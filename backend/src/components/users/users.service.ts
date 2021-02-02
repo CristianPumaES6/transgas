@@ -24,7 +24,7 @@ export class UsersService {
         private userRepository: Repository<UserEntity>,
     ) { }
 
-    async Get(id: Number): Promise<UserEntity> {
+    async Get(id: number): Promise<UserEntity> {
 
         // Hacemos una busqueda por id
         return await this.userRepository.findOne({
@@ -51,7 +51,6 @@ export class UsersService {
             where: [
                 // name && surname && nick && email
                 {
-                    id: Like('%' + (user.id || '') + '%'),
                     nick: Like('%' + (user.nick || '') + '%'),
                     name: Like('%' + (user.name || '') + '%'),
                     role: Like('%' + (user.role || '') + '%'),
@@ -96,7 +95,9 @@ export class UsersService {
         }).then(password => {
             // le asignamos el password encriptado al objeto
             user.password = password;
-
+            
+            // Eliminamos el user id
+            delete user.id;
             // procedemos hacer el save.
             return this.userRepository.save(user);
 
@@ -116,7 +117,7 @@ export class UsersService {
     // Actualiza un usuario
     async UpdateUserNickUnique(user: UserEntity): Promise<UserEntity> {
         // Contrasela antigua
-        let contraseniaOld: string = '';
+        let contraseniaOld = '';
 
         // Hacemos una busqueda por id
         return await this.userRepository.findOne({
@@ -161,7 +162,7 @@ export class UsersService {
         }).then(
             (password: string) => {
                 // Validamos el resultado.
-                if (!password) throw 'Revisar User.service la funcion hash o el retun no, respondio como se esperaba.'
+                if (!password) throw new Error('Revisar User.service la funcion hash o el retun no, respondio como se esperaba.');
 
                 // asignamos el password encriptado al objeto
                 user.password = password;
@@ -171,7 +172,7 @@ export class UsersService {
             }
         ).then(resultUpdate => {
 
-            if (!resultUpdate) throw 'userRepository.update no respondio como esperabamos.';
+            if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
 
             // borramos el password por seguridad.
             // delete user.password;
@@ -216,5 +217,25 @@ export class UsersService {
             }
         )
     }
-    
+
+    async GetUserByNick(nick: string): Promise<UserEntity> {
+
+        return await DummyPromise().then(
+            result => {
+                //
+                return this.userRepository.findOne({
+                    where: [
+                        // hacemos un where donde buscamos por email.
+                        { nick: nick }
+                    ]
+                });
+            }
+        ).then((resultUser: UserEntity) => {
+
+            if (!resultUser) throw new Error('user_was_not_found');
+            
+            return resultUser;
+        });
+    }
+
 }

@@ -1,3 +1,3 @@
 
 // Rounds bcrypt
-export const ROUNDS_BCRYPT: number = 192;
+export const ROUNDS_BCRYPT = 3;
