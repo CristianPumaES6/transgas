@@ -11,6 +11,7 @@ import { join } from 'path';
 // Path
 import { SQLITE_PATH } from './config/path.config';
 import { UsersModule } from './components/users/users.module';
+import { AuthModule } from './components/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UsersModule } from './components/users/users.module';
       synchronize: true,
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
