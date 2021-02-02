@@ -3,10 +3,8 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 import { SingUpComponent } from './components/sing-up/sing-up.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GlobalModule } from './global.module';
 
 @NgModule({
   declarations: [
@@ -14,10 +12,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SingUpComponent
   ],
   imports: [
+    GlobalModule,
     BrowserModule,
     AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
