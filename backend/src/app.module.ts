@@ -10,6 +10,7 @@ import { join } from 'path';
 
 // Path
 import { SQLITE_PATH } from './config/path.config';
+import { UsersModule } from './components/users/users.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SQLITE_PATH } from './config/path.config';
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
