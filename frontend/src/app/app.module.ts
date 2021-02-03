@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { GlobalModule } from './global.module';
 
+import { AuthGuardService } from './services/auth-guard.service';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,7 +19,7 @@ import { GlobalModule } from './global.module';
     BrowserModule,
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
