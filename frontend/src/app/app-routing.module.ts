@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // Components CRUD
-import { SingUpComponent } from './components/sing-up/sing-up.component';
+import { LogInComponent } from './components/log-in/log-in.component';
 
 const routes: Routes = [
-  { path: '', component: SingUpComponent},
+  { path: '', component: LogInComponent},
 ];
 
 @NgModule({
