@@ -5,6 +5,7 @@
   display: flex;
   justify-content: center;
   background-color: rgba($gray-100, .2);
+  height: 100vh;
 
   @include media-breakpoint-up(lg) { justify-content: flex-end; }
 }
