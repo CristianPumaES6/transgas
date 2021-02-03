@@ -1,8 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 // Servicio de Loading.
 import { LoadingComponent } from './shared/loading/loading.component';
 import { LoadingService } from './services/loading.service'
+
+// Moldes
+import { User } from './models/user'
+// Service
+import { AuthService } from './services/auth.service'
 
 @Component({
   selector: 'app-root',
@@ -10,11 +15,15 @@ import { LoadingService } from './services/loading.service'
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'Transgas';
 
+
+  @Input()
+  public loggedUser: User;
 
   constructor(
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private authService: AuthService,
   ) {
     console.log('constructor()');
 
@@ -33,6 +42,22 @@ export class AppComponent {
     pauseOnHover: true
   };
 
+
+  ngOnInit() {console.log('ngOnInit()');
+  
+    this.loggedUser = this.authService.GetLoggedUser();
+  }
+/* 
+  ngDoCheck() {console.log('ngDoCheck()');
+  
+    this.loggedUser = this.authService.GetLoggedUser();
+  }
+ */
+  logout() {console.log('logout()');
+  
+    this.authService.Logout();
+    this.loggedUser = this.authService.GetLoggedUser();
+  }
 
   // OnLoadingLoaded => Funcion que inicia el loading.service.
   public OnLoadingLoaded(loading: LoadingComponent): void {
