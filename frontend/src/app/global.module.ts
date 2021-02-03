@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-
+// Module
+import { SimpleNotificationsModule } from 'angular2-notifications';
+ 
+// ServiWorker
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -27,12 +29,16 @@ import { LoadingService } from './services/loading.service';
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         // ANGULAR MATERIAL  
         BrowserAnimationsModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        // Module
+        SimpleNotificationsModule.forRoot()
     ],
     exports: [
         // ANGULAR MATERIAL  
         BrowserAnimationsModule,
         MatProgressSpinnerModule,
+        // Module
+        SimpleNotificationsModule,
 
         // Components
         LoadingComponent

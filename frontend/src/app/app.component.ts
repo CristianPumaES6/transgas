@@ -22,6 +22,17 @@ export class AppComponent {
   };
 
 
+  // Configuracion para las notificaciones
+  public notificationOpts = {
+    timeOut: 5000,
+    lastOnBottom: true,
+    clickToClose: true,
+    maxLength: 0,
+    maxStack: 7,
+    showProgressBar: true,
+    pauseOnHover: true
+  };
+
 
   // OnLoadingLoaded => Funcion que inicia el loading.service.
   public OnLoadingLoaded(loading: LoadingComponent): void {
