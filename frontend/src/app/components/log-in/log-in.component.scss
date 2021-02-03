@@ -1,0 +1,41 @@
+@import "../../../app/variable";
+
+.az-signup-wrapper {
+  background-image: url("http://165.227.76.37:3001/ADRIAN2.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+
+.az-column-signup-left {
+  // background: rgba(255, 255, 255, 0.4);
+}
+
+.traductor {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  list-style: none;
+
+  li {
+    cursor: pointer;
+    padding: 0px 0px 0px 0px;
+    border-radius: 10px;
+    color: $t-blue;
+    &:hover {
+      color: $t-yellow;
+      transition: all 0.5s;
+      background: rgba($t-blue, 0.5);
+      padding: 0px 5px 0px 5px;
+    }
+  }
+}
+
+.img-peque {
+  width: 60px;
+}
+
+.left-hard {
+  position: absolute;
+  left: 40px;
+  top: 40px;
+}
