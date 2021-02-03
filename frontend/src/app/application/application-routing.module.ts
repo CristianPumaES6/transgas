@@ -10,7 +10,9 @@ const routes: Routes = [
   {
     path: 'application', component: ApplicationComponent,
     children: [
-      { path: '', component: DashboardComponent }
+      { path: '', component: DashboardComponent },
+      // Dashboard de la pagina
+      { path: 'dashboard', component: DashboardComponent },
     ]
   }
 ];
