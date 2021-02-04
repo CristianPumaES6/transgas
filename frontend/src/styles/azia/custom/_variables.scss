@@ -1,12 +1,13 @@
 
 $az-height-base:                  38px;
-$az-height-header:                64px;
-$az-height-header-mobile:         60px;
+$az-height-header:                50px;//64px;
+$az-height-header-mobile:         45px;//60px;
 $az-height-navbar:                48px;
 $az-height-navbar-compact:        42px;
-$az-height-footer:                40px;
-$az-height-content:               calc(100vh - #{$az-height-header + $az-height-navbar + $az-height-footer});
-
+$az-height-footer:                30px;//40px;
+$az-height-content:           //calc(100vh - #{$az-height-header + $az-height-navbar + $az-height-footer});
+                                calc(100vh - #{$az-height-header + $az-height-footer});
+                                
 $az-width-sidebar:                240px;
 $az-width-iconbar-aside:          230px;
 

@@ -1,3 +1,16 @@
+//
+export const aSide: any = {
+    DASHBOARD:'Dashboard',
+    VOYAGE:'Voyage',
+    USER: 'User'
+}
+
+//
+export const application: any = {
+    EDIT_PERFIL:'Edit profile',
+    EXIT_PERFIL:'Logout'
+}
+
 // Cateogría para autenticacion
 export const auth: any = {
     // Comunes personalizado,
@@ -7,7 +20,7 @@ export const auth: any = {
     CANNOT_REACH_SERVER: 'Could not connect to server.',
     ERROR_ON_GENERAL: 'He encountered an unexpected error, contact us at: labcode.team.lt@gmail.com ',
     CONNECTION_ERROR: 'Connection error.',
-    SESSION_LOST_401:'Session lost.',
+    SESSION_LOST_401: 'Session lost.',
     ACCOUNT_EXPIRED_402: 'Account expired.',
     USER_HAS_NOT_PERSMISSIONS_403: 'User does not have permission',
     SERVER_RETURNED_NOT_FOUND_404: 'Server returned not found.',
@@ -23,7 +36,7 @@ export const logIn: any = {
     SUB_TITLE_PRINCIPAL: 'SAILING ANALYSIS',
     WELCOME_LOGIN: 'Welcome back!',
     PLEASE_SING_LOGIN: 'Please sign in to continue.',
-    
+
     // Formulario
     USERNAME: 'Username',
     PASSWORD: 'Password',

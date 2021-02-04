@@ -74,17 +74,6 @@
   margin-bottom: 20px;
   position: relative;
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 6px;
-    left: 20px;
-    height: 3px;
-    width: 24px;
-    background-color: $az-color-primary;
-    @include border-radius(2px);
-  }
-
   @include hover-focus() { color: $gray-900; }
 }
 
