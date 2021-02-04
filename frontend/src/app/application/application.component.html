@@ -1,4 +1,5 @@
-<app-a-side (onLoaded)="OnAsideLoaded($event)"></app-a-side>
+<app-a-side (onLoaded)="OnAsideLoaded($event)" (onNavLinkSelect)="OnSelectNavLink($event)" [loggedUser]="loggedUser">
+</app-a-side>
 
 <div class="az-content az-content-dashboard-six">
   <div class="az-header az-header-dashboard-six">

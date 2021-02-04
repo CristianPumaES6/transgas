@@ -99,6 +99,8 @@ export class ApplicationComponent implements OnInit {
 
     // Cuando se carga el formulario modal, capturo la referencia y se la envio al servicio
     this.aSideService.Initialize(aside);
+
+    this.GetRoutelNavLink();
   }
 
   public OnNavLinkOpenClose(type: string): boolean {
@@ -110,9 +112,73 @@ export class ApplicationComponent implements OnInit {
 
   // Funcion para cerrar la session de usuario.
   public logout() {
+    console.log('logout()');
+
     this.authService.Logout();
     this.loggedUser = this.authService.GetLoggedUser();
     this.router.navigate(['../'], { relativeTo: this.activatedRoute });
   }
+
+  public GetRoutelNavLink() {
+    console.log('GetRoutelNavLink()');
+
+    let router: string = this.router.url;
+    let navLink: string = '';
+
+
+    switch (router) {
+
+      case '/application/dashboard':
+        navLink = 'dashboard';
+        break;
+
+      case '/application/voyages':
+        navLink = 'voyages';
+        break;
+
+      case '/application/users':
+        navLink = 'users';
+        break;
+
+      case '/application/helps':
+        navLink = 'helps';
+        break;
+
+      default:
+        navLink = 'dashboard';
+        break;
+    };
+
+    this.aSideService.SetNavLink(navLink);
+
+  }
+
+  // This function select navLink in the router.
+  public OnSelectNavLink(navLink: string) {
+    console.log('OnSelectNavLink(navLink: string)');
+
+
+    switch (navLink) {
+      case 'dashboard':
+        this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
+        break;
+
+      case 'users':
+        this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
+        break;
+
+      case 'voyages':
+        this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
+        break;
+
+      case 'helps':
+        this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
+        break;
+
+      default:
+        break;
+    }
+  }
+
 
 }

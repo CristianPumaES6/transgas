@@ -13,6 +13,9 @@ const routes: Routes = [
       { path: '', component: DashboardComponent },
       // Dashboard de la pagina
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'voyages', component: DashboardComponent },
+      { path: 'users', component: DashboardComponent },
+      { path: 'helps', component: DashboardComponent },
     ]
   }
 ];
