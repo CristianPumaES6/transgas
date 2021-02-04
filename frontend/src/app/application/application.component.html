@@ -1,4 +1,79 @@
-<app-a-side></app-a-side>
-<router-outlet></router-outlet>  
+<app-a-side (onLoaded)="OnAsideLoaded($event)"></app-a-side>
+
+<div class="az-content az-content-dashboard-six">
+  <div class="az-header az-header-dashboard-six">
+    <div class="container-fluid">
+
+      <div class="az-header-left menu-hidden-big">
+        <a href="" id="azIconbarShow" (click)="OnNavLinkOpenClose('open-menu')"
+          class="az-header-menu-icon  d-md-block"><span></span></a>
+        <a href="" id="azContentBodyHide" (click)="OnNavLinkOpenClose('back-formulario')"
+          class="az-header-arrow d-md-none"><i class="icon-back-1"></i></a>
+      </div><!-- az-header-left -->
 
 
+      <div class="az-header-center">
+        <!-- 
+        <input type="search" class="form-control" placeholder="Search for anything...">
+        <button class="btn"><i class="fas fa-search"></i></button>
+         -->
+      </div><!-- az-header-center -->
+
+
+      <div class="az-header-right">
+
+        <div class="dropdown az-profile-menu">
+          <a href="" class="az-img-user">
+            <div class="dropdown-menu"><img src="http://165.227.76.37:3000/FotosBuques/{{loggedUser.name}}.png" alt="">
+            </div>
+          </a>
+          <div class="dropdown-menu">
+
+            <div class="az-dropdown-header d-sm-none">
+              <a href="" class="az-header-arrow"><i class="icon-back-1"></i></a>
+            </div>
+
+
+            <div class="az-header-profile">
+              <div class="az-img-user">
+                <img src="http://165.227.76.37:3000/FotosBuques/{{loggedUser.name}}.png" alt="">
+              </div><!-- az-img-user -->
+
+              <h6>{{loggedUser.name}}</h6>
+
+              <span>{{loggedUser.role | translateMessage:translateCategory}}</span>
+            </div>
+
+
+            <a routerLink="/application/perfil/{{loggedUser.id}}" class="dropdown-item">
+              <i class="icon-edit-1"></i>
+              {{'EDIT_PERFIL' | translateMessage:translateCategory}}
+            </a>
+            <a (click)="logout()" class="dropdown-item">
+              <i class="icon-logout-1"></i>
+              {{'EXIT_PERFIL' | translateMessage:translateCategory}}
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- <div class="az-content-body az-content-body-dashboard-six"> -->
+  <div class="az-content-app az-content-contacts p-0">
+
+    <router-outlet></router-outlet>
+  </div>
+
+
+  <div class="az-footer">
+    <div class="container-fluid">
+      <span>&copy; 2020 Transgas v1.7 - Sailing Anality</span>
+      <!-- <span>Designed by: ThemePixels</span> -->
+    </div><!-- container -->
+  </div><!-- az-footer -->
+
+</div>
