@@ -8,20 +8,20 @@
         (click)="selectNavLink('dashboard')">
         <i class="icon-menu-dashboard"></i>
       </a>
-      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'voyage'}" (click)="selectNavLink('voyage')">
+      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'voyages'}" (click)="selectNavLink('voyages')">
         <i class="icon-menu-port">
         </i>
       </a>
 
       <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
-        <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'user'}" (click)="selectNavLink('loggedUser')">
+        <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'users'}" (click)="selectNavLink('users')">
           <i class="icon-menu-user"></i>
         </a>
       </ng-template>
 
     </nav>
     <div class="az-iconbar-bottom">
-      <a href="" class="az-iconbar-help"><i class="icon-menu-help"></i></a>
+      <a href="" class="az-iconbar-help" [ngClass]="{'active' : navLink === 'helps'}" (click)="selectNavLink('helps')"><i class="icon-menu-help"></i></a>
       <a href="" class="az-img-user online"><img src="http://165.227.76.37:3000/FotosBuques/{{loggedUser.name}}.png"
           alt=""></a>
     </div><!-- az-iconbar-bottom -->
@@ -50,7 +50,7 @@
 
 
       <a href="#" id="asideSailingAnality" class="az-iconbar-pane show pt-2"
-        [ngClass]="{'active' : navLink === 'voyage'}" (click)="selectNavLink('voyage')">
+        [ngClass]="{'active' : navLink === 'voyages'}" (click)="selectNavLink('voyages')">
         <h6 class="az-iconbar-title">{{'VOYAGE' | translateMessage:translateCategory}}</h6>
         <!--  <small
                     class="az-iconbar-text">{{ 'SAILING_ANALITY_DESCRIPTION' | translateMessage:translateCategory}}</small>
@@ -62,7 +62,7 @@
 
       <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
         <a href="#" id="asideDocumentacion" class="az-iconbar-pane show pt-2"
-          [ngClass]="{'active' : navLink === 'user'}" (click)="selectNavLink('user')">
+          [ngClass]="{'active' : navLink === 'users'}" (click)="selectNavLink('users')">
           <h6 class="az-iconbar-title">{{'USER' | translateMessage:translateCategory}}</h6>
           <!--<small class="az-iconbar-text">{{ 'USERS_DESCRIPTION' | translateMessage:translateCategory}}</small>
                 <nav class="nav">

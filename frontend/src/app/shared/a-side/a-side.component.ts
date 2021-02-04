@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
 // Services
 import { LanguageService } from '../../services/language.service';
@@ -20,11 +20,14 @@ export class ASideComponent implements OnInit {
   public translateCategory: string = 'aSide';
   public userLanguage: string = this.languageService.GetCurrentLanguage();
 
+  @Input()
+  public loggedUser: User = new User();
+
   // Creamos la variable
   @Output('onLoaded') private onLoaded: EventEmitter<ASideComponent> = new EventEmitter<ASideComponent>();
 
-  // user logeado
-  public loggedUser: User = new User();
+  // Creamos una variable de salida que emitira que navlink a sido seleccionado.
+  @Output('onNavLinkSelect') onNavLinkSelect = new EventEmitter<string>();
 
   // Esta variable servira para almacenar el item seleccionado.
   public navLink: string = '';
@@ -39,7 +42,7 @@ export class ASideComponent implements OnInit {
 
 
   }
-  
+
 
   ngOnInit() {
     console.log(' ngOnInit() ');
@@ -115,6 +118,14 @@ export class ASideComponent implements OnInit {
     return (this.openedNavBarMovil === 'open-menu');
   }
 
+  // Seteamos el nuevo navLink.
+  public setNavLink(newNavLink: string): string {
+    console.log('setNavLink(newNavLink: string)');
+
+    this.navLink = newNavLink;
+    return this.navLink;
+  }
+
   // This function returns the selected nav.
   public whatNavLinkIsSelected(): string {
     console.log('whatNavLinkIsSelected()');
@@ -127,8 +138,9 @@ export class ASideComponent implements OnInit {
   public selectNavLink(navLink: string): boolean {
     console.log('selectNavLink(navLink: string)');
 
-
+    // Actualizamos el navLink seleccionado.
     this.navLink = navLink;
+    this.onNavLinkSelect.emit(this.navLink);
 
     $('body').removeClass('az-iconbar-show');
     $('body').removeClass('az-navbar-show');

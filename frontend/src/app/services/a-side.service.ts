@@ -13,8 +13,6 @@ export class ASideService {
     // Inicializamos los valores de navBar.
     public Initialize(aSide: ASideComponent): void {
         console.log('Initialize(aSide: ASideComponent)');
-
-
         this.aSide = aSide;
     }
 
@@ -38,5 +36,12 @@ export class ASideService {
 
 
         return // (this.loading && this.loading.isOpened()) || false;
+    }
+
+    public SetNavLink(navLink: string): void {
+        console.log('SetNavLink(navLink: string)');
+
+
+        this.aSide.setNavLink(navLink);
     }
 }
