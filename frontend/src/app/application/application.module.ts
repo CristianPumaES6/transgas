@@ -8,13 +8,24 @@ import { DashboardComponent } from '../components/dashboard/dashboard.component'
 import { ApplicationComponent } from './application.component';
 import { ASideComponent } from '../shared/a-side/a-side.component';
 
+// Modules
+import { GlobalModule } from '../global.module';
 
+// Services
+import { ASideService } from '../services/a-side.service';
 
 @NgModule({
-  declarations: [DashboardComponent, ApplicationComponent, ASideComponent],
+  declarations: [
+    ApplicationComponent,
+    DashboardComponent,
+    ASideComponent
+  ],
   imports: [
+    GlobalModule,
     CommonModule,
     ApplicationRoutingModule,
-  ]
+  ],
+  providers: [ASideService],
+  bootstrap: [ApplicationComponent]
 })
 export class ApplicationModule { }

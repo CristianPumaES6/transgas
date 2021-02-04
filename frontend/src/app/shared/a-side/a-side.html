@@ -1,1 +1,76 @@
-<h1>A-SIDE</h1>
+<div class="container-personalizate">
+  <div class="az-iconbar">
+    <a href="http://www.transgas.com.pe/" class="az-iconbar-logo">
+      <i class="icon-transgas-icono"></i>
+    </a>
+    <nav class="nav">
+      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'dashboard'}"
+        (click)="selectNavLink('dashboard')">
+        <i class="icon-menu-dashboard"></i>
+      </a>
+      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'voyage'}" (click)="selectNavLink('voyage')">
+        <i class="icon-menu-port">
+        </i>
+      </a>
+
+      <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
+        <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'user'}" (click)="selectNavLink('loggedUser')">
+          <i class="icon-menu-user"></i>
+        </a>
+      </ng-template>
+
+    </nav>
+    <div class="az-iconbar-bottom">
+      <a href="" class="az-iconbar-help"><i class="icon-menu-help"></i></a>
+      <a href="" class="az-img-user online"><img src="http://165.227.76.37:3000/FotosBuques/{{loggedUser.name}}.png"
+          alt=""></a>
+    </div><!-- az-iconbar-bottom -->
+  </div><!-- az-iconbar -->
+
+
+  <div class="az-iconbar-aside">
+    <div class="az-iconbar-header">
+      <a href="http://www.transgas.com.pe/" class="az-logo">Transgas</a>
+      <a href="" class="az-iconbar-toggle-menu">
+        <i class="icon-back-1"></i>
+        <i class="icon-x1"></i>
+      </a>
+    </div><!-- az-iconbar-header -->
+    <div class="az-iconbar-body show">
+
+
+      <a href="#" id="asideDashboard" class="az-iconbar-pane show" [ngClass]="{'active' : navLink === 'dashboard'}"
+        (click)="selectNavLink('dashboard')">
+        <h6 class="az-iconbar-title">{{'DASHBOARD' | translateMessage:translateCategory}}</h6>
+        <!--<small class="az-iconbar-text">{{ 'DASHBOARD_DESCRIPTION' | translateMessage:translateCategory}}</small>-->
+        <!--     <nav class="nav">
+                    <a class="nav-link">Dashboard</a>
+                </nav> -->
+      </a><!-- az-iconbar-pane -->
+
+
+      <a href="#" id="asideSailingAnality" class="az-iconbar-pane show pt-2"
+        [ngClass]="{'active' : navLink === 'voyage'}" (click)="selectNavLink('voyage')">
+        <h6 class="az-iconbar-title">{{'VOYAGE' | translateMessage:translateCategory}}</h6>
+        <!--  <small
+                    class="az-iconbar-text">{{ 'SAILING_ANALITY_DESCRIPTION' | translateMessage:translateCategory}}</small>
+                <nav class="nav">
+                    <a class="nav-link">SAILING_ANALITY</a>
+                </nav> -->
+      </a><!-- az-iconbar-pane -->
+
+
+      <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
+        <a href="#" id="asideDocumentacion" class="az-iconbar-pane show pt-2"
+          [ngClass]="{'active' : navLink === 'user'}" (click)="selectNavLink('user')">
+          <h6 class="az-iconbar-title">{{'USER' | translateMessage:translateCategory}}</h6>
+          <!--<small class="az-iconbar-text">{{ 'USERS_DESCRIPTION' | translateMessage:translateCategory}}</small>
+                <nav class="nav">
+                    <a class="nav-link">USERS</a>
+                </nav> -->
+        </a><!-- az-iconbar-pane -->
+      </ng-template>
+
+    </div><!-- az-iconbar-body -->
+  </div><!-- az-iconbar-aside -->
+</div>
