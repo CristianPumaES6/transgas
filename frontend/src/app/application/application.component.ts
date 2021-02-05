@@ -21,6 +21,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import { OnlineOfflineService } from '../services/online-offline.service';
 import { AuthService } from '../services/auth.service';
 import { ASideService } from '../services/a-side.service';
+import { UserService } from '../services/user.service';
 
 import { DatabaseService } from '../services/database.service';
 
@@ -49,6 +50,7 @@ export class ApplicationComponent implements OnInit {
     private authService: AuthService,
     readonly onlineOfflineService: OnlineOfflineService,
     private readonly databaseService: DatabaseService,
+    private userService: UserService,
   ) {
     console.log('constructor()');
 

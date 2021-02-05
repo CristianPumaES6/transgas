@@ -7,6 +7,7 @@ export class User {
         public language?: string,
         public role?: string,
         public status?: boolean,
+        public syncStatus?:string,// none added updated
 
     ) {
         this.id = id || null;
@@ -16,6 +17,7 @@ export class User {
         this.language = language || 'EN';
         this.role = role || '';
         this.status = status || true;
+        this.syncStatus = '';
     }
 
 }
