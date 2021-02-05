@@ -74,6 +74,10 @@
     <div class="container-fluid">
       <span>&copy; 2020 Transgas v1.7 - Sailing Anality</span>
       <!-- <span>Designed by: ThemePixels</span> -->
+      <span class="float-righ"> {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
+        <span  [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline | translateMessage:translateCategory}} <span class="icon-punto-circulo"></span> </span>
+      </span>
+      
     </div><!-- container -->
   </div><!-- az-footer -->
 

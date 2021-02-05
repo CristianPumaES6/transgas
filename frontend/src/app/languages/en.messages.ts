@@ -1,14 +1,17 @@
 //
 export const aSide: any = {
-    DASHBOARD:'Dashboard',
-    VOYAGE:'Voyage',
+    DASHBOARD: 'Dashboard',
+    VOYAGE: 'Voyage',
     USER: 'User'
 }
 
 //
 export const application: any = {
-    EDIT_PERFIL:'Edit profile',
-    EXIT_PERFIL:'Logout'
+    EDIT_PERFIL: 'Edit profile',
+    EXIT_PERFIL: 'Logout',
+    CURRENT_STATUS: 'current status',
+    STATUS_TRUE: 'Online',
+    STATUS_FALSE: 'Offline'
 }
 
 // Cateogría para autenticacion
