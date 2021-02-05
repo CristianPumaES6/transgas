@@ -13,6 +13,7 @@ import { GlobalModule } from '../global.module';
 
 // Services
 import { ASideService } from '../services/a-side.service';
+import { DatabaseService } from '../services/database.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { ASideService } from '../services/a-side.service';
     CommonModule,
     ApplicationRoutingModule,
   ],
-  providers: [ASideService],
+  providers: [ASideService,DatabaseService],
   bootstrap: [ApplicationComponent]
 })
 export class ApplicationModule { }

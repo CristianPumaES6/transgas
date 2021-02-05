@@ -22,6 +22,8 @@ import { OnlineOfflineService } from '../services/online-offline.service';
 import { AuthService } from '../services/auth.service';
 import { ASideService } from '../services/a-side.service';
 
+import { DatabaseService } from '../services/database.service';
+
 // Models
 import { User } from '../models/user';
 @Component({
@@ -45,7 +47,8 @@ export class ApplicationComponent implements OnInit {
     private aSideService: ASideService,
     private languageService: LanguageService,
     private authService: AuthService,
-    readonly onlineOfflineService: OnlineOfflineService
+    readonly onlineOfflineService: OnlineOfflineService,
+    private readonly databaseService: DatabaseService,
   ) {
     console.log('constructor()');
 
