@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
-
+import { DatabaseService } from './database.service'
 declare const window: any;
 
 @Injectable({ providedIn: 'root' })
@@ -13,16 +13,23 @@ export class OnlineOfflineService {
   // private internalConnectionChanged = new Subject<boolean>();
 
   // Agregamos al servidor un evento de escucha
-  constructor() {
+  constructor(
+    private databaseService: DatabaseService,
+  ) {
     console.log('constructor()');
 
+    this.isOnline = !!window.navigator.onLine;
+
     // Caso sea online o Offline cambiara el estado de la coneccion interna.
-    window.addEventListener('online', () => this.updateOnlineStatus());
+    window.addEventListener('online', () => {
+      this.updateOnlineStatus();
+      this.databaseService.Sync();
+    });
     window.addEventListener('offline', () => this.updateOnlineStatus());
   }
 
   // Actualiza el estado de la coneccion
-  public updateOnlineStatus(): boolean {
+  private async updateOnlineStatus(): Promise<boolean> {
     console.log('updateOnlineStatus()');
 
     this.isOnline = !!window.navigator.onLine;

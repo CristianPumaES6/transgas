@@ -11,7 +11,10 @@ export const application: any = {
     EXIT_PERFIL: 'Logout',
     CURRENT_STATUS: 'current status',
     STATUS_TRUE: 'Online',
-    STATUS_FALSE: 'Offline'
+    STATUS_FALSE: 'Offline',
+    ERROR_UPDATE_INDEXEDDB_IN_ONLINE: 'Error updating the data in indexDB in online',
+    ERROR_SYNC_INDEXEDDB_IN_ONLINE: 'Failed to sync User ADD, UPDATE in server.',
+    ERROR_CLEAR_INDEXEDDB: 'Failed to clear User indexBD',
 }
 
 // Cateogría para autenticacion
