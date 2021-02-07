@@ -7,6 +7,8 @@ import { DashboardComponent } from '../components/dashboard/dashboard.component'
 // Components
 import { ApplicationComponent } from './application.component';
 import { ASideComponent } from '../shared/a-side/a-side.component';
+import { UserComponent } from '../components/users/user/user.component';
+import { AzListComponent } from '../shared/crud/az-list/az-list.component';
 
 // Modules
 import { GlobalModule } from '../global.module';
@@ -14,13 +16,13 @@ import { GlobalModule } from '../global.module';
 // Services
 import { ASideService } from '../services/a-side.service';
 import { DatabaseService } from '../services/database.service';
-import { UserComponent } from '../components/users/user/user.component';
 
 @NgModule({
   declarations: [
     ApplicationComponent,
     DashboardComponent,
     ASideComponent,
+    AzListComponent,
     UserComponent
   ],
   imports: [
