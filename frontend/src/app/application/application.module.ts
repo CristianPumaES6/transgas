@@ -14,12 +14,14 @@ import { GlobalModule } from '../global.module';
 // Services
 import { ASideService } from '../services/a-side.service';
 import { DatabaseService } from '../services/database.service';
+import { UserComponent } from '../components/users/user/user.component';
 
 @NgModule({
   declarations: [
     ApplicationComponent,
     DashboardComponent,
-    ASideComponent
+    ASideComponent,
+    UserComponent
   ],
   imports: [
     GlobalModule,
