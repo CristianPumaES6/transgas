@@ -50,10 +50,6 @@ export class ApplicationComponent implements OnInit {
     private languageService: LanguageService,
     private authService: AuthService,
     readonly onlineOfflineService: OnlineOfflineService,
-    private readonly databaseService: DatabaseService,
-    private userService: UserService,
-    private loadingService: LoadingService,
-    private notificationsService: NotificationsService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -111,81 +107,6 @@ export class ApplicationComponent implements OnInit {
         }
       }
     });
-
-
-
-    // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
-    if (!!window.navigator.onLine) {
-
-      // Instanciamos el obj que usaremos.
-      let user: User = new User();
-      
-      // Ejecuto todas las consultas para cargar datos segundarios
-      forkJoin(
-        [
-          // Traigo a todos los User y lo instancio en el obj.
-          this.GetUsers(user)
-        ]
-      ).pipe(
-        mergeMap(
-          (result: boolean[]) => {
-            if (result) {
-
-              // Obtengo resultados de las funciones
-              let resulGetSailingAnalities: boolean = result[0];
-
-
-              // Evaluo posibles errores en las ejecuciones
-              if (!resulGetSailingAnalities) throw 'ERROR_GET_USERS';
-
-              // Sincronizamos todos los datos.
-              return this.databaseService.Sync();
-            } else {
-              // Algo fallo al ejecutar los observables
-              throw this.languageService.GetMessage(this.translateCategory, 'ERROR_USERS_GET');
-            }
-          }
-        ), mergeMap(
-          (result: boolean) => {
-
-            // Revisamos si el result es el esperado.
-            if (!result) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
-
-            return this.databaseService.ClearUsersIndexedDB();
-          }
-        ), mergeMap(
-          (result: boolean) => {
-            // Revisamos si el result es el esperado.
-            if (!result) throw 'ERROR_CLEAR_INDEXEDDB';
-
-            // Agregamos los usuarios al indexedDB
-            return this.databaseService.addUsersIndexedDB(this.getUsers);
-          }
-        )
-      ).subscribe(
-        (result: boolean) => {
-          // Revisamos si el result es el esperado.
-          if (!result) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        },
-        err => {
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
-
-          // Esto deberian de enviarlo para registrar los errores.
-          console.error(msg);
-          console.dir(err);
-
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
-
-    }
-
 
   }
 
@@ -279,23 +200,5 @@ export class ApplicationComponent implements OnInit {
 
   // Funciones para cargar combos //
   //////////////////////////////////
-
-  // GetUsers: Cargo todos los Users para el listado de Users.
-  private GetUsers(user: User): Observable<boolean> {
-    console.log('GetUsers(user: User)');
-
-    // Consulto la lista de paises para cargar combo
-    return this.userService.GetUsers(user).pipe(map(
-      (resultUsers: User[]) => {
-
-        // Update result Users
-        this.getUsers = resultUsers;
-
-        // Segun el resultado retornamos la respuesta.
-        return (resultUsers !== null);
-      }
-    ));
-  }
-
 
 }
