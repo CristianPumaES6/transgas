@@ -16,7 +16,7 @@ export class User {
         this.password = password || '';
         this.language = language || 'EN';
         this.role = role || '';
-        this.status = status || true;
+        this.status = status || false;
         this.syncStatus = '';
     }
 

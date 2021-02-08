@@ -1,2 +1,76 @@
-<h1>AzLIST
-</h1>
+<div class="az-content-breadcrumb lh-1 mg-b-2">
+
+  <ng-template ngFor let-i="index" let-c="count" let-azListBreadcrumb [ngForOf]="settingAzList.azListBreadcrumbs">
+
+    <span>{{azListBreadcrumb}}</span>
+
+  </ng-template>
+
+</div>
+
+
+<h2 class="az-content-title tx-24 mg-b-0">
+
+  <ng-template [ngIf]="settingAzList.isBack">
+    <a href="" (click)="OnSelectBack()">
+      <i class="icon-back-1" matTooltip="{{settingAzList.toolTipBack}}"></i>
+    </a>
+  </ng-template>
+
+  {{ settingAzList.titleAzLists }}
+
+  <span class="float-right mr-2">
+    <ng-template [ngIf]="settingAzList.isNew">
+      <a href="" (click)="OnSelectNew()">
+        <i class="icon-add" matTooltip="{{settingAzList.toolTipNew}}"></i>
+      </a>
+    </ng-template>
+  </span>
+
+</h2>
+
+
+<ng-template [ngIf]="settingAzList.activateDropDown">
+  <mat-form-field class="w-100">
+    <mat-label>{{settingAzList.placeholderDropdown}}</mat-label>
+    <mat-select [(ngModel)]="selectAzSelectDropdown">
+
+      <ng-template ngFor let-idropdown [ngForOf]="azListDropdowns" let-i="index">
+        <mat-option value="{{idropdown.id}}" (click)="OnSelectDropdown()">
+          {{ idropdown.name}}
+        </mat-option>
+      </ng-template>
+
+    </mat-select>
+  </mat-form-field>
+</ng-template>
+
+<ng-template [ngIf]="!settingAzList.activateDropDown">
+  <div class=" az-nav-line-chat nav-link active"></div>
+</ng-template>
+
+
+
+
+<div id="azContactList" class="az-contacts-list w-100">
+
+  <ng-template ngFor let-i="index" let-c="count" let-azList [ngForOf]="azLists">
+
+    <div class="az-contact-item" [ngClass]="{'selected' : azList === selectAzList}">
+
+      <div *ngIf="!!azList.image" class="az-img-user"><img src="{{azList.image}}" alt=""></div>
+
+      <div class="az-contact-body" [ngClass]="{'ml-0': !azList.image == true}" (click)="OnSelectAzList(azList)">
+        <h6>{{azList.name}}</h6>
+        <span class="phone" class="mg-0">{{azList.surname}}</span>
+      </div><!-- az-contact-body -->
+
+
+      <a *ngIf="settingAzList.activateOptionDelete" href="" class="az-contact-star" (click)="OnSelectDelete(azList)">
+        <i class="icon-delete"></i>
+      </a>
+
+    </div><!-- az-contact-item -->
+
+  </ng-template>
+</div><!-- az-contacts-list -->
