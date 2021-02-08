@@ -39,7 +39,7 @@ export class UserEntity {
         this.password = password || '';
         this.language = language || '';
         this.role = role || '';
-        this.status = status || true;
+        this.status = status || false;
     }
 
 
