@@ -4,6 +4,7 @@ import { LanguageService } from '../../../services/language.service';
 
 // modelo
 import { SettingAzList, azListDropdown, AzList } from '../../../models/azlist';
+import PerfectScrollbar from 'perfect-scrollbar';
 
 @Component({
   selector: 'app-az-list',
@@ -51,6 +52,10 @@ export class AzListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    new PerfectScrollbar('#azContactList', {
+      suppressScrollX: true
+  })
+
   }
 
   // Emitimos una accion.
