@@ -49,7 +49,7 @@ export class DatabaseService {
 
         // Usuarios agregados en local mapeados.
         let usersMappings: Mapping[] = []
-       
+
         usersMappings = await this.SyncUsers();
 
         return true;
@@ -107,16 +107,20 @@ export class DatabaseService {
 
         }
 
-
         return saveUserMappings;
 
     }
 
 
     // =================== USERS IndexedDB ====================================
+    // Obtiene a todos los usuarios de IndexDB
+    public async getUsersIndexDB(): Promise<User[]> {
+        console.log('getUsersIndexDB()');
+        return await this.db.users.toArray();
+    }
 
     // Agregar User por indexedDB
-    private async addUserIndexedDB(user: User): Promise<boolean> {
+    public async addUserIndexedDB(user: User): Promise<boolean> {
         console.log('addUserIndexedDb(user: User)');
 
         return await this.db.users
@@ -129,15 +133,39 @@ export class DatabaseService {
                 });
     }
 
+    // Actualiza User del IndexedDB
+    public async updateUserIndexedDB(user: User): Promise<boolean> {
+        console.log('updateUserIndexedDB(user: User)');
+
+
+        return await this.db.users.update(user.id,
+            {
+                nick: user.nick,
+                name: user.name,
+                password: user.password,
+                language: user.language,
+                role: user.role,
+                status: user.status,
+                syncStatus: user.syncStatus
+            }
+        ).then(
+            async () => {
+
+                console.log('update in DB, DB is now', user);
+
+                return true;
+            });
+    }
+
     // Agregar Users por indexedDB
     public async addUsersIndexedDB(users: User[]): Promise<boolean> {
         console.log('addUsersIndexedDB(users: User[])');
-
+        
         // Verificamos como se encuentra el servicios
         if (true) {
 
             // for await
-            for await (const iUser of users) {
+            for (const iUser of users) {
                 await this.addUserIndexedDB(iUser);
             }
 
@@ -148,6 +176,8 @@ export class DatabaseService {
 
         }
 
+        console.log('FINNNNNN SINCRONOs');
+        
         return true;
 
     }

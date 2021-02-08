@@ -72,12 +72,14 @@ export class AzListComponent implements OnInit {
     this.eSelectBack.emit
     return false;
   }
+  // Emitimas al seleccionar una opcion de Dropdown
   public OnSelectDropdown(): boolean {
     console.log('OnSelectDropdown()');
 
     this.eSelectDropdown.emit(this.selectAzSelectDropdown)
     return false;
   }
+  // Emitimos al seleccionarun item de la lista
   public OnSelectAzList(azList: AzList): boolean {
     console.log('OnSelectAzList(azList: AzList)');
 
@@ -87,6 +89,7 @@ export class AzListComponent implements OnInit {
     this.eSelectAzList.emit(this.selectAzList);
     return false;
   }
+  // Emitimos al dar click a la opcion eliminar
   public OnSelectDelete(azList: AzList): boolean {
     console.log('OnSelectDelete(azList: AzList)');
 
