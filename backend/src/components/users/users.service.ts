@@ -86,7 +86,7 @@ export class UsersService {
             // validamos si exite un resultado.
             if (result) {
                 // Si existe, generamos un error para no continual.
-                throw new Error('repeat_user');
+                throw 'REPEAT_NICK';
             }
 
             // encriptamos el password.
@@ -147,7 +147,7 @@ export class UsersService {
             // validamos si exite un resultado.
             if (result) {
                 // Si existe, generamos un error para no continual.
-                throw new Error('repeat_nick');
+                throw 'REPEAT_NICK';
             }
 
             // Si existe el password lo encriptamos.

@@ -141,7 +141,7 @@ export class UsersController {
                 }
 
                 // Validamos que los datos sean los necesarios.
-                if (user && user.name && user.password && user.role) {
+                if (user && user.name && user.nick && user.password && user.role) {
                     user.status = true;
                     // retornamos la respuesta del servicio.
                     return this._usersService.CreateUserNickUnique(user);
@@ -192,7 +192,7 @@ export class UsersController {
                     throw new Error('Se esta intentado registrar con un rol no valido.');
                 }
 
-                if (!isNaN(id) && user && user.name && user.password && user.role) {
+                if (!isNaN(id) && user && user.name && user.nick && user.password && user.role) {
                     user.id = Number(id);
                     user.status = true;
                     // retornamos la respuesta del servicio.
