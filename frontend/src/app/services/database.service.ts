@@ -32,7 +32,7 @@ export class DatabaseService {
 
         this.db = new Dexie('TransgasDatabase');
         this.db.version(1).stores({
-            users: 'id,nick,name,password,language,role,status,syncStatus'
+            users: '++id,nick,name,password,language,role,status,syncStatus'
         });
 
     }
@@ -120,23 +120,21 @@ export class DatabaseService {
     }
 
     // Agregar User por indexedDB
-    public async addUserIndexedDB(user: User): Promise<boolean> {
+    public async addUserIndexedDB(user: User): Promise<User> {
         console.log('addUserIndexedDb(user: User)');
-
+        
         return await this.db.users
             .add(user).then(
-                async () => {
+                (userId: number) => {
+                    user.id = userId;
 
-                    console.log('saved in DB, DB is now', user);
-
-                    return true;
+                    return user;
                 });
     }
 
     // Actualiza User del IndexedDB
-    public async updateUserIndexedDB(user: User): Promise<boolean> {
+    public async updateUserIndexedDB(user: User): Promise<User> {
         console.log('updateUserIndexedDB(user: User)');
-
 
         return await this.db.users.update(user.id,
             {
@@ -148,19 +146,15 @@ export class DatabaseService {
                 status: user.status,
                 syncStatus: user.syncStatus
             }
-        ).then(
-            async () => {
-
-                console.log('update in DB, DB is now', user);
-
-                return true;
-            });
+        ).then((result: boolean) => {
+            return user;
+        });
     }
 
     // Agregar Users por indexedDB
     public async addUsersIndexedDB(users: User[]): Promise<boolean> {
         console.log('addUsersIndexedDB(users: User[])');
-        
+
         // Verificamos como se encuentra el servicios
         if (true) {
 
@@ -177,7 +171,7 @@ export class DatabaseService {
         }
 
         console.log('FINNNNNN SINCRONOs');
-        
+
         return true;
 
     }
