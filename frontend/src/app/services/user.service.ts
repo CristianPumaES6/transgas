@@ -140,6 +140,8 @@ export class UserService {
                 'Authorization': 'Bearer ' + this.GetToken(),
             });
 
+        // Eliminamos el campo sync
+        delete user.syncStatus;
         let body: string = JSON.stringify(user);
         let options: any = { headers: headers, responseType: 'json' };
 
@@ -167,6 +169,9 @@ export class UserService {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.GetToken(),
             });
+
+        // Eliminamos el campo sync
+        delete user.syncStatus;
         let body: string = JSON.stringify(user);
         let options: any = { headers: headers, responseType: 'json' };
 
