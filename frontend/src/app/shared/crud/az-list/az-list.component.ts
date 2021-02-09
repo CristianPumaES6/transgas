@@ -62,14 +62,14 @@ export class AzListComponent implements OnInit {
   public OnSelectNew(): boolean {
     console.log('OnSelectNew()');
 
-    this.eSelectNew.emit
+    this.eSelectNew.emit();
     return false;
   }
   // Emitimos una accion.
   public OnSelectBack(): boolean {
     console.log('OnSelectBack()');
 
-    this.eSelectBack.emit
+    this.eSelectBack.emit();
     return false;
   }
   // Emitimas al seleccionar una opcion de Dropdown

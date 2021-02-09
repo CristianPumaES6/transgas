@@ -2,13 +2,112 @@
 
   <div class="az-content-left az-content-left-contacts">
 
-    <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists"></app-az-list>
+    <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" (eSelectAzList)="SelectUser($event)"
+      (eSelectNew)="ClickNew()"></app-az-list>
 
   </div><!-- az-content-left -->
 
 
   <div class="az-content-body az-content-body-contacts">
-    TEST 2
+
+    <div class="az-contact-info-header">
+      <div class="media">
+        <div class="az-img-user">
+
+          <img src="https://via.placeholder.com/500x500" alt="">
+          <a href=""><i class="typcn typcn-camera-outline"></i></a>
+
+        </div>
+        <div class="media-body">
+
+          <h4>{{ user.name }}</h4>
+          <nav class="nav">
+            <a class="nav-link"><i class="typcn typcn-device-phone"></i>
+              {{ user.role | translateMessage:translateCategory }}</a>
+          </nav>
+
+        </div><!-- media-body -->
+      </div><!-- media -->
+      <div class="az-contact-action">
+
+        <!-- Estos campos son para el edit, recordemos que si un objeto tiene id entonces es para actualizar. -->
+        <ng-template [ngIf]="user.id && disableEdit">
+          <a href="" (click)="ClickEnableFrm()">
+            <i class="icon-edit-2" matTooltip=" {{'EDIT_USER' | translateMessage:translateCategory}}"></i>
+          </a>
+        </ng-template>
+        <!-- -->
+
+        <ng-template [ngIf]="!disableEdit">
+          <!-- El boton save actualiza y crea. -->
+          <a id="SaveUser" href="" (click)="ClickSaveUser()">
+            <i class="icon-save"
+              matTooltip="{{ (user.id? 'UPDATE_USER' : 'CREATE_USER') | translateMessage:translateCategory}}"></i>
+          </a>
+
+          <!-- Descata un formulario -->
+          <a id="DiscardUser" href="" (click)="ClickDiscardUser()">
+            <i class="icon-x2" matTooltip="{{'CANCEL' | translateMessage:translateCategory}}"></i>
+          </a>
+        </ng-template>
+        <!-- Fin accion en botones -->
+
+      </div><!-- az-contact-action -->
+    </div><!-- az-contact-info-header -->
+
+
+    <div class="az-contact-info-body">
+      <div class="media-list">
+
+        <div class="row pl-2 pb-2">
+
+          <div class="col-6 row no-gutters">
+            <mat-form-field class="w-100">
+
+              <mat-label>{{'NAME' | translateMessage:translateCategory}}</mat-label>
+              <input matInput type="text" placeholder="{{'NAME' | translateMessage:translateCategory}}"
+                [(ngModel)]="user.name" [disabled]='disableEdit'>
+            </mat-form-field>
+          </div>
+
+          <div class="col-6 row no-gutters">
+            <mat-form-field class="w-100">
+              <input matInput type="text" placeholder="{{'NICK' | translateMessage:translateCategory}}"
+                [(ngModel)]="user.nick" [disabled]='disableEdit'>
+            </mat-form-field>
+
+          </div>
+
+        </div>
+        <div class="row pl-2 pb-2">
+
+          <div class="col-6 row no-gutters">
+            <mat-form-field class="w-100">
+              <input matInput type="password" placeholder="{{'PASSWORD' | translateMessage:translateCategory}}"
+                [(ngModel)]="user.password" [disabled]='disableEdit'>
+            </mat-form-field>
+          </div>
+
+          <div class="col-6 row no-gutters">
+            <mat-form-field class="w-100">
+              <mat-label>{{'ROLE' | translateMessage:translateCategory}}</mat-label>
+              <mat-select [(ngModel)]="user.role" name="role" [disabled]='disableEdit'>
+                <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT'">
+                  <mat-option value="ADMIN">{{'ADMIN' | translateMessage:translateCategory}}</mat-option>
+                </ng-template>
+                <ng-template [ngIf]="roleUser == 'SUPPORT'">
+                  <mat-option value="SUPPORT">{{'SUPPORT' | translateMessage:translateCategory}}</mat-option>
+                </ng-template>
+                <mat-option value="BUQUE">{{'BUQUE' | translateMessage:translateCategory}}</mat-option>
+              </mat-select>
+              
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
 </div>
