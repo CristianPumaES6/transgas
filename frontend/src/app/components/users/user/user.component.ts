@@ -24,6 +24,7 @@ import { User } from 'src/app/models/user';
 // Services
 import { DatabaseService } from '../../../services/database.service';
 import { UserService } from '../../../services/user.service';
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user',
@@ -34,10 +35,11 @@ export class UserComponent implements OnInit {
   // rol del usuario.
   public roleUser: string = '';
 
-  //======== VARIABLES DE TRADUCCION===========
+  //======== VARIABLES DE TRADUCCION=============
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'user';
   //=================[ FIN ]=====================
+
   // Datos del user
   public user: User = new User();
   // Lista de los datos del usuario
@@ -46,14 +48,15 @@ export class UserComponent implements OnInit {
   private initialUser: User = <User>{};
 
   //======== Datos para el componente azList ===========
-
   public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false, "New user", "", false, "", true);
   public azLists: AzList[] = [];
 
-  // =========================================
-
+  // ===================================================
   // Esta variable permite habilita la edicion en el formulario.
   public disableEdit: boolean = true;
+
+  // Variable del grupo de formulario.
+  public formUser: FormGroup;
 
   constructor(
     private router: Router,
@@ -64,9 +67,9 @@ export class UserComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
+    private fb: FormBuilder
   ) {
     console.log('User Constructor()');
-
   }
 
   ngOnInit(): void {
@@ -81,7 +84,8 @@ export class UserComponent implements OnInit {
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
 
-
+    // Inicializamos y bloqueamos el formulario.
+    this.ReactiveForm(true, false, true);
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
@@ -156,10 +160,10 @@ export class UserComponent implements OnInit {
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
           // Deshabilito el spinner de loading
           this.loadingService.Close();
-        }
-      );
+        });
 
     } else {
+
       forkJoin([
         of(true)
       ]).pipe(
@@ -214,8 +218,7 @@ export class UserComponent implements OnInit {
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
           // Deshabilito el spinner de loading
           this.loadingService.Close();
-        }
-      );
+        });
 
     }
 
@@ -265,6 +268,8 @@ export class UserComponent implements OnInit {
     // Inicializo su valor.
     this.disableEdit = true;
 
+    this.ReactiveForm(false, true, true, false, false, true, false);
+
     // actualizo el valor del InitializeSailingAnality.
     this.initialUser = this.CollectUser();
   }
@@ -287,6 +292,65 @@ export class UserComponent implements OnInit {
     return !(JSON.stringify(userToSave) === JSON.stringify(this.initialUser));
   }
 
+  /* Reactive form */
+  private ReactiveForm(initialize?: boolean, clearValidate?: boolean, disableForm?: boolean, enableForm?: boolean, getForm?: boolean, setForm?: boolean, validate?: boolean): boolean {
+    console.log('ReactiveForm()');
+
+    // Inicializamos el formUser, si lo hacemos 2 proboca error, creao que deberia ser con un update
+    if (initialize) {
+      this.formUser = this.fb.group({
+        name: ['', [Validators.required]],
+        nick: ['', [Validators.required]],
+        password: ['', [Validators.required]],
+        role: ['', [Validators.required]],
+      });
+    }
+
+    // reseteamos la configuracion
+    if (clearValidate) {
+      this.formUser.reset({ onlySelf: true });
+    }
+
+    // deshabilitamos el formulario
+    if (disableForm) {
+      this.formUser.disable();
+    }
+
+    // Habilitamos el formulario
+    if (enableForm) {
+      this.formUser.enable();
+    }
+
+    // Obtenemos los valores del formulario
+    if (getForm) {
+      this.user.name = this.formUser.controls['name'].value;
+      this.user.nick = this.formUser.controls['nick'].value;
+      this.user.password = this.formUser.controls['password'].value;
+      this.user.role = this.formUser.controls['role'].value;
+    }
+
+    // Seteamos los valores del formulario con los datos del user.
+    if (setForm) {
+      this.formUser.controls['name'].setValue(this.user.name);
+      this.formUser.controls['nick'].setValue(this.user.nick);
+      this.formUser.controls['password'].setValue(this.user.password);
+      this.formUser.controls['role'].setValue(this.user.role);
+    }
+
+    // Validamos si el stado del formulario es VALID
+    if (validate) {
+      this.formUser.markAllAsTouched();
+      return this.formUser.status == 'VALID';
+    }
+
+
+    return true;
+  }
+
+  /* Handle form errors in Angular 8 */
+  public errorHandling = (control: string, error: string) => {
+    return this.formUser.controls[control].hasError(error);
+  }
   // ================[ FIN ] ================
   // ==============  Comun Formulario ====================
   public SelectUser(event: AzList): void {
@@ -318,9 +382,11 @@ export class UserComponent implements OnInit {
 
     // Inicializamos los datos user.
     this.InitializeUser();
-
     // Habilitamos el formulario.
     this.disableEdit = false;
+
+    // Solo habilitamos el formurio.
+    this.ReactiveForm(false, false, false, true);
 
     return false
   }
@@ -330,6 +396,8 @@ export class UserComponent implements OnInit {
     console.log('ChangeDisableFrm()');
 
     this.disableEdit = false;
+    // Habilitamos el formuario.
+    this.ReactiveForm(false, false, false, true);
 
     return false;
   }
@@ -353,8 +421,8 @@ export class UserComponent implements OnInit {
           this.user = new User();
         }
 
-        // bloqueamos el formulario
-        this.disableEdit = true;
+        // Inicializamos el user para que detecte la diferencia.
+        this.InitializeUser();
       } else {
         // sigues en la pagina.
       }
@@ -366,9 +434,9 @@ export class UserComponent implements OnInit {
         // Limpiamos el obj User
         this.user = new User();
       }
-      // Si no hubo cambios solo navego
+      // Inicializamos el user para que detecte la diferencia.
 
-      this.disableEdit = true;
+      this.InitializeUser();
     }
 
     // Devuelvo false
@@ -384,13 +452,16 @@ export class UserComponent implements OnInit {
 
     // Habilito el spinner de loading
     this.loadingService.Open();
-
-
-    // Verifico si es para actualizar
-    if (this.user.id) {
-      this.UpdateUserOnelineOffline(userToSave);
+    // Setemos los datos ademas hacemos una validacion y es correcto los campos del formualrio.
+    if (this.ReactiveForm(false, false, false, false, true, false, true)) {
+      // Verifico si es para actualizar
+      if (this.user.id) {
+        this.UpdateUserOnelineOffline(userToSave);
+      } else {
+        this.CreateUserOnlineOffline(userToSave);
+      }
     } else {
-      this.CreateUserOnlineOffline(userToSave);
+      this.loadingService.Close();
     }
 
     // Devuelvo false

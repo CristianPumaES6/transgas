@@ -59,51 +59,75 @@
     <div class="az-contact-info-body">
       <div class="media-list">
 
-        <div class="row pl-2 pb-2">
 
-          <div class="col-6 row no-gutters">
-            <mat-form-field class="w-100">
+        <form [formGroup]="formUser">
 
-              <mat-label>{{'NAME' | translateMessage:translateCategory}}</mat-label>
-              <input matInput type="text" placeholder="{{'NAME' | translateMessage:translateCategory}}"
-                [(ngModel)]="user.name" [disabled]='disableEdit'>
-            </mat-form-field>
+          <div class="row pl-2 pb-2">
+
+            <div class="col-6 row no-gutters">
+              <mat-form-field class="w-100">
+                <mat-label>{{'NAME' | translateMessage:translateCategory}}</mat-label>
+                <input matInput type="text" placeholder="{{'NAME' | translateMessage:translateCategory}}"
+                  formControlName="name">
+
+                <mat-error *ngIf="errorHandling('name', 'required')">
+                  Name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-6 row no-gutters">
+              <mat-form-field class="w-100">
+                <mat-label>{{'NICK' | translateMessage:translateCategory}}</mat-label>
+                <input matInput type="text" placeholder="{{'NICK' | translateMessage:translateCategory}}"
+                  formControlName="nick">
+                <mat-error *ngIf="errorHandling('nick', 'required')">
+                  Nick is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+
+            </div>
+
+          </div>
+          <div class="row pl-2 pb-2">
+
+            <div class="col-6 row no-gutters">
+              <mat-form-field class="w-100">
+                <mat-label>{{'PASSWORD' | translateMessage:translateCategory}}</mat-label>
+                <input matInput type="password" placeholder="{{'PASSWORD' | translateMessage:translateCategory}}"
+                  formControlName="password">
+
+                <mat-error *ngIf="errorHandling('password', 'required')">
+                  Password is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-6 row no-gutters">
+              <mat-form-field class="w-100">
+
+                <mat-label>{{'ROLE' | translateMessage:translateCategory}}</mat-label>
+                <mat-select [(value)]="user.role" formControlName="role">
+                  <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT'">
+                    <mat-option value="ADMIN">{{'ADMIN' | translateMessage:translateCategory}}</mat-option>
+                  </ng-template>
+                  <ng-template [ngIf]="roleUser == 'SUPPORT'">
+                    <mat-option value="SUPPORT">{{'SUPPORT' | translateMessage:translateCategory}}</mat-option>
+                  </ng-template>
+                  <mat-option value="BUQUE">{{'BUQUE' | translateMessage:translateCategory}}</mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errorHandling('role', 'required')">
+                  Role is <strong>required</strong>
+                </mat-error>
+
+              </mat-form-field>
+            </div>
           </div>
 
-          <div class="col-6 row no-gutters">
-            <mat-form-field class="w-100">
-              <input matInput type="text" placeholder="{{'NICK' | translateMessage:translateCategory}}"
-                [(ngModel)]="user.nick" [disabled]='disableEdit'>
-            </mat-form-field>
+        </form>
 
-          </div>
 
-        </div>
-        <div class="row pl-2 pb-2">
-
-          <div class="col-6 row no-gutters">
-            <mat-form-field class="w-100">
-              <input matInput type="password" placeholder="{{'PASSWORD' | translateMessage:translateCategory}}"
-                [(ngModel)]="user.password" [disabled]='disableEdit'>
-            </mat-form-field>
-          </div>
-
-          <div class="col-6 row no-gutters">
-            <mat-form-field class="w-100">
-              <mat-label>{{'ROLE' | translateMessage:translateCategory}}</mat-label>
-              <mat-select [(ngModel)]="user.role" name="role" [disabled]='disableEdit'>
-                <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT'">
-                  <mat-option value="ADMIN">{{'ADMIN' | translateMessage:translateCategory}}</mat-option>
-                </ng-template>
-                <ng-template [ngIf]="roleUser == 'SUPPORT'">
-                  <mat-option value="SUPPORT">{{'SUPPORT' | translateMessage:translateCategory}}</mat-option>
-                </ng-template>
-                <mat-option value="BUQUE">{{'BUQUE' | translateMessage:translateCategory}}</mat-option>
-              </mat-select>
-              
-            </mat-form-field>
-          </div>
-        </div>
 
       </div>
     </div>
