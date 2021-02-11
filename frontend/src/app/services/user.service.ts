@@ -201,19 +201,17 @@ export class UserService {
             });
         let options: any = { headers: headers, responseType: 'json' };
 
-        debugger
         // Mando consulta al API
         return this.httpClient.delete(url, options).pipe(
             map(
                 (response: any) => {
-                    debugger
+                    
                     if (response.status && response.status === 200) {
-                        debugger
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
                     }
-                    debugger
+                    
                 }
             ),
             catchError((err) => this.authGuardService.HandleError(err))

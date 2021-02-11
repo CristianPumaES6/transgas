@@ -19,12 +19,14 @@ import { map, mergeMap } from 'rxjs/operators';
 
 // Models
 import { SettingAzList, azListDropdown, AzList } from '../../../models/azlist';
-import { User } from 'src/app/models/user';
+import { User } from '../../../models/user';
 
 // Services
 import { DatabaseService } from '../../../services/database.service';
 import { UserService } from '../../../services/user.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 
 @Component({
   selector: 'app-user',
@@ -67,7 +69,8 @@ export class UserComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public dialog: MatDialog,
   ) {
     console.log('User Constructor()');
   }
@@ -200,8 +203,6 @@ export class UserComponent implements OnInit {
         )
       ).subscribe(
         (result: boolean) => {
-
-
           // Inicializo el SailingAnality
           this.InitializeUser();
 
@@ -257,6 +258,7 @@ export class UserComponent implements OnInit {
         new AzList(user.id, user.name, user.role, '')
       );
     });
+
   }
 
   // Funciones para inicializar datos //
@@ -268,6 +270,9 @@ export class UserComponent implements OnInit {
     // Inicializo su valor.
     this.disableEdit = true;
 
+    // limpiamos las validaciones,
+    // deshabilitamos el formulario
+    // Seteamos el formulario con los datos de this.user.
     this.ReactiveForm(false, true, true, false, false, true, false);
 
     // actualizo el valor del InitializeSailingAnality.
@@ -278,6 +283,10 @@ export class UserComponent implements OnInit {
   private CollectUser(): User {
     console.log('CollectUser()');
 
+    // Obtenemos los datos del formulario
+    this.ReactiveForm(false, false, false, false, true, false, false)
+
+    // El objeto user lo seteamos.
     let User: User = this.user;
 
     // Retorno el objeto
@@ -343,7 +352,6 @@ export class UserComponent implements OnInit {
       return this.formUser.status == 'VALID';
     }
 
-
     return true;
   }
 
@@ -352,7 +360,7 @@ export class UserComponent implements OnInit {
     return this.formUser.controls[control].hasError(error);
   }
   // ================[ FIN ] ================
-  // ==============  Comun Formulario ====================
+  // ==============  Funciones  AZLIST ====================
   public SelectUser(event: AzList): void {
     console.log('SelectUser(event: AzList)');
 
@@ -380,6 +388,9 @@ export class UserComponent implements OnInit {
     // Creamos un nuevo usuario.
     this.user = new User(null, '', '', '', '', '', true, null);
 
+    // abrimos el formulario solo para modal.
+    this.aSideService.OpenClose('open-formulario');
+
     // Inicializamos los datos user.
     this.InitializeUser();
     // Habilitamos el formulario.
@@ -391,6 +402,38 @@ export class UserComponent implements OnInit {
     return false
   }
 
+  public ClickDeleteUser(event: AzList) {
+
+    // Buscamos el usuario que se desea eliminar.
+    let userDelete: User = this.user = this.getUsers.find(
+      (user: User) => {
+        return user.id == event.id;
+      }
+    );
+
+    let dialogData: DialogData = {
+      color: "warning",
+      icon: "icon-delete",
+      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', userDelete.name),
+      mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
+    };
+
+    const dialogRef = this.dialog.open(DialogDeleteComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+          this.DeleteUserOnlineOffline(userDelete);
+        }
+      });
+
+  }
+  // ======================================================
+
+
   // habilitar el formulario.
   public ClickEnableFrm(): boolean {
     console.log('ChangeDisableFrm()');
@@ -401,8 +444,6 @@ export class UserComponent implements OnInit {
 
     return false;
   }
-
-
 
   // DiscardUser(): Descarta el formulario.
   public ClickDiscardUser(): boolean {
@@ -453,7 +494,7 @@ export class UserComponent implements OnInit {
     // Habilito el spinner de loading
     this.loadingService.Open();
     // Setemos los datos ademas hacemos una validacion y es correcto los campos del formualrio.
-    if (this.ReactiveForm(false, false, false, false, true, false, true)) {
+    if (this.ReactiveForm(false, false, false, false, false, false, true)) {
       // Verifico si es para actualizar
       if (this.user.id) {
         this.UpdateUserOnelineOffline(userToSave);
@@ -527,60 +568,74 @@ export class UserComponent implements OnInit {
       );
 
     } else {
-      // Le agregamos un stado Sync
-      this.user.syncStatus = 'updated';
+      
+      Promise.resolve(true).then(
+        () => {
+          // Consultamos al userIndexDB para saber el estado del sync.
+          return this.databaseService.getUserIndexDB(userToSave.id);
+        }
+      ).then(
+        (userIndexedDB: User) => {
+          // Verificamos el estado si es add que continue, caso contrario delete.
+          if (userIndexedDB.syncStatus !== 'added') {
+            userToSave.syncStatus = 'updated';
+          } else {
+            userToSave.syncStatus = 'added';
+            // Corregir todo con then
+          }
 
-      this.databaseService.updateUserIndexedDB(this.user).then(
-        result => {
-
-          // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_SAVE_LOCAL'));
-
+          // Actualizo el usuario
+          return this.databaseService.updateUserIndexedDB(userToSave)
+        }
+      ).then(
+        (resultUpdate: User) => {
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getUsers = this.getUsers.map(
             (user: User) => {
               // Buscamos el id para cambiar el valor de result.
-              if (user.id === result.id) {
+              if (user.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                user = result;
+                user = resultUpdate;
               }
 
               return user;
             }
           );
 
-
           // Actualizamos la lista del azlist
           this.azLists = this.azLists.map(
             (azList: AzList) => {
 
               // Buscamos el id para cambiar el valor de result.
-              if (azList.id === result.id) {
+              if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(result.id, result.name, result.role, '')
+                azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, '')
               }
-
               return azList;
+
             }
           )
 
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-
           // Si no hubo cambios solo navego
           this.InitializeUser();
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_SAVE_LOCAL'));
+
         }
       ).catch(
         error => {
           // Valido si viene un mensaje de error
-          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_UPDATE_LOCAL');
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_DELETE_LOCAL');
 
           // Muestro notificación
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
 
           // Deshabilito el spinner de loading
           this.loadingService.Close();
-        })
+        }
+      );
 
     }
   }
@@ -624,28 +679,32 @@ export class UserComponent implements OnInit {
 
 
     } else {
-
       // Le agregamos un stado Sync
-      this.user.syncStatus = 'added';
-      delete this.user.id;
+      userToSave.syncStatus = 'added';
+      delete userToSave.id;
 
-      this.databaseService.addUserIndexedDB(this.user).then(
-        (result: User) => {
-
-          this.user = result;
-          // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_CREATE_LOCAL'));
+      Promise.resolve(true).then(
+        () => {
+          // Agregamos el usuario al indexedDB.
+          return this.databaseService.addUserIndexedDB(userToSave)
+        }
+      ).then(
+        (resultUserIndexedDB: User) => {
 
           // Lo agrego al arreglo.
-          this.getUsers.push(result);
+          this.getUsers.push(resultUserIndexedDB);
 
-          this.azLists.push(new AzList(result.id, result.name, result.role, ''));
+          this.azLists.push(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, ''));
+
+          // vuelvo a cargar los datos de incio del token.
+          this.InitializeUser();
 
           // Deshabilito el spinner de loading
           this.loadingService.Close();
 
-          // vuelvo a cargar los datos de incio del token.
-          this.InitializeUser();
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_CREATE_LOCAL'));
+
         }
       ).catch(
         error => {
@@ -657,8 +716,129 @@ export class UserComponent implements OnInit {
 
           // Deshabilito el spinner de loading
           this.loadingService.Close();
+        }
+      );
+    }
+
+  }
+
+  private DeleteUserOnlineOffline(userDelete: User) {
+
+    if (!!window.navigator.onLine) {
+
+      // Guardo el objeto obtenido
+      this.userService.DeleteUser(userDelete).subscribe(
+        (result: User) => {
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_DELETE'));
+
+          // La siguiente linea de codigo eliminara un objeto del array.
+          this.getUsers = this.getUsers.filter(
+            (user: User) => {
+              if (user.id === result.id) {
+                return false;
+              }
+              return true;
+            }
+          )
+          this.azLists = this.azLists.filter(
+            azList => {
+              if (azList.id === result.id) {
+                return false;
+              }
+              return true;
+            }
+          );
+
+          // Revisar como llega el usuario y si viaja en false.
+          this.databaseService.updateUserIndexedDB(result);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // vuelvo a cargar los datos de incio del token.
+          this.InitializeUser();
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_DELETE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
         });
 
+    } else {
+
+      Promise.resolve(true).then(
+        () => {
+          // Consultamos al userIndexDB para saber el estado del sync.
+          return this.databaseService.getUserIndexDB(userDelete.id);
+        }
+      ).then(
+        (userIndexedDB: User) => {
+          // Verificamos el estado si es add que continue, caso contrario delete.
+          if (userIndexedDB.syncStatus !== 'added') {
+            userDelete.syncStatus = 'deleted';
+          } else {
+            userDelete.syncStatus = 'added';
+            // Corregir todo con then
+          }
+
+          // le seteo el password por defecto y el estado a false.
+          userDelete.status = false;
+
+          // Actualizo el usuario con el estado en False.
+          return this.databaseService.updateUserIndexedDB(userDelete);
+        }
+      ).then(
+        (resultUpdate: User) => {
+
+          // Elimino el usuario del arreglo.
+          this.getUsers = this.getUsers.filter(
+            (user: User) => {
+              if (user.id === resultUpdate.id) {
+                return false;
+              }
+              return true;
+            }
+          );
+          this.azLists = this.azLists.filter(
+            azList => {
+              if (azList.id === resultUpdate.id) {
+                return false;
+              }
+              return true;
+            }
+          )
+          // Inicializo los datos.
+          this.InitializeUser();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_DELETE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_DELETE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
     }
+
   }
+
 }

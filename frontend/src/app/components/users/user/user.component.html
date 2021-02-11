@@ -3,7 +3,7 @@
   <div class="az-content-left az-content-left-contacts">
 
     <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" (eSelectAzList)="SelectUser($event)"
-      (eSelectNew)="ClickNew()"></app-az-list>
+      (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDeleteUser($event)"></app-az-list>
 
   </div><!-- az-content-left -->
 
