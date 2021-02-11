@@ -8,6 +8,7 @@ import { User } from '../models/user';
 // Online service
 import { UserService } from '../services/user.service';
 import { Mapping } from '../models/mapping';
+import { user } from '../languages/en.messages';
 
 
 @Injectable()
@@ -70,11 +71,10 @@ export class DatabaseService {
         // FIltramos los datos que faltan aggregar y actualizar.
         const addUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'added');
         const updateUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'updated');
+        const deleteUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'deleted');
 
         // Recorremos por toods los users que falta por agregar.
-        console.log('---------------Eliminar el console SyncUsers prueba asincrona----------------');
         for (const iUser of addUsers) {
-
             // Resultado del create
             let resultCreate: User;
             resultCreate = await this.userService.CreateUser(iUser).pipe().toPromise();
@@ -86,26 +86,25 @@ export class DatabaseService {
             saveUserMappings.push(
                 new Mapping(iUser.id, resultCreate.id)
             )
-            // Verificamos si es sincrono.
-            console.log('Verificamos si es sincrono.');
-            console.log(resultCreate);
-
         }
 
         // Recorremos por todos los users que falta por actualizar.
         for (const iUser of updateUsers) {
-
-            let resultCreate: User;
-            resultCreate = await this.userService.SaveUser(iUser).pipe().toPromise();
+            let resultUpdate: User;
+            resultUpdate = await this.userService.SaveUser(iUser).pipe().toPromise();
 
             // Actualizamos el syncStatus a none.
             await this.db.users.update(iUser.id, { syncStatus: 'none' });
-
-            // Verificamos si es sincrono.
-            console.log('Verificamos si es sincrono.');
-            console.log(resultCreate);
-
         }
+
+
+        for (const iUser of deleteUsers) {
+            let resultDelete: User;
+            resultDelete = await this.userService.DeleteUser(iUser).pipe().toPromise();
+            // Actualizamos el syncStatus a none.
+            await this.db.users.update(iUser.id, { syncStatus: 'none' });
+        }
+
 
         return saveUserMappings;
 
@@ -116,13 +115,33 @@ export class DatabaseService {
     // Obtiene a todos los usuarios de IndexDB
     public async getUsersIndexDB(): Promise<User[]> {
         console.log('getUsersIndexDB()');
-        return await this.db.users.toArray();
+
+        return await this.db.users.toArray().then(
+            (results: User[]) => {
+
+                return results.filter(
+                    (user: User) => {
+                        return user.status === true;
+                    }
+                );
+
+            }
+        );
     }
 
+    public async getUserIndexDB(Index: number): Promise<User> {
+        console.log('getUserIndexDB(Index)');
+
+        return await this.db.users.get(Index).then(
+            (result: User) => {
+                return result;
+            });
+
+    }
     // Agregar User por indexedDB
     public async addUserIndexedDB(user: User): Promise<User> {
         console.log('addUserIndexedDb(user: User)');
-        
+
         return await this.db.users
             .add(user).then(
                 (userId: number) => {
@@ -130,25 +149,6 @@ export class DatabaseService {
 
                     return user;
                 });
-    }
-
-    // Actualiza User del IndexedDB
-    public async updateUserIndexedDB(user: User): Promise<User> {
-        console.log('updateUserIndexedDB(user: User)');
-
-        return await this.db.users.update(user.id,
-            {
-                nick: user.nick,
-                name: user.name,
-                password: user.password,
-                language: user.language,
-                role: user.role,
-                status: user.status,
-                syncStatus: user.syncStatus
-            }
-        ).then((result: boolean) => {
-            return user;
-        });
     }
 
     // Agregar Users por indexedDB
@@ -174,6 +174,25 @@ export class DatabaseService {
 
         return true;
 
+    }
+
+    // Actualiza User del IndexedDB
+    public async updateUserIndexedDB(user: User): Promise<User> {
+        console.log('updateUserIndexedDB(user: User)');
+
+        return await this.db.users.update(user.id,
+            {
+                nick: user.nick,
+                name: user.name,
+                password: user.password,
+                language: user.language,
+                role: user.role,
+                status: user.status,
+                syncStatus: user.syncStatus
+            }
+        ).then((result: boolean) => {
+            return user;
+        });
     }
 
     public async ClearUsersIndexedDB(): Promise<boolean> {
