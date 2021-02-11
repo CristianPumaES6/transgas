@@ -57,7 +57,7 @@ export class UsersController {
 
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.ACCEPTED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultGet
                 };
@@ -70,10 +70,10 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, HttpStatus.NOT_ACCEPTABLE);
+                }, HttpStatus.ACCEPTED);
             }
         );
     }
@@ -155,7 +155,7 @@ export class UsersController {
 
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.CREATED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultCreate
                 };
@@ -168,10 +168,10 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, 202);
+                }, HttpStatus.ACCEPTED);
             }
         );
     }
@@ -207,7 +207,7 @@ export class UsersController {
 
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.CREATED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultUpdate
                 };
@@ -220,10 +220,10 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, 202);
+                }, HttpStatus.ACCEPTED);
             }
         );
 
@@ -257,6 +257,16 @@ export class UsersController {
                     throw new Error('MISSING_FIELS');
                 }
             }
+        ).then(
+            (resultUpdate: UserEntity) => {
+
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: resultUpdate
+                };
+            }
         ).catch(
             err => {
                 // Obtengo mensajes de error
@@ -265,10 +275,10 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, 202);
+                }, HttpStatus.ACCEPTED);
             }
         );
     }

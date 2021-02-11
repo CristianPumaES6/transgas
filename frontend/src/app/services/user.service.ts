@@ -89,7 +89,7 @@ export class UserService {
         return this.httpClient.get(url, options).pipe(
             map(
                 (response: any) => {
-                    if (response.status) {
+                    if (response.status && response.status === 200) {
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
@@ -117,7 +117,7 @@ export class UserService {
         return this.httpClient.get(url, options).pipe(
             map(
                 (response: any) => {
-                    if (response.status && response.status >= 200 && response.status <= 400) {
+                    if (response.status && response.status === 200) {
 
                         return response.data;
                     } else {
@@ -149,7 +149,7 @@ export class UserService {
         return this.httpClient.post(url, body, options).pipe(
             map(
                 (response: any) => {
-                    if (response.status && response.status >= 200 && response.status <= 300) {
+                    if (response.status && response.status === 200) {
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
@@ -179,7 +179,7 @@ export class UserService {
         return this.httpClient.put(url, body, options).pipe(
             map(
                 (response: any) => {
-                    if (response.status && response.status >= 200 && response.status <= 300) {
+                    if (response.status && response.status === 200) {
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
@@ -201,15 +201,19 @@ export class UserService {
             });
         let options: any = { headers: headers, responseType: 'json' };
 
+        debugger
         // Mando consulta al API
         return this.httpClient.delete(url, options).pipe(
             map(
                 (response: any) => {
-                    if (response.status) {
+                    debugger
+                    if (response.status && response.status === 200) {
+                        debugger
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
                     }
+                    debugger
                 }
             ),
             catchError((err) => this.authGuardService.HandleError(err))
