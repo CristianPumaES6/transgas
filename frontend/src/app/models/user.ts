@@ -7,7 +7,7 @@ export class User {
         public language?: string,
         public role?: string,
         public status?: boolean,
-        public syncStatus?:string,// none added updated
+        public syncStatus?:string,// none added, updated, deleted
 
     ) {
         this.id = id || null;
