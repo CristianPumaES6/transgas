@@ -142,7 +142,6 @@ export class UsersController {
 
                 // Validamos que los datos sean los necesarios.
                 if (user && user.name && user.nick && user.password && user.role) {
-                    user.status = true;
                     // retornamos la respuesta del servicio.
                     return this._usersService.CreateUserNickUnique(user);
                 } else {
@@ -194,7 +193,6 @@ export class UsersController {
 
                 if (!isNaN(id) && user && user.name && user.nick && user.password && user.role) {
                     user.id = Number(id);
-                    user.status = true;
                     // retornamos la respuesta del servicio.
                     return this._usersService.UpdateUserNickUnique(user);
                 } else {
