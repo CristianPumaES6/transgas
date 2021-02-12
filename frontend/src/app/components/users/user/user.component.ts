@@ -27,6 +27,7 @@ import { UserService } from '../../../services/user.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
+import { OnlineOfflineService } from 'src/app/services/online-offline.service';
 
 @Component({
   selector: 'app-user',
@@ -64,6 +65,7 @@ export class UserComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private databaseService: DatabaseService,
+    private onlineOfflineService: OnlineOfflineService,
     private userService: UserService,
     private loadingService: LoadingService,
     private languageService: LanguageService,
@@ -73,6 +75,12 @@ export class UserComponent implements OnInit {
     public dialog: MatDialog,
   ) {
     console.log('User Constructor()');
+    // subscribe receives the value. sirve para recibir algun emit
+    this.onlineOfflineService.emitterReloadData.subscribe(
+      (isOnline: boolean) => {
+        console.log('Hacer reloadd______________');
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -568,7 +576,7 @@ export class UserComponent implements OnInit {
       );
 
     } else {
-      
+
       Promise.resolve(true).then(
         () => {
           // Consultamos al userIndexDB para saber el estado del sync.
