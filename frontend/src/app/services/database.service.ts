@@ -46,13 +46,14 @@ export class DatabaseService {
     }
 
     public async Sync(): Promise<boolean> {
-        console.log('Sync');
+        console.log('Sync Inicio');
 
         // Usuarios agregados en local mapeados.
         let usersMappings: Mapping[] = []
 
         usersMappings = await this.SyncUsers();
 
+        console.log('Sync Fin');
         return true;
 
     }
