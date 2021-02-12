@@ -9,6 +9,7 @@ import { ApplicationComponent } from './application.component';
 import { ASideComponent } from '../shared/a-side/a-side.component';
 import { UserComponent } from '../components/users/user/user.component';
 import { AzListComponent } from '../shared/crud/az-list/az-list.component';
+import { DialogDeleteComponent} from '../shared/dialog/delete/dialog-delete.component'
 
 // Modules
 import { GlobalModule } from '../global.module';
@@ -23,14 +24,15 @@ import { DatabaseService } from '../services/database.service';
     DashboardComponent,
     ASideComponent,
     AzListComponent,
-    UserComponent
+    UserComponent,
+    DialogDeleteComponent,
   ],
   imports: [
     GlobalModule,
     CommonModule,
     ApplicationRoutingModule,
   ],
-  providers: [ASideService,DatabaseService],
+  providers: [ASideService, DatabaseService],
   bootstrap: [ApplicationComponent]
 })
 export class ApplicationModule { }
