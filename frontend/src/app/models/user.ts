@@ -3,6 +3,7 @@ export class User {
         public id?: number,
         public nick?: string,
         public name?: string,
+        public filename?: string,
         public password?: string,
         public language?: string,
         public role?: string,
@@ -13,6 +14,7 @@ export class User {
         this.id = id || null;
         this.nick = nick || '';
         this.name = name || '';
+        this.filename = filename || '';
         this.password = password || '';
         this.language = language || 'EN';
         this.role = role || '';

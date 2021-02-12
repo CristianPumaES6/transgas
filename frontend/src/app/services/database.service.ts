@@ -33,7 +33,7 @@ export class DatabaseService {
 
         this.db = new Dexie('TransgasDatabase');
         this.db.version(1).stores({
-            users: '++id,nick,name,password,language,role,status,syncStatus'
+            users: '++id,nick,name,filename,password,language,role,status,syncStatus'
         });
 
     }

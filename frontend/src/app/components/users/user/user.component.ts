@@ -253,7 +253,7 @@ export class UserComponent implements OnInit {
     // Armo un obj azList.
     users.forEach((user: User) => {
       this.azLists.push(
-        new AzList(user.id, user.name, user.role, '')
+        new AzList(user.id, user.name, user.role, user.filename)
       );
     });
 
@@ -384,7 +384,7 @@ export class UserComponent implements OnInit {
     console.log('ClickNew()');
 
     // Creamos un nuevo usuario.
-    this.user = new User(null, '', '', '', '', '', true, null);
+    this.user = new User(null, '', '', '', '', '', '',true, null);
 
     // abrimos el formulario solo para modal.
     this.aSideService.OpenClose('open-formulario');
