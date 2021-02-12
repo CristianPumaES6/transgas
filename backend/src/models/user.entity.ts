@@ -11,6 +11,9 @@ export class UserEntity {
 
     @Column({ nullable: false })
     name: string;
+
+    @Column({ nullable: true })
+    filename: string;
     
     @Column({ nullable: false })
     password: string;

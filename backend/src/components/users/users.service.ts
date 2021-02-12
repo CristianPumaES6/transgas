@@ -10,6 +10,7 @@ import { Not } from "typeorm";
 // Otras librerias. 
 import * as bcrypt from 'bcrypt';
 import { ROUNDS_BCRYPT } from '../../config/bcrypt.config';
+import { URL_Server } from '../../config/server.config'
 
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
@@ -95,7 +96,7 @@ export class UsersService {
         }).then(password => {
             // le asignamos el password encriptado al objeto
             user.password = password;
-            
+
             // Eliminamos el user id
             delete user.id;
             // procedemos hacer el save.
@@ -233,8 +234,23 @@ export class UsersService {
         ).then((resultUser: UserEntity) => {
 
             if (!resultUser) throw new Error('user_was_not_found');
-            
+
             return resultUser;
+        });
+    }
+
+    // Actualiza un usuario
+    async UpdateImageUser(id: number, newFilename: string): Promise<boolean> {
+
+
+        let urlImage: string = URL_Server.back + '/' + newFilename;
+        // Hacemos una busqueda por id
+        return await this.userRepository.update(id, { filename: urlImage }).then(resultUpdate => {
+
+            if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
+
+            // Envio respuesta con el resultado recibido del ultimo paso
+            return true;
         });
     }
 

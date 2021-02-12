@@ -1,4 +1,4 @@
-import { Controller, Query, Get, Post, Put, Delete, Body, UseGuards, Param, HttpException, HttpStatus, Headers } from '@nestjs/common';
+import { Controller, Query, Get, Post, Put, Delete, Body, UseGuards, Param, HttpException, HttpStatus, Headers, UseInterceptors, UploadedFile } from '@nestjs/common';
 // import { AuthGuard } from '@nestjs/passport';
 
 // Si es una class lo tego que poner en el constructor y como proverdor del modulo
@@ -7,9 +7,13 @@ import { UsersService } from './users.service';
 
 import { DummyPromise } from '../../assets/promises.assets';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
+import { diskStorage } from 'multer';
 
 // Entity
 import { UserEntity } from '../../models/user.entity';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { EditFileName, ImageFileFilter } from 'src/middleware/image.middleware';
+import { FOLDER_UPLOADS } from 'src/config/path.config';
 
 @Controller('users')
 export class UsersController {
@@ -80,7 +84,7 @@ export class UsersController {
 
     // Solo si eres admin podras consultar por todos los usurios.
     @Get()
-    Gets(@Headers() headers, @Query() user: UserEntity): Promise<any> {
+    async Gets(@Headers() headers, @Query() user: UserEntity): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -125,7 +129,7 @@ export class UsersController {
     }
 
     @Post('create')
-    Create(@Headers() headers, @Body() user: UserEntity): Promise<any> {
+    async Create(@Headers() headers, @Body() user: UserEntity): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -225,7 +229,6 @@ export class UsersController {
             }
         );
 
-
     }
 
     @Delete(':id/delete')
@@ -280,4 +283,64 @@ export class UsersController {
             }
         );
     }
+
+    @Post(':id/image')
+    @UseInterceptors(FileInterceptor('image', {
+        storage: diskStorage({
+            destination: FOLDER_UPLOADS,
+            filename: EditFileName,
+        }),
+        fileFilter: ImageFileFilter
+    }))
+    async UploadImagePerfil(@Headers() headers, @Param('id') id, @UploadedFile() file) {
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+
+                // que solo puedan registrar un nuevo usuario los administradores o support.
+                if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
+                    throw new Error('Se esta intentado registrar con un rol no valido.');
+                }
+
+                if (!file || !file.filename) {
+                    // caso contrario retornamos un error
+                    throw 'MISSING_IMAGE';
+                }
+
+                return this._usersService.UpdateImageUser(id, file.filename);
+            }
+        ).then(
+            (resultUpdate: boolean) => {
+
+                if (!resultUpdate) throw new Error('No se guardo la imagen correctamente.');
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: resultUpdate
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+
+    }
+
+
 }
