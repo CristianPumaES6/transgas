@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('User')
 export class UserEntity {
-    
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -14,7 +14,7 @@ export class UserEntity {
 
     @Column({ nullable: true })
     filename: string;
-    
+
     @Column({ nullable: false })
     password: string;
 
@@ -31,6 +31,7 @@ export class UserEntity {
         id?: number,
         nick?: string,
         name?: string,
+        filename?: string,
         password?: string,
         language?: string,
         role?: string,
@@ -39,6 +40,7 @@ export class UserEntity {
         this.id = id || null;
         this.nick = nick || '';
         this.name = name || '';
+        this.filename = filename || '';
         this.password = password || '';
         this.language = language || '';
         this.role = role || '';
