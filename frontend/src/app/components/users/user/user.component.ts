@@ -78,6 +78,7 @@ export class UserComponent implements OnInit {
     // subscribe receives the value. sirve para recibir algun emit
     this.onlineOfflineService.emitterReloadData.subscribe(
       (isOnline: boolean) => {
+        this.loadDataIndexedDB();
         console.log('Hacer reloadd______________');
       }
     );
@@ -120,9 +121,6 @@ export class UserComponent implements OnInit {
               // Evaluo posibles errores en las ejecuciones
               if (!resulGetSailingAnalities) throw 'ERROR_GET_USERS';
 
-              // Generamos el azList
-              this.generateAzListBycUsers(this.getUsers);
-
               // Sincronizamos todos los datos que falten sincronizar.
               return this.databaseService.Sync();
             } else {
@@ -150,15 +148,12 @@ export class UserComponent implements OnInit {
         )
       ).subscribe(
         (result: boolean) => {
+
           // Revisamos si el result es el esperado.
           if (!result) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
 
+          this.loadDataIndexedDB();
 
-          // Inicializo el SailingAnality
-          this.InitializeUser();
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
         },
         err => {
 
@@ -174,65 +169,60 @@ export class UserComponent implements OnInit {
         });
 
     } else {
-
-      forkJoin([
-        of(true)
-      ]).pipe(
-        mergeMap(
-          (result: boolean[]) => {
-            if (result) {
-
-              // Obtengo resultados de las funciones
-              let resulGetSailingAnalities: boolean = result[0];
-              // Evaluo posibles errores en las ejecuciones
-              if (!resulGetSailingAnalities) throw 'ERROR_GET_USERS';
-
-
-              // Sincronizamos todos los datos que falten sincronizar.
-              return this.databaseService.getUsersIndexDB();
-            } else {
-              throw this.languageService.GetMessage(this.translateCategory, 'ERROR_RESULT_GET');
-            }
-          }
-        ),
-        mergeMap(
-          (users: User[]) => {
-            if (users.length > 0) {
-
-              this.getUsers = users;
-              // Generar lista por usuarios.
-              this.generateAzListBycUsers(this.getUsers);
-
-              return of(true);
-            } else {
-              throw this.languageService.GetMessage(this.translateCategory, 'ERROR_GET_USERS_INDEXEDDB');
-            }
-          }
-        )
-      ).subscribe(
-        (result: boolean) => {
-          // Inicializo el SailingAnality
-          this.InitializeUser();
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        },
-        err => {
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
-
-          console.error(msg);
-          console.dir(err);
-
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        });
+      this.loadDataIndexedDB();
 
     }
 
   }
 
+
+  private loadDataIndexedDB() {
+
+    Promise.resolve(true).then(
+      () => {
+
+        // Obtenemos los datos del usuario.
+        return this.databaseService.getUsersIndexDB();
+      }
+    ).then(
+      (users: User[]) => {
+        if (users.length > 0) {
+
+          this.getUsers = users;
+          // Generar lista por usuarios.
+          this.generateAzListBycUsers(this.getUsers);
+
+          return true;
+        } else {
+          throw this.languageService.GetMessage(this.translateCategory, 'ERROR_GET_USERS_INDEXEDDB');
+        }
+      }
+    ).then(
+      (result: boolean) => {
+        this.user = new User();
+        this.disableEdit = true;
+
+        // Inicializo el SailingAnality
+        this.InitializeUser();
+
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
+
+  }
   // Funciones para cargar Data //
   //////////////////////////////////
 
