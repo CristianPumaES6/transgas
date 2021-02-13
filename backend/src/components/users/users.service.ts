@@ -239,8 +239,8 @@ export class UsersService {
         });
     }
 
-    // Actualiza un usuario
-    async UpdateImageUser(id: number, newFilename: string): Promise<boolean> {
+    // Actualiza el filename del usuario ademas retorna el newfilename.
+    async UpdateImageUser(id: number, newFilename: string): Promise<string> {
 
 
         let urlImage: string = URL_Server.back + '/' + newFilename;
@@ -250,7 +250,7 @@ export class UsersService {
             if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
 
             // Envio respuesta con el resultado recibido del ultimo paso
-            return true;
+            return urlImage;
         });
     }
 

@@ -292,7 +292,7 @@ export class UsersController {
         }),
         fileFilter: ImageFileFilter
     }))
-    async UploadImagePerfil(@Headers() headers, @Param('id') id, @UploadedFile() file) {
+    async UploadImagePerfil(@Headers() headers, @Param('id') id, @UploadedFile() file): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -315,14 +315,14 @@ export class UsersController {
                 return this._usersService.UpdateImageUser(id, file.filename);
             }
         ).then(
-            (resultUpdate: boolean) => {
+            (resultFilenameUpdate: string) => {
 
-                if (!resultUpdate) throw new Error('No se guardo la imagen correctamente.');
+                if (!resultFilenameUpdate) throw new Error('No se guardo la imagen correctamente.');
                 // retornamos una Respuesta exitosa.
                 return {
                     status: HttpStatus.OK,
                     message: 'OK',
-                    data: resultUpdate
+                    data: resultFilenameUpdate
                 };
             }
         ).catch(
