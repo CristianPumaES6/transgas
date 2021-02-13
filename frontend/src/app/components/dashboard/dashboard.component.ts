@@ -13,8 +13,4 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  onFileComplete(data: any) {
-    console.log(data);
-  }
-
 }
