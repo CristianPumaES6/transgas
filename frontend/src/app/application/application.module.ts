@@ -9,7 +9,8 @@ import { ApplicationComponent } from './application.component';
 import { ASideComponent } from '../shared/a-side/a-side.component';
 import { UserComponent } from '../components/users/user/user.component';
 import { AzListComponent } from '../shared/crud/az-list/az-list.component';
-import { DialogDeleteComponent} from '../shared/dialog/delete/dialog-delete.component'
+import { DialogDeleteComponent } from '../shared/dialog/delete/dialog-delete.component'
+import { FileUploadComponent } from '../shared/file-upload/file-upload.component'
 
 // Modules
 import { GlobalModule } from '../global.module';
@@ -26,6 +27,7 @@ import { DatabaseService } from '../services/database.service';
     AzListComponent,
     UserComponent,
     DialogDeleteComponent,
+    FileUploadComponent,
   ],
   imports: [
     GlobalModule,
