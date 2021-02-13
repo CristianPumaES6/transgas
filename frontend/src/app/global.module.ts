@@ -33,6 +33,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 // Services
 import { LoadingService } from './services/loading.service';
@@ -64,7 +65,7 @@ import { TranslateMessagePipe } from './pipes/language.pipe';
         MatNativeDateModule, MatTableModule, MatTooltipModule,
         MatButtonToggleModule, MatSlideToggleModule, MatCheckboxModule,
         MatButtonModule, FormsModule, ReactiveFormsModule,
-        MatDialogModule,
+        MatDialogModule, MatProgressBarModule,
     ],
     exports: [
         HttpClientModule,
@@ -83,7 +84,7 @@ import { TranslateMessagePipe } from './pipes/language.pipe';
         MatNativeDateModule, MatTableModule, MatTooltipModule,
         MatButtonToggleModule, MatSlideToggleModule, MatCheckboxModule,
         MatButtonModule, FormsModule, ReactiveFormsModule,
-        MatDialogModule,
+        MatDialogModule, MatProgressBarModule,
     ],
     providers: [LoadingService]
 })
