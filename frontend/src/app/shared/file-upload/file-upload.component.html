@@ -1,24 +1,22 @@
-<button mat-button color="warn" (click)="onClick()">
-  <mat-icon>file_upload</mat-icon>
-  {{text}}
-</button>
-<br/>
-<ul>
-  <li *ngFor="let file of files" [@fadeInOut]="file.state">
+<div class="az-img-user cont-img-upload">
+
+  <img src="{{filename||'../../../../../assets/500x500.png'}}" alt="">
+
+  <ng-template [ngIf]="id && (role=='ADMIN' || role=='SUPPORT')">
+    <span *ngIf="!files.length" class="icon-upload-photo icon-upload-center efectOpacity" (click)="onClick()"></span>
+
+    <ul class="icon-upload-center">
+      <li *ngFor="let file of files" [@fadeInOut]="file.state">
         <mat-progress-bar [value]="file.progress"></mat-progress-bar>
-        <span id="file-label">
-        {{file.data.name}}
-        <a title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry">
-        <mat-icon>refresh</mat-icon></a>
-        <a title="Cancel" (click)="cancelFile(file)" *ngIf="file.canCancel">
-        <mat-icon>cancel</mat-icon></a>
-        </span>
-  </li>
-</ul>
-<input
-  type="file"
-  id="fileUpload"
-  name="fileUpload"
-  multiple="multiple"
-  accept="{{accept}}"
-  style="display:none;"/>
+        <div id="file-label">
+          <span class="icon-refresh" title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry"></span>
+
+        </div>
+      </li>
+    </ul>
+  </ng-template>
+
+</div>
+
+<br />
+<input type="file" id="fileUpload" name="fileUpload" accept="{{accept}}" style="display:none;" />

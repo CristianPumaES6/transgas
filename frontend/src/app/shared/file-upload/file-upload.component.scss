@@ -1,3 +1,34 @@
+@import "../../variable";
+
+
+.cont-img-upload {
+  position: relative;
+
+  .icon-upload-center {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+  }
+
+  .efectOpacity {
+    font-size: 14pt;
+    opacity: 0;
+    transition: 0.5s;
+    cursor: pointer;
+
+    &:hover {
+      color: $t-blue;
+    }
+  }
+
+  &:hover {
+    .efectOpacity {
+      opacity: 1;
+
+    }
+  }
+}
+
 ul,
 li {
   margin: 0;

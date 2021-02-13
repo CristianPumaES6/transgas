@@ -3,7 +3,11 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { HttpClient, HttpResponse, HttpRequest, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { catchError, last, map, tap } from 'rxjs/operators';
 import { FileUploadModel } from '../../models/fileUploadedModel';
-import { of } from 'rxjs/internal/observable/of';
+import { UserService } from '../../services/user.service';
+// Componentes Dependencias
+import { NotificationsService } from 'angular2-notifications';
+import { LanguageService } from '../../services/language.service';
+
 
 @Component({
   selector: 'app-file-upload',
@@ -20,28 +24,52 @@ import { of } from 'rxjs/internal/observable/of';
 })
 
 export class FileUploadComponent implements OnInit {
+  @Input() id: number = 0;
+  @Input() filename: string = '';
+  @Input() role: string = '';
+
   @Input() text = 'Upload';
-  @Input() param = 'file';
-  @Input() target = 'https://file.io';
-  @Input() accept = 'text/*';
+  @Input() param = 'image';
+
+  // tipos de archivos.
+  @Input() accept = 'image/jpg, image/jpeg, image/png, image/gif';
+  // Permite agregar multiples archivos
+  @Input() multiple = false;
   // tslint:disable-next-line:no-output-native
   @Output() complete = new EventEmitter<string>();
   fileInformation: any;
+
   public files: Array<FileUploadModel> = [];
 
+  public fileUpload: HTMLInputElement;
+
+
+  //======== VARIABLES DE TRADUCCION=============
+  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public translateCategory: string = 'fileUpload';
+  //=================[ FIN ]=====================
+
   // tslint:disable-next-line:variable-name
-  constructor(private _http: HttpClient) { }
+  constructor(
+    private userService: UserService,
+    private notificationsService: NotificationsService,
+    private languageService: LanguageService,
+  ) { }
 
   ngOnInit() {
+    this.fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
+
+    if (this.multiple) {
+      this.fileUpload.setAttribute('multiple', 'true');
+    }
+
   }
 
   onClick() {
-    const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
-
-    fileUpload.onchange = () => {
+    this.fileUpload.onchange = () => {
       // tslint:disable-next-line:prefer-for-of
-      for (let index = 0; index < fileUpload.files.length; index++) {
-        const file = fileUpload.files[index];
+      for (let index = 0; index < this.fileUpload.files.length; index++) {
+        const file = this.fileUpload.files[index];
         this.files.push({
           data: file,
           state: 'in',
@@ -55,7 +83,7 @@ export class FileUploadComponent implements OnInit {
       this.uploadFiles();
     };
 
-    fileUpload.click();
+    this.fileUpload.click();
   }
 
   cancelFile(file: FileUploadModel) {
@@ -71,22 +99,17 @@ export class FileUploadComponent implements OnInit {
   }
 
   private uploadFile(file: FileUploadModel) {
-    const fd = new FormData();
-    fd.append(this.param, file.data);
 
-    const req = new HttpRequest('POST', this.target, fd, {
-      reportProgress: true
-    });
 
     file.inProgress = true;
-    file.sub = this._http.request(req).pipe(
+    file.sub = this.userService.UploadPerfil(this.id, file).pipe(
       map(event => {
         switch (event.type) {
-              case HttpEventType.UploadProgress:
-                    file.progress = Math.round(event.loaded * 100 / event.total);
-                    break;
-              case HttpEventType.Response:
-                    return event;
+          case HttpEventType.UploadProgress:
+            file.progress = Math.round(event.loaded * 100 / event.total);
+            break;
+          case HttpEventType.Response:
+            return event;
         }
       }),
       tap(message => { }),
@@ -94,11 +117,13 @@ export class FileUploadComponent implements OnInit {
       catchError((error: HttpErrorResponse) => {
         file.inProgress = false;
         file.canRetry = true;
-        return of(`${file.data.name} upload failed.`);
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), this.languageService.GetMessage(this.translateCategory, 'ERROR_UPLOAD_IMAGE'))
+        return `${file.data.name} upload failed.`;
       })
     ).subscribe(
       (event: any) => {
         if (typeof (event) === 'object') {
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_UPLOAD_IMAGE'))
           this.removeFileFromArray(file);
           this.complete.emit(event.body);
         }
@@ -106,6 +131,7 @@ export class FileUploadComponent implements OnInit {
     );
   }
 
+  // Carga de multiples archivos.
   private uploadFiles() {
     const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
     fileUpload.value = '';
@@ -115,6 +141,7 @@ export class FileUploadComponent implements OnInit {
     });
   }
 
+  // Remover archivo
   private removeFileFromArray(file: FileUploadModel) {
     const index = this.files.indexOf(file);
 
