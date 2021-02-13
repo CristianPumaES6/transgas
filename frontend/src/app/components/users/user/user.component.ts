@@ -27,7 +27,7 @@ import { UserService } from '../../../services/user.service';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
-import { OnlineOfflineService } from 'src/app/services/online-offline.service';
+import { OnlineOfflineService } from '../../../services/online-offline.service';
 
 @Component({
   selector: 'app-user',
@@ -384,7 +384,7 @@ export class UserComponent implements OnInit {
     console.log('ClickNew()');
 
     // Creamos un nuevo usuario.
-    this.user = new User(null, '', '', '', '', '', '',true, null);
+    this.user = new User(null, '', '', '', '', '', '', true, null);
 
     // abrimos el formulario solo para modal.
     this.aSideService.OpenClose('open-formulario');
@@ -540,7 +540,7 @@ export class UserComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === result.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(result.id, result.name, result.role, '')
+                azList = new AzList(result.id, result.name, result.role, result.filename)
               }
 
               return azList;
@@ -607,7 +607,7 @@ export class UserComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, '')
+                azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, resultUpdate.filename)
               }
               return azList;
 
@@ -654,7 +654,7 @@ export class UserComponent implements OnInit {
           // Lo agrego al arreglo.
           this.getUsers.push(result);
 
-          this.azLists.push(new AzList(result.id, result.name, result.role, ''));
+          this.azLists.push(new AzList(result.id, result.name, result.role, result.filename));
 
           this.databaseService.addUserIndexedDB(result);
 
@@ -692,7 +692,7 @@ export class UserComponent implements OnInit {
           // Lo agrego al arreglo.
           this.getUsers.push(resultUserIndexedDB);
 
-          this.azLists.push(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, ''));
+          this.azLists.push(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, resultUserIndexedDB.filename));
 
           // vuelvo a cargar los datos de incio del token.
           this.InitializeUser();
@@ -839,4 +839,66 @@ export class UserComponent implements OnInit {
 
   }
 
+
+
+  public onFileComplete(resultComplete: any) {
+
+    const userToSave: User = this.user;
+    userToSave.filename = resultComplete.data;
+
+    Promise.resolve(true).then(
+      () => {
+        // Consultamos al userIndexDB para saber el estado del sync.
+        return this.databaseService.updateUserIndexedDB(userToSave);
+      }
+    ).then(
+      (resultUpdate: User) => {
+        // Filtro y actualizo luego lo agrego al arreglo.
+        this.getUsers = this.getUsers.map(
+          (user: User) => {
+            // Buscamos el id para cambiar el valor de result.
+            if (user.id === resultUpdate.id) {
+              // Actualizamos el valor con el resultado
+              user = resultUpdate;
+            }
+
+            return user;
+          }
+        );
+
+        // Actualizamos la lista del azlist
+        this.azLists = this.azLists.map(
+          (azList: AzList) => {
+
+            // Buscamos el id para cambiar el valor de result.
+            if (azList.id === resultUpdate.id) {
+              // Actualizamos el valor con el resultado
+              azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, resultUpdate.filename)
+            }
+            return azList;
+
+          }
+        )
+        this.user.filename = resultUpdate.filename;
+
+        // Si no hubo cambios solo navego
+        this.InitializeUser();
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    ).catch(
+      error => {
+        // Valido si viene un mensaje de error
+        let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_IMAGE_SAVE');
+
+        // Muestro notificación
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
+
+  }
 }
+

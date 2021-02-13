@@ -12,12 +12,10 @@
 
     <div class="az-contact-info-header">
       <div class="media">
-        <div class="az-img-user">
 
-          <img src="https://via.placeholder.com/500x500" alt="">
-          <a href=""><i class="typcn typcn-camera-outline"></i></a>
+        <app-file-upload (complete)="onFileComplete($event)" [multiple]="false" [id]="user.id"
+          [filename]="user.filename" [role]="roleUser"></app-file-upload>
 
-        </div>
         <div class="media-body">
 
           <h4>{{ user.name }}</h4>

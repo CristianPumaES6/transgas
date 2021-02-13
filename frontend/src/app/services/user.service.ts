@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators'
 
@@ -12,6 +12,7 @@ import Dexie from 'dexie';
 import { User } from '../models/user';
 
 import { AuthGuardService } from './auth-guard.service';
+import { FileUploadModel } from '../models/fileUploadedModel';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -100,7 +101,6 @@ export class UserService {
             })
         );
     }
-
 
 
     GetUsers(user: User): Observable<User[]> {
@@ -205,19 +205,38 @@ export class UserService {
         return this.httpClient.delete(url, options).pipe(
             map(
                 (response: any) => {
-                    
+
                     if (response.status && response.status === 200) {
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
                     }
-                    
+
                 }
             ),
             catchError((err) => this.authGuardService.HandleError(err))
         );
     }
 
+    UploadPerfil(id: number, file: FileUploadModel): Observable<any> {
+        // Armo el request
+        let url: string = this.url + '/users/' + id + '/image';
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Authorization': 'Bearer ' + this.GetToken(),
+            });
+        // Creamos el obj formulario.
+        const formData = new FormData();
+        // Agregamos la imagen
+        formData.append('image', file.data);
+
+        const httpRequest = new HttpRequest('POST', url, formData, {
+            headers: headers,
+            reportProgress: true
+        });
+        // Mando consulta al API
+        return this.httpClient.request(httpRequest);
+    }
     // -----------------------------------------
 
 

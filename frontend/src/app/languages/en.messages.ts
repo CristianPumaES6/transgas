@@ -103,8 +103,9 @@ export const user: any = {
     ERROR_USER_UPDATE_LOCAL: 'Could not update user local.',
     ERROR_USER_CREATE: 'Could not create user.',
     ERROR_USER_CREATE_LOCAL: 'Could not create user local.',
-    ERROR_USER_DELETE:'Could not delete user.',
-    ERROR_USER_DELETE_LOCAL:'Could not delete user local.',
+    ERROR_USER_DELETE: 'Could not delete user.',
+    ERROR_USER_DELETE_LOCAL: 'Could not delete user local.',
+    ERROR_USER_IMAGE_SAVE: 'Could not update the image.',
     REPEAT_NICK: 'Repeat nick.',
     // Formulario
     NAME: 'Name',
@@ -124,3 +125,10 @@ export const user: any = {
     COMFIMR_DELETE_TITLE_REPLACE: 'Are you sure you want to delete [NAME]?',
     COMFIRM_DELETE_DESCRIPTION: 'The changes are irreversible.',
 };
+
+export const fileUpload: any = {
+    ERROR: 'Error',
+    SUCCESS: 'Success',
+    ERROR_UPLOAD_IMAGE: 'Image could not be updated.',
+    SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.'
+}
