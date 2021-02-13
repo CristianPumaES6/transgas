@@ -7,6 +7,7 @@ import { UserService } from '../../services/user.service';
 // Componentes Dependencias
 import { NotificationsService } from 'angular2-notifications';
 import { LanguageService } from '../../services/language.service';
+import { OnlineOfflineService } from 'src/app/services/online-offline.service';
 
 
 @Component({
@@ -42,7 +43,7 @@ export class FileUploadComponent implements OnInit {
   public files: Array<FileUploadModel> = [];
 
   public fileUpload: HTMLInputElement;
-
+  public isOnline: boolean = true;
 
   //======== VARIABLES DE TRADUCCION=============
   public userLanguage: string = this.languageService.GetCurrentLanguage();
@@ -54,9 +55,24 @@ export class FileUploadComponent implements OnInit {
     private userService: UserService,
     private notificationsService: NotificationsService,
     private languageService: LanguageService,
-  ) { }
+    readonly onlineOfflineService: OnlineOfflineService,
+  ) {
+
+
+    // subscribe receives the value. sirve para recibir algun emit
+    this.onlineOfflineService.emitterIsOnline.subscribe(
+      (isOnline: boolean) => {
+        this.isOnline = isOnline;
+      }
+    );
+  }
+
 
   ngOnInit() {
+    
+    // Verificamos si esta online.
+    this.isOnline = !!window.navigator.onLine;
+
     this.fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
 
     if (this.multiple) {
