@@ -32,6 +32,7 @@ export class UserDetailEntity {
     @Column({ default: 0 })
     minMGOConsumption: number;
 
+
     // EQUIPMENT MGO 
     @Column({ default: true })
     isMEMGO: boolean;
