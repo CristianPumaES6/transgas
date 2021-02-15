@@ -4,6 +4,11 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('UserDetail')
 export class UserDetailEntity {
 
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    UserId: number;
 
     // CONFIG DE DATOS PARA EL CUADRO DEL DASHBOARD
 
@@ -85,5 +90,80 @@ export class UserDetailEntity {
     maneuverConsumption: number;
     @Column({ default: 0 })
     otherConsumption: number;
+
+    // Auditoria
+    @Column({ nullable: false })
+    status: boolean;
+
+
+    constructor(
+        id?: number,
+        UserId?: number,
+        minSpeed?: number,
+        maxSpeed?: number,
+        isConsumptionIFO?: boolean,
+        isConsumptionLSFO?: boolean,
+        isConsumptionMGO?: boolean,
+        maxIFOConsumption?: number,
+        maxMGOConsumption?: number,
+        minIFOConsumption?: number,
+        minMGOConsumption?: number,
+        isMEMGO?: boolean,
+        isAEMGO?: boolean,
+        isBoilerMGO?: boolean,
+        isIGMGO?: boolean,
+        isPowerPMGO?: boolean,
+        isOtherMGO?: boolean,
+        isMEIFO?: boolean,
+        isAEIFO?: boolean,
+        isBoilerIFO?: boolean,
+        isOtherIFO?: boolean,
+        contractSpeedSailingBallast?: number,
+        contractSpeedSailingLaden?: number,
+        contractSpeedSailingEconomical?: number,
+        loadingConsumption?: number,
+        dischargeConsumption?: number,
+        sailingBallastConsumption?: number,
+        sailingLoadConsumption?: number,
+        sailingEconomicConsumption?: number,
+        anchoredConsumption?: number,
+        maneuverConsumption?: number,
+        otherConsumption?: number,
+        status?: boolean,
+    ) {
+        this.id = id || null;
+        this.UserId = UserId || null;
+        this.minSpeed = minSpeed || 0;
+        this.maxSpeed = maxSpeed || 0;
+        this.isConsumptionIFO = isConsumptionIFO || false;
+        this.isConsumptionLSFO = isConsumptionLSFO || false;
+        this.isConsumptionMGO = isConsumptionMGO || false;
+        this.maxIFOConsumption = maxIFOConsumption || 0;
+        this.maxMGOConsumption = maxMGOConsumption || 0;
+        this.minIFOConsumption = minIFOConsumption || 0;
+        this.minMGOConsumption = minMGOConsumption || 0;
+        this.isMEMGO = isMEMGO || false;
+        this.isAEMGO = isAEMGO || false;
+        this.isBoilerMGO = isBoilerMGO || false;
+        this.isIGMGO = isIGMGO || false;
+        this.isPowerPMGO = isPowerPMGO || false;
+        this.isOtherMGO = isOtherMGO || false;
+        this.isMEIFO = isMEIFO || false;
+        this.isAEIFO = isAEIFO || false;
+        this.isBoilerIFO = isBoilerIFO || false;
+        this.isOtherIFO = isOtherIFO || false;
+        this.contractSpeedSailingBallast = contractSpeedSailingBallast || 0;
+        this.contractSpeedSailingLaden = contractSpeedSailingLaden || 0;
+        this.contractSpeedSailingEconomical = contractSpeedSailingEconomical || 0;
+        this.loadingConsumption = loadingConsumption || 0;
+        this.dischargeConsumption = dischargeConsumption || 0;
+        this.sailingBallastConsumption = sailingBallastConsumption || 0;
+        this.sailingLoadConsumption = sailingLoadConsumption || 0;
+        this.sailingEconomicConsumption = sailingEconomicConsumption || 0;
+        this.anchoredConsumption = anchoredConsumption || 0;
+        this.maneuverConsumption = maneuverConsumption || 0;
+        this.otherConsumption = otherConsumption || 0;
+        this.status = status || false;
+    }
 
 }
