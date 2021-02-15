@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { UserDetailEntity } from './user-detail.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -6,6 +7,9 @@ export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @OneToOne(type => UserDetailEntity, userDetail => userDetail.id)
+    userDetail: UserDetailEntity;
+    
     @Column({ nullable: false })
     nick: string;
 
