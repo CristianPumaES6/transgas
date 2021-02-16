@@ -12,8 +12,6 @@ import { join } from 'path';
 import { SQLITE_PATH } from './config/path.config';
 import { UsersModule } from './components/users/users.module';
 import { AuthModule } from './components/auth/auth.module';
-import { UserDetailsModule } from './components/user-details/user-details.module';
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -24,7 +22,6 @@ import { UserDetailsModule } from './components/user-details/user-details.module
     }),
     UsersModule,
     AuthModule,
-    UserDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
