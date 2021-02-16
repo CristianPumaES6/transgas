@@ -132,3 +132,29 @@ export const fileUpload: any = {
     ERROR_UPLOAD_IMAGE: 'Image could not be updated.',
     SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.'
 }
+
+export const userDetail: any = {
+    MIN_SPEED: 'Min speed',
+    MAX_SPEED: 'Max speed',
+    TYPE_CONSUMPTION: 'Type consumption',
+    MGO: 'MGO',
+    LSFO:'LSFO',
+    CONSUMPTION_MGO: 'Consumption MGO',
+    CONSUMPTION_IFO: 'Consumption LSFO',
+    EQUIPMENT_MGO: 'Equipment MGO',
+    EQUIPMENT_IFO: 'Equipment IFO',
+    SPEED_CONTRACT_BALLAST: 'Speed contract in ballast',
+    SPEED_CONTRACT_LADEN: 'Speed contract with laden',
+    SPEED_CONTRACT_ECONOMIC: 'Speed contract economic',
+    MAX_CONSUMPTION: 'Max consumption',
+    // Actividades.
+    CONTRACT_LOADING: 'C. Loading',
+    CONTRACT_DOWNLOADING: 'C. Discharge',
+    CONTRACT_SAILING_IN_BALLAST: 'C. Ballast',
+    CONTRACT_SAILING_WITH_LADEN: 'C. Laden',
+    CONTRACT_ECONOMICAL_NAVIGATION: 'C. Economical',
+    CONTRACT_ANCHORED: 'C. Anchored',
+    CONTRACT_MANEUVER: 'C. Maneuver',
+    CONTRACT_OTHER_ACT: 'C. Other act.',
+    DISPLAY_DASHBOARD: 'Display Dashboard',
+}

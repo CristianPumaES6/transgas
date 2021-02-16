@@ -18,7 +18,6 @@ import { GlobalModule } from '../global.module';
 // Services
 import { ASideService } from '../services/a-side.service';
 import { DatabaseService } from '../services/database.service';
-import { UserDetailComponent } from '../components/users/user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +28,6 @@ import { UserDetailComponent } from '../components/users/user-detail/user-detail
     UserComponent,
     DialogDeleteComponent,
     FileUploadComponent,
-    UserDetailComponent,
   ],
   imports: [
     GlobalModule,

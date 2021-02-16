@@ -20,14 +20,12 @@
 
           <h4>{{ user.name }}</h4>
           <nav class="nav">
-            <a class="nav-link"><i class="typcn typcn-device-phone"></i>
-              {{ user.role | translateMessage:translateCategory }}</a>
+            <span class="nav-link">{{ user.role | translateMessage:translateCategory }}</span>
           </nav>
 
         </div><!-- media-body -->
       </div><!-- media -->
       <div class="az-contact-action">
-
         <!-- Estos campos son para el edit, recordemos que si un objeto tiene id entonces es para actualizar. -->
         <ng-template [ngIf]="user.id && disableEdit">
           <a href="" (click)="ClickEnableFrm()">
@@ -56,7 +54,6 @@
 
     <div class="az-contact-info-body">
       <div class="media-list">
-
 
         <form [formGroup]="formUser">
 
@@ -124,7 +121,6 @@
           </div>
 
         </form>
-
 
 
       </div>
