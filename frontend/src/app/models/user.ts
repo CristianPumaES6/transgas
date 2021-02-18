@@ -64,7 +64,7 @@ export class User {
         public isDisplayVesselPerformanceMGO?: boolean,
 
 
-        // AUditoria
+        // Auditoria
         public userIdCreated?: number,
         public dateCreated?: Date,
         public userIdUpdated?: number,
