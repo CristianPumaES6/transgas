@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ApplicationComponent } from '../application/application.component'
 
 import { DashboardComponent } from '../components/dashboard/dashboard.component'
+import { UserComponent } from '../components/users/user/user.component';
 
 const routes: Routes = [
   {
@@ -14,7 +15,7 @@ const routes: Routes = [
       // Dashboard de la pagina
       { path: 'dashboard', component: DashboardComponent },
       { path: 'voyages', component: DashboardComponent },
-      { path: 'users', component: DashboardComponent },
+      { path: 'users', component: UserComponent },
       { path: 'helps', component: DashboardComponent },
     ]
   }

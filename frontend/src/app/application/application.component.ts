@@ -18,8 +18,12 @@ import { map, mergeMap } from 'rxjs/operators';
 // =====================================
 
 // Service
+import { OnlineOfflineService } from '../services/online-offline.service';
 import { AuthService } from '../services/auth.service';
-import { ASideService } from '../services/a-side.service'
+import { ASideService } from '../services/a-side.service';
+import { UserService } from '../services/user.service';
+
+import { DatabaseService } from '../services/database.service';
 
 // Models
 import { User } from '../models/user';
@@ -36,14 +40,27 @@ export class ApplicationComponent implements OnInit {
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'application';
 
+  public isOnline: boolean = !!window.navigator.onLine;
+  public getUsers: User[] = [];
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private aSideService: ASideService,
     private languageService: LanguageService,
     private authService: AuthService,
+    readonly onlineOfflineService: OnlineOfflineService,
   ) {
-    console.log('constructor()');
+    console.log('ApplicationComponent constructor()');
+
+    // subscribe receives the value. sirve para recibir algun emit
+    this.onlineOfflineService.emitterIsOnline.subscribe(
+      (isOnline: boolean) => {
+        console.log('this.onlineOfflineService.changeOnline.subscribe()');
+
+        this.isOnline = isOnline;
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -180,5 +197,8 @@ export class ApplicationComponent implements OnInit {
     }
   }
 
+
+  // Funciones para cargar combos //
+  //////////////////////////////////
 
 }

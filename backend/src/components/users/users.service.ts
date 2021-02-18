@@ -10,6 +10,7 @@ import { Not } from "typeorm";
 // Otras librerias. 
 import * as bcrypt from 'bcrypt';
 import { ROUNDS_BCRYPT } from '../../config/bcrypt.config';
+import { URL_Server } from '../../config/server.config'
 
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
@@ -86,7 +87,7 @@ export class UsersService {
             // validamos si exite un resultado.
             if (result) {
                 // Si existe, generamos un error para no continual.
-                throw new Error('repeat_user');
+                throw 'REPEAT_NICK';
             }
 
             // encriptamos el password.
@@ -95,7 +96,7 @@ export class UsersService {
         }).then(password => {
             // le asignamos el password encriptado al objeto
             user.password = password;
-            
+
             // Eliminamos el user id
             delete user.id;
             // procedemos hacer el save.
@@ -147,7 +148,7 @@ export class UsersService {
             // validamos si exite un resultado.
             if (result) {
                 // Si existe, generamos un error para no continual.
-                throw new Error('repeat_nick');
+                throw 'REPEAT_NICK';
             }
 
             // Si existe el password lo encriptamos.
@@ -233,8 +234,23 @@ export class UsersService {
         ).then((resultUser: UserEntity) => {
 
             if (!resultUser) throw new Error('user_was_not_found');
-            
+
             return resultUser;
+        });
+    }
+
+    // Actualiza el filename del usuario ademas retorna el newfilename.
+    async UpdateImageUser(id: number, newFilename: string): Promise<string> {
+
+
+        let urlImage: string = URL_Server.back + '/' + newFilename;
+        // Hacemos una busqueda por id
+        return await this.userRepository.update(id, { filename: urlImage }).then(resultUpdate => {
+
+            if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
+
+            // Envio respuesta con el resultado recibido del ultimo paso
+            return urlImage;
         });
     }
 

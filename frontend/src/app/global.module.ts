@@ -32,6 +32,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 // Services
 import { LoadingService } from './services/loading.service';
@@ -49,11 +51,12 @@ import { TranslateMessagePipe } from './pipes/language.pipe';
         TranslateMessagePipe
     ],
     imports: [
-        CommonModule,HttpClientModule,
+        CommonModule, HttpClientModule,
         // PWA
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         // Module
         SimpleNotificationsModule.forRoot(),
+        ReactiveFormsModule,
         // ANGULAR MATERIAL  
         BrowserAnimationsModule,
         MatFormFieldModule, MatInputModule, MatIconModule,
@@ -62,11 +65,13 @@ import { TranslateMessagePipe } from './pipes/language.pipe';
         MatNativeDateModule, MatTableModule, MatTooltipModule,
         MatButtonToggleModule, MatSlideToggleModule, MatCheckboxModule,
         MatButtonModule, FormsModule, ReactiveFormsModule,
+        MatDialogModule, MatProgressBarModule,
     ],
     exports: [
         HttpClientModule,
         // Module
         SimpleNotificationsModule,
+        ReactiveFormsModule,
         // Components
         LoadingComponent,
         // Pipe
@@ -79,6 +84,7 @@ import { TranslateMessagePipe } from './pipes/language.pipe';
         MatNativeDateModule, MatTableModule, MatTooltipModule,
         MatButtonToggleModule, MatSlideToggleModule, MatCheckboxModule,
         MatButtonModule, FormsModule, ReactiveFormsModule,
+        MatDialogModule, MatProgressBarModule,
     ],
     providers: [LoadingService]
 })

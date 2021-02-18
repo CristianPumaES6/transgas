@@ -1,4 +1,4 @@
-import { Controller, Query, Get, Post, Put, Delete, Body, UseGuards, Param, HttpException, HttpStatus, Headers } from '@nestjs/common';
+import { Controller, Query, Get, Post, Put, Delete, Body, UseGuards, Param, HttpException, HttpStatus, Headers, UseInterceptors, UploadedFile } from '@nestjs/common';
 // import { AuthGuard } from '@nestjs/passport';
 
 // Si es una class lo tego que poner en el constructor y como proverdor del modulo
@@ -7,9 +7,15 @@ import { UsersService } from './users.service';
 
 import { DummyPromise } from '../../assets/promises.assets';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
+import { diskStorage } from 'multer';
+import { getDate } from '../../assets/moment.assets';
+
 
 // Entity
 import { UserEntity } from '../../models/user.entity';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { EditFileName, ImageFileFilter } from 'src/middleware/image.middleware';
+import { FOLDER_UPLOADS } from 'src/config/path.config';
 
 @Controller('users')
 export class UsersController {
@@ -57,7 +63,7 @@ export class UsersController {
 
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.ACCEPTED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultGet
                 };
@@ -70,17 +76,17 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, HttpStatus.NOT_ACCEPTABLE);
+                }, HttpStatus.ACCEPTED);
             }
         );
     }
 
     // Solo si eres admin podras consultar por todos los usurios.
     @Get()
-    Gets(@Headers() headers, @Query() user: UserEntity): Promise<any> {
+    async Gets(@Headers() headers, @Query() user: UserEntity): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -125,7 +131,7 @@ export class UsersController {
     }
 
     @Post('create')
-    Create(@Headers() headers, @Body() user: UserEntity): Promise<any> {
+    async Create(@Headers() headers, @Body() user: UserEntity): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -141,8 +147,12 @@ export class UsersController {
                 }
 
                 // Validamos que los datos sean los necesarios.
-                if (user && user.name && user.password && user.role) {
-                    user.status = true;
+                if (user && user.name && user.nick && user.password && user.role) {
+
+                    user.userIdCreated = headerToken.id;
+                    user.dateCreated = getDate();
+                    delete user.userIdUpdated;
+                    delete user.dateUpdated;
                     // retornamos la respuesta del servicio.
                     return this._usersService.CreateUserNickUnique(user);
                 } else {
@@ -155,7 +165,7 @@ export class UsersController {
 
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.CREATED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultCreate
                 };
@@ -168,10 +178,10 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, 202);
+                }, HttpStatus.ACCEPTED);
             }
         );
     }
@@ -192,9 +202,14 @@ export class UsersController {
                     throw new Error('Se esta intentado registrar con un rol no valido.');
                 }
 
-                if (!isNaN(id) && user && user.name && user.password && user.role) {
+                if (!isNaN(id) && user && user.name && user.nick && user.password && user.role) {
                     user.id = Number(id);
-                    user.status = true;
+
+                    
+                    delete user.userIdCreated;
+                    delete user.dateCreated;
+                    user.userIdUpdated = headerToken.id;
+                    user.dateUpdated = getDate();
                     // retornamos la respuesta del servicio.
                     return this._usersService.UpdateUserNickUnique(user);
                 } else {
@@ -207,7 +222,7 @@ export class UsersController {
 
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.CREATED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultUpdate
                 };
@@ -220,13 +235,12 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, 202);
+                }, HttpStatus.ACCEPTED);
             }
         );
-
 
     }
 
@@ -257,6 +271,16 @@ export class UsersController {
                     throw new Error('MISSING_FIELS');
                 }
             }
+        ).then(
+            (resultUpdate: UserEntity) => {
+
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: resultUpdate
+                };
+            }
         ).catch(
             err => {
                 // Obtengo mensajes de error
@@ -265,11 +289,71 @@ export class UsersController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, 202);
+                }, HttpStatus.ACCEPTED);
             }
         );
     }
+
+    @Post(':id/image')
+    @UseInterceptors(FileInterceptor('image', {
+        storage: diskStorage({
+            destination: FOLDER_UPLOADS,
+            filename: EditFileName,
+        }),
+        fileFilter: ImageFileFilter
+    }))
+    async UploadImagePerfil(@Headers() headers, @Param('id') id, @UploadedFile() file): Promise<any> {
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+
+                // que solo puedan registrar un nuevo usuario los administradores o support.
+                if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
+                    throw new Error('Se esta intentado registrar con un rol no valido.');
+                }
+
+                if (!file || !file.filename) {
+                    // caso contrario retornamos un error
+                    throw 'MISSING_IMAGE';
+                }
+
+                return this._usersService.UpdateImageUser(id, file.filename);
+            }
+        ).then(
+            (resultFilenameUpdate: string) => {
+
+                if (!resultFilenameUpdate) throw new Error('No se guardo la imagen correctamente.');
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: resultFilenameUpdate
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+
+    }
+
+
 }

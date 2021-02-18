@@ -19,6 +19,30 @@ export class AppController {
     private readonly authService: AuthService
   ) { }
 
+  @Get('pruebas')
+  Pruebas(@Body() body: any): Promise<any> {
+    return DummyPromise().then(
+      (result: Boolean) => {
+        // Enviamos el mail de prueba.
+
+        return 'PRUEBA :)';
+      }
+    ).catch(
+      err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+        const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+        // caso contrario retornamos un error
+        throw new HttpException({
+          status: HttpStatus.ACCEPTED,
+          error: clientMsg,
+          message: errorMsg,
+        }, HttpStatus.ACCEPTED);
+      }
+    );
+  }
+
   // Guards(jwt)  valida que el token no halla caducado y exista, caso contrario invoca un error.
   @UseGuards(AuthGuard('jwt'))
   @Get()

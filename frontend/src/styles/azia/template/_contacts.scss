@@ -76,7 +76,7 @@
       content: '';
       position: absolute;
       top: -1px;
-      left: 65px;
+      left: 0px;
       right: 0;
       border-top: 1px solid $gray-200;
     }
@@ -241,7 +241,7 @@
 .az-contact-action {
   position: absolute;
   top: 0;
-  right: 20px;
+  right: 0px;
   display: flex;
 
   @include media-breakpoint-up(lg) {
