@@ -18,6 +18,7 @@ import { GlobalModule } from '../global.module';
 // Services
 import { ASideService } from '../services/a-side.service';
 import { DatabaseService } from '../services/database.service';
+import { VoyageComponent } from '../components/voyages/voyage/voyage.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { DatabaseService } from '../services/database.service';
     UserComponent,
     DialogDeleteComponent,
     FileUploadComponent,
+    VoyageComponent,
   ],
   imports: [
     GlobalModule,
