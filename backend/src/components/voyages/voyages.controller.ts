@@ -1,16 +1,16 @@
 import { Controller, Query, Get, Post, Put, Delete, Body, UseGuards, Param, HttpException, HttpStatus, Headers } from '@nestjs/common';
 
 // Assets || Si es una class lo tego que poner en el constructor y como provverdor del modulo
-import { DummyPromise } from '../../../assets/promises.assets';
-import { JwtDecode } from '../../../assets/jwtDecode.assets';
+import { DummyPromise } from '../../assets/promises.assets';
+import { JwtDecode } from '../../assets/jwtDecode.assets';
 
 // 1 Importo los servicios
 import { VoyagesService } from './voyages.service';
 
 // Entity
-import { Voyage } from '../../../models/voyage.entity';
-import { UserEntity } from '../../../models/user.entity';
-import { getDate } from '../../../assets/moment.assets';
+import { Voyage } from '../../models/voyage.entity';
+import { UserEntity } from '../../models/user.entity';
+import { getDate } from '../../assets/moment.assets';
 
 
 @Controller('voyages')

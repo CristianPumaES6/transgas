@@ -8,8 +8,8 @@ import { Like } from "typeorm";
 import { Not } from "typeorm";
 
 // Modelos.
-import { DummyPromise } from '../../../assets/promises.assets';
-import { Voyage } from '../../../models/voyage.entity'; // < Suele cambiar.
+import { DummyPromise } from '../../assets/promises.assets';
+import { Voyage } from '../../models/voyage.entity'; // < Suele cambiar.
 
 @Injectable()
 export class VoyagesService {
