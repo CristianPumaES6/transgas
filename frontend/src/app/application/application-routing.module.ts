@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ApplicationComponent } from '../application/application.component'
 
 import { DashboardComponent } from '../components/dashboard/dashboard.component'
+import { VoyageComponent } from '../components/voyages/voyage/voyage.component'
 import { UserComponent } from '../components/users/user/user.component';
 
 const routes: Routes = [
@@ -14,7 +15,7 @@ const routes: Routes = [
       { path: '', component: DashboardComponent },
       // Dashboard de la pagina
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'voyages', component: DashboardComponent },
+      { path: 'voyages', component: VoyageComponent },
       { path: 'users', component: UserComponent },
       { path: 'helps', component: DashboardComponent },
     ]
