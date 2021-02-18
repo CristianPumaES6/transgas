@@ -8,7 +8,9 @@ import { User } from '../models/user';
 // Online service
 import { UserService } from '../services/user.service';
 import { Mapping } from '../models/mapping';
-import { user } from '../languages/en.messages';
+import { user, voyage } from '../languages/en.messages';
+import { Voyage } from '../models/voyage';
+import { VoyageService } from './voyage.service';
 
 
 @Injectable()
@@ -18,7 +20,8 @@ export class DatabaseService {
     private db: any;
 
     constructor(
-        private userService: UserService
+        private userService: UserService,
+        private voyageService: VoyageService
     ) {
         console.log('DatabaseService constructor()');
 
@@ -33,7 +36,8 @@ export class DatabaseService {
 
         this.db = new Dexie('TransgasDatabase');
         this.db.version(1).stores({
-            users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
+            users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
+            voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
         });
 
     }
@@ -50,14 +54,17 @@ export class DatabaseService {
 
         // Usuarios agregados en local mapeados.
         let usersMappings: Mapping[] = []
+        let voyagesMappings: Mapping[] = []
 
         usersMappings = await this.SyncUsers();
+        voyagesMappings = await this.SyncVoyages();
 
         console.log('Sync Fin');
         return true;
 
     }
 
+    // =================== Sync IndexedDB ====================================
     // Sincroniza el modulo usuario.
     public async SyncUsers(): Promise<Mapping[]> {
         console.log('syncUsers(users:User)');
@@ -80,7 +87,7 @@ export class DatabaseService {
             let resultCreate: User;
             resultCreate = await this.userService.CreateUser(iUser).pipe().toPromise();
 
-            // Actualizamos el syncStatus a none. [REVISAR]
+            // Actualizamos el syncStatus a none.
             await this.db.users.update(iUser.id, { id: resultCreate.id, syncStatus: 'none' });
 
             // Mapping user
@@ -103,13 +110,67 @@ export class DatabaseService {
             let resultDelete: User;
             resultDelete = await this.userService.DeleteUser(iUser).pipe().toPromise();
             // Actualizamos el syncStatus a none.
-            await this.db.users.update(iUser.id, { syncStatus: 'none' });
+            await this.db.users.update(iUser.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
         }
 
 
         return saveUserMappings;
 
     }
+
+    // Sincroniza el modulo voyage.
+    public async SyncVoyages(): Promise<Mapping[]> {
+        console.log('SyncVoyages()');
+
+        // Voyage Mappings
+        let saveVoyageMappings: Mapping[] = [];
+
+        // data del IndexedDB
+        let voyagesIndexedDB: Voyage[];
+        voyagesIndexedDB = await this.db.voyages.toArray();
+
+        // FIltramos los datos que faltan aggregar y actualizar.
+        const addVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'added');
+        const updateVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'updated');
+        const deleteVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'deleted');
+
+        // Recorremos todos los viajes que falta por agregar.
+        for (const iVoyage of addVoyages) {
+            // Resultado del create
+            let resultCreate: Voyage;
+            resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            await this.db.voyages.update(iVoyage.id, { id: resultCreate.id, voyageNumber: resultCreate.voyageNumber, syncStatus: 'none' });
+
+            // Mapping user
+            saveVoyageMappings.push(
+                new Mapping(iVoyage.id, resultCreate.id)
+            )
+        }
+
+        // Recorremos todos los voyages que falta por actualizar.
+        for (const iVoyage of updateVoyages) {
+            let resultUpdate: Voyage;
+            resultUpdate = await this.voyageService.Save(iVoyage).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            await this.db.voyages.update(iVoyage.id, { syncStatus: 'none' });
+        }
+
+
+        for (const iVoyage of deleteVoyages) {
+            let resultDelete: Voyage;
+            resultDelete = await this.voyageService.Delete(iVoyage).pipe().toPromise();
+            // Actualizamos el syncStatus a none.
+            await this.db.users.update(iVoyage.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
+        }
+
+
+        return saveVoyageMappings;
+
+    }
+    // ================ FIN SYNC
 
 
     // =================== USERS IndexedDB ====================================
@@ -130,6 +191,7 @@ export class DatabaseService {
         );
     }
 
+    // Obtiene a un usuario por ID de IndexDB
     public async getUserIndexDB(Index: number): Promise<User> {
         console.log('getUserIndexDB(Index)');
 
@@ -139,6 +201,7 @@ export class DatabaseService {
             });
 
     }
+
     // Agregar User por indexedDB
     public async addUserIndexedDB(user: User): Promise<User> {
         console.log('addUserIndexedDb(user: User)');
@@ -183,78 +246,78 @@ export class DatabaseService {
 
         return await this.db.users.update(user.id,
             {
-                nick : user.nick,
-                name : user.name,
-                filename : user.filename,
-                password : user.password,
-                language : user.language,
-                role : user.role,
-        
-                minSpeed : user.minSpeed,
-                maxSpeed : user.maxSpeed,
-                isConsumptionIFO : user.isConsumptionIFO,
-                isConsumptionLSFO : user.isConsumptionLSFO,
-                isConsumptionMGO : user.isConsumptionMGO,
-                maxIFOConsumption : user.maxIFOConsumption,
-                maxMGOConsumption : user.maxMGOConsumption,
-                minIFOConsumption : user.minIFOConsumption,
-                minMGOConsumption : user.minMGOConsumption,
-                isMEMGO : user.isMEMGO,
-                isAEMGO : user.isAEMGO,
-                isBoilerMGO : user.isBoilerMGO,
-                isIGMGO : user.isIGMGO,
-                isPowerPMGO : user.isPowerPMGO,
-                isOtherMGO : user.isOtherMGO,
-                isMEIFO : user.isMEIFO,
-                isAEIFO : user.isAEIFO,
-                isBoilerIFO : user.isBoilerIFO,
-                isOtherIFO : user.isOtherIFO,
-        
+                nick: user.nick,
+                name: user.name,
+                filename: user.filename,
+                password: user.password,
+                language: user.language,
+                role: user.role,
+
+                minSpeed: user.minSpeed,
+                maxSpeed: user.maxSpeed,
+                isConsumptionIFO: user.isConsumptionIFO,
+                isConsumptionLSFO: user.isConsumptionLSFO,
+                isConsumptionMGO: user.isConsumptionMGO,
+                maxIFOConsumption: user.maxIFOConsumption,
+                maxMGOConsumption: user.maxMGOConsumption,
+                minIFOConsumption: user.minIFOConsumption,
+                minMGOConsumption: user.minMGOConsumption,
+                isMEMGO: user.isMEMGO,
+                isAEMGO: user.isAEMGO,
+                isBoilerMGO: user.isBoilerMGO,
+                isIGMGO: user.isIGMGO,
+                isPowerPMGO: user.isPowerPMGO,
+                isOtherMGO: user.isOtherMGO,
+                isMEIFO: user.isMEIFO,
+                isAEIFO: user.isAEIFO,
+                isBoilerIFO: user.isBoilerIFO,
+                isOtherIFO: user.isOtherIFO,
+
                 // Performance MGO
-                contractSpeedSailingBallastMGO : user.contractSpeedSailingBallastMGO,
-                contractSpeedSailingLadenMGO : user.contractSpeedSailingLadenMGO,
-                contractSpeedSailingEconomicalMGO : user.contractSpeedSailingEconomicalMGO,
-                loadingConsumptionMGO : user.loadingConsumptionMGO,
-                dischargeConsumptionMGO : user.dischargeConsumptionMGO,
-                sailingBallastConsumptionMGO : user.sailingBallastConsumptionMGO,
-                sailingLoadConsumptionMGO : user.sailingLoadConsumptionMGO,
-                sailingEconomicConsumptionMGO : user.sailingEconomicConsumptionMGO,
-                anchoredConsumptionMGO : user.anchoredConsumptionMGO,
-                maneuverConsumptionMGO : user.maneuverConsumptionMGO,
-                otherConsumptionMGO : user.otherConsumptionMGO,
-        
-        
+                contractSpeedSailingBallastMGO: user.contractSpeedSailingBallastMGO,
+                contractSpeedSailingLadenMGO: user.contractSpeedSailingLadenMGO,
+                contractSpeedSailingEconomicalMGO: user.contractSpeedSailingEconomicalMGO,
+                loadingConsumptionMGO: user.loadingConsumptionMGO,
+                dischargeConsumptionMGO: user.dischargeConsumptionMGO,
+                sailingBallastConsumptionMGO: user.sailingBallastConsumptionMGO,
+                sailingLoadConsumptionMGO: user.sailingLoadConsumptionMGO,
+                sailingEconomicConsumptionMGO: user.sailingEconomicConsumptionMGO,
+                anchoredConsumptionMGO: user.anchoredConsumptionMGO,
+                maneuverConsumptionMGO: user.maneuverConsumptionMGO,
+                otherConsumptionMGO: user.otherConsumptionMGO,
+
+
                 // Performance IFO
-                contractSpeedSailingBallastIFO : user.contractSpeedSailingBallastIFO,
-                contractSpeedSailingLadenIFO : user.contractSpeedSailingLadenIFO,
-                contractSpeedSailingEconomicalIFO : user.contractSpeedSailingEconomicalIFO,
-                loadingConsumptionIFO : user.loadingConsumptionIFO,
-                dischargeConsumptionIFO : user.dischargeConsumptionIFO,
-                sailingBallastConsumptionIFO : user.sailingBallastConsumptionIFO,
-                sailingLoadConsumptionIFO : user.sailingLoadConsumptionIFO,
-                sailingEconomicConsumptionIFO : user.sailingEconomicConsumptionIFO,
-                anchoredConsumptionIFO : user.anchoredConsumptionIFO,
-                maneuverConsumptionIFO : user.maneuverConsumptionIFO,
-                otherConsumptionIFO : user.otherConsumptionIFO,
-        
-        
+                contractSpeedSailingBallastIFO: user.contractSpeedSailingBallastIFO,
+                contractSpeedSailingLadenIFO: user.contractSpeedSailingLadenIFO,
+                contractSpeedSailingEconomicalIFO: user.contractSpeedSailingEconomicalIFO,
+                loadingConsumptionIFO: user.loadingConsumptionIFO,
+                dischargeConsumptionIFO: user.dischargeConsumptionIFO,
+                sailingBallastConsumptionIFO: user.sailingBallastConsumptionIFO,
+                sailingLoadConsumptionIFO: user.sailingLoadConsumptionIFO,
+                sailingEconomicConsumptionIFO: user.sailingEconomicConsumptionIFO,
+                anchoredConsumptionIFO: user.anchoredConsumptionIFO,
+                maneuverConsumptionIFO: user.maneuverConsumptionIFO,
+                otherConsumptionIFO: user.otherConsumptionIFO,
+
+
                 // Dashboard
-                isDisplayLSFOConsumption : user.isDisplayLSFOConsumption,
-                isDisplayMGOConsumption : user.isDisplayMGOConsumption,
-                isDisplayAverageSpeed : user.isDisplayAverageSpeed,
-                isDisplayDataMGO : user.isDisplayDataMGO,
-                isDisplayDataLSFO : user.isDisplayDataLSFO,
-                isDisplayVesselPerformanceLSFO : user.isDisplayVesselPerformanceLSFO,
-                isDisplayVesselPerformanceMGO : user.isDisplayVesselPerformanceMGO,
-        
-        
+                isDisplayLSFOConsumption: user.isDisplayLSFOConsumption,
+                isDisplayMGOConsumption: user.isDisplayMGOConsumption,
+                isDisplayAverageSpeed: user.isDisplayAverageSpeed,
+                isDisplayDataMGO: user.isDisplayDataMGO,
+                isDisplayDataLSFO: user.isDisplayDataLSFO,
+                isDisplayVesselPerformanceLSFO: user.isDisplayVesselPerformanceLSFO,
+                isDisplayVesselPerformanceMGO: user.isDisplayVesselPerformanceMGO,
+
+
                 // Audiotoria
-                userIdCreated : user.userIdCreated,
-                dateCreated : user.dateCreated,
-                userIdUpdated : user.userIdUpdated,
-                dateUpdated : user.dateUpdated,
-                status : user.status,
-                syncStatus : user.syncStatus,
+                userIdCreated: user.userIdCreated,
+                dateCreated: user.dateCreated,
+                userIdUpdated: user.userIdUpdated,
+                dateUpdated: user.dateUpdated,
+                status: user.status,
+                syncStatus: user.syncStatus,
             }
         ).then((result: boolean) => {
             return user;
@@ -268,6 +331,111 @@ export class DatabaseService {
             () => {
 
                 console.log('OK DELETE')
+                return true;
+            }
+        );
+
+    }
+    //__________________________________________________________________________
+
+
+    // =================== VOYAGES IndexedDB ====================================
+    // Obtiene a todos los viajes de IndexDB
+    public async getVoyagesIndexDB(): Promise<Voyage[]> {
+        console.log('getVoyagesIndexDB()');
+
+        return await this.db.voyages.toArray().then(
+            (results: Voyage[]) => {
+
+                return results.filter(
+                    (voyage: Voyage) => {
+                        return voyage.status === true;
+                    }
+                );
+
+            }
+        );
+    }
+
+    // Obtiene a un viaje por ID de IndexDB
+    public async getVoyageIndexDB(Index: number): Promise<Voyage> {
+        console.log('getVoyageIndexDB(Index)');
+
+        return await this.db.voyages.get(Index).then(
+            (result: Voyage) => {
+                return result;
+            });
+
+    }
+
+    // Agregar Voyage por indexedDB
+    public async addVoyageIndexedDB(voyage: Voyage): Promise<Voyage> {
+        console.log('addVoyageIndexedDB(voyage: Voyage)');
+
+        return await this.db.voyages
+            .add(voyage).then(
+                (voyageId: number) => {
+                    voyage.id = voyageId;
+
+                    return user;
+                });
+    }
+
+    // Agregar Voyages por indexedDB
+    public async addVoyagesIndexedDB(voyages: Voyage[]): Promise<boolean> {
+        console.log('addVoyagesIndexedDB(voyages: Voyage[])');
+
+        // Verificamos como se encuentra el servicios
+        if (true) {
+
+            // for await
+            for (const iVoyage of voyages) {
+                await this.addVoyageIndexedDB(iVoyage);
+            }
+
+        } else {
+
+            console.log('went offline, storing in indexdb');
+            return false;
+
+        }
+
+        console.log('FINNNNNN SINCRONOs');
+
+        return true;
+
+    }
+
+    // Actualiza Voyage del IndexedDB
+    public async updateVoyageIndexedDB(voyage: Voyage): Promise<Voyage> {
+        console.log('updateVoyageIndexedDB(voyage: Voyage)');
+
+        return await this.db.voyages.update(voyage.id,
+            {
+                userId: voyage.userId,
+                voyageNumber: voyage.voyageNumber,
+                year: voyage.year,
+
+
+                userIdCreated: voyage.userIdCreated,
+                dateCreated: voyage.dateCreated,
+                userIdUpdated: voyage.userIdUpdated,
+                dateUpdated: voyage.dateUpdated,
+                status: voyage.status,
+                syncStatus: voyage.syncStatus
+            }
+        ).then((result: boolean) => {
+            return user;
+        });
+    }
+
+    public async ClearVoyagesIndexedDB(): Promise<boolean> {
+        console.log('ClearVoyagesIndexedDB()')
+
+        return await this.db.voyages.clear().then(
+            () => {
+
+                console.log('OK DELETE Voyages DB')
                 return true;
             }
         );
