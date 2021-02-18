@@ -13,7 +13,7 @@ import { SQLITE_PATH } from './config/path.config';
 import { UsersModule } from './components/users/users.module';
 import { AuthModule } from './components/auth/auth.module';
 import { Moment } from 'moment';
-import { VoyagesModule } from './components/voyages/voyages/voyages.module';
+import { VoyagesModule } from './components/voyages/voyages.module';
 
 @Module({
   imports: [
