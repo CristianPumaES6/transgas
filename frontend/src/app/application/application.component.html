@@ -25,8 +25,7 @@
 
         <div class="dropdown az-profile-menu">
           <a href="" class="az-img-user">
-            <div class="dropdown-menu"><img src="http://165.227.76.37:3000/FotosBuques/{{loggedUser.name}}.png" alt="">
-            </div>
+            <img src="{{loggedUser.filename||'../../../../assets/500x500.png'}}" alt="">
           </a>
           <div class="dropdown-menu">
 
@@ -37,7 +36,7 @@
 
             <div class="az-header-profile">
               <div class="az-img-user">
-                <img src="http://165.227.76.37:3000/FotosBuques/{{loggedUser.name}}.png" alt="">
+                <img src="{{loggedUser.filename||'../../../../assets/500x500.png'}}" alt="">
               </div><!-- az-img-user -->
 
               <h6>{{loggedUser.name}}</h6>
@@ -75,9 +74,11 @@
       <span>&copy; 2020 Transgas v1.7 - Sailing Anality</span>
       <!-- <span>Designed by: ThemePixels</span> -->
       <span class="float-righ"> {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
-        <span  [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline | translateMessage:translateCategory}} <span class="icon-punto-circulo"></span> </span>
+        <span
+          [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline | translateMessage:translateCategory}}
+          <span class="icon-punto-circulo"></span> </span>
       </span>
-      
+
     </div><!-- container -->
   </div><!-- az-footer -->
 

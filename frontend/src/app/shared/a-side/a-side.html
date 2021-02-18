@@ -1,6 +1,6 @@
 <div class="container-personalizate">
   <div class="az-iconbar">
-    <a href="http://www.transgas.com.pe/" class="az-iconbar-logo">
+    <a href="https://www.transgas.com.pe/"  target="_blank" class="az-iconbar-logo">
       <i class="icon-transgas-icono"></i>
     </a>
     <nav class="nav">
@@ -22,8 +22,8 @@
     </nav>
     <div class="az-iconbar-bottom">
       <a href="" class="az-iconbar-help" [ngClass]="{'active' : navLink === 'helps'}" (click)="selectNavLink('helps')"><i class="icon-menu-help"></i></a>
-      <a href="" class="az-img-user online"><img src="http://165.227.76.37:3000/FotosBuques/{{loggedUser.name}}.png"
-          alt=""></a>
+      <span class="az-img-user online"><img src="{{loggedUser.filename||'../../../../assets/500x500.png'}}"
+          alt=""></span>
     </div><!-- az-iconbar-bottom -->
   </div><!-- az-iconbar -->
 
