@@ -141,7 +141,7 @@ export class VoyageService {
     }
 
 
-    Update(voyage: Voyage): Observable<Voyage> {
+    Save(voyage: Voyage): Observable<Voyage> {
 
         // Armo el request
         let url: string = this.url + '/voyages/' + voyage.id + '/update';
