@@ -33,7 +33,7 @@ export class DatabaseService {
 
         this.db = new Dexie('TransgasDatabase');
         this.db.version(1).stores({
-            users: '++id,nick,name,filename,password,language,role,status,syncStatus'
+            users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
         });
 
     }
@@ -183,13 +183,78 @@ export class DatabaseService {
 
         return await this.db.users.update(user.id,
             {
-                nick: user.nick,
-                name: user.name,
-                password: user.password,
-                language: user.language,
-                role: user.role,
-                status: user.status,
-                syncStatus: user.syncStatus
+                nick : user.nick,
+                name : user.name,
+                filename : user.filename,
+                password : user.password,
+                language : user.language,
+                role : user.role,
+        
+                minSpeed : user.minSpeed,
+                maxSpeed : user.maxSpeed,
+                isConsumptionIFO : user.isConsumptionIFO,
+                isConsumptionLSFO : user.isConsumptionLSFO,
+                isConsumptionMGO : user.isConsumptionMGO,
+                maxIFOConsumption : user.maxIFOConsumption,
+                maxMGOConsumption : user.maxMGOConsumption,
+                minIFOConsumption : user.minIFOConsumption,
+                minMGOConsumption : user.minMGOConsumption,
+                isMEMGO : user.isMEMGO,
+                isAEMGO : user.isAEMGO,
+                isBoilerMGO : user.isBoilerMGO,
+                isIGMGO : user.isIGMGO,
+                isPowerPMGO : user.isPowerPMGO,
+                isOtherMGO : user.isOtherMGO,
+                isMEIFO : user.isMEIFO,
+                isAEIFO : user.isAEIFO,
+                isBoilerIFO : user.isBoilerIFO,
+                isOtherIFO : user.isOtherIFO,
+        
+                // Performance MGO
+                contractSpeedSailingBallastMGO : user.contractSpeedSailingBallastMGO,
+                contractSpeedSailingLadenMGO : user.contractSpeedSailingLadenMGO,
+                contractSpeedSailingEconomicalMGO : user.contractSpeedSailingEconomicalMGO,
+                loadingConsumptionMGO : user.loadingConsumptionMGO,
+                dischargeConsumptionMGO : user.dischargeConsumptionMGO,
+                sailingBallastConsumptionMGO : user.sailingBallastConsumptionMGO,
+                sailingLoadConsumptionMGO : user.sailingLoadConsumptionMGO,
+                sailingEconomicConsumptionMGO : user.sailingEconomicConsumptionMGO,
+                anchoredConsumptionMGO : user.anchoredConsumptionMGO,
+                maneuverConsumptionMGO : user.maneuverConsumptionMGO,
+                otherConsumptionMGO : user.otherConsumptionMGO,
+        
+        
+                // Performance IFO
+                contractSpeedSailingBallastIFO : user.contractSpeedSailingBallastIFO,
+                contractSpeedSailingLadenIFO : user.contractSpeedSailingLadenIFO,
+                contractSpeedSailingEconomicalIFO : user.contractSpeedSailingEconomicalIFO,
+                loadingConsumptionIFO : user.loadingConsumptionIFO,
+                dischargeConsumptionIFO : user.dischargeConsumptionIFO,
+                sailingBallastConsumptionIFO : user.sailingBallastConsumptionIFO,
+                sailingLoadConsumptionIFO : user.sailingLoadConsumptionIFO,
+                sailingEconomicConsumptionIFO : user.sailingEconomicConsumptionIFO,
+                anchoredConsumptionIFO : user.anchoredConsumptionIFO,
+                maneuverConsumptionIFO : user.maneuverConsumptionIFO,
+                otherConsumptionIFO : user.otherConsumptionIFO,
+        
+        
+                // Dashboard
+                isDisplayLSFOConsumption : user.isDisplayLSFOConsumption,
+                isDisplayMGOConsumption : user.isDisplayMGOConsumption,
+                isDisplayAverageSpeed : user.isDisplayAverageSpeed,
+                isDisplayDataMGO : user.isDisplayDataMGO,
+                isDisplayDataLSFO : user.isDisplayDataLSFO,
+                isDisplayVesselPerformanceLSFO : user.isDisplayVesselPerformanceLSFO,
+                isDisplayVesselPerformanceMGO : user.isDisplayVesselPerformanceMGO,
+        
+        
+                // Audiotoria
+                userIdCreated : user.userIdCreated,
+                dateCreated : user.dateCreated,
+                userIdUpdated : user.userIdUpdated,
+                dateUpdated : user.dateUpdated,
+                status : user.status,
+                syncStatus : user.syncStatus,
             }
         ).then((result: boolean) => {
             return user;

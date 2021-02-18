@@ -30,6 +30,8 @@
     "@types/bcrypt": "^3.0.0",
     "bcrypt": "^4.0.1",
     "jwt-decode": "^3.1.2",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

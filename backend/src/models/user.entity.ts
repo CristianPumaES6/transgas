@@ -79,34 +79,89 @@ export class UserEntity {
     isOtherIFO: boolean;
 
     // ---------------------------------------------
-    // ---------------------------------------------
+    // --------------PERFORMANCE MGO-------------------------------
 
     // Cofiguracion de consumo de navegacion por contrato.
     @Column({ default: 0 })
-    contractSpeedSailingBallast: number;
+    contractSpeedSailingBallastMGO: number;
     @Column({ default: 0 })
-    contractSpeedSailingLaden: number;
+    contractSpeedSailingLadenMGO: number;
     @Column({ default: 0 })
-    contractSpeedSailingEconomical: number;
+    contractSpeedSailingEconomicalMGO: number;
 
     // Consumo por contrato
     @Column({ default: 0 })
-    loadingConsumption: number;
+    loadingConsumptionMGO: number;
     @Column({ default: 0 })
-    dischargeConsumption: number;
+    dischargeConsumptionMGO: number;
     @Column({ default: 0 })
-    sailingBallastConsumption: number;
+    sailingBallastConsumptionMGO: number;
     @Column({ default: 0 })
-    sailingLoadConsumption: number;
+    sailingLoadConsumptionMGO: number;
     @Column({ default: 0 })
-    sailingEconomicConsumption: number;
+    sailingEconomicConsumptionMGO: number;
     @Column({ default: 0 })
-    anchoredConsumption: number;
+    anchoredConsumptionMGO: number;
     @Column({ default: 0 })
-    maneuverConsumption: number;
+    maneuverConsumptionMGO: number;
     @Column({ default: 0 })
-    otherConsumption: number;
+    otherConsumptionMGO: number;
 
+    //Performance IFO
+    // Cofiguracion de consumo de navegacion por contrato.
+    @Column({ default: 0 })
+    contractSpeedSailingBallastIFO: number;
+    @Column({ default: 0 })
+    contractSpeedSailingLadenIFO: number;
+    @Column({ default: 0 })
+    contractSpeedSailingEconomicalIFO: number;
+
+    // Consumo por contrato
+    @Column({ default: 0 })
+    loadingConsumptionIFO: number;
+    @Column({ default: 0 })
+    dischargeConsumptionIFO: number;
+    @Column({ default: 0 })
+    sailingBallastConsumptionIFO: number;
+    @Column({ default: 0 })
+    sailingLoadConsumptionIFO: number;
+    @Column({ default: 0 })
+    sailingEconomicConsumptionIFO: number;
+    @Column({ default: 0 })
+    anchoredConsumptionIFO: number;
+    @Column({ default: 0 })
+    maneuverConsumptionIFO: number;
+    @Column({ default: 0 })
+    otherConsumptionIFO: number;
+
+    // Configuracion DASHBOARD
+    @Column({ default: true })
+    isDisplayLSFOConsumption: boolean;
+    @Column({ default: true })
+    isDisplayMGOConsumption: boolean;
+    @Column({ default: true })
+    isDisplayAverageSpeed: boolean;
+    @Column({ default: true })
+    isDisplayDataMGO: boolean;
+    @Column({ default: true })
+    isDisplayDataLSFO: boolean;
+    @Column({ default: true })
+    isDisplayVesselPerformanceLSFO: boolean;
+    @Column({ default: true })
+    isDisplayVesselPerformanceMGO: boolean;
+
+
+
+    // Auditoria
+    @Column()
+    userIdCreated: number;
+    @Column()
+    dateCreated: string;
+
+    @Column({ nullable: true })
+    userIdUpdated: number;
+    @Column({ nullable: true })
+    dateUpdated: string;
 
     @Column({ nullable: false })
     status: boolean;
@@ -139,18 +194,48 @@ export class UserEntity {
         isAEIFO?: boolean,
         isBoilerIFO?: boolean,
         isOtherIFO?: boolean,
-        contractSpeedSailingBallast?: number,
-        contractSpeedSailingLaden?: number,
-        contractSpeedSailingEconomical?: number,
-        loadingConsumption?: number,
-        dischargeConsumption?: number,
-        sailingBallastConsumption?: number,
-        sailingLoadConsumption?: number,
-        sailingEconomicConsumption?: number,
-        anchoredConsumption?: number,
-        maneuverConsumption?: number,
-        otherConsumption?: number,
 
+        // Performance MGO
+        contractSpeedSailingBallastMGO?: number,
+        contractSpeedSailingLadenMGO?: number,
+        contractSpeedSailingEconomicalMGO?: number,
+        loadingConsumptionMGO?: number,
+        dischargeConsumptionMGO?: number,
+        sailingBallastConsumptionMGO?: number,
+        sailingLoadConsumptionMGO?: number,
+        sailingEconomicConsumptionMGO?: number,
+        anchoredConsumptionMGO?: number,
+        maneuverConsumptionMGO?: number,
+        otherConsumptionMGO?: number,
+
+        // Performance IFO
+        contractSpeedSailingBallastIFO?: number,
+        contractSpeedSailingLadenIFO?: number,
+        contractSpeedSailingEconomicalIFO?: number,
+        loadingConsumptionIFO?: number,
+        dischargeConsumptionIFO?: number,
+        sailingBallastConsumptionIFO?: number,
+        sailingLoadConsumptionIFO?: number,
+        sailingEconomicConsumptionIFO?: number,
+        anchoredConsumptionIFO?: number,
+        maneuverConsumptionIFO?: number,
+        otherConsumptionIFO?: number,
+        
+
+        // Display Dashboard
+        isDisplayLSFOConsumption?: boolean,
+        isDisplayMGOConsumption?: boolean,
+        isDisplayAverageSpeed?: boolean,
+        isDisplayDataMGO?: boolean,
+        isDisplayDataLSFO?: boolean,
+        isDisplayVesselPerformanceLSFO?: boolean,
+        isDisplayVesselPerformanceMGO?: boolean,
+
+        // Auditoria
+        userIdCreated?: number,
+        dateCreated?: string,
+        userIdUpdated?: number,
+        dateUpdated?: string,
         status?: boolean,
     ) {
         this.id = id || null;
@@ -181,18 +266,48 @@ export class UserEntity {
         this.isAEIFO = isAEIFO || false;
         this.isBoilerIFO = isBoilerIFO || false;
         this.isOtherIFO = isOtherIFO || false;
-        this.contractSpeedSailingBallast = contractSpeedSailingBallast || 0;
-        this.contractSpeedSailingLaden = contractSpeedSailingLaden || 0;
-        this.contractSpeedSailingEconomical = contractSpeedSailingEconomical || 0;
-        this.loadingConsumption = loadingConsumption || 0;
-        this.dischargeConsumption = dischargeConsumption || 0;
-        this.sailingBallastConsumption = sailingBallastConsumption || 0;
-        this.sailingLoadConsumption = sailingLoadConsumption || 0;
-        this.sailingEconomicConsumption = sailingEconomicConsumption || 0;
-        this.anchoredConsumption = anchoredConsumption || 0;
-        this.maneuverConsumption = maneuverConsumption || 0;
-        this.otherConsumption = otherConsumption || 0;
 
+        // Performance MGO
+        this.contractSpeedSailingBallastMGO = contractSpeedSailingBallastMGO || 0;
+        this.contractSpeedSailingLadenMGO = contractSpeedSailingLadenMGO || 0;
+        this.contractSpeedSailingEconomicalMGO = contractSpeedSailingEconomicalMGO || 0;
+        this.loadingConsumptionMGO = loadingConsumptionMGO || 0;
+        this.dischargeConsumptionMGO = dischargeConsumptionMGO || 0;
+        this.sailingBallastConsumptionMGO = sailingBallastConsumptionMGO || 0;
+        this.sailingLoadConsumptionMGO = sailingLoadConsumptionMGO || 0;
+        this.sailingEconomicConsumptionMGO = sailingEconomicConsumptionMGO || 0;
+        this.anchoredConsumptionMGO = anchoredConsumptionMGO || 0;
+        this.maneuverConsumptionMGO = maneuverConsumptionMGO || 0;
+        this.otherConsumptionMGO = otherConsumptionMGO || 0;
+        
+        // Performance IFO
+        this.contractSpeedSailingBallastIFO = contractSpeedSailingBallastIFO || 0;
+        this.contractSpeedSailingLadenIFO = contractSpeedSailingLadenIFO || 0;
+        this.contractSpeedSailingEconomicalIFO = contractSpeedSailingEconomicalIFO || 0;
+        this.loadingConsumptionIFO = loadingConsumptionIFO || 0;
+        this.dischargeConsumptionIFO = dischargeConsumptionIFO || 0;
+        this.sailingBallastConsumptionIFO = sailingBallastConsumptionIFO || 0;
+        this.sailingLoadConsumptionIFO = sailingLoadConsumptionIFO || 0;
+        this.sailingEconomicConsumptionIFO = sailingEconomicConsumptionIFO || 0;
+        this.anchoredConsumptionIFO = anchoredConsumptionIFO || 0;
+        this.maneuverConsumptionIFO = maneuverConsumptionIFO || 0;
+        this.otherConsumptionIFO = otherConsumptionIFO || 0;
+        
+
+        // Display Dashboard
+        this.isDisplayLSFOConsumption = isDisplayLSFOConsumption || false;
+        this.isDisplayMGOConsumption = isDisplayMGOConsumption || false;
+        this.isDisplayAverageSpeed = isDisplayAverageSpeed || false;
+        this.isDisplayDataMGO = isDisplayDataMGO || false;
+        this.isDisplayDataLSFO = isDisplayDataLSFO || false;
+        this.isDisplayVesselPerformanceLSFO = isDisplayVesselPerformanceLSFO || false;
+        this.isDisplayVesselPerformanceMGO = isDisplayVesselPerformanceMGO || false;
+
+        // Auditoria
+        this.userIdCreated = userIdCreated || 0;
+        this.dateCreated = dateCreated || '';
+        this.userIdUpdated = userIdUpdated || 0;
+        this.dateUpdated = dateUpdated || '';
         this.status = status || false;
     }
 

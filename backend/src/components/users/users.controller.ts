@@ -8,6 +8,8 @@ import { UsersService } from './users.service';
 import { DummyPromise } from '../../assets/promises.assets';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { diskStorage } from 'multer';
+import { getDate } from '../../assets/moment.assets';
+
 
 // Entity
 import { UserEntity } from '../../models/user.entity';
@@ -146,6 +148,11 @@ export class UsersController {
 
                 // Validamos que los datos sean los necesarios.
                 if (user && user.name && user.nick && user.password && user.role) {
+
+                    user.userIdCreated = headerToken.id;
+                    user.dateCreated = getDate();
+                    delete user.userIdUpdated;
+                    delete user.dateUpdated;
                     // retornamos la respuesta del servicio.
                     return this._usersService.CreateUserNickUnique(user);
                 } else {
@@ -197,6 +204,12 @@ export class UsersController {
 
                 if (!isNaN(id) && user && user.name && user.nick && user.password && user.role) {
                     user.id = Number(id);
+
+                    
+                    delete user.userIdCreated;
+                    delete user.dateCreated;
+                    user.userIdUpdated = headerToken.id;
+                    user.dateUpdated = getDate();
                     // retornamos la respuesta del servicio.
                     return this._usersService.UpdateUserNickUnique(user);
                 } else {

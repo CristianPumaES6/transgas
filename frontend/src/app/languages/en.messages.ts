@@ -124,25 +124,19 @@ export const user: any = {
     SUCCESS_USER_DELETE_LOCAL: 'User successfully deleted local.',
     COMFIMR_DELETE_TITLE_REPLACE: 'Are you sure you want to delete [NAME]?',
     COMFIRM_DELETE_DESCRIPTION: 'The changes are irreversible.',
-};
 
-export const fileUpload: any = {
-    ERROR: 'Error',
-    SUCCESS: 'Success',
-    ERROR_UPLOAD_IMAGE: 'Image could not be updated.',
-    SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.'
-}
-
-export const userDetail: any = {
+    // CAMPOS
     MIN_SPEED: 'Min speed',
     MAX_SPEED: 'Max speed',
     TYPE_CONSUMPTION: 'Type consumption',
     MGO: 'MGO',
-    LSFO:'LSFO',
+    LSFO: 'LSFO',
     CONSUMPTION_MGO: 'Consumption MGO',
-    CONSUMPTION_IFO: 'Consumption LSFO',
+    CONSUMPTION_IFO: 'Consumption IFO',
+    CONSUMPTION_LSFO: 'Consumption LSFO',
     EQUIPMENT_MGO: 'Equipment MGO',
     EQUIPMENT_IFO: 'Equipment IFO',
+    EQUIPMENT_LSFO: 'Equipment LSFO',
     SPEED_CONTRACT_BALLAST: 'Speed contract in ballast',
     SPEED_CONTRACT_LADEN: 'Speed contract with laden',
     SPEED_CONTRACT_ECONOMIC: 'Speed contract economic',
@@ -157,4 +151,25 @@ export const userDetail: any = {
     CONTRACT_MANEUVER: 'C. Maneuver',
     CONTRACT_OTHER_ACT: 'C. Other act.',
     DISPLAY_DASHBOARD: 'Display Dashboard',
+    PERFORMANCE_MGO: 'Performance MGO',
+    PERFORMANCE_IFO: 'Performance IFO',
+    PERFORMANCE_LSFO: 'Performance LSFO',
+    LSFO_CONSUMPTION: 'LSFO Consumption',
+    IFO_CONSUMPTION: 'IFO Consumption',
+    MGO_CONSUMPTION: 'MGO Consumption',
+    AVERAGE_SPEED: 'Average Speed',
+    DATA_MGO: 'Data MGO',
+    DATA_IFO: 'Data IFO',
+    DATA_LSFO: 'Data LSFO',
+    VESSEL_PERFORMANCE_LSFO:'Vessel Performance LSFO',
+    VESSEL_PERFORMANCE_IFO:'Vessel Performance IFO',
+    VESSEL_PERFORMANCE_MGO:'Vessel Performance MGO',
+
+};
+
+export const fileUpload: any = {
+    ERROR: 'Error',
+    SUCCESS: 'Success',
+    ERROR_UPLOAD_IMAGE: 'Image could not be updated.',
+    SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.'
 }

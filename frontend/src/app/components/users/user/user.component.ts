@@ -28,6 +28,7 @@ import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
+import PerfectScrollbar from 'perfect-scrollbar';
 
 @Component({
   selector: 'app-user',
@@ -92,6 +93,10 @@ export class UserComponent implements OnInit {
 
     // si el aSide esta abierto lo cerramos.
     this.aSideService.Close();
+
+    new PerfectScrollbar('.az-contact-info-body', {
+      suppressScrollX: true
+    })
 
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
@@ -384,7 +389,8 @@ export class UserComponent implements OnInit {
     console.log('ClickNew()');
 
     // Creamos un nuevo usuario.
-    this.user = new User(null, '', '', '', '', '', '', true, null);
+    this.user = new User();
+    this.user.status = true;
 
     // abrimos el formulario solo para modal.
     this.aSideService.OpenClose('open-formulario');
@@ -482,6 +488,70 @@ export class UserComponent implements OnInit {
     return false;
   }
 
+  public ClickCheckMGO(): boolean {
+
+    if (this.user.isConsumptionMGO) {
+      this.user.isMEMGO = true;
+      this.user.isAEMGO = true;
+      this.user.isBoilerMGO = true;
+      this.user.isIGMGO = true;
+      this.user.isPowerPMGO = true;
+      this.user.isOtherMGO = true;
+    } else {
+      this.user.isMEMGO = false;
+      this.user.isAEMGO = false;
+      this.user.isBoilerMGO = false;
+      this.user.isIGMGO = false;
+      this.user.isPowerPMGO = false;
+      this.user.isOtherMGO = false;
+      this.user.maxMGOConsumption = 0;
+    }
+
+    return true;
+  }
+
+  public ClickCheckIFO(): boolean {
+
+    if (this.user.isConsumptionIFO) {
+      // desactivo el otro tipo de gas
+      this.user.isConsumptionLSFO = false;
+
+      this.user.isMEIFO = true;
+      this.user.isAEIFO = true;
+      this.user.isBoilerIFO = true;
+      this.user.isOtherIFO = true;
+
+    } else {
+      this.user.isMEIFO = false;
+      this.user.isAEIFO = false;
+      this.user.isBoilerIFO = false;
+      this.user.isOtherIFO = false;
+      this.user.maxIFOConsumption = 0;
+
+    }
+
+    return true;
+  }
+
+  public ClickCheckLSFO(): boolean {
+    if (this.user.isConsumptionLSFO) {
+      // desactivo el otro tipo de gas
+      this.user.isConsumptionIFO = false;
+
+      this.user.isMEIFO = true;
+      this.user.isAEIFO = true;
+      this.user.isBoilerIFO = true;
+      this.user.isOtherIFO = true;
+    } else {
+      this.user.isMEIFO = false;
+      this.user.isAEIFO = false;
+      this.user.isBoilerIFO = false;
+      this.user.isOtherIFO = false;
+      this.user.maxIFOConsumption = 0;
+
+    }
+    return true;
+  }
   // SaveUser(): Crea o actualiza un user.
   public ClickSaveUser(): boolean {
     console.log('SaveUser()');

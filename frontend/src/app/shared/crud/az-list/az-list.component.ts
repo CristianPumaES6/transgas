@@ -54,7 +54,7 @@ export class AzListComponent implements OnInit {
   ngOnInit(): void {
     new PerfectScrollbar('#azContactList', {
       suppressScrollX: true
-  })
+    })
 
   }
 
