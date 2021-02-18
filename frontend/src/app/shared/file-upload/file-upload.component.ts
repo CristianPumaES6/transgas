@@ -7,7 +7,7 @@ import { UserService } from '../../services/user.service';
 // Componentes Dependencias
 import { NotificationsService } from 'angular2-notifications';
 import { LanguageService } from '../../services/language.service';
-import { OnlineOfflineService } from 'src/app/services/online-offline.service';
+import { OnlineOfflineService } from '../../services/online-offline.service';
 
 
 @Component({
