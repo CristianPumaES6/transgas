@@ -114,7 +114,6 @@ export class VoyageComponent implements OnInit {
         voyage.userId = this.user.id;
         user.id = this.user.id;
       } else {
-        user.id = this.user.id;
       }
 
       // Ejecuto todas las consultas para cargar datos segundarios
