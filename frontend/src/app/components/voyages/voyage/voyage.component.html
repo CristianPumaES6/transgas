@@ -2,8 +2,10 @@
 
   <div class="az-content-left az-content-left-contacts">
 
-    <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" [azListDropdowns]="azListDropdowns" (eSelectAzList)="SelectVoyage($event)"
-      (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDeleteVoyage($event)"></app-az-list>
+    <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" [azListDropdowns]="azListDropdowns"
+      (eSelectAzList)="SelectVoyage($event)" (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDeleteVoyage($event)"
+      (eSelectDropdown)="ClickSelectUser($event)">
+    </app-az-list>
 
   </div><!-- az-content-left -->
 

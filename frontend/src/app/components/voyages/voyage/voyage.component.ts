@@ -25,6 +25,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Voyage } from 'src/app/models/voyage';
+import { voyage } from 'src/app/languages/en.messages';
 
 
 
@@ -106,8 +107,11 @@ export class VoyageComponent implements OnInit {
       let user: User = new User();
       let voyage: Voyage = new Voyage();
 
-      // UserID
-      voyage.userId = this.userService.userIdentity.id;
+      let userIdentity = this.userService.userIdentity;
+      if (user.role === 'BUQUE') {
+        // UserID
+        voyage.userId = this.userService.userIdentity.id;
+      }
 
       // Ejecuto todas las consultas para cargar datos segundarios
       forkJoin(
@@ -195,13 +199,89 @@ export class VoyageComponent implements OnInit {
 
     }
     else {
-
+      this.loadDataIndexedDB();
     }
   }
 
   // ==============  Funciones  AZLIST ====================
   public SelectVoyage(event: AzList): void {
     console.log('SelectVoyage(event: AzList)');
+  }
+
+  public ClickSelectUser(userId: number): void {
+    console.log('SelectUser(event: AzList)');
+    console.log(userId);
+
+    this.loadingService.Open();
+
+
+    // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
+    if (!!window.navigator.onLine) {
+
+      Promise.resolve(true).then(
+        () => {
+          // Syncronizamos los datos que falten sincronizar.
+          return this.databaseService.Sync();
+        }
+      ).then(
+        (result: boolean) => {
+          // Reportamos un error si no es el esperado.
+          if (!result) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
+
+          // Agregamos el usuario que se dese obtener datos de viajes.
+          let voyage = new Voyage();
+          voyage.userId = Number(userId);
+
+          // Obtenemos los datos del usuario.
+          return this.GetVoyages(voyage).pipe().toPromise();
+        }
+      ).then(
+        (result: boolean) => {
+          // Revizamos que los viajes sean los esperados.
+          if (!result) throw 'ERROR_GET_VOYAGES';
+
+          // Reseteamos los datos de la tabla viaje.
+          return this.databaseService.ClearVoyagesIndexedDB();
+        }
+      ).then(
+        (result: boolean) => {
+          if (!result) throw Error('Error limpiar la data Voyages.');
+
+          // Agregamos los viajes al IndexedDB
+          return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
+        }
+      ).then(
+        (result: boolean) => {
+          if (!result) throw Error('Error limpiar la data Voyages.');
+
+          return true;
+        }
+      ).then(
+        () => {
+          // Cargo la data en locla
+          this.loadDataIndexedDB();
+          this.loadingService.Close();
+        }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+    } else {
+
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'NEED_CONNECTION'));
+      // Deshabilito el spinner de loading
+      this.loadingService.Close();
+    }
+
   }
 
   public ClickNew() {
@@ -248,6 +328,7 @@ export class VoyageComponent implements OnInit {
 
   // Local Data
   private loadDataIndexedDB() {
+    console.log('loadDataIndexedDB()');
 
     Promise.resolve(true).then(
       () => {
@@ -258,7 +339,12 @@ export class VoyageComponent implements OnInit {
       (users: User[]) => {
         if (users.length > 0) {
 
-          this.getUsers = users;
+          // En la carga de data indexexDB cargo solo los buque.
+          this.getUsers = users.filter(
+            (user: User) => {
+              return user.role === 'BUQUE';
+            }
+          );
           // Generar lista por usuarios.
           this.generateAzListDropdownsByUsers(this.getUsers);
 
@@ -269,12 +355,13 @@ export class VoyageComponent implements OnInit {
       }
     ).then(
       () => {
-        // Obtenemos los datos del usuario.
+        // Obtenemos los viajes de IndexDB
         return this.databaseService.getVoyagesIndexDB(); // Revisar
       }
     ).then(
       (voyages: Voyage[]) => {
-        if (voyages.length > 0) {
+        // Los viajes pueden llegar vacio. solo si es array[] seria true.
+        if (voyages) {
 
           this.getVoyages = voyages;
           // Generar lista por usuarios.

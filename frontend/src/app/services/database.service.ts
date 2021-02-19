@@ -185,7 +185,7 @@ export class DatabaseService {
                     (user: User) => {
                         return user.status === true;
                     }
-                );
+                ).reverse();
 
             }
         );
@@ -351,7 +351,7 @@ export class DatabaseService {
                     (voyage: Voyage) => {
                         return voyage.status === true;
                     }
-                );
+                ).reverse();
 
             }
         );
