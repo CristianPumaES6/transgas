@@ -32,23 +32,26 @@ export class VoyagesController {
         // Inicio una promesa Dummy.
         return DummyPromise().then(
             (resultDummy: Boolean) => {
-                // Validamos que los datos sean los necesarios.
-                if (voyage && voyage.userId) {
 
-                    voyage.userId = Number(voyage.userId);
-                    return true;
-
+                if (voyage) {
+                    // Si no existe el user id tiene que ser admin o suppor para seguir
+                    if (!voyage.userId) {
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            return true;
+                        } else throw new Error('MISSING_FIELS');
+                    } else {
+                        // Validamos que el userId sea el mismo que el del token
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            // Nose hace nada
+                        } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                        return true;
+                    }
                 } else throw new Error('MISSING_FIELS');
+
 
             }
         ).then(
             (resultValidate: Boolean) => {
-
-                // Validamos que el userId sea el mismo que el del token
-                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    // ponemos null para que no haga filtro por usuario.
-                    voyage.userId = null;
-                } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener sailingAnalities.
                 return this._voyagesService.GetsDetails(voyage, page);
@@ -134,21 +137,25 @@ export class VoyagesController {
             (resultDummy: Boolean) => {
 
                 // Validamos que los datos sean los necesarios.
-                if (voyage && voyage.userId) {
-
-                    voyage.userId = Number(voyage.userId);
-                    return true;
-
+                if (voyage) {
+                    // Si no existe el user id tiene que ser admin o suppor para seguir
+                    if (!voyage.userId) {
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            return true;
+                        } else throw new Error('MISSING_FIELS');
+                    } else {
+                        // Validamos que el userId sea el mismo que el del token
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            // Nose hace nada
+                        } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                        return true;
+                    }
                 } else throw new Error('MISSING_FIELS');
+
 
             }
         ).then(
             (resultValidate: Boolean) => {
-
-                // Validamos que el userId sea el mismo que el del token
-                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    // No hacemos nada
-                } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener sailingAnalities.
                 return this._voyagesService.Gets(voyage, page);
