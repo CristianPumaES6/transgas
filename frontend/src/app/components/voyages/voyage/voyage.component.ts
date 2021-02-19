@@ -87,7 +87,7 @@ export class VoyageComponent implements OnInit {
     })
 
     // Seleccionalos al usuario logeado.
-    this.user = this.userService.userIdentity;
+    this.user = this.userService.GetIdentity();
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
 
