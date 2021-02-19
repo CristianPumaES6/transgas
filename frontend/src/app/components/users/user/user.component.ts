@@ -850,10 +850,10 @@ export class UserComponent implements OnInit {
       ).then(
         (userIndexedDB: User) => {
           // Verificamos el estado si es add que continue, caso contrario delete.
-          if (userIndexedDB.syncStatus !== 'added') {
-            userDelete.syncStatus = 'deleted';
+          if (userIndexedDB.syncStatus === 'added' || userIndexedDB.syncStatus === 'updated') {
+            //userDelete.syncStatus = 'deleted';
           } else {
-            userDelete.syncStatus = 'added';
+            userDelete.syncStatus = 'deleted';
             // Corregir todo con then
           }
 
