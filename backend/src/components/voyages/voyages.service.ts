@@ -23,7 +23,33 @@ export class VoyagesService {
     // Registra un nuevo viaje
     async Create(voyage: Voyage): Promise<Voyage> {
 
-        return await this.voyageRepository.save(voyage).then(
+
+        // Hacemos where por todos los campos de la entidad
+        return await this.voyageRepository.find({
+            where: [
+                // name && surname && nick && email
+                {
+                    userId: voyage.userId,
+                }
+            ],
+            take: 1,
+            order: {
+                voyageNumber: 'DESC',
+            }
+        }).then(
+            (result: Voyage[]) => {
+                // result length 
+                if (result && (result.length > 0)) {
+                    voyage.voyageNumber = Number(result[0].voyageNumber) + 1;
+                }
+                else {
+                    voyage.voyageNumber = 1;
+                };
+
+                // No lo validamos por que puede llegar vacio.
+                return this.voyageRepository.save(voyage)
+            }
+        ).then(
             (resultSave: Voyage) => {
                 // Validamos si encontro al usuario.
                 if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
@@ -69,7 +95,10 @@ export class VoyagesService {
                 }
             ],
             take: 5,
-            skip: 5 * (page - 5)
+            skip: 5 * (page - 5),
+            order: {
+                voyageNumber: 'DESC',
+            }
         }).then(
             (result: Voyage[]) => {
                 // No lo validamos por que puede llegar vacio.
@@ -78,7 +107,7 @@ export class VoyagesService {
         )
     }
 
-    
+
     // Retorna todos los viajes segun filtro.
     async GetsDetails(voyage: Voyage, page: number = 1): Promise<Voyage[]> {
 

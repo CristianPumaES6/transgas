@@ -187,7 +187,7 @@ export class VoyagesController {
     }
 
     @Post('create')
-    CreatePort(@Headers() headers, @Body() voyage: Voyage): Promise<any> {
+    CreateVoyage(@Headers() headers, @Body() voyage: Voyage): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
