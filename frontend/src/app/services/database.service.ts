@@ -161,9 +161,11 @@ export class DatabaseService {
 
         for (const iVoyage of deleteVoyages) {
             let resultDelete: Voyage;
+
             resultDelete = await this.voyageService.Delete(iVoyage).pipe().toPromise();
+
             // Actualizamos el syncStatus a none.
-            await this.db.users.update(iVoyage.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
+            await this.db.voyages.update(iVoyage.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
         }
 
 
@@ -425,7 +427,8 @@ export class DatabaseService {
                 syncStatus: voyage.syncStatus
             }
         ).then((result: boolean) => {
-            return user;
+
+            return voyage;
         });
     }
 
