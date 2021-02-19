@@ -239,9 +239,8 @@ export class VoyageComponent implements OnInit {
         (resultUser: User) => {
 
           if (!resultUser) throw 'ERROR_GET_USER_NO_FOUND';
-          debugger
+
           this.user = resultUser;
-          debugger
           // Agregamos el usuario para el filtro de viaje.
           let voyage = new Voyage();
           voyage.userId = Number(this.user.id);
@@ -303,7 +302,7 @@ export class VoyageComponent implements OnInit {
     console.log('ClickNew(event: AzList)');
 
     let newVoyage = new Voyage();
-    debugger
+
     newVoyage.userId = this.user.id;
     if (this.getVoyages && this.getVoyages.length > 0) { newVoyage.voyageNumber = this.getVoyages[0].voyageNumber + 1; }
     else { newVoyage.voyageNumber = 1; };
