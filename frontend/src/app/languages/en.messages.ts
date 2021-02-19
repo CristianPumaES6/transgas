@@ -55,7 +55,6 @@ export const logIn: any = {
     SUB_TITLE_PRINCIPAL: 'SAILING ANALYSIS',
     WELCOME_LOGIN: 'Welcome back!',
     PLEASE_SING_LOGIN: 'Please sign in to continue.',
-
     // Formulario
     USERNAME: 'Username',
     PASSWORD: 'Password',
@@ -66,7 +65,6 @@ export const logIn: any = {
     ERROR_CONNECTION: 'Could not connect to server',
     CANNOT_REACH_SERVER: 'Could not connect to server.',
     ERROR_ON_GENERAL: 'He encountered an unexpected error, contact us at: labcode.team.lt@gmail.com ',
-
     // Personalize
     SUCCESS_LOGIN: 'Welcome {{NAME}}',
     LOGIN_FAILED: 'The username or password entered is not valid.',
@@ -124,7 +122,6 @@ export const user: any = {
     SUCCESS_USER_DELETE_LOCAL: 'User successfully deleted local.',
     COMFIMR_DELETE_TITLE_REPLACE: 'Are you sure you want to delete [NAME]?',
     COMFIRM_DELETE_DESCRIPTION: 'The changes are irreversible.',
-
     // CAMPOS
     MIN_SPEED: 'Min speed',
     MAX_SPEED: 'Max speed',
@@ -161,15 +158,46 @@ export const user: any = {
     DATA_MGO: 'Data MGO',
     DATA_IFO: 'Data IFO',
     DATA_LSFO: 'Data LSFO',
-    VESSEL_PERFORMANCE_LSFO:'Vessel Performance LSFO',
-    VESSEL_PERFORMANCE_IFO:'Vessel Performance IFO',
-    VESSEL_PERFORMANCE_MGO:'Vessel Performance MGO',
-
+    VESSEL_PERFORMANCE_LSFO: 'Vessel Performance LSFO',
+    VESSEL_PERFORMANCE_IFO: 'Vessel Performance IFO',
+    VESSEL_PERFORMANCE_MGO: 'Vessel Performance MGO',
 };
 
 export const fileUpload: any = {
     ERROR: 'Error',
     SUCCESS: 'Success',
     ERROR_UPLOAD_IMAGE: 'Image could not be updated.',
-    SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.'
+    SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.',
+}
+
+export const voyage: any = {
+    // Registro de viajes
+    VOYAGE_REGISTER: 'Travel Record',
+    NEW_VOYAGE: 'New voyage',
+    SELECT_BUQUE: 'Select Buque',
+    // Errores personalizados
+    ERROR_GET_USERS: 'Could not get user data.',
+    ERROR_GET_VOYAGES: 'Cound not get voyage data.',
+    // Error comun indexedDB
+    ERROR_SYNC_INDEXEDDB_IN_ONLINE: 'Failed to sync Data, UPDATE in server.',
+    ERROR_UPDATE_INDEXEDDB_IN_ONLINE: 'Error updating the data in indexDB in online.',
+    ERROR_CLEAR_INDEXEDDB: 'Failed to clear User indexBD',
+    ERROR_ADD_USER_INDEXEDDB: 'ERROR_ADD_USER_INDEXEDDB',
+    ERROR: 'Error',
+    INFO: 'Info',
+    SUCCESS: 'Success',
+    WARNING: 'Warning',
+    ERROR_ON_LOAD: 'Could not get data from server.',
+    NEED_CONNECTION: 'You Need internet connection.',
+    ERROR_GET_USER_NO_FOUND: 'The user was not found.',
+    SUCCESS_VOYAGE_CREATE: 'Voyage created successfully.',
+    ERROR_VOYAGE_CREATE: 'Could not create voyage.',
+    SUCCESS_VOYAGE_CREATE_LOCAL: 'Voyage successfully created local.',
+    ERROR_VOYAGE_CREATE_LOCAL: 'Could not create voyage local.',
+    COMFIMR_DELETE_TITLE_REPLACE: 'Are you sure you want to delete the voyage [VOYAGE]?',
+    COMFIRM_DELETE_DESCRIPTION: 'The changes are irreversible.',
+    SUCCESS_VOYAGE_DELETE: 'Voyage deleted successfully.',
+    SUCCESS_VOYAGE_DELETE_LOCAL: 'Voyage successfully deleted local.',
+    ERROR_VOYAGE_DELETE: 'Could not delete voyage.',
+    ERROR_VOYAGE_DELETE_LOCAL: 'Could not delete voyage local.',
 }
