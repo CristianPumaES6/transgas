@@ -101,7 +101,14 @@ export class UsersController {
                     // Ejecutamos el servicio de obtener sailingAnalities.
                     return this._usersService.Gets(user);
 
-                } else throw new Error('MISSING_FIELS');
+                } else {
+                    if (Number(user.id) === Number(headerToken.id)) {
+                        // Ejecutamos el servicio de obtener sailingAnalities.
+                        return this._usersService.Gets(user);
+                    } else {
+                        throw new Error('MISSING_FIELS');
+                    }
+                }
 
             }
         ).then(

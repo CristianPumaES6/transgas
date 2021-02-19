@@ -52,6 +52,7 @@ export class UsersService {
             where: [
                 // name && surname && nick && email
                 {
+                    id: (user.id || Like('%' + '%')),
                     nick: Like('%' + (user.nick || '') + '%'),
                     name: Like('%' + (user.name || '') + '%'),
                     role: Like('%' + (user.role || '') + '%'),

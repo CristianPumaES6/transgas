@@ -43,7 +43,7 @@ export class VoyagesController {
                         // Validamos que el userId sea el mismo que el del token
                         if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                             // Nose hace nada
-                        } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                        } else if ((Number(voyage.userId) !== Number(headerToken.id))) throw new Error('ERROR_USERID_FAIL');
                         return true;
                     }
                 } else throw new Error('MISSING_FIELS');
@@ -147,7 +147,7 @@ export class VoyagesController {
                         // Validamos que el userId sea el mismo que el del token
                         if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                             // Nose hace nada
-                        } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                        } else if (Number(voyage.userId) !== Number(headerToken.id)) throw new Error('ERROR_USERID_FAIL');
                         return true;
                     }
                 } else throw new Error('MISSING_FIELS');
