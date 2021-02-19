@@ -11,11 +11,15 @@ import { LanguageService } from '../../../services/language.service';
 import { ASideService } from '../../../services/a-side.service'
 
 // Componentes Dependencias
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
+import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 
 // Librerias
 import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import PerfectScrollbar from 'perfect-scrollbar';
 
 // Models
 import { SettingAzList, azListDropdown, AzList } from '../../../models/azlist';
@@ -24,11 +28,7 @@ import { User } from '../../../models/user';
 // Services
 import { DatabaseService } from '../../../services/database.service';
 import { UserService } from '../../../services/user.service';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
-import PerfectScrollbar from 'perfect-scrollbar';
 
 @Component({
   selector: 'app-user',
@@ -407,6 +407,7 @@ export class UserComponent implements OnInit {
   }
 
   public ClickDeleteUser(event: AzList) {
+    console.log('ClickDeleteUser(event: AzList)');
 
     // Buscamos el usuario que se desea eliminar.
     let userDelete: User = this.user = this.getUsers.find(
