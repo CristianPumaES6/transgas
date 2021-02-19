@@ -1,1 +1,22 @@
-<p>voyage works!</p>
+<div class="container-fluid pr-4 pt-4 pl-4 pb-0">
+
+  <div class="az-content-left az-content-left-contacts">
+
+    <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" [azListDropdowns]="azListDropdowns" (eSelectAzList)="SelectVoyage($event)"
+      (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDeleteVoyage($event)"></app-az-list>
+
+  </div><!-- az-content-left -->
+
+
+  <div class="az-content-body az-content-body-contacts">
+
+    <div class="az-contact-info-header">
+      <div class="media">
+      </div>
+    </div><!-- az-contact-info-header -->
+    <div class="az-contact-info-body">
+    </div>
+
+  </div>
+
+</div>
