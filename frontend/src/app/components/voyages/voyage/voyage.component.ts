@@ -26,6 +26,7 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Voyage } from 'src/app/models/voyage';
 import { voyage } from 'src/app/languages/en.messages';
+import { getYear } from 'src/assets/moment/moment.assets';
 
 
 
@@ -50,7 +51,7 @@ export class VoyageComponent implements OnInit {
   public azListDropdowns: azListDropdown[] = [];
 
   // Data
-  // Lista de los datos del usuario
+  // Usuario seleccionado
   public user: User = new User();
   // Lista de los datos del usuario
   public getUsers: User[] = [];
@@ -85,13 +86,15 @@ export class VoyageComponent implements OnInit {
       suppressScrollX: true
     })
 
+    // Seleccionalos al usuario logeado.
+    this.user = this.userService.userIdentity;
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
 
     // Configuracion AzList
     this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
     this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGE_REGISTER');
-    this.SettingAzList.isNew = true;
+    this.SettingAzList.isNew = this.roleUser === 'BUQUE' ? true : false;
     this.SettingAzList.isBack = false;
     this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
     this.SettingAzList.toolTipBack = ''
@@ -103,14 +106,15 @@ export class VoyageComponent implements OnInit {
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
-      // Instanciamos el obj que usaremos.
-      let user: User = new User();
       let voyage: Voyage = new Voyage();
+      let user: User = new User();
 
-      let userIdentity = this.userService.userIdentity;
-      if (user.role === 'BUQUE') {
-        // UserID
-        voyage.userId = this.userService.userIdentity.id;
+      // Si el usuario es un buque lo filtramos.
+      if (this.user.role === 'BUQUE') {
+        voyage.userId = this.user.id;
+        user.id = this.user.id;
+      } else {
+        user.id = this.user.id;
       }
 
       // Ejecuto todas las consultas para cargar datos segundarios
@@ -211,6 +215,7 @@ export class VoyageComponent implements OnInit {
   public ClickSelectUser(userId: number): void {
     console.log('SelectUser(event: AzList)');
     console.log(userId);
+    userId = Number(userId);
 
     this.loadingService.Open();
 
@@ -228,9 +233,19 @@ export class VoyageComponent implements OnInit {
           // Reportamos un error si no es el esperado.
           if (!result) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
 
-          // Agregamos el usuario que se dese obtener datos de viajes.
+          return this.databaseService.getUserIndexDB(userId);
+        }
+      ).then(
+        (resultUser: User) => {
+
+          if (!resultUser) throw 'ERROR_GET_USER_NO_FOUND';
+          debugger
+          this.user = resultUser;
+          debugger
+          // Agregamos el usuario para el filtro de viaje.
           let voyage = new Voyage();
-          voyage.userId = Number(userId);
+          voyage.userId = Number(this.user.id);
+          this.SettingAzList.isNew = this.user.role === 'BUQUE' ? true : false;
 
           // Obtenemos los datos del usuario.
           return this.GetVoyages(voyage).pipe().toPromise();
@@ -286,6 +301,103 @@ export class VoyageComponent implements OnInit {
 
   public ClickNew() {
     console.log('ClickNew(event: AzList)');
+
+    let newVoyage = new Voyage();
+    debugger
+    newVoyage.userId = this.user.id;
+    if (this.getVoyages && this.getVoyages.length > 0) { newVoyage.voyageNumber = this.getVoyages[0].voyageNumber + 1; }
+    else { newVoyage.voyageNumber = 1; };
+    newVoyage.year = Number(getYear());
+    newVoyage.status = true;
+
+
+    // Verificamos si estamos en linea
+    if (!!window.navigator.onLine) {
+
+      this.voyageService.Create(newVoyage).subscribe(
+        (resultCreate: Voyage) => {
+
+          // Actualizamos el nuevo viaje con el resultado.
+          newVoyage = resultCreate;
+
+          // armamos el obj Azlist
+          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '');
+
+          // Se lo agregamos asus arreglos correspondientes.
+          this.azLists.unshift(azList);
+          this.getVoyages.unshift(newVoyage);
+          this.databaseService.addVoyageIndexedDB(newVoyage);
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE'));
+
+          // Inicializamos los datos.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          return true;
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_CREATE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    } else {
+
+      // Le agregamos un stado Sync
+      newVoyage.syncStatus = 'added';
+      delete newVoyage.id;
+
+      Promise.resolve(true).then(
+        () => {
+          // Agregamos el voyage al indexedDB.
+          return this.databaseService.addVoyageIndexedDB(newVoyage);
+        }
+      ).then(
+        (resultUserIndexedDB: Voyage) => {
+
+          newVoyage = resultUserIndexedDB;
+
+          // armamos el obj Azlist
+          let azList = new AzList(voyage.id, 'Voyage' + voyage.year + '-' + voyage.voyageNumber, '', '');
+
+          // Se lo agregamos asus arreglos correspondientes.
+          this.azLists.unshift(azList);
+          this.getVoyages.unshift(newVoyage);
+
+          // vuelvo a cargar los datos de incio del token.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_CREATE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
   }
 
 
@@ -374,7 +486,7 @@ export class VoyageComponent implements OnInit {
       }
     ).then(
       (result: boolean) => {
-        this.user = new User();
+
         this.disableEdit = true;
 
         // Inicializo el SailingAnality

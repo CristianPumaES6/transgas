@@ -723,9 +723,9 @@ export class UserComponent implements OnInit {
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_CREATE'));
 
           // Lo agrego al arreglo.
-          this.getUsers.push(result);
+          this.getUsers.unshift(result);
 
-          this.azLists.push(new AzList(result.id, result.name, result.role, result.filename));
+          this.azLists.unshift(new AzList(result.id, result.name, result.role, result.filename));
 
           this.databaseService.addUserIndexedDB(result);
 
@@ -761,9 +761,9 @@ export class UserComponent implements OnInit {
         (resultUserIndexedDB: User) => {
 
           // Lo agrego al arreglo.
-          this.getUsers.push(resultUserIndexedDB);
+          this.getUsers.unshift(resultUserIndexedDB);
 
-          this.azLists.push(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, resultUserIndexedDB.filename));
+          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, resultUserIndexedDB.filename));
 
           // vuelvo a cargar los datos de incio del token.
           this.InitializeUser();
