@@ -4,7 +4,7 @@
 
     <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" [azListDropdowns]="azListDropdowns"
       (eSelectAzList)="SelectVoyage($event)" (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDeleteVoyage($event)"
-      (eSelectDropdown)="ClickSelectUser($event)">
+      (eSelectDropdown)="ClickSelectUser($event)" (eSelectDelete)="ClickDelete($event)">
     </app-az-list>
 
   </div><!-- az-content-left -->

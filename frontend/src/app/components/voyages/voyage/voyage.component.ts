@@ -27,6 +27,8 @@ import { DatabaseService } from 'src/app/services/database.service';
 import { Voyage } from 'src/app/models/voyage';
 import { voyage } from 'src/app/languages/en.messages';
 import { getYear } from 'src/assets/moment/moment.assets';
+import { DialogData, DialogDeleteComponent } from 'src/app/shared/dialog/delete/dialog-delete.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 
@@ -71,6 +73,7 @@ export class VoyageComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -308,100 +311,44 @@ export class VoyageComponent implements OnInit {
     newVoyage.year = Number(getYear());
     newVoyage.status = true;
 
+    this.CreateVoyageOnlineOffline(newVoyage);
 
-    // Verificamos si estamos en linea
-    if (!!window.navigator.onLine) {
-
-      this.voyageService.Create(newVoyage).subscribe(
-        (resultCreate: Voyage) => {
-
-          // Actualizamos el nuevo viaje con el resultado.
-          newVoyage = resultCreate;
-
-          // armamos el obj Azlist
-          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '');
-
-          // Se lo agregamos asus arreglos correspondientes.
-          this.azLists.unshift(azList);
-          this.getVoyages.unshift(newVoyage);
-          this.databaseService.addVoyageIndexedDB(newVoyage);
-
-          // Muestro notificación
-          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE'));
-
-          // Inicializamos los datos.
-          this.Initialize();
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-
-          return true;
-        },
-        error => {
-          // Valido si viene un mensaje de error
-          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_CREATE');
-
-          // Muestro notificación
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
-
-    } else {
-
-      // Le agregamos un stado Sync
-      newVoyage.syncStatus = 'added';
-      delete newVoyage.id;
-
-      Promise.resolve(true).then(
-        () => {
-          // Agregamos el voyage al indexedDB.
-          return this.databaseService.addVoyageIndexedDB(newVoyage);
-        }
-      ).then(
-        (resultUserIndexedDB: Voyage) => {
-
-          newVoyage = resultUserIndexedDB;
-
-          // armamos el obj Azlist
-          let azList = new AzList(voyage.id, 'Voyage' + voyage.year + '-' + voyage.voyageNumber, '', '');
-
-          // Se lo agregamos asus arreglos correspondientes.
-          this.azLists.unshift(azList);
-          this.getVoyages.unshift(newVoyage);
-
-          // vuelvo a cargar los datos de incio del token.
-          this.Initialize();
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-
-          // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE_LOCAL'));
-
-        }
-      ).catch(
-        error => {
-          // Valido si viene un mensaje de error
-          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_CREATE_LOCAL');
-
-          // Muestro notificación
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
-
-    }
   }
-
 
   public ClickDeleteVoyage(event: AzList) {
     console.log('ClickDeleteVoyage(event: AzList)');
 
+  }
+
+  public ClickDelete(event: AzList) {
+    console.log('ClickDelete(event: AzList)');
+
+
+    // Buscamos el usuario que se desea eliminar.
+    let voyageDelete: Voyage = this.getVoyages.find(
+      (voyage: Voyage) => {
+        return Number(voyage.id) === Number(event.id);
+      }
+    );
+
+    let dialogData: DialogData = {
+      color: "warning",
+      icon: "icon-delete",
+      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[VOYAGE]', voyageDelete.year + '-' + voyageDelete.voyageNumber),
+      mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
+    };
+
+    const dialogRef = this.dialog.open(DialogDeleteComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+          this.DeleteVoyageOnlineOffline(voyageDelete);
+        }
+      });
   }
 
   // Azlist
@@ -545,6 +492,214 @@ export class VoyageComponent implements OnInit {
     ));
   }
 
+  private CreateVoyageOnlineOffline(newVoyage: Voyage) {
+
+    // Verificamos si estamos en linea
+    if (!!window.navigator.onLine) {
+
+      this.voyageService.Create(newVoyage).subscribe(
+        (resultCreate: Voyage) => {
+
+          // Actualizamos el nuevo viaje con el resultado.
+          newVoyage = resultCreate;
+
+          // armamos el obj Azlist
+          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '');
+
+          // Se lo agregamos asus arreglos correspondientes.
+          this.azLists.unshift(azList);
+          this.getVoyages.unshift(newVoyage);
+          this.databaseService.addVoyageIndexedDB(newVoyage);
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE'));
+
+          // Inicializamos los datos.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          return true;
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_CREATE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    } else {
+
+      // Le agregamos un stado Sync
+      newVoyage.syncStatus = 'added';
+      delete newVoyage.id;
+
+      Promise.resolve(true).then(
+        () => {
+          // Agregamos el voyage al indexedDB.
+          return this.databaseService.addVoyageIndexedDB(newVoyage);
+        }
+      ).then(
+        (resultUserIndexedDB: Voyage) => {
+
+          newVoyage = resultUserIndexedDB;
+
+          // armamos el obj Azlist
+          let azList = new AzList(voyage.id, 'Voyage' + voyage.year + '-' + voyage.voyageNumber, '', '');
+
+          // Se lo agregamos asus arreglos correspondientes.
+          this.azLists.unshift(azList);
+          this.getVoyages.unshift(newVoyage);
+
+          // vuelvo a cargar los datos de incio del token.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_CREATE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
+  }
+
+  private DeleteVoyageOnlineOffline(voyageDelete: Voyage) {
+
+    if (!!window.navigator.onLine) {
+
+      // Guardo el objeto obtenido
+      this.voyageService.Delete(voyageDelete).subscribe(
+        (result: Voyage) => {
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_DELETE'));
+
+          // La siguiente linea de codigo eliminara un objeto del array.
+          this.getVoyages = this.getVoyages.filter(
+            (voyage: Voyage) => {
+              if (Number(voyage.id) === Number(result.id)) {
+                return false;
+              }
+              return true;
+            }
+          )
+          this.azLists = this.azLists.filter(
+            azList => {
+              if (Number(azList.id) === Number(result.id)) {
+                return false;
+              }
+              return true;
+            }
+          );
+
+          // Revisar como llega el usuario y si viaja en false.
+          this.databaseService.updateVoyageIndexedDB(result);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // vuelvo a cargar los datos de incio del token.
+          this.Initialize();
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_DELETE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
+
+    } else {
+
+      Promise.resolve(true).then(
+        () => {
+          // Consultamos al userIndexDB para saber el estado del sync.
+          return this.databaseService.getVoyageIndexDB(voyageDelete.id);
+        }
+      ).then(
+        (voyageIndexedDB: Voyage) => {
+          // Verificamos el estado si es add que continue, caso contrario delete.
+          if (voyageIndexedDB.syncStatus === 'added' || voyageIndexedDB.syncStatus === 'updated') {
+
+          } else {
+            voyageDelete.syncStatus = 'deleted';
+          }
+
+          // le seteo el password por defecto y el estado a false.
+          voyageDelete.status = false;
+
+          // Actualizo el voyage con el estado en False.
+          return this.databaseService.updateVoyageIndexedDB(voyageDelete);
+        }
+      ).then(
+        (resultUpdate: Voyage) => {
+
+          // Elimino el usuario del arreglo.
+          this.getVoyages = this.getVoyages.filter(
+            (voyage: Voyage) => {
+              if (Number(voyage.id) === Number(resultUpdate.id)) {
+                return false;
+              }
+              return true;
+            }
+          );
+          this.azLists = this.azLists.filter(
+            azList => {
+              if (Number(azList.id) === Number(resultUpdate.id)) {
+                return false;
+              }
+              return true;
+            }
+          )
+          // Inicializo los datos.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_DELETE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_VOYAGE_DELETE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
+
+  }
   // Funciones para inicializar datos //
   //////////////////////////////////////
   // InitializeUser() : Iniziliza el objeto SailingAnality.
