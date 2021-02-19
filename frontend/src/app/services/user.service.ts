@@ -105,7 +105,7 @@ export class UserService {
 
     GetUsers(user: User): Observable<User[]> {
         // Armo el request
-        let url: string = this.url + '/users?id=' + this.userIdentity.id + '&name=' + user.name + '&role=' + user.role;
+        let url: string = this.url + '/users?id=' + (user.id || '') + '&name=' + (user.name || '') + '&role=' + (user.role || '');
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
