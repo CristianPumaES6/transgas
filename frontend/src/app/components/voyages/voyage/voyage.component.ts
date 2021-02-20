@@ -148,7 +148,6 @@ export class VoyageComponent implements OnInit {
           }
         ), mergeMap(
           (result: boolean) => {
-
             // Revisamos si el result es el esperado.
             if (!result) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
 
@@ -174,8 +173,17 @@ export class VoyageComponent implements OnInit {
           }
         ), mergeMap(
           (result: boolean) => {
+
             // Revisamos si el result es el esperado.
             if (!result) throw 'ERROR_CLEAR_INDEXEDDB';
+
+            // Hacemos Clear a la Tabla Users
+            return this.databaseService.ClearPortsIndexedDB();
+          }
+        ), mergeMap(
+          (result: boolean) => {
+            // Revisamos si el result es el esperado.
+            if (!result) throw '';
 
             // Agregamos los usuarios al indexedDB
             return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
