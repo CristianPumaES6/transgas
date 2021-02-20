@@ -38,10 +38,10 @@ export class DatabaseService {
         console.log('createDatabase()');
 
         this.db = new Dexie('TransgasDatabase');
-        this.db.version(2).stores({
+        this.db.version(1).stores({
             users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
             voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
-            ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus,'
+            ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
         });
 
     }
@@ -446,13 +446,17 @@ export class DatabaseService {
     public async addVoyageIndexedDB(voyage: Voyage): Promise<Voyage> {
         console.log('addVoyageIndexedDB(voyage: Voyage)');
 
-        return await this.db.voyages
+        await this.db.voyages
             .add(voyage).then(
                 (voyageId: number) => {
                     voyage.id = voyageId;
 
                     return voyage;
                 });
+
+        await this.addPortsIndexedDB(voyage.ports);
+
+        return voyage;
     }
 
     // Agregar Voyages por indexedDB
@@ -570,7 +574,10 @@ export class DatabaseService {
 
             // for await
             for (const iPort of ports) {
-                await this.addPortIndexedDB(iPort);
+
+                if (Boolean(iPort.status) === true) {
+                    await this.addPortIndexedDB(iPort);
+                }
             }
 
         } else {
@@ -612,7 +619,7 @@ export class DatabaseService {
         });
     }
 
-    public async ClearVPortsIndexedDB(): Promise<boolean> {
+    public async ClearPortsIndexedDB(): Promise<boolean> {
         console.log('ClearVPortsIndexedDB()')
 
         return await this.db.ports.clear().then(
