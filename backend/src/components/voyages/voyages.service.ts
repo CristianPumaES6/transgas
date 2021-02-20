@@ -169,19 +169,7 @@ export class VoyagesService {
     // Elimina a un voyage por id
     async Delete(voyage: Voyage): Promise<Voyage> {
         // Eliminamos de la base de dato al usuario.
-        return await this.voyageRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                { id: voyage.id }
-            ]
-        }).then(resultFind => {
-            // Validamos si encontro al usuario.
-            if (!resultFind) throw new Error('voyage_does_not_exist');
-
-            resultFind.status = false;
-            // verificamos que el email no este en uso, recordemos que el email es unico.
-            return this.voyageRepository.update(voyage.id, resultFind);
-        }).then(
+        return await this.voyageRepository.update(voyage.id, voyage).then(
             resultSave => {
 
                 // Validamos si encontro al usuario.
