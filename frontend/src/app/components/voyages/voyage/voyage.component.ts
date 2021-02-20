@@ -54,7 +54,7 @@ export class VoyageComponent implements OnInit {
 
   // Data
   // Usuario seleccionado
-  public user: User = new User();
+  public selectUser: User = new User();
   // Lista de los datos del usuario
   public getUsers: User[] = [];
 
@@ -90,7 +90,7 @@ export class VoyageComponent implements OnInit {
     })
 
     // Seleccionalos al usuario logeado.
-    this.user = this.userService.GetIdentity();
+    this.selectUser = this.userService.GetIdentity();
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
 
@@ -113,9 +113,9 @@ export class VoyageComponent implements OnInit {
       let user: User = new User();
 
       // Si el usuario es un buque lo filtramos.
-      if (this.user.role === 'BUQUE') {
-        voyage.userId = this.user.id;
-        user.id = this.user.id;
+      if (this.selectUser.role === 'BUQUE') {
+        voyage.userId = this.selectUser.id;
+        user.id = this.selectUser.id;
       } else {
       }
 
@@ -125,7 +125,7 @@ export class VoyageComponent implements OnInit {
           // Traigo a todos los User y lo instancio en el obj.
           this.GetUsers(user),
           // Traigo a todos los User y lo instancio en el obj.
-          this.GetVoyages(voyage)
+          this.GetVoyagesDetail(voyage)
         ]
       ).pipe(
         mergeMap(
@@ -242,14 +242,14 @@ export class VoyageComponent implements OnInit {
 
           if (!resultUser) throw 'ERROR_GET_USER_NO_FOUND';
 
-          this.user = resultUser;
+          this.selectUser = resultUser;
           // Agregamos el usuario para el filtro de viaje.
           let voyage = new Voyage();
-          voyage.userId = Number(this.user.id);
-          this.SettingAzList.isNew = this.user.role === 'BUQUE' ? true : false;
+          voyage.userId = Number(this.selectUser.id);
+          this.SettingAzList.isNew = this.selectUser.role === 'BUQUE' ? true : false;
 
           // Obtenemos los datos del usuario.
-          return this.GetVoyages(voyage).pipe().toPromise();
+          return this.GetVoyagesDetail(voyage).pipe().toPromise();
         }
       ).then(
         (result: boolean) => {
@@ -305,7 +305,7 @@ export class VoyageComponent implements OnInit {
 
     let newVoyage = new Voyage();
 
-    newVoyage.userId = this.user.id;
+    newVoyage.userId = this.selectUser.id;
     if (this.getVoyages && this.getVoyages.length > 0) { newVoyage.voyageNumber = this.getVoyages[0].voyageNumber + 1; }
     else { newVoyage.voyageNumber = 1; };
     newVoyage.year = Number(getYear());
@@ -476,7 +476,7 @@ export class VoyageComponent implements OnInit {
     ));
   }
 
-  private GetVoyages(voyage: Voyage): Observable<boolean> {
+  private GetVoyagesDetail(voyage: Voyage): Observable<boolean> {
     console.log('GetVoyages(voyage: Voyage)');
 
     // Consulto la lista de paises para cargar combo
