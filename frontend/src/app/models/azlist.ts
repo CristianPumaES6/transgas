@@ -10,7 +10,17 @@ export class SettingAzList {
         public toolTipBack?: string,
         public activateDropDown?: boolean,
         public placeholderDropdown?: string,
-        public activateOptionDelete?: boolean
+        public activateOptionDelete?: boolean,
+        // Select Item
+        public activateSelectItemEmit2?: Boolean,
+        public toolTipSelectItemEmit2?: string,
+        public iconSelectItemEmit2?: string,
+        public dataSelectItemEmit2?: string,
+        public activateSelectItemEmit3?: Boolean,
+        public toolTipSelectItemEmit3?: string,
+        public iconSelectItemEmit3?: string,
+        public dataSelectItemEmit3?: string,
+
     ) {
         this.azListBreadcrumbs = azListBreadcrumbs || [];
         this.titleAzLists = titleAzLists || '';
@@ -21,6 +31,14 @@ export class SettingAzList {
         this.activateDropDown = activateDropDown || false;
         this.placeholderDropdown = placeholderDropdown || '';
         this.activateOptionDelete = activateOptionDelete || false;
+        this.activateSelectItemEmit2 = activateSelectItemEmit2 || false;
+        this.toolTipSelectItemEmit2 = toolTipSelectItemEmit2 || '';
+        this.iconSelectItemEmit2 = iconSelectItemEmit2 || '';
+        this.dataSelectItemEmit2 = dataSelectItemEmit2 || '';
+        this.activateSelectItemEmit3 = activateSelectItemEmit3 || false;
+        this.toolTipSelectItemEmit3 = toolTipSelectItemEmit3 || '';
+        this.iconSelectItemEmit3 = iconSelectItemEmit3 || '';
+        this.dataSelectItemEmit3 = dataSelectItemEmit3 || '';
     }
 
 }
@@ -41,10 +59,14 @@ export class AzList {
         public name?: string,
         public surname?: string,
         public image?: string,
+        public item1?: string,
+        public item2?: string
     ) {
         this.id = id || null;
         this.name = name || '';
         this.surname = surname || '';
         this.image = image || '';
+        this.item1 = item1 || '';
+        this.item2 = item2 || '';
     }
 }

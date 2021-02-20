@@ -22,12 +22,12 @@ export class AzListComponent implements OnInit {
   // Lista de Dropdowns.
   @Input()
   public azListDropdowns: azListDropdown[] = [];
-
   // Arreglo de item para el listado.
   @Input()
   public azLists: AzList[] = [];
   // Esta variable servira para almacenar el item seleccionado.
   public selectAzList: AzList = new AzList();
+
 
   // opcion para agregar un nuevo item
   @Output()
@@ -46,6 +46,10 @@ export class AzListComponent implements OnInit {
   @Output()
   public eSelectDelete = new EventEmitter<AzList>();
 
+  @Output()
+  public eSelectItemEmit2 = new EventEmitter<AzList>();
+  @Output()
+  public eSelectItemEmit3 = new EventEmitter<AzList>();
 
   constructor(
     private languageService: LanguageService,
@@ -54,8 +58,7 @@ export class AzListComponent implements OnInit {
   ngOnInit(): void {
     new PerfectScrollbar('#azContactList', {
       suppressScrollX: true
-    })
-
+    });
   }
 
   // Emitimos una accion.
@@ -65,6 +68,7 @@ export class AzListComponent implements OnInit {
     this.eSelectNew.emit();
     return false;
   }
+
   // Emitimos una accion.
   public OnSelectBack(): boolean {
     console.log('OnSelectBack()');
@@ -72,6 +76,7 @@ export class AzListComponent implements OnInit {
     this.eSelectBack.emit();
     return false;
   }
+
   // Emitimas al seleccionar una opcion de Dropdown
   public OnSelectDropdown(): boolean {
     console.log('OnSelectDropdown()');
@@ -79,6 +84,7 @@ export class AzListComponent implements OnInit {
     this.eSelectDropdown.emit(this.selectAzSelectDropdown)
     return false;
   }
+
   // Emitimos al seleccionarun item de la lista
   public OnSelectAzList(azList: AzList): boolean {
     console.log('OnSelectAzList(azList: AzList)');
@@ -89,6 +95,34 @@ export class AzListComponent implements OnInit {
     this.eSelectAzList.emit(this.selectAzList);
     return false;
   }
+
+  // Esta funcion sirve para agregarun reporte
+  public OnSelectItemEmit2(azList: AzList): boolean {
+    console.log('OnSelectItemEmit2(azList: AzList)');
+
+    // Guardamos el objeto seleccionado.
+    this.selectAzList = azList;
+
+    // Emitimos el valor al componente padre.
+    this.eSelectItemEmit2.emit(this.selectAzList);
+
+    return false;
+  }
+
+  // Esta funcion sirve para agregarun reporte
+  public OnSelectItemEmit3(azList: AzList): boolean {
+    console.log('OnSelectItemEmit3(azList: AzList)');
+    
+
+    // Guardamos el objeto seleccionado.
+    this.selectAzList = azList;
+
+    // Emitimos el valor al componente padre.
+    this.eSelectItemEmit3.emit(this.selectAzList);
+
+    return false;
+  }
+
   // Emitimos al dar click a la opcion eliminar
   public OnSelectDelete(azList: AzList): boolean {
     console.log('OnSelectDelete(azList: AzList)');
@@ -100,4 +134,5 @@ export class AzListComponent implements OnInit {
 
     return false;
   }
+
 }

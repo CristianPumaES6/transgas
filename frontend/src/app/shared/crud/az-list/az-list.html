@@ -65,6 +65,26 @@
         <span class="phone" class="mg-0">{{azList.surname}}</span>
       </div><!-- az-contact-body -->
 
+      <ng-template [ngIf]="settingAzList.activateSelectItemEmit2">
+        <span class="float-right">
+          <span id="OnSelectContactItem2" (click)="OnSelectItemEmit2(azList)"
+            matTooltip="{{settingAzList.toolTipSelectItemEmit2}}">
+            {{azList.item2}}
+            <i class="{{settingAzList.iconSelectItemEmit2}}"></i>
+          </span>
+        </span>
+      </ng-template>
+
+      <ng-template [ngIf]="settingAzList.activateSelectItemEmit3">
+        <span class="float-right mr-2">
+          <span id="OnSelectItemEmit3" (click)="OnSelectItemEmit3(azList)"
+            matTooltip="{{settingAzList.toolTipSelectItemEmit3}}">
+            {{azList.item3}}
+            <i class="{{settingAzList.iconSelectItemEmit3}}"></i>
+          </span>
+        </span>
+      </ng-template>
+
 
       <a *ngIf="settingAzList.activateOptionDelete" href="" class="az-contact-star" (click)="OnSelectDelete(azList)">
         <i class="icon-delete"></i>
