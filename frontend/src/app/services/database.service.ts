@@ -7,10 +7,12 @@ import { User } from '../models/user';
 
 // Online service
 import { UserService } from '../services/user.service';
-import { Mapping } from '../models/mapping';
+import { Mapping, searchKey } from '../models/mapping';
 import { user, voyage } from '../languages/en.messages';
 import { Voyage } from '../models/voyage';
 import { VoyageService } from './voyage.service';
+import { Port } from '../models/port';
+import { PortService } from './port.service';
 
 
 @Injectable()
@@ -21,7 +23,8 @@ export class DatabaseService {
 
     constructor(
         private userService: UserService,
-        private voyageService: VoyageService
+        private voyageService: VoyageService,
+        private portService: PortService
     ) {
         console.log('DatabaseService constructor()');
 
@@ -35,9 +38,10 @@ export class DatabaseService {
         console.log('createDatabase()');
 
         this.db = new Dexie('TransgasDatabase');
-        this.db.version(1).stores({
+        this.db.version(2).stores({
             users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
-            voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
+            voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
+            ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus,'
         });
 
     }
@@ -55,9 +59,11 @@ export class DatabaseService {
         // Usuarios agregados en local mapeados.
         let usersMappings: Mapping[] = []
         let voyagesMappings: Mapping[] = []
+        let portsMappings: Mapping[] = []
 
         usersMappings = await this.SyncUsers();
         voyagesMappings = await this.SyncVoyages();
+        portsMappings = await this.SyncPorts(voyagesMappings);
 
         console.log('Sync Fin');
         return true;
@@ -172,6 +178,72 @@ export class DatabaseService {
         return saveVoyageMappings;
 
     }
+
+    public async SyncPorts(voyagesMappings: Mapping[]): Promise<Mapping[]> {
+
+        console.log('SyncVoyages()');
+
+        // Voyage Mappings
+        let savePortsMappings: Mapping[] = [];
+
+        // data del IndexedDB
+        let portsIndexedDB: Port[];
+        portsIndexedDB = await this.db.voyages.toArray();
+
+        // FIltramos los datos que faltan aggregar y actualizar.
+        const addPorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'added');
+        const updatePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'updated');
+        const deletePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'deleted');
+
+        // Recorremos todos los puertos que falta por agregar.
+        for (let iPort of addPorts) {
+            // Resultado del create
+            let resultCreate: Port;
+
+            debugger // Revisar que valor tiene el voyage
+            let searchMapping = searchKey(voyagesMappings, iPort.voyageId);
+
+            if (searchMapping) { iPort.voyageId = searchMapping.value }
+            debugger // Revisar si cambio el valor del voyage
+
+            resultCreate = await this.portService.Create(iPort).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            // Actualizo el numero de puerto por que puede cambiar.
+            // Actualizo el id del viaje por que puede cambiar.
+            await this.db.ports.update(iPort.id, { id: resultCreate.id, voyageId: resultCreate.voyageId, portNumber: resultCreate.portNumber, syncStatus: 'none' });
+
+            // Mapping Port por el nuevo ID
+            savePortsMappings.push(
+                new Mapping(iPort.id, resultCreate.id)
+            )
+        }
+
+        // Recorremos todos los voyages que falta por actualizar.
+        for (let iPort of updatePorts) {
+            let resultUpdate: Port;
+            resultUpdate = await this.portService.Save(iPort).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            await this.db.ports.update(iPort.id, { syncStatus: 'none' });
+        }
+
+
+        for (let iPort of deletePorts) {
+            let resultDelete: Port;
+
+            resultDelete = await this.portService.Delete(iPort).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            await this.db.ports.update(iPort.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
+        }
+
+
+        return savePortsMappings;
+
+    }
+
+
     // ================ FIN SYNC
 
 
@@ -379,7 +451,7 @@ export class DatabaseService {
                 (voyageId: number) => {
                     voyage.id = voyageId;
 
-                    return user;
+                    return voyage;
                 });
     }
 
@@ -439,6 +511,114 @@ export class DatabaseService {
             () => {
 
                 console.log('OK DELETE Voyages DB')
+                return true;
+            }
+        );
+
+    }
+    //__________________________________________________________________________
+
+
+    // =================== PORTS IndexedDB ====================================
+    // Obtiene a todos los puertos de IndexDB
+    public async getPortsIndexDB(): Promise<Port[]> {
+        console.log('getPortsIndexDB()');
+
+        return await this.db.ports.toArray().then(
+            (results: Port[]) => {
+
+                return results.filter(
+                    (port: Port) => {
+                        return Boolean(port.status) === true;
+                    }
+                ).reverse();
+
+            }
+        );
+    }
+
+    // Obtiene a un puerto por ID de IndexDB
+    public async getPortIndexDB(Index: number): Promise<Port> {
+        console.log('getPortIndexDB(Index)');
+
+        return await this.db.ports.get(Index).then(
+            (result: Port) => {
+                return result;
+            });
+
+    }
+
+    // Agregar Port por indexedDB
+    public async addPortIndexedDB(port: Port): Promise<Voyage> {
+        console.log('addPortIndexedDB(voyage: Voyage)');
+
+        return await this.db.ports
+            .add(port).then(
+                (portID: number) => {
+                    port.id = portID;
+
+                    return port;
+                });
+    }
+
+    // Agregar Ports por indexedDB
+    public async addPortsIndexedDB(ports: Port[]): Promise<boolean> {
+        console.log('addPortsIndexedDB(ports: Port[])');
+
+        // Verificamos como se encuentra el servicios
+        if (true) {
+
+            // for await
+            for (const iPort of ports) {
+                await this.addPortIndexedDB(iPort);
+            }
+
+        } else {
+
+            console.log('went offline, storing in indexdb');
+            return false;
+
+        }
+
+        console.log('FINNNNNN SINCRONOs');
+
+        return true;
+
+    }
+
+    // Actualiza port del IndexedDB
+    public async updatePortIndexedDB(port: Port): Promise<Port> {
+        console.log('updateVoyageIndexedDB(voyage: Voyage)');
+
+        return await this.db.ports.update(port.id,
+            {
+                userId: port.userId,
+                voyageId: port.voyageId,
+                portNumber: port.portNumber,
+                departurePort: port.departurePort,
+                arrivalPort: port.arrivalPort,
+
+
+                userIdCreated: port.userIdCreated,
+                dateCreated: port.dateCreated,
+                userIdUpdated: port.userIdUpdated,
+                dateUpdated: port.dateUpdated,
+                status: port.status,
+                syncStatus: port.syncStatus,
+            }
+        ).then((result: boolean) => {
+
+            return port;
+        });
+    }
+
+    public async ClearVPortsIndexedDB(): Promise<boolean> {
+        console.log('ClearVPortsIndexedDB()')
+
+        return await this.db.ports.clear().then(
+            () => {
+
+                console.log('OK DELETE Ports DB')
                 return true;
             }
         );
