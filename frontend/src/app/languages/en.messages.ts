@@ -200,4 +200,6 @@ export const voyage: any = {
     SUCCESS_VOYAGE_DELETE_LOCAL: 'Voyage successfully deleted local.',
     ERROR_VOYAGE_DELETE: 'Could not delete voyage.',
     ERROR_VOYAGE_DELETE_LOCAL: 'Could not delete voyage local.',
+    ADD_PORT: 'Add Port',
+    ADD_REPORT: 'Add Report',
 }
