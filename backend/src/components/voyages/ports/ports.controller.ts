@@ -35,8 +35,8 @@ export class PortsController {
         ).then(
             (resultValidate: Boolean) => {
                 // Validamos que el userId sea el mismo que el del token
-                if (headerToken.role === 'ADMIN') {
-                    port.userId = null;
+                if (headerToken.role === 'ADMIN' || headerToken.role === 'SUPPORT') {
+
                 } else if (port.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener sailingAnalities.
@@ -93,7 +93,7 @@ export class PortsController {
             (resultGet: Port) => {
 
                 // Validamos que el userId sea el mismo que el del token
-                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                if (headerToken.role === 'ADMIN' || headerToken.role === 'SUPPORT') {
 
                 } else if (Number(resultGet.userId) !== Number(headerToken.id)) {
                     throw new Error('ERROR_USERID_FAIL');
@@ -144,8 +144,7 @@ export class PortsController {
         ).then(
             (resultValidate: Boolean) => {
                 // Validamos que el userId sea el mismo que el del token
-                if (headerToken.role == 'ADMIN') {
-                    port.userId = null;
+                if (headerToken.role === 'ADMIN' || headerToken.role === 'SUPPORT') {
                 } else if (port.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener sailingAnalities.
@@ -233,7 +232,7 @@ export class PortsController {
 
     @Put(':id/update')
     async Update(@Headers() headers, @Param('id') id, @Body() port: Port): Promise<any> {
-
+ 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
         let headerToken: UserEntity = JwtDecode(headers.authorization);
@@ -249,14 +248,14 @@ export class PortsController {
                     if (headerToken.role === 'BUQUE') {
                         if (Number(headerToken.id) !== Number(port.userId)) throw new Error('ERROR_USERID_FAIL');
                     }
-                    
+
                     // Auditoria.
                     delete port.userIdCreated;
                     delete port.dateCreated;
                     port.userIdUpdated = headerToken.id;
                     port.dateUpdated = getDate();
                     port.status = Boolean(port.status);
-                    
+
 
                     // Ejecutamos la funcion que actualiza el obj en la bd.
                     return this._portsService.Update(port);
@@ -322,6 +321,12 @@ export class PortsController {
             }
         ).then(
             (result: Port) => {
+
+                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    // No se hace nada
+                } else if (Number(headerToken.id) !== Number(result.userId)) throw new Error('ERROR_USERID_FAIL');
+
+
                 delete result.dailyReports;
 
                 result.status = false;
