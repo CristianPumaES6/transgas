@@ -25,7 +25,6 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from 'src/app/services/database.service';
 import { Voyage } from 'src/app/models/voyage';
-import { voyage } from 'src/app/languages/en.messages';
 import { getYear } from 'src/assets/moment/moment.assets';
 import { DialogData, DialogDeleteComponent } from 'src/app/shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -58,7 +57,12 @@ export class VoyageComponent implements OnInit {
   // Lista de los datos del usuario
   public getUsers: User[] = [];
 
+  public selectVoyage: Voyage = new Voyage();
   public getVoyages: Voyage[] = [];
+
+  // Esta variable servira para identificar si estamos en
+  // Voyage, Port, DailyReport
+  public List_Voyages_Ports_DailyReports = 'Voyages';
 
   // Esta variable permite habilita la edicion en el formulario.
   public disableEdit: boolean = true;
@@ -183,7 +187,7 @@ export class VoyageComponent implements OnInit {
         ), mergeMap(
           (result: boolean) => {
             // Revisamos si el result es el esperado.
-            if (!result) throw '';
+            if (!result) throw 'ERROR_CLEAR_INDEXEDDB';
 
             // Agregamos los usuarios al indexedDB
             return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
@@ -218,8 +222,18 @@ export class VoyageComponent implements OnInit {
   }
 
   // ==============  Funciones  AZLIST ====================
-  public SelectVoyage(event: AzList): void {
+  public SelectItemAzList(event: AzList): void {
     console.log('SelectVoyage(event: AzList)');
+
+    // REVISAR SI ES QUE LO BUSCAMOS DESDE EL ARREGLO O DESDE EL indexedDB
+    if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
+      this.selectVoyage = this.getVoyages.find(
+        (voyage: Voyage) => {
+          return Number(voyage.id) === Number(event.id)
+        }
+      );
+
+    }
   }
 
   public ClickSelectUser(userId: number): void {
@@ -554,12 +568,12 @@ export class VoyageComponent implements OnInit {
           return this.databaseService.addVoyageIndexedDB(newVoyage);
         }
       ).then(
-        (resultUserIndexedDB: Voyage) => {
+        (resultVoyageIndexedDB: Voyage) => {
 
-          newVoyage = resultUserIndexedDB;
+          newVoyage = resultVoyageIndexedDB;
 
           // armamos el obj Azlist
-          let azList = new AzList(voyage.id, 'Voyage' + voyage.year + '-' + voyage.voyageNumber, '', '');
+          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '');
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -708,6 +722,7 @@ export class VoyageComponent implements OnInit {
     }
 
   }
+
   // Funciones para inicializar datos //
   //////////////////////////////////////
   // InitializeUser() : Iniziliza el objeto SailingAnality.
