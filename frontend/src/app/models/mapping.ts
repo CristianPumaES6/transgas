@@ -8,8 +8,8 @@ export class Mapping {
         this.value = value || 0;
     }
 
-    public searchKey(mappings: Mapping[], key: number): Mapping {
-        return mappings.find(mapping => mapping.key == key);
-    }
+}
 
+export function searchKey(mappings: Mapping[], key: number): Mapping {
+    return mappings.find(mapping => Number(mapping.key) == Number(key));
 }
