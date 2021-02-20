@@ -108,7 +108,14 @@ export class VoyageComponent implements OnInit {
     this.SettingAzList.activateDropDown = this.roleUser === 'ADMIN' || this.roleUser === 'SUPPORT' ? true : false;
     this.SettingAzList.placeholderDropdown = this.languageService.GetMessage(this.translateCategory, (this.roleUser === 'ADMIN' || this.roleUser === 'SUPPORT' ? 'SELECT_BUQUE' : ''));
     this.SettingAzList.activateOptionDelete = true;
-
+    // Activamos el 2° selectItem
+    this.SettingAzList.activateSelectItemEmit2 = true;
+    this.SettingAzList.toolTipSelectItemEmit2 = this.languageService.GetMessage(this.translateCategory, 'ADD_PORT');
+    this.SettingAzList.iconSelectItemEmit2 = 'icon-port';
+    // Activamos el 3° selectItem
+    this.SettingAzList.activateSelectItemEmit3 = true;
+    this.SettingAzList.toolTipSelectItemEmit3 = this.languageService.GetMessage(this.translateCategory, 'ADD_REPORT');
+    this.SettingAzList.iconSelectItemEmit3 = 'icon-clipboard';
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
@@ -283,6 +290,14 @@ export class VoyageComponent implements OnInit {
         }
       ).then(
         (result: boolean) => {
+          // Revizamos que los viajes sean los esperados.
+          if (!result) throw Error('Error limpiar la data Voyages.');
+
+          // Reseteamos los datos de la tabla viaje.
+          return this.databaseService.ClearPortsIndexedDB();
+        }
+      ).then(
+        (result: boolean) => {
           if (!result) throw Error('Error limpiar la data Voyages.');
 
           // Agregamos los viajes al IndexedDB
@@ -334,6 +349,15 @@ export class VoyageComponent implements OnInit {
     newVoyage.status = true;
 
     this.CreateVoyageOnlineOffline(newVoyage);
+
+  }
+
+  public ClickAddPort() {
+    console.log('ClickAddPort()');
+
+  }
+  public ClickAddReport() {
+    console.log('ClickAddReport()');
 
   }
 
