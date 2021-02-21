@@ -3,9 +3,9 @@
   <div class="az-content-left az-content-left-contacts">
 
     <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" [azListDropdowns]="azListDropdowns"
-      (eSelectAzList)="SelectItemAzList($event)" (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDeleteVoyage($event)"
-      (eSelectDropdown)="ClickSelectUser($event)" (eSelectDelete)="ClickDelete($event)"
-      (eSelectItemEmit2)="ClickAddPort($event)" (eSelectItemEmit3)="ClickAddReport($event)">
+      (eSelectAzList)="SelectItemAzList($event)" (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDelete($event)"
+      (eSelectDropdown)="ClickSelectUser($event)" (eSelectOption2)="ClickAddPort($event)"
+      (eSelectOption3)="ClickAddReport($event)">
     </app-az-list>
 
   </div><!-- az-content-left -->

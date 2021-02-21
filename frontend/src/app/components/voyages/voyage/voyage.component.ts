@@ -12,8 +12,8 @@ import { LoadingService } from '../../../services/loading.service';
 import { LanguageService } from '../../../services/language.service';
 import { ASideService } from '../../../services/a-side.service'
 // Service
-import { UserService } from 'src/app/services/user.service';
-import { VoyageService } from 'src/app/services/voyage.service';
+import { UserService } from '../../../services/user.service';
+import { VoyageService } from '../../../services/voyage.service';
 
 // Components Shared
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,10 +23,10 @@ import { NotificationsService } from 'angular2-notifications';
 import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
-import { DatabaseService } from 'src/app/services/database.service';
-import { Voyage } from 'src/app/models/voyage';
-import { getYear } from 'src/assets/moment/moment.assets';
-import { DialogData, DialogDeleteComponent } from 'src/app/shared/dialog/delete/dialog-delete.component';
+import { DatabaseService } from '../../../services/database.service';
+import { Voyage } from '../../../models/voyage';
+import { getYear } from '../../../../assets/moment/moment.assets';
+import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
 
 
@@ -352,22 +352,17 @@ export class VoyageComponent implements OnInit {
 
   }
 
-  public ClickAddPort() {
+  public ClickAddPort(event: AzList) {
     console.log('ClickAddPort()');
 
   }
-  public ClickAddReport() {
+  public ClickAddReport(event: AzList) {
     console.log('ClickAddReport()');
 
   }
 
   public ClickDeleteVoyage(event: AzList) {
     console.log('ClickDeleteVoyage(event: AzList)');
-
-  }
-
-  public ClickDelete(event: AzList) {
-    console.log('ClickDelete(event: AzList)');
 
 
     // Buscamos el usuario que se desea eliminar.
@@ -395,6 +390,11 @@ export class VoyageComponent implements OnInit {
           this.DeleteVoyageOnlineOffline(voyageDelete);
         }
       });
+  }
+
+  public ClickDelete(event: AzList) {
+    console.log('ClickDelete(event: AzList)');
+    this.ClickDeleteVoyage(event);
   }
 
   // Azlist

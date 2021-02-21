@@ -45,11 +45,12 @@ export class AzListComponent implements OnInit {
   // Emit al seleccionar el boton eliminar.
   @Output()
   public eSelectDelete = new EventEmitter<AzList>();
+  // Emit al seletxxionar item 1
+  @Output()
+  public eSelectOption2 = new EventEmitter<AzList>();
 
   @Output()
-  public eSelectItemEmit2 = new EventEmitter<AzList>();
-  @Output()
-  public eSelectItemEmit3 = new EventEmitter<AzList>();
+  public eSelectOption3 = new EventEmitter<AzList>();
 
   constructor(
     private languageService: LanguageService,
@@ -104,7 +105,7 @@ export class AzListComponent implements OnInit {
     this.selectAzList = azList;
 
     // Emitimos el valor al componente padre.
-    this.eSelectItemEmit2.emit(this.selectAzList);
+    this.eSelectOption2.emit(this.selectAzList);
 
     return false;
   }
@@ -112,13 +113,13 @@ export class AzListComponent implements OnInit {
   // Esta funcion sirve para agregarun reporte
   public OnSelectItemEmit3(azList: AzList): boolean {
     console.log('OnSelectItemEmit3(azList: AzList)');
-    
+
 
     // Guardamos el objeto seleccionado.
     this.selectAzList = azList;
 
     // Emitimos el valor al componente padre.
-    this.eSelectItemEmit3.emit(this.selectAzList);
+    this.eSelectOption3.emit(this.selectAzList);
 
     return false;
   }
