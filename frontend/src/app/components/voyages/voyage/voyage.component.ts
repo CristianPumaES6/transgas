@@ -130,85 +130,76 @@ export class VoyageComponent implements OnInit {
       } else {
       }
 
-      // Ejecuto todas las consultas para cargar datos segundarios
-      forkJoin(
-        [
+
+      Promise.resolve(true).then(
+        result => {
+
           // Traigo a todos los User y lo instancio en el obj.
-          this.GetUsers(user),
+          return this.GetUsers(user).pipe().toPromise();
+        }
+      ).then(
+        resultGetUser => {
+          if (!resultGetUser) throw 'ERROR_GET_USERS';
+
           // Traigo a todos los User y lo instancio en el obj.
-          this.GetVoyagesDetail(voyage)
-        ]
-      ).pipe(
-        mergeMap(
-          (result: boolean[]) => {
-            if (result) {
-              // Obtengo resultados de las funciones
-              let resulGetUsers: boolean = result[0];
-              let resulGetVoyages: boolean = result[1];
+          // GeyVoyage obtiene todos los puertos.
+          return this.GetVoyagesDetail(voyage).pipe().toPromise();
+        }
+      ).then(
+        resulGetVoyages => {
+          if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
 
-              // Evaluo posibles errores en las ejecuciones
-              if (!resulGetUsers) throw 'ERROR_GET_USERS';
-              if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
-
-              // Sincronizamos todos los datos que falten sincronizar.
-              return this.databaseService.Sync(); // Revisar.
-            } else {
-              // Algo fallo al ejecutar los observables
-              throw this.languageService.GetMessage(this.translateCategory, 'ERROR_RESULT_GET');
-            }
-          }
-        ), mergeMap(
-          (result: boolean) => {
-            // Revisamos si el result es el esperado.
-            if (!result) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
-
-            // Hacemos Clear a la Tabla Users
-            return this.databaseService.ClearUsersIndexedDB();
-          }
-        ), mergeMap(
-          (result: boolean) => {
-            // Revisamos si el result es el esperado.
-            if (!result) throw 'ERROR_CLEAR_INDEXEDDB';
-
-            // Agregamos los usuarios al indexedDB
-            return this.databaseService.addUsersIndexedDB(this.getUsers);
-          }
-        ), mergeMap(
-          (result: boolean) => {
-
-            // Revisamos si el result es el esperado.
-            if (!result) throw 'ERROR_ADD_USER_INDEXEDDB';
-
-            // Hacemos Clear a la Tabla Users
-            return this.databaseService.ClearVoyagesIndexedDB();
-          }
-        ), mergeMap(
-          (result: boolean) => {
-
-            // Revisamos si el result es el esperado.
-            if (!result) throw 'ERROR_CLEAR_INDEXEDDB';
-
-            // Hacemos Clear a la Tabla Users
-            return this.databaseService.ClearPortsIndexedDB();
-          }
-        ), mergeMap(
-          (result: boolean) => {
-            // Revisamos si el result es el esperado.
-            if (!result) throw 'ERROR_CLEAR_INDEXEDDB';
-
-            // Agregamos los usuarios al indexedDB
-            return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
-          }
-        )
-      ).subscribe(
-        (result: boolean) => {
-
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.databaseService.Sync();
+        }
+      ).then(
+        resultSync => {
           // Revisamos si el result es el esperado.
-          if (!result) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
+          if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
+
+          // Hacemos Clear a la Tabla Users
+          return this.databaseService.ClearUsersIndexedDB();
+        }
+      ).then(
+        resultClear => {
+          // Revisamos si el result es el esperado.
+          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
+          // Hacemos Clear a la Tabla Users
+          return this.databaseService.ClearVoyagesIndexedDB();
+        }
+      ).then(
+        resultClear => {
+          // Revisamos si el result es el esperado.
+          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
+          // Hacemos Clear a la Tabla Users
+          return this.databaseService.ClearPortsIndexedDB();
+        }
+      ).then(
+        resultClear => {
+          // Revisamos si el result es el esperado.
+          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
+          // Agregamos los usuarios al indexedDB
+          return this.databaseService.addUsersIndexedDB(this.getUsers);
+        }
+      ).then(
+        resultAddUser => {
+          // Revisamos si el result es el esperado.
+          if (!resultAddUser) throw 'ERROR_ADD_USER_INDEXEDDB';
+
+          // Agregamos los usuarios al indexedDB
+          return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
+        }
+      ).then(
+        resultAddVoyages => {
+          // Revisamos si el result es el esperado.
+          if (!resultAddVoyages) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
 
           this.loadDataIndexedDB();
-
-        },
+        }
+      ).catch(
         err => {
 
           // Manejo el error
