@@ -295,7 +295,6 @@ export class DatabaseService {
 
         // Verificamos como se encuentra el servicios
         if (true) {
-
             // for await
             for (const iUser of users) {
                 await this.addUserIndexedDB(iUser);
@@ -446,6 +445,11 @@ export class DatabaseService {
     public async addVoyageIndexedDB(voyage: Voyage): Promise<Voyage> {
         console.log('addVoyageIndexedDB(voyage: Voyage)');
 
+        // Primero agregamos los puestos.
+        await this.addPortsIndexedDB(voyage.ports);
+        // Luego eliminamos los puetos
+        delete voyage.ports;
+
         await this.db.voyages
             .add(voyage).then(
                 (voyageId: number) => {
@@ -453,8 +457,6 @@ export class DatabaseService {
 
                     return voyage;
                 });
-
-        await this.addPortsIndexedDB(voyage.ports);
 
         return voyage;
     }
@@ -468,7 +470,10 @@ export class DatabaseService {
 
             // for await
             for (const iVoyage of voyages) {
-                await this.addVoyageIndexedDB(iVoyage);
+                let voyage = iVoyage;
+                voyage.totalPort = voyage.ports.length;
+                voyage.totalReport = 0;// revisar total de reports
+                await this.addVoyageIndexedDB(voyage);
             }
 
         } else {
