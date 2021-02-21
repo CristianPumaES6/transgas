@@ -10,7 +10,7 @@ export class Voyage {
         public voyageNumber?: number,
         // Lugar de llegada.
         public year?: number,
-        
+
         // Auditoria
         public userIdCreated?: number,
         public dateCreated?: Date,
@@ -24,7 +24,7 @@ export class Voyage {
         this.userId = userId || null;
         this.voyageNumber = voyageNumber || null;
         this.year = year || null;
-        
+
         // Audiotoria
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || null;
@@ -35,5 +35,6 @@ export class Voyage {
     }
 
     ports: Port[] = [];
-
+    totalPort: number = 0;
+    totalReport: number = 0;
 }
