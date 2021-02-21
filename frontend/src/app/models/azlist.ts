@@ -59,14 +59,14 @@ export class AzList {
         public name?: string,
         public surname?: string,
         public image?: string,
-        public item1?: string,
-        public item2?: string
+        public item2?: string,
+        public item3?: string
     ) {
         this.id = id || null;
         this.name = name || '';
         this.surname = surname || '';
         this.image = image || '';
-        this.item1 = item1 || '';
         this.item2 = item2 || '';
+        this.item3 = item3 || '';
     }
 }
