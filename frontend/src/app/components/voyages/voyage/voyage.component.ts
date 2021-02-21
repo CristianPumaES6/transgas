@@ -347,6 +347,7 @@ export class VoyageComponent implements OnInit {
     console.log('ClickAddPort()');
 
   }
+
   public ClickAddReport(event: AzList) {
     console.log('ClickAddReport()');
 
@@ -413,7 +414,7 @@ export class VoyageComponent implements OnInit {
     // Armo un obj azList.
     voyages.forEach((voyage: Voyage) => {
       this.azLists.push(
-        new AzList(voyage.id, 'Voyage' + voyage.year + '-' + voyage.voyageNumber, '', '')
+        new AzList(voyage.id, 'Voyage' + voyage.year + '-' + voyage.voyageNumber, '', '', '' + voyage.totalPort, '' + voyage.totalReport)
       );
     });
 
