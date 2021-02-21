@@ -47,10 +47,10 @@ export class AzListComponent implements OnInit {
   public eSelectDelete = new EventEmitter<AzList>();
   // Emit al seletxxionar item 1
   @Output()
-  public eSelectOption2 = new EventEmitter<AzList>();
+  public eSelectItemEmit2 = new EventEmitter<AzList>();
 
   @Output()
-  public eSelectOption3 = new EventEmitter<AzList>();
+  public eSelectItemEmit3 = new EventEmitter<AzList>();
 
   constructor(
     private languageService: LanguageService,
@@ -105,7 +105,7 @@ export class AzListComponent implements OnInit {
     this.selectAzList = azList;
 
     // Emitimos el valor al componente padre.
-    this.eSelectOption2.emit(this.selectAzList);
+    this.eSelectItemEmit2.emit(this.selectAzList);
 
     return false;
   }
@@ -119,7 +119,7 @@ export class AzListComponent implements OnInit {
     this.selectAzList = azList;
 
     // Emitimos el valor al componente padre.
-    this.eSelectOption3.emit(this.selectAzList);
+    this.eSelectItemEmit3.emit(this.selectAzList);
 
     return false;
   }
