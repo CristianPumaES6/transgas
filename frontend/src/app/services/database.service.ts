@@ -546,6 +546,22 @@ export class DatabaseService {
         );
     }
 
+    public async getPortsByVoyageIndexDB(voyageId: number): Promise<Port[]> {
+        console.log('getPortsByVoyageIndexDB()');
+
+        return await this.db.ports.toArray().then(
+            (results: Port[]) => {
+
+                return results.filter(
+                    (port: Port) => {
+                        return Number(port.voyageId) === Number(voyageId);
+                    }
+                ).reverse();
+
+            }
+        );
+    }
+
     // Obtiene a un puerto por ID de IndexDB
     public async getPortIndexDB(Index: number): Promise<Port> {
         console.log('getPortIndexDB(Index)');
@@ -558,8 +574,8 @@ export class DatabaseService {
     }
 
     // Agregar Port por indexedDB
-    public async addPortIndexedDB(port: Port): Promise<Voyage> {
-        console.log('addPortIndexedDB(voyage: Voyage)');
+    public async addPortIndexedDB(port: Port): Promise<Port> {
+        console.log('addPortIndexedDB(port: Port)');
 
         return await this.db.ports
             .add(port).then(
