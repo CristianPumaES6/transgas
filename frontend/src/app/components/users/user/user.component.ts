@@ -94,10 +94,6 @@ export class UserComponent implements OnInit {
     // si el aSide esta abierto lo cerramos.
     this.aSideService.Close();
 
-    new PerfectScrollbar('.az-contact-info-body', {
-      suppressScrollX: true
-    })
-
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
 
@@ -156,6 +152,11 @@ export class UserComponent implements OnInit {
 
           // Revisamos si el result es el esperado.
           if (!result) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
+
+
+          new PerfectScrollbar('.az-contact-info-body', {
+            suppressScrollX: true
+          })
 
           this.loadDataIndexedDB();
 
