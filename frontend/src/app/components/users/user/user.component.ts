@@ -52,9 +52,9 @@ export class UserComponent implements OnInit {
   private initialUser: User = <User>{};
 
   //======== Datos para el componente azList ===========
-  public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false, 
-  this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
-  this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
+  public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false,
+    this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
+    this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
   public azLists: AzList[] = [];
 
   // ===================================================
@@ -460,31 +460,32 @@ export class UserComponent implements OnInit {
     // Valido si algun elemento se cambio
     if (this.ModifiedUser()) {
 
-      var opcion = confirm(this.languageService.GetMessage(this.translateCategory, 'CHANGES_WITHOUT_SAVING'));
-      if (opcion == true) {
-        // Reset user
-        if (this.user.id) {
-          this.user = this.initialUser;
-        } else {
-          // Limpiamos el obj User
-          this.user = new User();
-        }
+      let dialogData: DialogData = {
+        color: "warning",
+        icon: "icon-warning",
+        title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DISCARD_CHANGES'),
+        mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DISCARD_DESCRIPTION'),
+      };
 
-        // Inicializamos el user para que detecte la diferencia.
-        this.InitializeUser();
-      } else {
-        // sigues en la pagina.
-      }
+      const dialogRef = this.dialog.open(DialogDeleteComponent, {
+        data: dialogData
+      });
+
+      dialogRef.afterClosed().subscribe(
+        (result: Boolean) => {
+
+          if (result) {
+            this.user = this.user.id ? this.initialUser : new User();
+            // Inicializamos el user para que detecte la diferencia.
+            this.InitializeUser();
+          } else {
+
+          }
+        });
+
     } else {
-      // Reset user
-      if (this.user.id) {
-        this.user = this.initialUser;
-      } else {
-        // Limpiamos el obj User
-        this.user = new User();
-      }
-      // Inicializamos el user para que detecte la diferencia.
 
+      this.user = this.user.id ? this.initialUser : new User();
       this.InitializeUser();
     }
 
@@ -912,8 +913,6 @@ export class UserComponent implements OnInit {
     }
 
   }
-
-
 
   public onFileComplete(resultComplete: any) {
 

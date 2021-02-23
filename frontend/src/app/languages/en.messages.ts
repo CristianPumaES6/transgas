@@ -163,6 +163,8 @@ export const user: any = {
     VESSEL_PERFORMANCE_MGO: 'Vessel Performance MGO',
     TOOLTIP_DELETE_USER: 'Delete User',
     NEW_USER: 'New User',
+    COMFIMR_DISCARD_CHANGES: 'There are unsaved changes, do you want to discard the changes?',
+    COMFIRM_DISCARD_DESCRIPTION: 'The changes are irreversible.',
 };
 
 export const fileUpload: any = {
@@ -218,4 +220,6 @@ export const voyage: any = {
     NEW_DAILYREPORT: 'New Daily Report',
     TOOLTIP_DELETE_VOYAGE: 'Delete Voyage',
     TOOLTIP_DELETE_PORT: 'Delete Port',
+    COMFIMR_DISCARD_CHANGES: 'There are unsaved changes, do you want to discard the changes?',
+    COMFIRM_DISCARD_DESCRIPTION: 'The changes are irreversible.',
 }
