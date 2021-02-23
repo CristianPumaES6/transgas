@@ -471,14 +471,12 @@ export class DatabaseService {
                 for await (const iPort of voyage.ports) {
                     let port = iPort;
 
-                    debugger
                     if (port.status === true) {
                         voyage.totalPort = voyage.totalPort + 1;
                         await this.addPortIndexedDB(port);
                     }
                 }
 
-                debugger
                 delete voyage.ports;
                 await this.addVoyageIndexedDB(voyage);
             }
