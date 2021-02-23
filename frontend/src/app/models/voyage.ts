@@ -35,6 +35,8 @@ export class Voyage {
     }
 
     ports: Port[] = [];
+    // Numero total de puertos
     totalPort: number = 0;
+    //Numero total de reportes
     totalReport: number = 0;
 }
