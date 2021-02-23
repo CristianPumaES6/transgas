@@ -161,6 +161,8 @@ export const user: any = {
     VESSEL_PERFORMANCE_LSFO: 'Vessel Performance LSFO',
     VESSEL_PERFORMANCE_IFO: 'Vessel Performance IFO',
     VESSEL_PERFORMANCE_MGO: 'Vessel Performance MGO',
+    TOOLTIP_DELETE_USER: 'Delete User',
+    NEW_USER: 'New User',
 };
 
 export const fileUpload: any = {
@@ -172,6 +174,7 @@ export const fileUpload: any = {
 
 export const voyage: any = {
     // Registro de viajes
+    PORT_REGISTER: 'Port List',
     VOYAGE_REGISTER: 'Travel Record',
     NEW_VOYAGE: 'New voyage',
     SELECT_BUQUE: 'Select Buque',
@@ -202,4 +205,17 @@ export const voyage: any = {
     ERROR_VOYAGE_DELETE_LOCAL: 'Could not delete voyage local.',
     ADD_PORT: 'Add Port',
     ADD_REPORT: 'Add Report',
+    NEW_PORT: 'New Port',
+    BACK_LIST_VOYAGE: 'Back to the list of voyage.',
+    SUCCESS_PORT_CREATE: 'Port created successfully.',
+    SUCCESS_PORT_CREATE_LOCAL: 'Port successfully created local.',
+    ERROR_PORT_CREATE_LOCAL: 'Could not create port local.',
+    ERROR_PORT_CREATE: 'Could not create port.',
+    DEPARTURE_PORT: 'Departure',
+    ARRIVAL_PORT: 'Arrival',
+    DEPARTURE_MISSING: 'Departure is missing',
+    ARRIVAL_MISSING: 'Arrival is missing',
+    NEW_DAILYREPORT: 'New Daily Report',
+    TOOLTIP_DELETE_VOYAGE: 'Delete Voyage',
+    TOOLTIP_DELETE_PORT: 'Delete Port',
 }
