@@ -3,9 +3,9 @@
   <div class="az-content-left az-content-left-contacts">
 
     <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" [azListDropdowns]="azListDropdowns"
-      (eSelectAzList)="SelectItemAzList($event)" (eSelectNew)="ClickNew()" (eSelectDelete)="ClickDelete($event)"
-      (eSelectDropdown)="ClickSelectUser($event)" (eSelectItemEmit2)="ClickAddPort($event)"
-      (eSelectItemEmit3)="ClickAddReport($event)">
+      (eSelectAzList)="SelectItemAzList($event)" (eSelectNew)="ClickNew()" (eSelectBack)="ClickSelectBack()"
+      (eSelectDelete)="ClickDelete($event)" (eSelectDropdown)="ClickSelectUser($event)"
+      (eSelectItemEmit2)="ClickAddPort($event)" (eSelectItemEmit3)="ClickAddReport($event)">
     </app-az-list>
 
   </div><!-- az-content-left -->
@@ -15,12 +15,78 @@
 
     <div class="az-contact-info-header">
       <div class="media">
-      </div>
-    </div><!-- az-contact-info-header -->
-    <div class="az-contact-info-body">
 
-      {{selectVoyage.year}}
-      {{selectVoyage.voyageNumber}}
+        <div class="media-body ml-0">
+          <h4>{{title_header_media}}</h4>
+          <p class="mb-0">{{sub_title_header_media}}</p>
+        </div>
+
+      </div>
+
+
+      <div class="az-contact-action">
+
+        <!-- Accion en botones -->
+        <!-- Estos campos son para el edit, recordemos que si un objeto tiene id entonces es para actualizar. -->
+        <ng-template [ngIf]="disableEdit">
+
+          <button mat-icon-button color="primary" (click)="ClickChangeFrm(true)" matTooltip="{{toolTipEnableForm}}">
+            <mat-icon class="icon-edit-2"></mat-icon>
+          </button>
+
+        </ng-template>
+
+
+        <ng-template [ngIf]="!disableEdit">
+
+          <button mat-icon-button color="primary" (click)="ClickSave()" matTooltip="{{toolTipSave}}">
+            <mat-icon class="icon-save"></mat-icon>
+          </button>
+
+          <button mat-icon-button color="primary" (click)="ClickDiscard()" matTooltip="{{toolTipDiscard}}">
+            <mat-icon class="icon-x3"></mat-icon>
+          </button>
+
+        </ng-template>
+
+        <!-- Fin accion en botones -->
+
+      </div><!-- az-contact-action -->
+
+    </div><!-- az-contact-info-header -->
+    <div class="az-contact-info-body sin-image">
+      <div class="media-list">
+
+        <ng-template [ngIf]="List_Voyages_Ports_DailyReports==='Ports'">
+
+          <div class="row pb-2">
+            <div class="col-6 row no-gutters">
+              <mat-form-field>
+                <input matInput type="text" placeholder="{{'DEPARTURE_PORT' | translateMessage:translateCategory}}"
+                  [(ngModel)]="selectPort.departurePort" [disabled]='disableEdit'>
+              </mat-form-field>
+            </div>
+            <div class="col-6 row no-gutters">
+              <mat-form-field>
+                <input matInput type="text" placeholder="{{'ARRIVAL_PORT' | translateMessage:translateCategory}}"
+                  [(ngModel)]="selectPort.arrivalPort" [disabled]='disableEdit'>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <hr>
+
+          <ng-template [ngIf]="selectPort.id">
+            <div class="text-right">
+              <button  mat-button color="primary">Add Report
+                <mat-icon class="icon-clipboard"></mat-icon>
+              </button>
+            </div>
+          </ng-template>
+
+        </ng-template>
+
+      </div><!-- media-list -->
     </div>
 
   </div>
