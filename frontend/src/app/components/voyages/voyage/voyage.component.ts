@@ -58,10 +58,13 @@ export class VoyageComponent implements OnInit {
   public selectUser: User = new User();
   // Lista de los datos del usuario
   public getUsers: User[] = [];
+
   // Lista y seleccion de viajes.
   public selectVoyage: Voyage = new Voyage();
   public getVoyages: Voyage[] = [];
+
   // Lista del puerto y seleccion
+  public initialPort: Port = new Port();
   public selectPort: Port = new Port();
   public getPorts: Port[] = [];
 
@@ -305,6 +308,11 @@ export class VoyageComponent implements OnInit {
             }
           );
 
+          return true;
+        }
+      ).then(
+        result => {
+          this.Initialize();
         }
       ).catch(
         err => {
@@ -437,6 +445,7 @@ export class VoyageComponent implements OnInit {
       // habilitamos el puerto actual para registrar uno nuevo.
       this.selectPort = new Port();
 
+      this.Initialize();
       this.disableEdit = false;
 
     }
@@ -468,10 +477,47 @@ export class VoyageComponent implements OnInit {
   public ClickDiscard() {
     console.log('ClickDiscard()');
 
+    // Valido si algun elemento se cambio
+    if (this.Modified()) {
+
+
+      let dialogData: DialogData = {
+        color: "warning",
+        icon: "icon-warning",
+        title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DISCARD_CHANGES'),
+        mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DISCARD_DESCRIPTION'),
+      };
+
+      const dialogRef = this.dialog.open(DialogDeleteComponent, {
+        data: dialogData
+      });
+
+      dialogRef.afterClosed().subscribe(
+        (result: Boolean) => {
+
+          if (result) {
+            this.selectPort = this.selectPort.id ? this.initialPort : new Port();
+            this.Initialize();
+          } else {
+
+          }
+        });
+
+    } else {
+
+      if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+        this.selectPort = this.selectPort.id ? this.initialPort : new Port();
+
+      }
+
+      // Inicializamos el user para que detecte la diferencia.
+
+      this.Initialize();
+    }
   }
 
-  public ClickChangeEnableFrm(isActive?: boolean) {
-    console.log('ClickChangeFrm()');
+  public ClickChangeEnableFrm(isActive?: boolean): boolean {
+    console.log('ClickChangeEnableFrm()');
 
     if (isActive) {
       this.disableEdit = false;
@@ -480,6 +526,7 @@ export class VoyageComponent implements OnInit {
     } else {
       this.disableEdit = !this.disableEdit;
     }
+    return false;
   }
 
   public ClickSelectBack() {
@@ -647,8 +694,6 @@ export class VoyageComponent implements OnInit {
       }
     ).then(
       (result: boolean) => {
-
-        this.disableEdit = true;
 
         // Inicializo el SailingAnality
         this.Initialize();
@@ -1025,17 +1070,49 @@ export class VoyageComponent implements OnInit {
   //////////////////////////////////////
   // InitializeUser() : Iniziliza el objeto SailingAnality.
   private Initialize(): void {
-    console.log('InitializeUser()');
+    console.log('Initialize()');
 
     // Inicializo su valor.
     this.disableEdit = true;
 
-    // limpiamos las validaciones,
-    // deshabilitamos el formulario
-    // Seteamos el formulario con los datos de this.user.
-    // this.ReactiveForm(false, true, true, false, false, true, false); // REVISAR
+    if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
 
-    // actualizo el valor del InitializeSailingAnality.
-    // this.initialUser = this.CollectUser();  // REVISAR
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+
+      // actualizo el valor del InitializeSailingAnality.
+      this.initialPort = this.Collect();
+    }
+
   }
+
+  private Collect(): any {
+
+    if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
+
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+
+      // El objeto user lo seteamos.
+      let port: Port = this.selectPort;
+
+      // Retorno el objeto
+      return JSON.parse(JSON.stringify(port));
+    }
+
+  }
+
+  // ModifiedUser() : Verifica si el usuario a sido modificado.
+  private Modified(): boolean {
+
+    if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
+
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+      // Armo objeto para pasarle al servicio
+      let portToSave: Port = this.Collect();
+      // Comparo los objetos antes y despues
+      return !(JSON.stringify(portToSave) === JSON.stringify(this.initialPort));
+    }
+
+  }
+
+
 }

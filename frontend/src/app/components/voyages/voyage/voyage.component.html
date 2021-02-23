@@ -28,9 +28,9 @@
 
         <!-- Accion en botones -->
         <!-- Estos campos son para el edit, recordemos que si un objeto tiene id entonces es para actualizar. -->
-        <ng-template [ngIf]="disableEdit">
+        <ng-template [ngIf]="disableEdit && (selectPort.id)">
 
-          <button mat-icon-button color="primary" (click)="ClickChangeFrm(true)" matTooltip="{{toolTipEnableForm}}">
+          <button mat-icon-button color="primary" (click)="ClickChangeEnableFrm(true)" matTooltip="{{toolTipEnableForm}}">
             <mat-icon class="icon-edit-2"></mat-icon>
           </button>
 
@@ -78,7 +78,7 @@
 
           <ng-template [ngIf]="selectPort.id">
             <div class="text-right">
-              <button  mat-button color="primary">Add Report
+              <button  mat-button color="primary" [disabled]='disableEdit'>Add Report
                 <mat-icon class="icon-clipboard"></mat-icon>
               </button>
             </div>
