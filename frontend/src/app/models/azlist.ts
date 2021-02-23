@@ -11,6 +11,7 @@ export class SettingAzList {
         public activateDropDown?: boolean,
         public placeholderDropdown?: string,
         public activateOptionDelete?: boolean,
+        public toolTipOptionDelete?: string,
         // Select Item
         public activateSelectItemEmit2?: Boolean,
         public toolTipSelectItemEmit2?: string,
@@ -31,6 +32,7 @@ export class SettingAzList {
         this.activateDropDown = activateDropDown || false;
         this.placeholderDropdown = placeholderDropdown || '';
         this.activateOptionDelete = activateOptionDelete || false;
+        this.toolTipOptionDelete = toolTipOptionDelete || '';
         this.activateSelectItemEmit2 = activateSelectItemEmit2 || false;
         this.toolTipSelectItemEmit2 = toolTipSelectItemEmit2 || '';
         this.iconSelectItemEmit2 = iconSelectItemEmit2 || '';
