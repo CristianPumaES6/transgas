@@ -242,9 +242,7 @@ export class DatabaseService {
         return savePortsMappings;
 
     }
-
-
-    // ================ FIN SYNC
+    // ========================= FIN SYNC ========================
 
 
     // =================== USERS IndexedDB ====================================
@@ -409,6 +407,7 @@ export class DatabaseService {
         );
 
     }
+
     //__________________________________________________________________________
 
 
@@ -445,11 +444,6 @@ export class DatabaseService {
     public async addVoyageIndexedDB(voyage: Voyage): Promise<Voyage> {
         console.log('addVoyageIndexedDB(voyage: Voyage)');
 
-        // Primero agregamos los puestos.
-        await this.addPortsIndexedDB(voyage.ports);
-        // Luego eliminamos los puetos
-        delete voyage.ports;
-
         await this.db.voyages
             .add(voyage).then(
                 (voyageId: number) => {
@@ -469,10 +463,23 @@ export class DatabaseService {
         if (true) {
 
             // for await
-            for (const iVoyage of voyages) {
+            for await (const iVoyage of voyages) {
                 let voyage = iVoyage;
-                voyage.totalPort = voyage.ports.length;
-                voyage.totalReport = 0;// revisar total de reports
+                voyage.totalPort = 0;
+                voyage.totalReport = 0;
+                
+                for await (const iPort of voyage.ports) {
+                    let port = iPort;
+
+                    debugger
+                    if (port.status === true) {
+                        voyage.totalPort = voyage.totalPort + 1;
+                        await this.addPortIndexedDB(port);
+                    }
+                }
+
+                debugger
+                delete voyage.ports;
                 await this.addVoyageIndexedDB(voyage);
             }
 
@@ -595,7 +602,6 @@ export class DatabaseService {
 
             // for await
             for (const iPort of ports) {
-
                 if (Boolean(iPort.status) === true) {
                     await this.addPortIndexedDB(iPort);
                 }
