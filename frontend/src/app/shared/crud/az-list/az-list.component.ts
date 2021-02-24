@@ -38,6 +38,8 @@ export class AzListComponent implements OnInit {
   // Emit al seleccionar un Dropdown
   @Output()
   public eSelectDropdown = new EventEmitter<number>();
+
+  @Input()
   public selectAzSelectDropdown: number = 0;
   // Emit al seleccionar un item de la lista.
   @Output()

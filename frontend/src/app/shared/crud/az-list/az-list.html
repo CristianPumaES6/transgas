@@ -16,10 +16,6 @@
     </button>
   </ng-template>
 
-  <span>
-    {{ settingAzList.titleAzLists }}
-  </span>
-
   <span class="float-right mr-2">
     <ng-template [ngIf]="settingAzList.isNew">
       <button mat-icon-button mat-button color="primary" (click)="OnSelectNew()"
@@ -38,7 +34,7 @@
     <mat-select [(ngModel)]="selectAzSelectDropdown">
 
       <ng-template ngFor let-idropdown [ngForOf]="azListDropdowns" let-i="index">
-        <mat-option value="{{idropdown.id}}" (click)="OnSelectDropdown()">
+        <mat-option [value]="idropdown.id" (click)="OnSelectDropdown()">
           {{ idropdown.name}}
         </mat-option>
       </ng-template>
