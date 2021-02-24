@@ -13,6 +13,7 @@ import { Voyage } from '../models/voyage';
 import { VoyageService } from './voyage.service';
 import { Port } from '../models/port';
 import { PortService } from './port.service';
+import { LoadingService } from './loading.service';
 
 
 @Injectable()
@@ -24,7 +25,8 @@ export class DatabaseService {
     constructor(
         private userService: UserService,
         private voyageService: VoyageService,
-        private portService: PortService
+        private portService: PortService,
+        private loadingService: LoadingService,
     ) {
         console.log('DatabaseService constructor()');
 
@@ -55,6 +57,7 @@ export class DatabaseService {
 
     public async Sync(): Promise<boolean> {
         console.log('Sync Inicio');
+        this.loadingService.Open();
 
         // Usuarios agregados en local mapeados.
         let usersMappings: Mapping[] = []
@@ -62,10 +65,11 @@ export class DatabaseService {
         let portsMappings: Mapping[] = []
 
         usersMappings = await this.SyncUsers();
-        voyagesMappings = await this.SyncVoyages();
-        portsMappings = await this.SyncPorts(voyagesMappings);
+        voyagesMappings = await this.SyncVoyages(usersMappings);
+        portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
 
         console.log('Sync Fin');
+        this.loadingService.Close();
         return true;
 
     }
@@ -88,7 +92,7 @@ export class DatabaseService {
         const deleteUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'deleted');
 
         // Recorremos por toods los users que falta por agregar.
-        for (const iUser of addUsers) {
+        for await (const iUser of addUsers) {
             // Resultado del create
             let resultCreate: User;
             resultCreate = await this.userService.CreateUser(iUser).pipe().toPromise();
@@ -103,7 +107,7 @@ export class DatabaseService {
         }
 
         // Recorremos por todos los users que falta por actualizar.
-        for (const iUser of updateUsers) {
+        for await (const iUser of updateUsers) {
             let resultUpdate: User;
             resultUpdate = await this.userService.SaveUser(iUser).pipe().toPromise();
 
@@ -112,7 +116,7 @@ export class DatabaseService {
         }
 
 
-        for (const iUser of deleteUsers) {
+        for await (const iUser of deleteUsers) {
             let resultDelete: User;
             resultDelete = await this.userService.DeleteUser(iUser).pipe().toPromise();
             // Actualizamos el syncStatus a none.
@@ -125,7 +129,7 @@ export class DatabaseService {
     }
 
     // Sincroniza el modulo voyage.
-    public async SyncVoyages(): Promise<Mapping[]> {
+    public async SyncVoyages(usersMappings: Mapping[]): Promise<Mapping[]> {
         console.log('SyncVoyages()');
 
         // Voyage Mappings
@@ -141,7 +145,12 @@ export class DatabaseService {
         const deleteVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'deleted');
 
         // Recorremos todos los viajes que falta por agregar.
-        for (const iVoyage of addVoyages) {
+        for await (const iVoyage of addVoyages) {
+
+            let searchUserMapping = searchKey(usersMappings, iVoyage.userId);
+
+            if (searchUserMapping) { iVoyage.userId = searchUserMapping.value }
+
             // Resultado del create
             let resultCreate: Voyage;
             resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
@@ -156,7 +165,7 @@ export class DatabaseService {
         }
 
         // Recorremos todos los voyages que falta por actualizar.
-        for (const iVoyage of updateVoyages) {
+        for await (const iVoyage of updateVoyages) {
             let resultUpdate: Voyage;
             resultUpdate = await this.voyageService.Save(iVoyage).pipe().toPromise();
 
@@ -165,7 +174,7 @@ export class DatabaseService {
         }
 
 
-        for (const iVoyage of deleteVoyages) {
+        for await (const iVoyage of deleteVoyages) {
             let resultDelete: Voyage;
 
             resultDelete = await this.voyageService.Delete(iVoyage).pipe().toPromise();
@@ -179,7 +188,7 @@ export class DatabaseService {
 
     }
 
-    public async SyncPorts(voyagesMappings: Mapping[]): Promise<Mapping[]> {
+    public async SyncPorts(usersMappings: Mapping[], voyagesMappings: Mapping[]): Promise<Mapping[]> {
 
         console.log('SyncVoyages()');
 
@@ -188,7 +197,7 @@ export class DatabaseService {
 
         // data del IndexedDB
         let portsIndexedDB: Port[];
-        portsIndexedDB = await this.db.voyages.toArray();
+        portsIndexedDB = await this.db.ports.toArray();
 
         // FIltramos los datos que faltan aggregar y actualizar.
         const addPorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'added');
@@ -196,15 +205,16 @@ export class DatabaseService {
         const deletePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'deleted');
 
         // Recorremos todos los puertos que falta por agregar.
-        for (let iPort of addPorts) {
+        for await (let iPort of addPorts) {
             // Resultado del create
             let resultCreate: Port;
 
-            debugger // Revisar que valor tiene el voyage
-            let searchMapping = searchKey(voyagesMappings, iPort.voyageId);
 
-            if (searchMapping) { iPort.voyageId = searchMapping.value }
-            debugger // Revisar si cambio el valor del voyage
+            let searchMappingVoyage = searchKey(voyagesMappings, iPort.voyageId);
+            let searchMappingUser = searchKey(usersMappings, iPort.userId);
+
+            if (searchMappingVoyage) { iPort.voyageId = searchMappingVoyage.value }
+            if (searchMappingUser) { iPort.userId = searchMappingUser.value }
 
             resultCreate = await this.portService.Create(iPort).pipe().toPromise();
 
@@ -220,7 +230,7 @@ export class DatabaseService {
         }
 
         // Recorremos todos los voyages que falta por actualizar.
-        for (let iPort of updatePorts) {
+        for await (let iPort of updatePorts) {
             let resultUpdate: Port;
             resultUpdate = await this.portService.Save(iPort).pipe().toPromise();
 
@@ -228,8 +238,7 @@ export class DatabaseService {
             await this.db.ports.update(iPort.id, { syncStatus: 'none' });
         }
 
-
-        for (let iPort of deletePorts) {
+        for await (let iPort of deletePorts) {
             let resultDelete: Port;
 
             resultDelete = await this.portService.Delete(iPort).pipe().toPromise();
@@ -237,7 +246,6 @@ export class DatabaseService {
             // Actualizamos el syncStatus a none.
             await this.db.ports.update(iPort.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
         }
-
 
         return savePortsMappings;
 
@@ -294,7 +302,7 @@ export class DatabaseService {
         // Verificamos como se encuentra el servicios
         if (true) {
             // for await
-            for (const iUser of users) {
+            for await (const iUser of users) {
                 await this.addUserIndexedDB(iUser);
             }
 
@@ -429,6 +437,22 @@ export class DatabaseService {
         );
     }
 
+    public async getVoyagesByUserIdIndexDB(userId: number): Promise<Voyage[]> {
+        console.log('getVoyagesIndexDB()');
+
+        return await this.db.voyages.toArray().then(
+            (results: Voyage[]) => {
+
+                return results.filter(
+                    (voyage: Voyage) => {
+
+                        return voyage.status === true && Number(voyage.userId) === Number(userId);
+                    }
+                ).reverse();
+
+            }
+        );
+    }
     // Obtiene a un viaje por ID de IndexDB
     public async getVoyageIndexDB(Index: number): Promise<Voyage> {
         console.log('getVoyageIndexDB(Index)');
@@ -467,7 +491,7 @@ export class DatabaseService {
                 let voyage = iVoyage;
                 voyage.totalPort = 0;
                 voyage.totalReport = 0;
-                
+
                 for await (const iPort of voyage.ports) {
                     let port = iPort;
 
@@ -599,7 +623,7 @@ export class DatabaseService {
         if (true) {
 
             // for await
-            for (const iPort of ports) {
+            for await (const iPort of ports) {
                 if (Boolean(iPort.status) === true) {
                     await this.addPortIndexedDB(iPort);
                 }
