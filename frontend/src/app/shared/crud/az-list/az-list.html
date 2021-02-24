@@ -16,6 +16,10 @@
     </button>
   </ng-template>
 
+  <span>
+    {{ settingAzList.titleAzLists }}
+  </span>
+
   <span class="float-right mr-2">
     <ng-template [ngIf]="settingAzList.isNew">
       <button mat-icon-button mat-button color="primary" (click)="OnSelectNew()"
@@ -68,7 +72,8 @@
       <div class="az-contact-star">
 
         <ng-template [ngIf]="settingAzList.activateOptionDelete">
-          <button mat-icon-button mat-button (click)="OnSelectDelete(azList)" matTooltip="{{settingAzList.toolTipOptionDelete}}">
+          <button mat-icon-button mat-button (click)="OnSelectDelete(azList)"
+            matTooltip="{{settingAzList.toolTipOptionDelete}}">
             <mat-icon class="icon-delete"></mat-icon>
           </button>
         </ng-template>
