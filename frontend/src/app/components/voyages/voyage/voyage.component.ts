@@ -55,6 +55,7 @@ export class VoyageComponent implements OnInit {
 
   // Data
   // Usuario seleccionado
+  public selectUserDropdown: number = 0;
   public selectUser: User = new User();
   // Lista de los datos del usuario
   public getUsers: User[] = [];
@@ -100,7 +101,6 @@ export class VoyageComponent implements OnInit {
 
     // Activamos el loading.
     this.loadingService.Open();
-
     // si el aSide esta abierto lo cerramos.
     this.aSideService.Close();
 
@@ -112,9 +112,7 @@ export class VoyageComponent implements OnInit {
     // Configuracion AzList
     this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
     this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGE_REGISTER');
-    this.SettingAzList.isNew = this.roleUser === 'BUQUE' ? true : false;
     this.SettingAzList.isBack = false;
-    this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
     this.SettingAzList.toolTipBack = ''
     this.SettingAzList.activateDropDown = this.roleUser === 'ADMIN' || this.roleUser === 'SUPPORT' ? true : false;
     this.SettingAzList.placeholderDropdown = this.languageService.GetMessage(this.translateCategory, (this.roleUser === 'ADMIN' || this.roleUser === 'SUPPORT' ? 'SELECT_BUQUE' : ''));
@@ -141,16 +139,13 @@ export class VoyageComponent implements OnInit {
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
-      let voyage: Voyage = new Voyage();
       let user: User = new User();
 
       // Si el usuario es un buque lo filtramos.
       if (this.selectUser.role === 'BUQUE') {
-        voyage.userId = this.selectUser.id;
         user.id = this.selectUser.id;
       } else {
       }
-
 
       Promise.resolve(true).then(
         result => {
@@ -161,6 +156,21 @@ export class VoyageComponent implements OnInit {
       ).then(
         resultGetUser => {
           if (!resultGetUser) throw 'ERROR_GET_USERS';
+
+
+          let voyage: Voyage = new Voyage();
+          let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
+          if (firstUser) {
+            this.selectUser = firstUser;
+            this.selectUserDropdown = firstUser.id;
+            voyage.userId = this.selectUserDropdown;
+
+            this.SettingAzList.isNew = true;
+            this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+          } else {
+            if (!resultGetUser) throw 'NO_BUQUE_REGISTER';
+          }
+
 
           // Traigo a todos los User y lo instancio en el obj.
           // GeyVoyage obtiene todos los puertos.
@@ -333,7 +343,7 @@ export class VoyageComponent implements OnInit {
   }
 
   public ClickSelectUser(userId: number): void {
-    console.log('SelectUser(event: AzList)');
+    console.log('ClickSelectUser(event: AzList)');
     console.log(userId);
     userId = Number(userId);
 

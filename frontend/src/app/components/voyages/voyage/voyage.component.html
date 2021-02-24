@@ -3,9 +3,10 @@
   <div class="az-content-left az-content-left-contacts">
 
     <app-az-list [settingAzList]="SettingAzList" [azLists]="azLists" [azListDropdowns]="azListDropdowns"
-      (eSelectAzList)="SelectItemAzList($event)" (eSelectNew)="ClickNew()" (eSelectBack)="ClickSelectBack()"
-      (eSelectDelete)="ClickDelete($event)" (eSelectDropdown)="ClickSelectUser($event)"
-      (eSelectItemEmit2)="ClickAddPort($event)" (eSelectItemEmit3)="ClickAddReport($event)">
+      [selectAzSelectDropdown]="selectUserDropdown" (eSelectAzList)="SelectItemAzList($event)" (eSelectNew)="ClickNew()"
+      (eSelectBack)="ClickSelectBack()" (eSelectDelete)="ClickDelete($event)"
+      (eSelectDropdown)="ClickSelectUser($event)" (eSelectItemEmit2)="ClickAddPort($event)"
+      (eSelectItemEmit3)="ClickAddReport($event)">
     </app-az-list>
 
   </div><!-- az-content-left -->
@@ -30,7 +31,8 @@
         <!-- Estos campos son para el edit, recordemos que si un objeto tiene id entonces es para actualizar. -->
         <ng-template [ngIf]="disableEdit && (selectPort.id)">
 
-          <button mat-icon-button color="primary" (click)="ClickChangeEnableFrm(true)" matTooltip="{{toolTipEnableForm}}">
+          <button mat-icon-button color="primary" (click)="ClickChangeEnableFrm(true)"
+            matTooltip="{{toolTipEnableForm}}">
             <mat-icon class="icon-edit-2"></mat-icon>
           </button>
 
@@ -78,7 +80,8 @@
 
           <ng-template [ngIf]="selectPort.id">
             <div class="text-right">
-              <button  mat-button color="primary" [disabled]='disableEdit'>Add Report
+              <button mat-button color="primary" [disabled]='disableEdit'>
+                {{'ADD_REPORT' | translateMessage:translateCategory}}
                 <mat-icon class="icon-clipboard"></mat-icon>
               </button>
             </div>
