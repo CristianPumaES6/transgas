@@ -700,7 +700,7 @@ export class UserComponent implements OnInit {
       ).catch(
         error => {
           // Valido si viene un mensaje de error
-          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_DELETE_LOCAL');
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_UPDATE_LOCAL');
 
           // Muestro notificación
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
