@@ -144,7 +144,6 @@ export class VoyageComponent implements OnInit {
       // Si el usuario es un buque lo filtramos.
       if (this.selectUser.role === 'BUQUE') {
         user.id = this.selectUser.id;
-      } else {
       }
 
       Promise.resolve(true).then(
@@ -158,6 +157,7 @@ export class VoyageComponent implements OnInit {
           if (!resultGetUser) throw 'ERROR_GET_USERS';
 
 
+          // Seleccionaremos el primer buque del arreglo.
           let voyage: Voyage = new Voyage();
           let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
           if (firstUser) {
@@ -168,7 +168,7 @@ export class VoyageComponent implements OnInit {
             this.SettingAzList.isNew = true;
             this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
           } else {
-            if (!resultGetUser) throw 'NO_BUQUE_REGISTER';
+            throw 'NO_BUQUE_REGISTER';
           }
 
 
@@ -228,7 +228,7 @@ export class VoyageComponent implements OnInit {
           // Revisamos si el result es el esperado.
           if (!resultAddVoyages) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
 
-          this.loadDataIndexedDB();
+          this.loadDataIndexedDB(this.selectUser);
         }
       ).catch(
         err => {
@@ -411,7 +411,7 @@ export class VoyageComponent implements OnInit {
       ).then(
         () => {
           // Cargo la data en locla
-          this.loadDataIndexedDB();
+          this.loadDataIndexedDB(this.selectUser);
           this.loadingService.Close();
         }
       ).catch(
@@ -468,17 +468,26 @@ export class VoyageComponent implements OnInit {
 
     if (this.List_Voyages_Ports_DailyReports === 'Ports') {
 
-      let newPort = new Port();
+      if (!this.selectPort.id) {
+        let newPort = new Port();
 
-      newPort.userId = this.selectUser.id;
-      if (this.getPorts && this.getPorts.length > 0) { newPort.portNumber = this.getPorts[0].portNumber + 1; }
-      else { newPort.portNumber = 1; };
-      newPort.voyageId = this.selectVoyage.id;
-      newPort.departurePort = this.selectPort.departurePort;
-      newPort.arrivalPort = this.selectPort.arrivalPort;
-      newPort.status = true;
+        newPort.userId = this.selectUser.id;
+        if (this.getPorts && this.getPorts.length > 0) { newPort.portNumber = this.getPorts[0].portNumber + 1; }
+        else { newPort.portNumber = 1; };
+        newPort.voyageId = this.selectVoyage.id;
+        newPort.departurePort = this.selectPort.departurePort;
+        newPort.arrivalPort = this.selectPort.arrivalPort;
+        newPort.status = true;
 
-      this.CreatePortOnlineOffline(newPort);
+        this.CreatePortOnlineOffline(newPort);
+
+      } else {
+        let portToSave = this.selectPort;
+        delete portToSave.dailyReports;
+        this.UpdatePortOnelineOffline(portToSave)
+
+      }
+
     }
 
     return false;
@@ -656,8 +665,8 @@ export class VoyageComponent implements OnInit {
 
   }
 
-  // Local Data
-  private loadDataIndexedDB() {
+  // Local Data // Seleccionar usuario
+  private loadDataIndexedDB(selectUser?: User) {
     console.log('loadDataIndexedDB()');
 
     Promise.resolve(true).then(
@@ -669,12 +678,24 @@ export class VoyageComponent implements OnInit {
       (users: User[]) => {
         if (users.length > 0) {
 
-          // En la carga de data indexexDB cargo solo los buque.
+          // En la carga de data indexedDB cargo solo los buque.
           this.getUsers = users.filter(
             (user: User) => {
               return user.role === 'BUQUE';
             }
           );
+
+          let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
+          if (!firstUser) throw 'NO_BUQUE_REGISTER';
+
+          if (!selectUser) {
+            this.selectUser = firstUser;
+            this.selectUserDropdown = firstUser.id;
+
+            this.SettingAzList.isNew = true;
+            this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+          }
+
           // Generar lista por usuarios.
           this.generateAzListDropdownsByUsers(this.getUsers);
 
@@ -686,10 +707,11 @@ export class VoyageComponent implements OnInit {
     ).then(
       () => {
         // Obtenemos los viajes de IndexDB
-        return this.databaseService.getVoyagesIndexDB(); // Revisar
+        return this.databaseService.getVoyagesByUserIdIndexDB(this.selectUser.id); // Revisar
       }
     ).then(
       (voyages: Voyage[]) => {
+
         // Los viajes pueden llegar vacio. solo si es array[] seria true.
         if (voyages) {
 
@@ -714,7 +736,7 @@ export class VoyageComponent implements OnInit {
     ).catch(
       err => {
         // Manejo el error
-        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
+        let msg: string = this.languageService.GetMessage(this.translateCategory, err);
 
         console.error(msg);
         console.dir(err);
@@ -739,7 +761,7 @@ export class VoyageComponent implements OnInit {
       (resultUser: User[]) => {
 
         // Guardamos el valor en nuestra variable global.
-        this.getUsers = resultUser || this.getUsers;
+        this.getUsers = resultUser.reverse() || this.getUsers;
 
         // Segun el resultado retornamos la respuesta.
         return (resultUser !== null);
@@ -755,7 +777,7 @@ export class VoyageComponent implements OnInit {
       (resultVoyages: Voyage[]) => {
 
         // Guardamos el valor en nuestra variable global.
-        this.getVoyages = resultVoyages || this.getVoyages;
+        this.getVoyages = resultVoyages.reverse() || this.getVoyages;
 
         // Segun el resultado retornamos la respuesta.
         return (resultVoyages !== null);
@@ -1064,6 +1086,139 @@ export class VoyageComponent implements OnInit {
         error => {
           // Valido si viene un mensaje de error
           let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_PORT_CREATE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
+  }
+
+  private UpdatePortOnelineOffline(portToSave: Port) {
+
+    // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
+    if (!!window.navigator.onLine) {
+
+      // Guardo el objeto obtenido
+      this.portService.Save(portToSave).subscribe(
+        (result: Port) => {
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE'));
+
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getPorts = this.getPorts.map(
+            (port: Port) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(port.id) === Number(result.id)) {
+                // Actualizamos el valor con el resultado
+                port = result;
+              }
+
+              return port;
+            }
+          );
+          this.databaseService.updatePortIndexedDB(result);
+
+          // Actualizamos la lista del azlist
+          this.azLists = this.azLists.map(
+            (azList: AzList) => {
+
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(azList.id) === Number(result.id)) {
+
+
+                // Actualizamos el valor con el resultado
+                azList = new AzList(result.id, 'Port' + result.portNumber, result.departurePort + ' - ' + result.arrivalPort, '', '' + 123, '')
+              }
+
+              return azList;
+            }
+          )
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Si no hubo cambios solo navego
+          this.Initialize();
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_PORT_UPDATE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    } else {
+
+      Promise.resolve(true).then(
+        () => {
+          // Consultamos al getPortIndexDB para saber el estado del sync.
+          return this.databaseService.getPortIndexDB(portToSave.id);
+        }
+      ).then(
+        (portIndexedDB: Port) => {
+          // Verificamos el estado si es add que continue, caso contrario delete.
+          if (portIndexedDB.syncStatus !== 'added') {
+            portIndexedDB.syncStatus = 'updated';
+          } else {
+            portIndexedDB.syncStatus = 'added';
+            // Corregir todo con then
+          }
+
+          // Actualizo el puerto
+          return this.databaseService.updatePortIndexedDB(portToSave)
+        }
+      ).then(
+        (resultUpdate: Port) => {
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getPorts = this.getPorts.map(
+            (port: Port) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(port.id) === Number(resultUpdate.id)) {
+                // Actualizamos el valor con el resultado
+                port = resultUpdate;
+              }
+
+              return port;
+            }
+          );
+
+          // Actualizamos la lista del azlist
+          this.azLists = this.azLists.map(
+            (azList: AzList) => {
+
+              // Buscamos el id para cambiar el valor de result.
+              if (azList.id === resultUpdate.id) {
+                // Actualizamos el valor con el resultado
+                azList = new AzList(resultUpdate.id, 'Port' + resultUpdate.portNumber, resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort, '', '' + 123, '')
+              }
+              return azList;
+
+            }
+          )
+
+          // Si no hubo cambios solo navego
+          this.Initialize();
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_PORT_UPDATE_LOCAL');
 
           // Muestro notificación
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
