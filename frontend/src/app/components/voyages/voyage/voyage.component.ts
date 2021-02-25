@@ -349,6 +349,20 @@ export class VoyageComponent implements OnInit {
 
     this.loadingService.Open();
 
+    // RESET SETTING
+
+    this.List_Voyages_Ports_DailyReports = 'Voyages';
+    this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
+    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGE_REGISTER');
+    this.SettingAzList.isNew = true;
+    this.SettingAzList.isBack = false;
+    this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+    this.SettingAzList.toolTipBack = ''
+    this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
+    this.SettingAzList.activateSelectItemEmit2 = true;
+    this.selectPort = new Port();
+    this.title_header_media = '';
+    this.sub_title_header_media = '';
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
@@ -430,8 +444,49 @@ export class VoyageComponent implements OnInit {
     } else {
 
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'NEED_CONNECTION'));
-      // Deshabilito el spinner de loading
-      this.loadingService.Close();
+
+      Promise.resolve(true).then(
+        () => {
+          // Obtenemos los viajes de IndexDB
+          return this.databaseService.getVoyagesByUserIdIndexDB(userId); // Revisar
+        }
+      ).then(
+        (voyages: Voyage[]) => {
+
+          // Los viajes pueden llegar vacio. solo si es array[] seria true.
+          if (voyages) {
+
+            this.getVoyages = voyages;
+            // Generar lista por usuarios.
+            this.generateAzListByVoyages(this.getVoyages); // Revisar
+
+            return true;
+          } else {
+            throw this.languageService.GetMessage(this.translateCategory, 'ERROR_GET_USERS_INDEXEDDB');
+          }
+        }
+      ).then(
+        (result: boolean) => {
+
+          // Inicializo el SailingAnality
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
     }
 
   }
@@ -448,6 +503,7 @@ export class VoyageComponent implements OnInit {
       else { newVoyage.voyageNumber = 1; };
       newVoyage.year = Number(getYear());
       newVoyage.status = true;
+
 
       this.CreateVoyageOnlineOffline(newVoyage);
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
@@ -550,7 +606,6 @@ export class VoyageComponent implements OnInit {
 
   public ClickSelectBack() {
     console.log('ClickSelectBack()');
-
     if (this.List_Voyages_Ports_DailyReports === 'Ports') {
       // A lista se vuelve puertos
       this.List_Voyages_Ports_DailyReports = 'Voyages';
@@ -795,9 +850,11 @@ export class VoyageComponent implements OnInit {
 
           // Actualizamos el nuevo viaje con el resultado.
           newVoyage = resultCreate;
+          newVoyage.totalPort = 0;
+          newVoyage.totalReport = 0;
 
           // armamos el obj Azlist
-          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '');
+          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '', '' + newVoyage.totalPort, '' + newVoyage.totalReport)
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -832,6 +889,8 @@ export class VoyageComponent implements OnInit {
       // Le agregamos un stado Sync
       newVoyage.syncStatus = 'added';
       delete newVoyage.id;
+      newVoyage.totalPort = 0;
+      newVoyage.totalReport = 0;
 
       Promise.resolve(true).then(
         () => {
@@ -844,7 +903,7 @@ export class VoyageComponent implements OnInit {
           newVoyage = resultVoyageIndexedDB;
 
           // armamos el obj Azlist
-          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '');
+          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '', '' + newVoyage.totalPort, '' + newVoyage.totalReport)
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -1026,6 +1085,22 @@ export class VoyageComponent implements OnInit {
           this.getPorts.unshift(newPort);
           this.databaseService.addPortIndexedDB(newPort);
 
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalPort + 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
+
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_CREATE'));
 
@@ -1071,6 +1146,23 @@ export class VoyageComponent implements OnInit {
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
           this.getPorts.unshift(newPort);
+
+
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalPort + 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
 
           // vuelvo a cargar los datos de incio del token.
           this.Initialize();
