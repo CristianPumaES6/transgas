@@ -101,7 +101,7 @@ export class PortsController {
 
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.ACCEPTED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultGet
                 };
@@ -114,10 +114,10 @@ export class PortsController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, HttpStatus.NOT_ACCEPTABLE);
+                }, HttpStatus.ACCEPTED);
             }
         );
     }
@@ -288,7 +288,7 @@ export class PortsController {
 
                 // Caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
                 }, HttpStatus.ACCEPTED);
@@ -342,7 +342,7 @@ export class PortsController {
 
                 // Retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.ACCEPTED,
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: resultDelete
                 };
@@ -355,10 +355,10 @@ export class PortsController {
 
                 // caso contrario retornamos un error
                 throw new HttpException({
-                    status: HttpStatus.NOT_ACCEPTABLE,
+                    status: HttpStatus.ACCEPTED,
                     error: clientMsg,
                     message: errorMsg,
-                }, HttpStatus.NOT_ACCEPTABLE);
+                }, HttpStatus.ACCEPTED);
             }
         );
 
