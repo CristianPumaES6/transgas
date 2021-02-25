@@ -429,7 +429,7 @@ export class DatabaseService {
 
                 return results.filter(
                     (voyage: Voyage) => {
-                        return voyage.status === true;
+                        return Boolean(voyage.status) === true;
                     }
                 ).reverse();
 
@@ -446,7 +446,7 @@ export class DatabaseService {
                 return results.filter(
                     (voyage: Voyage) => {
 
-                        return voyage.status === true && Number(voyage.userId) === Number(userId);
+                        return Boolean(voyage.status) === true && Number(voyage.userId) === Number(userId);
                     }
                 ).reverse();
 
@@ -583,7 +583,7 @@ export class DatabaseService {
 
                 return results.filter(
                     (port: Port) => {
-                        return Number(port.voyageId) === Number(voyageId);
+                        return Boolean(port.status) === true && Number(port.voyageId) === Number(voyageId);
                     }
                 ).reverse();
 
