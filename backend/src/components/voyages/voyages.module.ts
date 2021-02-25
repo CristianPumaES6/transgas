@@ -6,12 +6,14 @@ import { VoyagesController } from './voyages.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Voyage } from '../../models/voyage.entity';
 import { PortsModule } from './ports/ports.module';
+import { DailyReportsModule } from './daily-reports/daily-reports.module';
 
 @Module({  
   //Importamos el TypeOrm con el modulo a usar, para que funcione en el servicio.
   imports: [
     TypeOrmModule.forFeature([Voyage]),
     PortsModule,
+    DailyReportsModule,
   ],
   providers: [VoyagesService],
   controllers: [VoyagesController]
