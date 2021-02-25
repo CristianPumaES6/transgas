@@ -519,6 +519,19 @@ export class VoyageComponent implements OnInit {
     return false;
   }
 
+  public ClickDelete(event: AzList) {
+    console.log('ClickDelete(event: AzList)');
+
+    if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
+
+      this.ClickDeleteVoyage(event);
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+
+      this.ClickDeletePort(event);
+    }
+
+  }
+
   public ClickSave() {
     console.log('ClickSave()');
 
@@ -651,7 +664,9 @@ export class VoyageComponent implements OnInit {
     let dialogData: DialogData = {
       color: "warning",
       icon: "icon-delete",
-      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[VOYAGE]', voyageDelete.year + '-' + voyageDelete.voyageNumber),
+      title: this.languageService.GetMessage(
+        this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]',
+          'the voyage ' + voyageDelete.year + '-' + voyageDelete.voyageNumber),
       mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
     };
 
@@ -668,9 +683,35 @@ export class VoyageComponent implements OnInit {
       });
   }
 
-  public ClickDelete(event: AzList) {
-    console.log('ClickDelete(event: AzList)');
-    this.ClickDeleteVoyage(event);
+  public ClickDeletePort(event: AzList) {
+    console.log('ClickDeletePort(event: AzList)');
+
+
+    // Buscamos el usuario que se desea eliminar.
+    let portDelete: Port = this.getPorts.find(
+      (port: Port) => {
+        return Number(port.id) === Number(event.id);
+      }
+    );
+
+    let dialogData: DialogData = {
+      color: "warning",
+      icon: "icon-delete",
+      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the port N°' + portDelete.portNumber),
+      mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
+    };
+
+    const dialogRef = this.dialog.open(DialogDeleteComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+          this.DeletePortOnlineOffline(portDelete);
+        }
+      });
   }
 
   // Azlist
@@ -1053,7 +1094,6 @@ export class VoyageComponent implements OnInit {
 
   }
 
-
   private CreatePortOnlineOffline(newPort: Port) {
 
     let error: boolean = false;
@@ -1322,6 +1362,160 @@ export class VoyageComponent implements OnInit {
 
     }
   }
+
+  private DeletePortOnlineOffline(portDelete: Port) {
+
+    if (!!window.navigator.onLine) {
+      // Guardo el objeto obtenido
+      this.portService.Delete(portDelete).subscribe(
+        (result: Port) => {
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_DELETE'));
+
+          // La siguiente linea de codigo eliminara un objeto del array.
+          this.getPorts = this.getPorts.filter(
+            (port: Port) => {
+              if (Number(port.id) === Number(result.id)) {
+                return false;
+              }
+              return true;
+            }
+          )
+          this.azLists = this.azLists.filter(
+            azList => {
+              if (Number(azList.id) === Number(result.id)) {
+                return false;
+              }
+              return true;
+            }
+          );
+
+
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalPort - 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
+
+
+          // Revisar como llega el usuario y si viaja en false.
+          this.databaseService.updatePortIndexedDB(result);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // vuelvo a cargar los datos de incio del token.
+          this.Initialize();
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_PORT_DELETE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
+
+    } else {
+
+      Promise.resolve(true).then(
+        () => {
+          // Consultamos al userIndexDB para saber el estado del sync.
+          return this.databaseService.getPortIndexDB(portDelete.id);
+        }
+      ).then(
+        (getPortIndexDB: Port) => {
+          // Verificamos el estado si es add que continue, caso contrario delete.
+          if (getPortIndexDB.syncStatus === 'added' || getPortIndexDB.syncStatus === 'updated') {
+
+          } else {
+            getPortIndexDB.syncStatus = 'deleted';
+          }
+
+          // le seteo el password por defecto y el estado a false.
+          getPortIndexDB.status = false;
+
+          // Actualizo el voyage con el estado en False.
+          return this.databaseService.updatePortIndexedDB(getPortIndexDB);
+        }
+      ).then(
+        (resultUpdate: Port) => {
+
+          // Elimino el usuario del arreglo.
+          this.getPorts = this.getPorts.filter(
+            (port: Port) => {
+              if (Number(port.id) === Number(resultUpdate.id)) {
+                return false;
+              }
+              return true;
+            }
+          );
+          this.azLists = this.azLists.filter(
+            azList => {
+              if (Number(azList.id) === Number(resultUpdate.id)) {
+                return false;
+              }
+              return true;
+            }
+          )
+
+
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalPort - 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
+
+          // Inicializo los datos.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_DELETE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_PORT_DELETE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
+
+  }
+
 
   // Funciones para inicializar datos //
   //////////////////////////////////////
