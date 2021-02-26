@@ -76,7 +76,7 @@ export class VoyageComponent implements OnInit {
   public getDailyReports: DailyReport[] = [];
 
 
-  
+
   // Texto de la cabecera del body
   public title_header_media: string = '';
   public sub_title_header_media: string = '';
@@ -119,7 +119,7 @@ export class VoyageComponent implements OnInit {
 
     // Configuracion AzList
     this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
-    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGE_REGISTER');
+    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
     this.SettingAzList.isBack = false;
     this.SettingAzList.toolTipBack = ''
     this.SettingAzList.activateDropDown = this.roleUser === 'ADMIN' || this.roleUser === 'SUPPORT' ? true : false;
@@ -277,7 +277,8 @@ export class VoyageComponent implements OnInit {
             }
           );
 
-          this.title_header_media = 'Voyage-' + this.selectVoyage.year + '-' + this.selectVoyage.voyageNumber;
+          this.title_header_media = 'Voyage ' + this.selectVoyage.year + '  N°' + this.selectVoyage.voyageNumber;
+          this.sub_title_header_media = '';
 
           return this.databaseService.getPortsByVoyageIndexDB(this.selectVoyage.id);
         }
@@ -326,6 +327,10 @@ export class VoyageComponent implements OnInit {
             }
           );
 
+
+          this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
+
+
           return true;
         }
       ).then(
@@ -361,7 +366,7 @@ export class VoyageComponent implements OnInit {
 
     this.List_Voyages_Ports_DailyReports = 'Voyages';
     this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
-    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGE_REGISTER');
+    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
     this.SettingAzList.isNew = true;
     this.SettingAzList.isBack = false;
     this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
@@ -627,12 +632,12 @@ export class VoyageComponent implements OnInit {
 
   public ClickSelectBack() {
     console.log('ClickSelectBack()');
-    if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+    if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
       // A lista se vuelve puertos
       this.List_Voyages_Ports_DailyReports = 'Voyages';
 
       this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
-      this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGE_REGISTER');
+      this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
       this.SettingAzList.isNew = true;
       this.SettingAzList.isBack = false;
       this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
@@ -675,7 +680,7 @@ export class VoyageComponent implements OnInit {
       icon: "icon-delete",
       title: this.languageService.GetMessage(
         this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]',
-          'the voyage ' + voyageDelete.year + '-' + voyageDelete.voyageNumber),
+          'the Voyage ' + voyageDelete.year + ' N°' + voyageDelete.voyageNumber),
       mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
     };
 
@@ -746,9 +751,9 @@ export class VoyageComponent implements OnInit {
     this.azLists = [];
 
     // Armo un obj azList.
-    voyages.forEach((voyage: Voyage) => {
+    voyages.forEach((newVoyage: Voyage) => {
       this.azLists.push(
-        new AzList(voyage.id, 'Voyage' + voyage.year + '-' + voyage.voyageNumber, '', '', '' + voyage.totalPort, '' + voyage.totalReport)
+        new AzList(newVoyage.id, 'Voyage ' + newVoyage.year + ' N°' + newVoyage.voyageNumber, '', '', String(newVoyage.totalPort), String(newVoyage.totalReport))
       );
     });
 
@@ -762,9 +767,9 @@ export class VoyageComponent implements OnInit {
     this.azLists = [];
 
     // Armo un obj azList.
-    ports.forEach((port: Port) => {
+    ports.forEach((azPort: Port) => {
       this.azLists.push(
-        new AzList(port.id, 'Port' + port.portNumber, port.departurePort + ' - ' + port.arrivalPort, '', '' + 123, '')
+        new AzList(azPort.id, 'Port N°' + azPort.portNumber, '(' + azPort.departurePort + ' - ' + azPort.arrivalPort + ')', '', '' + 123, '')
       );
     });
 
@@ -904,7 +909,7 @@ export class VoyageComponent implements OnInit {
           newVoyage.totalReport = 0;
 
           // armamos el obj Azlist
-          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '', '' + newVoyage.totalPort, '' + newVoyage.totalReport)
+          let azList = new AzList(newVoyage.id, 'Voyage ' + newVoyage.year + ' N°' + newVoyage.voyageNumber, '', '', String(newVoyage.totalPort), String(newVoyage.totalReport))
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -953,7 +958,7 @@ export class VoyageComponent implements OnInit {
           newVoyage = resultVoyageIndexedDB;
 
           // armamos el obj Azlist
-          let azList = new AzList(newVoyage.id, 'Voyage' + newVoyage.year + '-' + newVoyage.voyageNumber, '', '', '' + newVoyage.totalPort, '' + newVoyage.totalReport)
+          let azList = new AzList(newVoyage.id, 'Voyage ' + newVoyage.year + ' N°' + newVoyage.voyageNumber, '', '', String(newVoyage.totalPort), String(newVoyage.totalReport))
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -1127,7 +1132,7 @@ export class VoyageComponent implements OnInit {
           newPort = resultCreate;
 
           // armamos el obj Azlist
-          let azList = new AzList(newPort.id, 'Port' + newPort.portNumber, newPort.departurePort + ' - ' + newPort.arrivalPort, '', '' + 123, '')
+          let azList = new AzList(newPort.id, 'Port N°' + newPort.portNumber, '(' + newPort.departurePort + ' - ' + newPort.arrivalPort + ')', '', '' + 123, '')
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -1190,7 +1195,7 @@ export class VoyageComponent implements OnInit {
           newPort = resultPortIndexedDB;
 
           // armamos el obj Azlist
-          let azList = new AzList(newPort.id, 'Port' + newPort.portNumber, newPort.departurePort + ' - ' + newPort.arrivalPort, '', '' + 123, '')
+          let azList = new AzList(newPort.id, 'Port N°' + newPort.portNumber, '(' + newPort.departurePort + ' - ' + newPort.arrivalPort + ')', '', '' + 123, '')
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -1272,9 +1277,8 @@ export class VoyageComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (Number(azList.id) === Number(result.id)) {
 
-
                 // Actualizamos el valor con el resultado
-                azList = new AzList(result.id, 'Port' + result.portNumber, result.departurePort + ' - ' + result.arrivalPort, '', '' + 123, '')
+                azList = new AzList(result.id, 'Port N°' + result.portNumber, '(' + result.departurePort + ' - ' + result.arrivalPort + ')', '', '' + 123, '')
               }
 
               return azList;
@@ -1341,7 +1345,7 @@ export class VoyageComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, 'Port' + resultUpdate.portNumber, resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort, '', '' + 123, '')
+                azList = new AzList(resultUpdate.id, 'Port N°' + resultUpdate.portNumber, '(' + resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort + ')', '', '' + 123, '')
               }
               return azList;
 
