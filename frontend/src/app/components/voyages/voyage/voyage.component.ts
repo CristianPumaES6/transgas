@@ -87,6 +87,7 @@ export class VoyageComponent implements OnInit {
   public List_Voyages_Ports_DailyReports = 'Voyages';
   public toolTipSave = '';
   public toolTipDiscard = '';
+  public toolTipEnableForm = '';
 
   // Esta variable permite habilita la edicion en el formulario.
   public disableEdit: boolean = true;
@@ -267,7 +268,7 @@ export class VoyageComponent implements OnInit {
 
       this.SelectVoyagebyVoyageId(event.id);
 
-    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
       // A lista se vuelve puertos
       //this.List_Voyages_Ports_DailyReports = 'DailyReports';
       this.SelectPortByPortId(event.id);
@@ -275,7 +276,12 @@ export class VoyageComponent implements OnInit {
   }
 
   public async SelectVoyagebyVoyageId(voyageId: number): Promise<boolean> {
-    console.log('SelectVoyage(event: AzList)');
+    console.log('SelectVoyagebyVoyageId(voyageId: number)');
+
+
+    this.toolTipSave = 'SAVE_PORT';
+    this.toolTipDiscard = 'DISCARD_PORT';
+    this.toolTipEnableForm = 'ENABLE_FORM';
 
     // A lista se vuelve puertos
     this.List_Voyages_Ports_DailyReports = 'Ports';
@@ -331,6 +337,14 @@ export class VoyageComponent implements OnInit {
   }
 
   public async SelectPortByPortId(portId: number): Promise<boolean> {
+    console.log('SelectPortByPortId(portId: number)');
+
+
+    this.toolTipSave = 'SAVE_PORT';
+    this.toolTipDiscard = 'DISCARD_PORT';
+    this.toolTipEnableForm = 'ENABLE_FORM';
+
+    this.List_Voyages_Ports_DailyReports = 'Ports';
 
     return await Promise.resolve(true).then(
       result => {
@@ -707,6 +721,17 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
 
     }
+
+  }
+
+  public ClickAddNewReport() {
+    console.log('ClickAddNewReport()');
+
+    this.List_Voyages_Ports_DailyReports = 'DailyReports';
+
+    this.toolTipSave = 'SAVE_REPORT';
+    this.toolTipDiscard = 'DISCARD_REPORT';
+    this.toolTipEnableForm = 'ENABLE_REPORT';
 
   }
 
