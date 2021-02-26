@@ -87,7 +87,7 @@
           </button>
         </ng-template>
 
-        <ng-template [ngIf]="settingAzList.activateSelectItemEmit3">
+        <ng-template [ngIf]="settingAzList.activateSelectItemEmit3 && (!settingAzList.activateSelectItemEmit2 || azList.item2 > 0)">
 
           <button mat-icon-button mat-button (click)="OnSelectItemEmit3(azList)"
             matTooltip="{{settingAzList.toolTipSelectItemEmit3}}">
