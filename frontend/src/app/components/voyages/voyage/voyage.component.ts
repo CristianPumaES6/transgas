@@ -30,6 +30,7 @@ import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete
 import { MatDialog } from '@angular/material/dialog';
 import { Port } from '../../../models/port';
 import { PortService } from '../../../services/port.service';
+import { DailyReport } from 'src/app/models/daily-report';
 
 
 
@@ -69,6 +70,13 @@ export class VoyageComponent implements OnInit {
   public selectPort: Port = new Port();
   public getPorts: Port[] = [];
 
+  // 
+  public initialDailyReport: DailyReport = new DailyReport();
+  public selectDailyReport: DailyReport = new DailyReport();
+  public getDailyReports: DailyReport[] = [];
+
+
+  
   // Texto de la cabecera del body
   public title_header_media: string = '';
   public sub_title_header_media: string = '';
@@ -648,6 +656,7 @@ export class VoyageComponent implements OnInit {
   public ClickAddReport(event: AzList) {
     console.log('ClickAddReport()');
 
+    this.List_Voyages_Ports_DailyReports = 'DailyReports';
   }
 
   public ClickDeleteVoyage(event: AzList) {
