@@ -757,7 +757,7 @@ export class VoyageComponent implements OnInit {
     let dialogData: DialogData = {
       color: "warning",
       icon: "icon-delete",
-      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the port N°' + portDelete.portNumber),
+      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the Port N°' + portDelete.portNumber),
       mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
     };
 
