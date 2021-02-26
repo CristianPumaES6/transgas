@@ -507,7 +507,6 @@ export class VoyageComponent implements OnInit {
   public ClickNew() {
     console.log('ClickNew(event: AzList)');
 
-
     if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
       let newVoyage = new Voyage();
 
@@ -519,8 +518,9 @@ export class VoyageComponent implements OnInit {
 
 
       this.CreateVoyageOnlineOffline(newVoyage);
-    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
+      this.List_Voyages_Ports_DailyReports = 'Ports';
       // habilitamos el puerto actual para registrar uno nuevo.
       this.selectPort = new Port();
 
@@ -529,9 +529,9 @@ export class VoyageComponent implements OnInit {
 
       let newPort = new Port();
 
-      if (this.getPorts && this.getPorts.length > 0) { 
+      if (this.getPorts && this.getPorts.length > 0) {
         newPort.portNumber = this.getPorts[0].portNumber + 1;
-       }
+      }
       else { newPort.portNumber = 1; };
 
       this.sub_title_header_media = 'Port N°' + newPort.portNumber;
