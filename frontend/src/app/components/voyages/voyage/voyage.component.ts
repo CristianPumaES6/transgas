@@ -265,51 +265,16 @@ export class VoyageComponent implements OnInit {
     // REVISAR SI ES QUE LO BUSCAMOS DESDE EL ARREGLO O DESDE EL indexedDB
     if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
 
-      this.SelectVoyage(event);
+      this.SelectVoyagebyVoyageId(event.id);
 
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
       // A lista se vuelve puertos
       //this.List_Voyages_Ports_DailyReports = 'DailyReports';
-
-      Promise.resolve(true).then(
-        result => {
-
-          // Seleccionamos al viaje.
-          this.selectPort = this.getPorts.find(
-            (port: Port) => {
-              return Number(port.id) === Number(event.id)
-            }
-          );
-
-
-          this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
-
-
-          return true;
-        }
-      ).then(
-        result => {
-          this.Initialize();
-        }
-      ).catch(
-        err => {
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
-
-          console.error(msg);
-          console.dir(err);
-
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
-
-
+      this.SelectPortByPortId(event.id);
     }
   }
 
-  public async SelectVoyage(event: AzList): Promise<boolean> {
+  public async SelectVoyagebyVoyageId(voyageId: number): Promise<boolean> {
     console.log('SelectVoyage(event: AzList)');
 
     // A lista se vuelve puertos
@@ -321,7 +286,7 @@ export class VoyageComponent implements OnInit {
         // Seleccionamos al viaje.
         this.selectVoyage = this.getVoyages.find(
           (voyage: Voyage) => {
-            return Number(voyage.id) === Number(event.id)
+            return Number(voyage.id) === Number(voyageId)
           }
         );
 
@@ -363,6 +328,48 @@ export class VoyageComponent implements OnInit {
         return false;
       }
     );
+  }
+
+  public async SelectPortByPortId(portId: number): Promise<boolean> {
+
+    return await Promise.resolve(true).then(
+      result => {
+
+        // Seleccionamos al viaje.
+        this.selectPort = this.getPorts.find(
+          (port: Port) => {
+            return Number(port.id) === Number(portId)
+          }
+        );
+
+
+        this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
+
+
+        return true;
+      }
+    ).then(
+      result => {
+        this.Initialize();
+
+        return true;
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+        return false;
+      }
+    );
+
+
   }
 
   public ClickSelectUser(userId: number): void {
@@ -680,7 +687,7 @@ export class VoyageComponent implements OnInit {
   public ClickAddPort(event: AzList) {
     console.log('ClickAddPort()');
 
-    this.SelectVoyage(event).then(
+    this.SelectVoyagebyVoyageId(event.id).then(
       result => {
         if (!result) throw new Error('ERROR SELECT VOYAGE');
         this.NewPort();
@@ -695,7 +702,12 @@ export class VoyageComponent implements OnInit {
   public ClickAddReport(event: AzList) {
     console.log('ClickAddReport()');
 
-    this.List_Voyages_Ports_DailyReports = 'DailyReports';
+    if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
+
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+
+    }
+
   }
 
   public ClickDeleteVoyage(event: AzList) {
