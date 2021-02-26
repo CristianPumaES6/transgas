@@ -264,54 +264,8 @@ export class VoyageComponent implements OnInit {
 
     // REVISAR SI ES QUE LO BUSCAMOS DESDE EL ARREGLO O DESDE EL indexedDB
     if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
-      // A lista se vuelve puertos
-      this.List_Voyages_Ports_DailyReports = 'Ports';
 
-      Promise.resolve(true).then(
-        result => {
-
-          // Seleccionamos al viaje.
-          this.selectVoyage = this.getVoyages.find(
-            (voyage: Voyage) => {
-              return Number(voyage.id) === Number(event.id)
-            }
-          );
-
-          this.title_header_media = 'Voyage ' + this.selectVoyage.year + '  N°' + this.selectVoyage.voyageNumber;
-          this.sub_title_header_media = '';
-
-          return this.databaseService.getPortsByVoyageIndexDB(this.selectVoyage.id);
-        }
-      ).then(
-        resultPorts => {
-          if (!resultPorts) throw 'NO_FOUND_PORTS';
-
-          this.getPorts = resultPorts;
-
-          this.generateAzListByPorts(this.getPorts);
-
-          this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage', 'Port'];
-          this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'PORT_REGISTER');
-          this.SettingAzList.isNew = true;
-          this.SettingAzList.isBack = true;
-          this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_PORT');
-          this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_PORT');
-          this.SettingAzList.toolTipBack = this.languageService.GetMessage(this.translateCategory, 'BACK_LIST_VOYAGE');
-          this.SettingAzList.activateSelectItemEmit2 = false;
-        }
-      ).catch(
-        err => {
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
-
-          console.error(msg);
-          console.dir(err);
-
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
+      this.SelectVoyage(event);
 
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
       // A lista se vuelve puertos
@@ -353,6 +307,62 @@ export class VoyageComponent implements OnInit {
 
 
     }
+  }
+
+  public async SelectVoyage(event: AzList): Promise<boolean> {
+    console.log('SelectVoyage(event: AzList)');
+
+    // A lista se vuelve puertos
+    this.List_Voyages_Ports_DailyReports = 'Ports';
+
+    return await Promise.resolve(true).then(
+      result => {
+
+        // Seleccionamos al viaje.
+        this.selectVoyage = this.getVoyages.find(
+          (voyage: Voyage) => {
+            return Number(voyage.id) === Number(event.id)
+          }
+        );
+
+        this.title_header_media = 'Voyage ' + this.selectVoyage.year + '  N°' + this.selectVoyage.voyageNumber;
+        this.sub_title_header_media = '';
+
+        return this.databaseService.getPortsByVoyageIndexDB(this.selectVoyage.id);
+      }
+    ).then(
+      resultPorts => {
+        if (!resultPorts) throw 'NO_FOUND_PORTS';
+
+        this.getPorts = resultPorts;
+
+        this.generateAzListByPorts(this.getPorts);
+
+        this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage', 'Port'];
+        this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'PORT_REGISTER');
+        this.SettingAzList.isNew = true;
+        this.SettingAzList.isBack = true;
+        this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_PORT');
+        this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_PORT');
+        this.SettingAzList.toolTipBack = this.languageService.GetMessage(this.translateCategory, 'BACK_LIST_VOYAGE');
+        this.SettingAzList.activateSelectItemEmit2 = false;
+
+        return true;
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+        return false;
+      }
+    );
   }
 
   public ClickSelectUser(userId: number): void {
@@ -520,26 +530,30 @@ export class VoyageComponent implements OnInit {
       this.CreateVoyageOnlineOffline(newVoyage);
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
-      this.List_Voyages_Ports_DailyReports = 'Ports';
-      // habilitamos el puerto actual para registrar uno nuevo.
-      this.selectPort = new Port();
-
-      this.Initialize();
-      this.disableEdit = false;
-
-      let newPort = new Port();
-
-      if (this.getPorts && this.getPorts.length > 0) {
-        newPort.portNumber = this.getPorts[0].portNumber + 1;
-      }
-      else { newPort.portNumber = 1; };
-
-      this.sub_title_header_media = 'Port N°' + newPort.portNumber;
-
-
+      this.NewPort();
     }
 
     return false;
+  }
+
+  public NewPort(): void {
+
+    this.List_Voyages_Ports_DailyReports = 'Ports';
+    // habilitamos el puerto actual para registrar uno nuevo.
+    this.selectPort = new Port();
+
+    this.Initialize();
+    this.disableEdit = false;
+
+    let newPort = new Port();
+
+    if (this.getPorts && this.getPorts.length > 0) {
+      newPort.portNumber = this.getPorts[0].portNumber + 1;
+    }
+    else { newPort.portNumber = 1; };
+
+    this.sub_title_header_media = 'Port N°' + newPort.portNumber;
+
   }
 
   public ClickDelete(event: AzList) {
@@ -665,6 +679,16 @@ export class VoyageComponent implements OnInit {
 
   public ClickAddPort(event: AzList) {
     console.log('ClickAddPort()');
+
+    this.SelectVoyage(event).then(
+      result => {
+        if (!result) throw new Error('ERROR SELECT VOYAGE');
+        this.NewPort();
+
+        return true;
+      }
+    );
+
 
   }
 
