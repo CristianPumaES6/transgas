@@ -527,6 +527,16 @@ export class VoyageComponent implements OnInit {
       this.Initialize();
       this.disableEdit = false;
 
+      let newPort = new Port();
+
+      if (this.getPorts && this.getPorts.length > 0) { 
+        newPort.portNumber = this.getPorts[0].portNumber + 1;
+       }
+      else { newPort.portNumber = 1; };
+
+      this.sub_title_header_media = 'Port N°' + newPort.portNumber;
+
+
     }
 
     return false;
