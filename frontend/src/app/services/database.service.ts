@@ -834,7 +834,7 @@ export class DatabaseService {
     }
 
     // Actualiza DailyReports del IndexedDB
-    public async updateDailyReportsIndexedDB(dailyReport: DailyReport): Promise<DailyReport> {
+    public async updateDailyReportIndexedDB(dailyReport: DailyReport): Promise<DailyReport> {
         console.log('updateDailyReportsIndexedDB(dailyReports: DailyReports)');
 
         return await this.db.dailyReports.update(dailyReport.id,
