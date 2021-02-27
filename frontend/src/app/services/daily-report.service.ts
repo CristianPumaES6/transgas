@@ -85,7 +85,7 @@ export class DailyReportService {
 
     Create(dailyReport: DailyReport): Observable<DailyReport> {
         // Armo el request
-        let url: string = this.url + '/daily-report/create';
+        let url: string = this.url + '/daily-reports/create';
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
