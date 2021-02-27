@@ -31,7 +31,7 @@ export class Port {
         this.portNumber = portNumber || null;
         this.departurePort = departurePort || '';
         this.arrivalPort = arrivalPort || '';
-        
+
         // Audiotoria
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || null;
@@ -41,6 +41,7 @@ export class Port {
         this.syncStatus = '';
     }
 
+    public totalReport: number = 0;
     public robIfo: number = 0;
     public robMgo: number = 0;
 
