@@ -14,6 +14,8 @@ import { VoyageService } from './voyage.service';
 import { Port } from '../models/port';
 import { PortService } from './port.service';
 import { LoadingService } from './loading.service';
+import { DailyReport } from '../models/daily-report';
+import { DailyReportService } from './daily-report.service';
 
 
 @Injectable()
@@ -26,6 +28,7 @@ export class DatabaseService {
         private userService: UserService,
         private voyageService: VoyageService,
         private portService: PortService,
+        private dailyReportService: DailyReportService,
         private loadingService: LoadingService,
     ) {
         console.log('DatabaseService constructor()');
@@ -43,7 +46,8 @@ export class DatabaseService {
         this.db.version(1).stores({
             users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
             voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
-            ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
+            ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
+            dailyReports: '++id,userId,portId,activityPerformed,date,hour,bunkeringIfo,bunkeringMgo,mplaIfo,auxIfo,calderaIfo,otherIfo,mplaMgo,auxMgo,calderaMgo,ppMgo,giMgo,otherMgo,steamingTime,distance,beaufour,observation,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
         });
 
     }
@@ -63,10 +67,12 @@ export class DatabaseService {
         let usersMappings: Mapping[] = []
         let voyagesMappings: Mapping[] = []
         let portsMappings: Mapping[] = []
+        let dailyReportsMappings: Mapping[] = []
 
         usersMappings = await this.SyncUsers();
         voyagesMappings = await this.SyncVoyages(usersMappings);
         portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
+        dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
 
         console.log('Sync Fin');
         this.loadingService.Close();
@@ -192,7 +198,7 @@ export class DatabaseService {
 
         console.log('SyncVoyages()');
 
-        // Voyage Mappings
+        // POrt Mappings
         let savePortsMappings: Mapping[] = [];
 
         // data del IndexedDB
@@ -248,6 +254,67 @@ export class DatabaseService {
         }
 
         return savePortsMappings;
+
+    }
+    public async SyncDailyReports(usersMappings: Mapping[], portsMappings: Mapping[]): Promise<Mapping[]> {
+
+        console.log('SyncVoyages()');
+
+        // DailyReports Mappings
+        let saveDailyReportsMappings: Mapping[] = [];
+
+        // data del IndexedDB
+        let dailyReportsIndexedDB: DailyReport[];
+        dailyReportsIndexedDB = await this.db.dailyReports.toArray();
+
+        // FIltramos los datos que faltan aggregar y actualizar.
+        const addDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'added');
+        const updateDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'updated');
+        const deleteDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'deleted');
+
+        // Recorremos todos los puertos que falta por agregar.
+        for await (let iDailyReport of addDailyReports) {
+            // Resultado del create
+            let resultCreate: DailyReport;
+
+
+            let searchMappingUser = searchKey(usersMappings, iDailyReport.userId);
+            let searchMappingPort = searchKey(portsMappings, iDailyReport.portId);
+
+            if (searchMappingUser) { iDailyReport.userId = searchMappingUser.value }
+            if (searchMappingPort) { iDailyReport.portId = searchMappingPort.value }
+
+            resultCreate = await this.dailyReportService.Create(iDailyReport).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            // Actualizo el numero de puerto por que puede cambiar.
+            await this.db.dailyReports.update(iDailyReport.id, { id: resultCreate.id, portId: resultCreate.portId, syncStatus: 'none' });
+
+            // Mapping Port por el nuevo ID
+            saveDailyReportsMappings.push(
+                new Mapping(iDailyReport.id, resultCreate.id)
+            )
+        }
+
+        // Recorremos todos los voyages que falta por actualizar.
+        for await (let iDailyReport of updateDailyReports) {
+            let resultUpdate: DailyReport;
+            resultUpdate = await this.dailyReportService.Save(iDailyReport).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            await this.db.dailyReports.update(iDailyReport.id, { syncStatus: 'none' });
+        }
+
+        for await (let iDailyReport of deleteDailyReports) {
+            let resultDelete: DailyReport;
+
+            resultDelete = await this.dailyReportService.Delete(iDailyReport).pipe().toPromise();
+
+            // Actualizamos el syncStatus a none.
+            await this.db.dailyReports.update(iDailyReport.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
+        }
+
+        return saveDailyReportsMappings;
 
     }
     // ========================= FIN SYNC ========================
@@ -681,4 +748,143 @@ export class DatabaseService {
 
     }
     //__________________________________________________________________________
+    // =================== REPORT DAILY IndexedDB ====================================
+    // Obtiene a todos los reportes de IndexDB
+    public async getReportDailysIndexDB(): Promise<DailyReport[]> {
+        console.log('getReportDailyIndexDB()');
+
+        return await this.db.dailyReports.toArray().then(
+            (results: DailyReport[]) => {
+
+                return results.filter(
+                    (dailyReport: DailyReport) => {
+                        return Boolean(dailyReport.status) === true;
+                    }
+                ).reverse();
+
+            }
+        );
+    }
+
+    public async getReportDailysByPortIdIndexDB(portId: number): Promise<DailyReport[]> {
+        console.log('getReportDailysByPortIdIndexDB(portId: number)');
+
+        return await this.db.dailyReports.toArray().then(
+            (results: Port[]) => {
+
+                return results.filter(
+                    (dailyReport: DailyReport) => {
+                        return Boolean(dailyReport.status) === true && Number(dailyReport.portId) === Number(portId);
+                    }
+                ).reverse();
+
+            }
+        );
+    }
+
+    // Obtiene a un puerto por ID de IndexDB
+    public async getDailyReportIndexDB(Index: number): Promise<DailyReport> {
+        console.log('getDailyReportIndexDB(Index: number)');
+
+        return await this.db.dailyReports.get(Index).then(
+            (result: DailyReport) => {
+                return result;
+            });
+
+    }
+
+    // Agregar DailyReport por indexedDB
+    public async addDailyReportIndexedDB(dailyReport: DailyReport): Promise<DailyReport> {
+        console.log('addDailyReportIndexedDB(dailyReport: DailyReport)');
+
+        return await this.db.dailyReports
+            .add(dailyReport).then(
+                (dailyReportId: number) => {
+                    dailyReport.id = dailyReportId;
+
+                    return dailyReport;
+                });
+    }
+
+    // Agregar DailyReports por indexedDB
+    public async addDailyReportsIndexedDB(dailyReports: DailyReport[]): Promise<boolean> {
+        console.log('addPortsIndexedDB(ports: Port[])');
+
+        // Verificamos como se encuentra el servicios
+        if (true) {
+
+            // for await
+            for await (const iDailyReports of dailyReports) {
+                if (Boolean(iDailyReports.status) === true) {
+                    await this.addDailyReportIndexedDB(iDailyReports);
+                }
+            }
+
+        } else {
+
+            console.log('went offline, storing in indexdb');
+            return false;
+
+        }
+
+        console.log('FINNNNNN SINCRONOs');
+
+        return true;
+
+    }
+
+    // Actualiza DailyReports del IndexedDB
+    public async updateDailyReportsIndexedDB(dailyReport: DailyReport): Promise<DailyReport> {
+        console.log('updateDailyReportsIndexedDB(dailyReports: DailyReports)');
+
+        return await this.db.dailyReports.update(dailyReport.id,
+            {
+                userId: dailyReport.userId,
+                portId: dailyReport.portId,
+                activityPerformed: dailyReport.activityPerformed,
+                date: dailyReport.date,
+                hour: dailyReport.hour,
+                bunkeringIfo: dailyReport.bunkeringIfo,
+                bunkeringMgo: dailyReport.bunkeringMgo,
+                mplaIfo: dailyReport.mplaIfo,
+                auxIfo: dailyReport.auxIfo,
+                calderaIfo: dailyReport.calderaIfo,
+                otherIfo: dailyReport.otherIfo,
+                mplaMgo: dailyReport.mplaMgo,
+                auxMgo: dailyReport.auxMgo,
+                calderaMgo: dailyReport.calderaMgo,
+                ppMgo: dailyReport.ppMgo,
+                giMgo: dailyReport.giMgo,
+                otherMgo: dailyReport.otherMgo,
+                steamingTime: dailyReport.steamingTime,
+                distance: dailyReport.distance,
+                beaufour: dailyReport.beaufour,
+                observation: dailyReport.observation,
+
+
+                userIdCreated: dailyReport.userIdCreated,
+                dateCreated: dailyReport.dateCreated,
+                userIdUpdated: dailyReport.userIdUpdated,
+                dateUpdated: dailyReport.dateUpdated,
+                status: dailyReport.status,
+                syncStatus: dailyReport.syncStatus,
+            }
+        ).then((result: boolean) => {
+
+            return dailyReport;
+        });
+    }
+
+    public async ClearDailyReportsIndexedDB(): Promise<boolean> {
+        console.log('ClearVPortsIndexedDB()')
+
+        return await this.db.dailyReports.clear().then(
+            () => {
+
+                console.log('OK DELETE DailyReports DB')
+                return true;
+            }
+        );
+
+    }
 }
