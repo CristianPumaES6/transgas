@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { JwtDecode } from 'src/assets/jwtDecode.assets';
+import { getDate } from 'src/assets/moment.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { DailyReport } from 'src/models/daily-report.entity';
 import { UserEntity } from 'src/models/user.entity';
@@ -128,6 +129,14 @@ export class DailyReportsController {
                         if (Number(headerToken.id) !== Number(dailyReport.userId)) throw new Error('ERROR_USERID_FAIL');
                     }
 
+                    
+                    // Auditoria.
+                    dailyReport.userIdCreated = headerToken.id;
+                    dailyReport.dateCreated = getDate();
+                    delete dailyReport.userIdUpdated;
+                    delete dailyReport.dateUpdated;
+                    dailyReport.status = Boolean(dailyReport.status);
+
                     // Ejecutamos la funcion que registra en bd.
                     return this._dailyReportsService.Create(dailyReport);
                 }
@@ -178,6 +187,15 @@ export class DailyReportsController {
                     if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
                         if (Number(headerToken.id) !== Number(dailyReport.userId)) throw new Error('ERROR_USERID_FAIL');
                     }
+
+                    
+                    // Auditoria.
+                    delete dailyReport.userIdCreated;
+                    delete dailyReport.dateCreated;
+                    dailyReport.userIdUpdated = headerToken.id;
+                    dailyReport.dateUpdated = getDate();
+                    dailyReport.status = Boolean(dailyReport.status);
+
 
                     // Ejecutamos la funcion que actualiza el obj en la bd.
                     return this._dailyReportsService.Update(dailyReport);
@@ -245,6 +263,11 @@ export class DailyReportsController {
             (result: DailyReport) => {
 
                 result.status = false;
+                delete result.userIdCreated;
+                delete result.dateCreated;
+                result.userIdUpdated = headerToken.id;
+                result.dateUpdated = getDate();
+
                 // 
                 return this._dailyReportsService.Delete(result);
             }
