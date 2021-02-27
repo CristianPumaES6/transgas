@@ -31,6 +31,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Port } from '../../../models/port';
 import { PortService } from '../../../services/port.service';
 import { DailyReport } from 'src/app/models/daily-report';
+import { DailyReportService } from 'src/app/services/daily-report.service';
 
 
 
@@ -99,6 +100,7 @@ export class VoyageComponent implements OnInit {
     private userService: UserService,
     private voyageService: VoyageService,
     private portService: PortService,
+    private dailyReportService: DailyReportService,
     private loadingService: LoadingService,
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
@@ -642,7 +644,18 @@ export class VoyageComponent implements OnInit {
         (result: Boolean) => {
 
           if (result) {
-            this.selectPort = this.selectPort.id ? this.initialPort : new Port();
+
+            if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+              this.selectPort = this.selectPort.id ? this.initialPort : new Port();
+            } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+              this.selectDailyReport = this.selectDailyReport.id ? this.initialDailyReport : new DailyReport();
+            }
+
+            this.toolTipSave = 'SAVE_PORT';
+            this.toolTipDiscard = 'DISCARD_PORT';
+            this.toolTipEnableForm = 'ENABLE_FORM';
+            this.List_Voyages_Ports_DailyReports = 'Ports';
+
             this.Initialize();
           } else {
 
@@ -653,7 +666,8 @@ export class VoyageComponent implements OnInit {
 
       if (this.List_Voyages_Ports_DailyReports === 'Ports') {
         this.selectPort = this.selectPort.id ? this.initialPort : new Port();
-
+      } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+        this.selectDailyReport = this.selectDailyReport.id ? this.initialDailyReport : new DailyReport();
       }
 
       // Inicializamos el user para que detecte la diferencia.
@@ -1385,9 +1399,9 @@ export class VoyageComponent implements OnInit {
         (portIndexedDB: Port) => {
           // Verificamos el estado si es add que continue, caso contrario delete.
           if (portIndexedDB.syncStatus !== 'added') {
-            portIndexedDB.syncStatus = 'updated';
+            portToSave.syncStatus = 'updated';
           } else {
-            portIndexedDB.syncStatus = 'added';
+            portToSave.syncStatus = 'added';
             // Corregir todo con then
           }
 
@@ -1601,6 +1615,466 @@ export class VoyageComponent implements OnInit {
   }
 
 
+
+  // ----------------------------      DailyReport      -----------------------------
+  private CreateDailyReportOnlineOffline(newDailyReport: DailyReport) {
+
+    let error: boolean = false;
+    if (!newDailyReport.date && !newDailyReport.date) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR DATE'));
+      error = true;
+    }
+    if (!newDailyReport.hour && !newDailyReport.hour) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR HOUR'));
+      error = true;
+    }
+    if (!newDailyReport.activityPerformed && !newDailyReport.activityPerformed) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR ACTIVITY'));
+      error = true;
+    }
+
+    if (error) throw 'OK';
+
+    // Verificamos si estamos en linea
+    if (!!window.navigator.onLine) {
+
+      this.dailyReportService.Create(newDailyReport).subscribe(
+        (resultCreate: DailyReport) => {
+
+          // Actualizamos el nuevo viaje con el resultado.
+          newDailyReport = resultCreate;
+
+          this.databaseService.addDailyReportIndexedDB(newDailyReport);
+
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalReport + 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
+
+
+          // Actualizamos el total de reportes.
+          this.selectPort.totalReport = this.selectPort.totalReport + 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getPorts = this.getPorts.map(
+            (port: Port) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(port.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                port = this.selectPort;
+              }
+
+              return port;
+            }
+          );
+          this.databaseService.updatePortIndexedDB(this.selectPort);
+
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE'));
+
+          // Inicializamos los datos.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          return true;
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_DAILY_REPORT_CREATE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    } else {
+
+      // Le agregamos un stado Sync
+      newDailyReport.syncStatus = 'added';
+      delete newDailyReport.id;
+
+      Promise.resolve(true).then(
+        () => {
+          // Agregamos el port al indexedDB.
+          return this.databaseService.addDailyReportIndexedDB(newDailyReport);
+        }
+      ).then(
+        (resultDailyReportIndexedDB: DailyReport) => {
+
+          newDailyReport = resultDailyReportIndexedDB;
+
+
+          this.databaseService.addDailyReportIndexedDB(newDailyReport);
+
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalReport + 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
+
+
+          // Actualizamos el total de reportes.
+          this.selectPort.totalReport = this.selectPort.totalReport + 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getPorts = this.getPorts.map(
+            (port: Port) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(port.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                port = this.selectPort;
+              }
+
+              return port;
+            }
+          );
+          this.databaseService.updatePortIndexedDB(this.selectPort);
+
+
+
+          // vuelvo a cargar los datos de incio del token.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_DAILY_REPORT_CREATE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
+  }
+
+  private UpdateDailyReportOnelineOffline(dailyReportToSave: DailyReport) {
+
+    // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
+    if (!!window.navigator.onLine) {
+
+      // Guardo el objeto obtenido
+      this.dailyReportService.Save(dailyReportToSave).subscribe(
+        (result: DailyReport) => {
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_SAVE'));
+
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getDailyReports = this.getDailyReports.map(
+            (dailyReport: DailyReport) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(dailyReport.id) === Number(result.id)) {
+                // Actualizamos el valor con el resultado
+                dailyReport = result;
+              }
+
+              return dailyReport;
+            }
+          );
+          this.databaseService.updateDailyReportIndexedDB(result);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Si no hubo cambios solo navego
+          this.Initialize();
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_PORT_UPDATE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    } else {
+
+      Promise.resolve(true).then(
+        () => {
+          // Consultamos al getPortIndexDB para saber el estado del sync.
+          return this.databaseService.getDailyReportIndexDB(dailyReportToSave.id);
+        }
+      ).then(
+        (dailyReportIndexedDB: DailyReport) => {
+          // Verificamos el estado si es add que continue, caso contrario delete.
+          if (dailyReportIndexedDB.syncStatus !== 'added') {
+            dailyReportToSave.syncStatus = 'updated';
+          } else {
+            dailyReportToSave.syncStatus = 'added';
+            // Corregir todo con then
+          }
+
+          // Actualizo el puerto
+          return this.databaseService.updateDailyReportIndexedDB(dailyReportToSave)
+        }
+      ).then(
+        (resultUpdate: Port) => {
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getPorts = this.getPorts.map(
+            (port: Port) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(port.id) === Number(resultUpdate.id)) {
+                // Actualizamos el valor con el resultado
+                port = resultUpdate;
+              }
+
+              return port;
+            }
+          );
+
+          // Actualizamos la lista del azlist
+          this.azLists = this.azLists.map(
+            (azList: AzList) => {
+
+              // Buscamos el id para cambiar el valor de result.
+              if (azList.id === resultUpdate.id) {
+                // Actualizamos el valor con el resultado
+                azList = new AzList(resultUpdate.id, 'Port N°' + resultUpdate.portNumber, '(' + resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort + ')', '', '' + 123, '')
+              }
+              return azList;
+
+            }
+          )
+
+          // Si no hubo cambios solo navego
+          this.Initialize();
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_PORT_UPDATE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
+  }
+
+  private DeleteDailyReportOnlineOffline(dailyReportDelete: DailyReport) {
+
+    if (!!window.navigator.onLine) {
+      // Guardo el objeto obtenido
+      this.dailyReportService.Delete(dailyReportDelete).subscribe(
+        (result: DailyReport) => {
+
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_DELETE'));
+
+          // La siguiente linea de codigo eliminara un objeto del array.
+          this.getDailyReports = this.getDailyReports.filter(
+            (dailyReport: DailyReport) => {
+              if (Number(dailyReport.id) === Number(result.id)) {
+                return false;
+              }
+              return true;
+            }
+          );
+
+
+          
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalReport - 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
+
+
+          // Actualizamos el total de reportes.
+          this.selectPort.totalReport = this.selectPort.totalReport - 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getPorts = this.getPorts.map(
+            (port: Port) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(port.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                port = this.selectPort;
+              }
+
+              return port;
+            }
+          );
+          this.databaseService.updatePortIndexedDB(this.selectPort);
+
+
+
+          // Revisar como llega el usuario y si viaja en false.
+          this.databaseService.updateDailyReportIndexedDB(result);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // vuelvo a cargar los datos de incio del token.
+          this.Initialize();
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_DAILY_REPORT_DELETE');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
+
+    } else {
+
+      Promise.resolve(true).then(
+        () => {
+          // Consultamos al userIndexDB para saber el estado del sync.
+          return this.databaseService.getDailyReportIndexDB(dailyReportDelete.id);
+        }
+      ).then(
+        (getDailyReportIndexDB: DailyReport) => {
+          // Verificamos el estado si es add que continue, caso contrario delete.
+          if (getDailyReportIndexDB.syncStatus === 'added' || getDailyReportIndexDB.syncStatus === 'updated') {
+          } else {
+            getDailyReportIndexDB.syncStatus = 'deleted';
+          }
+
+          // le seteo el password por defecto y el estado a false.
+          getDailyReportIndexDB.status = false;
+
+          // Actualizo el voyage con el estado en False.
+          return this.databaseService.updateDailyReportIndexedDB(getDailyReportIndexDB);
+        }
+      ).then(
+        (resultUpdate: DailyReport) => {
+
+          // Elimino el usuario del arreglo.
+          this.getDailyReports = this.getDailyReports.filter(
+            (dailyReport: DailyReport) => {
+              if (Number(dailyReport.id) === Number(resultUpdate.id)) {
+                return false;
+              }
+              return true;
+            }
+          );
+
+          
+          // Actualizamos el total de puertos.
+          this.selectVoyage.totalPort = this.selectVoyage.totalReport - 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getVoyages = this.getVoyages.map(
+            (voyage: Voyage) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(voyage.id) === Number(this.selectVoyage.id)) {
+                // Actualizamos el valor con el resultado
+                voyage = this.selectVoyage;
+              }
+
+              return voyage;
+            }
+          );
+          this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
+
+
+          // Actualizamos el total de reportes.
+          this.selectPort.totalReport = this.selectPort.totalReport - 1;
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getPorts = this.getPorts.map(
+            (port: Port) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(port.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                port = this.selectPort;
+              }
+
+              return port;
+            }
+          );
+          this.databaseService.updatePortIndexedDB(this.selectPort);
+
+
+          // Inicializo los datos.
+          this.Initialize();
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+          // Muestro notificación
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_DELETE_LOCAL'));
+
+        }
+      ).catch(
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_DAILY_REPORT_DELETE_LOCAL');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+    }
+
+  }
+
+
+
   // Funciones para inicializar datos //
   //////////////////////////////////////
   // InitializeUser() : Iniziliza el objeto SailingAnality.
@@ -1638,6 +2112,7 @@ export class VoyageComponent implements OnInit {
   // ModifiedUser() : Verifica si el usuario a sido modificado.
   private Modified(): boolean {
 
+
     if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
 
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
@@ -1645,6 +2120,11 @@ export class VoyageComponent implements OnInit {
       let portToSave: Port = this.Collect();
       // Comparo los objetos antes y despues
       return !(JSON.stringify(portToSave) === JSON.stringify(this.initialPort));
+    } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+      // Armo objeto para pasarle al servicio
+      let dailyReportToSave: DailyReport = this.Collect();
+      // Comparo los objetos antes y despues
+      return !(JSON.stringify(dailyReportToSave) === JSON.stringify(this.initialDailyReport));
     }
 
   }
