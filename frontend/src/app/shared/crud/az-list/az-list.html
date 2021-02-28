@@ -1,4 +1,4 @@
-<div class="az-content-breadcrumb lh-1 mg-b-2">
+<div class="az-content-breadcrumb lh-1 mg-b-2 pl-0">
 
   <ng-template ngFor let-i="index" let-c="count" let-azListBreadcrumb [ngForOf]="settingAzList.azListBreadcrumbs">
     <span>{{azListBreadcrumb}}</span>
@@ -7,7 +7,7 @@
 </div>
 
 
-<h2 class="az-content-title tx-24 mg-b-0">
+<h2 class="az-content-title tx-24 mg-b-0 pl-0">
 
   <ng-template [ngIf]="settingAzList.isBack">
     <button mat-icon-button mat-button color="primary" (click)="OnSelectBack()"
@@ -20,7 +20,7 @@
     {{ settingAzList.titleAzLists }}
   </span>
 
-  <span class="float-right mr-2">
+  <span class="float-right">
     <ng-template [ngIf]="settingAzList.isNew">
       <button mat-icon-button mat-button color="primary" (click)="OnSelectNew()"
         matTooltip="{{settingAzList.toolTipNew}}">
