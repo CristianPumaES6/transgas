@@ -129,7 +129,21 @@ export class DailyReportsController {
                         if (Number(headerToken.id) !== Number(dailyReport.userId)) throw new Error('ERROR_USERID_FAIL');
                     }
 
-                    
+                    dailyReport.bunkeringIfo = dailyReport.bunkeringIfo || 0;
+                    dailyReport.bunkeringMgo = dailyReport.bunkeringMgo || 0;
+                    dailyReport.mplaIfo = dailyReport.mplaIfo || 0;
+                    dailyReport.auxIfo = dailyReport.auxIfo || 0;
+                    dailyReport.boilerIfo = dailyReport.boilerIfo || 0;
+                    dailyReport.otherIfo = dailyReport.otherIfo || 0;
+                    dailyReport.mplaMgo = dailyReport.mplaMgo || 0;
+                    dailyReport.auxMgo = dailyReport.auxMgo || 0;
+                    dailyReport.boilerMgo = dailyReport.boilerMgo || 0;
+                    dailyReport.ppMgo = dailyReport.ppMgo || 0;
+                    dailyReport.giMgo = dailyReport.giMgo || 0;
+                    dailyReport.otherMgo = dailyReport.otherMgo || 0;
+                    dailyReport.steamingTime = dailyReport.steamingTime || 0;
+                    dailyReport.distance = dailyReport.distance || 0;
+
                     // Auditoria.
                     dailyReport.userIdCreated = headerToken.id;
                     dailyReport.dateCreated = getDate();
@@ -188,7 +202,22 @@ export class DailyReportsController {
                         if (Number(headerToken.id) !== Number(dailyReport.userId)) throw new Error('ERROR_USERID_FAIL');
                     }
 
-                    
+
+                    dailyReport.bunkeringIfo = dailyReport.bunkeringIfo || 0;
+                    dailyReport.bunkeringMgo = dailyReport.bunkeringMgo || 0;
+                    dailyReport.mplaIfo = dailyReport.mplaIfo || 0;
+                    dailyReport.auxIfo = dailyReport.auxIfo || 0;
+                    dailyReport.boilerIfo = dailyReport.boilerIfo || 0;
+                    dailyReport.otherIfo = dailyReport.otherIfo || 0;
+                    dailyReport.mplaMgo = dailyReport.mplaMgo || 0;
+                    dailyReport.auxMgo = dailyReport.auxMgo || 0;
+                    dailyReport.boilerMgo = dailyReport.boilerMgo || 0;
+                    dailyReport.ppMgo = dailyReport.ppMgo || 0;
+                    dailyReport.giMgo = dailyReport.giMgo || 0;
+                    dailyReport.otherMgo = dailyReport.otherMgo || 0;
+                    dailyReport.steamingTime = dailyReport.steamingTime || 0;
+                    dailyReport.distance = dailyReport.distance || 0;
+
                     // Auditoria.
                     delete dailyReport.userIdCreated;
                     delete dailyReport.dateCreated;
