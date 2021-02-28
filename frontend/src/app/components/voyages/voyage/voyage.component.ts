@@ -223,6 +223,14 @@ export class VoyageComponent implements OnInit {
           // Revisamos si el result es el esperado.
           if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
 
+          // Hacemos Clear a la Tabla Users
+          return this.databaseService.ClearDailyReportsIndexedDB();
+        }
+      ).then(
+        resultClear => {
+          // Revisamos si el result es el esperado.
+          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
           // Agregamos los usuarios al indexedDB
           return this.databaseService.addUsersIndexedDB(this.getUsers);
         }
@@ -594,7 +602,7 @@ export class VoyageComponent implements OnInit {
 
   public ClickSave() {
     console.log('ClickSave()');
-
+    debugger
     if (this.List_Voyages_Ports_DailyReports === 'Ports') {
 
       if (!this.selectPort.id) {
@@ -614,6 +622,24 @@ export class VoyageComponent implements OnInit {
         let portToSave = this.selectPort;
         delete portToSave.dailyReports;
         this.UpdatePortOnelineOffline(portToSave)
+
+      }
+
+    } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+
+      if (!this.selectDailyReport.id) {
+
+        let newDailyReport = this.selectDailyReport;
+        newDailyReport.userId = this.selectUser.id;
+        newDailyReport.portId = this.selectPort.id;
+        newDailyReport.status = true;
+
+        this.CreateDailyReportOnlineOffline(newDailyReport);
+
+      } else {
+        let dailyReportToSave = this.selectDailyReport;
+
+        this.UpdateDailyReportOnelineOffline(dailyReportToSave);
 
       }
 
@@ -1614,8 +1640,6 @@ export class VoyageComponent implements OnInit {
 
   }
 
-
-
   // ----------------------------      DailyReport      -----------------------------
   private CreateDailyReportOnlineOffline(newDailyReport: DailyReport) {
 
@@ -1921,7 +1945,7 @@ export class VoyageComponent implements OnInit {
           );
 
 
-          
+
           // Actualizamos el total de puertos.
           this.selectVoyage.totalPort = this.selectVoyage.totalReport - 1;
           // Filtro y actualizo luego lo agrego al arreglo.
@@ -2011,7 +2035,7 @@ export class VoyageComponent implements OnInit {
             }
           );
 
-          
+
           // Actualizamos el total de puertos.
           this.selectVoyage.totalPort = this.selectVoyage.totalReport - 1;
           // Filtro y actualizo luego lo agrego al arreglo.
@@ -2072,8 +2096,6 @@ export class VoyageComponent implements OnInit {
     }
 
   }
-
-
 
   // Funciones para inicializar datos //
   //////////////////////////////////////
