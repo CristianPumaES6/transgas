@@ -273,7 +273,6 @@ export class VoyageComponent implements OnInit {
   public SelectItemAzList(event: AzList): void {
     console.log('SelectItemAzList(event: AzList)');
 
-    // REVISAR SI ES QUE LO BUSCAMOS DESDE EL ARREGLO O DESDE EL indexedDB
     if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
 
       this.SelectVoyagebyVoyageId(event.id);
@@ -313,6 +312,7 @@ export class VoyageComponent implements OnInit {
       }
     ).then(
       resultPorts => {
+        
         if (!resultPorts) throw 'NO_FOUND_PORTS';
 
         this.getPorts = resultPorts;
@@ -502,7 +502,7 @@ export class VoyageComponent implements OnInit {
       Promise.resolve(true).then(
         () => {
           // Obtenemos los viajes de IndexDB
-          return this.databaseService.getVoyagesByUserIdIndexDB(userId); // Revisar
+          return this.databaseService.getVoyagesByUserIdIndexDB(userId);
         }
       ).then(
         (voyages: Voyage[]) => {
@@ -512,7 +512,7 @@ export class VoyageComponent implements OnInit {
 
             this.getVoyages = voyages;
             // Generar lista por usuarios.
-            this.generateAzListByVoyages(this.getVoyages); // Revisar
+            this.generateAzListByVoyages(this.getVoyages);
 
             return true;
           } else {
@@ -602,7 +602,7 @@ export class VoyageComponent implements OnInit {
 
   public ClickSave() {
     console.log('ClickSave()');
-    debugger
+    
     if (this.List_Voyages_Ports_DailyReports === 'Ports') {
 
       if (!this.selectPort.id) {
@@ -675,12 +675,12 @@ export class VoyageComponent implements OnInit {
               this.selectPort = this.selectPort.id ? this.initialPort : new Port();
             } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
               this.selectDailyReport = this.selectDailyReport.id ? this.initialDailyReport : new DailyReport();
+              this.List_Voyages_Ports_DailyReports = 'Ports';
             }
 
             this.toolTipSave = 'SAVE_PORT';
             this.toolTipDiscard = 'DISCARD_PORT';
             this.toolTipEnableForm = 'ENABLE_FORM';
-            this.List_Voyages_Ports_DailyReports = 'Ports';
 
             this.Initialize();
           } else {
@@ -694,6 +694,7 @@ export class VoyageComponent implements OnInit {
         this.selectPort = this.selectPort.id ? this.initialPort : new Port();
       } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
         this.selectDailyReport = this.selectDailyReport.id ? this.initialDailyReport : new DailyReport();
+        this.List_Voyages_Ports_DailyReports = 'Ports';
       }
 
       // Inicializamos el user para que detecte la diferencia.
@@ -773,6 +774,9 @@ export class VoyageComponent implements OnInit {
     this.toolTipDiscard = 'DISCARD_REPORT';
     this.toolTipEnableForm = 'ENABLE_REPORT';
 
+    this.selectDailyReport = new DailyReport();
+    this.Initialize();
+    this.disableEdit = false;
   }
 
   public ClickDeleteVoyage(event: AzList) {
@@ -880,7 +884,7 @@ export class VoyageComponent implements OnInit {
     // Armo un obj azList.
     ports.forEach((azPort: Port) => {
       this.azLists.push(
-        new AzList(azPort.id, 'Port N°' + azPort.portNumber, '(' + azPort.departurePort + ' - ' + azPort.arrivalPort + ')', '', '' + 123, '')
+        new AzList(azPort.id, 'Port N°' + azPort.portNumber, '(' + azPort.departurePort + ' - ' + azPort.arrivalPort + ')', '', '', String(azPort.totalReport))
       );
     });
 
@@ -928,7 +932,7 @@ export class VoyageComponent implements OnInit {
     ).then(
       () => {
         // Obtenemos los viajes de IndexDB
-        return this.databaseService.getVoyagesByUserIdIndexDB(this.selectUser.id); // Revisar
+        return this.databaseService.getVoyagesByUserIdIndexDB(this.selectUser.id);
       }
     ).then(
       (voyages: Voyage[]) => {
@@ -938,7 +942,7 @@ export class VoyageComponent implements OnInit {
 
           this.getVoyages = voyages;
           // Generar lista por usuarios.
-          this.generateAzListByVoyages(this.getVoyages); // Revisar
+          this.generateAzListByVoyages(this.getVoyages);
 
           return true;
         } else {
@@ -1129,8 +1133,7 @@ export class VoyageComponent implements OnInit {
               return true;
             }
           );
-
-          // Revisar como llega el usuario y si viaja en false.
+          
           this.databaseService.updateVoyageIndexedDB(result);
 
           // Deshabilito el spinner de loading
@@ -1241,9 +1244,10 @@ export class VoyageComponent implements OnInit {
 
           // Actualizamos el nuevo viaje con el resultado.
           newPort = resultCreate;
+          newPort.totalReport = 0;
 
           // armamos el obj Azlist
-          let azList = new AzList(newPort.id, 'Port N°' + newPort.portNumber, '(' + newPort.departurePort + ' - ' + newPort.arrivalPort + ')', '', '' + 123, '')
+          let azList = new AzList(newPort.id, 'Port N°' + newPort.portNumber, '(' + newPort.departurePort + ' - ' + newPort.arrivalPort + ')', '', '', String(newPort.totalReport))
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -1294,6 +1298,7 @@ export class VoyageComponent implements OnInit {
       // Le agregamos un stado Sync
       newPort.syncStatus = 'added';
       delete newPort.id;
+      newPort.totalReport = 0;
 
       Promise.resolve(true).then(
         () => {
@@ -1306,7 +1311,7 @@ export class VoyageComponent implements OnInit {
           newPort = resultPortIndexedDB;
 
           // armamos el obj Azlist
-          let azList = new AzList(newPort.id, 'Port N°' + newPort.portNumber, '(' + newPort.departurePort + ' - ' + newPort.arrivalPort + ')', '', '' + 123, '')
+          let azList = new AzList(newPort.id, 'Port N°' + newPort.portNumber, '(' + newPort.departurePort + ' - ' + newPort.arrivalPort + ')', '', '', String(newPort.totalReport))
 
           // Se lo agregamos asus arreglos correspondientes.
           this.azLists.unshift(azList);
@@ -1367,6 +1372,9 @@ export class VoyageComponent implements OnInit {
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE'));
 
+          // le seteo el total de reporte por que este valor no viene desde el backend.
+          result.totalReport = portToSave.totalReport;
+
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getPorts = this.getPorts.map(
             (port: Port) => {
@@ -1389,7 +1397,7 @@ export class VoyageComponent implements OnInit {
               if (Number(azList.id) === Number(result.id)) {
 
                 // Actualizamos el valor con el resultado
-                azList = new AzList(result.id, 'Port N°' + result.portNumber, '(' + result.departurePort + ' - ' + result.arrivalPort + ')', '', '' + 123, '')
+                azList = new AzList(result.id, 'Port N°' + result.portNumber, '(' + result.departurePort + ' - ' + result.arrivalPort + ')', '', '', String(result.totalReport));
               }
 
               return azList;
@@ -1432,7 +1440,7 @@ export class VoyageComponent implements OnInit {
           }
 
           // Actualizo el puerto
-          return this.databaseService.updatePortIndexedDB(portToSave)
+          return this.databaseService.updatePortIndexedDB(portToSave);
         }
       ).then(
         (resultUpdate: Port) => {
@@ -1456,7 +1464,7 @@ export class VoyageComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, 'Port N°' + resultUpdate.portNumber, '(' + resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort + ')', '', '' + 123, '')
+                azList = new AzList(resultUpdate.id, 'Port N°' + resultUpdate.portNumber, '(' + resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort + ')', '', '', String(resultUpdate.totalReport));
               }
               return azList;
 
@@ -1533,7 +1541,6 @@ export class VoyageComponent implements OnInit {
           this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
 
 
-          // Revisar como llega el usuario y si viaja en false.
           this.databaseService.updatePortIndexedDB(result);
 
           // Deshabilito el spinner de loading
@@ -1671,7 +1678,7 @@ export class VoyageComponent implements OnInit {
           this.databaseService.addDailyReportIndexedDB(newDailyReport);
 
           // Actualizamos el total de puertos.
-          this.selectVoyage.totalPort = this.selectVoyage.totalReport + 1;
+          this.selectVoyage.totalReport = this.selectVoyage.totalReport + 1;
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getVoyages = this.getVoyages.map(
             (voyage: Voyage) => {
@@ -1703,6 +1710,18 @@ export class VoyageComponent implements OnInit {
           );
           this.databaseService.updatePortIndexedDB(this.selectPort);
 
+          this.azLists = this.azLists.map(
+            (azList: AzList) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(azList.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                azList.item3 = String(this.selectPort.totalReport);
+              }
+
+              return azList;
+            }
+          );
+
 
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE'));
@@ -1712,6 +1731,7 @@ export class VoyageComponent implements OnInit {
 
           // Deshabilito el spinner de loading
           this.loadingService.Close();
+          this.List_Voyages_Ports_DailyReports = 'Ports';
 
           return true;
         },
@@ -1742,9 +1762,6 @@ export class VoyageComponent implements OnInit {
         (resultDailyReportIndexedDB: DailyReport) => {
 
           newDailyReport = resultDailyReportIndexedDB;
-
-
-          this.databaseService.addDailyReportIndexedDB(newDailyReport);
 
           // Actualizamos el total de puertos.
           this.selectVoyage.totalPort = this.selectVoyage.totalReport + 1;
@@ -1789,6 +1806,7 @@ export class VoyageComponent implements OnInit {
 
           // Muestro notificación
           this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE_LOCAL'));
+          this.List_Voyages_Ports_DailyReports = 'Ports';
 
         }
       ).catch(
@@ -1886,6 +1904,7 @@ export class VoyageComponent implements OnInit {
             }
           );
 
+          //Revisar como se deberia actualizar el reporte.
           // Actualizamos la lista del azlist
           this.azLists = this.azLists.map(
             (azList: AzList) => {
@@ -1893,7 +1912,7 @@ export class VoyageComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, 'Port N°' + resultUpdate.portNumber, '(' + resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort + ')', '', '' + 123, '')
+                azList = new AzList(resultUpdate.id, 'Port N°' + resultUpdate.portNumber, '(' + resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort + ')', '', '' + 123, '');
               }
               return azList;
 
@@ -1979,9 +1998,6 @@ export class VoyageComponent implements OnInit {
           );
           this.databaseService.updatePortIndexedDB(this.selectPort);
 
-
-
-          // Revisar como llega el usuario y si viaja en false.
           this.databaseService.updateDailyReportIndexedDB(result);
 
           // Deshabilito el spinner de loading
@@ -2112,6 +2128,10 @@ export class VoyageComponent implements OnInit {
 
       // actualizo el valor del InitializeSailingAnality.
       this.initialPort = this.Collect();
+    } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+
+      // actualizo el valor del InitializeSailingAnality.
+      this.initialDailyReport = this.Collect();
     }
 
   }
@@ -2127,6 +2147,14 @@ export class VoyageComponent implements OnInit {
 
       // Retorno el objeto
       return JSON.parse(JSON.stringify(port));
+
+    } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+
+      // El objeto user lo seteamos.
+      let dailyReport: DailyReport = this.selectDailyReport;
+
+      // Retorno el objeto
+      return JSON.parse(JSON.stringify(dailyReport));
     }
 
   }
