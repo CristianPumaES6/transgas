@@ -312,10 +312,11 @@ export class VoyageComponent implements OnInit {
       }
     ).then(
       resultPorts => {
-        
+
         if (!resultPorts) throw 'NO_FOUND_PORTS';
 
         this.getPorts = resultPorts;
+        this.getDailyReports = [];
 
         this.generateAzListByPorts(this.getPorts);
 
@@ -366,14 +367,20 @@ export class VoyageComponent implements OnInit {
           }
         );
 
-
         this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
-
 
         return true;
       }
     ).then(
       result => {
+        // no validamos el resultado por que siempre es true.
+        
+        return this.databaseService.getReportDailysByPortIdIndexDB(this.selectPort.id);
+      }
+    ).then(
+      dailyReports => {
+        this.getDailyReports = dailyReports;
+
         this.Initialize();
 
         return true;
@@ -602,7 +609,7 @@ export class VoyageComponent implements OnInit {
 
   public ClickSave() {
     console.log('ClickSave()');
-    
+
     if (this.List_Voyages_Ports_DailyReports === 'Ports') {
 
       if (!this.selectPort.id) {
@@ -1133,7 +1140,7 @@ export class VoyageComponent implements OnInit {
               return true;
             }
           );
-          
+
           this.databaseService.updateVoyageIndexedDB(result);
 
           // Deshabilito el spinner de loading

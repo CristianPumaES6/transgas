@@ -87,6 +87,42 @@
             </div>
           </ng-template>
 
+          <div class="row pb-2">
+
+            <div [ngClass]="{'d-none': getDailyReports.length == 0}" class="PerfectScrollbar-reportTable col-12">
+
+              <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
+                <thead>
+                  <tr>
+
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="getDailyReports">
+
+                    <tr>
+                      <td class="p-1 color-title-table border">
+                        {{ dailyReport.activityPerformed | translateMessage:translateCategory }}
+                      </td>
+                    </tr>
+
+                  </ng-template>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+
+          </div>
+
+
+
         </ng-template>
 
         <ng-template [ngIf]="List_Voyages_Ports_DailyReports==='DailyReports'">
