@@ -745,6 +745,8 @@ export class DatabaseService {
                 dateUpdated: port.dateUpdated,
                 status: port.status,
                 syncStatus: port.syncStatus,
+
+                totalReport: port.totalReport,
             }
         ).then((result: boolean) => {
 
