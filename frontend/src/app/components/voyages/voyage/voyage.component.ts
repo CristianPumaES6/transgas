@@ -366,6 +366,7 @@ export class VoyageComponent implements OnInit {
             return Number(port.id) === Number(portId)
           }
         );
+        this.selectPort = JSON.parse(JSON.stringify(this.selectPort));
 
         this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
 
