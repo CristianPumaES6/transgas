@@ -578,6 +578,7 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
       this.NewPort();
+      this.getDailyReports = [];
     }
 
     return false;
