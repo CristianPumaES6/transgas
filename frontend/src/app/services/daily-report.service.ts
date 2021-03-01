@@ -91,6 +91,9 @@ export class DailyReportService {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
+
+        // Eliminamos el campo sync
+        delete dailyReport.syncStatus;
         // Parseo el obj para poder enviarlo en el request
         let body: string = JSON.stringify(dailyReport);
         let options: any = { headers: headers, responseType: 'json' };
@@ -120,6 +123,8 @@ export class DailyReportService {
                 'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
 
+        // Eliminamos el campo sync
+        delete dailyReport.syncStatus;
         // Armo el obj para enviarlo.
         let body: string = JSON.stringify(dailyReport);
         let options: any = { headers: headers, responseType: 'json' };

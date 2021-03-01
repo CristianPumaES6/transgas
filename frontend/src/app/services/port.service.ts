@@ -121,6 +121,9 @@ export class PortService {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
+            
+        // Eliminamos el campo sync
+        delete port.syncStatus;
         // Parseo el obj para poder enviarlo en el request
         let body: string = JSON.stringify(port);
         let options: any = { headers: headers, responseType: 'json' };
@@ -151,6 +154,8 @@ export class PortService {
                 'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
 
+        // Eliminamos el campo sync
+        delete port.syncStatus;
         // Armo el obj para enviarlo.
         let body: string = JSON.stringify(port);
         let options: any = { headers: headers, responseType: 'json' };
