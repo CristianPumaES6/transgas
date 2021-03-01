@@ -752,6 +752,8 @@ export class VoyageComponent implements OnInit {
       this.title_header_media = '';
       this.sub_title_header_media = '';
 
+      this.disableEdit = true;
+
       this.generateAzListByVoyages(this.getVoyages);
     }
   }
@@ -2277,7 +2279,7 @@ export class VoyageComponent implements OnInit {
     let total = 0;
 
     // sumamos el consumo
-     total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.boilerMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
+    total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.boilerMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
 
     // Retornamos el total de cosumo
     return mathRound(total, 2);
