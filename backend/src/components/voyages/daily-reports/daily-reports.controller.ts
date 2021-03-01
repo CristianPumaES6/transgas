@@ -199,8 +199,8 @@ export class DailyReportsController {
 
 
                     if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
-                        if (Number(headerToken.id) !== Number(dailyReport.userId)) throw new Error('ERROR_USERID_FAIL');
-                    }
+                       
+                    } else if (Number(headerToken.id) !== Number(dailyReport.userId)) throw new Error('ERROR_USERID_FAIL');
 
 
                     dailyReport.bunkeringIfo = dailyReport.bunkeringIfo || 0;
