@@ -2265,9 +2265,7 @@ export class VoyageComponent implements OnInit {
 
     // sumamos el consumo
 
-    // total = dailyReport.mplaIfo + dailyReport.auxIfo + dailyReport.calderaIfo + dailyReport.otherIfo;
-
-    total = 3.7888;
+    total = dailyReport.mplaIfo + dailyReport.auxIfo + dailyReport.boilerIfo + dailyReport.otherIfo;
 
     // Retornamos el total de cosumo
     return mathRound(total, 2);
@@ -2279,9 +2277,8 @@ export class VoyageComponent implements OnInit {
     let total = 0;
 
     // sumamos el consumo
-    // total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.calderaMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
+     total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.boilerMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
 
-    total = 3.7888;
     // Retornamos el total de cosumo
     return mathRound(total, 2);
   }

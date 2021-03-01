@@ -22,16 +22,16 @@ export class DailyReport {
         public mplaIfo?: number,
         // Consumo auxIfo
         public auxIfo?: number,
-        // consumo calderaIfo
-        public calderaIfo?: number,
+        // consumo boilerIfo
+        public boilerIfo?: number,
         // Otros consumos Ifo
         public otherIfo?: number,
         // Consumo mplaMgo
         public mplaMgo?: number,
         // Consumo auxMgo
         public auxMgo?: number,
-        // Consumo calderaMgo
-        public calderaMgo?: number,
+        // Consumo boilerMgo
+        public boilerMgo?: number,
         // Consumo ppMgo
         public ppMgo?: number,
         // Consumo giMgo
@@ -67,15 +67,15 @@ export class DailyReport {
         // Consumo IFO
         this.mplaIfo = mplaIfo || 0;
         this.auxIfo = auxIfo || 0;
-        this.calderaIfo = calderaIfo || 0;
+        this.boilerIfo = boilerIfo || 0;
         this.otherIfo = otherIfo || 0;
         // Consumo MGO
-        this.mplaMgo = otherIfo || 0;
-        this.auxMgo = otherIfo || 0;
-        this.calderaMgo = otherIfo || 0;
-        this.ppMgo = otherIfo || 0;
-        this.giMgo = otherIfo || 0;
-        this.otherMgo = otherIfo || 0;
+        this.mplaMgo = mplaMgo || 0;
+        this.auxMgo = auxMgo || 0;
+        this.boilerMgo = boilerMgo || 0;
+        this.ppMgo = ppMgo || 0;
+        this.giMgo = giMgo || 0;
+        this.otherMgo = otherMgo || 0;
 
         this.steamingTime = steamingTime || 0;
         this.distance = distance || 0;
