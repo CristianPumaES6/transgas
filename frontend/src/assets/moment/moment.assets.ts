@@ -17,10 +17,19 @@ export function getYear(): string {
     return moment().format('YYYY');
 }
 
-export function stringToDate(fecha: string): string {
+export function stringToDate(fecha: any): string {
 
     let formatfecha = moment(fecha).format('MM-DD-YYYY');
 
     return formatfecha;
+}
+
+
+// retorna true si es valido false si no lo es.
+export function validateDate(fecha: any): boolean {
+
+    let result = !!moment(fecha).isValid();
+    
+    return result;
 }
 

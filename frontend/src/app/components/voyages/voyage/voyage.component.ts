@@ -25,7 +25,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { getYear, stringToDate } from '../../../../assets/moment/moment.assets';
+import { getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -1428,6 +1428,18 @@ export class VoyageComponent implements OnInit {
 
   private UpdatePortOnelineOffline(portToSave: Port) {
 
+    let error: boolean = false;
+    if (!portToSave.departurePort && !portToSave.departurePort.length) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'DEPARTURE_MISSING'));
+      error = true;
+    }
+    if (!portToSave.arrivalPort && !portToSave.arrivalPort.length) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'ARRIVAL_MISSING'));
+      error = true;
+    }
+
+    if (error) throw 'OK';
+
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
@@ -1717,7 +1729,7 @@ export class VoyageComponent implements OnInit {
   private CreateDailyReportOnlineOffline(newDailyReport: DailyReport) {
 
     let error: boolean = false;
-    if (!newDailyReport.date && !newDailyReport.date) {
+    if (!newDailyReport.date || !validateDate(newDailyReport.date) ) {
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR DATE'));
       error = true;
     }
@@ -1908,7 +1920,21 @@ export class VoyageComponent implements OnInit {
   }
 
   private UpdateDailyReportOnelineOffline(dailyReportToSave: DailyReport) {
-    debugger
+    let error: boolean = false;
+    if (!dailyReportToSave.date  || !validateDate(dailyReportToSave.date) ) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR DATE'));
+      error = true;
+    }
+    if (!dailyReportToSave.hour && !dailyReportToSave.hour) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR HOUR'));
+      error = true;
+    }
+    if (!dailyReportToSave.activityPerformed && !dailyReportToSave.activityPerformed) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR ACTIVITY'));
+      error = true;
+    }
+
+
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
@@ -2070,6 +2096,19 @@ export class VoyageComponent implements OnInit {
           );
           this.databaseService.updatePortIndexedDB(this.selectPort);
 
+
+          this.azLists = this.azLists.map(
+            (azList: AzList) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(azList.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                azList.item3 = String(this.selectPort.totalReport);
+              }
+
+              return azList;
+            }
+          );
+
           this.databaseService.updateDailyReportIndexedDB(result);
 
           // Deshabilito el spinner de loading
@@ -2153,6 +2192,24 @@ export class VoyageComponent implements OnInit {
               return port;
             }
           );
+
+
+
+          this.azLists = this.azLists.map(
+            (azList: AzList) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(azList.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                azList.item3 = String(this.selectPort.totalReport);
+              }
+
+              return azList;
+            }
+          );
+
+
+
+
           this.databaseService.updatePortIndexedDB(this.selectPort);
 
           // Inicializo los datos.
