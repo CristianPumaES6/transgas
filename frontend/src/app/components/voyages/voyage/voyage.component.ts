@@ -1690,6 +1690,7 @@ export class VoyageComponent implements OnInit {
           // Actualizamos el nuevo viaje con el resultado.
           newDailyReport = resultCreate;
 
+          this.getDailyReports.unshift(newDailyReport);
           this.databaseService.addDailyReportIndexedDB(newDailyReport);
 
           // Actualizamos el total de puertos.
@@ -1778,6 +1779,8 @@ export class VoyageComponent implements OnInit {
 
           newDailyReport = resultDailyReportIndexedDB;
 
+          this.getDailyReports.unshift(newDailyReport);
+
           // Actualizamos el total de puertos.
           this.selectVoyage.totalReport = this.selectVoyage.totalReport + 1;
           // Filtro y actualizo luego lo agrego al arreglo.
@@ -1810,6 +1813,19 @@ export class VoyageComponent implements OnInit {
             }
           );
           this.databaseService.updatePortIndexedDB(this.selectPort);
+
+
+          this.azLists = this.azLists.map(
+            (azList: AzList) => {
+              // Buscamos el id para cambiar el valor de result.
+              if (Number(azList.id) === Number(this.selectPort.id)) {
+                // Actualizamos el valor con el resultado
+                azList.item3 = String(this.selectPort.totalReport);
+              }
+
+              return azList;
+            }
+          );
 
 
 
