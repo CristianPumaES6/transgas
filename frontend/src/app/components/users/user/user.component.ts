@@ -179,6 +179,13 @@ export class UserComponent implements OnInit {
     } else {
       this.loadDataIndexedDB();
 
+      setTimeout(() => {
+
+        new PerfectScrollbar('.az-contact-info-body', {
+          suppressScrollX: true
+        })
+
+      }, 500);
     }
 
   }
