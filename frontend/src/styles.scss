@@ -23,4 +23,15 @@ mat-form-field {
   width: 100%;
 }
 
+.personalizate {
+  mat-form-field {
+    .mat-form-field-wrapper {
+      .mat-form-field-infix {
+        width: auto;
+      }
+    }
+  }
+}
+
+
 @import "styles/azia/azia.scss";

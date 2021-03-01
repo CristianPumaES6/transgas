@@ -1,0 +1,70 @@
+@import "../../../variable";
+
+.modi {
+  &.table {
+    overflow: hidden hidden;
+
+    // Clase de bootstrap estoy modificando solo el color del borde-
+    .border {
+      border-color: $blue-light-2 !important;
+    }
+
+    thead {
+      tr {
+        .color-title-table {
+          color: #ffffff;
+
+          &.blue-1 {
+            background: $blue-light-1;
+          }
+
+          &.blue-2 {
+            background: $blue-light-1;
+          }
+
+          &.blue-3 {
+            background: $blue-dark-1;
+          }
+        }
+
+        th {
+          text-align: center;
+        }
+
+        td {
+          text-align: center;
+          cursor: pointer;
+          animation: all 0.5s;
+          transition: all 0.5s;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        .color-title-table {
+          color: $t-blue;
+        }
+
+        th {
+          text-align: center;
+          font-weight: bold;
+        }
+
+        td {
+          text-align: center;
+          animation: all 0.5s;
+          transition: all 0.5s;
+          font-weight: bold;
+        }
+
+        &:hover {
+          td {
+            background: rgba(184, 209, 255, 0.2);
+          }
+        }
+      }
+    }
+
+  }
+}

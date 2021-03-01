@@ -4,85 +4,67 @@ import { Observable, Subject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators'
 
 import { EnvConfig } from '../config/env.config'
-//import { UUID } from 'angular2-uuid';
-import Dexie from 'dexie';
-//import { Todo } from '../models/todo';
 
-// Models
-import { User } from '../models/user';
-
+// Service
+import { UserService } from './user.service';
 import { AuthGuardService } from './auth-guard.service';
-import { FileUploadModel } from '../models/fileUploadedModel';
+
+// Modelos
+import { Port } from '../models/port';
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
-
-    public db: any;
+export class PortService {
 
     public url: string;
-    public userIdentity: User;
-    public token;
-    public status;
 
+    // Constructor
     constructor(
+        // HttpClient
         private httpClient: HttpClient,
-        private authGuardService: AuthGuardService
+        // GuardService.
+        private authGuardService: AuthGuardService,
+        // Instanciamos al servicio usuario.
+        private userService: UserService,
     ) {
-        console.log('constructor()');
-
         this.url = EnvConfig.API;
-        // Obtenemos la identidad logeada.
-        this.GetIdentity();
     }
 
-    //--------------- Servicios Utiles, deberia ir en el shared Creo ----------------------------------------//
-    // Obtiene al usuario logeado.
-    public GetIdentity(): User {
-        console.log('GetIdentity()');
 
-        // Obtenemos la entidad del localStorage LoggedUser
-        let identity: User = JSON.parse(localStorage.getItem('LoggedUser'));
-        if (identity) {
-            this.userIdentity = identity;
-        } else {
-            this.userIdentity = null;
-        }
-
-        return this.userIdentity;
-    }
-
-    // obtiene el token del usuario actual
-    public GetToken(): string {
-        console.log('GetToken()');
-
-        let token = localStorage.getItem('Session');
-        if (token != "undefined") {
-            this.token = token;
-        } else {
-            this.token = null;
-        }
-
-        return this.token;
-    }
-    // --------------------------------------------------------
-
-
-
-
-    //---------------------------------------------------------------------------//
-    //----------------------------- Services ------------------------------------//
-    //---[ Get<Class>s, Get<Class>, Create<Class>, Save<Class>, Delete<Class>]---//
-    //---------------------------------------------------------------------------//
-
-    GetUser(userId: Number): Observable<User> {
-        console.log('GetUser(userId: Number)');
-
+    // Obtine solo un objeto desde el ID.
+    Get(portId: Number): Observable<Port> {
         // Armo el request
-        let url: string = this.url + '/users/' + userId;
+        let url: string = this.url + '/ports/' + portId;
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.GetToken(),
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    if (response.status && response.status === 200) {
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
+                return this.authGuardService.HandleError(err);
+            })
+        );
+    }
+
+    // Obtiene todos los objetos segun el filtro enviado.
+    Gets(port: Port): Observable<Port[]> {
+        // Armo el request
+        let url: string = this.url + '/ports?userId=' + (port.userId || '') + '&voyageId=' + (port.voyageId || '') + '&portNumber=' + (port.portNumber || '')+'&departurePort=' + (port.departurePort || '')+'&arrivalPort=' + (port.arrivalPort || '');
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
         let options: any = { headers: headers, responseType: 'json' };
 
@@ -103,13 +85,14 @@ export class UserService {
     }
 
 
-    GetUsers(user: User): Observable<User[]> {
+    // Obtiene todos los objetos segun el filtro enviado.
+    GetsDetail(port: Port, page?: number): Observable<Port[]> {
         // Armo el request
-        let url: string = this.url + '/users?id=' + (user.id || '') + '&name=' + (user.name || '') + '&role=' + (user.role || '');
+        let url: string = this.url + '/ports/detail?userId=' + (port.userId || '') + '&voyageId=' + (port.voyageId || '') + '&portNumber=' + (port.portNumber || '')+'&departurePort=' + (port.departurePort || '')+'&arrivalPort=' + (port.arrivalPort || '');
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.GetToken(),
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
         let options: any = { headers: headers, responseType: 'json' };
 
@@ -118,7 +101,6 @@ export class UserService {
             map(
                 (response: any) => {
                     if (response.status && response.status === 200) {
-
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
@@ -131,18 +113,19 @@ export class UserService {
     }
 
 
-    CreateUser(user: User): Observable<User> {
+    Create(port: Port): Observable<Port> {
         // Armo el request
-        let url: string = this.url + '/users/create';
+        let url: string = this.url + '/ports/create';
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.GetToken(),
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
-
+            
         // Eliminamos el campo sync
-        delete user.syncStatus;
-        let body: string = JSON.stringify(user);
+        delete port.syncStatus;
+        // Parseo el obj para poder enviarlo en el request
+        let body: string = JSON.stringify(port);
         let options: any = { headers: headers, responseType: 'json' };
 
         // Mando consulta al API
@@ -161,18 +144,20 @@ export class UserService {
     }
 
 
-    SaveUser(user: User): Observable<User> {
+    Save(port: Port): Observable<Port> {
+
         // Armo el request
-        let url: string = this.url + '/users/' + user.id + '/update';
+        let url: string = this.url + '/ports/' + port.id + '/update';
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.GetToken(),
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
 
         // Eliminamos el campo sync
-        delete user.syncStatus;
-        let body: string = JSON.stringify(user);
+        delete port.syncStatus;
+        // Armo el obj para enviarlo.
+        let body: string = JSON.stringify(port);
         let options: any = { headers: headers, responseType: 'json' };
 
         // Mando consulta al API
@@ -189,15 +174,15 @@ export class UserService {
             catchError((err) => this.authGuardService.HandleError(err))
         );
     }
-
-
-    DeleteUser(user: User): Observable<User> {
+    
+    // Eliminamos el obj desde el id recibido desde el obj.
+    Delete(port: Port): Observable<Port> {
         // Armo el request
-        let url: string = this.url + '/users/' + user.id + '/delete';
+        let url: string = this.url + '/ports/' + port.id + '/delete';
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.GetToken(),
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
             });
         let options: any = { headers: headers, responseType: 'json' };
 
@@ -205,39 +190,16 @@ export class UserService {
         return this.httpClient.delete(url, options).pipe(
             map(
                 (response: any) => {
-
                     if (response.status && response.status === 200) {
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
                     }
-
                 }
             ),
             catchError((err) => this.authGuardService.HandleError(err))
         );
     }
-
-    UploadPerfil(id: number, file: FileUploadModel): Observable<any> {
-        // Armo el request
-        let url: string = this.url + '/users/' + id + '/image';
-        let headers: HttpHeaders = new HttpHeaders(
-            {
-                'Authorization': 'Bearer ' + this.GetToken(),
-            });
-        // Creamos el obj formulario.
-        const formData = new FormData();
-        // Agregamos la imagen
-        formData.append('image', file.data);
-
-        const httpRequest = new HttpRequest('POST', url, formData, {
-            headers: headers,
-            reportProgress: true
-        });
-        // Mando consulta al API
-        return this.httpClient.request(httpRequest);
-    }
-    // -----------------------------------------
 
 
 }

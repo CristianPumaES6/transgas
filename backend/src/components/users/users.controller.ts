@@ -101,7 +101,14 @@ export class UsersController {
                     // Ejecutamos el servicio de obtener sailingAnalities.
                     return this._usersService.Gets(user);
 
-                } else throw new Error('MISSING_FIELS');
+                } else {
+                    if (Number(user.id) === Number(headerToken.id)) {
+                        // Ejecutamos el servicio de obtener sailingAnalities.
+                        return this._usersService.Gets(user);
+                    } else {
+                        throw new Error('MISSING_FIELS');
+                    }
+                }
 
             }
         ).then(
@@ -153,6 +160,7 @@ export class UsersController {
                     user.dateCreated = getDate();
                     delete user.userIdUpdated;
                     delete user.dateUpdated;
+                    user.status = Boolean(user.status);
                     // retornamos la respuesta del servicio.
                     return this._usersService.CreateUserNickUnique(user);
                 } else {
@@ -205,11 +213,11 @@ export class UsersController {
                 if (!isNaN(id) && user && user.name && user.nick && user.password && user.role) {
                     user.id = Number(id);
 
-                    
                     delete user.userIdCreated;
                     delete user.dateCreated;
                     user.userIdUpdated = headerToken.id;
                     user.dateUpdated = getDate();
+                    user.status = Boolean(user.status);
                     // retornamos la respuesta del servicio.
                     return this._usersService.UpdateUserNickUnique(user);
                 } else {

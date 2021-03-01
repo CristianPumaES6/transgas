@@ -11,11 +11,15 @@ import { LanguageService } from '../../../services/language.service';
 import { ASideService } from '../../../services/a-side.service'
 
 // Componentes Dependencias
+import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
+import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 
 // Librerias
 import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import PerfectScrollbar from 'perfect-scrollbar';
 
 // Models
 import { SettingAzList, azListDropdown, AzList } from '../../../models/azlist';
@@ -24,11 +28,7 @@ import { User } from '../../../models/user';
 // Services
 import { DatabaseService } from '../../../services/database.service';
 import { UserService } from '../../../services/user.service';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
-import PerfectScrollbar from 'perfect-scrollbar';
 
 @Component({
   selector: 'app-user',
@@ -52,7 +52,9 @@ export class UserComponent implements OnInit {
   private initialUser: User = <User>{};
 
   //======== Datos para el componente azList ===========
-  public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false, "New user", "", false, "", true);
+  public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false,
+    this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
+    this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
   public azLists: AzList[] = [];
 
   // ===================================================
@@ -93,10 +95,6 @@ export class UserComponent implements OnInit {
 
     // si el aSide esta abierto lo cerramos.
     this.aSideService.Close();
-
-    new PerfectScrollbar('.az-contact-info-body', {
-      suppressScrollX: true
-    })
 
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
@@ -157,6 +155,11 @@ export class UserComponent implements OnInit {
           // Revisamos si el result es el esperado.
           if (!result) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
 
+
+          new PerfectScrollbar('.az-contact-info-body', {
+            suppressScrollX: true
+          })
+
           this.loadDataIndexedDB();
 
         },
@@ -176,6 +179,13 @@ export class UserComponent implements OnInit {
     } else {
       this.loadDataIndexedDB();
 
+      setTimeout(() => {
+
+        new PerfectScrollbar('.az-contact-info-body', {
+          suppressScrollX: true
+        })
+
+      }, 500);
     }
 
   }
@@ -407,6 +417,7 @@ export class UserComponent implements OnInit {
   }
 
   public ClickDeleteUser(event: AzList) {
+    console.log('ClickDeleteUser(event: AzList)');
 
     // Buscamos el usuario que se desea eliminar.
     let userDelete: User = this.user = this.getUsers.find(
@@ -456,31 +467,32 @@ export class UserComponent implements OnInit {
     // Valido si algun elemento se cambio
     if (this.ModifiedUser()) {
 
-      var opcion = confirm(this.languageService.GetMessage(this.translateCategory, 'CHANGES_WITHOUT_SAVING'));
-      if (opcion == true) {
-        // Reset user
-        if (this.user.id) {
-          this.user = this.initialUser;
-        } else {
-          // Limpiamos el obj User
-          this.user = new User();
-        }
+      let dialogData: DialogData = {
+        color: "warning",
+        icon: "icon-warning",
+        title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DISCARD_CHANGES'),
+        mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DISCARD_DESCRIPTION'),
+      };
 
-        // Inicializamos el user para que detecte la diferencia.
-        this.InitializeUser();
-      } else {
-        // sigues en la pagina.
-      }
+      const dialogRef = this.dialog.open(DialogDeleteComponent, {
+        data: dialogData
+      });
+
+      dialogRef.afterClosed().subscribe(
+        (result: Boolean) => {
+
+          if (result) {
+            this.user = this.user.id ? this.initialUser : new User();
+            // Inicializamos el user para que detecte la diferencia.
+            this.InitializeUser();
+          } else {
+
+          }
+        });
+
     } else {
-      // Reset user
-      if (this.user.id) {
-        this.user = this.initialUser;
-      } else {
-        // Limpiamos el obj User
-        this.user = new User();
-      }
-      // Inicializamos el user para que detecte la diferencia.
 
+      this.user = this.user.id ? this.initialUser : new User();
       this.InitializeUser();
     }
 
@@ -695,7 +707,7 @@ export class UserComponent implements OnInit {
       ).catch(
         error => {
           // Valido si viene un mensaje de error
-          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_DELETE_LOCAL');
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_USER_UPDATE_LOCAL');
 
           // Muestro notificación
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
@@ -722,9 +734,9 @@ export class UserComponent implements OnInit {
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_USER_CREATE'));
 
           // Lo agrego al arreglo.
-          this.getUsers.push(result);
+          this.getUsers.unshift(result);
 
-          this.azLists.push(new AzList(result.id, result.name, result.role, result.filename));
+          this.azLists.unshift(new AzList(result.id, result.name, result.role, result.filename));
 
           this.databaseService.addUserIndexedDB(result);
 
@@ -760,9 +772,9 @@ export class UserComponent implements OnInit {
         (resultUserIndexedDB: User) => {
 
           // Lo agrego al arreglo.
-          this.getUsers.push(resultUserIndexedDB);
+          this.getUsers.unshift(resultUserIndexedDB);
 
-          this.azLists.push(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, resultUserIndexedDB.filename));
+          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, resultUserIndexedDB.filename));
 
           // vuelvo a cargar los datos de incio del token.
           this.InitializeUser();
@@ -849,10 +861,10 @@ export class UserComponent implements OnInit {
       ).then(
         (userIndexedDB: User) => {
           // Verificamos el estado si es add que continue, caso contrario delete.
-          if (userIndexedDB.syncStatus !== 'added') {
-            userDelete.syncStatus = 'deleted';
+          if (userIndexedDB.syncStatus === 'added' || userIndexedDB.syncStatus === 'updated') {
+            //userDelete.syncStatus = 'deleted';
           } else {
-            userDelete.syncStatus = 'added';
+            userDelete.syncStatus = 'deleted';
             // Corregir todo con then
           }
 
@@ -908,8 +920,6 @@ export class UserComponent implements OnInit {
     }
 
   }
-
-
 
   public onFileComplete(resultComplete: any) {
 

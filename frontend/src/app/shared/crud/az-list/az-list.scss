@@ -1,0 +1,37 @@
+// Deshabilita el cursor
+.az-contact-item {
+  position: relative;
+  cursor: default;
+
+  .az-contact-star {
+
+    button {
+      mat-icon {
+        font-size: 0.8rem;
+      }
+      &:hover {
+        color: red;
+      }
+    }
+  }
+
+  .az-contact-body {
+    cursor: pointer;
+
+    button {
+      mat-icon {
+        font-size: 0.8rem;
+      }
+      &:hover {
+        color: red;
+      }
+    }
+    
+    &:hover {
+      h6 {
+        color: red;
+      }
+    }
+  }
+
+}

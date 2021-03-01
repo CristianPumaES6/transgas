@@ -271,7 +271,10 @@
 
   @include media-breakpoint-up(lg) {
     padding-left: 30px;
-    height: calc(100% - 126px);
+    height: calc(100% - 145px);
+    &.sin-image {
+      height: calc(100% - 80px);
+    }
     position: relative;
   }
 
