@@ -25,13 +25,14 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { getYear } from '../../../../assets/moment/moment.assets';
+import { getYear, stringToDate } from '../../../../assets/moment/moment.assets';
+import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Port } from '../../../models/port';
 import { PortService } from '../../../services/port.service';
-import { DailyReport } from 'src/app/models/daily-report';
-import { DailyReportService } from 'src/app/services/daily-report.service';
+import { DailyReport } from '../../../models/daily-report';
+import { DailyReportService } from '../../../services/daily-report.service';
 
 
 
@@ -792,6 +793,20 @@ export class VoyageComponent implements OnInit {
     this.selectDailyReport = new DailyReport();
     this.Initialize();
     this.disableEdit = false;
+  }
+
+  public ClickEditReport(dailyReport: DailyReport): boolean {
+    this.List_Voyages_Ports_DailyReports = 'DailyReports';
+    this.selectDailyReport = this.getDailyReports.find(report => Number(report.id) === Number(dailyReport.id));
+
+
+    // Parseamos el obj para evirar cambios de valor de regerencia
+    this.selectDailyReport = JSON.parse(JSON.stringify(this.selectDailyReport));
+
+    this.Initialize();
+    this.disableEdit = false;
+
+    return false;
   }
 
   public ClickDeleteVoyage(event: AzList) {
@@ -1857,7 +1872,7 @@ export class VoyageComponent implements OnInit {
   }
 
   private UpdateDailyReportOnelineOffline(dailyReportToSave: DailyReport) {
-
+    debugger
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
@@ -1887,6 +1902,8 @@ export class VoyageComponent implements OnInit {
 
           // Si no hubo cambios solo navego
           this.Initialize();
+          this.List_Voyages_Ports_DailyReports = 'Ports';
+
         },
         error => {
           // Valido si viene un mensaje de error
@@ -1923,32 +1940,19 @@ export class VoyageComponent implements OnInit {
       ).then(
         (resultUpdate: Port) => {
           // Filtro y actualizo luego lo agrego al arreglo.
-          this.getPorts = this.getPorts.map(
-            (port: Port) => {
+
+          // Filtro y actualizo luego lo agrego al arreglo.
+          this.getDailyReports = this.getDailyReports.map(
+            (dailyReport: DailyReport) => {
               // Buscamos el id para cambiar el valor de result.
-              if (Number(port.id) === Number(resultUpdate.id)) {
+              if (Number(dailyReport.id) === Number(resultUpdate.id)) {
                 // Actualizamos el valor con el resultado
-                port = resultUpdate;
+                dailyReport = resultUpdate;
               }
 
-              return port;
+              return dailyReport;
             }
           );
-
-          //Revisar como se deberia actualizar el reporte.
-          // Actualizamos la lista del azlist
-          this.azLists = this.azLists.map(
-            (azList: AzList) => {
-
-              // Buscamos el id para cambiar el valor de result.
-              if (azList.id === resultUpdate.id) {
-                // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, 'Port N°' + resultUpdate.portNumber, '(' + resultUpdate.departurePort + ' - ' + resultUpdate.arrivalPort + ')', '', '' + 123, '');
-              }
-              return azList;
-
-            }
-          )
 
           // Si no hubo cambios solo navego
           this.Initialize();
@@ -1957,6 +1961,7 @@ export class VoyageComponent implements OnInit {
           // Muestro notificación
           this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
 
+          this.List_Voyages_Ports_DailyReports = 'Ports';
         }
       ).catch(
         error => {
@@ -2208,6 +2213,46 @@ export class VoyageComponent implements OnInit {
       return !(JSON.stringify(dailyReportToSave) === JSON.stringify(this.initialDailyReport));
     }
 
+  }
+
+
+
+
+  // Mejorar esto
+  public FormatDate(fecha: string): string {
+
+    let formatfecha = stringToDate(fecha);
+
+    return formatfecha;
+  }
+
+
+  // Total del consumo IFO
+  public TotalIFO(dailyReport: DailyReport): number {
+    // Total del consumo MGO
+    let total = 0;
+
+    // sumamos el consumo
+
+    // total = dailyReport.mplaIfo + dailyReport.auxIfo + dailyReport.calderaIfo + dailyReport.otherIfo;
+
+    total = 3.7888;
+
+    // Retornamos el total de cosumo
+    return mathRound(total, 2);
+  }
+
+  // Total del consumo MGO
+  public TotalMGO(dailyReport: DailyReport): number {
+    // Total del consumo MGO
+    let total = 0;
+
+    // sumamos el consumo
+    // total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.calderaMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
+
+    total = 3.7888;
+    // Retornamos el total de cosumo
+    return mathRound(total, 2);
   }
 
 

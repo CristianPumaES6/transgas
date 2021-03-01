@@ -32,7 +32,7 @@
         <ng-template [ngIf]="disableEdit && (selectPort.id)">
 
           <button mat-icon-button color="primary" (click)="ClickChangeEnableFrm(true)"
-            matTooltip="{{toolTipEnableForm}}">
+            matTooltip="{{toolTipEnableForm | translateMessage:translateCategory}}">
             <mat-icon class="icon-edit-2"></mat-icon>
           </button>
 
@@ -41,11 +41,13 @@
 
         <ng-template [ngIf]="!disableEdit">
 
-          <button mat-icon-button color="primary" (click)="ClickSave()" matTooltip="{{toolTipSave}}">
+          <button mat-icon-button color="primary" (click)="ClickSave()"
+            matTooltip="{{toolTipSave | translateMessage:translateCategory}}">
             <mat-icon class="icon-save"></mat-icon>
           </button>
 
-          <button mat-icon-button color="primary" (click)="ClickDiscard()" matTooltip="{{toolTipDiscard}}">
+          <button mat-icon-button color="primary" (click)="ClickDiscard()"
+            matTooltip="{{toolTipDiscard | translateMessage:translateCategory}}">
             <mat-icon class="icon-x3"></mat-icon>
           </button>
 
@@ -80,7 +82,8 @@
 
           <ng-template [ngIf]="selectPort.id">
             <div class="text-right pb-3">
-              <button mat-button color="primary" (click)="ClickAddNewReport()">
+              <button mat-button color="primary" (click)="ClickAddNewReport()"
+                matTooltip="{{'ADD_REPORT' | translateMessage:translateCategory}}">
                 {{'ADD_REPORT' | translateMessage:translateCategory}}
                 <mat-icon class="icon-clipboard"></mat-icon>
               </button>
@@ -97,6 +100,20 @@
 
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{'DATE' | translateMessage:translateCategory}}</th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{'HOUR' | translateMessage:translateCategory}}</th>
+                    <th *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO"
+                      class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      {{(selectUser.isConsumptionIFO?'TOTAL_IFO':'TOTAL_LSFO') | translateMessage:translateCategory}}
+                    </th>
+                    <th *ngIf="selectUser.isConsumptionMGO"
+                      class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      {{'TOTAL_MGO' | translateMessage:translateCategory}}</th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{'OBSERVATIONS' | translateMessage:translateCategory}}</th>
+                    <th class="color-title-table blue-1 border align-top pt-1"></th>
 
                   </tr>
                 </thead>
@@ -107,6 +124,23 @@
                     <tr>
                       <td class="p-1 color-title-table border">
                         {{ dailyReport.activityPerformed | translateMessage:translateCategory }}
+                      </td>
+                      <td class="p-1 color-title-table border">{{ FormatDate(dailyReport.date) }}</td>
+                      <td class="p-1 color-title-table border">{{ dailyReport.hour }}</td>
+                      <td *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO"
+                        class="p-1 color-title-table border">{{ TotalIFO(dailyReport) }}</td>
+                      <td *ngIf="selectUser.isConsumptionMGO" class="p-1 color-title-table border">
+                        {{ TotalMGO(dailyReport) }}</td>
+                      <td class="p-1 color-title-table border">{{ dailyReport.observation }}</td>
+                      <td class="p-1 color-title-table border">
+                        <a href="#" class="mr-3" (click)="ClickEditReport(dailyReport)">
+                          <i class="icon-edit-2"
+                            matTooltip=" {{'EDIT_REPORT' | translateMessage:translateCategory}}"></i>
+                        </a>
+                        <a href="#" (click)="DeleteDailyReport(dailyReport)">
+                          <i class="icon-delete"
+                            matTooltip="{{'DELETE_REPORT' | translateMessage:translateCategory}}"></i>
+                        </a>
                       </td>
                     </tr>
 
