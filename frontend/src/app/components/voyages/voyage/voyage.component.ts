@@ -359,7 +359,6 @@ export class VoyageComponent implements OnInit {
 
     return await Promise.resolve(true).then(
       result => {
-
         // Seleccionamos al viaje.
         this.selectPort = this.getPorts.find(
           (port: Port) => {
@@ -375,7 +374,7 @@ export class VoyageComponent implements OnInit {
     ).then(
       result => {
         // no validamos el resultado por que siempre es true.
-        
+
         return this.databaseService.getReportDailysByPortIdIndexDB(this.selectPort.id);
       }
     ).then(
@@ -470,6 +469,14 @@ export class VoyageComponent implements OnInit {
 
           // Reseteamos los datos de la tabla viaje.
           return this.databaseService.ClearPortsIndexedDB();
+        }
+      ).then(
+        (result: boolean) => {
+          // Revizamos que los viajes sean los esperados.
+          if (!result) throw Error('Error limpiar la data Port.');
+
+          // Reseteamos los datos de la tabla viaje.
+          return this.databaseService.ClearDailyReportsIndexedDB();
         }
       ).then(
         (result: boolean) => {
@@ -1772,7 +1779,7 @@ export class VoyageComponent implements OnInit {
           newDailyReport = resultDailyReportIndexedDB;
 
           // Actualizamos el total de puertos.
-          this.selectVoyage.totalPort = this.selectVoyage.totalReport + 1;
+          this.selectVoyage.totalReport = this.selectVoyage.totalReport + 1;
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getVoyages = this.getVoyages.map(
             (voyage: Voyage) => {
