@@ -874,6 +874,39 @@ export class VoyageComponent implements OnInit {
       });
   }
 
+  public ClickDeleteReport(dailyReport: DailyReport): boolean {
+    console.log('ClickDeletePort(event: AzList)');
+
+
+    // Buscamos el usuario que se desea eliminar.
+    let dailyReportDelete: DailyReport = this.getDailyReports.find(
+      (report: DailyReport) => {
+        return Number(report.id) === Number(dailyReport.id);
+      }
+    );
+
+    let dialogData: DialogData = {
+      color: "warning",
+      icon: "icon-delete",
+      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the Report ' + this.FormatDate(dailyReportDelete.date) + ' - ' + dailyReportDelete.hour),
+      mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
+    };
+
+    const dialogRef = this.dialog.open(DialogDeleteComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+          this.DeleteDailyReportOnlineOffline(dailyReportDelete);
+        }
+      });
+
+    return false;
+  }
+
   // Azlist
   private generateAzListDropdownsByUsers(users: User[]) {
     console.log('generateAzListDropdownsByUsers(users: User[])');
@@ -2003,7 +2036,7 @@ export class VoyageComponent implements OnInit {
 
 
           // Actualizamos el total de puertos.
-          this.selectVoyage.totalPort = this.selectVoyage.totalReport - 1;
+          this.selectVoyage.totalReport = this.selectVoyage.totalReport - 1;
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getVoyages = this.getVoyages.map(
             (voyage: Voyage) => {
@@ -2088,9 +2121,8 @@ export class VoyageComponent implements OnInit {
             }
           );
 
-
           // Actualizamos el total de puertos.
-          this.selectVoyage.totalPort = this.selectVoyage.totalReport - 1;
+          this.selectVoyage.totalReport = this.selectVoyage.totalReport - 1;
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getVoyages = this.getVoyages.map(
             (voyage: Voyage) => {
@@ -2104,7 +2136,6 @@ export class VoyageComponent implements OnInit {
             }
           );
           this.databaseService.updateVoyageIndexedDB(this.selectVoyage);
-
 
           // Actualizamos el total de reportes.
           this.selectPort.totalReport = this.selectPort.totalReport - 1;
@@ -2121,7 +2152,6 @@ export class VoyageComponent implements OnInit {
             }
           );
           this.databaseService.updatePortIndexedDB(this.selectPort);
-
 
           // Inicializo los datos.
           this.Initialize();
@@ -2220,7 +2250,7 @@ export class VoyageComponent implements OnInit {
 
 
   // Mejorar esto
-  public FormatDate(fecha: string): string {
+  public FormatDate(fecha: any): string {
 
     let formatfecha = stringToDate(fecha);
 
