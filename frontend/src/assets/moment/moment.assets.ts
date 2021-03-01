@@ -16,3 +16,11 @@ export function getYear(): string {
     // retornamos el año.
     return moment().format('YYYY');
 }
+
+export function stringToDate(fecha: string): string {
+
+    let formatfecha = moment(fecha).format('MM-DD-YYYY');
+
+    return formatfecha;
+}
+
