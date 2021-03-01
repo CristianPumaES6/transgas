@@ -275,4 +275,7 @@ export const voyage: any = {
     SUCCESS_DAILY_REPORT_DELETE_LOCAL: 'Report successfully deleted local.',
     ERROR_DAILY_REPORT_DELETE: 'Could not delete report.',
     ERROR_DAILY_REPORT_DELETE_LOCAL: 'Could not delete report local.',
+    CHECK_DATE_FIELD: 'Check date field.',
+    CHECK_HOUR_FIELD: 'Check hour field',
+    CHECK_ACTIVITY_FIELD: 'Check activity field',
 }
