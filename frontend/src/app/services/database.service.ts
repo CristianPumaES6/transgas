@@ -45,8 +45,8 @@ export class DatabaseService {
         this.db = new Dexie('TransgasDatabase');
         this.db.version(2).stores({
             users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
-            voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
-            ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
+            voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus,totalPort,totalReport',
+            ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus,totalReport',
             dailyReports: '++id,userId,portId,activityPerformed,date,hour,bunkeringIfo,bunkeringMgo,mplaIfo,auxIfo,boilerIfo,otherIfo,mplaMgo,auxMgo,boilerMgo,ppMgo,giMgo,otherMgo,steamingTime,distance,beaufour,observation,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
         });
 
@@ -552,31 +552,31 @@ export class DatabaseService {
 
         // Verificamos como se encuentra el servicios
         if (true) {
-            
+
             // for await
             for await (const iVoyage of voyages) {
                 let voyage = iVoyage;
                 voyage.totalPort = 0;
                 voyage.totalReport = 0;
-                
+
                 for await (const iPort of voyage.ports) {
                     let port = iPort;
                     port.totalReport = 0;
 
-                    
 
-                    
+
+
                     if (port.status === true) {
 
 
                         for await (const iDailyReports of port.dailyReports) {
                             let dailyReports = iDailyReports;
-                            
+
                             if (dailyReports.status === true) {
                                 voyage.totalReport = voyage.totalReport + 1;
                                 port.totalReport = port.totalReport + 1;
                                 await this.addDailyReportIndexedDB(dailyReports);
-                                
+
                             }
                         }
 
@@ -618,7 +618,9 @@ export class DatabaseService {
                 userIdUpdated: voyage.userIdUpdated,
                 dateUpdated: voyage.dateUpdated,
                 status: voyage.status,
-                syncStatus: voyage.syncStatus
+                syncStatus: voyage.syncStatus,
+                totalPort: voyage.totalPort,
+                totalReport: voyage.totalReport
             }
         ).then((result: boolean) => {
 
@@ -816,15 +818,15 @@ export class DatabaseService {
     public async addDailyReportIndexedDB(dailyReport: DailyReport): Promise<DailyReport> {
         console.log('addDailyReportIndexedDB(dailyReport: DailyReport)');
 
-        
+
         return await this.db.dailyReports
             .add(dailyReport).then(
                 (dailyReportId: number) => {
-                    
+
 
                     dailyReport.id = dailyReportId;
 
-                    
+
                     return dailyReport;
                 });
     }
