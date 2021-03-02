@@ -40,6 +40,8 @@ export class UserEntity {
     isConsumptionIFO: boolean;
     @Column({ default: true })
     isConsumptionLSFO: boolean;
+    @Column({ default: false })
+    isConsumptionVLSFO: boolean;
     @Column({ default: true })
     isConsumptionMGO: boolean;
 
@@ -220,7 +222,7 @@ export class UserEntity {
         anchoredConsumptionIFO?: number,
         maneuverConsumptionIFO?: number,
         otherConsumptionIFO?: number,
-        
+
 
         // Display Dashboard
         isDisplayLSFOConsumption?: boolean,
@@ -279,7 +281,7 @@ export class UserEntity {
         this.anchoredConsumptionMGO = anchoredConsumptionMGO || 0;
         this.maneuverConsumptionMGO = maneuverConsumptionMGO || 0;
         this.otherConsumptionMGO = otherConsumptionMGO || 0;
-        
+
         // Performance IFO
         this.contractSpeedSailingBallastIFO = contractSpeedSailingBallastIFO || 0;
         this.contractSpeedSailingLadenIFO = contractSpeedSailingLadenIFO || 0;
@@ -292,7 +294,7 @@ export class UserEntity {
         this.anchoredConsumptionIFO = anchoredConsumptionIFO || 0;
         this.maneuverConsumptionIFO = maneuverConsumptionIFO || 0;
         this.otherConsumptionIFO = otherConsumptionIFO || 0;
-        
+
 
         // Display Dashboard
         this.isDisplayLSFOConsumption = isDisplayLSFOConsumption || false;

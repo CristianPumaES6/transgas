@@ -20,10 +20,8 @@ export class VoyagesController {
         private readonly _voyagesService: VoyagesService,
     ) { }
 
-
-
     @Get('detail')
-    GetsDetail(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
+    async GetsDetail(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -126,7 +124,7 @@ export class VoyagesController {
     }
 
     @Get()
-    Gets(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
+    async Gets(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -187,7 +185,7 @@ export class VoyagesController {
     }
 
     @Post('create')
-    CreateVoyage(@Headers() headers, @Body() voyage: Voyage): Promise<any> {
+    async CreateVoyage(@Headers() headers, @Body() voyage: Voyage): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -368,5 +366,6 @@ export class VoyagesController {
         );
     }
 
+    
 
 }
