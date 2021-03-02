@@ -12,6 +12,7 @@ export class User {
         public maxSpeed?: number,
         public isConsumptionIFO?: boolean,
         public isConsumptionLSFO?: boolean,
+        public isConsumptionVLSFO?: boolean,
         public isConsumptionMGO?: boolean,
         public maxIFOConsumption?: number,
         public maxMGOConsumption?: number,
@@ -85,6 +86,7 @@ export class User {
         this.maxSpeed = maxSpeed || 0;
         this.isConsumptionIFO = isConsumptionIFO || false;
         this.isConsumptionLSFO = isConsumptionLSFO || false;
+        this.isConsumptionVLSFO = isConsumptionVLSFO || false;
         this.isConsumptionMGO = isConsumptionMGO || false;
         this.maxIFOConsumption = maxIFOConsumption || 0;
         this.maxMGOConsumption = maxMGOConsumption || 0;

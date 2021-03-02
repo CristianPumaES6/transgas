@@ -130,7 +130,7 @@
 
           <div class="row  pb-2">
 
-            <div class="col-12 col-md-5 row no-gutters">
+            <div class="col-12 col-md-4 row no-gutters">
 
               <div class="col-6">
                 <mat-form-field>
@@ -147,37 +147,44 @@
               </div>
             </div>
 
-            <div class=" col-md-12 col-lg-7 row no-gutters">
-              <div class="col-12 col-md-6 ">
+            <div class=" col-md-12 col-lg-8 row no-gutters">
+              <div class="col-12 col-md-7 ">
                 <p class="m-0 grp-title-check font-weight-bold">
                   {{'TYPE_CONSUMPTION' | translateMessage:translateCategory}}</p>
 
                 <div class="row  no-gutters">
-                  <div class="col-4">
+                  <div class="col-3">
                     <mat-checkbox [(ngModel)]="user.isConsumptionMGO" [disabled]='disableEdit'
                       (change)="ClickCheckMGO()">
                       {{'MGO' | translateMessage:translateCategory}}
                     </mat-checkbox>
                   </div>
 
-                  <div class="col-4">
+                  <div class="col-3">
+                    <mat-checkbox [(ngModel)]="user.isConsumptionIFO" class="pl-2" [disabled]='disableEdit'
+                      (change)="ClickCheckIFO()">
+                      {{'IFO' | translateMessage:translateCategory}}
+                    </mat-checkbox>
+                  </div>
+
+                  <div class="col-3">
                     <mat-checkbox [(ngModel)]="user.isConsumptionLSFO" class="pl-2" [disabled]='disableEdit'
                       (change)="ClickCheckLSFO()">
                       {{'LSFO' | translateMessage:translateCategory}}
                     </mat-checkbox>
                   </div>
 
-                  <div class="col-4">
-                    <mat-checkbox [(ngModel)]="user.isConsumptionIFO" class="pl-2" [disabled]='disableEdit'
-                      (change)="ClickCheckIFO()">
-                      {{'IFO' | translateMessage:translateCategory}}
+                  <div class="col-3">
+                    <mat-checkbox [(ngModel)]="user.isConsumptionVLSFO" class="pl-2" [disabled]='disableEdit'
+                      (change)="ClickCheckVLSFO()">
+                      {{'VLSFO' | translateMessage:translateCategory}}
                     </mat-checkbox>
                   </div>
                 </div>
 
               </div>
 
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-5">
                 <div class="row no-gutters">
 
                   <div class="col-6">
@@ -191,9 +198,9 @@
                   <div class="col-6">
                     <mat-form-field>
                       <input matInput type="number"
-                        placeholder="{{ (user.isConsumptionIFO ? 'CONSUMPTION_IFO' : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}}"
+                        placeholder="{{ (user.isConsumptionIFO ? 'CONSUMPTION_IFO' : user.isConsumptionVLSFO ? 'CONSUMPTION_VLSFO' : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}}"
                         [(ngModel)]="user.maxIFOConsumption"
-                        [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO)'>
+                        [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO && !user.isConsumptionVLSFO)'>
                     </mat-form-field>
                   </div>
 
@@ -244,27 +251,28 @@
 
 
             <div class="col-6 col-md-6 col-md-6 col-lg-6">
-              <p class="m-0 grp-title-check font-weight-bold">{{(user.isConsumptionIFO ? 'EQUIPMENT_IFO' : 'EQUIPMENT_LSFO') | translateMessage:translateCategory}}
+              <p class="m-0 grp-title-check font-weight-bold">
+                {{(user.isConsumptionIFO ? 'EQUIPMENT_IFO' :  user.isConsumptionVLSFO ? 'EQUIPMENT_VLSFO' : 'EQUIPMENT_LSFO') | translateMessage:translateCategory}}
               </p>
 
               <div class="row no-gutters">
                 <div class="col-12 col-lg-2">
                   <mat-checkbox [(ngModel)]="user.isMEIFO" class="pl-2 pl-lg-0"
-                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO)'> M.E
+                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO && !user.isConsumptionVLSFO)'> M.E
                   </mat-checkbox>
                 </div>
                 <div class="col-12 col-lg-2">
                   <mat-checkbox [(ngModel)]="user.isAEIFO" class="pl-2"
-                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO)'> A.E</mat-checkbox>
+                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO && !user.isConsumptionVLSFO)'> A.E</mat-checkbox>
                 </div>
                 <div class="col-12 col-lg-2">
                   <mat-checkbox [(ngModel)]="user.isBoilerIFO" class="pl-2"
-                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO)'> Boiler
+                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO && !user.isConsumptionVLSFO)'> Boiler
                   </mat-checkbox>
                 </div>
                 <div class="col-12 col-lg-2">
                   <mat-checkbox [(ngModel)]="user.isOtherIFO" class="pl-2"
-                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO)'> Other
+                    [disabled]='disableEdit || (!user.isConsumptionIFO && !user.isConsumptionLSFO && !user.isConsumptionVLSFO)'> Other
                   </mat-checkbox>
                 </div>
 
@@ -371,7 +379,8 @@
           <!-- Campos de Consumo por contrato MGO -->
           <div class="row no-gutters">
 
-            <p class="m-0 grp-title-check font-weight-bold">{{(user.isConsumptionIFO ? 'PERFORMANCE_IFO' : 'PERFORMANCE_LSFO') | translateMessage:translateCategory}}
+            <p class="m-0 grp-title-check font-weight-bold">
+              {{(user.isConsumptionIFO ? 'PERFORMANCE_IFO' :  user.isConsumptionVLSFO ? 'PERFORMANCE_VLSFO' : 'PERFORMANCE_LSFO') | translateMessage:translateCategory}}
             </p>
 
             <!-- Campos de velociades -->
@@ -470,7 +479,7 @@
             <div class="col-12">
               <div class="row no-gutters">
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                  <mat-checkbox [(ngModel)]="user.isDisplayLSFOConsumption" [disabled]='disableEdit'> 
+                  <mat-checkbox [(ngModel)]="user.isDisplayLSFOConsumption" [disabled]='disableEdit'>
                     {{(user.isConsumptionIFO ? 'IFO_CONSUMPTION' : 'LSFO_CONSUMPTION') | translateMessage:translateCategory}}
                   </mat-checkbox>
                 </div>
@@ -481,17 +490,17 @@
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                   <mat-checkbox [(ngModel)]="user.isDisplayAverageSpeed" [disabled]='disableEdit'>
-                    {{ 'AVERAGE_SPEED' | translateMessage:translateCategory}} 
+                    {{ 'AVERAGE_SPEED' | translateMessage:translateCategory}}
                   </mat-checkbox>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                   <mat-checkbox [(ngModel)]="user.isDisplayDataMGO" [disabled]='disableEdit'>
-                    {{ 'DATA_MGO' | translateMessage:translateCategory}} 
+                    {{ 'DATA_MGO' | translateMessage:translateCategory}}
                   </mat-checkbox>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                  <mat-checkbox [(ngModel)]="user.isDisplayDataLSFO" [disabled]='disableEdit'> 
+                  <mat-checkbox [(ngModel)]="user.isDisplayDataLSFO" [disabled]='disableEdit'>
                     {{(user.isConsumptionIFO ? 'DATA_IFO' : 'DATA_LSFO') | translateMessage:translateCategory}}
                   </mat-checkbox>
                 </div>

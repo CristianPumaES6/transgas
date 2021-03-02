@@ -527,6 +527,7 @@ export class UserComponent implements OnInit {
     if (this.user.isConsumptionIFO) {
       // desactivo el otro tipo de gas
       this.user.isConsumptionLSFO = false;
+      this.user.isConsumptionVLSFO = false;
 
       this.user.isMEIFO = true;
       this.user.isAEIFO = true;
@@ -549,6 +550,28 @@ export class UserComponent implements OnInit {
     if (this.user.isConsumptionLSFO) {
       // desactivo el otro tipo de gas
       this.user.isConsumptionIFO = false;
+      this.user.isConsumptionVLSFO = false;
+
+      this.user.isMEIFO = true;
+      this.user.isAEIFO = true;
+      this.user.isBoilerIFO = true;
+      this.user.isOtherIFO = true;
+    } else {
+      this.user.isMEIFO = false;
+      this.user.isAEIFO = false;
+      this.user.isBoilerIFO = false;
+      this.user.isOtherIFO = false;
+      this.user.maxIFOConsumption = 0;
+
+    }
+    return true;
+  }
+  
+  public ClickCheckVLSFO(): boolean {
+    if (this.user.isConsumptionVLSFO) {
+      // desactivo el otro tipo de gas
+      this.user.isConsumptionIFO = false;
+      this.user.isConsumptionLSFO = false;
 
       this.user.isMEIFO = true;
       this.user.isAEIFO = true;
