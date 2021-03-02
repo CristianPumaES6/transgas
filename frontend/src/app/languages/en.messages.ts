@@ -282,4 +282,8 @@ export const voyage: any = {
     CHECK_DATE_FIELD: 'Check date field.',
     CHECK_HOUR_FIELD: 'Check hour field',
     CHECK_ACTIVITY_FIELD: 'Check activity field',
+    TOTAL_LSFO: 'Total LSFO',
+    TOTAL_VLSFO: 'Total VLSFO',
+    TOTAL_IFO: 'Total IFO',
+    TOTAL_MGO: 'Total MGO',
 }

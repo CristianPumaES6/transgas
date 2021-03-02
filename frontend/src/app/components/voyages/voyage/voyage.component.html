@@ -104,9 +104,9 @@
                       {{'DATE' | translateMessage:translateCategory}}</th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'HOUR' | translateMessage:translateCategory}}</th>
-                    <th *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO"
+                    <th *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                      {{(selectUser.isConsumptionIFO?'TOTAL_IFO':'TOTAL_LSFO') | translateMessage:translateCategory}}
+                      {{(selectUser.isConsumptionIFO?'TOTAL_IFO':selectUser.isConsumptionVLSFO ? 'TOTAL_VLSFO' : 'TOTAL_LSFO') | translateMessage:translateCategory}}
                     </th>
                     <th *ngIf="selectUser.isConsumptionMGO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
@@ -114,7 +114,6 @@
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'OBSERVATIONS' | translateMessage:translateCategory}}</th>
                     <th class="color-title-table blue-1 border align-top pt-1"></th>
-
                   </tr>
                 </thead>
                 <tbody>
@@ -127,7 +126,8 @@
                       </td>
                       <td class="p-1 color-title-table border">{{ FormatDate(dailyReport.date) }}</td>
                       <td class="p-1 color-title-table border">{{ dailyReport.hour }}</td>
-                      <td *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO"
+                      <td
+                        *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                         class="p-1 color-title-table border">{{ TotalIFO(dailyReport) }}</td>
                       <td *ngIf="selectUser.isConsumptionMGO" class="p-1 color-title-table border">
                         {{ TotalMGO(dailyReport) }}</td>
@@ -198,12 +198,11 @@
             </div>
 
           </div>
-
-
-          <ng-template [ngIf]="selectDailyReport.bunkeringIfo || selectDailyReport.bunkeringMgo">
+          
+          <ng-template [ngIf]="isBunkering">
             <div class="row pl-2 pb-2">
 
-              <ng-template [ngIf]="selectUser.isConsumptionIFO">
+              <ng-template [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
                 <div class="col row no-gutters">
                   <mat-form-field>
                     <input matInput type="number" placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}}"
@@ -221,26 +220,28 @@
                         [(ngModel)]="selectDailyReport.bunkeringMgo">
                     </mat-form-field>
                   </div>
-                  <div class="col">
-                    <div class="force-right pt-3">
-                      <a class="ml-3" href="" (click)="ActivateBunkering(false)"
-                        matTooltip="{{'NO_BUNKERING' | translateMessage:translateCategory}}">
-                        <i class="icon-gas-station"></i>
-                      </a>
-                    </div>
-                  </div>
                 </div>
               </ng-template>
+
+              <div class="col-1">
+                <div class="force-right pt-3">
+                  <a class="ml-3" href="" (click)="ActivateBunkering(false)"
+                    matTooltip="{{'NO_BUNKERING' | translateMessage:translateCategory}}">
+                   <i class="icon-cancel2"></i> <i class="icon-gas-station"></i>
+                  </a>
+                </div>
+              </div>
             </div>
           </ng-template>
 
           <div class="row pl-2 pb-2">
 
-            <ng-template [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO">
+            <ng-template
+              [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
               <div class="col row no-gutters">
 
                 <p class="m-0 grp-title">
-                  {{(selectUser.isConsumptionIFO?'CONSUMPTION_IFO':'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
+                  {{(selectUser.isConsumptionIFO?'CONSUMPTION_IFO': selectUser.isConsumptionVLSFO ? 'CONSUMPTION_VLSFO' : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
                 </p>
 
                 <div class="col-12 row no-gutters personalizate">
@@ -280,7 +281,6 @@
 
               </div>
             </ng-template>
-
 
             <ng-template [ngIf]="selectUser.isConsumptionMGO">
               <div class="col row no-gutters">
@@ -329,21 +329,22 @@
                       </mat-form-field>
                     </div>
                   </ng-template>
-                  <ng-template [ngIf]="!selectDailyReport.bunkeringIfo && !selectDailyReport.bunkeringMgo">
-                    <div class="col-1">
-                      <div class="force-right pt-3">
-                        <a class="ml-3" href="" (click)="ActivateBunkering(true)"
-                          matTooltip="{{'BUNKERING' | translateMessage:translateCategory}}">
-                          <i class="icon-gas-station"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </ng-template>
                 </div>
-
-
               </div>
             </ng-template>
+
+            <div class="col-1 row no-gutters">
+              <ng-template [ngIf]="!isBunkering">
+                <div class="col-1">
+                  <div class="force-right pt-3">
+                    <a class="ml-3" href="" (click)="ActivateBunkering(true)"
+                      matTooltip="{{'BUNKERING' | translateMessage:translateCategory}}">
+                      <i class="icon-gas-station"></i>
+                    </a>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
           </div>
 
 

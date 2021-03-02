@@ -35,7 +35,6 @@ import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 
 
-
 @Component({
   selector: 'app-voyage',
   templateUrl: './voyage.component.html',
@@ -93,6 +92,9 @@ export class VoyageComponent implements OnInit {
 
   // Esta variable permite habilita la edicion en el formulario.
   public disableEdit: boolean = true;
+
+  public isBunkering: boolean = false;
+
 
   constructor(
     private router: Router,
@@ -750,7 +752,7 @@ export class VoyageComponent implements OnInit {
 
       this.selectPort = new Port();
       this.getDailyReports = [];
-      
+
       this.title_header_media = '';
       this.sub_title_header_media = '';
 
@@ -793,9 +795,11 @@ export class VoyageComponent implements OnInit {
           this.toolTipDiscard = 'DISCARD_REPORT';
           this.toolTipEnableForm = 'ENABLE_REPORT';
 
+          this.selectDailyReport = new DailyReport();
           this.Initialize();
 
           this.disableEdit = false;
+          this.isBunkering = false;
           return true;
         }
       );
@@ -810,9 +814,11 @@ export class VoyageComponent implements OnInit {
       this.toolTipDiscard = 'DISCARD_REPORT';
       this.toolTipEnableForm = 'ENABLE_REPORT';
 
+      this.selectDailyReport = new DailyReport();
       this.Initialize();
 
       this.disableEdit = false;
+      this.isBunkering = false;
 
     }
 
@@ -830,9 +836,13 @@ export class VoyageComponent implements OnInit {
     this.selectDailyReport = new DailyReport();
     this.Initialize();
     this.disableEdit = false;
+    this.isBunkering = false;
   }
 
   public ClickEditReport(dailyReport: DailyReport): boolean {
+    console.log('ClickEditReport(dailyReport: DailyReport)');
+
+
     this.List_Voyages_Ports_DailyReports = 'DailyReports';
     this.selectDailyReport = this.getDailyReports.find(report => Number(report.id) === Number(dailyReport.id));
 
@@ -842,6 +852,12 @@ export class VoyageComponent implements OnInit {
 
     this.Initialize();
     this.disableEdit = false;
+
+    if (this.selectDailyReport.bunkeringIfo > 0 || this.selectDailyReport.bunkeringMgo > 0) {
+      this.isBunkering = true;
+    } else {
+      this.isBunkering = false;
+    }
 
     return false;
   }
@@ -2374,6 +2390,22 @@ export class VoyageComponent implements OnInit {
 
     // Retornamos el total de cosumo
     return mathRound(total, 2);
+  }
+
+
+  public ActivateBunkering(activateOrDes: boolean): boolean {
+
+    if (activateOrDes) {
+      this.isBunkering = true;
+      this.selectDailyReport.bunkeringIfo = 0;
+      this.selectDailyReport.bunkeringMgo = 0;
+    } else {
+      this.isBunkering = false;
+      this.selectDailyReport.bunkeringIfo = 0;
+      this.selectDailyReport.bunkeringMgo = 0;
+    }
+
+    return false;
   }
 
 
