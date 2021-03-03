@@ -18,7 +18,7 @@
         </div>
       </div>
 
-      <ng-template [ngIf]="roleUser == 'ADMIN'">
+      <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
 
         <mat-form-field>
           <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
@@ -165,7 +165,7 @@
 
 
     </div>
-    
+
 
 
     <div class="no-gutters
@@ -189,13 +189,13 @@
       <div class="row no-gutters mb-2">
         <div class="card card-body">
 
-          <ng-template [ngIf]="roleUser == 'ADMIN'">
+          <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
 
             <mat-form-field>
               <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
               <mat-select [(ngModel)]="selectUserId">
-                <ng-template ngFor let-iUser [ngForOf]="users" let-i="index">
-                  <mat-option value="{{iUser.id}}" (click)="SelectComboBuque()">
+                <ng-template ngFor let-iUser [ngForOf]="getUsers" let-i="index">
+                  <mat-option [value]="iUser.id" (click)="SelectComboBuque()">
                     {{ iUser.name}}
                   </mat-option>
                 </ng-template>
