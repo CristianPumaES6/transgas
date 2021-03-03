@@ -1,1 +1,191 @@
-<p>dashboard works!</p>
+<div class="component-filter" [ngClass]="{'component-filter-none': !isViewFilter}">
+
+  <div class="row no-gutters">
+    <div class="card card-body" [ngClass]="{'mt-2 mr-2 mb-0 ml-2': isViewFilter}">
+
+      <h6 class="card-title tx-14 mb-3">
+        {{ 'Legend' | translateMessage:translateCategory }}
+        <span class="close-icon" (click)="viewFilter(false)">
+          <i class="icon-x3"></i>
+        </span>
+      </h6>
+      <div class="row">
+        <div class="col-6">
+          <span class="cudrado-red"><i></i></span> <label class="">Max</label>
+        </div>
+        <div class="col-6">
+          <span class="cudrado-green"><i></i></span> <label class="">Min</label>
+        </div>
+      </div>
+
+      <ng-template [ngIf]="roleUser == 'ADMIN'">
+
+        <mat-form-field>
+          <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
+          <mat-select [(ngModel)]="selectUserId">
+            <ng-template ngFor let-iUser [ngForOf]="getUsers" let-i="index">
+              <mat-option value="{{iUser.id}}" (click)="SelectComboBuque()">
+                {{ iUser.name}}
+              </mat-option>
+            </ng-template>
+          </mat-select>
+        </mat-form-field>
+
+      </ng-template>
+
+      <mat-form-field>
+        <mat-label>{{'START_DATE' | translateMessage:translateCategory}}</mat-label>
+        <input matInput [matDatepicker]="picker3" [(ngModel)]="startDate">
+        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+        <mat-datepicker #picker3 startView="year"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{'END_DATE' | translateMessage:translateCategory}}</mat-label>
+        <input matInput [matDatepicker]="picker4" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
+        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+        <mat-datepicker #picker4 startView="year"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{'VOYAGE' | translateMessage:translateCategory}}</mat-label>
+        <mat-select [(ngModel)]="selectVoyage">
+          <ng-template ngFor let-iTravel [ngForOf]="getVoyages" let-i="index">
+            <mat-option value="{{iTravel.id}}" (click)="SelectComboTravel()">
+              {{ "V" + iTravel.id +" (" + iTravel.departure +" )" }}
+            </mat-option>
+          </ng-template>
+
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
+        <mat-select [formControl]="activityPerformed" multiple>
+          <mat-select-trigger>
+            {{activityPerformed.value ? activityPerformed.value[0] : ''}}
+            <span *ngIf="activityPerformed.value?.length > 1" class="span-select">
+              (+{{activityPerformed.value.length - 1}}
+              {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
+            </span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterActivity()">
+            {{ activity | translateMessage:translateCategory}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30"
+        (click)="ClearFilter()">{{ 'CLEAR' | translateMessage:translateCategory}}</button>
+
+      <div class="row" style="opacity: 0;">
+        <!--               <div class="col-6">
+            <h6 class="font-small-3"><span>ROB IFO :</span>{{MathRoundOneDecimal(robIfoCurrent,2)}}</h6>
+          </div>
+          <div class="col-6">
+            <h6 class="font-small-3">
+              <span>ROB MGO :</span>{{MathRoundOneDecimal(robMgoCurrent,2)}}</h6>
+          </div>
+           -->
+        <div class="col-6">
+          <h6 class="font-small-3">
+            <span>Day :</span>{{cantDiasDashboard}}
+          </h6>
+        </div>
+      </div>
+
+
+      <br><br>
+      <div class="row">
+        <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
+          <span class="transgas-file-excel"></span>
+        </div>
+
+
+        <a href="#" id="buttom_pdf" data-toggle="modal" data-target="#exampleModal" (click)="exportPdf()"
+          class="pr-3 pb-3">
+          <span class="transgas-document-file-pdf"></span>
+        </a>
+
+
+        <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
+          (click)="SelectionmodalDisplayView()" class="pr-3 pb-3">
+          <span class="transgas-2000-eye"></span>
+        </a>
+      </div>
+
+
+    </div><!-- card -->
+  </div>
+
+</div>
+
+<div class="component-fixed-bottom fixed-bottom text-right pb-2 pr-2">
+  <button (click)="viewFilter(true)" class="outline-none" mat-mini-fab color="primary"
+    aria-label="Example icon button with a bookmark icon">
+    <mat-icon class="icon-filter"></mat-icon>
+  </button>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalDisplayView" tabindex="-1" role="dialog" aria-labelledby="modalDisplayViewLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDisplayViewLabel">
+          DISPLAY DASHBOARD</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <p>Select the charts you want to include in the dashboard:</p>
+
+
+
+        <br>
+        <mat-checkbox [(ngModel)]="selectUser.isDisplayLSFOConsumption" class="pl-2" [disabled]='disableEdit'>
+          LSFO
+          CONSUMPTION
+        </mat-checkbox>
+        <br>
+        <mat-checkbox [(ngModel)]="selectUser.isDisplayMGOConsumption" class="pl-2" [disabled]='disableEdit'> MGO
+          CONSUMPTION
+        </mat-checkbox>
+        <br>
+        <mat-checkbox [(ngModel)]="selectUser.isDisplayAverageSpeed" class="pl-2" [disabled]='disableEdit'>
+          AVERAGE
+          SPEED
+        </mat-checkbox>
+
+        <br>
+        <mat-checkbox [(ngModel)]="selectUser.isDisplayDataMGO" class="pl-2" [disabled]='disableEdit'> DATA MGO
+        </mat-checkbox>
+        <br>
+
+        <mat-checkbox [(ngModel)]="selectUser.isDisplayDataLSFO" [disabled]='disableEdit' class="pl-2"> DATA
+          LSFO
+        </mat-checkbox>
+
+        <br>
+        <mat-checkbox [(ngModel)]="selectUser.isDisplayVesselPerformanceLSFO" class="pl-2" [disabled]='disableEdit'>
+          VESSEL PERFORMANCE LSFO
+        </mat-checkbox>
+        <br>
+        <mat-checkbox [(ngModel)]="selectUser.isDisplayVesselPerformanceMGO" class="pl-2" [disabled]='disableEdit'>
+          VESSEL PERFORMANCE MGO
+        </mat-checkbox>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+
+</div>
