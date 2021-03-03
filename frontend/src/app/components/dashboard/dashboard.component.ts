@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { User } from 'src/app/models/user';
 import { Voyage } from 'src/app/models/voyage';
 import { ASideService } from 'src/app/services/a-side.service';
@@ -10,6 +12,7 @@ import { LanguageService } from 'src/app/services/language.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { PortService } from 'src/app/services/port.service';
 import { UserService } from 'src/app/services/user.service';
+import { VoyageService } from 'src/app/services/voyage.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -51,8 +54,7 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
-    private voyageService: PortService,
-    private dailyReportService: DailyReportService,
+    private voyageService: VoyageService,
     private loadingService: LoadingService,
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
@@ -61,6 +63,124 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     console.log('ngOnInit()');
 
+
+    // Activamos el loading.
+    this.loadingService.Open();
+
+    // Rol del usurio logeado.
+    this.roleUser = this.userService.GetIdentity().role;
+
+
+    Promise.resolve(true).then(
+      result => {
+
+        // Instanciamos el obj que usaremos en la consulta de registro de viajes
+        let user: User = new User();
+        // Si no eres un admin solo puedes registrar voajes con tu userId logeado.
+        if (this.roleUser === 'BUQUE') {
+          user.id = this.userService.GetIdentity().id;
+          user.name = this.userService.GetIdentity().name;
+          user.nick = this.userService.GetIdentity().nick;
+        }
+        // Traigo a todos los User y lo instancio en el obj.
+        return this.GetUsers(user).pipe().toPromise();
+      }
+    ).then(
+      (result) => {
+
+        // Seleccionaremos el primer buque del arreglo.
+        let voyage: Voyage = new Voyage();
+        let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
+
+        if (firstUser) {
+          this.selectUser = firstUser;
+          this.selectUserId = firstUser.id;
+          voyage.userId = this.selectUser.id;
+        } else {
+          throw 'NO_BUQUE_REGISTER';
+        }
+
+        // Traigo a todos los User y lo instancio en el obj.
+        // GeyVoyage obtiene todos los puertos.
+        return this.GetVoyages(voyage).pipe().toPromise();
+      }
+    ).then(
+      result => {
+
+
+        // Activamos el loading.
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      });
+
+
+  }
+
+
+
+
+  // GetUsers: Cargo todos los Users para el listado de Users.
+  private GetUsers(user: User): Observable<boolean> {
+    // Test
+    console.log('GetUsers(user: User)');
+    console.log(user);
+
+    // Obtenemos todos los usuarios
+    return this.userService.GetUsers(user).pipe(map(
+      (resultUser: User[]) => {
+
+        // Filtramos para que solos los busques se visualizen
+        this.getUsers = resultUser.filter((userItem: User) => {
+          if (userItem.role === 'ADMIN' || userItem.role === 'SUPPORT') {
+            return false;
+          }
+          return true;
+        });
+
+        // Segun el resultado retornamos la respuesta.
+        return (resultUser !== null);
+      }
+    ));
+
+  }
+
+
+  // GetDailyReports: Cargo todos los registros de viaje, util para el dashboard.
+  private GetVoyages(voyages: Voyage): Observable<boolean> {
+    // Test
+    console.log(' GetVoyages(voyages: Voyage)');
+    console.log(voyages);
+
+    // Consulto el servicio
+    return this.voyageService.Gets(voyages).pipe(map(
+      (resultVoyages: Voyage[]) => {
+
+        // Guardamos el valor en nuestra variable global.
+        this.getVoyages = resultVoyages || this.getVoyages;
+
+        // Segun el resultado retornamos la respuesta.
+        return (resultVoyages !== null);
+      }
+    ));
+
+  }
+
+  public SelectComboBuque(): boolean {
+    console.log('SelectComboBuque()');
+    alert(this.selectUserId);
+    return false;
   }
 
   public ClearFilter(): boolean {
