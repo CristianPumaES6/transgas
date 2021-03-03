@@ -59,31 +59,45 @@ export class DashboardComponent implements OnInit {
     private aSideService: ASideService) { }
 
   ngOnInit(): void {
+    console.log('ngOnInit()');
+
   }
 
   public ClearFilter(): boolean {
+    console.log('ClearFilter()');
+
     return false;
   }
 
   public viewFilter(isView: boolean) {
+    console.log('viewFilter(isView: boolean)');
+
     this.isViewFilter = isView;
   }
 
 
   public exportExcel(): boolean {
+    console.log('exportExcel();');
+
     return false;
   }
 
   public exportPdf(): boolean {
+    console.log('exportPdf()');
+
     return false;
   }
 
   public GenerateReporteByDate(): boolean {
+    console.log('GenerateReporteByDate()');
+
     return false;
   }
 
   public SelectionmodalDisplayView(): boolean {
+    console.log('SelectionmodalDisplayView()');
+
     return false;
   }
-  
+
 }

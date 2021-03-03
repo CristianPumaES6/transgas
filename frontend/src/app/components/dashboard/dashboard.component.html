@@ -126,6 +126,167 @@
   </button>
 </div>
 
+<div class="body-full-container" style="background: rosybrown;">
+
+  <div
+    class="row no-gutters pt-2 pt-ms-3 pt-md-3 pt-lg-3  pr-2 pr-ms-3 pr-md-3 pr-lg-3 pb-0 pb-ms-0 pb-md-0 pb-lg-0  pl-2 pl-ms-3 pl-md-3 pl-lg-3"
+    style="background: red;">
+
+
+
+
+    <div class="col-12 col-md-10 row no-gutters" style="background: blue;">
+
+      <div
+        [className]="!selectUser.isDisplayLSFOConsumption ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
+        <div class="card card-body p-2 background-content-linea" id="picture1">
+          <canvas id="lineIFO"></canvas>
+        </div><!-- card -->
+      </div><!-- col -->
+
+
+      <div
+        [className]="!selectUser.isDisplayMGOConsumption ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
+
+        <div class="card card-body p-2 background-content-linea" id="picture2">
+          <canvas id="lineMGO"></canvas>
+        </div><!-- card -->
+      </div>
+
+
+      <div
+        [className]="!selectUser.isDisplayAverageSpeed ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2'">
+        <div class="card card-body p-2 background-content-linea" id="picture3">
+
+          <canvas id="lineSPEED"></canvas>
+
+        </div><!-- card -->
+      </div>
+
+
+    </div>
+    
+
+
+    <div class="no-gutters
+    col-2
+    d-none d-sm-none d-md-block">
+      <div class="row no-gutters mb-2">
+        <div class="card card-body">
+          <h6 class="card-title tx-14 mb-3">
+            {{ 'Legend' | translateMessage:translateCategory }}
+          </h6>
+          <div class="row">
+            <div class="col-6">
+              <span class="cudrado-red"><i></i></span> <label class="">Max</label>
+            </div>
+            <div class="col-6">
+              <span class="cudrado-green"><i></i></span> <label class="">Min</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row no-gutters mb-2">
+        <div class="card card-body">
+
+          <ng-template [ngIf]="roleUser == 'ADMIN'">
+
+            <mat-form-field>
+              <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
+              <mat-select [(ngModel)]="selectUserId">
+                <ng-template ngFor let-iUser [ngForOf]="users" let-i="index">
+                  <mat-option value="{{iUser.id}}" (click)="SelectComboBuque()">
+                    {{ iUser.name}}
+                  </mat-option>
+                </ng-template>
+              </mat-select>
+            </mat-form-field>
+
+          </ng-template>
+
+          <mat-form-field>
+            <mat-label>{{'START_DATE' | translateMessage:translateCategory}}</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="startDate">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker startView="year"></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{'END_DATE' | translateMessage:translateCategory}}</mat-label>
+            <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2 startView="year"></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{'VOYAGE' | translateMessage:translateCategory}}</mat-label>
+            <mat-select [(ngModel)]="selectVoyage">
+              <ng-template ngFor let-iTravel [ngForOf]="getVoyages" let-i="index">
+                <mat-option value="{{iTravel.id}}" (click)="SelectComboTravel()">
+                  {{ "V" + iTravel.id +" (" + iTravel.departure +" )" }}
+                </mat-option>
+              </ng-template>
+
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
+            <mat-select [formControl]="activityPerformed" multiple>
+              <mat-select-trigger>
+                {{activityPerformed.value ? activityPerformed.value[0] : ''}}
+                <span *ngIf="activityPerformed.value?.length > 1" class="span-select">
+                  (+{{activityPerformed.value.length - 1}}
+                  {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
+                </span>
+              </mat-select-trigger>
+              <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterActivity()">
+                {{ activity | translateMessage:translateCategory}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30"
+            (click)="ClearFilter()">{{ 'CLEAR' | translateMessage:translateCategory}}</button>
+
+          <div class="row" style="opacity: 0;">
+            <!--               <div class="col-6">
+            <h6 class="font-small-3"><span>ROB IFO :</span>{{MathRoundOneDecimal(robIfoCurrent,2)}}</h6>
+          </div>
+          <div class="col-6">
+            <h6 class="font-small-3">
+              <span>ROB MGO :</span>{{MathRoundOneDecimal(robMgoCurrent,2)}}</h6>
+          </div>
+           -->
+            <div class="col-6">
+              <h6 class="font-small-3">
+                <span>Day :</span>{{cantDiasDashboard}}
+              </h6>
+            </div>
+          </div>
+
+
+          <br><br>
+          <div class="row">
+
+            <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
+              <span class="transgas-file-excel"></span>
+            </div>
+
+
+
+            <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
+              (click)="SelectionmodalDisplayView()" class="pr-3 pb-3">
+              <span class="transgas-2000-eye"></span>
+            </a>
+          </div>
+
+
+        </div><!-- card -->
+      </div>
+    </div>
+
+  </div>
+</div>
 
 
 <!-- Modal -->
