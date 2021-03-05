@@ -36,3 +36,7 @@ export class Voyage {
 
 
 }
+export class VoyageFilterByYear {
+    userId: number;
+    year: number[];
+}

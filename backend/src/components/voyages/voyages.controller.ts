@@ -8,7 +8,7 @@ import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { VoyagesService } from './voyages.service';
 
 // Entity
-import { Voyage } from '../../models/voyage.entity';
+import { Voyage, VoyageFilterByYear } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
 import { getDate } from '../../assets/moment.assets';
 
@@ -19,6 +19,69 @@ export class VoyagesController {
     constructor(
         private readonly _voyagesService: VoyagesService,
     ) { }
+
+
+    @Get('byYear')
+    async GetsByYear(@Headers() headers, @Query() voyageFilterByYear: VoyageFilterByYear): Promise<any> {
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+
+                if (voyageFilterByYear) {
+                    // Si no existe el user id tiene que ser admin o suppor para seguir
+                    if (!voyageFilterByYear.userId) {
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            return true;
+                        } else throw new Error('MISSING_FIELS');
+                    } else {
+                        // Validamos que el userId sea el mismo que el del token
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            // Nose hace nada
+                        } else if ((Number(voyageFilterByYear.userId) !== Number(headerToken.id))) throw new Error('ERROR_USERID_FAIL');
+                        return true;
+                    }
+                } else throw new Error('MISSING_FIELS');
+
+
+            }
+        ).then(
+            (resultValidate: Boolean) => {
+
+
+                voyageFilterByYear.year = JSON.parse('' + voyageFilterByYear.year);
+                // Ejecutamos el servicio de obtener sailingAnalities.
+                return this._voyagesService.GetsByYear(voyageFilterByYear);
+            }
+        ).then(
+            (results: Voyage[]) => {
+
+                // Retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: results
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
 
     @Get('detail')
     async GetsDetail(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
@@ -366,6 +429,6 @@ export class VoyagesController {
         );
     }
 
-    
+
 
 }
