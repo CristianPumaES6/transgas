@@ -36,7 +36,7 @@ export class Voyage {
 
 
 }
-export class VoyageFilterByYear {
+export class VoyageFilterByYears {
     userId: number;
-    year: number[];
+    years: number[];
 }

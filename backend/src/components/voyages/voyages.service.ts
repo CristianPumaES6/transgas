@@ -9,7 +9,7 @@ import { Not } from "typeorm";
 
 // Modelos.
 import { DummyPromise } from '../../assets/promises.assets';
-import { Voyage, VoyageFilterByYear } from '../../models/voyage.entity'; // < Suele cambiar.
+import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity'; // < Suele cambiar.
 
 @Injectable()
 export class VoyagesService {
@@ -139,7 +139,7 @@ export class VoyagesService {
     }
 
     // Retorna todos los viajes segun filtro.
-    async GetsByYear(voyageFilterByYear: VoyageFilterByYear): Promise<Voyage[]> {
+    async GetsByYears(voyageFilterByYears: VoyageFilterByYears): Promise<Voyage[]> {
 
         // Hacemos where por todos los campos de la entidad
         return await this.voyageRepository.find({
@@ -147,7 +147,7 @@ export class VoyagesService {
             where: [
                 // name && surname && nick && email
                 {
-                    year: In(voyageFilterByYear.year),
+                    year: In(voyageFilterByYears.years),
                     status: Not(false)
                 }
             ],

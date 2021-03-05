@@ -8,7 +8,7 @@ import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { VoyagesService } from './voyages.service';
 
 // Entity
-import { Voyage, VoyageFilterByYear } from '../../models/voyage.entity';
+import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
 import { getDate } from '../../assets/moment.assets';
 
@@ -22,7 +22,7 @@ export class VoyagesController {
 
 
     @Get('byYear')
-    async GetsByYear(@Headers() headers, @Query() voyageFilterByYear: VoyageFilterByYear): Promise<any> {
+    async GetsByYear(@Headers() headers, @Query() voyageFilterByYears: VoyageFilterByYears): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -32,9 +32,9 @@ export class VoyagesController {
         return DummyPromise().then(
             (resultDummy: Boolean) => {
 
-                if (voyageFilterByYear) {
+                if (voyageFilterByYears) {
                     // Si no existe el user id tiene que ser admin o suppor para seguir
-                    if (!voyageFilterByYear.userId) {
+                    if (!voyageFilterByYears.userId) {
                         if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                             return true;
                         } else throw new Error('MISSING_FIELS');
@@ -42,7 +42,7 @@ export class VoyagesController {
                         // Validamos que el userId sea el mismo que el del token
                         if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                             // Nose hace nada
-                        } else if ((Number(voyageFilterByYear.userId) !== Number(headerToken.id))) throw new Error('ERROR_USERID_FAIL');
+                        } else if ((Number(voyageFilterByYears.userId) !== Number(headerToken.id))) throw new Error('ERROR_USERID_FAIL');
                         return true;
                     }
                 } else throw new Error('MISSING_FIELS');
@@ -53,9 +53,9 @@ export class VoyagesController {
             (resultValidate: Boolean) => {
 
 
-                voyageFilterByYear.year = JSON.parse('' + voyageFilterByYear.year);
+                voyageFilterByYears.years = JSON.parse('' + voyageFilterByYears.years);
                 // Ejecutamos el servicio de obtener sailingAnalities.
-                return this._voyagesService.GetsByYear(voyageFilterByYear);
+                return this._voyagesService.GetsByYears(voyageFilterByYears);
             }
         ).then(
             (results: Voyage[]) => {
