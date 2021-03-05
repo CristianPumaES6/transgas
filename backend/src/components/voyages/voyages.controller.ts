@@ -21,7 +21,7 @@ export class VoyagesController {
     ) { }
 
 
-    @Get('byYear')
+    @Get('byYears')
     async GetsByYear(@Headers() headers, @Query() voyageFilterByYears: VoyageFilterByYears): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
