@@ -39,4 +39,22 @@ export class Voyage {
     totalPort: number = 0;
     //Numero total de reportes
     totalReport: number = 0;
+
+    totalMGO: number;
+    totalIFO: number;
+}
+
+
+export class VoyageFilterByYears {
+
+    constructor(
+        // userId : servira para hacer auditoria.
+        public userId?: number,
+        // Lugar de partida,
+        public years?: number[],
+    ) {
+        this.userId = userId || null;
+        this.years = years || [];
+    }
+
 }

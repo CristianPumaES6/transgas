@@ -10,7 +10,7 @@ import { UserService } from './user.service';
 import { AuthGuardService } from './auth-guard.service';
 
 // Modelos
-import { Voyage } from '../models/voyage';
+import { Voyage, VoyageFilterByYears } from '../models/voyage';
 
 @Injectable({ providedIn: 'root' })
 export class VoyageService {
@@ -61,6 +61,33 @@ export class VoyageService {
     Gets(voyage: Voyage): Observable<Voyage[]> {
         // Armo el request
         let url: string = this.url + '/voyages?userId=' + (voyage.userId || '') + '&voyageNumber=' + (voyage.voyageNumber || '') + '&year=' + (voyage.year || '');
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    if (response.status && response.status === 200) {
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
+                return this.authGuardService.HandleError(err);
+            })
+        );
+    }
+
+    // Obtiene todos los objetos segun el filtro enviado.
+    GetsVoyageByYears(filter: VoyageFilterByYears): Observable<Voyage[]> {
+        // Armo el request
+        let url: string = this.url + '/voyages/byYears?userId=' + (filter.userId || '') + '&years=' + JSON.stringify(filter.years || []);
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
@@ -169,7 +196,7 @@ export class VoyageService {
             catchError((err) => this.authGuardService.HandleError(err))
         );
     }
-    
+
     // Eliminamos el obj desde el id recibido desde el obj.
     Delete(voyage: Voyage): Observable<Voyage> {
         // Armo el request
