@@ -147,6 +147,7 @@ export class VoyagesService {
             where: [
                 // name && surname && nick && email
                 {
+                    userId: voyageFilterByYears.userId,
                     year: In(voyageFilterByYears.years),
                     status: Not(false)
                 }
