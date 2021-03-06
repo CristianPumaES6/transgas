@@ -4,8 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { DailyReport } from 'src/app/models/daily-report';
 import { User } from 'src/app/models/user';
-import { Voyage } from 'src/app/models/voyage';
+import { Voyage, VoyageFilterByYears } from 'src/app/models/voyage';
 import { ASideService } from 'src/app/services/a-side.service';
 import { DailyReportService } from 'src/app/services/daily-report.service';
 import { LanguageService } from 'src/app/services/language.service';
@@ -44,6 +45,8 @@ export class DashboardComponent implements OnInit {
   public startDate: Date;
   public endDate: Date;
 
+  // El viaje generado suma total.
+  public generateVoyages: Voyage[] = [];
 
   public getVoyages: Voyage[] = [];
   public selectVoyageId: number = 0;
@@ -62,7 +65,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('ngOnInit()');
-
 
     // Activamos el loading.
     this.loadingService.Open();
@@ -89,25 +91,27 @@ export class DashboardComponent implements OnInit {
       (result) => {
 
         // Seleccionaremos el primer buque del arreglo.
-        let voyage: Voyage = new Voyage();
+        let filter: VoyageFilterByYears = new VoyageFilterByYears();
         let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
 
         if (firstUser) {
           this.selectUser = firstUser;
           this.selectUserId = firstUser.id;
-          voyage.userId = this.selectUser.id;
+          filter.userId = this.selectUser.id;
+          filter.years = [2021];
         } else {
           throw 'NO_BUQUE_REGISTER';
         }
 
         // Traigo a todos los User y lo instancio en el obj.
         // GeyVoyage obtiene todos los puertos.
-        return this.GetVoyages(voyage).pipe().toPromise();
+        return this.GetVoyagesByYears(filter).pipe().toPromise();
       }
     ).then(
       result => {
 
-
+        debugger;
+        this.Generate();
         // Activamos el loading.
         this.loadingService.Close();
       }
@@ -158,13 +162,10 @@ export class DashboardComponent implements OnInit {
 
 
   // GetDailyReports: Cargo todos los registros de viaje, util para el dashboard.
-  private GetVoyages(voyages: Voyage): Observable<boolean> {
-    // Test
-    console.log(' GetVoyages(voyages: Voyage)');
-    console.log(voyages);
+  private GetVoyagesByYears(filter: VoyageFilterByYears): Observable<boolean> {
 
     // Consulto el servicio
-    return this.voyageService.Gets(voyages).pipe(map(
+    return this.voyageService.GetsVoyageByYears(filter).pipe(map(
       (resultVoyages: Voyage[]) => {
 
         // Guardamos el valor en nuestra variable global.
@@ -220,4 +221,92 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+
+  public Generate() {
+
+
+    this.generateVoyages = JSON.parse(JSON.stringify(this.getVoyages));
+
+    this.generateVoyages = this.generateVoyages.filter(
+      (voyage: Voyage, indexV: number, voyages: any[]) => {
+
+        let totalConsumoViajeIFO = 0;
+        let totalConsumoViajeMGO = 0;
+
+        // Recorremos los puertos
+        voyage.ports = voyage.ports.filter(
+          (port, index, ports) => {
+
+
+            let totalConsumoByPortIFO = 0;
+            let totalConsumoByPortMGO = 0;
+
+            // Filtramos si el estado es true, ademas de filtros.
+            if (port.status) {
+              // Recorremos los reportes
+              port.dailyReports = port.dailyReports.filter(
+                (report, index, reports) => {
+
+
+                  if (report.status) {
+
+                    totalConsumoByPortIFO = totalConsumoByPortIFO + this.SumaIfo(report);
+                    totalConsumoByPortMGO = totalConsumoByPortMGO + this.SumaMgo(report);
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }
+              )
+
+              port.robIfo = totalConsumoByPortIFO;
+              port.robMgo = totalConsumoByPortMGO
+
+              totalConsumoViajeIFO = totalConsumoViajeIFO + totalConsumoByPortIFO;
+              totalConsumoViajeMGO = totalConsumoViajeMGO + totalConsumoByPortMGO;
+              return true;
+            } else {
+              return false;
+            }
+
+          }
+        );
+
+        voyage.totalMGO = totalConsumoViajeMGO;
+        voyage.totalIFO = totalConsumoViajeIFO;
+
+        console.log('TOTAL DE Voyage N°' + voyage.voyageNumber + '   MGO:' + totalConsumoViajeMGO + 'IFO:' + totalConsumoViajeIFO);
+
+        return true;
+      });
+
+    console.log(this.getVoyages);
+    console.log(this.generateVoyages);
+
+  }
+
+  // Generate data
+  public GenerateResumeVoyage(iVoyage): boolean {
+
+    for (const iVoyage of this.getVoyages) {
+
+      let resuVoyage: any = {};
+      resuVoyage.name = 'Voyage ' + iVoyage.year + ' N°' + iVoyage.voyageNumber;
+
+      // resumenVoyage.push()
+    }
+
+    return false;
+  }
+
+
+  // Suma los campos ifo()
+  private SumaIfo(report: DailyReport): number {
+    let ifo = report.mplaIfo + report.auxIfo + report.boilerIfo + report.otherIfo;
+    return ifo;
+  }
+  private SumaMgo(report: DailyReport): number {
+    let mgo = report.mplaMgo + report.auxMgo + report.boilerMgo + report.ppMgo + report.giMgo + report.otherMgo;
+    return mgo;
+  }
 }
