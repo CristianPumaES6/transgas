@@ -33,11 +33,9 @@ export class VoyagesController {
             (resultDummy: Boolean) => {
 
                 if (voyageFilterByYears) {
-                    // Si no existe el user id tiene que ser admin o suppor para seguir
+                    // Tiene que llegar el userId
                     if (!voyageFilterByYears.userId) {
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                            return true;
-                        } else throw new Error('MISSING_FIELS');
+                        throw new Error('MISSING_FIELS');
                     } else {
                         // Validamos que el userId sea el mismo que el del token
                         if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
