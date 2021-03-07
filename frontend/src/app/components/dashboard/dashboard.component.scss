@@ -5,6 +5,7 @@
 
 .background-content-linea {
   background: #121c3c;
+  height: 260px;
 }
 
 .background-cuadro {
@@ -18,6 +19,7 @@
 }
 
 canvas {
+  user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
