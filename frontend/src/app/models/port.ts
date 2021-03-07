@@ -1,4 +1,4 @@
-import { DailyReport } from './daily-report';
+import { DailyReport, Speed } from './daily-report';
 
 export class Port {
     constructor(
@@ -47,4 +47,6 @@ export class Port {
 
     dailyReports: DailyReport[];
 
+
+    public speed: Speed;
 }

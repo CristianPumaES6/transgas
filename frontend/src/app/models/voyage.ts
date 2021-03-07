@@ -1,3 +1,4 @@
+import { Speed } from './daily-report';
 import { Port } from './port';
 
 export class Voyage {
@@ -42,8 +43,8 @@ export class Voyage {
 
     totalMGO: number;
     totalIFO: number;
+    totalSpeed: Speed;
 }
-
 
 export class VoyageFilterByYears {
 
