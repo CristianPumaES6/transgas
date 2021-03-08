@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit {
   public activityPerformed = new FormControl();
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
   public disableEdit = false;
-
+  public summaryBy: string = 'VOYAGES';
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dashboard';
@@ -223,6 +223,10 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  public ClickSummaryBy(): boolean {
+    return true;
+  }
+
   public ClearFilter(): boolean {
     console.log('ClearFilter()');
 
@@ -330,85 +334,115 @@ export class DashboardComponent implements OnInit {
 
   // COnfiguracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
   public ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
+    let config: any = {};
 
-    let config: any = {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          fontColor: '#b8d1ff',
-        },
-        gridLines: {
-          display: true,
-          color: '#b8d1ff'
-        },
-      }],
-      xAxes: [{
-        ticks: {
-          beginAtZero: true,
-          fontColor: '#b8d1ff',
-        },
-        type: 'time',
-        position: 'bottom',
-        time: {
-          displayFormats: {
-            day: 'MM/DD'
-          },
-          tooltipFormat: 'MM/DD',
-          unit: 'day',
-        },
-        gridLines: {
-          display: true,
-          color: '#b8d1ff'
-        },
-      }]
-    };
-
-
-    if (isSpeed) {
-
-      if (lineaMax > 0) {
-        config.yAxes = [{
+    if (this.summaryBy === 'VOYAGES') {
+      config = {
+        yAxes: [{
           ticks: {
             beginAtZero: true,
-            steps: 10,
-            stepValue: 5,
+            fontColor: '#b8d1ff',
             max: lineaMax,
+          },
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+          },
+          type: 'category',
+          position: 'bottom',
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+        }]
+      };
+    } else {
+
+      config = {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
             fontColor: '#b8d1ff',
           },
           gridLines: {
             display: true,
             color: '#b8d1ff'
           },
-        }];
+        }],
+        xAxes: [{
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+          },
+          type: 'time',
+          position: 'bottom',
+          time: {
+            displayFormats: {
+              day: 'MM/DD'
+            },
+            tooltipFormat: 'MM/DD',
+            unit: 'day',
+          },
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+        }]
+      };
+
+
+      if (isSpeed) {
+
+        if (lineaMax > 0) {
+          config.yAxes = [{
+            ticks: {
+              beginAtZero: true,
+              steps: 10,
+              stepValue: 5,
+              max: lineaMax,
+              fontColor: '#b8d1ff',
+            },
+            gridLines: {
+              display: true,
+              color: '#b8d1ff'
+            },
+          }];
+
+        }
+      }
+
+      // Segun la cantidad de datos, estara personalizada.
+      if (dataReport.length < 60) {
+
+        config.xAxes[0].time = {
+          displayFormats: {
+            day: 'MM/DD'
+          },
+          tooltipFormat: 'MM/DD',
+          unit: 'day',
+        };
+
+      } else {
+
+        config.xAxes[0].time = {
+          displayFormats: {
+            day: 'MM/YY'
+          },
+          tooltipFormat: 'MM/DD/YY',
+          unit: 'month',
+        };
 
       }
-    }
-
-    // Segun la cantidad de datos, estara personalizada.
-    if (dataReport.length < 60) {
-
-      config.xAxes[0].time = {
-        displayFormats: {
-          day: 'MM/DD'
-        },
-        tooltipFormat: 'MM/DD',
-        unit: 'day',
-      };
-      return config;
-
-    } else {
-
-      config.xAxes[0].time = {
-        displayFormats: {
-          day: 'MM/YY'
-        },
-        tooltipFormat: 'MM/DD/YY',
-        unit: 'month',
-      };
-      return config;
 
     }
 
+    return config;
   }
 
   // Generar data para el dashboard desde el arreglo de reportes
@@ -417,18 +451,20 @@ export class DashboardComponent implements OnInit {
 
     this.generateVoyages.forEach(
       voyage => {
-        this.xLabelReport.push(voyage.voyageNumber);
+
+        let txtX = 'V' + voyage.voyageNumber + '-' + ('' + voyage.year).slice(-2);
+        this.xLabelReport.push(txtX);
 
         this.dataIFO.push(
-          { x: voyage.voyageNumber, y: voyage.totalIFO }
+          { x: txtX, y: voyage.totalIFO }
         );
         this.dataMGO.push(
-          { x: voyage.voyageNumber, y: voyage.totalMGO }
+          { x: txtX, y: voyage.totalMGO }
         );
 
         let speed = mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2);
         this.dataSPEED.push(
-          { x: voyage.voyageNumber, y: speed }
+          { x: txtX, y: speed }
         );
 
         if (voyage.totalIFO > this.configLineaIFO.lineaMax) {
@@ -491,7 +527,7 @@ export class DashboardComponent implements OnInit {
 
           callbacks: {
             title: (tooltipItem, data) => {
-              console.log('---------------');
+              console.log('-------TITLE--------');
               console.log(tooltipItem);
               console.log(data);
               console.log('---------------');

@@ -33,6 +33,26 @@
 
       </ng-template>
 
+
+      <mat-form-field>
+        <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
+        <mat-select [(ngModel)]="summaryBy">
+
+          <mat-option value="{{'VOYAGES'}}" (click)="ClickSummaryBy()">
+            {{'VOYAGES' | translateMessage:translateCategory}}
+          </mat-option>
+          <mat-option value="{{'PORTS'}}" (click)="ClickSummaryBy()">
+            {{'PORTS' | translateMessage:translateCategory}}
+          </mat-option>
+          <mat-option value="{{'MONTHS'}}" (click)="ClickSummaryBy()">
+            {{'MONTHS' | translateMessage:translateCategory}}
+          </mat-option>
+          <mat-option value="{{'DAYS'}}" (click)="ClickSummaryBy()">
+            {{'DAYS' | translateMessage:translateCategory}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <mat-form-field>
         <mat-label>{{'START_DATE' | translateMessage:translateCategory}}</mat-label>
         <input matInput [matDatepicker]="picker3" [(ngModel)]="startDate">
@@ -201,6 +221,26 @@
             </mat-form-field>
 
           </ng-template>
+
+          <mat-form-field>
+            <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
+            <mat-select [(ngModel)]="summaryBy">
+
+              <mat-option value="{{'VOYAGES'}}" (click)="ClickSummaryBy()">
+                {{'VOYAGES' | translateMessage:translateCategory}}
+              </mat-option>
+              <mat-option value="{{'PORTS'}}" (click)="ClickSummaryBy()">
+                {{'PORTS' | translateMessage:translateCategory}}
+              </mat-option>
+              <mat-option value="{{'MONTHS'}}" (click)="ClickSummaryBy()">
+                {{'MONTHS' | translateMessage:translateCategory}}
+              </mat-option>
+              <mat-option value="{{'DAYS'}}" (click)="ClickSummaryBy()">
+                {{'DAYS' | translateMessage:translateCategory}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
 
           <mat-form-field>
             <mat-label>{{'START_DATE' | translateMessage:translateCategory}}</mat-label>
