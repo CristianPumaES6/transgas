@@ -20,6 +20,7 @@ import * as Chart from 'chart.js';
 import { mathRound } from 'dist/frontend/assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from 'src/app/models/port';
+import { FormatDate, GetMonthYearFromDate } from 'src/assets/moment/moment.assets';
 
 @Component({
   selector: 'app-dashboard',
@@ -101,8 +102,7 @@ export class DashboardComponent implements OnInit {
 
     Promise.resolve(true).then(
       result => {
-
-
+        this.PluginChartLine();
         // Generamos las lineas en el canvas
         this.GenetareLineIFO();
         this.GenetareLineMGO();
@@ -144,7 +144,10 @@ export class DashboardComponent implements OnInit {
 
         this.GenerateDataByFilter();
 
-        this.GenerateDashBoardByVoyage();
+        this.GenerateDashBoardByVoyages();
+        // this.GenerateDashBoardByPorts();
+        // this.GenerateDashBoardByMonths();
+        // this.GenerateDashBoardByDays();
 
         //Bro tienes yerba?
         this.UpdateLineIFO();
@@ -337,6 +340,7 @@ export class DashboardComponent implements OnInit {
     let config: any = {};
 
     if (this.summaryBy === 'VOYAGES') {
+
       config = {
         yAxes: [{
           ticks: {
@@ -362,13 +366,15 @@ export class DashboardComponent implements OnInit {
           },
         }]
       };
-    } else {
+
+    } else if (this.summaryBy === 'PORTS') {
 
       config = {
         yAxes: [{
           ticks: {
             beginAtZero: true,
             fontColor: '#b8d1ff',
+            max: lineaMax,
           },
           gridLines: {
             display: true,
@@ -380,9 +386,71 @@ export class DashboardComponent implements OnInit {
             beginAtZero: true,
             fontColor: '#b8d1ff',
           },
-          type: 'time',
+          type: 'category',
           position: 'bottom',
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+        }]
+      };
+
+    } else if (this.summaryBy === 'MONTHS') {
+
+      config = {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+            max: lineaMax,
+          },
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+        }],
+        xAxes: [{
+          type: 'time',
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+          },
           time: {
+            displayFormats: {
+              day: 'MM/YY'
+            },
+            tooltipFormat: 'MM/DD/YY',
+            unit: 'month',
+          },
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+        }]
+      };
+
+    } else if (this.summaryBy === 'DAYS') {
+
+      config = {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+            max: lineaMax,
+          },
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+        }],
+        xAxes: [{
+          type: 'time',
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+          },
+          time:
+          {
             displayFormats: {
               day: 'MM/DD'
             },
@@ -396,49 +464,83 @@ export class DashboardComponent implements OnInit {
         }]
       };
 
+    } else {
 
-      if (isSpeed) {
-
-        if (lineaMax > 0) {
-          config.yAxes = [{
+      /*   config = {
+          yAxes: [{
             ticks: {
               beginAtZero: true,
-              steps: 10,
-              stepValue: 5,
-              max: lineaMax,
               fontColor: '#b8d1ff',
             },
             gridLines: {
               display: true,
               color: '#b8d1ff'
             },
-          }];
-
+          }],
+          xAxes: [{
+            ticks: {
+              beginAtZero: true,
+              fontColor: '#b8d1ff',
+            },
+            type: 'time',
+            position: 'bottom',
+            time: {
+              displayFormats: {
+                day: 'MM/DD'
+              },
+              tooltipFormat: 'MM/DD',
+              unit: 'day',
+            },
+            gridLines: {
+              display: true,
+              color: '#b8d1ff'
+            },
+          }]
+        };
+  
+  
+        if (isSpeed) {
+  
+          if (lineaMax > 0) {
+            config.yAxes = [{
+              ticks: {
+                beginAtZero: true,
+                steps: 10,
+                stepValue: 5,
+                max: lineaMax,
+                fontColor: '#b8d1ff',
+              },
+              gridLines: {
+                display: true,
+                color: '#b8d1ff'
+              },
+            }];
+  
+          }
         }
-      }
-
-      // Segun la cantidad de datos, estara personalizada.
-      if (dataReport.length < 60) {
-
-        config.xAxes[0].time = {
-          displayFormats: {
-            day: 'MM/DD'
-          },
-          tooltipFormat: 'MM/DD',
-          unit: 'day',
-        };
-
-      } else {
-
-        config.xAxes[0].time = {
-          displayFormats: {
-            day: 'MM/YY'
-          },
-          tooltipFormat: 'MM/DD/YY',
-          unit: 'month',
-        };
-
-      }
+  
+        // Segun la cantidad de datos, estara personalizada.
+        if (dataReport.length < 60) {
+  
+          config.xAxes[0].time = {
+            displayFormats: {
+              day: 'MM/DD'
+            },
+            tooltipFormat: 'MM/DD',
+            unit: 'day',
+          };
+  
+        } else {
+  
+          config.xAxes[0].time = {
+            displayFormats: {
+              day: 'MM/YY'
+            },
+            tooltipFormat: 'MM/DD/YY',
+            unit: 'month',
+          };
+  
+        } */
 
     }
 
@@ -446,7 +548,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // Generar data para el dashboard desde el arreglo de reportes
-  public GenerateDashBoardByVoyage() {
+  public GenerateDashBoardByVoyages() {
 
 
     this.generateVoyages.forEach(
@@ -484,6 +586,255 @@ export class DashboardComponent implements OnInit {
 
 
   }
+  // Generar data para el dashboard desde el arreglo de reportes
+  public GenerateDashBoardByPorts() {
+
+    this.xLabelReport = [];
+    this.dataIFO = [];
+    this.dataMGO = [];
+    this.dataSPEED = [];
+
+    this.generateVoyages.forEach(
+      (voyage, iV) => {
+
+        voyage.ports.forEach(
+          (port, iP) => {
+            let txtX = 'V' + voyage.voyageNumber + '-' + ('' + voyage.year).slice(-2) + '-' + 'P' + port.portNumber;
+
+            this.xLabelReport.push(txtX);
+            this.dataIFO.push(
+              { x: txtX, y: port.robIfo, ubication: [iV, iP] }
+            );
+            this.dataMGO.push(
+              { x: txtX, y: port.robMgo }
+            );
+
+            let speed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
+            this.dataSPEED.push(
+              { x: txtX, y: speed }
+            );
+
+
+            if (port.robIfo > this.configLineaIFO.lineaMax) {
+              this.configLineaIFO.lineaMax = port.robIfo;
+            }
+            if (port.robMgo > this.configLineaMGO.lineaMax) {
+              this.configLineaMGO.lineaMax = port.robMgo;
+            }
+
+            if (speed > this.configLineaSPEED.lineaMax) {
+              this.configLineaSPEED.lineaMax = speed;
+            }
+          }
+        )
+
+
+
+      }
+
+    );
+
+
+  }
+
+  public GenerateDashBoardByMonths() {
+
+    this.xLabelReport = [];
+    this.dataIFO = [];
+    this.dataMGO = [];
+    this.dataSPEED = [];
+
+    this.generateVoyages.forEach(
+      (voyage, iV) => {
+
+        voyage.ports.forEach(
+          (port, iP) => {
+
+            port.dailyReports.forEach(
+              (report, iR) => {
+
+                let day = report.date;
+                debugger
+
+                let resultSearch = this.xLabelReport.find(
+                  (xDay, iL) => {
+
+                    // Verificamos la fecha actual.
+                    debugger
+                    if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
+                      this.dataIFO[iL].x = day;
+                      this.dataMGO[iL].x = day;
+                      // Actualizamos el vlaor por la posicion.
+                      this.dataIFO[iL].y = this.dataIFO[iL].y + this.SumaIfo(report)
+                      this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
+
+
+                      if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
+                        this.configLineaIFO.lineaMax = this.dataIFO[iL].y;
+                      }
+                      if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
+                        this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
+                      }
+                      // this.dataSPEED[iL].y = { x: dataReport.date, y: dataReport.totalMGO };
+                      // speed.distance / speed.steamingTime
+                      return true;
+                    }
+
+                    return false;
+                  }
+
+                );
+
+                debugger
+                if (!resultSearch) {
+                  debugger
+                  // console.log('GenerateDataForDashboard()');
+
+                  // agregamos la fecha a nuestro arreglo.
+                  this.xLabelReport.push(day);
+
+                  this.dataIFO.push(
+                    { x: day, y: this.SumaIfo(report) }
+                  );
+
+                  this.dataMGO.push(
+                    { x: day, y: this.SumaMgo(report) }
+                  );
+
+
+
+                  if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
+                    this.configLineaIFO.lineaMax = this.SumaIfo(report);
+                  }
+                  if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
+                    this.configLineaMGO.lineaMax = this.SumaMgo(report);
+                  }
+
+
+                }
+
+
+
+              }
+            );
+
+          }
+        )
+
+
+
+      }
+
+    );
+
+
+  }
+
+  public GenerateDashBoardByDays() {
+
+    this.xLabelReport = [];
+    this.dataIFO = [];
+    this.dataMGO = [];
+    this.dataSPEED = [];
+
+    this.generateVoyages.forEach(
+      (voyage, iV) => {
+
+        voyage.ports.forEach(
+          (port, iP) => {
+
+            port.dailyReports.forEach(
+              (report, iR) => {
+                let day = report.date;
+                debugger
+
+                let resultSearch = this.xLabelReport.find(
+                  (xDay, iL) => {
+
+                    // Verificamos la fecha actual.
+                    debugger
+                    if (FormatDate(day) === FormatDate(xDay)) {
+
+                      // Actualizamos el vlaor por la posicion.
+                      this.dataIFO[iL].y = this.dataIFO[iL].y + this.SumaIfo(report)
+                      this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
+
+
+                      if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
+                        this.configLineaIFO.lineaMax = this.dataIFO[iL].y;
+                      }
+                      if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
+                        this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
+                      }
+                      // this.dataSPEED[iL].y = { x: dataReport.date, y: dataReport.totalMGO };
+                      // speed.distance / speed.steamingTime
+                      return true;
+                    }
+
+                    return false;
+                  }
+
+                );
+
+                debugger
+                if (!resultSearch) {
+                  debugger
+                  // console.log('GenerateDataForDashboard()');
+
+                  // agregamos la fecha a nuestro arreglo.
+                  this.xLabelReport.push(day);
+
+                  this.dataIFO.push(
+                    { x: day, y: this.SumaIfo(report) }
+                  );
+
+                  this.dataMGO.push(
+                    { x: day, y: this.SumaMgo(report) }
+                  );
+
+
+
+                  if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
+                    this.configLineaIFO.lineaMax = this.SumaIfo(report);
+                  }
+                  if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
+                    this.configLineaMGO.lineaMax = this.SumaMgo(report);
+                  }
+
+                  /*     let speed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
+                      this.dataSPEED.push(
+                        { x: txtX, y: speed }
+                      );
+          
+          
+                      if (port.robIfo > this.configLineaIFO.lineaMax) {
+                        this.configLineaIFO.lineaMax = port.robIfo;
+                      }
+                      if (port.robMgo > this.configLineaMGO.lineaMax) {
+                        this.configLineaMGO.lineaMax = port.robMgo;
+                      }
+          
+                      if (speed > this.configLineaSPEED.lineaMax) {
+                        this.configLineaSPEED.lineaMax = speed;
+                      } */
+                }
+
+
+              }
+            );
+
+          }
+        )
+
+
+
+      }
+
+    );
+
+
+  }
+
 
   // Generar linea en los canvas.
   public GenetareLineIFO(): boolean {
@@ -501,7 +852,6 @@ export class DashboardComponent implements OnInit {
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
           data: this.dataIFO,
-          reportDetail: this.generateVoyages,
           fill: false,
         }]
       },
@@ -523,37 +873,12 @@ export class DashboardComponent implements OnInit {
           mode: 'nearest',
           // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
           intersect: false,
-
-
           callbacks: {
             title: (tooltipItem, data) => {
-              console.log('-------TITLE--------');
-              console.log(tooltipItem);
-              console.log(data);
-              console.log('---------------');
               return tooltipItem[0].xLabel;
             },
             label: (tooltipItem, data) => {
               return 'Consumption LSFO: ' + tooltipItem.value;
-            },
-            /*   labelColor: (tooltipItem, data) => {
-                return {
-                  borderColor: 'red',
-                  backgroundColor: 'blue',
-                };
-              }, */
-            afterBody: (tooltipItem, data) => {
-              let index = tooltipItem[0].index;
-
-              let reportDetail: Voyage[] = data.datasets[0].reportDetail;
-
-              //  '     MPAL : ' + reportDetail[index].mplaIfo,
-              //  '     AUX :  ' + reportDetail[index].auxIfo,
-              //  '     CALDERA :  ' + reportDetail[index].calderaIfo,
-              //  '     OTHER :  ' + reportDetail[index].otherIfo,
-              //  '',
-
-              return [];
             },
             footer: (tooltipItem, data) => {
               let index = tooltipItem[0].index;
@@ -584,7 +909,6 @@ export class DashboardComponent implements OnInit {
       lineaMax: 0
     };
 
-    debugger
     this.configLineaIFO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaIFO.lineaMax, 0) + 2);
 
 
@@ -870,13 +1194,12 @@ export class DashboardComponent implements OnInit {
     this.configLineaIFO.data.labels = this.xLabelReport;
     debugger
     this.configLineaIFO.data.datasets[0].data = this.dataIFO;
-    this.configLineaIFO.data.datasets[0].reportDetail = this.generateVoyages;
 
     // Vaciamos la configuracion de las lines MGO
     this.configLineaIFO.options.lines = [];
 
     // Verificamos que exista una confifuracion para LSFO
-    if (this.selectUser.isConsumptionIFO) {
+    if (this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionVLSFO) {
       // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
       if (this.selectUser.maxIFOConsumption > 0) {
         this.configLineaIFO.options.lines.push({
@@ -886,6 +1209,62 @@ export class DashboardComponent implements OnInit {
           label: ''
         });
       }
+
+      this.configLineaIFO.options.tooltips = {
+        // Establece qué elementos aparecen en la información sobre herramientas.
+        mode: 'nearest',
+        // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
+        intersect: false,
+        callbacks: {
+          title: (tooltipItem, data) => {
+            return tooltipItem[0].xLabel;
+          },
+          label: (tooltipItem, data) => {
+
+            let typeConsumption = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+            return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+          },
+          footer: (tooltipItem, data) => {
+            debugger
+            let index = tooltipItem[0].index;
+
+            let ubication = data.datasets[0].data[index].ubication;
+
+            debugger
+            let result = [];
+            if (this.summaryBy === 'VOYAGES') {
+              result = [
+                'Voyage N° : ' + this.generateVoyages[index].voyageNumber,
+                'Consume :' + this.generateVoyages[index].totalIFO,
+              ];
+            } else if (this.summaryBy === 'PORTS') {
+
+              let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+              result = [
+                'Voyage N° : ' + this.generateVoyages[ubication[0]].voyageNumber,
+                'Port N° : ' + port.portNumber,
+                'Departure : ' + port.departurePort,
+                'Arrival : ' + port.arrivalPort,
+                'Consume :' + port.robIfo,
+              ];
+            } else if (this.summaryBy === 'MONTHS') {
+
+              //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+              result = ['OK'];
+            }
+            else if (this.summaryBy === 'DAYS') {
+
+              //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+              result = ['DAYS'];
+            }
+
+
+            return result;
+
+          },
+        },
+      }
+
     }
 
 
@@ -958,6 +1337,47 @@ export class DashboardComponent implements OnInit {
 
   public Testt() {
     alert("DI O CLICK");
+  }
+
+  public PluginChartLine() {
+
+    // Agregamos un plugin para saver los niveles.
+    const chartPluginLineaHorizontal = {
+      afterDraw: (chartobj: any) => {
+        if (chartobj.options.lines) {
+          let ctx = chartobj.chart.ctx;
+
+          // tslint:disable-next-line: prefer-for-of
+          for (let idx = 0; idx < chartobj.options.lines.length; idx++) {
+
+            let line = chartobj.options.lines[idx];
+            line.iniCoord = [0, 0];
+            line.endCoord = [0, 0];
+            line.color = line.color ? line.color : 'red';
+            line.label = line.label ? line.label : '';
+
+            if (line.type === 'horizontal' && line.y) {
+              line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
+              line.endCoord[0] = chartobj.chart.width;
+            } else if (line.type === 'vertical' && line.x) {
+              line.iniCoord[0] = line.endCoord[0] = chartobj.scales['x-axis-0'].getPixelForValue(line.x);
+              line.endCoord[1] = chartobj.chart.height;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(line.iniCoord[0], line.iniCoord[1]);
+            ctx.lineTo(line.endCoord[0], line.endCoord[1]);
+            ctx.strokeStyle = line.color;
+            ctx.stroke();
+            ctx.fillStyle = line.color;
+            ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+          }
+        }
+      }
+    };
+
+    Chart.pluginService.register(chartPluginLineaHorizontal);
+
   }
 
 }
