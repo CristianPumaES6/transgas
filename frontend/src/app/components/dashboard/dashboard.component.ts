@@ -143,14 +143,10 @@ export class DashboardComponent implements OnInit {
     ).then(
       result => {
 
-        this.GenerateDataByFilter();
+        this.GenerateDataByFilter(this.getVoyages);
 
         this.GenerateDashboardBySumary()
 
-        // Actualizamos los cuadros del dashboard.
-        this.UpdateLineIFO();
-        this.UpdateLineMGO();
-        this.UpdateLineSPEED();
 
         // Activamos el loading.
         this.loadingService.Close();
@@ -224,6 +220,21 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  public SelectComboVoyage(index: number): boolean {
+
+    console.log('SelectComboVoyage()');
+
+    let newVoyages = [];
+    newVoyages.push(this.getVoyages[index]);
+    this.GenerateDataByFilter(newVoyages);
+
+    this.summaryBy = 'PORTS';
+    this.GenerateDashboardBySumary();
+
+
+    return false;
+  }
+
   public ClickSummaryBy(): boolean {
 
     this.loadingService.Open();
@@ -236,9 +247,6 @@ export class DashboardComponent implements OnInit {
       }
     ).then(
       () => {
-        this.UpdateLineIFO();
-        this.UpdateLineMGO();
-        this.UpdateLineSPEED();
 
 
         this.loadingService.Close();
@@ -285,11 +293,11 @@ export class DashboardComponent implements OnInit {
   }
 
   // Genera la data del viaje con filtro y resumen.
-  public GenerateDataByFilter() {
+  public GenerateDataByFilter(aRvoyages: Voyage[]) {
     console.log('Generate()');
 
 
-    this.generateVoyages = JSON.parse(JSON.stringify(this.getVoyages));
+    this.generateVoyages = JSON.parse(JSON.stringify(aRvoyages));
 
     this.generateVoyages = this.generateVoyages.filter(
       (voyage: Voyage, indexV: number, voyages: any[]) => {
@@ -598,6 +606,12 @@ export class DashboardComponent implements OnInit {
     } else if (filter === 'DAYS') {
       this.GenerateDashBoardByDays();
     }
+
+    // Actualizamos los cuadros del dashboard.
+    this.UpdateLineIFO();
+    this.UpdateLineMGO();
+    this.UpdateLineSPEED();
+
   }
 
   // Generar data para el dashboard desde el arreglo de reportes
@@ -640,15 +654,15 @@ export class DashboardComponent implements OnInit {
           this.configLineaSPEED.lineaMax = speed;
         }
 
-        debugger
+
         startDate = ComparePreviousDates(startDate, voyage.dayStart)
         endDate = CompareAfterDates(endDate, voyage.dayEnd)
-        debugger
+
       }
 
     );
 
-    debugger
+
     this.startDate = startDate;
     this.endDate = endDate;
 
@@ -732,13 +746,13 @@ export class DashboardComponent implements OnInit {
               (report, iR) => {
 
                 let day = report.date;
-                debugger
+
 
                 let resultSearch = this.xLabelReport.find(
                   (xDay, iL) => {
 
                     // Verificamos la fecha actual.
-                    debugger
+
                     if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
                       this.dataIFO[iL].x = day;
                       this.dataMGO[iL].x = day;
@@ -784,9 +798,9 @@ export class DashboardComponent implements OnInit {
 
                 );
 
-                debugger
+
                 if (!resultSearch) {
-                  debugger
+
                   // console.log('GenerateDataForDashboard()');
 
                   // agregamos la fecha a nuestro arreglo.
@@ -865,13 +879,13 @@ export class DashboardComponent implements OnInit {
             port.dailyReports.forEach(
               (report, iR) => {
                 let day = report.date;
-                debugger
+
 
                 let resultSearch = this.xLabelReport.find(
                   (xDay, iL) => {
 
                     // Verificamos la fecha actual.
-                    debugger
+
                     if (FormatDate(day) === FormatDate(xDay)) {
 
                       let speedI: Speed = this.dataSPEED[iL].speed;
@@ -919,9 +933,9 @@ export class DashboardComponent implements OnInit {
 
                 );
 
-                debugger
+
                 if (!resultSearch) {
-                  debugger
+
                   // console.log('GenerateDataForDashboard()');
 
                   // agregamos la fecha a nuestro arreglo.
@@ -1010,6 +1024,7 @@ export class DashboardComponent implements OnInit {
         // Habilitamos la opcion para que sea responsive
         maintainAspectRatio: false,
         tooltips: {
+
           // Establece qué elementos aparecen en la información sobre herramientas.
           mode: 'nearest',
           // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
@@ -1036,15 +1051,6 @@ export class DashboardComponent implements OnInit {
 
         },
         scales: null,
-        onClick: function (e) {
-          var bar = this.getElementAtEvent(e)[0];
-          if (bar != undefined) {
-            var index = bar._index;
-            var datasetIndex = bar._datasetIndex;
-
-            debugger
-          }
-        }
 
       },
       lineaMax: 0
@@ -1066,7 +1072,7 @@ export class DashboardComponent implements OnInit {
 
   public GenetareLineMGO(): boolean {
     console.log('GenetareLineMGO()');
-    debugger
+
 
     this.configLineaMGO = {
       type: 'line',
@@ -1077,7 +1083,6 @@ export class DashboardComponent implements OnInit {
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
           data: this.dataMGO,
-          reportDetail: this.generateVoyages,
           fill: false,
         }]
       },
@@ -1099,7 +1104,7 @@ export class DashboardComponent implements OnInit {
         legend: {
           display: true,
           onClick: (event, legendItem) => {
-            debugger
+
             this.Testt();
             console.log('onClick:' + legendItem.text);
           },
@@ -1111,7 +1116,6 @@ export class DashboardComponent implements OnInit {
         // Habilitamos la opcion para que sea responsive
         maintainAspectRatio: false,
         tooltips: {
-
           // Establece qué elementos aparecen en la información sobre herramientas.
           mode: 'nearest',
           // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
@@ -1192,7 +1196,6 @@ export class DashboardComponent implements OnInit {
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
           data: this.dataSPEED,
-          reportDetail: this.generateVoyages,
           fill: false,
         }],
         moreData: [['ROBIFO', 'MPL']]
@@ -1296,7 +1299,6 @@ export class DashboardComponent implements OnInit {
     // Actualizamos los labels
     this.configLineaMGO.data.labels = this.xLabelReport;
     this.configLineaMGO.data.datasets[0].data = this.dataMGO;
-    this.configLineaMGO.data.datasets[0].reportDetail = this.generateVoyages;
 
     // Vaciamos la configuracion de las lines MGO
     this.configLineaMGO.options.lines = [];
@@ -1316,6 +1318,7 @@ export class DashboardComponent implements OnInit {
 
 
     this.configLineaMGO.options.tooltips = {
+
       // Establece qué elementos aparecen en la información sobre herramientas.
       mode: 'nearest',
       // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
@@ -1435,7 +1438,7 @@ export class DashboardComponent implements OnInit {
 
     // Actualizamos los labels
     this.configLineaIFO.data.labels = this.xLabelReport;
-    debugger
+
     this.configLineaIFO.data.datasets[0].data = this.dataIFO;
 
     // Vaciamos la configuracion de las lines MGO
@@ -1454,6 +1457,7 @@ export class DashboardComponent implements OnInit {
       }
 
       this.configLineaIFO.options.tooltips = {
+
         // Establece qué elementos aparecen en la información sobre herramientas.
         mode: 'nearest',
         // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
@@ -1598,6 +1602,7 @@ export class DashboardComponent implements OnInit {
 
 
     this.configLineaSPEED.options.tooltips = {
+
       // Establece qué elementos aparecen en la información sobre herramientas.
       mode: 'nearest',
       // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
