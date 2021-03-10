@@ -1262,8 +1262,13 @@ export class DashboardComponent implements OnInit {
       callbacks: {
         title: (tooltipItem, data) => {
 
-          return tooltipItem[0].xLabel;
+          let result = tooltipItem[0].xLabel;
+          if (this.summaryBy === 'MONTHS') {
 
+            result = TextMonthYear(result);
+          }
+
+          return result;
         },
         label: (tooltipItem, data) => {
 
@@ -1274,14 +1279,13 @@ export class DashboardComponent implements OnInit {
           return result;
         },
         footer: (tooltipItem, data) => {
-          debugger
           let index = tooltipItem[0].index;
 
-          let ubication = data.datasets[0].data[index].ubication;
-
-          debugger
           let result = [];
           if (this.summaryBy === 'VOYAGES') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+
             let voyage = this.generateVoyages[ubication[0]];
             result = [
               'Ports : ' + voyage.totalPort,
@@ -1290,6 +1294,8 @@ export class DashboardComponent implements OnInit {
               'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'PORTS') {
+
+            let ubication = data.datasets[0].data[index].ubication;
 
             let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
             result = [
@@ -1301,8 +1307,15 @@ export class DashboardComponent implements OnInit {
             ];
           } else if (this.summaryBy === 'MONTHS') {
 
+
+            let speed = data.datasets[0].data[index].speed;
+
             //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-            result = ['OK'];
+            result = [
+              'Distance : ' + speed.distance,
+              'Time : ' + speed.steamingTime,
+              'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
+            ];
           }
           else if (this.summaryBy === 'DAYS') {
 
@@ -1361,7 +1374,14 @@ export class DashboardComponent implements OnInit {
         intersect: false,
         callbacks: {
           title: (tooltipItem, data) => {
-            return tooltipItem[0].xLabel;
+
+            let result = tooltipItem[0].xLabel;
+            if (this.summaryBy === 'MONTHS') {
+
+              result = TextMonthYear(result);
+            }
+
+            return result;
           },
           label: (tooltipItem, data) => {
 
@@ -1369,14 +1389,13 @@ export class DashboardComponent implements OnInit {
             return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
           },
           footer: (tooltipItem, data) => {
-            debugger
             let index = tooltipItem[0].index;
 
-            let ubication = data.datasets[0].data[index].ubication;
-
-            debugger
             let result = [];
             if (this.summaryBy === 'VOYAGES') {
+
+              let ubication = data.datasets[0].data[index].ubication;
+
               let voyage = this.generateVoyages[ubication[0]];
               result = [
                 'Ports : ' + voyage.totalPort,
@@ -1385,6 +1404,8 @@ export class DashboardComponent implements OnInit {
                 'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
               ];
             } else if (this.summaryBy === 'PORTS') {
+
+              let ubication = data.datasets[0].data[index].ubication;
 
               let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
               result = [
@@ -1396,8 +1417,13 @@ export class DashboardComponent implements OnInit {
               ];
             } else if (this.summaryBy === 'MONTHS') {
 
-              //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-              result = ['OK'];
+              let speed = data.datasets[0].data[index].speed;
+
+              result = [
+                'Distance : ' + speed.distance,
+                'Time : ' + speed.steamingTime,
+                'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
+              ];
             }
             else if (this.summaryBy === 'DAYS') {
 
@@ -1469,22 +1495,30 @@ export class DashboardComponent implements OnInit {
       intersect: false,
       callbacks: {
         title: (tooltipItem, data) => {
-          return tooltipItem[0].xLabel;
+
+          let result = tooltipItem[0].xLabel;
+          if (this.summaryBy === 'MONTHS') {
+
+            result = TextMonthYear(result);
+          }
+
+          return result;
         },
         label: (tooltipItem, data) => {
 
-          let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
-          return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+          let typeConsumption = 'Speed : ' + tooltipItem.value;
+          return typeConsumption;
         },
         footer: (tooltipItem, data) => {
-          debugger
+
           let index = tooltipItem[0].index;
 
-          let ubication = data.datasets[0].data[index].ubication;
 
-          debugger
           let result = [];
           if (this.summaryBy === 'VOYAGES') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+
             let voyage = this.generateVoyages[ubication[0]];
             result = [
               'Ports : ' + voyage.totalPort,
@@ -1492,6 +1526,8 @@ export class DashboardComponent implements OnInit {
               'Time : ' + voyage.totalSpeed.steamingTime,
             ];
           } else if (this.summaryBy === 'PORTS') {
+
+            let ubication = data.datasets[0].data[index].ubication;
 
             let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
             result = [
@@ -1502,8 +1538,12 @@ export class DashboardComponent implements OnInit {
             ];
           } else if (this.summaryBy === 'MONTHS') {
 
-            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-            result = ['OK'];
+            let speed = data.datasets[0].data[index].speed;
+
+            result = [
+              'Distance : ' + speed.distance,
+              'Time : ' + speed.steamingTime
+            ];
           }
           else if (this.summaryBy === 'DAYS') {
 
