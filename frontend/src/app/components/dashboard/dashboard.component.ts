@@ -609,7 +609,7 @@ export class DashboardComponent implements OnInit {
     this.generateVoyages.forEach(
       (voyage, iv) => {
 
-        let txtX = 'V' + voyage.voyageNumber + '-' + ('' + voyage.year).slice(-2);
+        let txtX = 'V' + voyage.voyageNumber + ' Y' + ('' + voyage.year).slice(-2);
         this.xLabelReport.push(txtX);
 
         this.dataIFO.push(
@@ -654,7 +654,7 @@ export class DashboardComponent implements OnInit {
 
         voyage.ports.forEach(
           (port, iP) => {
-            let txtX = 'V' + voyage.voyageNumber + ' ' + 'P' + port.portNumber + '-' + ('' + voyage.year).slice(-2);
+            let txtX = 'V' + voyage.voyageNumber + ' ' + 'P' + port.portNumber + ' Y' + ('' + voyage.year).slice(-2);
 
             this.xLabelReport.push(txtX);
             this.dataIFO.push(
@@ -1227,6 +1227,65 @@ export class DashboardComponent implements OnInit {
     }
 
 
+    this.configLineaMGO.options.tooltips = {
+      // Establece qué elementos aparecen en la información sobre herramientas.
+      mode: 'nearest',
+      // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
+      intersect: false,
+      callbacks: {
+        title: (tooltipItem, data) => {
+          return tooltipItem[0].xLabel;
+        },
+        label: (tooltipItem, data) => {
+
+          let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
+          return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+        },
+        footer: (tooltipItem, data) => {
+          debugger
+          let index = tooltipItem[0].index;
+
+          let ubication = data.datasets[0].data[index].ubication;
+
+          debugger
+          let result = [];
+          if (this.summaryBy === 'VOYAGES') {
+            let voyage = this.generateVoyages[ubication[0]];
+            result = [
+              'Ports : ' + voyage.totalPort,
+              'Distance : ' + voyage.totalSpeed.distance,
+              'Time : ' + voyage.totalSpeed.steamingTime,
+              'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
+            ];
+          } else if (this.summaryBy === 'PORTS') {
+
+            let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = [
+              'Departure : ' + port.departurePort,
+              'Arrival : ' + port.arrivalPort,
+              'Distance : ' + port.speed.distance,
+              'Time : ' + port.speed.steamingTime,
+              'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
+            ];
+          } else if (this.summaryBy === 'MONTHS') {
+
+            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = ['OK'];
+          }
+          else if (this.summaryBy === 'DAYS') {
+
+            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = ['DAYS'];
+          }
+
+
+          return result;
+
+        },
+      },
+    }
+
+
     if (this.configLineaMGO.lineaMax < this.selectUser.maxMGOConsumption) {
       this.configLineaMGO.lineaMax = this.selectUser.maxMGOConsumption;
     }
@@ -1288,8 +1347,6 @@ export class DashboardComponent implements OnInit {
             if (this.summaryBy === 'VOYAGES') {
               let voyage = this.generateVoyages[ubication[0]];
               result = [
-                'Voyage N° : ' + voyage.voyageNumber,
-                'Consume : ' + voyage.totalIFO,
                 'Ports : ' + voyage.totalPort,
                 'Distance : ' + voyage.totalSpeed.distance,
                 'Time : ' + voyage.totalSpeed.steamingTime,
@@ -1299,11 +1356,11 @@ export class DashboardComponent implements OnInit {
 
               let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
               result = [
-                'Voyage N° : ' + this.generateVoyages[ubication[0]].voyageNumber,
-                'Port N° : ' + port.portNumber,
                 'Departure : ' + port.departurePort,
                 'Arrival : ' + port.arrivalPort,
-                'Consume :' + port.robIfo,
+                'Distance : ' + port.speed.distance,
+                'Time : ' + port.speed.steamingTime,
+                'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
               ];
             } else if (this.summaryBy === 'MONTHS') {
 
@@ -1370,6 +1427,65 @@ export class DashboardComponent implements OnInit {
         label: ''
       });
     }
+
+    
+
+    this.configLineaSPEED.options.tooltips = {
+      // Establece qué elementos aparecen en la información sobre herramientas.
+      mode: 'nearest',
+      // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
+      intersect: false,
+      callbacks: {
+        title: (tooltipItem, data) => {
+          return tooltipItem[0].xLabel;
+        },
+        label: (tooltipItem, data) => {
+
+          let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
+          return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+        },
+        footer: (tooltipItem, data) => {
+          debugger
+          let index = tooltipItem[0].index;
+
+          let ubication = data.datasets[0].data[index].ubication;
+
+          debugger
+          let result = [];
+          if (this.summaryBy === 'VOYAGES') {
+            let voyage = this.generateVoyages[ubication[0]];
+            result = [
+              'Ports : ' + voyage.totalPort,
+              'Distance : ' + voyage.totalSpeed.distance,
+              'Time : ' + voyage.totalSpeed.steamingTime,
+            ];
+          } else if (this.summaryBy === 'PORTS') {
+
+            let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = [
+              'Departure : ' + port.departurePort,
+              'Arrival : ' + port.arrivalPort,
+              'Distance : ' + port.speed.distance,
+              'Time : ' + port.speed.steamingTime,
+            ];
+          } else if (this.summaryBy === 'MONTHS') {
+
+            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = ['OK'];
+          }
+          else if (this.summaryBy === 'DAYS') {
+
+            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = ['DAYS'];
+          }
+
+
+          return result;
+
+        },
+      },
+    }
+
 
     if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
       this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
