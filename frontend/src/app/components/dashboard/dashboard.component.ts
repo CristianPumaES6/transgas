@@ -1087,6 +1087,37 @@ export class DashboardComponent implements OnInit {
         }]
       },
       options: {
+        onClick: (event, legendItem) => {
+
+          if (legendItem && legendItem.length) {
+            let index = legendItem[0]._index;
+
+            if (this.summaryBy === 'VOYAGES') {
+debugger
+              let ubication = this.dataMGO[index].ubication;
+              let voyage = this.generateVoyages[ubication[0]]
+
+              let newVoyage = [];
+              newVoyage.push(voyage);
+
+              this.generateVoyages = newVoyage;
+              this.summaryBy = 'PORTS'
+              this.ClickSummaryBy();
+            }else if (this.summaryBy === 'PORTS') {
+
+              let ubication = this.dataMGO[index].ubication;
+              let voyage = this.generateVoyages[ubication[0]]
+              let port = this.generateVoyages[ubication[0]].ports[ubication[1]]
+
+              let newVoyage = [voyage];
+              newVoyage[0].ports = [port];
+
+              this.generateVoyages = newVoyage;
+              this.summaryBy = 'DAYS'
+              this.ClickSummaryBy();
+            }
+          }
+        },
         lines: [
           /*  {
              type: 'horizontal',
@@ -1103,11 +1134,6 @@ export class DashboardComponent implements OnInit {
         ],
         legend: {
           display: true,
-          onClick: (event, legendItem) => {
-
-            this.Testt();
-            console.log('onClick:' + legendItem.text);
-          },
           labels: {
             fontColor: 'rgb(255,255,255)',
             fontStyle: 'bold',
@@ -1138,15 +1164,6 @@ export class DashboardComponent implements OnInit {
               let index = tooltipItem[0].index;
 
               let reportDetail: Voyage[] = data.datasets[0].reportDetail;
-
-
-              // '     MPAL :  ' + reportDetail[index].mplaMgo,
-              // '     AUX :  ' + reportDetail[index].auxMgo,
-              // '     CALDERA :  ' + reportDetail[index].calderaMgo,
-              // '     PP :  ' + reportDetail[index].ppMgo,
-              // '     GI :  ' + reportDetail[index].giMgo,
-              // '     OTHER :  ' + reportDetail[index].otherIfo,
-              // '',
 
               return [];
 
@@ -1548,7 +1565,7 @@ export class DashboardComponent implements OnInit {
             return result;
 
           },
-        },
+        }
       }
 
     }
