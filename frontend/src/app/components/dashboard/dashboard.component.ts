@@ -20,7 +20,7 @@ import * as Chart from 'chart.js';
 import { mathRound } from 'dist/frontend/assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from 'src/app/models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareBeforeDates } from 'src/assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareBeforeDates, TextMonthYear } from 'src/assets/moment/moment.assets';
 
 @Component({
   selector: 'app-dashboard',
@@ -718,9 +718,23 @@ export class DashboardComponent implements OnInit {
                     if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
                       this.dataIFO[iL].x = day;
                       this.dataMGO[iL].x = day;
+                      this.dataSPEED[iL].x = day;
+
+
+                      let speedI: Speed = this.dataSPEED[iL].speed;
+                      speedI.add(report.distance, report.steamingTime);
+
+                      this.dataIFO[iL].speed = speedI;
+                      this.dataMGO[iL].speed = speedI;
+                      this.dataSPEED[iL].speed = speedI;
+
                       // Actualizamos el vlaor por la posicion.
                       this.dataIFO[iL].y = this.dataIFO[iL].y + this.SumaIfo(report)
                       this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
+
+                      let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
+                      this.dataSPEED[iL].y = ySpeed;
+
 
 
                       if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
@@ -728,6 +742,9 @@ export class DashboardComponent implements OnInit {
                       }
                       if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
                         this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
+                      }
+                      if (ySpeed > this.configLineaSPEED.lineaMax) {
+                        this.configLineaSPEED.lineaMax = ySpeed;
                       }
                       // this.dataSPEED[iL].y = { x: dataReport.date, y: dataReport.totalMGO };
                       // speed.distance / speed.steamingTime
@@ -747,12 +764,18 @@ export class DashboardComponent implements OnInit {
                   // agregamos la fecha a nuestro arreglo.
                   this.xLabelReport.push(day);
 
+                  let newSpeed = new Speed(report.distance, report.steamingTime);
                   this.dataIFO.push(
-                    { x: day, y: this.SumaIfo(report) }
+                    { x: day, y: this.SumaIfo(report), speed: newSpeed }
                   );
 
                   this.dataMGO.push(
-                    { x: day, y: this.SumaMgo(report) }
+                    { x: day, y: this.SumaMgo(report), speed: newSpeed }
+                  );
+
+                  let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2)
+                  this.dataSPEED.push(
+                    { x: day, y: ySpeed, speed: newSpeed }
                   );
 
 
@@ -762,6 +785,10 @@ export class DashboardComponent implements OnInit {
                   }
                   if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
                     this.configLineaMGO.lineaMax = this.SumaMgo(report);
+                  }
+
+                  if (ySpeed > this.configLineaSPEED.lineaMax) {
+                    this.configLineaSPEED.lineaMax = ySpeed;
                   }
 
 
@@ -1234,12 +1261,17 @@ export class DashboardComponent implements OnInit {
       intersect: false,
       callbacks: {
         title: (tooltipItem, data) => {
+
           return tooltipItem[0].xLabel;
+
         },
         label: (tooltipItem, data) => {
 
           let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
-          return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+
+          let result = 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+
+          return result;
         },
         footer: (tooltipItem, data) => {
           debugger
@@ -1428,7 +1460,7 @@ export class DashboardComponent implements OnInit {
       });
     }
 
-    
+
 
     this.configLineaSPEED.options.tooltips = {
       // Establece qué elementos aparecen en la información sobre herramientas.
