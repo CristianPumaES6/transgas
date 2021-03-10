@@ -1352,7 +1352,7 @@ export class DashboardComponent implements OnInit {
 
             let voyage = this.generateVoyages[ubication[0]];
             result = [
-              'Ports : ' + voyage.totalPort,
+              'T. Ports : ' + voyage.totalPort,
               'Distance : ' + voyage.totalSpeed.distance,
               'Time : ' + voyage.totalSpeed.steamingTime,
               'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
@@ -1487,7 +1487,7 @@ export class DashboardComponent implements OnInit {
 
               let voyage = this.generateVoyages[ubication[0]];
               result = [
-                'Ports : ' + voyage.totalPort,
+                'T. Ports : ' + voyage.totalPort,
                 'Distance : ' + voyage.totalSpeed.distance,
                 'Time : ' + voyage.totalSpeed.steamingTime,
                 'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
@@ -1632,7 +1632,7 @@ export class DashboardComponent implements OnInit {
 
             let voyage = this.generateVoyages[ubication[0]];
             result = [
-              'Ports : ' + voyage.totalPort,
+              'T. Ports : ' + voyage.totalPort,
               'Distance : ' + voyage.totalSpeed.distance,
               'Time : ' + voyage.totalSpeed.steamingTime,
             ];
