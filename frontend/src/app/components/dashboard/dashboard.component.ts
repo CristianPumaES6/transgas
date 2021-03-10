@@ -20,7 +20,7 @@ import * as Chart from 'chart.js';
 import { mathRound } from 'dist/frontend/assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from 'src/app/models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareBeforeDates, TextMonthYear, TextMonthDayYear } from 'src/assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear } from 'src/assets/moment/moment.assets';
 import { data } from 'jquery';
 
 @Component({
@@ -240,6 +240,7 @@ export class DashboardComponent implements OnInit {
         this.UpdateLineMGO();
         this.UpdateLineSPEED();
 
+
         this.loadingService.Close();
       }
     )
@@ -327,7 +328,7 @@ export class DashboardComponent implements OnInit {
 
 
                     dayStartByPort = ComparePreviousDates(dayStartByPort, report.date);
-                    dayEndByPort = CompareBeforeDates(dayEndByPort, report.date);
+                    dayEndByPort = CompareAfterDates(dayEndByPort, report.date);
 
                     return true;
                   } else {
@@ -345,7 +346,7 @@ export class DashboardComponent implements OnInit {
 
 
               dayStartByVoyage = ComparePreviousDates(dayStartByVoyage, dayStartByPort);
-              dayEndByVoyage = CompareBeforeDates(dayEndByVoyage, dayEndByPort);
+              dayEndByVoyage = CompareAfterDates(dayEndByVoyage, dayEndByPort);
 
               totalConsumoViajeIFO = totalConsumoViajeIFO + totalConsumoByPortIFO;
               totalConsumoViajeMGO = totalConsumoViajeMGO + totalConsumoByPortMGO;
@@ -607,6 +608,9 @@ export class DashboardComponent implements OnInit {
     this.dataMGO = [];
     this.dataSPEED = [];
 
+
+    let startDate;
+    let endDate;
     this.generateVoyages.forEach(
       (voyage, iv) => {
 
@@ -636,10 +640,17 @@ export class DashboardComponent implements OnInit {
           this.configLineaSPEED.lineaMax = speed;
         }
 
+        debugger
+        startDate = ComparePreviousDates(startDate, voyage.dayStart)
+        endDate = CompareAfterDates(endDate, voyage.dayEnd)
+        debugger
       }
 
     );
 
+    debugger
+    this.startDate = startDate;
+    this.endDate = endDate;
 
   }
   // Generar data para el dashboard desde el arreglo de reportes
@@ -649,6 +660,9 @@ export class DashboardComponent implements OnInit {
     this.dataIFO = [];
     this.dataMGO = [];
     this.dataSPEED = [];
+
+    let startDate;
+    let endDate;
 
     this.generateVoyages.forEach(
       (voyage: Voyage, iV) => {
@@ -681,6 +695,9 @@ export class DashboardComponent implements OnInit {
             if (speed > this.configLineaSPEED.lineaMax) {
               this.configLineaSPEED.lineaMax = speed;
             }
+
+            startDate = ComparePreviousDates(startDate, port.dayStart)
+            endDate = CompareAfterDates(endDate, port.dayEnd)
           }
         )
 
@@ -690,6 +707,8 @@ export class DashboardComponent implements OnInit {
 
     );
 
+    this.startDate = startDate;
+    this.endDate = endDate;
 
   }
 
@@ -699,6 +718,9 @@ export class DashboardComponent implements OnInit {
     this.dataIFO = [];
     this.dataMGO = [];
     this.dataSPEED = [];
+
+    let startDate;
+    let endDate;
 
     this.generateVoyages.forEach(
       (voyage, iV) => {
@@ -749,6 +771,11 @@ export class DashboardComponent implements OnInit {
                         this.configLineaSPEED.lineaMax = ySpeed;
                       }
 
+
+                      startDate = ComparePreviousDates(startDate, report.date)
+                      endDate = CompareAfterDates(endDate, report.date)
+
+
                       return true;
                     }
 
@@ -793,6 +820,10 @@ export class DashboardComponent implements OnInit {
                   }
 
 
+
+                  startDate = ComparePreviousDates(startDate, report.date)
+                  endDate = CompareAfterDates(endDate, report.date)
+
                 }
 
 
@@ -810,6 +841,9 @@ export class DashboardComponent implements OnInit {
     );
 
 
+    this.startDate = startDate;
+    this.endDate = endDate;
+
   }
 
   public GenerateDashBoardByDays() {
@@ -818,6 +852,9 @@ export class DashboardComponent implements OnInit {
     this.dataIFO = [];
     this.dataMGO = [];
     this.dataSPEED = [];
+
+    let startDate;
+    let endDate;
 
     this.generateVoyages.forEach(
       (voyage, iV) => {
@@ -868,6 +905,12 @@ export class DashboardComponent implements OnInit {
                       if (ySpeed > this.configLineaSPEED.lineaMax) {
                         this.configLineaSPEED.lineaMax = ySpeed;
                       }
+
+
+                      startDate = ComparePreviousDates(startDate, report.date)
+                      endDate = CompareAfterDates(endDate, report.date)
+
+
                       return true;
                     }
 
@@ -910,6 +953,9 @@ export class DashboardComponent implements OnInit {
                     this.configLineaSPEED.lineaMax = ySpeed;
                   }
 
+                  startDate = ComparePreviousDates(startDate, report.date)
+                  endDate = CompareAfterDates(endDate, report.date)
+
                 }
 
 
@@ -925,6 +971,8 @@ export class DashboardComponent implements OnInit {
 
     );
 
+    this.startDate = startDate;
+    this.endDate = endDate;
 
   }
 
@@ -1559,7 +1607,6 @@ export class DashboardComponent implements OnInit {
 
           let result = tooltipItem[0].xLabel;
           if (this.summaryBy === 'MONTHS') {
-
             result = TextMonthYear(result);
           }
           if (this.summaryBy === 'DAYS') {
