@@ -20,7 +20,8 @@ import * as Chart from 'chart.js';
 import { mathRound } from 'dist/frontend/assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from 'src/app/models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareBeforeDates, TextMonthYear } from 'src/assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareBeforeDates, TextMonthYear, TextMonthDayYear } from 'src/assets/moment/moment.assets';
+import { data } from 'jquery';
 
 @Component({
   selector: 'app-dashboard',
@@ -691,6 +692,7 @@ export class DashboardComponent implements OnInit {
 
 
   }
+
   public GenerateDashBoardByMonths() {
 
     this.xLabelReport = [];
@@ -746,8 +748,7 @@ export class DashboardComponent implements OnInit {
                       if (ySpeed > this.configLineaSPEED.lineaMax) {
                         this.configLineaSPEED.lineaMax = ySpeed;
                       }
-                      // this.dataSPEED[iL].y = { x: dataReport.date, y: dataReport.totalMGO };
-                      // speed.distance / speed.steamingTime
+
                       return true;
                     }
 
@@ -810,6 +811,7 @@ export class DashboardComponent implements OnInit {
 
 
   }
+
   public GenerateDashBoardByDays() {
 
     this.xLabelReport = [];
@@ -835,10 +837,27 @@ export class DashboardComponent implements OnInit {
                     debugger
                     if (FormatDate(day) === FormatDate(xDay)) {
 
+                      let speedI: Speed = this.dataSPEED[iL].speed;
+                      speedI.add(report.distance, report.steamingTime);
+
+                      this.dataIFO[iL].speed = speedI;
+                      this.dataMGO[iL].speed = speedI;
+                      this.dataSPEED[iL].speed = speedI;
+
                       // Actualizamos el vlaor por la posicion.
                       this.dataIFO[iL].y = this.dataIFO[iL].y + this.SumaIfo(report)
                       this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
+                      let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
+                      this.dataSPEED[iL].y = ySpeed;
 
+
+
+                      let dataExtra = this.dataIFO[iL].dataExtra;
+                      dataExtra.push(report);
+
+                      this.dataIFO[iL].dataExtra = dataExtra;
+                      this.dataMGO[iL].dataExtra = dataExtra;
+                      this.dataSPEED[iL].dataExtra = dataExtra;
 
                       if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
                         this.configLineaIFO.lineaMax = this.dataIFO[iL].y;
@@ -846,8 +865,9 @@ export class DashboardComponent implements OnInit {
                       if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
                         this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
                       }
-                      // this.dataSPEED[iL].y = { x: dataReport.date, y: dataReport.totalMGO };
-                      // speed.distance / speed.steamingTime
+                      if (ySpeed > this.configLineaSPEED.lineaMax) {
+                        this.configLineaSPEED.lineaMax = ySpeed;
+                      }
                       return true;
                     }
 
@@ -864,15 +884,21 @@ export class DashboardComponent implements OnInit {
                   // agregamos la fecha a nuestro arreglo.
                   this.xLabelReport.push(day);
 
+                  let newSpeed = new Speed(report.distance, report.steamingTime);
+                  let dataExtra = [];
+
+                  dataExtra.push(report)
+
                   this.dataIFO.push(
-                    { x: day, y: this.SumaIfo(report) }
+                    { x: day, y: this.SumaIfo(report), speed: newSpeed, dataExtra: dataExtra }
                   );
-
                   this.dataMGO.push(
-                    { x: day, y: this.SumaMgo(report) }
+                    { x: day, y: this.SumaMgo(report), speed: newSpeed, dataExtra: dataExtra }
                   );
-
-
+                  let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2)
+                  this.dataSPEED.push(
+                    { x: day, y: ySpeed, speed: newSpeed, dataExtra: dataExtra }
+                  );
 
                   if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
                     this.configLineaIFO.lineaMax = this.SumaIfo(report);
@@ -880,23 +906,10 @@ export class DashboardComponent implements OnInit {
                   if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
                     this.configLineaMGO.lineaMax = this.SumaMgo(report);
                   }
+                  if (ySpeed > this.configLineaSPEED.lineaMax) {
+                    this.configLineaSPEED.lineaMax = ySpeed;
+                  }
 
-                  /*     let speed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
-                      this.dataSPEED.push(
-                        { x: txtX, y: speed }
-                      );
-          
-          
-                      if (port.robIfo > this.configLineaIFO.lineaMax) {
-                        this.configLineaIFO.lineaMax = port.robIfo;
-                      }
-                      if (port.robMgo > this.configLineaMGO.lineaMax) {
-                        this.configLineaMGO.lineaMax = port.robMgo;
-                      }
-          
-                      if (speed > this.configLineaSPEED.lineaMax) {
-                        this.configLineaSPEED.lineaMax = speed;
-                      } */
                 }
 
 
@@ -1267,6 +1280,9 @@ export class DashboardComponent implements OnInit {
 
             result = TextMonthYear(result);
           }
+          if (this.summaryBy === 'DAYS') {
+            result = TextMonthDayYear(result)
+          }
 
           return result;
         },
@@ -1319,8 +1335,30 @@ export class DashboardComponent implements OnInit {
           }
           else if (this.summaryBy === 'DAYS') {
 
-            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-            result = ['DAYS'];
+
+            let dataExtra = data.datasets[0].data[index].dataExtra;
+
+            let speed = new Speed();
+            let activities = '';
+            let observations = '';
+            let totalReport = 0;
+
+            dataExtra.forEach((report: DailyReport) => {
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              observations = observations + ', ' + report.observation;
+              speed.add(report.distance, report.steamingTime);
+              totalReport = totalReport + 1;
+            });
+
+            result = [
+              'Distance : ' + speed.distance,
+              'Time : ' + speed.steamingTime,
+              'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
+              'T. Reports : ' + totalReport,
+              'Activities : ' + activities,
+              'Observations : ' + observations
+            ];
+
           }
 
 
@@ -1380,6 +1418,9 @@ export class DashboardComponent implements OnInit {
 
               result = TextMonthYear(result);
             }
+            if (this.summaryBy === 'DAYS') {
+              result = TextMonthDayYear(result)
+            }
 
             return result;
           },
@@ -1427,8 +1468,28 @@ export class DashboardComponent implements OnInit {
             }
             else if (this.summaryBy === 'DAYS') {
 
-              //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-              result = ['DAYS'];
+              let dataExtra = data.datasets[0].data[index].dataExtra;
+
+              let speed = new Speed();
+              let activities = '';
+              let observations = '';
+              let totalReport = 0;
+
+              dataExtra.forEach((report: DailyReport) => {
+                activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+                observations = observations + ', ' + report.observation;
+                speed.add(report.distance, report.steamingTime);
+                totalReport = totalReport + 1;
+              });
+
+              result = [
+                'Distance : ' + speed.distance,
+                'Time : ' + speed.steamingTime,
+                'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
+                'T. Reports : ' + totalReport,
+                'Activities : ' + activities,
+                'Observations : ' + observations
+              ];
             }
 
 
@@ -1501,6 +1562,9 @@ export class DashboardComponent implements OnInit {
 
             result = TextMonthYear(result);
           }
+          if (this.summaryBy === 'DAYS') {
+            result = TextMonthDayYear(result)
+          }
 
           return result;
         },
@@ -1547,8 +1611,27 @@ export class DashboardComponent implements OnInit {
           }
           else if (this.summaryBy === 'DAYS') {
 
-            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-            result = ['DAYS'];
+            let dataExtra = data.datasets[0].data[index].dataExtra;
+
+            let speed = new Speed();
+            let activities = '';
+            let observations = '';
+            let totalReport = 0;
+
+            dataExtra.forEach((report: DailyReport) => {
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              observations = observations + ', ' + report.observation;
+              speed.add(report.distance, report.steamingTime);
+              totalReport = totalReport + 1;
+            });
+
+            result = [
+              'Distance : ' + speed.distance,
+              'Time : ' + speed.steamingTime,
+              'T. Reports : ' + totalReport,
+              'Activities : ' + activities,
+              'Observations : ' + observations
+            ];
           }
 
 
