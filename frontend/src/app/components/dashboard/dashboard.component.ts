@@ -147,6 +147,33 @@ export class DashboardComponent implements OnInit {
       new PerfectScrollbar('.body-full-container', {
         suppressScrollX: true
       });
+
+      // PerfectScrollbar, para el elemento div az-contact-info-body del html.
+      new PerfectScrollbar('.PerfectScrollbar-table-data-MGO', {
+        suppressScrollY: true,
+        minScrollbarLength: 60
+      });
+
+      new PerfectScrollbar('.PerfectScrollbar-table-data-LSFO', {
+        suppressScrollY: true,
+        minScrollbarLength: 20
+      });
+
+
+
+      // PerfectScrollbar, para el elemento div az-contact-info-body del html.
+      new PerfectScrollbar('.PerfectScrollbar-table-data-activity-lsfo', {
+        suppressScrollY: true,
+        minScrollbarLength: 20
+      });
+
+
+      // PerfectScrollbar, para el elemento div az-contact-info-body del html.
+      new PerfectScrollbar('.PerfectScrollbar-table-data-activity-mgo', {
+        suppressScrollY: true,
+        minScrollbarLength: 20
+      });
+
     }, 500)
 
     Promise.resolve(true).then(

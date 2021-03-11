@@ -49,4 +49,6 @@ export class Port {
 
 
     public speed: Speed;
+    public dayStart: String;
+    public dayEnd: String;
 }

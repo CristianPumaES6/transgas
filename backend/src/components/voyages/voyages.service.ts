@@ -153,7 +153,7 @@ export class VoyagesService {
                 }
             ],
             order: {
-                voyageNumber: 'ASC',
+                voyageNumber: 'DESC',
             }
         }).then(
             (result: Voyage[]) => {

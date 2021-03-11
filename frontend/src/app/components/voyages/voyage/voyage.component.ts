@@ -284,6 +284,7 @@ export class VoyageComponent implements OnInit {
       // A lista se vuelve puertos
       //this.List_Voyages_Ports_DailyReports = 'DailyReports';
       this.SelectPortByPortId(event.id);
+      this.aSideService.OpenClose('open-formulario');
     }
   }
 
@@ -581,6 +582,8 @@ export class VoyageComponent implements OnInit {
 
       this.NewPort();
       this.getDailyReports = [];
+      this.aSideService.OpenClose('open-formulario');
+
     }
 
     return false;
@@ -774,6 +777,7 @@ export class VoyageComponent implements OnInit {
       }
     );
 
+    this.aSideService.OpenClose('open-formulario');
 
   }
 
@@ -821,6 +825,9 @@ export class VoyageComponent implements OnInit {
       this.isBunkering = false;
 
     }
+
+    this.aSideService.OpenClose('open-formulario');
+
 
   }
 
@@ -1357,6 +1364,8 @@ export class VoyageComponent implements OnInit {
 
       this.portService.Create(newPort).subscribe(
         (resultCreate: Port) => {
+          
+          this.selectPort = resultCreate;
 
           // Actualizamos el nuevo viaje con el resultado.
           newPort = resultCreate;
@@ -1388,6 +1397,7 @@ export class VoyageComponent implements OnInit {
 
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_CREATE'));
+
 
           // Inicializamos los datos.
           this.Initialize();
