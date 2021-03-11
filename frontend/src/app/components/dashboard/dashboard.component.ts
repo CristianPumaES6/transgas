@@ -4,25 +4,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { DailyReport, Speed } from 'src/app/models/daily-report';
-import { User } from 'src/app/models/user';
-import { Voyage, VoyageFilterByYears } from 'src/app/models/voyage';
-import { ASideService } from 'src/app/services/a-side.service';
-import { DailyReportService } from 'src/app/services/daily-report.service';
-import { LanguageService } from 'src/app/services/language.service';
-import { LoadingService } from 'src/app/services/loading.service';
-import { PortService } from 'src/app/services/port.service';
-import { UserService } from 'src/app/services/user.service';
-import { VoyageService } from 'src/app/services/voyage.service';
+import { DailyReport, Speed } from '../../models/daily-report';
+import { User } from '../../models/user';
+import { Voyage, VoyageFilterByYears } from '../../models/voyage';
+import { ASideService } from '../../services/a-side.service';
+import { DailyReportService } from '../../services/daily-report.service';
+import { LanguageService } from '../../services/language.service';
+import { LoadingService } from '../../services/loading.service';
+import { PortService } from '../../services/port.service';
+import { UserService } from '../../services/user.service';
+import { VoyageService } from '../../services/voyage.service';
 
 
 import * as Chart from 'chart.js';
-import { mathRound } from 'dist/frontend/assets/math/math.assets';
+import { mathRound } from '../../../assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
-import { Port } from 'src/app/models/port';
+import { Port } from '../../models/port';
 import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates } from 'src/assets/moment/moment.assets';
-import { data } from 'jquery';
-import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from 'src/app/models/dashboard';
+import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
 
 @Component({
   selector: 'app-dashboard',

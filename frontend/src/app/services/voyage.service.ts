@@ -141,6 +141,8 @@ export class VoyageService {
 
 
     Create(voyage: Voyage): Observable<Voyage> {
+
+        delete voyage.totalReport;
         // Armo el request
         let url: string = this.url + '/voyages/create';
         let headers: HttpHeaders = new HttpHeaders(
@@ -170,6 +172,8 @@ export class VoyageService {
 
     Save(voyage: Voyage): Observable<Voyage> {
 
+        delete voyage.totalReport;
+        
         // Armo el request
         let url: string = this.url + '/voyages/' + voyage.id + '/update';
         let headers: HttpHeaders = new HttpHeaders(

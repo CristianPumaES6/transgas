@@ -124,6 +124,8 @@ export class PortService {
             
         // Eliminamos el campo sync
         delete port.syncStatus;
+        
+        delete port.totalReport;
         // Parseo el obj para poder enviarlo en el request
         let body: string = JSON.stringify(port);
         let options: any = { headers: headers, responseType: 'json' };
@@ -156,6 +158,7 @@ export class PortService {
 
         // Eliminamos el campo sync
         delete port.syncStatus;
+        delete port.totalReport;
         // Armo el obj para enviarlo.
         let body: string = JSON.stringify(port);
         let options: any = { headers: headers, responseType: 'json' };
