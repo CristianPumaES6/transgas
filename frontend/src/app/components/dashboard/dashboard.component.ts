@@ -279,13 +279,13 @@ export class DashboardComponent implements OnInit {
     this.summaryBy = 'PORTS';
     this.GenerateDashboardBySumary();
 
-
     return false;
   }
 
   public FilterByActivities() {
 
     this.GenerateDataByFilter(this.getVoyages);
+    this.GenerateDashboardBySumary();
   }
 
   public ClickSummaryBy(): boolean {
@@ -309,8 +309,24 @@ export class DashboardComponent implements OnInit {
   }
 
   public ClearFilter(): boolean {
-    console.log('ClearFilter()');
 
+    this.startDate = null;
+    this.endDate = null;
+
+    if (this.activityPerformed && this.activityPerformed.value && this.activityPerformed.value) {
+      // Reset filtro.
+      this.activityPerformed = new FormControl();
+    }
+
+    this.selectVoyageId = 0;
+    this.selectVoyage = new Voyage();
+
+
+    this.summaryBy = 'VOYAGES';
+
+    this.GenerateDataByFilter(this.getVoyages);
+
+    this.GenerateDashboardBySumary();
     return false;
   }
 
@@ -446,37 +462,6 @@ export class DashboardComponent implements OnInit {
                     dayStartByPort = ComparePreviousDates(dayStartByPort, report.date);
                     dayEndByPort = CompareAfterDates(dayEndByPort, report.date);
 
-                    if (
-                      (!this.activityPerformed.value || this.activityPerformed.value.length === 0) ||
-                      this.activityPerformed.value.find(activity => activity === report.activityPerformed)
-                    ) {
-
-
-                      totalConsumoByPortIFO = totalConsumoByPortIFO + totalIFO;
-                      totalConsumoByPortMGO = totalConsumoByPortMGO + totalMGO;
-                      totalSpeedByPort.add(report.distance, report.steamingTime);
-                      totalPuertos = totalPuertos + 1;
-
-                      // Sumamos el consumo MGO
-                      this.consumptionTotalMGO.mpal += report.mplaMgo;
-                      this.consumptionTotalMGO.aux += report.auxMgo;
-                      this.consumptionTotalMGO.boiler += report.boilerIfo;
-                      this.consumptionTotalMGO.pp += report.ppMgo;
-                      this.consumptionTotalMGO.gi += report.giMgo;
-                      this.consumptionTotalMGO.other += report.otherMgo;
-                      // FIN Consumo MGO
-
-                      // Sumamos el consumo IFO
-                      this.consumptionTotalIFO.mpal += report.mplaIfo;
-                      this.consumptionTotalIFO.aux += report.auxIfo;
-                      this.consumptionTotalIFO.boiler += report.boilerIfo;
-                      this.consumptionTotalIFO.other += report.otherIfo;
-                      // FIN Consumo IFO
-
-
-                    }
-
-
                     // FILTRO POR ACTIVIDAD
                     if (report.activityPerformed === 'LOADING') {
 
@@ -565,6 +550,40 @@ export class DashboardComponent implements OnInit {
                       this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalMGO;
 
                     }
+                    if (
+                      (!this.activityPerformed.value || this.activityPerformed.value.length === 0) ||
+                      this.activityPerformed.value.find(activity => activity === report.activityPerformed)
+                    ) {
+
+
+                      totalConsumoByPortIFO = totalConsumoByPortIFO + totalIFO;
+                      totalConsumoByPortMGO = totalConsumoByPortMGO + totalMGO;
+                      totalSpeedByPort.add(report.distance, report.steamingTime);
+                      totalPuertos = totalPuertos + 1;
+
+                      // Sumamos el consumo MGO
+                      this.consumptionTotalMGO.mpal += report.mplaMgo;
+                      this.consumptionTotalMGO.aux += report.auxMgo;
+                      this.consumptionTotalMGO.boiler += report.boilerIfo;
+                      this.consumptionTotalMGO.pp += report.ppMgo;
+                      this.consumptionTotalMGO.gi += report.giMgo;
+                      this.consumptionTotalMGO.other += report.otherMgo;
+                      // FIN Consumo MGO
+
+                      // Sumamos el consumo IFO
+                      this.consumptionTotalIFO.mpal += report.mplaIfo;
+                      this.consumptionTotalIFO.aux += report.auxIfo;
+                      this.consumptionTotalIFO.boiler += report.boilerIfo;
+                      this.consumptionTotalIFO.other += report.otherIfo;
+                      // FIN Consumo IFO
+
+
+                    } else {
+                      debugger
+                      return false;
+                    }
+
+
                     return true;
                   } else {
                     return false;
@@ -1447,6 +1466,8 @@ export class DashboardComponent implements OnInit {
               let ubication = this.dataIFO[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
 
+              this.selectVoyageId = voyage.id;
+
               let newVoyage = [];
               newVoyage.push(voyage);
 
@@ -1557,6 +1578,8 @@ export class DashboardComponent implements OnInit {
 
               let ubication = this.dataMGO[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
+
+              this.selectVoyageId = voyage.id;
 
               let newVoyage = [];
               newVoyage.push(voyage);
@@ -1693,6 +1716,8 @@ export class DashboardComponent implements OnInit {
 
               let ubication = this.dataSPEED[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
+
+              this.selectVoyageId = voyage.id;
 
               let newVoyage = [];
               newVoyage.push(voyage);
