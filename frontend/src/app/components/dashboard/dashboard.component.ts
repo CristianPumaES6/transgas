@@ -20,8 +20,9 @@ import * as Chart from 'chart.js';
 import { mathRound } from 'dist/frontend/assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from 'src/app/models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear } from 'src/assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates } from 'src/assets/moment/moment.assets';
 import { data } from 'jquery';
+import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from 'src/app/models/dashboard';
 
 @Component({
   selector: 'app-dashboard',
@@ -75,6 +76,53 @@ export class DashboardComponent implements OnInit {
   public chartLineSPEED: any; // LINEA
   public dataSPEED = [];
 
+
+  // Consumo IFO POR ACTIVIDAD
+  public totalTimePerActivityIFO: ActivityPerformed = new ActivityPerformed();
+  public totalDistanceMilesByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+
+  public averageSpeedByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+  public averageSpeedCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+
+  public voyageConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+  public dayliConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+
+  public dayliConsumptionCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+  public timePerNavigationCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+  public voyageConsumptionCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+
+  public balanceConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+  public balanceTimeByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
+
+  // CONSUMER MGO
+  public totalTimePerActivityMGO: ActivityPerformed = new ActivityPerformed();
+  public totalDistanceMilesByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+
+  public averageSpeedByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+  public averageSpeedCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+
+  public voyageConsumptionByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+  public dayliConsumptionByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+
+  public dayliConsumptionCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+  public timePerNavigationCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+  public voyageConsumptionCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+
+  public balanceConsumptionByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+  public balanceTimeByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
+
+
+  // CONSUMER MGO POR MAUQINA
+  public consumptionTotalMGO = new ConsumptionMachineMGO();
+  public consumptionDaysRealMGO = new ConsumptionMachineMGO();
+  public consumptionDaysByContractMGO = new ConsumptionMachineMGO();
+  public consumptionDailyBalanceMGO = new ConsumptionMachineMGO();
+
+  // CONSUMER MGO POR MAQUINA
+  public consumptionTotalIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
+  public consumptionDaysRealIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
+  public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO(0, 0, 0, 0, 0);
+  public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
 
   constructor(
     private router: Router,
@@ -235,6 +283,11 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  public FilterByActivities() {
+
+    this.GenerateDataByFilter(this.getVoyages);
+  }
+
   public ClickSummaryBy(): boolean {
 
     this.loadingService.Open();
@@ -299,6 +352,63 @@ export class DashboardComponent implements OnInit {
 
     this.generateVoyages = JSON.parse(JSON.stringify(aRvoyages));
 
+    // Consumo IFO POR ACTIVIDAD
+    this.totalTimePerActivityIFO = new ActivityPerformed();
+    this.totalDistanceMilesByActivityPerformedIFO = new ActivityPerformed();
+
+    this.averageSpeedByActivityPerformedIFO = new ActivityPerformed();
+    this.averageSpeedCharterByActivityPerformedIFO = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+
+    this.voyageConsumptionByActivityPerformedIFO = new ActivityPerformed();
+    this.dayliConsumptionByActivityPerformedIFO = new ActivityPerformed();
+
+    this.dayliConsumptionCharterByActivityPerformedIFO = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+    this.timePerNavigationCharterByActivityPerformedIFO = new ActivityPerformed();
+    this.voyageConsumptionCharterByActivityPerformedIFO = new ActivityPerformed();
+
+    this.balanceConsumptionByActivityPerformedIFO = new ActivityPerformed();
+    this.balanceTimeByActivityPerformedIFO = new ActivityPerformed();
+
+
+
+
+
+
+    // CONSUMER MGO
+
+    this.totalTimePerActivityMGO = new ActivityPerformed();
+    this.totalDistanceMilesByActivityPerformedMGO = new ActivityPerformed();
+
+    this.averageSpeedByActivityPerformedMGO = new ActivityPerformed();
+    this.averageSpeedCharterByActivityPerformedMGO = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+
+    this.voyageConsumptionByActivityPerformedMGO = new ActivityPerformed();
+    this.dayliConsumptionByActivityPerformedMGO = new ActivityPerformed();
+
+    this.dayliConsumptionCharterByActivityPerformedMGO = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+    this.timePerNavigationCharterByActivityPerformedMGO = new ActivityPerformed();
+    this.voyageConsumptionCharterByActivityPerformedMGO = new ActivityPerformed();
+
+    this.balanceConsumptionByActivityPerformedMGO = new ActivityPerformed();
+    this.balanceTimeByActivityPerformedMGO = new ActivityPerformed();
+
+
+    // CONSUMER MGO POR MAUQINA
+    this.consumptionTotalMGO = new ConsumptionMachineMGO();
+    this.consumptionDaysRealMGO = new ConsumptionMachineMGO();
+    this.consumptionDaysByContractMGO = new ConsumptionMachineMGO();
+    this.consumptionDailyBalanceMGO = new ConsumptionMachineMGO();
+
+    // CONSUMER MGO POR MAQUINA
+    this.consumptionTotalIFO = new ConsumptionMachineIFO();
+    this.consumptionDaysRealIFO = new ConsumptionMachineIFO();
+    this.consumptionDaysByContractIFO = new ConsumptionMachineIFO(0, 0, 0, 0, 0);
+    this.consumptionDailyBalanceIFO = new ConsumptionMachineIFO();
+
+
+    let generalStartDate: String;
+    let generalEndDate: String;
+
     this.generateVoyages = this.generateVoyages.filter(
       (voyage: Voyage, indexV: number, voyages: any[]) => {
 
@@ -329,15 +439,132 @@ export class DashboardComponent implements OnInit {
 
 
                   if (report.status) {
-                    totalConsumoByPortIFO = totalConsumoByPortIFO + this.SumaIfo(report);
-                    totalConsumoByPortMGO = totalConsumoByPortMGO + this.SumaMgo(report);
-                    totalSpeedByPort.add(report.distance, report.steamingTime);
-                    totalPuertos = totalPuertos + 1;
 
+                    let totalIFO = this.SumaIfo(report);
+                    let totalMGO = this.SumaMgo(report);
 
                     dayStartByPort = ComparePreviousDates(dayStartByPort, report.date);
                     dayEndByPort = CompareAfterDates(dayEndByPort, report.date);
 
+                    if (
+                      (!this.activityPerformed.value || this.activityPerformed.value.length === 0) ||
+                      this.activityPerformed.value.find(activity => activity === report.activityPerformed)
+                    ) {
+
+
+                      totalConsumoByPortIFO = totalConsumoByPortIFO + totalIFO;
+                      totalConsumoByPortMGO = totalConsumoByPortMGO + totalMGO;
+                      totalSpeedByPort.add(report.distance, report.steamingTime);
+                      totalPuertos = totalPuertos + 1;
+
+                      // Sumamos el consumo MGO
+                      this.consumptionTotalMGO.mpal += report.mplaMgo;
+                      this.consumptionTotalMGO.aux += report.auxMgo;
+                      this.consumptionTotalMGO.boiler += report.boilerIfo;
+                      this.consumptionTotalMGO.pp += report.ppMgo;
+                      this.consumptionTotalMGO.gi += report.giMgo;
+                      this.consumptionTotalMGO.other += report.otherMgo;
+                      // FIN Consumo MGO
+
+                      // Sumamos el consumo IFO
+                      this.consumptionTotalIFO.mpal += report.mplaIfo;
+                      this.consumptionTotalIFO.aux += report.auxIfo;
+                      this.consumptionTotalIFO.boiler += report.boilerIfo;
+                      this.consumptionTotalIFO.other += report.otherIfo;
+                      // FIN Consumo IFO
+
+
+                    }
+
+
+                    // FILTRO POR ACTIVIDAD
+                    if (report.activityPerformed === 'LOADING') {
+
+                      this.totalTimePerActivityIFO.loading += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.loading += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.loading += totalIFO;
+
+
+                      this.totalTimePerActivityMGO.loading += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.loading += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.loading += totalMGO;
+
+                    } else if (report.activityPerformed === 'DOWNLOADING') {
+
+                      this.totalTimePerActivityIFO.discharge += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.discharge += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.discharge += totalIFO;
+
+
+                      this.totalTimePerActivityMGO.discharge += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.discharge += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.discharge += totalMGO;
+
+                    } else if (report.activityPerformed === 'SAILING_IN_BALLAST') {
+
+                      this.totalTimePerActivityIFO.ballast += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.ballast += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.ballast += totalIFO;
+
+                      this.totalTimePerActivityMGO.ballast += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.ballast += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.ballast += totalMGO;
+
+                    } else if (report.activityPerformed === 'SAILING_WITH_LADEN') {
+
+                      this.totalTimePerActivityIFO.laden += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.laden += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.laden += totalIFO;
+
+
+                      this.totalTimePerActivityMGO.laden += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.laden += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.laden += totalMGO;
+
+                    } else if (report.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+
+                      this.totalTimePerActivityIFO.economical += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.economical += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.economical += totalIFO;
+
+
+                      this.totalTimePerActivityMGO.economical += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.economical += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.economical += totalMGO;
+
+                    } else if (report.activityPerformed === 'ANCHORED') {
+
+                      this.totalTimePerActivityIFO.anchor += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.anchor += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.anchor += totalIFO;
+
+
+                      this.totalTimePerActivityMGO.anchor += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.anchor += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.anchor += totalMGO;
+
+                    } else if (report.activityPerformed === 'MANEUVER') {
+
+                      this.totalTimePerActivityIFO.maneuver += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.maneuver += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.maneuver += totalIFO;
+
+
+                      this.totalTimePerActivityMGO.maneuver += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.maneuver += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.maneuver += totalMGO;
+
+                    } else if (report.activityPerformed === 'OTHER_ACT') {
+
+                      this.totalTimePerActivityIFO.otherActivity += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedIFO.otherActivity += report.distance;
+                      this.voyageConsumptionByActivityPerformedIFO.otherActivity += totalIFO;
+
+                      this.totalTimePerActivityMGO.otherActivity += report.steamingTime; // revisar
+                      this.totalDistanceMilesByActivityPerformedMGO.otherActivity += report.distance;
+                      this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalMGO;
+
+                    }
                     return true;
                   } else {
                     return false;
@@ -374,8 +601,207 @@ export class DashboardComponent implements OnInit {
         voyage.dayStart = dayStartByVoyage;
         voyage.dayEnd = dayEndByVoyage;
 
+        generalStartDate = ComparePreviousDates(generalStartDate, voyage.dayStart);
+        generalEndDate = CompareAfterDates(generalEndDate, voyage.dayEnd);
         return true;
       });
+
+    let numberDay = DiffDates(generalStartDate, generalEndDate);
+    if (!numberDay) numberDay = 1;
+
+    // MGO
+    this.consumptionDaysRealMGO.mpal = this.consumptionTotalMGO.mpal / (numberDay || 1);
+    this.consumptionDaysRealMGO.aux = this.consumptionTotalMGO.aux / (numberDay || 1);
+    this.consumptionDaysRealMGO.boiler = this.consumptionTotalMGO.boiler / (numberDay || 1);
+    this.consumptionDaysRealMGO.pp = this.consumptionTotalMGO.pp / (numberDay || 1);
+    this.consumptionDaysRealMGO.gi = this.consumptionTotalMGO.gi / (numberDay || 1);
+    this.consumptionDaysRealMGO.other = this.consumptionTotalMGO.other / (numberDay || 1);
+
+
+    this.consumptionDaysByContractMGO.mpal = this.selectUser.sailingBallastConsumptionMGO;
+    this.consumptionDaysByContractMGO.aux = this.selectUser.sailingBallastConsumptionMGO;
+    this.consumptionDaysByContractMGO.boiler = this.selectUser.sailingBallastConsumptionMGO;
+    this.consumptionDaysByContractMGO.pp = this.selectUser.sailingBallastConsumptionMGO;
+    this.consumptionDaysByContractMGO.gi = this.selectUser.sailingBallastConsumptionMGO;
+    this.consumptionDaysByContractMGO.other = this.selectUser.sailingBallastConsumptionMGO;
+
+    this.consumptionDailyBalanceMGO.mpal = this.consumptionDaysRealMGO.mpal / this.consumptionDaysByContractMGO.mpal;
+    this.consumptionDailyBalanceMGO.aux = this.consumptionDaysRealMGO.aux / this.consumptionDaysByContractMGO.aux;
+    this.consumptionDailyBalanceMGO.boiler = this.consumptionDaysRealMGO.boiler / this.consumptionDaysByContractMGO.boiler;
+    this.consumptionDailyBalanceMGO.pp = this.consumptionDaysRealMGO.pp / this.consumptionDaysByContractMGO.pp;
+    this.consumptionDailyBalanceMGO.gi = this.consumptionDaysRealMGO.gi / this.consumptionDaysByContractMGO.gi;
+    this.consumptionDailyBalanceMGO.other = this.consumptionDaysRealMGO.other / this.consumptionDaysByContractMGO.other;
+
+
+
+    //IFO
+    this.consumptionDaysRealIFO.mpal = this.consumptionTotalIFO.mpal / (numberDay || 1);
+    this.consumptionDaysRealIFO.aux = this.consumptionTotalIFO.aux / (numberDay || 1);
+    this.consumptionDaysRealIFO.boiler = this.consumptionTotalIFO.boiler / (numberDay || 1);
+    this.consumptionDaysRealIFO.other = this.consumptionTotalIFO.other / (numberDay || 1);
+
+    this.consumptionDaysByContractIFO.mpal = this.selectUser.sailingBallastConsumptionIFO;
+    this.consumptionDaysByContractIFO.aux = this.selectUser.sailingBallastConsumptionIFO;
+    this.consumptionDaysByContractIFO.boiler = this.selectUser.sailingBallastConsumptionIFO;
+    this.consumptionDaysByContractIFO.other = this.selectUser.sailingBallastConsumptionIFO;
+
+    this.consumptionDailyBalanceIFO.mpal = this.consumptionDaysRealIFO.mpal - this.consumptionDaysByContractIFO.mpal;
+    this.consumptionDailyBalanceIFO.aux = this.consumptionDaysRealIFO.aux - this.consumptionDaysByContractIFO.aux;
+    this.consumptionDailyBalanceIFO.boiler = this.consumptionDaysRealIFO.boiler - this.consumptionDaysByContractIFO.boiler;
+    this.consumptionDailyBalanceIFO.other = this.consumptionDaysRealIFO.other - this.consumptionDaysByContractIFO.other;
+
+    // ActivityPerformance IFO
+    // calculo de speed
+    this.averageSpeedByActivityPerformedIFO.loading = this.totalDistanceMilesByActivityPerformedIFO.loading / (this.totalTimePerActivityIFO.loading || 1);
+    this.averageSpeedByActivityPerformedIFO.discharge = this.totalDistanceMilesByActivityPerformedIFO.discharge / (this.totalTimePerActivityIFO.discharge || 1);
+    this.averageSpeedByActivityPerformedIFO.ballast = this.totalDistanceMilesByActivityPerformedIFO.ballast / (this.totalTimePerActivityIFO.ballast || 1);
+    this.averageSpeedByActivityPerformedIFO.laden = this.totalDistanceMilesByActivityPerformedIFO.laden / (this.totalTimePerActivityIFO.laden || 1);
+    this.averageSpeedByActivityPerformedIFO.economical = this.totalDistanceMilesByActivityPerformedIFO.economical / (this.totalTimePerActivityIFO.economical || 1);
+    this.averageSpeedByActivityPerformedIFO.anchor = this.totalDistanceMilesByActivityPerformedIFO.anchor / (this.totalTimePerActivityIFO.anchor || 1);
+    this.averageSpeedByActivityPerformedIFO.maneuver = this.totalDistanceMilesByActivityPerformedIFO.maneuver / (this.totalTimePerActivityIFO.maneuver || 1);
+    this.averageSpeedByActivityPerformedIFO.otherActivity = this.totalDistanceMilesByActivityPerformedIFO.otherActivity / (this.totalTimePerActivityIFO.otherActivity || 1);
+
+    // calculo de speed
+    this.averageSpeedCharterByActivityPerformedIFO.loading = 0;
+    this.averageSpeedCharterByActivityPerformedIFO.discharge = 0;
+    this.averageSpeedCharterByActivityPerformedIFO.ballast = this.selectUser.contractSpeedSailingBallastIFO;
+    this.averageSpeedCharterByActivityPerformedIFO.laden = this.selectUser.contractSpeedSailingLadenIFO;
+    this.averageSpeedCharterByActivityPerformedIFO.economical = this.selectUser.contractSpeedSailingEconomicalIFO;
+    this.averageSpeedCharterByActivityPerformedIFO.anchor = 0;
+    this.averageSpeedCharterByActivityPerformedIFO.maneuver = 0;
+    this.averageSpeedCharterByActivityPerformedIFO.otherActivity = 0;
+
+    this.dayliConsumptionByActivityPerformedIFO.loading = (this.voyageConsumptionByActivityPerformedIFO.loading * numberDay) / (this.totalTimePerActivityIFO.loading || 1);
+    this.dayliConsumptionByActivityPerformedIFO.discharge = (this.voyageConsumptionByActivityPerformedIFO.discharge * numberDay) / (this.totalTimePerActivityIFO.discharge || 1);
+    this.dayliConsumptionByActivityPerformedIFO.ballast = (this.voyageConsumptionByActivityPerformedIFO.ballast * numberDay) / (this.totalTimePerActivityIFO.ballast || 1);
+    this.dayliConsumptionByActivityPerformedIFO.laden = (this.voyageConsumptionByActivityPerformedIFO.laden * numberDay) / (this.totalTimePerActivityIFO.laden || 1);
+    this.dayliConsumptionByActivityPerformedIFO.economical = (this.voyageConsumptionByActivityPerformedIFO.economical * numberDay) / (this.totalTimePerActivityIFO.economical || 1);
+    this.dayliConsumptionByActivityPerformedIFO.anchor = (this.voyageConsumptionByActivityPerformedIFO.anchor * numberDay) / (this.totalTimePerActivityIFO.anchor || 1);
+    this.dayliConsumptionByActivityPerformedIFO.maneuver = (this.voyageConsumptionByActivityPerformedIFO.maneuver * numberDay) / (this.totalTimePerActivityIFO.maneuver || 1);
+    this.dayliConsumptionByActivityPerformedIFO.otherActivity = (this.voyageConsumptionByActivityPerformedIFO.otherActivity * numberDay) / (this.totalTimePerActivityIFO.otherActivity || 1);
+
+    this.dayliConsumptionCharterByActivityPerformedIFO.loading = this.totalDistanceMilesByActivityPerformedIFO.loading / (this.totalTimePerActivityIFO.loading || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.discharge = this.totalDistanceMilesByActivityPerformedIFO.discharge / (this.totalTimePerActivityIFO.discharge || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.ballast = this.totalDistanceMilesByActivityPerformedIFO.ballast / (this.totalTimePerActivityIFO.ballast || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.laden = this.totalDistanceMilesByActivityPerformedIFO.laden / (this.totalTimePerActivityIFO.laden || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.economical = this.totalDistanceMilesByActivityPerformedIFO.economical / (this.totalTimePerActivityIFO.economical || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.anchor = this.totalDistanceMilesByActivityPerformedIFO.anchor / (this.totalTimePerActivityIFO.anchor || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.maneuver = this.totalDistanceMilesByActivityPerformedIFO.maneuver / (this.totalTimePerActivityIFO.maneuver || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.otherActivity = this.totalDistanceMilesByActivityPerformedIFO.otherActivity / (this.totalTimePerActivityIFO.otherActivity || 1);
+
+    this.timePerNavigationCharterByActivityPerformedIFO.loading = this.totalDistanceMilesByActivityPerformedIFO.loading / (this.averageSpeedCharterByActivityPerformedIFO.loading || 1);
+    this.timePerNavigationCharterByActivityPerformedIFO.discharge = this.totalDistanceMilesByActivityPerformedIFO.discharge / (this.averageSpeedCharterByActivityPerformedIFO.discharge || 1);
+    this.timePerNavigationCharterByActivityPerformedIFO.ballast = this.totalDistanceMilesByActivityPerformedIFO.ballast / (this.averageSpeedCharterByActivityPerformedIFO.ballast || 1);
+    this.timePerNavigationCharterByActivityPerformedIFO.laden = this.totalDistanceMilesByActivityPerformedIFO.laden / (this.averageSpeedCharterByActivityPerformedIFO.laden || 1);
+    this.timePerNavigationCharterByActivityPerformedIFO.economical = this.totalDistanceMilesByActivityPerformedIFO.economical / (this.averageSpeedCharterByActivityPerformedIFO.economical || 1);
+    this.timePerNavigationCharterByActivityPerformedIFO.anchor = this.totalDistanceMilesByActivityPerformedIFO.anchor / (this.averageSpeedCharterByActivityPerformedIFO.anchor || 1);
+    this.timePerNavigationCharterByActivityPerformedIFO.maneuver = this.totalDistanceMilesByActivityPerformedIFO.maneuver / (this.averageSpeedCharterByActivityPerformedIFO.maneuver || 1);
+    this.timePerNavigationCharterByActivityPerformedIFO.otherActivity = this.totalDistanceMilesByActivityPerformedIFO.otherActivity / (this.averageSpeedCharterByActivityPerformedIFO.otherActivity || 1);
+
+    this.voyageConsumptionCharterByActivityPerformedIFO.loading = (this.dayliConsumptionCharterByActivityPerformedIFO.loading * (this.timePerNavigationCharterByActivityPerformedIFO.loading ? this.timePerNavigationCharterByActivityPerformedIFO.loading : this.totalTimePerActivityIFO.loading)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedIFO.discharge = (this.dayliConsumptionCharterByActivityPerformedIFO.discharge * (this.timePerNavigationCharterByActivityPerformedIFO.discharge ? this.timePerNavigationCharterByActivityPerformedIFO.discharge : this.totalTimePerActivityIFO.discharge)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedIFO.ballast = (this.dayliConsumptionCharterByActivityPerformedIFO.ballast * (this.timePerNavigationCharterByActivityPerformedIFO.ballast ? this.timePerNavigationCharterByActivityPerformedIFO.ballast : this.totalTimePerActivityIFO.ballast)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedIFO.laden = (this.dayliConsumptionCharterByActivityPerformedIFO.laden * (this.timePerNavigationCharterByActivityPerformedIFO.laden ? this.timePerNavigationCharterByActivityPerformedIFO.laden : this.totalTimePerActivityIFO.laden)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedIFO.economical = (this.dayliConsumptionCharterByActivityPerformedIFO.economical * (this.timePerNavigationCharterByActivityPerformedIFO.economical ? this.timePerNavigationCharterByActivityPerformedIFO.economical : this.totalTimePerActivityIFO.economical)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedIFO.anchor = (this.dayliConsumptionCharterByActivityPerformedIFO.anchor * (this.timePerNavigationCharterByActivityPerformedIFO.anchor ? this.timePerNavigationCharterByActivityPerformedIFO.anchor : this.totalTimePerActivityIFO.anchor)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedIFO.maneuver = (this.dayliConsumptionCharterByActivityPerformedIFO.maneuver * (this.timePerNavigationCharterByActivityPerformedIFO.maneuver ? this.timePerNavigationCharterByActivityPerformedIFO.maneuver : this.totalTimePerActivityIFO.maneuver)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedIFO.otherActivity = (this.dayliConsumptionCharterByActivityPerformedIFO.otherActivity * (this.timePerNavigationCharterByActivityPerformedIFO.otherActivity ? this.timePerNavigationCharterByActivityPerformedIFO.otherActivity : this.totalTimePerActivityIFO.otherActivity)) / numberDay;
+
+    this.balanceConsumptionByActivityPerformedIFO.loading = this.voyageConsumptionCharterByActivityPerformedIFO.loading - this.voyageConsumptionByActivityPerformedIFO.loading;
+    this.balanceConsumptionByActivityPerformedIFO.discharge = this.voyageConsumptionCharterByActivityPerformedIFO.discharge - this.voyageConsumptionByActivityPerformedIFO.discharge;
+    this.balanceConsumptionByActivityPerformedIFO.ballast = this.voyageConsumptionCharterByActivityPerformedIFO.ballast - this.voyageConsumptionByActivityPerformedIFO.ballast;
+    this.balanceConsumptionByActivityPerformedIFO.laden = this.voyageConsumptionCharterByActivityPerformedIFO.laden - this.voyageConsumptionByActivityPerformedIFO.laden;
+    this.balanceConsumptionByActivityPerformedIFO.economical = this.voyageConsumptionCharterByActivityPerformedIFO.economical - this.voyageConsumptionByActivityPerformedIFO.economical;
+    this.balanceConsumptionByActivityPerformedIFO.anchor = this.voyageConsumptionCharterByActivityPerformedIFO.anchor - this.voyageConsumptionByActivityPerformedIFO.anchor;
+    this.balanceConsumptionByActivityPerformedIFO.maneuver = this.voyageConsumptionCharterByActivityPerformedIFO.maneuver - this.voyageConsumptionByActivityPerformedIFO.maneuver;
+    this.balanceConsumptionByActivityPerformedIFO.otherActivity = this.voyageConsumptionCharterByActivityPerformedIFO.otherActivity - this.voyageConsumptionByActivityPerformedIFO.otherActivity;
+
+    this.balanceTimeByActivityPerformedIFO.loading = this.timePerNavigationCharterByActivityPerformedIFO.loading - this.totalTimePerActivityIFO.loading;
+    this.balanceTimeByActivityPerformedIFO.discharge = this.timePerNavigationCharterByActivityPerformedIFO.discharge - this.totalTimePerActivityIFO.discharge;
+    this.balanceTimeByActivityPerformedIFO.ballast = this.timePerNavigationCharterByActivityPerformedIFO.ballast - this.totalTimePerActivityIFO.ballast;
+    this.balanceTimeByActivityPerformedIFO.laden = this.timePerNavigationCharterByActivityPerformedIFO.laden - this.totalTimePerActivityIFO.laden;
+    this.balanceTimeByActivityPerformedIFO.economical = this.timePerNavigationCharterByActivityPerformedIFO.economical - this.totalTimePerActivityIFO.economical;
+    this.balanceTimeByActivityPerformedIFO.anchor = this.timePerNavigationCharterByActivityPerformedIFO.anchor - this.totalTimePerActivityIFO.anchor;
+    this.balanceTimeByActivityPerformedIFO.maneuver = this.timePerNavigationCharterByActivityPerformedIFO.maneuver - this.totalTimePerActivityIFO.maneuver;
+    this.balanceTimeByActivityPerformedIFO.otherActivity = this.timePerNavigationCharterByActivityPerformedIFO.otherActivity - this.totalTimePerActivityIFO.otherActivity;
+
+
+
+    // ActivityPerformance MGO
+    // calculo de speed
+    this.averageSpeedByActivityPerformedMGO.loading = this.totalDistanceMilesByActivityPerformedMGO.loading / (this.totalTimePerActivityMGO.loading || 1);
+    this.averageSpeedByActivityPerformedMGO.discharge = this.totalDistanceMilesByActivityPerformedMGO.discharge / (this.totalTimePerActivityMGO.discharge || 1);
+    this.averageSpeedByActivityPerformedMGO.ballast = this.totalDistanceMilesByActivityPerformedMGO.ballast / (this.totalTimePerActivityMGO.ballast || 1);
+    this.averageSpeedByActivityPerformedMGO.laden = this.totalDistanceMilesByActivityPerformedMGO.laden / (this.totalTimePerActivityMGO.laden || 1);
+    this.averageSpeedByActivityPerformedMGO.economical = this.totalDistanceMilesByActivityPerformedMGO.economical / (this.totalTimePerActivityMGO.economical || 1);
+    this.averageSpeedByActivityPerformedMGO.anchor = this.totalDistanceMilesByActivityPerformedMGO.anchor / (this.totalTimePerActivityMGO.anchor || 1);
+    this.averageSpeedByActivityPerformedMGO.maneuver = this.totalDistanceMilesByActivityPerformedMGO.maneuver / (this.totalTimePerActivityMGO.maneuver || 1);
+    this.averageSpeedByActivityPerformedMGO.otherActivity = this.totalDistanceMilesByActivityPerformedMGO.otherActivity / (this.totalTimePerActivityMGO.otherActivity || 1);
+
+    // calculo de speed
+    this.averageSpeedCharterByActivityPerformedMGO.loading = 0;
+    this.averageSpeedCharterByActivityPerformedMGO.discharge = 0;
+    this.averageSpeedCharterByActivityPerformedMGO.ballast = this.selectUser.contractSpeedSailingBallastMGO;
+    this.averageSpeedCharterByActivityPerformedMGO.laden = this.selectUser.contractSpeedSailingLadenMGO;
+    this.averageSpeedCharterByActivityPerformedMGO.economical = this.selectUser.contractSpeedSailingEconomicalMGO;
+    this.averageSpeedCharterByActivityPerformedMGO.anchor = 0;
+    this.averageSpeedCharterByActivityPerformedMGO.maneuver = 0;
+    this.averageSpeedCharterByActivityPerformedMGO.otherActivity = 0;
+
+    this.dayliConsumptionByActivityPerformedMGO.loading = (this.voyageConsumptionByActivityPerformedMGO.loading * numberDay) / (this.totalTimePerActivityMGO.loading || 1);
+    this.dayliConsumptionByActivityPerformedMGO.discharge = (this.voyageConsumptionByActivityPerformedMGO.discharge * numberDay) / (this.totalTimePerActivityMGO.discharge || 1);
+    this.dayliConsumptionByActivityPerformedMGO.ballast = (this.voyageConsumptionByActivityPerformedMGO.ballast * numberDay) / (this.totalTimePerActivityMGO.ballast || 1);
+    this.dayliConsumptionByActivityPerformedMGO.laden = (this.voyageConsumptionByActivityPerformedMGO.laden * numberDay) / (this.totalTimePerActivityMGO.laden || 1);
+    this.dayliConsumptionByActivityPerformedMGO.economical = (this.voyageConsumptionByActivityPerformedMGO.economical * numberDay) / (this.totalTimePerActivityMGO.economical || 1);
+    this.dayliConsumptionByActivityPerformedMGO.anchor = (this.voyageConsumptionByActivityPerformedMGO.anchor * numberDay) / (this.totalTimePerActivityMGO.anchor || 1);
+    this.dayliConsumptionByActivityPerformedMGO.maneuver = (this.voyageConsumptionByActivityPerformedMGO.maneuver * numberDay) / (this.totalTimePerActivityMGO.maneuver || 1);
+    this.dayliConsumptionByActivityPerformedMGO.otherActivity = (this.voyageConsumptionByActivityPerformedMGO.otherActivity * numberDay) / (this.totalTimePerActivityMGO.otherActivity || 1);
+
+    this.dayliConsumptionCharterByActivityPerformedMGO.loading = this.totalDistanceMilesByActivityPerformedMGO.loading / (this.totalTimePerActivityMGO.loading || 1);
+    this.dayliConsumptionCharterByActivityPerformedMGO.discharge = this.totalDistanceMilesByActivityPerformedMGO.discharge / (this.totalTimePerActivityMGO.discharge || 1);
+    this.dayliConsumptionCharterByActivityPerformedMGO.ballast = this.totalDistanceMilesByActivityPerformedMGO.ballast / (this.totalTimePerActivityMGO.ballast || 1);
+    this.dayliConsumptionCharterByActivityPerformedMGO.laden = this.totalDistanceMilesByActivityPerformedMGO.laden / (this.totalTimePerActivityMGO.laden || 1);
+    this.dayliConsumptionCharterByActivityPerformedMGO.economical = this.totalDistanceMilesByActivityPerformedMGO.economical / (this.totalTimePerActivityMGO.economical || 1);
+    this.dayliConsumptionCharterByActivityPerformedMGO.anchor = this.totalDistanceMilesByActivityPerformedMGO.anchor / (this.totalTimePerActivityMGO.anchor || 1);
+    this.dayliConsumptionCharterByActivityPerformedMGO.maneuver = this.totalDistanceMilesByActivityPerformedMGO.maneuver / (this.totalTimePerActivityMGO.maneuver || 1);
+    this.dayliConsumptionCharterByActivityPerformedMGO.otherActivity = this.totalDistanceMilesByActivityPerformedMGO.otherActivity / (this.totalTimePerActivityMGO.otherActivity || 1);
+
+    this.timePerNavigationCharterByActivityPerformedMGO.loading = this.totalDistanceMilesByActivityPerformedMGO.loading / (this.averageSpeedCharterByActivityPerformedMGO.loading || 1);
+    this.timePerNavigationCharterByActivityPerformedMGO.discharge = this.totalDistanceMilesByActivityPerformedMGO.discharge / (this.averageSpeedCharterByActivityPerformedMGO.discharge || 1);
+    this.timePerNavigationCharterByActivityPerformedMGO.ballast = this.totalDistanceMilesByActivityPerformedMGO.ballast / (this.averageSpeedCharterByActivityPerformedMGO.ballast || 1);
+    this.timePerNavigationCharterByActivityPerformedMGO.laden = this.totalDistanceMilesByActivityPerformedMGO.laden / (this.averageSpeedCharterByActivityPerformedMGO.laden || 1);
+    this.timePerNavigationCharterByActivityPerformedMGO.economical = this.totalDistanceMilesByActivityPerformedMGO.economical / (this.averageSpeedCharterByActivityPerformedMGO.economical || 1);
+    this.timePerNavigationCharterByActivityPerformedMGO.anchor = this.totalDistanceMilesByActivityPerformedMGO.anchor / (this.averageSpeedCharterByActivityPerformedMGO.anchor || 1);
+    this.timePerNavigationCharterByActivityPerformedMGO.maneuver = this.totalDistanceMilesByActivityPerformedMGO.maneuver / (this.averageSpeedCharterByActivityPerformedMGO.maneuver || 1);
+    this.timePerNavigationCharterByActivityPerformedMGO.otherActivity = this.totalDistanceMilesByActivityPerformedMGO.otherActivity / (this.averageSpeedCharterByActivityPerformedMGO.otherActivity || 1);
+
+    this.voyageConsumptionCharterByActivityPerformedMGO.loading = (this.dayliConsumptionCharterByActivityPerformedMGO.loading * (this.timePerNavigationCharterByActivityPerformedMGO.loading ? this.timePerNavigationCharterByActivityPerformedMGO.loading : this.totalTimePerActivityMGO.loading)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedMGO.discharge = (this.dayliConsumptionCharterByActivityPerformedMGO.discharge * (this.timePerNavigationCharterByActivityPerformedMGO.discharge ? this.timePerNavigationCharterByActivityPerformedMGO.discharge : this.totalTimePerActivityMGO.discharge)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedMGO.ballast = (this.dayliConsumptionCharterByActivityPerformedMGO.ballast * (this.timePerNavigationCharterByActivityPerformedMGO.ballast ? this.timePerNavigationCharterByActivityPerformedMGO.ballast : this.totalTimePerActivityMGO.ballast)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedMGO.laden = (this.dayliConsumptionCharterByActivityPerformedMGO.laden * (this.timePerNavigationCharterByActivityPerformedMGO.laden ? this.timePerNavigationCharterByActivityPerformedMGO.laden : this.totalTimePerActivityMGO.laden)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedMGO.economical = (this.dayliConsumptionCharterByActivityPerformedMGO.economical * (this.timePerNavigationCharterByActivityPerformedMGO.economical ? this.timePerNavigationCharterByActivityPerformedMGO.economical : this.totalTimePerActivityMGO.economical)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedMGO.anchor = (this.dayliConsumptionCharterByActivityPerformedMGO.anchor * (this.timePerNavigationCharterByActivityPerformedMGO.anchor ? this.timePerNavigationCharterByActivityPerformedMGO.anchor : this.totalTimePerActivityMGO.anchor)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedMGO.maneuver = (this.dayliConsumptionCharterByActivityPerformedMGO.maneuver * (this.timePerNavigationCharterByActivityPerformedMGO.maneuver ? this.timePerNavigationCharterByActivityPerformedMGO.maneuver : this.totalTimePerActivityMGO.maneuver)) / numberDay;
+    this.voyageConsumptionCharterByActivityPerformedMGO.otherActivity = (this.dayliConsumptionCharterByActivityPerformedMGO.otherActivity * (this.timePerNavigationCharterByActivityPerformedMGO.otherActivity ? this.timePerNavigationCharterByActivityPerformedMGO.otherActivity : this.totalTimePerActivityMGO.otherActivity)) / numberDay;
+
+    this.balanceConsumptionByActivityPerformedMGO.loading = this.voyageConsumptionCharterByActivityPerformedMGO.loading - this.voyageConsumptionByActivityPerformedMGO.loading;
+    this.balanceConsumptionByActivityPerformedMGO.discharge = this.voyageConsumptionCharterByActivityPerformedMGO.discharge - this.voyageConsumptionByActivityPerformedMGO.discharge;
+    this.balanceConsumptionByActivityPerformedMGO.ballast = this.voyageConsumptionCharterByActivityPerformedMGO.ballast - this.voyageConsumptionByActivityPerformedMGO.ballast;
+    this.balanceConsumptionByActivityPerformedMGO.laden = this.voyageConsumptionCharterByActivityPerformedMGO.laden - this.voyageConsumptionByActivityPerformedMGO.laden;
+    this.balanceConsumptionByActivityPerformedMGO.economical = this.voyageConsumptionCharterByActivityPerformedMGO.economical - this.voyageConsumptionByActivityPerformedMGO.economical;
+    this.balanceConsumptionByActivityPerformedMGO.anchor = this.voyageConsumptionCharterByActivityPerformedMGO.anchor - this.voyageConsumptionByActivityPerformedMGO.anchor;
+    this.balanceConsumptionByActivityPerformedMGO.maneuver = this.voyageConsumptionCharterByActivityPerformedMGO.maneuver - this.voyageConsumptionByActivityPerformedMGO.maneuver;
+    this.balanceConsumptionByActivityPerformedMGO.otherActivity = this.voyageConsumptionCharterByActivityPerformedMGO.otherActivity - this.voyageConsumptionByActivityPerformedMGO.otherActivity;
+
+    this.balanceTimeByActivityPerformedMGO.loading = this.timePerNavigationCharterByActivityPerformedMGO.loading - this.totalTimePerActivityMGO.loading;
+    this.balanceTimeByActivityPerformedMGO.discharge = this.timePerNavigationCharterByActivityPerformedMGO.discharge - this.totalTimePerActivityMGO.discharge;
+    this.balanceTimeByActivityPerformedMGO.ballast = this.timePerNavigationCharterByActivityPerformedMGO.ballast - this.totalTimePerActivityMGO.ballast;
+    this.balanceTimeByActivityPerformedMGO.laden = this.timePerNavigationCharterByActivityPerformedMGO.laden - this.totalTimePerActivityMGO.laden;
+    this.balanceTimeByActivityPerformedMGO.economical = this.timePerNavigationCharterByActivityPerformedMGO.economical - this.totalTimePerActivityMGO.economical;
+    this.balanceTimeByActivityPerformedMGO.anchor = this.timePerNavigationCharterByActivityPerformedMGO.anchor - this.totalTimePerActivityMGO.anchor;
+    this.balanceTimeByActivityPerformedMGO.maneuver = this.timePerNavigationCharterByActivityPerformedMGO.maneuver - this.totalTimePerActivityMGO.maneuver;
+    this.balanceTimeByActivityPerformedMGO.otherActivity = this.timePerNavigationCharterByActivityPerformedMGO.otherActivity - this.totalTimePerActivityMGO.otherActivity;
+
 
     console.log(' FIN Generate()');
 
@@ -1011,6 +1437,41 @@ export class DashboardComponent implements OnInit {
         }]
       },
       options: {
+        onClick: (event, legendItem) => {
+
+          if (legendItem && legendItem.length) {
+            let index = legendItem[0]._index;
+
+            if (this.summaryBy === 'VOYAGES') {
+
+              let ubication = this.dataIFO[index].ubication;
+              let voyage = this.generateVoyages[ubication[0]]
+
+              let newVoyage = [];
+              newVoyage.push(voyage);
+
+              this.generateVoyages = newVoyage;
+              this.summaryBy = 'PORTS'
+              this.GenerateDataByFilter(newVoyage);
+
+              this.GenerateDashboardBySumary()
+            } else if (this.summaryBy === 'PORTS') {
+
+              let ubication = this.dataIFO[index].ubication;
+              let voyage = this.generateVoyages[ubication[0]]
+              let port = this.generateVoyages[ubication[0]].ports[ubication[1]]
+
+              let newVoyage = [voyage];
+              newVoyage[0].ports = [port];
+
+              this.generateVoyages = newVoyage;
+              this.summaryBy = 'DAYS'
+              this.GenerateDataByFilter(newVoyage);
+
+              this.GenerateDashboardBySumary()
+            }
+          }
+        },
         legend: {
           display: true,
           onClick: (event, legendItem) => {
@@ -1093,7 +1554,7 @@ export class DashboardComponent implements OnInit {
             let index = legendItem[0]._index;
 
             if (this.summaryBy === 'VOYAGES') {
-debugger
+
               let ubication = this.dataMGO[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
 
@@ -1102,8 +1563,10 @@ debugger
 
               this.generateVoyages = newVoyage;
               this.summaryBy = 'PORTS'
-              this.ClickSummaryBy();
-            }else if (this.summaryBy === 'PORTS') {
+              this.GenerateDataByFilter(newVoyage);
+
+              this.GenerateDashboardBySumary()
+            } else if (this.summaryBy === 'PORTS') {
 
               let ubication = this.dataMGO[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
@@ -1114,7 +1577,9 @@ debugger
 
               this.generateVoyages = newVoyage;
               this.summaryBy = 'DAYS'
-              this.ClickSummaryBy();
+              this.GenerateDataByFilter(newVoyage);
+
+              this.GenerateDashboardBySumary()
             }
           }
         },
@@ -1219,6 +1684,41 @@ debugger
       },
 
       options: {
+        onClick: (event, legendItem) => {
+
+          if (legendItem && legendItem.length) {
+            let index = legendItem[0]._index;
+
+            if (this.summaryBy === 'VOYAGES') {
+
+              let ubication = this.dataSPEED[index].ubication;
+              let voyage = this.generateVoyages[ubication[0]]
+
+              let newVoyage = [];
+              newVoyage.push(voyage);
+
+              this.generateVoyages = newVoyage;
+              this.summaryBy = 'PORTS'
+              this.GenerateDataByFilter(newVoyage);
+
+              this.GenerateDashboardBySumary()
+            } else if (this.summaryBy === 'PORTS') {
+
+              let ubication = this.dataMGO[index].ubication;
+              let voyage = this.generateVoyages[ubication[0]]
+              let port = this.generateVoyages[ubication[0]].ports[ubication[1]]
+
+              let newVoyage = [voyage];
+              newVoyage[0].ports = [port];
+
+              this.generateVoyages = newVoyage;
+              this.summaryBy = 'DAYS'
+              this.GenerateDataByFilter(newVoyage);
+
+              this.GenerateDashboardBySumary()
+            }
+          }
+        },
         lines: [
           /*     {
                 type: 'horizontal',
@@ -1733,6 +2233,14 @@ debugger
     return mgo;
   }
 
+
+  public MathRoundOneDecimal(valor, cantDecimales: number) {
+    if (!valor) { return 0; }
+
+    let result = mathRound(valor, 2)
+    return result;
+
+  }
   public Testt() {
     alert("DI O CLICK");
   }
