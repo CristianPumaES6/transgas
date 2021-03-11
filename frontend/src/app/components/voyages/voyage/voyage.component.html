@@ -188,8 +188,7 @@
                   <mat-option value="SAILING_WITH_LADEN">{{'SAILING_WITH_LADEN' | translateMessage:translateCategory}}
                   </mat-option>
                   <mat-option value="ECONOMICAL_NAVIGATION">
-                    {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}
-                  </mat-option>
+                    {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}</mat-option>
                   <mat-option value="ANCHORED">{{'ANCHORED' | translateMessage:translateCategory}}</mat-option>
                   <mat-option value="MANEUVER">{{'MANEUVER' | translateMessage:translateCategory}}</mat-option>
                   <mat-option value="OTHER_ACT">{{'OTHER_ACT' | translateMessage:translateCategory}}</mat-option>
@@ -198,11 +197,12 @@
             </div>
 
           </div>
-          
+
           <ng-template [ngIf]="isBunkering">
             <div class="row pl-2 pb-2">
 
-              <ng-template [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
+              <ng-template
+                [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
                 <div class="col row no-gutters">
                   <mat-form-field>
                     <input matInput type="number" placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}}"
@@ -227,7 +227,7 @@
                 <div class="force-right pt-3">
                   <a class="ml-3" href="" (click)="ActivateBunkering(false)"
                     matTooltip="{{'NO_BUNKERING' | translateMessage:translateCategory}}">
-                   <i class="icon-cancel2"></i> <i class="icon-gas-station"></i>
+                    <i class="icon-cancel2"></i> <i class="icon-gas-station"></i>
                   </a>
                 </div>
               </div>
