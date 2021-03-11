@@ -654,6 +654,7 @@ export class DashboardComponent implements OnInit {
 
     let numberDay = DiffDates(generalStartDate, generalEndDate);
     if (!numberDay) numberDay = 1;
+    console.log('Numero de dias' + numberDay);
 
     // MGO
     this.consumptionDaysRealMGO.mpal = this.consumptionTotalMGO.mpal / (numberDay || 1);
