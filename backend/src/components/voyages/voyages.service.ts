@@ -207,4 +207,25 @@ export class VoyagesService {
     }
 
 
+    // Permite consultar si el numero de viaje existe
+    // Retorna underfined si el viaje no existe.
+    async ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number): Promise<Voyage> {
+        return await this.voyageRepository.findOne({
+            where: [
+                // hacemos un where donde buscamos por id.
+                {
+                    voyageNumber: voyageNumber,
+                    yearVoyage: yearVoyage
+                }
+            ]
+        }).then(resultFind => {
+
+            // No vlaidamos resultado por que tambien puede ser underfine.
+
+            // Actualizamos
+            return resultFind;
+
+        });
+    }
+
 }
