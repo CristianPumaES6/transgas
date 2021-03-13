@@ -9,7 +9,8 @@ import { Port } from 'src/models/port.entity';
     TypeOrmModule.forFeature([Port]),
   ],
   providers: [PortsService],
-  controllers: [PortsController]
+  controllers: [PortsController],
+  exports: [PortsService]
 })
 export class PortsModule {
 

@@ -14,8 +14,31 @@ export class PortsService {
 
     // Registra un nuevo viaje
     async Create(port: Port): Promise<Port> {
+        return await this.portRepository.find({
+            where: [
+                // name && surname && nick && email
+                {
+                    userId: port.userId,
+                    voyageId: port.voyageId
+                }
+            ],
+            take: 1,
+            order: {
+                portNumber: 'DESC',
+            }
+        }).then(
+            (result: Port[]) => {
+                // result length 
+                if (result && (result.length > 0)) {
+                    port.portNumber = Number(result[0].portNumber) + 1;
+                }
+                else {
+                    port.portNumber = 1;
+                };
 
-        return await this.portRepository.save(port).then(
+                return this.portRepository.save(port)
+            }
+        ).then(
             (resultSave: Port) => {
                 // Validamos si encontro al usuario.
                 if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
@@ -23,6 +46,8 @@ export class PortsService {
                 return resultSave;
             }
         );
+
+
 
     }
 
@@ -137,5 +162,29 @@ export class PortsService {
                 return port;
             }
         );
+    }
+
+
+
+    // Permite consultar si el puerto existe en el viaje,
+    // Retorna underfined si el puerto no existe.
+    async ThereIsThisPortInTheVoyage(numeroPuerto: number, voyageId: number): Promise<Port> {
+        
+        return await this.portRepository.findOne({
+            where: [
+                // hacemos un where donde buscamos por id.
+                {
+                    voyageId: voyageId,
+                    portNumber: numeroPuerto,
+                }
+            ]
+        }).then(resultFind => {
+
+            // No vlaidamos resultado por que tambien puede ser underfine.
+
+            // Enviamos el puerto encontrado.
+            return resultFind;
+
+        });
     }
 }
