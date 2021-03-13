@@ -9,6 +9,7 @@ import { DailyReport } from '../../../models/daily-report.entity';
     TypeOrmModule.forFeature([DailyReport]),
   ],
   providers: [DailyReportsService],
-  controllers: [DailyReportsController]
+  controllers: [DailyReportsController],
+  exports: [DailyReportsService]
 })
 export class DailyReportsModule { }
