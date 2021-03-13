@@ -10,3 +10,13 @@ export function getDate(): any {
     // lo desencripto
     return moment().format();
 }
+
+
+// Convierte el formato de fecha.
+export function ConvertDDMMYYYToYYYYMMDD(dateDDMMYYY: any): Date {
+
+    let date = moment(dateDDMMYYY, "DD/MM/YYYY");
+
+    return new Date(date.format("YYYY/MM/DD"));
+
+}

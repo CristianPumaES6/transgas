@@ -8,9 +8,13 @@ import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { VoyagesService } from './voyages.service';
 
 // Entity
-import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
+import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { getDate } from '../../assets/moment.assets';
+import { ConvertDDMMYYYToYYYYMMDD, getDate } from '../../assets/moment.assets';
+import { Port } from '../../models/port.entity';
+import { PortsService } from './ports/ports.service';
+import { DailyReport } from '../../models/daily-report.entity';
+import { DailyReportsService } from './daily-reports/daily-reports.service';
 
 
 @Controller('voyages')
@@ -18,6 +22,8 @@ export class VoyagesController {
 
     constructor(
         private readonly _voyagesService: VoyagesService,
+        private readonly _portsService: PortsService,
+        private readonly _dailyReportsService: DailyReportsService,
     ) { }
 
 
@@ -428,5 +434,178 @@ export class VoyagesController {
     }
 
 
+    // Registra viajes desde un arreglo del objeto Port.
+    @Post('importVoyages')
+    async ImportJSONVoyages(@Headers() headers, @Body() ImportVoyages: ImportVoyage[]): Promise<any> {
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
 
+        if (!(headerToken.role === 'SUPPORT')) {
+            return 'HOLA QUE HACES? Escribeme WSP => +51976873362';
+        }
+
+        let MappingVoyage: Mapping[] = [];
+        let MappingPort: Mapping[] = [];
+
+        for await (const importVoyage of ImportVoyages) {
+
+            let existeViaje = searchKey(MappingVoyage, importVoyage.NV);
+
+            // Consultamos si el numero de viaje ya lo tenemos mapeado.
+            // Si no lo tuvieramos lo registrariamos.
+            if (!existeViaje) {
+
+                // Hacemos una consulta si tenemos el numero de viaje en tal año.
+                let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.NV, importVoyage.year);
+
+                // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+                if (!voyageExistente) {
+
+                    // ARMAMOS AL NUEVO VIAJE
+                    let newVoyage = new Voyage();
+                    delete newVoyage.id;
+                    newVoyage.userId = importVoyage.USERID;
+                    newVoyage.year = importVoyage.year;
+                    // Auditoria.
+                    newVoyage.userIdCreated = headerToken.id;
+                    newVoyage.dateCreated = getDate();
+                    delete newVoyage.userIdUpdated;
+                    delete newVoyage.dateUpdated;
+                    newVoyage.status = true;
+
+                    // LO REGISTRAMOS
+                    let voyageRegister = await this._voyagesService.Create(newVoyage);
+
+                    // Lo agregamos al mapping
+                    MappingVoyage.push(new Mapping(importVoyage.NV, voyageRegister.id))
+                    // Reset mapping Port
+                    MappingPort = [];
+                } else {
+                    // Agregamos al mapping el id buscado por numero de viaje.
+                    MappingVoyage.push(new Mapping(importVoyage.NV, voyageExistente.id))
+                }
+            }
+            // Actualizmos el viaje
+            existeViaje = searchKey(MappingVoyage, importVoyage.NV);
+
+            // Consultamos si tenemos mapeado el puerto.
+            // Si no lo tuvieramos lo registrariamos.
+            let existePort = searchKey(MappingPort, importVoyage.NP);
+            if (!existePort) {
+
+                // Consultamos si existe el numero de puerto en el viaje.
+                let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.NP, existeViaje.value)
+                
+                
+                // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+                if (!portExiste) {
+                    let newPort = new Port();
+                    delete newPort.id;
+                    newPort.userId = importVoyage.USERID;
+                    newPort.voyageId = existeViaje.value;
+                    newPort.departurePort = importVoyage.Departure;
+                    newPort.arrivalPort = importVoyage.Arrival;
+                    // Auditoria.
+                    newPort.userIdCreated = headerToken.id;
+                    newPort.dateCreated = getDate();
+                    delete newPort.userIdUpdated;
+                    delete newPort.dateUpdated;
+                    newPort.status = true;
+
+                    // Lo registramos
+                    let portRegister = await this._portsService.Create(newPort);
+                    MappingPort.push(new Mapping(importVoyage.NP, portRegister.id))
+
+                } else {
+
+                    // Agregamos al mapping el id buscado por numero de viaje.
+                    MappingPort.push(new Mapping(importVoyage.NP, existePort.value))
+
+                }
+
+            }
+            // Actualizamos el puerto
+            existePort = searchKey(MappingPort, importVoyage.NP);
+
+            // Armamos el obj de reporte.
+            let newReport = new DailyReport();
+            delete newReport.id;
+            newReport.userId = importVoyage.USERID;
+            newReport.portId = existePort.value;
+
+            newReport.date = ConvertDDMMYYYToYYYYMMDD(importVoyage.FECHA)
+            newReport.hour = importVoyage.HORA;
+
+            newReport.bunkeringIfo = 0
+            newReport.bunkeringMgo = 0;
+            newReport.mplaIfo = importVoyage.MPAL_IFO || 0;
+            newReport.auxIfo = importVoyage.AUX_IFO || 0;
+            newReport.boilerIfo = importVoyage.CALDERA_IFO || 0;
+            newReport.otherIfo = 0;
+            newReport.mplaMgo = importVoyage.MPAL2_MGO || 0;
+            newReport.auxMgo = importVoyage.AUX_MGO || 0;
+            newReport.boilerMgo = importVoyage.CALDERA_MGO || 0;
+            newReport.ppMgo = importVoyage.PP_MGO || 0;
+            newReport.giMgo = importVoyage.GI_MGO || 0;
+            newReport.otherMgo = 0;
+            newReport.steamingTime = importVoyage.TIEMPO || 0;
+            newReport.distance = importVoyage.DISTANCIA_POR_CARTA || 0;
+            newReport.beaufour = importVoyage.BEAUFORT;
+            newReport.observation = importVoyage.REFERENCIA;
+
+            newReport.activityPerformed = importVoyage.ACTIVIDAD_REALIZADA;
+            if (newReport.activityPerformed == 'CARGANDO') {
+                newReport.activityPerformed = 'LOADING';
+
+            } else if (newReport.activityPerformed == 'DESCARGANDO') {
+                newReport.activityPerformed = 'DOWNLOADING';
+
+            } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+                newReport.activityPerformed = 'SAILING_IN_BALLAST';
+
+            } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+                newReport.activityPerformed = 'SAILING_WITH_LADEN';
+
+            } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+                newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+
+            } else if (newReport.activityPerformed == 'FONDEADO') {
+                newReport.activityPerformed = 'ANCHORED';
+
+            } else if (newReport.activityPerformed == 'MANIOBRA') {
+                newReport.activityPerformed = 'MANEUVER';
+
+            } else if (newReport.activityPerformed == 'OTRAS ACT.') {
+                newReport.activityPerformed = 'OTHER_ACT';
+            }
+
+            // Auditoria.
+            newReport.userIdCreated = headerToken.id;
+            newReport.dateCreated = getDate();
+            delete newReport.userIdUpdated;
+            delete newReport.dateUpdated;
+            newReport.status = true;
+
+            await this._dailyReportsService.Create(newReport);
+
+        }
+
+        return 'Se registraron los datos correctamente.';
+    }
+
+}
+
+export class Mapping {
+    constructor(
+        public key?: number,
+        public value?: number
+    ) {
+        this.key = key || 0;
+        this.value = value || 0;
+    }
+
+}
+
+
+export function searchKey(mappings: Mapping[], key: number): Mapping {
+    return mappings.find(mapping => Number(mapping.key) == Number(key));
 }
