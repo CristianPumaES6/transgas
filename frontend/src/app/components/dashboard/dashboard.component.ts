@@ -81,12 +81,12 @@ export class DashboardComponent implements OnInit {
   public totalDistanceMilesByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
 
   public averageSpeedByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
-  public averageSpeedCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+  public averageSpeedCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
 
   public voyageConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
   public dayliConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
 
-  public dayliConsumptionCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+  public dayliConsumptionCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
   public timePerNavigationCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
   public voyageConsumptionCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
 
@@ -98,12 +98,12 @@ export class DashboardComponent implements OnInit {
   public totalDistanceMilesByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
 
   public averageSpeedByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
-  public averageSpeedCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+  public averageSpeedCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
 
   public voyageConsumptionByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
   public dayliConsumptionByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
 
-  public dayliConsumptionCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+  public dayliConsumptionCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
   public timePerNavigationCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
   public voyageConsumptionCharterByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
 
@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit {
   public balanceTimeByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
 
 
-  // CONSUMER MGO POR MAUQINA
+  // CONSUMER MGO POR MAQUINA
   public consumptionTotalMGO = new ConsumptionMachineMGO();
   public consumptionDaysRealMGO = new ConsumptionMachineMGO();
   public consumptionDaysByContractMGO = new ConsumptionMachineMGO();
@@ -120,7 +120,7 @@ export class DashboardComponent implements OnInit {
   // CONSUMER MGO POR MAQUINA
   public consumptionTotalIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDaysRealIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
-  public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO(0, 0, 0, 0, 0);
+  public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
 
   constructor(
@@ -205,7 +205,7 @@ export class DashboardComponent implements OnInit {
           this.selectUser = firstUser;
           this.selectUserId = firstUser.id;
           filter.userId = this.selectUser.id;
-          filter.years = [2021];
+          filter.years = [2021, 2020];
         } else {
           throw 'NO_BUQUE_REGISTER';
         }
@@ -399,21 +399,17 @@ export class DashboardComponent implements OnInit {
     this.totalDistanceMilesByActivityPerformedIFO = new ActivityPerformed();
 
     this.averageSpeedByActivityPerformedIFO = new ActivityPerformed();
-    this.averageSpeedCharterByActivityPerformedIFO = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+    this.averageSpeedCharterByActivityPerformedIFO = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0)
 
     this.voyageConsumptionByActivityPerformedIFO = new ActivityPerformed();
     this.dayliConsumptionByActivityPerformedIFO = new ActivityPerformed();
 
-    this.dayliConsumptionCharterByActivityPerformedIFO = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+    this.dayliConsumptionCharterByActivityPerformedIFO = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5)
     this.timePerNavigationCharterByActivityPerformedIFO = new ActivityPerformed();
     this.voyageConsumptionCharterByActivityPerformedIFO = new ActivityPerformed();
 
     this.balanceConsumptionByActivityPerformedIFO = new ActivityPerformed();
     this.balanceTimeByActivityPerformedIFO = new ActivityPerformed();
-
-
-
-
 
 
     // CONSUMER MGO
@@ -422,12 +418,12 @@ export class DashboardComponent implements OnInit {
     this.totalDistanceMilesByActivityPerformedMGO = new ActivityPerformed();
 
     this.averageSpeedByActivityPerformedMGO = new ActivityPerformed();
-    this.averageSpeedCharterByActivityPerformedMGO = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0);
+    this.averageSpeedCharterByActivityPerformedMGO = new ActivityPerformed(); // (0, 0, 12.5, 12, 12, 0, 0, 0)
 
     this.voyageConsumptionByActivityPerformedMGO = new ActivityPerformed();
     this.dayliConsumptionByActivityPerformedMGO = new ActivityPerformed();
 
-    this.dayliConsumptionCharterByActivityPerformedMGO = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5);
+    this.dayliConsumptionCharterByActivityPerformedMGO = new ActivityPerformed();  // (4.5, 4.5, 30.5, 30.5, 30.5, 4.5, 4.5, 4.5)
     this.timePerNavigationCharterByActivityPerformedMGO = new ActivityPerformed();
     this.voyageConsumptionCharterByActivityPerformedMGO = new ActivityPerformed();
 
@@ -466,7 +462,6 @@ export class DashboardComponent implements OnInit {
         voyage.ports = voyage.ports.reverse().filter(
           (port: Port, index, ports) => {
 
-
             let totalConsumoByPortIFO = 0;
             let totalConsumoByPortMGO = 0;
             let totalSpeedByPort: Speed = new Speed();
@@ -475,10 +470,10 @@ export class DashboardComponent implements OnInit {
 
             // Filtramos si el estado es true, ademas de filtros.
             if (port.status) {
+
               // Recorremos los reportes
               port.dailyReports = port.dailyReports.filter(
                 (report, index, reports) => {
-
 
                   if (report.status) {
 
@@ -576,6 +571,7 @@ export class DashboardComponent implements OnInit {
                       this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalMGO;
 
                     }
+
                     if (
                       (!this.activityPerformed.value || this.activityPerformed.value.length === 0) ||
                       this.activityPerformed.value.find(activity => activity === report.activityPerformed)
@@ -590,7 +586,7 @@ export class DashboardComponent implements OnInit {
                       // Sumamos el consumo MGO
                       this.consumptionTotalMGO.mpal += report.mplaMgo;
                       this.consumptionTotalMGO.aux += report.auxMgo;
-                      this.consumptionTotalMGO.boiler += report.boilerIfo;
+                      this.consumptionTotalMGO.boiler += report.boilerMgo;
                       this.consumptionTotalMGO.pp += report.ppMgo;
                       this.consumptionTotalMGO.gi += report.giMgo;
                       this.consumptionTotalMGO.other += report.otherMgo;
@@ -614,6 +610,7 @@ export class DashboardComponent implements OnInit {
                   } else {
                     return false;
                   }
+
                 }
               )
 
@@ -624,14 +621,15 @@ export class DashboardComponent implements OnInit {
               port.dayStart = dayStartByPort;
               port.dayEnd = dayEndByPort;
 
-
               dayStartByVoyage = ComparePreviousDates(dayStartByVoyage, dayStartByPort);
               dayEndByVoyage = CompareAfterDates(dayEndByVoyage, dayEndByPort);
 
               totalConsumoViajeIFO = totalConsumoViajeIFO + totalConsumoByPortIFO;
               totalConsumoViajeMGO = totalConsumoViajeMGO + totalConsumoByPortMGO;
               totalSpeedViaje.add(totalSpeedByPort.distance, totalSpeedByPort.steamingTime);
+
               return true;
+
             } else {
               return false;
             }
@@ -653,16 +651,13 @@ export class DashboardComponent implements OnInit {
 
     let numberDay = DiffDates(generalStartDate, generalEndDate);
     if (!numberDay) numberDay = 1;
-    console.log('Numero de dias' + numberDay);
 
-    // MGO
     this.consumptionDaysRealMGO.mpal = this.consumptionTotalMGO.mpal / (numberDay || 1);
     this.consumptionDaysRealMGO.aux = this.consumptionTotalMGO.aux / (numberDay || 1);
     this.consumptionDaysRealMGO.boiler = this.consumptionTotalMGO.boiler / (numberDay || 1);
     this.consumptionDaysRealMGO.pp = this.consumptionTotalMGO.pp / (numberDay || 1);
     this.consumptionDaysRealMGO.gi = this.consumptionTotalMGO.gi / (numberDay || 1);
     this.consumptionDaysRealMGO.other = this.consumptionTotalMGO.other / (numberDay || 1);
-
 
     this.consumptionDaysByContractMGO.mpal = this.selectUser.sailingBallastConsumptionMGO;
     this.consumptionDaysByContractMGO.aux = this.selectUser.sailingBallastConsumptionMGO;
@@ -677,8 +672,6 @@ export class DashboardComponent implements OnInit {
     this.consumptionDailyBalanceMGO.pp = this.consumptionDaysRealMGO.pp / this.consumptionDaysByContractMGO.pp;
     this.consumptionDailyBalanceMGO.gi = this.consumptionDaysRealMGO.gi / this.consumptionDaysByContractMGO.gi;
     this.consumptionDailyBalanceMGO.other = this.consumptionDaysRealMGO.other / this.consumptionDaysByContractMGO.other;
-
-
 
     //IFO
     this.consumptionDaysRealIFO.mpal = this.consumptionTotalIFO.mpal / (numberDay || 1);
