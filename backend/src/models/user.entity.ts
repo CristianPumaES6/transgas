@@ -153,6 +153,29 @@ export class UserEntity {
     isDisplayVesselPerformanceMGO: boolean;
 
 
+    @Column()
+    consumptionEquipmentME_MGO: number;
+    @Column()
+    consumptionEquipmentAE_MGO: number;
+    @Column()
+    consumptionEquipmentBOILER_MGO: number;
+    @Column()
+    consumptionEquipmentIG_MGO: number;
+    @Column()
+    consumptionEquipmentPP_MGO: number;
+    @Column()
+    consumptionEquipmentOther_MGO: number;
+
+    @Column()
+    consumptionEquipmentME_IFO: number;
+    @Column()
+    consumptionEquipmentAE_IFO: number;
+    @Column()
+    consumptionEquipmentBOILER_IFO: number;
+    @Column()
+    consumptionEquipmentOther_IFO: number;
+
+
 
     // Auditoria
     @Column()
@@ -233,6 +256,20 @@ export class UserEntity {
         isDisplayVesselPerformanceLSFO?: boolean,
         isDisplayVesselPerformanceMGO?: boolean,
 
+
+
+        consumptionEquipmentME_MGO?: number,
+        consumptionEquipmentAE_MGO?: number,
+        consumptionEquipmentBOILER_MGO?: number,
+        consumptionEquipmentIG_MGO?: number,
+        consumptionEquipmentPP_MGO?: number,
+        consumptionEquipmentOther_MGO?: number,
+        consumptionEquipmentME_IFO?: number,
+        consumptionEquipmentAE_IFO?: number,
+        consumptionEquipmentBOILER_IFO?: number,
+        consumptionEquipmentOther_IFO?: number,
+
+
         // Auditoria
         userIdCreated?: number,
         dateCreated?: string,
@@ -304,6 +341,18 @@ export class UserEntity {
         this.isDisplayDataLSFO = isDisplayDataLSFO || false;
         this.isDisplayVesselPerformanceLSFO = isDisplayVesselPerformanceLSFO || false;
         this.isDisplayVesselPerformanceMGO = isDisplayVesselPerformanceMGO || false;
+
+        // Conusmo por equipo.
+        this.consumptionEquipmentME_MGO= consumptionEquipmentME_MGO || 0;
+        this.consumptionEquipmentAE_MGO = consumptionEquipmentAE_MGO || 0;
+        this.consumptionEquipmentBOILER_MGO = consumptionEquipmentBOILER_MGO || 0;
+        this.consumptionEquipmentIG_MGO = consumptionEquipmentIG_MGO || 0;
+        this.consumptionEquipmentPP_MGO = consumptionEquipmentPP_MGO || 0;
+        this.consumptionEquipmentOther_MGO = consumptionEquipmentOther_MGO || 0;
+        this.consumptionEquipmentME_IFO = consumptionEquipmentME_IFO || 0;
+        this.consumptionEquipmentAE_IFO = consumptionEquipmentAE_IFO || 0;
+        this.consumptionEquipmentBOILER_IFO = consumptionEquipmentBOILER_IFO || 0;
+        this.consumptionEquipmentOther_IFO = consumptionEquipmentOther_IFO || 0;
 
         // Auditoria
         this.userIdCreated = userIdCreated || 0;

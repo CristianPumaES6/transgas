@@ -171,6 +171,15 @@ export const user: any = {
     NEW_USER: 'New User',
     COMFIMR_DISCARD_CHANGES: 'There are unsaved changes, do you want to discard the changes?',
     COMFIRM_DISCARD_DESCRIPTION: 'The changes are irreversible.',
+    MIN_CONSUMPTION_MGO: 'Minimum daily consumption MGO',
+    MAX_CONSUMPTION_MGO: 'Maximum daily consumption MGO',
+    MIN_CONSUMPTION_IFO: 'Minimum daily consumption IFO',
+    MIN_CONSUMPTION_VLSFO:  'Minimum daily consumption VLSFO',
+    MIN_CONSUMPTION_LSFO: 'Minimum daily consumption LSFO',
+    MAX_CONSUMPTION_IFO:'Maximum daily consumption IFO',
+    MAX_CONSUMPTION_VLSFO:'Maximum daily consumption VLSFO',
+    MAX_CONSUMPTION_LSFO:'Maximum daily consumption LSFO',
+    CONSUMPTION_TABLE_CONFIGURATION: 'Consumption Table Configuration'
 };
 
 export const fileUpload: any = {

@@ -342,63 +342,73 @@
             </div>
 
             <div class="row no-gutters col-12">
-              <div class="col-6 col-md">
-                <mat-form-field>
-                  <input matInput type="number"
-                    placeholder="{{'CONTRACT_LOADING' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.loadingConsumptionMGO" [disabled]='disableEdit'>
-                </mat-form-field>
-              </div>
-              <div class="col-6 col-md">
-                <mat-form-field>
-                  <input matInput type="number"
-                    placeholder="{{'CONTRACT_DOWNLOADING' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.dischargeConsumptionMGO" [disabled]='disableEdit'>
-                </mat-form-field>
-              </div>
-              <div style="display: none;">
-                <div class="col-6 col-md">
+              <div class="col-6  row no-gutters">
+
+                <div class="col-6  col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_LOADING' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.loadingConsumptionMGO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+                <div class="col-6  col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_DOWNLOADING' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.dischargeConsumptionMGO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+
+
+                <div class="col-6 col-md-3">
                   <mat-form-field>
                     <input matInput type="number"
                       placeholder="{{'CONTRACT_SAILING_IN_BALLAST' | translateMessage:translateCategory}}"
                       [(ngModel)]="user.sailingBallastConsumptionMGO" [disabled]='disableEdit'>
                   </mat-form-field>
                 </div>
-                <div class="col-6 col-md">
+                <div class="col-6 col-md-3">
                   <mat-form-field>
                     <input matInput type="number"
                       placeholder="{{'CONTRACT_SAILING_WITH_LADEN' | translateMessage:translateCategory}}"
                       [(ngModel)]="user.sailingLoadConsumptionMGO" [disabled]='disableEdit'>
                   </mat-form-field>
                 </div>
-                <div class="col-6 col-md">
+              </div>
+
+
+              <div class="col-6  row no-gutters">
+
+                <div class="col-6 col-md-3">
                   <mat-form-field>
                     <input matInput type="number"
                       placeholder="{{'CONTRACT_ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}"
                       [(ngModel)]="user.sailingEconomicConsumptionMGO" [disabled]='disableEdit'>
                   </mat-form-field>
                 </div>
-              </div>
-              <div class="col-6 col-md">
-                <mat-form-field>
-                  <input matInput type="number"
-                    placeholder="{{'CONTRACT_ANCHORED' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.anchoredConsumptionMGO" [disabled]='disableEdit'>
-                </mat-form-field>
-              </div>
-              <div class="col-6 col-md">
-                <mat-form-field>
-                  <input matInput type="number"
-                    placeholder="{{'CONTRACT_MANEUVER' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.maneuverConsumptionMGO" [disabled]='disableEdit'>
-                </mat-form-field>
-              </div>
-              <div class="col-6 col-md">
-                <mat-form-field>
-                  <input matInput type="number"
-                    placeholder="{{'CONTRACT_OTHER_ACT' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.otherConsumptionMGO" [disabled]='disableEdit'>
-                </mat-form-field>
+
+
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_ANCHORED' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.anchoredConsumptionMGO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_MANEUVER' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.maneuverConsumptionMGO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_OTHER_ACT' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.otherConsumptionMGO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
               </div>
             </div>
           </div>
