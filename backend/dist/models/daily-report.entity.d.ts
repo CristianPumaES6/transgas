@@ -1,0 +1,31 @@
+import { Port } from './port.entity';
+export declare class DailyReport {
+    id: number;
+    userId: number;
+    portId: number;
+    port: Port;
+    activityPerformed: string;
+    date: Date;
+    hour: string;
+    bunkeringIfo: number;
+    bunkeringMgo: number;
+    mplaIfo: number;
+    auxIfo: number;
+    boilerIfo: number;
+    otherIfo: number;
+    mplaMgo: number;
+    auxMgo: number;
+    boilerMgo: number;
+    ppMgo: number;
+    giMgo: number;
+    otherMgo: number;
+    steamingTime: number;
+    distance: number;
+    beaufour: string;
+    observation: string;
+    userIdCreated: number;
+    dateCreated: string;
+    userIdUpdated: number;
+    dateUpdated: string;
+    status: boolean;
+}
