@@ -44,7 +44,7 @@ export class DatabaseService {
 
         this.db = new Dexie('TransgasDatabase');
         this.db.version(2).stores({
-            users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
+            users: '++id,nick,name,filename,password,language,role,minSpeed,maxSpeed,isConsumptionIFO,isConsumptionLSFO,isConsumptionVLSFO,isConsumptionMGO,maxIFOConsumption,maxMGOConsumption,minIFOConsumption,minMGOConsumption,isMEMGO,isAEMGO,isBoilerMGO,isIGMGO,isPowerPMGO,isOtherMGO,isMEIFO,isAEIFO,isBoilerIFO,isOtherIFO,contractSpeedSailingBallastMGO,contractSpeedSailingLadenMGO,contractSpeedSailingEconomicalMGO,loadingConsumptionMGO,dischargeConsumptionMGO,sailingBallastConsumptionMGO,sailingLoadConsumptionMGO,sailingEconomicConsumptionMGO,anchoredConsumptionMGO,maneuverConsumptionMGO,otherConsumptionMGO,contractSpeedSailingBallastIFO,contractSpeedSailingLadenIFO,contractSpeedSailingEconomicalIFO,loadingConsumptionIFO,dischargeConsumptionIFO,sailingBallastConsumptionIFO,sailingLoadConsumptionIFO,sailingEconomicConsumptionIFO,anchoredConsumptionIFO,maneuverConsumptionIFO,otherConsumptionIFO,isDisplayLSFOConsumption,isDisplayMGOConsumption,isDisplayAverageSpeed,isDisplayDataMGO,isDisplayDataLSFO,isDisplayVesselPerformanceLSFO,isDisplayVesselPerformanceMGO,consumptionEquipmentME_MGO,consumptionEquipmentAE_MGO,consumptionEquipmentBOILER_MGO,consumptionEquipmentIG_MGO,consumptionEquipmentPP_MGO,consumptionEquipmentOther_MGO,consumptionEquipmentME_IFO,consumptionEquipmentAE_IFO,consumptionEquipmentBOILER_IFO,consumptionEquipmentOther_IFO,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus',
             voyages: '++id,userId,voyageNumber,year,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus,totalPort,totalReport',
             ports: '++id,userId,voyageId,portNumber,departurePort,arrivalPort,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus,totalReport',
             dailyReports: '++id,userId,portId,activityPerformed,date,hour,bunkeringIfo,bunkeringMgo,mplaIfo,auxIfo,boilerIfo,otherIfo,mplaMgo,auxMgo,boilerMgo,ppMgo,giMgo,otherMgo,steamingTime,distance,beaufour,observation,userIdCreated,dateCreated,userIdUpdated,dateUpdated,status,syncStatus'
@@ -126,7 +126,7 @@ export class DatabaseService {
             let resultDelete: User;
             resultDelete = await this.userService.DeleteUser(iUser).pipe().toPromise();
             // Actualizamos el syncStatus a none.
-            await this.db.users.update(iUser.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
+            await this.db.users.update(iUser.id, { status: false, syncStatus: 'none' });
         }
 
 
@@ -447,6 +447,7 @@ export class DatabaseService {
                 otherConsumptionIFO: user.otherConsumptionIFO,
 
 
+
                 // Dashboard
                 isDisplayLSFOConsumption: user.isDisplayLSFOConsumption,
                 isDisplayMGOConsumption: user.isDisplayMGOConsumption,
@@ -456,6 +457,18 @@ export class DatabaseService {
                 isDisplayVesselPerformanceLSFO: user.isDisplayVesselPerformanceLSFO,
                 isDisplayVesselPerformanceMGO: user.isDisplayVesselPerformanceMGO,
 
+
+                
+                consumptionEquipmentME_MGO: user.consumptionEquipmentME_MGO,
+                consumptionEquipmentAE_MGO: user.consumptionEquipmentAE_MGO,
+                consumptionEquipmentBOILER_MGO: user.consumptionEquipmentBOILER_MGO,
+                consumptionEquipmentIG_MGO: user.consumptionEquipmentIG_MGO,
+                consumptionEquipmentPP_MGO: user.consumptionEquipmentPP_MGO,
+                consumptionEquipmentOther_MGO: user.consumptionEquipmentOther_MGO,
+                consumptionEquipmentME_IFO: user.consumptionEquipmentME_IFO,
+                consumptionEquipmentAE_IFO: user.consumptionEquipmentAE_IFO,
+                consumptionEquipmentBOILER_IFO: user.consumptionEquipmentBOILER_IFO,
+                consumptionEquipmentOther_IFO: user.consumptionEquipmentOther_IFO,
 
                 // Audiotoria
                 userIdCreated: user.userIdCreated,
