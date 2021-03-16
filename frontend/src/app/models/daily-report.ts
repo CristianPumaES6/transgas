@@ -95,3 +95,23 @@ export class DailyReport {
     public robIfo = 0;
     public robMgo = 0;
 }
+
+
+export class Speed {
+
+    constructor(
+        // userId : servira para hacer auditoria.
+        public distance?: number,
+        // Lugar de partida,
+        public steamingTime?: number,
+    ) {
+        this.distance = distance || 0;
+        this.steamingTime = steamingTime || 0;
+    }
+
+    public add(addDistance, addSteamingTime) {
+        this.distance = this.distance + addDistance;
+        this.steamingTime = this.steamingTime + addSteamingTime;
+    }
+
+}

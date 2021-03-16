@@ -12,6 +12,7 @@ export class User {
         public maxSpeed?: number,
         public isConsumptionIFO?: boolean,
         public isConsumptionLSFO?: boolean,
+        public isConsumptionVLSFO?: boolean,
         public isConsumptionMGO?: boolean,
         public maxIFOConsumption?: number,
         public maxMGOConsumption?: number,
@@ -53,7 +54,7 @@ export class User {
         public anchoredConsumptionIFO?: number,
         public maneuverConsumptionIFO?: number,
         public otherConsumptionIFO?: number,
-        
+
         // Dashboard
         public isDisplayLSFOConsumption?: boolean,
         public isDisplayMGOConsumption?: boolean,
@@ -62,6 +63,18 @@ export class User {
         public isDisplayDataLSFO?: boolean,
         public isDisplayVesselPerformanceLSFO?: boolean,
         public isDisplayVesselPerformanceMGO?: boolean,
+
+
+        public consumptionEquipmentME_MGO?: number,
+        public consumptionEquipmentAE_MGO?: number,
+        public consumptionEquipmentBOILER_MGO?: number,
+        public consumptionEquipmentIG_MGO?: number,
+        public consumptionEquipmentPP_MGO?: number,
+        public consumptionEquipmentOther_MGO?: number,
+        public consumptionEquipmentME_IFO?: number,
+        public consumptionEquipmentAE_IFO?: number,
+        public consumptionEquipmentBOILER_IFO?: number,
+        public consumptionEquipmentOther_IFO?: number,
 
 
         // Auditoria
@@ -85,6 +98,7 @@ export class User {
         this.maxSpeed = maxSpeed || 0;
         this.isConsumptionIFO = isConsumptionIFO || false;
         this.isConsumptionLSFO = isConsumptionLSFO || false;
+        this.isConsumptionVLSFO = isConsumptionVLSFO || false;
         this.isConsumptionMGO = isConsumptionMGO || false;
         this.maxIFOConsumption = maxIFOConsumption || 0;
         this.maxMGOConsumption = maxMGOConsumption || 0;
@@ -137,6 +151,21 @@ export class User {
         this.isDisplayDataLSFO = isDisplayDataLSFO || false;
         this.isDisplayVesselPerformanceLSFO = isDisplayVesselPerformanceLSFO || false;
         this.isDisplayVesselPerformanceMGO = isDisplayVesselPerformanceMGO || false;
+
+
+
+        this.consumptionEquipmentME_MGO = consumptionEquipmentME_MGO || 0;
+        this.consumptionEquipmentAE_MGO = consumptionEquipmentAE_MGO || 0;
+        this.consumptionEquipmentBOILER_MGO = consumptionEquipmentBOILER_MGO || 0;
+        this.consumptionEquipmentIG_MGO = consumptionEquipmentIG_MGO || 0;
+        this.consumptionEquipmentPP_MGO = consumptionEquipmentPP_MGO || 0;
+        this.consumptionEquipmentOther_MGO = consumptionEquipmentOther_MGO || 0;
+        this.consumptionEquipmentME_IFO = consumptionEquipmentME_IFO || 0;
+        this.consumptionEquipmentAE_IFO = consumptionEquipmentAE_IFO || 0;
+        this.consumptionEquipmentBOILER_IFO = consumptionEquipmentBOILER_IFO || 0;
+        this.consumptionEquipmentOther_IFO = consumptionEquipmentOther_IFO || 0;
+
+
 
 
         // Audiotoria

@@ -35,7 +35,6 @@ import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 
 
-
 @Component({
   selector: 'app-voyage',
   templateUrl: './voyage.component.html',
@@ -93,6 +92,9 @@ export class VoyageComponent implements OnInit {
 
   // Esta variable permite habilita la edicion en el formulario.
   public disableEdit: boolean = true;
+
+  public isBunkering: boolean = false;
+
 
   constructor(
     private router: Router,
@@ -282,6 +284,7 @@ export class VoyageComponent implements OnInit {
       // A lista se vuelve puertos
       //this.List_Voyages_Ports_DailyReports = 'DailyReports';
       this.SelectPortByPortId(event.id);
+      this.aSideService.OpenClose('open-formulario');
     }
   }
 
@@ -579,6 +582,8 @@ export class VoyageComponent implements OnInit {
 
       this.NewPort();
       this.getDailyReports = [];
+      this.aSideService.OpenClose('open-formulario');
+
     }
 
     return false;
@@ -749,6 +754,8 @@ export class VoyageComponent implements OnInit {
       this.SettingAzList.activateSelectItemEmit2 = true;
 
       this.selectPort = new Port();
+      this.getDailyReports = [];
+
       this.title_header_media = '';
       this.sub_title_header_media = '';
 
@@ -770,6 +777,7 @@ export class VoyageComponent implements OnInit {
       }
     );
 
+    this.aSideService.OpenClose('open-formulario');
 
   }
 
@@ -778,9 +786,48 @@ export class VoyageComponent implements OnInit {
 
     if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
 
-    } else if (this.List_Voyages_Ports_DailyReports === 'Ports') {
+      this.SelectVoyagebyVoyageId(event.id).then(
+        result => {
+          if (!result) throw new Error('ERROR SELECT VOYAGE');
+
+          this.selectPort = this.getPorts[0];
+          this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
+
+          this.List_Voyages_Ports_DailyReports = 'DailyReports';
+
+          this.toolTipSave = 'SAVE_REPORT';
+          this.toolTipDiscard = 'DISCARD_REPORT';
+          this.toolTipEnableForm = 'ENABLE_REPORT';
+
+          this.selectDailyReport = new DailyReport();
+          this.Initialize();
+
+          this.disableEdit = false;
+          this.isBunkering = false;
+          return true;
+        }
+      );
+
+    } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+
+      this.selectPort = this.getPorts[0];
+      this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
+      this.List_Voyages_Ports_DailyReports = 'DailyReports';
+
+      this.toolTipSave = 'SAVE_REPORT';
+      this.toolTipDiscard = 'DISCARD_REPORT';
+      this.toolTipEnableForm = 'ENABLE_REPORT';
+
+      this.selectDailyReport = new DailyReport();
+      this.Initialize();
+
+      this.disableEdit = false;
+      this.isBunkering = false;
 
     }
+
+    this.aSideService.OpenClose('open-formulario');
+
 
   }
 
@@ -796,9 +843,13 @@ export class VoyageComponent implements OnInit {
     this.selectDailyReport = new DailyReport();
     this.Initialize();
     this.disableEdit = false;
+    this.isBunkering = false;
   }
 
   public ClickEditReport(dailyReport: DailyReport): boolean {
+    console.log('ClickEditReport(dailyReport: DailyReport)');
+
+
     this.List_Voyages_Ports_DailyReports = 'DailyReports';
     this.selectDailyReport = this.getDailyReports.find(report => Number(report.id) === Number(dailyReport.id));
 
@@ -808,6 +859,12 @@ export class VoyageComponent implements OnInit {
 
     this.Initialize();
     this.disableEdit = false;
+
+    if (this.selectDailyReport.bunkeringIfo > 0 || this.selectDailyReport.bunkeringMgo > 0) {
+      this.isBunkering = true;
+    } else {
+      this.isBunkering = false;
+    }
 
     return false;
   }
@@ -1307,6 +1364,8 @@ export class VoyageComponent implements OnInit {
 
       this.portService.Create(newPort).subscribe(
         (resultCreate: Port) => {
+          
+          this.selectPort = resultCreate;
 
           // Actualizamos el nuevo viaje con el resultado.
           newPort = resultCreate;
@@ -1338,6 +1397,7 @@ export class VoyageComponent implements OnInit {
 
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_CREATE'));
+
 
           // Inicializamos los datos.
           this.Initialize();
@@ -1729,16 +1789,16 @@ export class VoyageComponent implements OnInit {
   private CreateDailyReportOnlineOffline(newDailyReport: DailyReport) {
 
     let error: boolean = false;
-    if (!newDailyReport.date || !validateDate(newDailyReport.date) ) {
-      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR DATE'));
+    if (!newDailyReport.date || !validateDate(newDailyReport.date)) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DATE_FIELD'));
       error = true;
     }
     if (!newDailyReport.hour && !newDailyReport.hour) {
-      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR HOUR'));
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_HOUR_FIELD'));
       error = true;
     }
     if (!newDailyReport.activityPerformed && !newDailyReport.activityPerformed) {
-      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR ACTIVITY'));
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_ACTIVITY_FIELD'));
       error = true;
     }
 
@@ -1921,7 +1981,7 @@ export class VoyageComponent implements OnInit {
 
   private UpdateDailyReportOnelineOffline(dailyReportToSave: DailyReport) {
     let error: boolean = false;
-    if (!dailyReportToSave.date  || !validateDate(dailyReportToSave.date) ) {
+    if (!dailyReportToSave.date || !validateDate(dailyReportToSave.date)) {
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR DATE'));
       error = true;
     }
@@ -2340,6 +2400,22 @@ export class VoyageComponent implements OnInit {
 
     // Retornamos el total de cosumo
     return mathRound(total, 2);
+  }
+
+
+  public ActivateBunkering(activateOrDes: boolean): boolean {
+
+    if (activateOrDes) {
+      this.isBunkering = true;
+      this.selectDailyReport.bunkeringIfo = 0;
+      this.selectDailyReport.bunkeringMgo = 0;
+    } else {
+      this.isBunkering = false;
+      this.selectDailyReport.bunkeringIfo = 0;
+      this.selectDailyReport.bunkeringMgo = 0;
+    }
+
+    return false;
   }
 
 

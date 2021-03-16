@@ -1,3 +1,4 @@
+import { Speed } from './daily-report';
 import { Port } from './port';
 
 export class Voyage {
@@ -35,8 +36,28 @@ export class Voyage {
     }
 
     ports: Port[] = [];
-    // Numero total de puertos
-    totalPort: number = 0;
     //Numero total de reportes
     totalReport: number = 0;
+
+    totalMGO: number;
+    totalIFO: number;
+    totalSpeed: Speed;
+    // Numero total de puertos
+    totalPort: number = 0;
+    dayStart: String;
+    dayEnd: String;
+}
+
+export class VoyageFilterByYears {
+
+    constructor(
+        // userId : servira para hacer auditoria.
+        public userId?: number,
+        // Lugar de partida,
+        public years?: number[],
+    ) {
+        this.userId = userId || null;
+        this.years = years || [];
+    }
+
 }

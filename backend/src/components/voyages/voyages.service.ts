@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 
 // Librerias de TypeOrm
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { Like } from "typeorm";
 import { Not } from "typeorm";
 
 // Modelos.
 import { DummyPromise } from '../../assets/promises.assets';
-import { Voyage } from '../../models/voyage.entity'; // < Suele cambiar.
+import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity'; // < Suele cambiar.
 
 @Injectable()
 export class VoyagesService {
@@ -138,6 +138,32 @@ export class VoyagesService {
 
     }
 
+    // Retorna todos los viajes segun filtro.
+    async GetsByYears(voyageFilterByYears: VoyageFilterByYears): Promise<Voyage[]> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await this.voyageRepository.find({
+            relations: ["ports"],
+            where: [
+                // name && surname && nick && email
+                {
+                    userId: voyageFilterByYears.userId,
+                    year: In(voyageFilterByYears.years),
+                    status: Not(false)
+                }
+            ],
+            order: {
+                voyageNumber: 'DESC',
+            }
+        }).then(
+            (result: Voyage[]) => {
+
+                // No lo validamos por que puede llegar vacio.
+                return result;
+            }
+        );
+
+    }
 
     // Actualiza un Voyage
     async Update(voyage: Voyage): Promise<Voyage> {
@@ -180,5 +206,26 @@ export class VoyagesService {
         );
     }
 
+
+    // Permite consultar si el numero de viaje existe
+    // Retorna underfined si el viaje no existe.
+    async ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number): Promise<Voyage> {
+        return await this.voyageRepository.findOne({
+            where: [
+                // hacemos un where donde buscamos por id.
+                {
+                    voyageNumber: voyageNumber,
+                    yearVoyage: yearVoyage
+                }
+            ]
+        }).then(resultFind => {
+
+            // No vlaidamos resultado por que tambien puede ser underfine.
+
+            // Actualizamos
+            return resultFind;
+
+        });
+    }
 
 }

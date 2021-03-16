@@ -94,6 +94,9 @@ export class DailyReportService {
 
         // Eliminamos el campo sync
         delete dailyReport.syncStatus;
+        delete dailyReport.robIfo;
+        delete dailyReport.robMgo;
+        
         // Parseo el obj para poder enviarlo en el request
         let body: string = JSON.stringify(dailyReport);
         let options: any = { headers: headers, responseType: 'json' };
@@ -125,6 +128,9 @@ export class DailyReportService {
 
         // Eliminamos el campo sync
         delete dailyReport.syncStatus;
+        delete dailyReport.robIfo;
+        delete dailyReport.robMgo;
+
         // Armo el obj para enviarlo.
         let body: string = JSON.stringify(dailyReport);
         let options: any = { headers: headers, responseType: 'json' };
