@@ -179,7 +179,18 @@ export const user: any = {
     MAX_CONSUMPTION_IFO:'Maximum daily consumption IFO',
     MAX_CONSUMPTION_VLSFO:'Maximum daily consumption VLSFO',
     MAX_CONSUMPTION_LSFO:'Maximum daily consumption LSFO',
-    CONSUMPTION_TABLE_CONFIGURATION: 'Consumption Table Configuration'
+    CONSUMPTION_TABLE_CONFIGURATION: 'Consumption Table Configuration',
+    CONSUMPTIONEQUIPMENTME_MGO:'C. M.E.',
+    CONSUMPTIONEQUIPMENTAE_MGO: 'C. A.E.',
+    CONSUMPTIONEQUIPMENTBOILER_MGO: 'C. Boiler',
+    CONSUMPTIONEQUIPMENTIG_MGO: 'C. G.I.',
+    CONSUMPTIONEQUIPMENTPP_MGO: 'C. P.P.',
+    CONSUMPTIONEQUIPMENTOTHER_MGO: 'C. Other',
+    CONSUMPTIONEQUIPMENTME_IFO: 'C. M.E.',
+    CONSUMPTIONEQUIPMENTAE_IFO: 'C. A.E.',
+    CONSUMPTIONEQUIPMENTBOILER_IFO: 'C. Boiler',
+    CONSUMPTIONEQUIPMENTOTHER_IFO: 'C. Other',
+
 };
 
 export const fileUpload: any = {
