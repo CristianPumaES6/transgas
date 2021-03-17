@@ -267,6 +267,7 @@ export class VoyagesController {
                         // NO se hace nada
                     } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
+                    delete voyage.id;
                     // Auditoria.
                     voyage.userIdCreated = headerToken.id;
                     voyage.dateCreated = getDate();
@@ -494,8 +495,8 @@ export class VoyagesController {
 
                 // Consultamos si existe el numero de puerto en el viaje.
                 let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.NP, existeViaje.value)
-                
-                
+
+
                 // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
                 if (!portExiste) {
                     let newPort = new Port();
