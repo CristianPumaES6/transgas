@@ -159,6 +159,8 @@ export class PortService {
         // Eliminamos el campo sync
         delete port.syncStatus;
         delete port.totalReport;
+        delete port.totalReport;
+        delete port.dailyReports;
         // Armo el obj para enviarlo.
         let body: string = JSON.stringify(port);
         let options: any = { headers: headers, responseType: 'json' };
