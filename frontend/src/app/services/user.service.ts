@@ -172,6 +172,8 @@ export class UserService {
 
         // Eliminamos el campo sync
         delete user.syncStatus;
+
+        
         let body: string = JSON.stringify(user);
         let options: any = { headers: headers, responseType: 'json' };
 
