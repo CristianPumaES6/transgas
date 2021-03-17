@@ -1364,7 +1364,7 @@ export class VoyageComponent implements OnInit {
 
       this.portService.Create(newPort).subscribe(
         (resultCreate: Port) => {
-          
+
           this.selectPort = resultCreate;
 
           // Actualizamos el nuevo viaje con el resultado.
@@ -1502,16 +1502,18 @@ export class VoyageComponent implements OnInit {
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
-
+      // ENcapsulamos el valor antes qie se elimine en el lservicio.
+      let totalReport = portToSave.totalReport;
       // Guardo el objeto obtenido
       this.portService.Save(portToSave).subscribe(
+
         (result: Port) => {
 
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE'));
-
+          portToSave.totalReport = totalReport;
           // le seteo el total de reporte por que este valor no viene desde el backend.
-          result.totalReport = portToSave.totalReport;
+          result.totalReport = totalReport;
 
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getPorts = this.getPorts.map(
