@@ -70,8 +70,11 @@ export class DatabaseService {
         let dailyReportsMappings: Mapping[] = []
 
         usersMappings = await this.SyncUsers();
+
         voyagesMappings = await this.SyncVoyages(usersMappings);
+
         portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
+
         dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
 
         console.log('Sync Fin');
@@ -160,6 +163,7 @@ export class DatabaseService {
             // Resultado del create
             let resultCreate: Voyage;
             resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
+
 
             // Actualizamos el syncStatus a none.
             await this.db.voyages.update(iVoyage.id, { id: resultCreate.id, voyageNumber: resultCreate.voyageNumber, syncStatus: 'none' });

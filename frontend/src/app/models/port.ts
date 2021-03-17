@@ -41,9 +41,9 @@ export class Port {
         this.syncStatus = '';
     }
 
-    public totalReport: number = 0;
-    public robIfo: number = 0;
-    public robMgo: number = 0;
+    public totalReport: number;
+    public robIfo: number;
+    public robMgo: number;
 
     dailyReports: DailyReport[];
 
