@@ -290,7 +290,42 @@ export class DashboardComponent implements OnInit {
 
   public SelectComboBuque(): boolean {
     console.log('SelectComboBuque()');
-    alert(this.selectUserId);
+
+    Promise.resolve(true).then(
+      result => {
+        // Activamos el loading.
+        this.loadingService.Open();
+
+        // Seleccionamos al usuairo
+        this.selectUser = this.getUsers.find(user => user.id === this.selectUserId);
+        return true;
+
+      }
+    ).then(
+      result => {
+
+        // Seleccionaremos el primer buque del arreglo.
+        let filter: VoyageFilterByYears = new VoyageFilterByYears();
+        filter.userId = this.selectUserId;
+        filter.years = [2021, 2020];
+        // Traigo a todos los User y lo instancio en el obj.
+        // GeyVoyage obtiene todos los puertos.
+        return this.GetVoyagesByYears(filter).pipe().toPromise();
+      }
+    ).then(
+      reulst => {
+
+
+        this.GenerateDataByFilter(this.getVoyages);
+
+        this.GenerateDashboardBySumary()
+
+
+        // Activamos el loading.
+        this.loadingService.Close();
+      }
+    )
+
     return false;
   }
 
@@ -601,7 +636,7 @@ export class DashboardComponent implements OnInit {
 
 
                     } else {
-                      
+
                       return false;
                     }
 
