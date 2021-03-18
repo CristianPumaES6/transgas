@@ -192,6 +192,7 @@ export class PortsController {
                         if (Number(headerToken.id) !== Number(port.userId)) throw new Error('ERROR_USERID_FAIL');
                     }
 
+                    delete port.id;
                     // Auditoria.
                     port.userIdCreated = headerToken.id;
                     port.dateCreated = getDate();
