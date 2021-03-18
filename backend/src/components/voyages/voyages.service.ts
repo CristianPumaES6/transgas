@@ -215,7 +215,7 @@ export class VoyagesService {
                 // hacemos un where donde buscamos por id.
                 {
                     voyageNumber: voyageNumber,
-                    yearVoyage: yearVoyage
+                    year: yearVoyage
                 }
             ]
         }).then(resultFind => {

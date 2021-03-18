@@ -191,8 +191,16 @@ export class VoyageComponent implements OnInit {
         }
       ).then(
         resultGetUser => {
+          
           if (!resultGetUser) throw 'ERROR_GET_USERS';
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.databaseService.Sync();
+        }
+      ).then(
+        resultSync => {
 
+          // Revisamos si el result es el esperado.
+          if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
 
           // Seleccionaremos el primer buque del arreglo.
           let voyage: Voyage = new Voyage();
@@ -215,15 +223,8 @@ export class VoyageComponent implements OnInit {
         }
       ).then(
         resulGetVoyages => {
-          if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
-
-          // Traigo a todos los User y lo instancio en el obj.
-          return this.databaseService.Sync();
-        }
-      ).then(
-        resultSync => {
           // Revisamos si el result es el esperado.
-          if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
+          if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
 
           // Hacemos Clear a la Tabla Users
           return this.databaseService.ClearUsersIndexedDB();
