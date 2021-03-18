@@ -33,6 +33,7 @@ import { Port } from '../../../models/port';
 import { PortService } from '../../../services/port.service';
 import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
+import { OnlineOfflineService } from '../../../services/online-offline.service';
 
 
 @Component({
@@ -108,8 +109,30 @@ export class VoyageComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
+    private onlineOfflineService: OnlineOfflineService,
     public dialog: MatDialog,
-  ) { }
+  ) {
+
+    this.onlineOfflineService.emitterReloadData.subscribe(
+      (isOnline: boolean) => {
+        this.loadDataIndexedDB(this.selectUser);
+
+        this.List_Voyages_Ports_DailyReports = 'Voyages';
+        this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
+        this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
+        this.SettingAzList.isNew = true;
+        this.SettingAzList.isBack = false;
+        this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+        this.SettingAzList.toolTipBack = ''
+        this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
+        this.SettingAzList.activateSelectItemEmit2 = true;
+        this.selectPort = new Port();
+        this.title_header_media = '';
+        this.sub_title_header_media = '';
+
+      }
+    );
+  }
 
   ngOnInit(): void {
 
