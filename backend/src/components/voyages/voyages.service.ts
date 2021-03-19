@@ -30,6 +30,7 @@ export class VoyagesService {
                 // name && surname && nick && email
                 {
                     userId: voyage.userId,
+                    year: voyage.year,
                 }
             ],
             take: 1,
