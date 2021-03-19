@@ -156,6 +156,76 @@ export class UsersController {
                 // Validamos que los datos sean los necesarios.
                 if (user && user.name && user.nick && user.password && user.role) {
 
+                    user.years = user.years || '[]';
+
+                    user.minSpeed = user.minSpeed || 0;
+                    user.maxSpeed = user.maxSpeed || 0;
+                    user.isConsumptionIFO = user.isConsumptionIFO || false;
+                    user.isConsumptionLSFO = user.isConsumptionLSFO || false;
+                    user.isConsumptionMGO = user.isConsumptionMGO || false;
+                    user.maxIFOConsumption = user.maxIFOConsumption || 0;
+                    user.maxMGOConsumption = user.maxMGOConsumption || 0;
+                    user.minIFOConsumption = user.minIFOConsumption || 0;
+                    user.minMGOConsumption = user.minMGOConsumption || 0;
+                    user.isMEMGO = user.isMEMGO || false;
+                    user.isAEMGO = user.isAEMGO || false;
+                    user.isBoilerMGO = user.isBoilerMGO || false;
+                    user.isIGMGO = user.isIGMGO || false;
+                    user.isPowerPMGO = user.isPowerPMGO || false;
+                    user.isOtherMGO = user.isOtherMGO || false;
+                    user.isMEIFO = user.isMEIFO || false;
+                    user.isAEIFO = user.isAEIFO || false;
+                    user.isBoilerIFO = user.isBoilerIFO || false;
+                    user.isOtherIFO = user.isOtherIFO || false;
+
+                    // Performance MGO
+                    user.contractSpeedSailingBallastMGO = user.contractSpeedSailingBallastMGO || 0;
+                    user.contractSpeedSailingLadenMGO = user.contractSpeedSailingLadenMGO || 0;
+                    user.contractSpeedSailingEconomicalMGO = user.contractSpeedSailingEconomicalMGO || 0;
+                    user.loadingConsumptionMGO = user.loadingConsumptionMGO || 0;
+                    user.dischargeConsumptionMGO = user.dischargeConsumptionMGO || 0;
+                    user.sailingBallastConsumptionMGO = user.sailingBallastConsumptionMGO || 0;
+                    user.sailingLoadConsumptionMGO = user.sailingLoadConsumptionMGO || 0;
+                    user.sailingEconomicConsumptionMGO = user.sailingEconomicConsumptionMGO || 0;
+                    user.anchoredConsumptionMGO = user.anchoredConsumptionMGO || 0;
+                    user.maneuverConsumptionMGO = user.maneuverConsumptionMGO || 0;
+                    user.otherConsumptionMGO = user.otherConsumptionMGO || 0;
+
+                    // Performance IFO
+                    user.contractSpeedSailingBallastIFO = user.contractSpeedSailingBallastIFO || 0;
+                    user.contractSpeedSailingLadenIFO = user.contractSpeedSailingLadenIFO || 0;
+                    user.contractSpeedSailingEconomicalIFO = user.contractSpeedSailingEconomicalIFO || 0;
+                    user.loadingConsumptionIFO = user.loadingConsumptionIFO || 0;
+                    user.dischargeConsumptionIFO = user.dischargeConsumptionIFO || 0;
+                    user.sailingBallastConsumptionIFO = user.sailingBallastConsumptionIFO || 0;
+                    user.sailingLoadConsumptionIFO = user.sailingLoadConsumptionIFO || 0;
+                    user.sailingEconomicConsumptionIFO = user.sailingEconomicConsumptionIFO || 0;
+                    user.anchoredConsumptionIFO = user.anchoredConsumptionIFO || 0;
+                    user.maneuverConsumptionIFO = user.maneuverConsumptionIFO || 0;
+                    user.otherConsumptionIFO = user.otherConsumptionIFO || 0;
+
+                    // Display Dashboard
+                    user.isDisplayLSFOConsumption = user.isDisplayLSFOConsumption || false;
+                    user.isDisplayMGOConsumption = user.isDisplayMGOConsumption || false;
+                    user.isDisplayAverageSpeed = user.isDisplayAverageSpeed || false;
+                    user.isDisplayDataMGO = user.isDisplayDataMGO || false;
+                    user.isDisplayDataLSFO = user.isDisplayDataLSFO || false;
+                    user.isDisplayVesselPerformanceLSFO = user.isDisplayVesselPerformanceLSFO || false;
+                    user.isDisplayVesselPerformanceMGO = user.isDisplayVesselPerformanceMGO || false;
+
+                    // Conusmo por equipo.
+                    user.consumptionEquipmentME_MGO = user.consumptionEquipmentME_MGO || 0;
+                    user.consumptionEquipmentAE_MGO = user.consumptionEquipmentAE_MGO || 0;
+                    user.consumptionEquipmentBOILER_MGO = user.consumptionEquipmentBOILER_MGO || 0;
+                    user.consumptionEquipmentIG_MGO = user.consumptionEquipmentIG_MGO || 0;
+                    user.consumptionEquipmentPP_MGO = user.consumptionEquipmentPP_MGO || 0;
+                    user.consumptionEquipmentOther_MGO = user.consumptionEquipmentOther_MGO || 0;
+                    user.consumptionEquipmentME_IFO = user.consumptionEquipmentME_IFO || 0;
+                    user.consumptionEquipmentAE_IFO = user.consumptionEquipmentAE_IFO || 0;
+                    user.consumptionEquipmentBOILER_IFO = user.consumptionEquipmentBOILER_IFO || 0;
+                    user.consumptionEquipmentOther_IFO = user.consumptionEquipmentOther_IFO || 0;
+
+
                     user.userIdCreated = headerToken.id;
                     user.dateCreated = getDate();
                     delete user.userIdUpdated;
@@ -211,13 +281,87 @@ export class UsersController {
                 }
 
                 if (!isNaN(id) && user && user.name && user.nick && user.password && user.role) {
+
                     user.id = Number(id);
+
+                    user.years = user.years || '[]';
+
+                    user.minSpeed = user.minSpeed || 0;
+                    user.maxSpeed = user.maxSpeed || 0;
+                    user.isConsumptionIFO = user.isConsumptionIFO || false;
+                    user.isConsumptionLSFO = user.isConsumptionLSFO || false;
+                    user.isConsumptionMGO = user.isConsumptionMGO || false;
+                    user.maxIFOConsumption = user.maxIFOConsumption || 0;
+                    user.maxMGOConsumption = user.maxMGOConsumption || 0;
+                    user.minIFOConsumption = user.minIFOConsumption || 0;
+                    user.minMGOConsumption = user.minMGOConsumption || 0;
+                    user.isMEMGO = user.isMEMGO || false;
+                    user.isAEMGO = user.isAEMGO || false;
+                    user.isBoilerMGO = user.isBoilerMGO || false;
+                    user.isIGMGO = user.isIGMGO || false;
+                    user.isPowerPMGO = user.isPowerPMGO || false;
+                    user.isOtherMGO = user.isOtherMGO || false;
+                    user.isMEIFO = user.isMEIFO || false;
+                    user.isAEIFO = user.isAEIFO || false;
+                    user.isBoilerIFO = user.isBoilerIFO || false;
+                    user.isOtherIFO = user.isOtherIFO || false;
+
+                    // Performance MGO
+                    user.contractSpeedSailingBallastMGO = user.contractSpeedSailingBallastMGO || 0;
+                    user.contractSpeedSailingLadenMGO = user.contractSpeedSailingLadenMGO || 0;
+                    user.contractSpeedSailingEconomicalMGO = user.contractSpeedSailingEconomicalMGO || 0;
+                    user.loadingConsumptionMGO = user.loadingConsumptionMGO || 0;
+                    user.dischargeConsumptionMGO = user.dischargeConsumptionMGO || 0;
+                    user.sailingBallastConsumptionMGO = user.sailingBallastConsumptionMGO || 0;
+                    user.sailingLoadConsumptionMGO = user.sailingLoadConsumptionMGO || 0;
+                    user.sailingEconomicConsumptionMGO = user.sailingEconomicConsumptionMGO || 0;
+                    user.anchoredConsumptionMGO = user.anchoredConsumptionMGO || 0;
+                    user.maneuverConsumptionMGO = user.maneuverConsumptionMGO || 0;
+                    user.otherConsumptionMGO = user.otherConsumptionMGO || 0;
+
+                    // Performance IFO
+                    user.contractSpeedSailingBallastIFO = user.contractSpeedSailingBallastIFO || 0;
+                    user.contractSpeedSailingLadenIFO = user.contractSpeedSailingLadenIFO || 0;
+                    user.contractSpeedSailingEconomicalIFO = user.contractSpeedSailingEconomicalIFO || 0;
+                    user.loadingConsumptionIFO = user.loadingConsumptionIFO || 0;
+                    user.dischargeConsumptionIFO = user.dischargeConsumptionIFO || 0;
+                    user.sailingBallastConsumptionIFO = user.sailingBallastConsumptionIFO || 0;
+                    user.sailingLoadConsumptionIFO = user.sailingLoadConsumptionIFO || 0;
+                    user.sailingEconomicConsumptionIFO = user.sailingEconomicConsumptionIFO || 0;
+                    user.anchoredConsumptionIFO = user.anchoredConsumptionIFO || 0;
+                    user.maneuverConsumptionIFO = user.maneuverConsumptionIFO || 0;
+                    user.otherConsumptionIFO = user.otherConsumptionIFO || 0;
+
+                    // Display Dashboard
+                    user.isDisplayLSFOConsumption = user.isDisplayLSFOConsumption || false;
+                    user.isDisplayMGOConsumption = user.isDisplayMGOConsumption || false;
+                    user.isDisplayAverageSpeed = user.isDisplayAverageSpeed || false;
+                    user.isDisplayDataMGO = user.isDisplayDataMGO || false;
+                    user.isDisplayDataLSFO = user.isDisplayDataLSFO || false;
+                    user.isDisplayVesselPerformanceLSFO = user.isDisplayVesselPerformanceLSFO || false;
+                    user.isDisplayVesselPerformanceMGO = user.isDisplayVesselPerformanceMGO || false;
+
+                    // Conusmo por equipo.
+                    user.consumptionEquipmentME_MGO = user.consumptionEquipmentME_MGO || 0;
+                    user.consumptionEquipmentAE_MGO = user.consumptionEquipmentAE_MGO || 0;
+                    user.consumptionEquipmentBOILER_MGO = user.consumptionEquipmentBOILER_MGO || 0;
+                    user.consumptionEquipmentIG_MGO = user.consumptionEquipmentIG_MGO || 0;
+                    user.consumptionEquipmentPP_MGO = user.consumptionEquipmentPP_MGO || 0;
+                    user.consumptionEquipmentOther_MGO = user.consumptionEquipmentOther_MGO || 0;
+                    user.consumptionEquipmentME_IFO = user.consumptionEquipmentME_IFO || 0;
+                    user.consumptionEquipmentAE_IFO = user.consumptionEquipmentAE_IFO || 0;
+                    user.consumptionEquipmentBOILER_IFO = user.consumptionEquipmentBOILER_IFO || 0;
+                    user.consumptionEquipmentOther_IFO = user.consumptionEquipmentOther_IFO || 0;
 
                     delete user.userIdCreated;
                     delete user.dateCreated;
                     user.userIdUpdated = headerToken.id;
                     user.dateUpdated = getDate();
+
                     user.status = Boolean(user.status);
+
+
+
                     // retornamos la respuesta del servicio.
                     return this._usersService.UpdateUserNickUnique(user);
                 } else {
