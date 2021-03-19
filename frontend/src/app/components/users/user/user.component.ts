@@ -29,6 +29,7 @@ import { User } from '../../../models/user';
 import { DatabaseService } from '../../../services/database.service';
 import { UserService } from '../../../services/user.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
+import { getYear } from '../../../../assets/moment/moment.assets';
 
 @Component({
   selector: 'app-user',
@@ -566,7 +567,7 @@ export class UserComponent implements OnInit {
     }
     return true;
   }
-  
+
   public ClickCheckVLSFO(): boolean {
     if (this.user.isConsumptionVLSFO) {
       // desactivo el otro tipo de gas
@@ -1002,6 +1003,29 @@ export class UserComponent implements OnInit {
       }
     );
 
+  }
+
+  // Arreglo de años para mostrar.
+  public TextYears(years: number[]) {
+    let result = '';
+
+    years.forEach(
+      year => {
+        debugger
+        if (!result) { result = result + year; }
+        else { result = result + ', ' + year; }
+      }
+    )
+    return result;
+  }
+
+  // Agrega el año actual al user.
+  public ClickAddYear(): boolean {
+    console.log('ClickAddYear()');
+    debugger
+    this.user.years.push(parseInt(getYear()));
+
+    return true;
   }
 }
 

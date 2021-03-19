@@ -190,6 +190,7 @@ export const user: any = {
     CONSUMPTIONEQUIPMENTAE_IFO: 'C. A.E.',
     CONSUMPTIONEQUIPMENTBOILER_IFO: 'C. Boiler',
     CONSUMPTIONEQUIPMENTOTHER_IFO: 'C. Other',
+    NEW_YEAR: 'New year',
 
 };
 

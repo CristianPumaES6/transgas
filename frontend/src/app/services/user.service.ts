@@ -118,6 +118,10 @@ export class UserService {
             map(
                 (response: any) => {
                     if (response.status && response.status === 200) {
+                        // Convertimos en JSON todos los años.
+                        response.data.forEach(user => {
+                            user.years = JSON.parse(user.years)
+                        });
 
                         return response.data;
                     } else {
@@ -150,6 +154,9 @@ export class UserService {
             map(
                 (response: any) => {
                     if (response.status && response.status === 200) {
+                        // Convertimos a JSON LOS AÑOS
+                        response.data.years = JSON.parse(response.data.years)
+
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
@@ -173,7 +180,7 @@ export class UserService {
         // Eliminamos el campo sync
         delete user.syncStatus;
 
-        
+
         let body: string = JSON.stringify(user);
         let options: any = { headers: headers, responseType: 'json' };
 
@@ -182,6 +189,9 @@ export class UserService {
             map(
                 (response: any) => {
                     if (response.status && response.status === 200) {
+                        // Convertimos en JSON LOS AÑOS  
+                        response.data.years = JSON.parse(response.data.years)
+
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
