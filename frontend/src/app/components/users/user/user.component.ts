@@ -1011,7 +1011,7 @@ export class UserComponent implements OnInit {
 
     years.forEach(
       year => {
-        debugger
+        
         if (!result) { result = result + year; }
         else { result = result + ', ' + year; }
       }
@@ -1022,7 +1022,7 @@ export class UserComponent implements OnInit {
   // Agrega el año actual al user.
   public ClickAddYear(): boolean {
     console.log('ClickAddYear()');
-    debugger
+    
     this.user.years.push(parseInt(getYear()));
 
     return true;
