@@ -700,7 +700,7 @@ export class DashboardComponent implements OnInit {
     this.consumptionDaysByContractMGO.pp = this.selectUser.consumptionEquipmentPP_MGO;
     this.consumptionDaysByContractMGO.gi = this.selectUser.consumptionEquipmentIG_MGO;
     this.consumptionDaysByContractMGO.other = this.selectUser.consumptionEquipmentOther_MGO;
-    
+
     this.consumptionDailyBalanceMGO.mpal = this.consumptionDaysByContractMGO.mpal ? this.consumptionDaysRealMGO.mpal - this.consumptionDaysByContractMGO.mpal : 0;
     this.consumptionDailyBalanceMGO.aux = this.consumptionDaysByContractMGO.aux ? this.consumptionDaysRealMGO.aux - this.consumptionDaysByContractMGO.aux : 0;
     this.consumptionDailyBalanceMGO.boiler = this.consumptionDaysByContractMGO.boiler ? this.consumptionDaysRealMGO.boiler - this.consumptionDaysByContractMGO.boiler : 0;
@@ -708,7 +708,7 @@ export class DashboardComponent implements OnInit {
     this.consumptionDailyBalanceMGO.gi = this.consumptionDaysByContractMGO.gi ? this.consumptionDaysRealMGO.gi - this.consumptionDaysByContractMGO.gi : 0;
     this.consumptionDailyBalanceMGO.other = this.consumptionDaysByContractMGO.other ? this.consumptionDaysRealMGO.other - this.consumptionDaysByContractMGO.other : 0;
 
-    
+
     //IFO
     this.consumptionDaysRealIFO.mpal = this.consumptionTotalIFO.mpal / (numberDay || 1);
     this.consumptionDaysRealIFO.aux = this.consumptionTotalIFO.aux / (numberDay || 1);
@@ -2034,11 +2034,14 @@ export class DashboardComponent implements OnInit {
     // Testing
     console.log('UpdateLineIFO');
 
+
     // Actualizamos los labels
     this.configLineaIFO.data.labels = this.xLabelReport;
 
     this.configLineaIFO.data.datasets[0].data = this.dataIFO;
 
+    this.configLineaIFO.data.datasets[0].label = this.languageService.GetMessage(this.translateCategory, (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO') );
+  
     // Vaciamos la configuracion de las lines MGO
     this.configLineaIFO.options.lines = [];
 
