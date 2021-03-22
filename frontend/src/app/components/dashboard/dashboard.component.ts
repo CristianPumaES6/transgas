@@ -694,12 +694,12 @@ export class DashboardComponent implements OnInit {
     this.consumptionDaysRealMGO.gi = this.consumptionTotalMGO.gi / (numberDay || 1);
     this.consumptionDaysRealMGO.other = this.consumptionTotalMGO.other / (numberDay || 1);
 
-    this.consumptionDaysByContractMGO.mpal = this.selectUser.sailingBallastConsumptionMGO;
-    this.consumptionDaysByContractMGO.aux = this.selectUser.sailingBallastConsumptionMGO;
-    this.consumptionDaysByContractMGO.boiler = this.selectUser.sailingBallastConsumptionMGO;
-    this.consumptionDaysByContractMGO.pp = this.selectUser.sailingBallastConsumptionMGO;
-    this.consumptionDaysByContractMGO.gi = this.selectUser.sailingBallastConsumptionMGO;
-    this.consumptionDaysByContractMGO.other = this.selectUser.sailingBallastConsumptionMGO;
+    this.consumptionDaysByContractMGO.mpal = this.selectUser.consumptionEquipmentME_MGO;
+    this.consumptionDaysByContractMGO.aux = this.selectUser.consumptionEquipmentAE_MGO;
+    this.consumptionDaysByContractMGO.boiler = this.selectUser.consumptionEquipmentBOILER_MGO;
+    this.consumptionDaysByContractMGO.pp = this.selectUser.consumptionEquipmentPP_MGO;
+    this.consumptionDaysByContractMGO.gi = this.selectUser.consumptionEquipmentIG_MGO;
+    this.consumptionDaysByContractMGO.other = this.selectUser.consumptionEquipmentOther_MGO;
 
     this.consumptionDailyBalanceMGO.mpal = this.consumptionDaysRealMGO.mpal / this.consumptionDaysByContractMGO.mpal;
     this.consumptionDailyBalanceMGO.aux = this.consumptionDaysRealMGO.aux / this.consumptionDaysByContractMGO.aux;
@@ -714,10 +714,10 @@ export class DashboardComponent implements OnInit {
     this.consumptionDaysRealIFO.boiler = this.consumptionTotalIFO.boiler / (numberDay || 1);
     this.consumptionDaysRealIFO.other = this.consumptionTotalIFO.other / (numberDay || 1);
 
-    this.consumptionDaysByContractIFO.mpal = this.selectUser.sailingBallastConsumptionIFO;
-    this.consumptionDaysByContractIFO.aux = this.selectUser.sailingBallastConsumptionIFO;
-    this.consumptionDaysByContractIFO.boiler = this.selectUser.sailingBallastConsumptionIFO;
-    this.consumptionDaysByContractIFO.other = this.selectUser.sailingBallastConsumptionIFO;
+    this.consumptionDaysByContractIFO.mpal = this.selectUser.consumptionEquipmentME_IFO;
+    this.consumptionDaysByContractIFO.aux = this.selectUser.consumptionEquipmentAE_IFO;
+    this.consumptionDaysByContractIFO.boiler = this.selectUser.consumptionEquipmentBOILER_IFO;
+    this.consumptionDaysByContractIFO.other = this.selectUser.consumptionEquipmentOther_IFO;
 
     this.consumptionDailyBalanceIFO.mpal = this.consumptionDaysRealIFO.mpal - this.consumptionDaysByContractIFO.mpal;
     this.consumptionDailyBalanceIFO.aux = this.consumptionDaysRealIFO.aux - this.consumptionDaysByContractIFO.aux;
