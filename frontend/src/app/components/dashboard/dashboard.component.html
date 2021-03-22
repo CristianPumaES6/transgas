@@ -293,7 +293,9 @@
         [className]="!selectUser.isDisplayDataLSFO ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
         <div class="card card-body background-cuadro p-2">
           <h6 class="card-title tx-14 mb-1 text-center">
-            {{ 'DATA_TABLE_BY_EQUIPMENT_LSFO' | translateMessage:translateCategory }}
+
+            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_EQUIPMENT_IFO' : selectUser.isConsumptionVLSFO ? 'DATA_TABLE_BY_EQUIPMENT_VLSFO' : 'DATA_TABLE_BY_EQUIPMENT_LSFO') | translateMessage:translateCategory}}
+          
           </h6>
           <div class="PerfectScrollbar-table-data-LSFO">
 
@@ -530,7 +532,9 @@
 
         <div class="card card-header background-cuadro p-2" id="picture6">
           <h6 class="card-title tx-14 mb-1 text-center">
-            {{'DATA_TABLE_BY_ACTIVITY_LSFO' | translateMessage:translateCategory}}</h6>
+            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_ACTIVITY_IFO' : selectUser.isConsumptionVLSFO ? 'DATA_TABLE_BY_ACTIVITY_VLSFO' :
+            'DATA_TABLE_BY_ACTIVITY_LSFO') | translateMessage:translateCategory}}
+          </h6>
 
           <div class="PerfectScrollbar-table-data-activity-lsfo">
 
