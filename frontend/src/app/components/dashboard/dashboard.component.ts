@@ -755,14 +755,14 @@ export class DashboardComponent implements OnInit {
     this.dayliConsumptionByActivityPerformedIFO.maneuver = (this.voyageConsumptionByActivityPerformedIFO.maneuver * numberDay) / (this.totalTimePerActivityIFO.maneuver || 1);
     this.dayliConsumptionByActivityPerformedIFO.otherActivity = (this.voyageConsumptionByActivityPerformedIFO.otherActivity * numberDay) / (this.totalTimePerActivityIFO.otherActivity || 1);
 
-    this.dayliConsumptionCharterByActivityPerformedIFO.loading = this.totalDistanceMilesByActivityPerformedIFO.loading / (this.totalTimePerActivityIFO.loading || 1);
-    this.dayliConsumptionCharterByActivityPerformedIFO.discharge = this.totalDistanceMilesByActivityPerformedIFO.discharge / (this.totalTimePerActivityIFO.discharge || 1);
-    this.dayliConsumptionCharterByActivityPerformedIFO.ballast = this.totalDistanceMilesByActivityPerformedIFO.ballast / (this.totalTimePerActivityIFO.ballast || 1);
-    this.dayliConsumptionCharterByActivityPerformedIFO.laden = this.totalDistanceMilesByActivityPerformedIFO.laden / (this.totalTimePerActivityIFO.laden || 1);
-    this.dayliConsumptionCharterByActivityPerformedIFO.economical = this.totalDistanceMilesByActivityPerformedIFO.economical / (this.totalTimePerActivityIFO.economical || 1);
-    this.dayliConsumptionCharterByActivityPerformedIFO.anchor = this.totalDistanceMilesByActivityPerformedIFO.anchor / (this.totalTimePerActivityIFO.anchor || 1);
-    this.dayliConsumptionCharterByActivityPerformedIFO.maneuver = this.totalDistanceMilesByActivityPerformedIFO.maneuver / (this.totalTimePerActivityIFO.maneuver || 1);
-    this.dayliConsumptionCharterByActivityPerformedIFO.otherActivity = this.totalDistanceMilesByActivityPerformedIFO.otherActivity / (this.totalTimePerActivityIFO.otherActivity || 1);
+    this.dayliConsumptionCharterByActivityPerformedIFO.loading = this.selectUser.loadingConsumptionIFO;
+    this.dayliConsumptionCharterByActivityPerformedIFO.discharge = this.selectUser.dischargeConsumptionIFO
+    this.dayliConsumptionCharterByActivityPerformedIFO.ballast = this.selectUser.sailingBallastConsumptionIFO;
+    this.dayliConsumptionCharterByActivityPerformedIFO.laden = this.selectUser.sailingLoadConsumptionIFO;
+    this.dayliConsumptionCharterByActivityPerformedIFO.economical = this.selectUser.sailingEconomicConsumptionIFO;
+    this.dayliConsumptionCharterByActivityPerformedIFO.anchor = this.selectUser.anchoredConsumptionIFO;
+    this.dayliConsumptionCharterByActivityPerformedIFO.maneuver = this.selectUser.maneuverConsumptionIFO;
+    this.dayliConsumptionCharterByActivityPerformedIFO.otherActivity = this.selectUser.otherConsumptionIFO;
 
     this.timePerNavigationCharterByActivityPerformedIFO.loading = this.totalDistanceMilesByActivityPerformedIFO.loading / (this.averageSpeedCharterByActivityPerformedIFO.loading || 1);
     this.timePerNavigationCharterByActivityPerformedIFO.discharge = this.totalDistanceMilesByActivityPerformedIFO.discharge / (this.averageSpeedCharterByActivityPerformedIFO.discharge || 1);
@@ -832,14 +832,15 @@ export class DashboardComponent implements OnInit {
     this.dayliConsumptionByActivityPerformedMGO.maneuver = (this.voyageConsumptionByActivityPerformedMGO.maneuver * numberDay) / (this.totalTimePerActivityMGO.maneuver || 1);
     this.dayliConsumptionByActivityPerformedMGO.otherActivity = (this.voyageConsumptionByActivityPerformedMGO.otherActivity * numberDay) / (this.totalTimePerActivityMGO.otherActivity || 1);
 
-    this.dayliConsumptionCharterByActivityPerformedMGO.loading = this.totalDistanceMilesByActivityPerformedMGO.loading / (this.totalTimePerActivityMGO.loading || 1);
-    this.dayliConsumptionCharterByActivityPerformedMGO.discharge = this.totalDistanceMilesByActivityPerformedMGO.discharge / (this.totalTimePerActivityMGO.discharge || 1);
-    this.dayliConsumptionCharterByActivityPerformedMGO.ballast = this.totalDistanceMilesByActivityPerformedMGO.ballast / (this.totalTimePerActivityMGO.ballast || 1);
-    this.dayliConsumptionCharterByActivityPerformedMGO.laden = this.totalDistanceMilesByActivityPerformedMGO.laden / (this.totalTimePerActivityMGO.laden || 1);
-    this.dayliConsumptionCharterByActivityPerformedMGO.economical = this.totalDistanceMilesByActivityPerformedMGO.economical / (this.totalTimePerActivityMGO.economical || 1);
-    this.dayliConsumptionCharterByActivityPerformedMGO.anchor = this.totalDistanceMilesByActivityPerformedMGO.anchor / (this.totalTimePerActivityMGO.anchor || 1);
-    this.dayliConsumptionCharterByActivityPerformedMGO.maneuver = this.totalDistanceMilesByActivityPerformedMGO.maneuver / (this.totalTimePerActivityMGO.maneuver || 1);
-    this.dayliConsumptionCharterByActivityPerformedMGO.otherActivity = this.totalDistanceMilesByActivityPerformedMGO.otherActivity / (this.totalTimePerActivityMGO.otherActivity || 1);
+
+    this.dayliConsumptionCharterByActivityPerformedMGO.loading = this.selectUser.loadingConsumptionMGO;
+    this.dayliConsumptionCharterByActivityPerformedMGO.discharge = this.selectUser.dischargeConsumptionMGO
+    this.dayliConsumptionCharterByActivityPerformedMGO.ballast = this.selectUser.sailingBallastConsumptionMGO;
+    this.dayliConsumptionCharterByActivityPerformedMGO.laden = this.selectUser.loadingConsumptionMGO;
+    this.dayliConsumptionCharterByActivityPerformedMGO.economical = this.selectUser.sailingEconomicConsumptionMGO;
+    this.dayliConsumptionCharterByActivityPerformedMGO.anchor = this.selectUser.anchoredConsumptionMGO;
+    this.dayliConsumptionCharterByActivityPerformedMGO.maneuver = this.selectUser.maneuverConsumptionMGO;
+    this.dayliConsumptionCharterByActivityPerformedMGO.otherActivity = this.selectUser.otherConsumptionMGO;
 
     this.timePerNavigationCharterByActivityPerformedMGO.loading = this.totalDistanceMilesByActivityPerformedMGO.loading / (this.averageSpeedCharterByActivityPerformedMGO.loading || 1);
     this.timePerNavigationCharterByActivityPerformedMGO.discharge = this.totalDistanceMilesByActivityPerformedMGO.discharge / (this.averageSpeedCharterByActivityPerformedMGO.discharge || 1);
@@ -2040,8 +2041,8 @@ export class DashboardComponent implements OnInit {
 
     this.configLineaIFO.data.datasets[0].data = this.dataIFO;
 
-    this.configLineaIFO.data.datasets[0].label = this.languageService.GetMessage(this.translateCategory, (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO') );
-  
+    this.configLineaIFO.data.datasets[0].label = this.languageService.GetMessage(this.translateCategory, (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO'));
+
     // Vaciamos la configuracion de las lines MGO
     this.configLineaIFO.options.lines = [];
 
