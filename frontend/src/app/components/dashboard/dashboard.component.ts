@@ -836,7 +836,7 @@ export class DashboardComponent implements OnInit {
     this.dayliConsumptionCharterByActivityPerformedMGO.loading = this.selectUser.loadingConsumptionMGO;
     this.dayliConsumptionCharterByActivityPerformedMGO.discharge = this.selectUser.dischargeConsumptionMGO
     this.dayliConsumptionCharterByActivityPerformedMGO.ballast = this.selectUser.sailingBallastConsumptionMGO;
-    this.dayliConsumptionCharterByActivityPerformedMGO.laden = this.selectUser.loadingConsumptionMGO;
+    this.dayliConsumptionCharterByActivityPerformedMGO.laden = this.selectUser.sailingLoadConsumptionMGO;
     this.dayliConsumptionCharterByActivityPerformedMGO.economical = this.selectUser.sailingEconomicConsumptionMGO;
     this.dayliConsumptionCharterByActivityPerformedMGO.anchor = this.selectUser.anchoredConsumptionMGO;
     this.dayliConsumptionCharterByActivityPerformedMGO.maneuver = this.selectUser.maneuverConsumptionMGO;
