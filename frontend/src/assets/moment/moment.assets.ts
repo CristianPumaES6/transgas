@@ -56,7 +56,22 @@ export function ComparePreviousDates(date1: any, date2: any): String {
     }
 
 }
+export function IsPrevious1Date(date1: any, date2: any): boolean {
 
+
+    if (!date1) return false;
+
+    let d1 = moment(date1, 'YYYY-MM-DD');
+    let d2 = moment(date2, 'YYYY-MM-DD');
+
+    let condition = d1.isSameOrBefore(d2);
+    if (condition) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
 
 export function DiffDates(date1: any, date2: any): number {
 
@@ -84,6 +99,25 @@ export function CompareAfterDates(date1: any, date2: any): String {
         return date1;
     } else {
         return date2;
+    }
+
+}
+
+
+export function IsAfter1Date(date1: any, date2: any): boolean {
+
+
+    if (!date1) return false;
+
+    debugger
+    let d1 = moment(date1, 'YYYY-MM-DD');
+    let d2 = moment(date2, 'YYYY-MM-DD');
+
+    let condition = d1.isSameOrAfter(d2);
+    if (condition) {
+        return true;
+    } else {
+        return false;
     }
 
 }

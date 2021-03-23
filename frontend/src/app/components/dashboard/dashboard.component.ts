@@ -20,7 +20,7 @@ import * as Chart from 'chart.js';
 import { mathRound } from '../../../assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from '../../models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates } from 'src/assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date } from '../../../assets/moment/moment.assets';
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
 
 @Component({
@@ -286,10 +286,10 @@ export class DashboardComponent implements OnInit {
                 port => {
                   port.dailyReports.sort(function (aReport, bReport) {
                     if (aReport.id > bReport.id) {
-                      return 1;
+                      return -1;
                     }
                     if (aReport.id < bReport.id) {
-                      return -1;
+                      return 1;
                     }
                     // a must be equal to b
                     return 0;
@@ -299,6 +299,7 @@ export class DashboardComponent implements OnInit {
             }
           )
         }
+
         // Guardamos el valor en nuestra variable global.
         this.getVoyages = resultVoyages || this.getVoyages;
 
@@ -382,8 +383,6 @@ export class DashboardComponent implements OnInit {
       }
     ).then(
       () => {
-
-
         this.loadingService.Close();
       }
     )
@@ -434,6 +433,10 @@ export class DashboardComponent implements OnInit {
   public GenerateReporteByDate(): boolean {
     console.log('GenerateReporteByDate()');
 
+    this.GenerateDataByFilter(this.getVoyages, true);
+
+    this.GenerateDashboardBySumary();
+
     return false;
   }
 
@@ -444,7 +447,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // Genera la data del viaje con filtro y resumen.
-  public GenerateDataByFilter(aRvoyages: Voyage[]) {
+  public GenerateDataByFilter(aRvoyages: Voyage[], isFilterWithDate?: boolean) {
     console.log('Generate()');
 
 
@@ -532,6 +535,11 @@ export class DashboardComponent implements OnInit {
                 (report, index, reports) => {
 
                   if (report.status) {
+
+                    if (isFilterWithDate && this.startDate && this.endDate && (!IsAfter1Date(report.date, this.startDate) || !IsPrevious1Date(report.date, this.endDate))) {
+                      return false;
+                    }
+
 
                     let totalIFO = this.SumaIfo(report);
                     let totalMGO = this.SumaMgo(report);
@@ -670,6 +678,8 @@ export class DashboardComponent implements OnInit {
                 }
               )
 
+              if (!port.dailyReports.length) return false;
+
               port.robIfo = totalConsumoByPortIFO;
               port.robMgo = totalConsumoByPortMGO
               port.speed = totalSpeedByPort;
@@ -692,6 +702,8 @@ export class DashboardComponent implements OnInit {
 
           }
         );
+
+        if (!voyage.ports.length) return false;
 
         voyage.totalMGO = totalConsumoViajeMGO;
         voyage.totalIFO = totalConsumoViajeIFO;
@@ -1145,6 +1157,9 @@ export class DashboardComponent implements OnInit {
     this.dataMGO = [];
     this.dataSPEED = [];
 
+    this.configLineaIFO.lineaMax = 0;
+    this.configLineaMGO.lineaMax = 0;
+    this.configLineaSPEED.lineaMax = 0;
 
     let startDate;
     let endDate;
@@ -1154,17 +1169,24 @@ export class DashboardComponent implements OnInit {
         let txtX = 'V' + voyage.voyageNumber + ' Y' + ('' + voyage.year).slice(-2);
         this.xLabelReport.push(txtX);
 
-        this.dataIFO.push(
-          { x: txtX, y: voyage.totalIFO, ubication: [iv] }
-        );
-        this.dataMGO.push(
-          { x: txtX, y: voyage.totalMGO, ubication: [iv] }
-        );
+        if (voyage.totalIFO > 0) {
+          this.dataIFO.push(
+            { x: txtX, y: voyage.totalIFO, ubication: [iv] }
+          );
+        }
 
-        let speed = mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2);
-        this.dataSPEED.push(
-          { x: txtX, y: speed, ubication: [iv] }
-        );
+        if (voyage.totalMGO > 0) {
+          this.dataMGO.push(
+            { x: txtX, y: voyage.totalMGO, ubication: [iv] }
+          );
+        }
+
+        let speed = mathRound(voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1), 2);
+        if (speed > 0) {
+          this.dataSPEED.push(
+            { x: txtX, y: speed, ubication: [iv] }
+          );
+        }
 
         if (voyage.totalIFO > this.configLineaIFO.lineaMax) {
           this.configLineaIFO.lineaMax = voyage.totalIFO;
@@ -1201,6 +1223,11 @@ export class DashboardComponent implements OnInit {
     let startDate;
     let endDate;
 
+
+    this.configLineaIFO.lineaMax = 0;
+    this.configLineaMGO.lineaMax = 0;
+    this.configLineaSPEED.lineaMax = 0;
+
     this.generateVoyages.forEach(
       (voyage: Voyage, iV) => {
 
@@ -1209,17 +1236,24 @@ export class DashboardComponent implements OnInit {
             let txtX = 'V' + voyage.voyageNumber + ' ' + 'P' + port.portNumber + ' Y' + ('' + voyage.year).slice(-2);
 
             this.xLabelReport.push(txtX);
-            this.dataIFO.push(
-              { x: txtX, y: port.robIfo, ubication: [iV, iP] }
-            );
-            this.dataMGO.push(
-              { x: txtX, y: port.robMgo, ubication: [iV, iP] }
-            );
 
-            let speed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
-            this.dataSPEED.push(
-              { x: txtX, y: speed, ubication: [iV, iP] }
-            );
+            if (port.robIfo > 0) {
+              this.dataIFO.push(
+                { x: txtX, y: port.robIfo, ubication: [iV, iP] }
+              );
+            }
+            if (port.robMgo > 0) {
+              this.dataMGO.push(
+                { x: txtX, y: port.robMgo, ubication: [iV, iP] }
+              );
+            }
+
+            let speed = mathRound(port.speed.distance / (port.speed.steamingTime || 1), 2);
+            if (speed > 0) {
+              this.dataSPEED.push(
+                { x: txtX, y: speed, ubication: [iV, iP] }
+              );
+            }
 
 
             if (port.robIfo > this.configLineaIFO.lineaMax) {
