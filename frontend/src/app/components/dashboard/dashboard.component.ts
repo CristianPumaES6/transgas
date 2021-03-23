@@ -278,6 +278,27 @@ export class DashboardComponent implements OnInit {
     return this.voyageService.GetsVoyageByYears(filter).pipe(map(
       (resultVoyages: Voyage[]) => {
 
+        if (resultVoyages) {
+          resultVoyages.forEach(
+            voyage => {
+
+              voyage.ports.forEach(
+                port => {
+                  port.dailyReports.sort(function (aReport, bReport) {
+                    if (aReport.id > bReport.id) {
+                      return 1;
+                    }
+                    if (aReport.id < bReport.id) {
+                      return -1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                  });
+                }
+              )
+            }
+          )
+        }
         // Guardamos el valor en nuestra variable global.
         this.getVoyages = resultVoyages || this.getVoyages;
 
@@ -1543,7 +1564,8 @@ export class DashboardComponent implements OnInit {
               newVoyage[0].ports = [port];
 
               this.generateVoyages = newVoyage;
-              this.summaryBy = 'DAYS'
+              this.summaryBy = 'DAYS';
+
               this.GenerateDataByFilter(newVoyage);
 
               this.GenerateDashboardBySumary()
