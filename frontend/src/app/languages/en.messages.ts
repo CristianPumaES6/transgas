@@ -314,6 +314,7 @@ export const voyage: any = {
 
 export const dashboard: any = {
     LEGEND: 'Legend',
+    YEARS: 'Years',
     SUMMARY_BY: 'Summary By',
     VOYAGES: 'Voyages',
     PORTS: 'Ports',
@@ -369,4 +370,5 @@ export const dashboard: any = {
     FUEL_BALANCE: 'BALANCE CONSUMPTION (MT)',
     BALANCE_HOURS_SAILED: 'BALANCE TIME (HRS)',
     DISPLAY_DASHBOARD: 'Display Dashboard',
+    NO_BUQUE_REGISTER: 'There is no registered ship.',
 }

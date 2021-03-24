@@ -476,6 +476,8 @@
             <mat-label>{{'VOYAGE' | translateMessage:translateCategory}}</mat-label>
 
             <mat-select [(ngModel)]="selectVoyageId">
+
+              <mat-option (click)="SelectComboVoyage()">None</mat-option>
               <ng-template ngFor let-iVoyage [ngForOf]="getVoyages" let-i="index">
                 <mat-option [value]="iVoyage.id" (click)="SelectComboVoyage(i)">
                   {{ "V" + iVoyage.voyageNumber +" Y" + iVoyage.year }}

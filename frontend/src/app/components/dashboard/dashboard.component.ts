@@ -301,7 +301,7 @@ export class DashboardComponent implements OnInit {
           resultVoyages.forEach(
             voyage => {
 
-              
+
               voyage.ports.sort(function (aPort, bPort) {
                 if (aPort.id > bPort.id) {
                   return 1;
@@ -338,6 +338,42 @@ export class DashboardComponent implements OnInit {
         return (resultVoyages !== null);
       }
     ));
+
+  }
+
+  public SelectComboYears() {
+
+    this.loadingService.Open();
+    Promise.resolve(true).then(
+      result => {
+        this.selectVoyageId = null;
+        // Seleccionaremos el primer buque del arreglo.
+        let filter: VoyageFilterByYears = new VoyageFilterByYears();
+
+        filter.userId = this.selectUserId;
+        if (this.frmSelectedYear.value && this.frmSelectedYear.value.length > 0) {
+          this.frmSelectedYear.value.forEach(year => {
+            filter.years.push(year);
+          });
+        }
+
+        // Traigo a todos los User y lo instancio en el obj.
+        // GeyVoyage obtiene todos los puertos.
+        return this.GetVoyagesByYears(filter).pipe().toPromise();
+      }
+    ).then(
+      reulst => {
+        this.summaryBy = 'VOYAGES';
+
+        this.GenerateDataByFilter(this.getVoyages);
+
+        this.GenerateDashboardBySumary()
+
+
+        // Activamos el loading.
+        this.loadingService.Close();
+      }
+    );
 
   }
 
@@ -400,10 +436,16 @@ export class DashboardComponent implements OnInit {
     console.log('SelectComboVoyage()');
 
     let newVoyages = [];
-    newVoyages.push(this.getVoyages[index]);
-    this.GenerateDataByFilter(newVoyages);
+    this.summaryBy = 'DAYS';
+    if (index == null) {
+      newVoyages = this.getVoyages;
+      
+    this.summaryBy = 'VOYAGES';
+    } else {
+      newVoyages.push(this.getVoyages[index]);
+    }
 
-    this.summaryBy = 'PORTS';
+    this.GenerateDataByFilter(newVoyages);
     this.GenerateDashboardBySumary();
 
     return false;
@@ -415,22 +457,30 @@ export class DashboardComponent implements OnInit {
     this.GenerateDashboardBySumary();
   }
 
-  public ClickSummaryBy(): boolean {
+  public ClickSummaryBy() {
+    console.log(' ClickSummaryBy():');
+
 
     this.loadingService.Open();
+
 
     Promise.resolve(true).then(
       () => {
 
-        this.GenerateDashboardBySumary();
+        setTimeout(() => {
+          console.log('OKKK');
+
+          console.log('INICA EL SUMARRY');
+
+          this.GenerateDashboardBySumary();
+
+          this.loadingService.Close();
+        }, 100);
+
 
       }
-    ).then(
-      () => {
-        this.loadingService.Close();
-      }
     )
-    return true;
+
   }
 
   public ClearFilter(): boolean {
@@ -477,10 +527,23 @@ export class DashboardComponent implements OnInit {
   public GenerateReporteByDate(): boolean {
     console.log('GenerateReporteByDate()');
 
-    this.GenerateDataByFilter(this.getVoyages, true);
+    this.loadingService.Open();
 
-    this.GenerateDashboardBySumary();
+    Promise.resolve(true).then(
+      () => {
 
+        setTimeout(() => {
+          this.GenerateDataByFilter(this.getVoyages, true);
+
+          this.GenerateDashboardBySumary();
+
+
+          this.loadingService.Close();
+        }, 100);
+
+
+      }
+    )
     return false;
   }
 
@@ -955,7 +1018,6 @@ export class DashboardComponent implements OnInit {
     this.balanceTimeByActivityPerformedMGO.maneuver = this.timePerNavigationCharterByActivityPerformedMGO.maneuver - this.totalTimePerActivityMGO.maneuver;
     this.balanceTimeByActivityPerformedMGO.otherActivity = this.timePerNavigationCharterByActivityPerformedMGO.otherActivity - this.totalTimePerActivityMGO.otherActivity;
 
-
     console.log(' FIN Generate()');
 
   }
@@ -1173,6 +1235,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public GenerateDashboardBySumary() {
+    console.log('GenerateDashboardBySumary()');
 
     let filter = this.summaryBy;
 
@@ -1190,6 +1253,8 @@ export class DashboardComponent implements OnInit {
     this.UpdateLineIFO();
     this.UpdateLineMGO();
     this.UpdateLineSPEED();
+
+    console.log('GenerateDashboardBySumary() FINNNNNNNNNNN');
 
   }
 
@@ -1628,7 +1693,7 @@ export class DashboardComponent implements OnInit {
               newVoyage.push(voyage);
 
               this.generateVoyages = newVoyage;
-              this.summaryBy = 'PORTS'
+              this.summaryBy = 'DAYS'
               this.GenerateDataByFilter(newVoyage);
 
               this.GenerateDashboardBySumary()
@@ -1742,7 +1807,7 @@ export class DashboardComponent implements OnInit {
               newVoyage.push(voyage);
 
               this.generateVoyages = newVoyage;
-              this.summaryBy = 'PORTS'
+              this.summaryBy = 'DAYS'
               this.GenerateDataByFilter(newVoyage);
 
               this.GenerateDashboardBySumary()
@@ -1880,7 +1945,7 @@ export class DashboardComponent implements OnInit {
               newVoyage.push(voyage);
 
               this.generateVoyages = newVoyage;
-              this.summaryBy = 'PORTS'
+              this.summaryBy = 'DAYS'
               this.GenerateDataByFilter(newVoyage);
 
               this.GenerateDashboardBySumary()
@@ -2471,40 +2536,4 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public SelectComboYears() {
-
-    debugger
-
-    Promise.resolve(true).then(
-      result => {
-
-        // Seleccionaremos el primer buque del arreglo.
-        let filter: VoyageFilterByYears = new VoyageFilterByYears();
-
-        filter.userId = this.selectUserId;
-        if (this.frmSelectedYear.value && this.frmSelectedYear.value.length > 0) {
-          this.frmSelectedYear.value.forEach(year => {
-            filter.years.push(year);
-          });
-        }
-
-        // Traigo a todos los User y lo instancio en el obj.
-        // GeyVoyage obtiene todos los puertos.
-        return this.GetVoyagesByYears(filter).pipe().toPromise();
-      }
-    ).then(
-      reulst => {
-
-
-        this.GenerateDataByFilter(this.getVoyages);
-
-        this.GenerateDashboardBySumary()
-
-
-        // Activamos el loading.
-        this.loadingService.Close();
-      }
-    )
-    debugger
-  }
 }
