@@ -439,8 +439,8 @@ export class DashboardComponent implements OnInit {
     this.summaryBy = 'DAYS';
     if (index == null) {
       newVoyages = this.getVoyages;
-      
-    this.summaryBy = 'VOYAGES';
+
+      this.summaryBy = 'VOYAGES';
     } else {
       newVoyages.push(this.getVoyages[index]);
     }
@@ -452,8 +452,25 @@ export class DashboardComponent implements OnInit {
   }
 
   public FilterByActivities() {
+    let voyages: Voyage[] = [];
 
-    this.GenerateDataByFilter(this.getVoyages);
+    // SI existe un viaje seleccionamos lo seleccionamos para reducir el arreglo
+    if (this.selectVoyageId) {
+      let voyageSelect = this.getVoyages.find(voyage => voyage.id == this.selectVoyageId);
+      voyages.push(voyageSelect);
+    } else {
+      // Caso contrario el filtro se hara en todos los viajes.
+      voyages = this.getVoyages;
+
+      // Si el sumary es DAYS lo convertimos a viajes.
+      if (this.summaryBy == 'DAYS') {
+        this.summaryBy = 'VOYAGES';
+      }
+    }
+
+    console.log('FilterByActivities()');
+
+    this.GenerateDataByFilter(voyages);
     this.GenerateDashboardBySumary();
   }
 
