@@ -154,7 +154,7 @@ export class VoyagesService {
                 }
             ],
             order: {
-                voyageNumber: 'DESC',
+                id: 'ASC',
             }
         }).then(
             (result: Voyage[]) => {

@@ -123,6 +123,11 @@ export class DashboardComponent implements OnInit {
   public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
 
+  // años
+  public yearsOfUsers: number[] = [];
+  public selectedYearsOfUsers: number[] = [];
+  public frmSelectedYear = new FormControl();
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -201,11 +206,25 @@ export class DashboardComponent implements OnInit {
         let filter: VoyageFilterByYears = new VoyageFilterByYears();
         let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
 
+
+
+
         if (firstUser) {
+          let years = firstUser.years;
+          let OldYearUser: number;
+          if (years && years.length > 0) {
+            this.yearsOfUsers = years;
+            OldYearUser = this.yearsOfUsers[firstUser.years.length - 1]
+            this.frmSelectedYear.setValue([OldYearUser]);
+          } else {
+            this.yearsOfUsers = [];
+            this.frmSelectedYear.setValue([]);
+          };
+
           this.selectUser = firstUser;
           this.selectUserId = firstUser.id;
           filter.userId = this.selectUser.id;
-          filter.years = [2021, 2020];
+          filter.years = [OldYearUser];
         } else {
           throw 'NO_BUQUE_REGISTER';
         }
@@ -282,14 +301,26 @@ export class DashboardComponent implements OnInit {
           resultVoyages.forEach(
             voyage => {
 
+              
+              voyage.ports.sort(function (aPort, bPort) {
+                if (aPort.id > bPort.id) {
+                  return 1;
+                }
+                if (aPort.id < bPort.id) {
+                  return -1;
+                }
+                // a must be equal to b
+                return 0;
+              });
+
               voyage.ports.forEach(
                 port => {
                   port.dailyReports.sort(function (aReport, bReport) {
                     if (aReport.id > bReport.id) {
-                      return -1;
+                      return 1;
                     }
                     if (aReport.id < bReport.id) {
-                      return 1;
+                      return -1;
                     }
                     // a must be equal to b
                     return 0;
@@ -328,8 +359,21 @@ export class DashboardComponent implements OnInit {
 
         // Seleccionaremos el primer buque del arreglo.
         let filter: VoyageFilterByYears = new VoyageFilterByYears();
+
+
+        let years = this.selectUser.years;
+        let OldYearUser: number;
+        if (years && years.length > 0) {
+          this.yearsOfUsers = years;
+          OldYearUser = this.yearsOfUsers[this.selectUser.years.length - 1]
+          this.frmSelectedYear.setValue([OldYearUser]);
+        } else {
+          this.yearsOfUsers = [];
+          this.frmSelectedYear.setValue([]);
+        };
+
         filter.userId = this.selectUserId;
-        filter.years = [2021, 2020];
+        filter.years = [OldYearUser];
         // Traigo a todos los User y lo instancio en el obj.
         // GeyVoyage obtiene todos los puertos.
         return this.GetVoyagesByYears(filter).pipe().toPromise();
@@ -518,7 +562,7 @@ export class DashboardComponent implements OnInit {
         let totalSpeedViaje: Speed = new Speed();
 
         // Recorremos los puertos
-        voyage.ports = voyage.ports.reverse().filter(
+        voyage.ports = voyage.ports.filter(
           (port: Port, index, ports) => {
 
             let totalConsumoByPortIFO = 0;
@@ -2427,4 +2471,40 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  public SelectComboYears() {
+
+    debugger
+
+    Promise.resolve(true).then(
+      result => {
+
+        // Seleccionaremos el primer buque del arreglo.
+        let filter: VoyageFilterByYears = new VoyageFilterByYears();
+
+        filter.userId = this.selectUserId;
+        if (this.frmSelectedYear.value && this.frmSelectedYear.value.length > 0) {
+          this.frmSelectedYear.value.forEach(year => {
+            filter.years.push(year);
+          });
+        }
+
+        // Traigo a todos los User y lo instancio en el obj.
+        // GeyVoyage obtiene todos los puertos.
+        return this.GetVoyagesByYears(filter).pipe().toPromise();
+      }
+    ).then(
+      reulst => {
+
+
+        this.GenerateDataByFilter(this.getVoyages);
+
+        this.GenerateDashboardBySumary()
+
+
+        // Activamos el loading.
+        this.loadingService.Close();
+      }
+    )
+    debugger
+  }
 }

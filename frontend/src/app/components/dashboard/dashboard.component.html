@@ -72,7 +72,7 @@
         <mat-select [(ngModel)]="selectVoyage">
           <ng-template ngFor let-iVoyage [ngForOf]="getVoyages" let-i="index">
             <mat-option value="{{iVoyage.id}}" (click)="SelectComboVoyage(i)">
-              {{ "V" + iVoyage.voyageNumber +" Y" + iVoyage.year  }}
+              {{ "V" + iVoyage.voyageNumber +" Y" + iVoyage.year }}
             </mat-option>
           </ng-template>
 
@@ -94,8 +94,8 @@
         </mat-select>
       </mat-form-field>
 
-      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30"
-        (click)="ClearFilter()">{{ 'CLEAR' | translateMessage:translateCategory}}</button>
+      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{ 'CLEAR' |
+        translateMessage:translateCategory}}</button>
 
       <div class="row" style="opacity: 0;">
         <div class="col-6">
@@ -270,13 +270,15 @@
                   <th class="p-1 color-title-table border">Total</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionTotalMGO.mpal +consumptionTotalMGO.aux+ consumptionTotalMGO.boiler+ consumptionTotalMGO.pp + consumptionTotalMGO.gi + consumptionTotalMGO.other
-                  ,2)}}
+                    consumptionTotalMGO.mpal +consumptionTotalMGO.aux+ consumptionTotalMGO.boiler+
+                    consumptionTotalMGO.pp + consumptionTotalMGO.gi + consumptionTotalMGO.other
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionDaysRealMGO.mpal +consumptionDaysRealMGO.aux+ consumptionDaysRealMGO.boiler+ consumptionDaysRealMGO.pp + consumptionDaysRealMGO.gi + consumptionDaysRealMGO.other
-                  ,2)}}
+                    consumptionDaysRealMGO.mpal +consumptionDaysRealMGO.aux+ consumptionDaysRealMGO.boiler+
+                    consumptionDaysRealMGO.pp + consumptionDaysRealMGO.gi + consumptionDaysRealMGO.other
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
@@ -294,8 +296,9 @@
         <div class="card card-body background-cuadro p-2">
           <h6 class="card-title tx-14 mb-1 text-center">
 
-            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_EQUIPMENT_IFO' : selectUser.isConsumptionVLSFO ? 'DATA_TABLE_BY_EQUIPMENT_VLSFO' : 'DATA_TABLE_BY_EQUIPMENT_LSFO') | translateMessage:translateCategory}}
-          
+            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_EQUIPMENT_IFO' : selectUser.isConsumptionVLSFO ?
+            'DATA_TABLE_BY_EQUIPMENT_VLSFO' : 'DATA_TABLE_BY_EQUIPMENT_LSFO') | translateMessage:translateCategory}}
+
           </h6>
           <div class="PerfectScrollbar-table-data-LSFO">
 
@@ -366,13 +369,15 @@
                   <th class="p-1 color-title-table border">Total</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionTotalIFO.mpal +consumptionTotalIFO.aux+ consumptionTotalIFO.boiler+   consumptionTotalIFO.other
-                  ,2)}}
+                    consumptionTotalIFO.mpal +consumptionTotalIFO.aux+ consumptionTotalIFO.boiler+
+                    consumptionTotalIFO.other
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionDaysRealIFO.mpal +consumptionDaysRealIFO.aux+ consumptionDaysRealIFO.boiler+ consumptionDaysRealIFO.other
-                  ,2)}}
+                    consumptionDaysRealIFO.mpal +consumptionDaysRealIFO.aux+ consumptionDaysRealIFO.boiler+
+                    consumptionDaysRealIFO.other
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
@@ -410,6 +415,16 @@
         <div class="card card-body">
 
           <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
+
+
+            <mat-form-field>
+              <mat-label>{{'YEARS' | translateMessage:translateCategory}}</mat-label>
+              <mat-select [formControl]="frmSelectedYear" multiple>
+                <mat-option *ngFor="let yearUser of yearsOfUsers" [value]="yearUser" (click)="SelectComboYears()">
+                  {{ yearUser }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
             <mat-form-field>
               <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
@@ -487,8 +502,8 @@
             </mat-select>
           </mat-form-field>
 
-          <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30"
-            (click)="ClearFilter()">{{ 'CLEAR' | translateMessage:translateCategory}}</button>
+          <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{
+            'CLEAR' | translateMessage:translateCategory}}</button>
 
           <div class="row" style="opacity: 0;">
             <div class="col-6">
@@ -532,7 +547,8 @@
 
         <div class="card card-header background-cuadro p-2" id="picture6">
           <h6 class="card-title tx-14 mb-1 text-center">
-            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_ACTIVITY_IFO' : selectUser.isConsumptionVLSFO ? 'DATA_TABLE_BY_ACTIVITY_VLSFO' :
+            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_ACTIVITY_IFO' : selectUser.isConsumptionVLSFO ?
+            'DATA_TABLE_BY_ACTIVITY_VLSFO' :
             'DATA_TABLE_BY_ACTIVITY_LSFO') | translateMessage:translateCategory}}
           </h6>
 
@@ -797,33 +813,56 @@
                   <th class="p-1 color-title-table border">{{'TOTAL' | translateMessage:translateCategory}}</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalTimePerActivityIFO.loading +totalTimePerActivityIFO.discharge+ totalTimePerActivityIFO.ballast+ totalTimePerActivityIFO.laden + totalTimePerActivityIFO.economical + totalTimePerActivityIFO.anchor + totalTimePerActivityIFO.maneuver + totalTimePerActivityIFO.otherActivity
-              ,2)}}
+                    totalTimePerActivityIFO.loading +totalTimePerActivityIFO.discharge+ totalTimePerActivityIFO.ballast+
+                    totalTimePerActivityIFO.laden + totalTimePerActivityIFO.economical + totalTimePerActivityIFO.anchor
+                    + totalTimePerActivityIFO.maneuver + totalTimePerActivityIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalDistanceMilesByActivityPerformedIFO.loading +totalDistanceMilesByActivityPerformedIFO.discharge+ totalDistanceMilesByActivityPerformedIFO.ballast+ totalDistanceMilesByActivityPerformedIFO.laden + totalDistanceMilesByActivityPerformedIFO.economical + totalDistanceMilesByActivityPerformedIFO.anchor + totalDistanceMilesByActivityPerformedIFO.maneuver + totalDistanceMilesByActivityPerformedIFO.otherActivity
-              ,2)}}
+                    totalDistanceMilesByActivityPerformedIFO.loading
+                    +totalDistanceMilesByActivityPerformedIFO.discharge+
+                    totalDistanceMilesByActivityPerformedIFO.ballast+ totalDistanceMilesByActivityPerformedIFO.laden +
+                    totalDistanceMilesByActivityPerformedIFO.economical +
+                    totalDistanceMilesByActivityPerformedIFO.anchor + totalDistanceMilesByActivityPerformedIFO.maneuver
+                    + totalDistanceMilesByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionByActivityPerformedIFO.loading +voyageConsumptionByActivityPerformedIFO.discharge+ voyageConsumptionByActivityPerformedIFO.ballast + voyageConsumptionByActivityPerformedIFO.laden + voyageConsumptionByActivityPerformedIFO.economical + voyageConsumptionByActivityPerformedIFO.anchor + voyageConsumptionByActivityPerformedIFO.maneuver + voyageConsumptionByActivityPerformedIFO.otherActivity
-                ,2)}}
+                    voyageConsumptionByActivityPerformedIFO.loading +voyageConsumptionByActivityPerformedIFO.discharge+
+                    voyageConsumptionByActivityPerformedIFO.ballast + voyageConsumptionByActivityPerformedIFO.laden +
+                    voyageConsumptionByActivityPerformedIFO.economical + voyageConsumptionByActivityPerformedIFO.anchor
+                    + voyageConsumptionByActivityPerformedIFO.maneuver +
+                    voyageConsumptionByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionCharterByActivityPerformedIFO.loading +voyageConsumptionCharterByActivityPerformedIFO.discharge+ voyageConsumptionCharterByActivityPerformedIFO.ballast + voyageConsumptionCharterByActivityPerformedIFO.laden + voyageConsumptionCharterByActivityPerformedIFO.economical + voyageConsumptionCharterByActivityPerformedIFO.anchor + voyageConsumptionCharterByActivityPerformedIFO.maneuver + voyageConsumptionCharterByActivityPerformedIFO.otherActivity
-                ,2)}}
+                    voyageConsumptionCharterByActivityPerformedIFO.loading
+                    +voyageConsumptionCharterByActivityPerformedIFO.discharge+
+                    voyageConsumptionCharterByActivityPerformedIFO.ballast +
+                    voyageConsumptionCharterByActivityPerformedIFO.laden +
+                    voyageConsumptionCharterByActivityPerformedIFO.economical +
+                    voyageConsumptionCharterByActivityPerformedIFO.anchor +
+                    voyageConsumptionCharterByActivityPerformedIFO.maneuver +
+                    voyageConsumptionCharterByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              balanceConsumptionByActivityPerformedIFO.loading +balanceConsumptionByActivityPerformedIFO.discharge+ balanceConsumptionByActivityPerformedIFO.ballast + balanceConsumptionByActivityPerformedIFO.laden + balanceConsumptionByActivityPerformedIFO.economical + balanceConsumptionByActivityPerformedIFO.anchor + balanceConsumptionByActivityPerformedIFO.maneuver + balanceConsumptionByActivityPerformedIFO.otherActivity
-                ,2)}}
+                    balanceConsumptionByActivityPerformedIFO.loading
+                    +balanceConsumptionByActivityPerformedIFO.discharge+
+                    balanceConsumptionByActivityPerformedIFO.ballast + balanceConsumptionByActivityPerformedIFO.laden +
+                    balanceConsumptionByActivityPerformedIFO.economical +
+                    balanceConsumptionByActivityPerformedIFO.anchor + balanceConsumptionByActivityPerformedIFO.maneuver
+                    + balanceConsumptionByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <td class="p-1"></td>
                 </tr>
@@ -1108,33 +1147,56 @@
                   <th class="p-1 color-title-table border">{{'TOTAL' | translateMessage:translateCategory}}</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalTimePerActivityMGO.loading +totalTimePerActivityMGO.discharge+ totalTimePerActivityMGO.ballast+ totalTimePerActivityMGO.laden + totalTimePerActivityMGO.economical + totalTimePerActivityMGO.anchor + totalTimePerActivityMGO.maneuver + totalTimePerActivityMGO.otherActivity
-              ,2)}}
+                    totalTimePerActivityMGO.loading +totalTimePerActivityMGO.discharge+ totalTimePerActivityMGO.ballast+
+                    totalTimePerActivityMGO.laden + totalTimePerActivityMGO.economical + totalTimePerActivityMGO.anchor
+                    + totalTimePerActivityMGO.maneuver + totalTimePerActivityMGO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalDistanceMilesByActivityPerformedMGO.loading +totalDistanceMilesByActivityPerformedMGO.discharge+ totalDistanceMilesByActivityPerformedMGO.ballast+ totalDistanceMilesByActivityPerformedMGO.laden + totalDistanceMilesByActivityPerformedMGO.economical + totalDistanceMilesByActivityPerformedMGO.anchor + totalDistanceMilesByActivityPerformedMGO.maneuver + totalDistanceMilesByActivityPerformedIFO.otherActivity
-              ,2)}}
+                    totalDistanceMilesByActivityPerformedMGO.loading
+                    +totalDistanceMilesByActivityPerformedMGO.discharge+
+                    totalDistanceMilesByActivityPerformedMGO.ballast+ totalDistanceMilesByActivityPerformedMGO.laden +
+                    totalDistanceMilesByActivityPerformedMGO.economical +
+                    totalDistanceMilesByActivityPerformedMGO.anchor + totalDistanceMilesByActivityPerformedMGO.maneuver
+                    + totalDistanceMilesByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionByActivityPerformedMGO.loading +voyageConsumptionByActivityPerformedMGO.discharge+ voyageConsumptionByActivityPerformedMGO.ballast + voyageConsumptionByActivityPerformedMGO.laden + voyageConsumptionByActivityPerformedMGO.economical + voyageConsumptionByActivityPerformedMGO.anchor + voyageConsumptionByActivityPerformedMGO.maneuver + voyageConsumptionByActivityPerformedMGO.otherActivity
-                ,2)}}
+                    voyageConsumptionByActivityPerformedMGO.loading +voyageConsumptionByActivityPerformedMGO.discharge+
+                    voyageConsumptionByActivityPerformedMGO.ballast + voyageConsumptionByActivityPerformedMGO.laden +
+                    voyageConsumptionByActivityPerformedMGO.economical + voyageConsumptionByActivityPerformedMGO.anchor
+                    + voyageConsumptionByActivityPerformedMGO.maneuver +
+                    voyageConsumptionByActivityPerformedMGO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionCharterByActivityPerformedMGO.loading +voyageConsumptionCharterByActivityPerformedMGO.discharge+ voyageConsumptionCharterByActivityPerformedMGO.ballast + voyageConsumptionCharterByActivityPerformedMGO.laden + voyageConsumptionCharterByActivityPerformedMGO.economical + voyageConsumptionCharterByActivityPerformedMGO.anchor + voyageConsumptionCharterByActivityPerformedMGO.maneuver + voyageConsumptionCharterByActivityPerformedMGO.otherActivity
-                ,2)}}
+                    voyageConsumptionCharterByActivityPerformedMGO.loading
+                    +voyageConsumptionCharterByActivityPerformedMGO.discharge+
+                    voyageConsumptionCharterByActivityPerformedMGO.ballast +
+                    voyageConsumptionCharterByActivityPerformedMGO.laden +
+                    voyageConsumptionCharterByActivityPerformedMGO.economical +
+                    voyageConsumptionCharterByActivityPerformedMGO.anchor +
+                    voyageConsumptionCharterByActivityPerformedMGO.maneuver +
+                    voyageConsumptionCharterByActivityPerformedMGO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              balanceConsumptionByActivityPerformedMGO.loading +balanceConsumptionByActivityPerformedMGO.discharge+ balanceConsumptionByActivityPerformedMGO.ballast + balanceConsumptionByActivityPerformedMGO.laden + balanceConsumptionByActivityPerformedMGO.economical + balanceConsumptionByActivityPerformedMGO.anchor + balanceConsumptionByActivityPerformedMGO.maneuver + balanceConsumptionByActivityPerformedMGO.otherActivity
-                ,2)}}
+                    balanceConsumptionByActivityPerformedMGO.loading
+                    +balanceConsumptionByActivityPerformedMGO.discharge+
+                    balanceConsumptionByActivityPerformedMGO.ballast + balanceConsumptionByActivityPerformedMGO.laden +
+                    balanceConsumptionByActivityPerformedMGO.economical +
+                    balanceConsumptionByActivityPerformedMGO.anchor + balanceConsumptionByActivityPerformedMGO.maneuver
+                    + balanceConsumptionByActivityPerformedMGO.otherActivity
+                    ,2)}}
                   </th>
                   <td class="p-1"></td>
                 </tr>
