@@ -28,6 +28,7 @@ let VoyagesService = class VoyagesService {
             where: [
                 {
                     userId: voyage.userId,
+                    year: voyage.year,
                 }
             ],
             take: 1,
@@ -111,7 +112,7 @@ let VoyagesService = class VoyagesService {
                 }
             ],
             order: {
-                voyageNumber: 'DESC',
+                id: 'ASC',
             }
         }).then((result) => {
             return result;
@@ -144,7 +145,7 @@ let VoyagesService = class VoyagesService {
             where: [
                 {
                     voyageNumber: voyageNumber,
-                    yearVoyage: yearVoyage
+                    year: yearVoyage
                 }
             ]
         }).then(resultFind => {

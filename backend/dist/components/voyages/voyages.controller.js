@@ -183,6 +183,7 @@ let VoyagesController = class VoyagesController {
                 }
                 else if (voyage.userId !== headerToken.id)
                     throw new Error('ERROR_USERID_FAIL');
+                delete voyage.id;
                 voyage.userIdCreated = headerToken.id;
                 voyage.dateCreated = moment_assets_1.getDate();
                 delete voyage.userIdUpdated;
@@ -333,7 +334,7 @@ let VoyagesController = class VoyagesController {
                         MappingPort.push(new Mapping(importVoyage.NP, portRegister.id));
                     }
                     else {
-                        MappingPort.push(new Mapping(importVoyage.NP, existePort.value));
+                        MappingPort.push(new Mapping(importVoyage.NP, portExiste.id));
                     }
                 }
                 existePort = searchKey(MappingPort, importVoyage.NP);
@@ -357,7 +358,32 @@ let VoyagesController = class VoyagesController {
                 newReport.otherMgo = 0;
                 newReport.steamingTime = importVoyage.TIEMPO || 0;
                 newReport.distance = importVoyage.DISTANCIA_POR_CARTA || 0;
-                newReport.beaufour = importVoyage.BEAUFORT;
+                if (!importVoyage.BEAUFORT) {
+                    newReport.beaufour = '';
+                }
+                else if (importVoyage.BEAUFORT === 's1' || importVoyage.BEAUFORT === 'S1' || importVoyage.BEAUFORT === 's 1' || importVoyage.BEAUFORT == 'S 1' || importVoyage.BEAUFORT === '1s' || importVoyage.BEAUFORT === '1S' || importVoyage.BEAUFORT === '1 s' || importVoyage.BEAUFORT == '1 S' || importVoyage.BEAUFORT == '1.00' || importVoyage.BEAUFORT == '1') {
+                    newReport.beaufour = 'S1';
+                }
+                else if (importVoyage.BEAUFORT === 's2' || importVoyage.BEAUFORT === 'S2' || importVoyage.BEAUFORT === 's 2' || importVoyage.BEAUFORT == 'S 2' || importVoyage.BEAUFORT === '2s' || importVoyage.BEAUFORT === '2S' || importVoyage.BEAUFORT === '2 s' || importVoyage.BEAUFORT == '2 S' || importVoyage.BEAUFORT == '2.00' || importVoyage.BEAUFORT == '2') {
+                    newReport.beaufour = 'S2';
+                }
+                else if (importVoyage.BEAUFORT === 's3' || importVoyage.BEAUFORT === 'S3' || importVoyage.BEAUFORT === 's 3' || importVoyage.BEAUFORT == 'S 3' || importVoyage.BEAUFORT === '3s' || importVoyage.BEAUFORT === '3S' || importVoyage.BEAUFORT === '3 s' || importVoyage.BEAUFORT == '3 S' || importVoyage.BEAUFORT == '3.00' || importVoyage.BEAUFORT == '3') {
+                    newReport.beaufour = 'S3';
+                }
+                else if (importVoyage.BEAUFORT === 's4' || importVoyage.BEAUFORT === 'S4' || importVoyage.BEAUFORT === 's 4' || importVoyage.BEAUFORT == 'S 4' || importVoyage.BEAUFORT === '4s' || importVoyage.BEAUFORT === '4S' || importVoyage.BEAUFORT === '4 s' || importVoyage.BEAUFORT == '4 S' || importVoyage.BEAUFORT == '4.00' || importVoyage.BEAUFORT == '4') {
+                    newReport.beaufour = 'S4';
+                }
+                else if (importVoyage.BEAUFORT === 's5' || importVoyage.BEAUFORT === 'S5' || importVoyage.BEAUFORT === 's 5' || importVoyage.BEAUFORT == 'S 5' || importVoyage.BEAUFORT === '5s' || importVoyage.BEAUFORT === '5S' || importVoyage.BEAUFORT === '5 s' || importVoyage.BEAUFORT == '5 S' || importVoyage.BEAUFORT == '5.00' || importVoyage.BEAUFORT == '5') {
+                    newReport.beaufour = 'S5';
+                }
+                else if (importVoyage.BEAUFORT === 's6' || importVoyage.BEAUFORT === 'S6' || importVoyage.BEAUFORT === 's 6' || importVoyage.BEAUFORT == 'S 6' || importVoyage.BEAUFORT === '6s' || importVoyage.BEAUFORT === '6S' || importVoyage.BEAUFORT === '6 s' || importVoyage.BEAUFORT == '6 S' || importVoyage.BEAUFORT == '6.00' || importVoyage.BEAUFORT == '6') {
+                    newReport.beaufour = 'S6';
+                }
+                else {
+                    newReport.beaufour = '';
+                }
+                newReport.bunkeringIfo = importVoyage.FAENA_IFO || 0;
+                newReport.bunkeringMgo = importVoyage.FAENA_MGO || 0;
                 newReport.observation = importVoyage.REFERENCIA;
                 newReport.activityPerformed = importVoyage.ACTIVIDAD_REALIZADA;
                 if (newReport.activityPerformed == 'CARGANDO') {

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserEntity = void 0;
 const typeorm_1 = require("typeorm");
 let UserEntity = class UserEntity {
-    constructor(id, nick, name, filename, password, language, role, minSpeed, maxSpeed, isConsumptionIFO, isConsumptionLSFO, isConsumptionMGO, maxIFOConsumption, maxMGOConsumption, minIFOConsumption, minMGOConsumption, isMEMGO, isAEMGO, isBoilerMGO, isIGMGO, isPowerPMGO, isOtherMGO, isMEIFO, isAEIFO, isBoilerIFO, isOtherIFO, contractSpeedSailingBallastMGO, contractSpeedSailingLadenMGO, contractSpeedSailingEconomicalMGO, loadingConsumptionMGO, dischargeConsumptionMGO, sailingBallastConsumptionMGO, sailingLoadConsumptionMGO, sailingEconomicConsumptionMGO, anchoredConsumptionMGO, maneuverConsumptionMGO, otherConsumptionMGO, contractSpeedSailingBallastIFO, contractSpeedSailingLadenIFO, contractSpeedSailingEconomicalIFO, loadingConsumptionIFO, dischargeConsumptionIFO, sailingBallastConsumptionIFO, sailingLoadConsumptionIFO, sailingEconomicConsumptionIFO, anchoredConsumptionIFO, maneuverConsumptionIFO, otherConsumptionIFO, isDisplayLSFOConsumption, isDisplayMGOConsumption, isDisplayAverageSpeed, isDisplayDataMGO, isDisplayDataLSFO, isDisplayVesselPerformanceLSFO, isDisplayVesselPerformanceMGO, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+    constructor(id, nick, name, filename, password, language, role, years, minSpeed, maxSpeed, isConsumptionIFO, isConsumptionLSFO, isConsumptionMGO, maxIFOConsumption, maxMGOConsumption, minIFOConsumption, minMGOConsumption, isMEMGO, isAEMGO, isBoilerMGO, isIGMGO, isPowerPMGO, isOtherMGO, isMEIFO, isAEIFO, isBoilerIFO, isOtherIFO, contractSpeedSailingBallastMGO, contractSpeedSailingLadenMGO, contractSpeedSailingEconomicalMGO, loadingConsumptionMGO, dischargeConsumptionMGO, sailingBallastConsumptionMGO, sailingLoadConsumptionMGO, sailingEconomicConsumptionMGO, anchoredConsumptionMGO, maneuverConsumptionMGO, otherConsumptionMGO, contractSpeedSailingBallastIFO, contractSpeedSailingLadenIFO, contractSpeedSailingEconomicalIFO, loadingConsumptionIFO, dischargeConsumptionIFO, sailingBallastConsumptionIFO, sailingLoadConsumptionIFO, sailingEconomicConsumptionIFO, anchoredConsumptionIFO, maneuverConsumptionIFO, otherConsumptionIFO, isDisplayLSFOConsumption, isDisplayMGOConsumption, isDisplayAverageSpeed, isDisplayDataMGO, isDisplayDataLSFO, isDisplayVesselPerformanceLSFO, isDisplayVesselPerformanceMGO, consumptionEquipmentME_MGO, consumptionEquipmentAE_MGO, consumptionEquipmentBOILER_MGO, consumptionEquipmentIG_MGO, consumptionEquipmentPP_MGO, consumptionEquipmentOther_MGO, consumptionEquipmentME_IFO, consumptionEquipmentAE_IFO, consumptionEquipmentBOILER_IFO, consumptionEquipmentOther_IFO, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.id = id || null;
         this.nick = nick || '';
         this.name = name || '';
@@ -20,6 +20,7 @@ let UserEntity = class UserEntity {
         this.password = password || '';
         this.language = language || '';
         this.role = role || '';
+        this.years = years || '';
         this.minSpeed = minSpeed || 0;
         this.maxSpeed = maxSpeed || 0;
         this.isConsumptionIFO = isConsumptionIFO || false;
@@ -68,6 +69,16 @@ let UserEntity = class UserEntity {
         this.isDisplayDataLSFO = isDisplayDataLSFO || false;
         this.isDisplayVesselPerformanceLSFO = isDisplayVesselPerformanceLSFO || false;
         this.isDisplayVesselPerformanceMGO = isDisplayVesselPerformanceMGO || false;
+        this.consumptionEquipmentME_MGO = consumptionEquipmentME_MGO || 0;
+        this.consumptionEquipmentAE_MGO = consumptionEquipmentAE_MGO || 0;
+        this.consumptionEquipmentBOILER_MGO = consumptionEquipmentBOILER_MGO || 0;
+        this.consumptionEquipmentIG_MGO = consumptionEquipmentIG_MGO || 0;
+        this.consumptionEquipmentPP_MGO = consumptionEquipmentPP_MGO || 0;
+        this.consumptionEquipmentOther_MGO = consumptionEquipmentOther_MGO || 0;
+        this.consumptionEquipmentME_IFO = consumptionEquipmentME_IFO || 0;
+        this.consumptionEquipmentAE_IFO = consumptionEquipmentAE_IFO || 0;
+        this.consumptionEquipmentBOILER_IFO = consumptionEquipmentBOILER_IFO || 0;
+        this.consumptionEquipmentOther_IFO = consumptionEquipmentOther_IFO || 0;
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
         this.userIdUpdated = userIdUpdated || 0;
@@ -103,6 +114,10 @@ __decorate([
     typeorm_1.Column({ nullable: false }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "role", void 0);
+__decorate([
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "years", void 0);
 __decorate([
     typeorm_1.Column({ default: 0 }),
     __metadata("design:type", Number)
@@ -302,6 +317,46 @@ __decorate([
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentME_MGO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentAE_MGO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentBOILER_MGO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentIG_MGO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentPP_MGO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentOther_MGO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentME_IFO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentAE_IFO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentBOILER_IFO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserEntity.prototype, "consumptionEquipmentOther_IFO", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
 ], UserEntity.prototype, "userIdCreated", void 0);
 __decorate([
     typeorm_1.Column(),
@@ -321,7 +376,7 @@ __decorate([
 ], UserEntity.prototype, "status", void 0);
 UserEntity = __decorate([
     typeorm_1.Entity('User'),
-    __metadata("design:paramtypes", [Number, String, String, String, String, String, String, Number, Number, Boolean, Boolean, Boolean, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, String, Number, String, Boolean])
+    __metadata("design:paramtypes", [Number, String, String, String, String, String, String, String, Number, Number, Boolean, Boolean, Boolean, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, String, Number, String, Boolean])
 ], UserEntity);
 exports.UserEntity = UserEntity;
 //# sourceMappingURL=user.entity.js.map

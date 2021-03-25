@@ -125,6 +125,7 @@ let PortsController = class PortsController {
                     if (Number(headerToken.id) !== Number(port.userId))
                         throw new Error('ERROR_USERID_FAIL');
                 }
+                delete port.id;
                 port.userIdCreated = headerToken.id;
                 port.dateCreated = moment_assets_1.getDate();
                 delete port.userIdUpdated;

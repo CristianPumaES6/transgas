@@ -73,6 +73,7 @@ let UsersService = class UsersService {
         }).then(password => {
             user.password = password;
             delete user.id;
+            user.years = JSON.stringify(user.years);
             return this.userRepository.save(user);
         }).then((resultSave) => {
             if (!resultSave)
@@ -113,6 +114,7 @@ let UsersService = class UsersService {
             if (!password)
                 throw new Error('Revisar User.service la funcion hash o el retun no, respondio como se esperaba.');
             user.password = password;
+            user.years = JSON.stringify(user.years);
             return this.userRepository.update(user.id, user);
         }).then(resultUpdate => {
             if (!resultUpdate)

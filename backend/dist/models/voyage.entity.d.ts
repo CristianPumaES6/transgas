@@ -39,4 +39,6 @@ export declare class ImportVoyage {
     CALDERA_MGO: number;
     PP_MGO: number;
     GI_MGO: number;
+    FAENA_IFO: number;
+    FAENA_MGO: number;
 }

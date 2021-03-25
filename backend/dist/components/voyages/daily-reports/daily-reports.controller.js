@@ -89,6 +89,7 @@ let DailyReportsController = class DailyReportsController {
                     if (Number(headerToken.id) !== Number(dailyReport.userId))
                         throw new Error('ERROR_USERID_FAIL');
                 }
+                delete dailyReport.id;
                 dailyReport.bunkeringIfo = dailyReport.bunkeringIfo || 0;
                 dailyReport.bunkeringMgo = dailyReport.bunkeringMgo || 0;
                 dailyReport.mplaIfo = dailyReport.mplaIfo || 0;

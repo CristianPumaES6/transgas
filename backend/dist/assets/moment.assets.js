@@ -10,7 +10,7 @@ function getDate() {
 }
 exports.getDate = getDate;
 function ConvertDDMMYYYToYYYYMMDD(dateDDMMYYY) {
-    let date = moment(dateDDMMYYY, "DD/MM/YYYY");
+    let date = moment(dateDDMMYYY, "MM/DD/YYYY");
     return new Date(date.format("YYYY/MM/DD"));
 }
 exports.ConvertDDMMYYYToYYYYMMDD = ConvertDDMMYYYToYYYYMMDD;
