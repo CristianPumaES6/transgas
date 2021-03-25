@@ -1449,6 +1449,11 @@ export class DashboardComponent implements OnInit {
     this.dataMGO = [];
     this.dataSPEED = [];
 
+
+    this.configLineaIFO.lineaMax = 0;
+    this.configLineaMGO.lineaMax = 0;
+    this.configLineaSPEED.lineaMax = 0;
+
     let startDate;
     let endDate;
 
@@ -1584,6 +1589,11 @@ export class DashboardComponent implements OnInit {
     this.dataIFO = [];
     this.dataMGO = [];
     this.dataSPEED = [];
+
+
+    this.configLineaIFO.lineaMax = 0;
+    this.configLineaMGO.lineaMax = 0;
+    this.configLineaSPEED.lineaMax = 0;
 
     let startDate;
     let endDate;
