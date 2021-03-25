@@ -6,8 +6,8 @@ export interface EnvConfig {
     ENV?: string;
 }
 
-/* export const Config: EnvConfig = {
-    API: 'http://165.227.76.37:3000',
+/* export const EnvConfig: EnvConfig = {
+    API: 'https://transgas.labcode.site',
     ENV: ''
 }; */
 
