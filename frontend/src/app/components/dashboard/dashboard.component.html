@@ -18,13 +18,25 @@
         </div>
       </div>
 
+
+
       <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
+
+
+        <mat-form-field>
+          <mat-label>{{'YEARS' | translateMessage:translateCategory}}</mat-label>
+          <mat-select [formControl]="frmSelectedYear" multiple>
+            <mat-option *ngFor="let yearUser of yearsOfUsers" [value]="yearUser" (click)="SelectComboYears()">
+              {{ yearUser }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
         <mat-form-field>
           <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
           <mat-select [(ngModel)]="selectUserId">
             <ng-template ngFor let-iUser [ngForOf]="getUsers" let-i="index">
-              <mat-option value="{{iUser.id}}" (click)="SelectComboBuque()">
+              <mat-option [value]="iUser.id" (click)="SelectComboBuque()">
                 {{ iUser.name}}
               </mat-option>
             </ng-template>
@@ -32,7 +44,6 @@
         </mat-form-field>
 
       </ng-template>
-
 
       <mat-form-field>
         <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
@@ -55,47 +66,51 @@
 
       <mat-form-field>
         <mat-label>{{'START_DATE' | translateMessage:translateCategory}}</mat-label>
-        <input matInput [matDatepicker]="picker3" [(ngModel)]="startDate">
-        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-        <mat-datepicker #picker3 startView="year"></mat-datepicker>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="startDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker startView="year"></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>{{'END_DATE' | translateMessage:translateCategory}}</mat-label>
-        <input matInput [matDatepicker]="picker4" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
-        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
-        <mat-datepicker #picker4 startView="year"></mat-datepicker>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2 startView="year"></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>{{'VOYAGE' | translateMessage:translateCategory}}</mat-label>
-        <mat-select [(ngModel)]="selectVoyage">
+
+        <mat-select [(ngModel)]="selectVoyageId">
+
+          <mat-option (click)="SelectComboVoyage()">None</mat-option>
           <ng-template ngFor let-iVoyage [ngForOf]="getVoyages" let-i="index">
-            <mat-option value="{{iVoyage.id}}" (click)="SelectComboVoyage(i)">
+            <mat-option [value]="iVoyage.id" (click)="SelectComboVoyage(i)">
               {{ "V" + iVoyage.voyageNumber +" Y" + iVoyage.year }}
             </mat-option>
           </ng-template>
 
         </mat-select>
+
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
         <mat-select [formControl]="activityPerformed" multiple>
           <mat-select-trigger>
-            {{activityPerformed.value ? activityPerformed.value[0] : ''}}
+            {{(activityPerformed.value ? activityPerformed.value[0] : '' )| translateMessage:translateCategory}}
             <span *ngIf="activityPerformed.value?.length > 1" class="span-select">
               (+{{activityPerformed.value.length - 1}}
               {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
             </span>
           </mat-select-trigger>
-          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterActivity()">
+          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterByActivities()">
             {{ activity | translateMessage:translateCategory}}</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{ 'CLEAR' |
-        translateMessage:translateCategory}}</button>
+      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{
+        'CLEAR' | translateMessage:translateCategory}}</button>
 
       <div class="row" style="opacity: 0;">
         <div class="col-6">
@@ -108,15 +123,11 @@
 
       <br><br>
       <div class="row">
+
         <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
           <span class="transgas-file-excel"></span>
         </div>
 
-
-        <a href="#" id="buttom_pdf" data-toggle="modal" data-target="#exampleModal" (click)="exportPdf()"
-          class="pr-3 pb-3">
-          <span class="transgas-document-file-pdf"></span>
-        </a>
 
 
         <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
