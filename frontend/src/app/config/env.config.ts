@@ -6,14 +6,14 @@ export interface EnvConfig {
     ENV?: string;
 }
 
-export const EnvConfig: EnvConfig = {
+/* export const EnvConfig: EnvConfig = {
     API: 'https://transgas.labcode.site',
     ENV: ''
-};
+}; */
 
 
 
-/* export const EnvConfig: EnvConfig = {
+export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: ''
-}; */
+};
