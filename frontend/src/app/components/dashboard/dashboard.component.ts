@@ -261,9 +261,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-
-
-
   // GetUsers: Cargo todos los Users para el listado de Users.
   private GetUsers(user: User): Observable<boolean> {
     // Test
@@ -288,7 +285,6 @@ export class DashboardComponent implements OnInit {
     ));
 
   }
-
 
   // GetDailyReports: Cargo todos los registros de viaje, util para el dashboard.
   private GetVoyagesByYears(filter: VoyageFilterByYears): Observable<boolean> {
@@ -832,7 +828,7 @@ export class DashboardComponent implements OnInit {
               if (!port.dailyReports.length) return false;
 
               totalPuertos = totalPuertos + 1;
-              
+
               port.robIfo = totalConsumoByPortIFO;
               port.robMgo = totalConsumoByPortMGO
               port.speed = totalSpeedByPort;
