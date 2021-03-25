@@ -23,9 +23,10 @@ export class LoginGuard implements CanActivate {
     // if (identity && (identity.role == 'ROLE_USER' || identity.role == 'ROLE_ADMIN')) {
 
     if (identity) {
-      this._router.navigate(['./application']);
-    } else {
       return true;
+    } else {
+      this._router.navigate(['../../..']);
+      return false;
     }
   }
 
