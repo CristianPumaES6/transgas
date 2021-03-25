@@ -185,15 +185,42 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'EQUIPMENT' | translateMessage:translateCategory }} </th>
+                    {{ 'EQUIPMENT' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }} </th>
+                    {{ 'TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }} </th>
+                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_DAILY_BALANCE_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -306,15 +333,42 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'EQUIPMENT' | translateMessage:translateCategory }} </th>
+                    {{ 'EQUIPMENT' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }} </th>
+                    {{ 'TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }} </th>
+                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_DAILY_BALANCE_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -560,29 +614,94 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</th>
+                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_ACTIVITY_PERFORMED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}</th>
+                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_FUEL_BALANCE' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
                     {{'BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
                   </th>
                 </tr>
               </thead>
@@ -894,29 +1013,91 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</th>
+                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_ACTIVITY_PERFORMED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}</th>
+                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_FUEL_BALANCE' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
                     {{'BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
                   </th>
                 </tr>
               </thead>

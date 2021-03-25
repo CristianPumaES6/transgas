@@ -34,4 +34,14 @@ mat-form-field {
 }
 
 
+.multiline{
+  white-space: pre-line !important ;
+}
+
+.multiline-tooltip-not_formule{
+  white-space: pre-line !important ;
+  
+  background: #0040d8 !important ;
+}
+
 @import "styles/azia/azia.scss";
