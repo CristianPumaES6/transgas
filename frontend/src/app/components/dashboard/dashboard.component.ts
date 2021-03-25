@@ -797,7 +797,6 @@ export class DashboardComponent implements OnInit {
                       totalConsumoByPortIFO = totalConsumoByPortIFO + totalIFO;
                       totalConsumoByPortMGO = totalConsumoByPortMGO + totalMGO;
                       totalSpeedByPort.add(report.distance, report.steamingTime);
-                      totalPuertos = totalPuertos + 1;
 
                       // Sumamos el consumo MGO
                       this.consumptionTotalMGO.mpal += report.mplaMgo;
@@ -832,6 +831,8 @@ export class DashboardComponent implements OnInit {
 
               if (!port.dailyReports.length) return false;
 
+              totalPuertos = totalPuertos + 1;
+              
               port.robIfo = totalConsumoByPortIFO;
               port.robMgo = totalConsumoByPortMGO
               port.speed = totalSpeedByPort;
