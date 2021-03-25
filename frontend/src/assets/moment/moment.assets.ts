@@ -143,3 +143,18 @@ export function TextMonthDayYear(date: any): string {
 
     return result;
 }
+
+
+export function FisrtOldDayFromDate(date: any): any {
+    if (!date) return null;
+
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
+    const startOfMonth = momentDate.startOf('month').format('YYYY-MM-DD hh:mm');
+    const endOfMonth = momentDate.endOf('month').format('YYYY-MM-DD hh:mm');
+
+    return {
+        start: startOfMonth,
+        end: endOfMonth
+    }
+}

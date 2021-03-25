@@ -20,7 +20,7 @@ import * as Chart from 'chart.js';
 import { mathRound } from '../../../assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from '../../models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate } from '../../../assets/moment/moment.assets';
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
 
 @Component({
@@ -431,7 +431,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  public SelectComboVoyage(index: number): boolean {
+  public SelectComboVoyage(index?: number): boolean {
 
     console.log('SelectComboVoyage()');
 
@@ -1698,7 +1698,7 @@ export class DashboardComponent implements OnInit {
 
           if (legendItem && legendItem.length) {
             let index = legendItem[0]._index;
-
+            debugger
             if (this.summaryBy === 'VOYAGES') {
 
               let ubication = this.dataIFO[index].ubication;
@@ -1729,6 +1729,19 @@ export class DashboardComponent implements OnInit {
               this.GenerateDataByFilter(newVoyage);
 
               this.GenerateDashboardBySumary()
+            } else if (this.summaryBy === 'MONTHS') {
+
+              let ubication = this.dataIFO[index].x;
+
+              let result = FisrtOldDayFromDate(ubication);
+
+              this.startDate = new Date(result.start);
+
+              this.endDate = new Date(result.end);
+
+              this.summaryBy = 'DAYS';
+              this.GenerateReporteByDate();
+
             }
           }
         },
@@ -1842,6 +1855,19 @@ export class DashboardComponent implements OnInit {
               this.GenerateDataByFilter(newVoyage);
 
               this.GenerateDashboardBySumary()
+            } else if (this.summaryBy === 'MONTHS') {
+
+              let date = this.dataMGO[index].x;
+
+              let result = FisrtOldDayFromDate(date);
+
+              this.startDate = new Date(result.start);
+
+              this.endDate = new Date(result.end);
+
+              this.summaryBy = 'DAYS';
+              this.GenerateReporteByDate();
+
             }
           }
         },
@@ -1980,6 +2006,20 @@ export class DashboardComponent implements OnInit {
               this.GenerateDataByFilter(newVoyage);
 
               this.GenerateDashboardBySumary()
+            }
+            else if (this.summaryBy === 'MONTHS') {
+
+              let ubication = this.dataSPEED[index].x;
+
+              let result = FisrtOldDayFromDate(ubication);
+
+              this.startDate = new Date(result.start);
+
+              this.endDate = new Date(result.end);
+
+              this.summaryBy = 'DAYS';
+              this.GenerateReporteByDate();
+
             }
           }
         },
