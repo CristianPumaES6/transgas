@@ -109,7 +109,6 @@ export function IsAfter1Date(date1: any, date2: any): boolean {
 
     if (!date1) return false;
 
-    debugger
     let d1 = moment(date1, 'YYYY-MM-DD');
     let d2 = moment(date2, 'YYYY-MM-DD');
 

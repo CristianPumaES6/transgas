@@ -1698,7 +1698,7 @@ export class DashboardComponent implements OnInit {
 
           if (legendItem && legendItem.length) {
             let index = legendItem[0]._index;
-            debugger
+            
             if (this.summaryBy === 'VOYAGES') {
 
               let ubication = this.dataIFO[index].ubication;
