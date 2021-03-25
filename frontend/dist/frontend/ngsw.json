@@ -1,0 +1,90 @@
+{
+  "configVersion": 1,
+  "timestamp": 1616658859726,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/favicon.ico",
+        "/index.html",
+        "/main.83307ed59b208c21bd94.js",
+        "/manifest.webmanifest",
+        "/polyfills.a4021de53358bb0fec14.js",
+        "/runtime.e227d1a0e31cbccbf8ec.js",
+        "/scripts.568694a568f45ab03c95.js",
+        "/styles.1cb2e3d183f15e446e5d.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/500x500.png",
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/icons/logotransgas.png",
+        "/assets/math/math.assets.ts",
+        "/assets/moment/moment.assets.ts"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/500x500.png": "9dcb9bb1b32805305dedaf9f0a2161930f585190",
+    "/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
+    "/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
+    "/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
+    "/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
+    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
+    "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "/assets/icons/logotransgas.png": "102c1544f6c0cc366933ea17f6dd7bc810ad8df2",
+    "/assets/math/math.assets.ts": "fb1062fa4b1b7bd5f820f7a3688ffec2ec1d639b",
+    "/assets/moment/moment.assets.ts": "ccfc61ec02e85dc15ad41724eb4abe57b6055244",
+    "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
+    "/index.html": "1b856028247c8224cd1ff0c61fe576544a938a7b",
+    "/main.83307ed59b208c21bd94.js": "3961c82066dc623f76d1568217cc4f5fa55b77c6",
+    "/manifest.webmanifest": "f7ac9a144214abe24041f42ade7195230b1247a5",
+    "/polyfills.a4021de53358bb0fec14.js": "b47435a9ef2a4829f2f9dfd35599bde3614981b1",
+    "/runtime.e227d1a0e31cbccbf8ec.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "/scripts.568694a568f45ab03c95.js": "2791ef2944fcf448bce24e9ec345fcaebbae3add",
+    "/styles.1cb2e3d183f15e446e5d.css": "b820e6018a0e732b4066a9daf67f3b9a71439ed9"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
