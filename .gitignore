@@ -4,6 +4,9 @@ backend/IMAGE_UPLOADS/*
 backend/src/*
 backend/test/*
 
+
+
+
 backend/.eslintrc.js
 backend/.prettierrc
 backend/nest-cli.json
@@ -12,3 +15,20 @@ backend/package.json
 backend/README.md
 backend/tsconfig.build.json
 backend/tsconfig.json
+
+frontend/.browserslistrc
+frontend/.editorconfig
+frontend/angular.json
+frontend/karma.conf.js
+frontend/ngsw-config.json
+frontend/package-lock.json
+frontend/README.md
+frontend/tsconfig.app.json
+frontend/tsconfig.base.json
+frontend/tsconfig.json
+frontend/tsconfig.spec.json
+frontend/tslint.json
+frontend/e2e/protractor.conf.js
+frontend/e2e/tsconfig.json
+frontend/e2e/src/app.e2e-spec.ts
+frontend/e2e/src/app.po.ts
