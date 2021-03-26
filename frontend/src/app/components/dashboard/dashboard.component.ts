@@ -1471,11 +1471,11 @@ export class DashboardComponent implements OnInit {
                     // Verificamos la fecha actual.
 
                     if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
-                      this.dataIFO[iL].x = day;
+                      /* this.dataIFO[iL].x = day;
                       this.dataMGO[iL].x = day;
                       this.dataSPEED[iL].x = day;
 
-
+ */
                       let speedI: Speed = this.dataSPEED[iL].speed;
                       speedI.add(report.distance, report.steamingTime);
 
@@ -2189,13 +2189,33 @@ export class DashboardComponent implements OnInit {
       intersect: false,
       callbacks: {
         title: (tooltipItem, data) => {
+          let index = tooltipItem[0].index;
 
-          let result = tooltipItem[0].xLabel;
-          if (this.summaryBy === 'MONTHS') {
+          let result = "";
 
+          if (this.summaryBy === 'VOYAGES') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+            let viaje = this.generateVoyages[ubication[0]]
+
+            result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.summaryBy === 'PORTS') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+
+            let viaje = this.generateVoyages[ubication[0]];
+            let port = viaje.ports[ubication[1]];
+
+            result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.summaryBy === 'MONTHS') {
+
+            result = tooltipItem[0].xLabel;
             result = TextMonthYear(result);
-          }
-          if (this.summaryBy === 'DAYS') {
+          } else if (this.summaryBy === 'DAYS') {
+
+            result = tooltipItem[0].xLabel;
             result = TextMonthDayYear(result)
           }
 
@@ -2332,12 +2352,33 @@ export class DashboardComponent implements OnInit {
         callbacks: {
           title: (tooltipItem, data) => {
 
-            let result = tooltipItem[0].xLabel;
-            if (this.summaryBy === 'MONTHS') {
+            let index = tooltipItem[0].index;
 
+            let result = "";
+
+            if (this.summaryBy === 'VOYAGES') {
+
+              let ubication = data.datasets[0].data[index].ubication;
+              let viaje = this.generateVoyages[ubication[0]]
+
+              result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+            } else if (this.summaryBy === 'PORTS') {
+
+              let ubication = data.datasets[0].data[index].ubication;
+
+              let viaje = this.generateVoyages[ubication[0]];
+              let port = viaje.ports[ubication[1]];
+
+              result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+            } else if (this.summaryBy === 'MONTHS') {
+
+              result = tooltipItem[0].xLabel;
               result = TextMonthYear(result);
-            }
-            if (this.summaryBy === 'DAYS') {
+            } else if (this.summaryBy === 'DAYS') {
+
+              result = tooltipItem[0].xLabel;
               result = TextMonthDayYear(result)
             }
 
@@ -2476,12 +2517,33 @@ export class DashboardComponent implements OnInit {
       intersect: false,
       callbacks: {
         title: (tooltipItem, data) => {
+          let index = tooltipItem[0].index;
 
-          let result = tooltipItem[0].xLabel;
-          if (this.summaryBy === 'MONTHS') {
+          let result = "";
+
+          if (this.summaryBy === 'VOYAGES') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+            let viaje = this.generateVoyages[ubication[0]]
+
+            result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.summaryBy === 'PORTS') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+
+            let viaje = this.generateVoyages[ubication[0]];
+            let port = viaje.ports[ubication[1]];
+
+            result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.summaryBy === 'MONTHS') {
+
+            result = tooltipItem[0].xLabel;
             result = TextMonthYear(result);
-          }
-          if (this.summaryBy === 'DAYS') {
+          } else if (this.summaryBy === 'DAYS') {
+
+            result = tooltipItem[0].xLabel;
             result = TextMonthDayYear(result)
           }
 
@@ -2499,10 +2561,9 @@ export class DashboardComponent implements OnInit {
 
           let result = [];
           if (this.summaryBy === 'VOYAGES') {
-
             let ubication = data.datasets[0].data[index].ubication;
-
             let voyage = this.generateVoyages[ubication[0]];
+
             result = [
               'T. Ports : ' + voyage.totalPort,
               'Distance : ' + voyage.totalSpeed.distance,
