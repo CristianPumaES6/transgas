@@ -100,6 +100,7 @@ export class UsersService {
 
             // Eliminamos el user id
             delete user.id;
+            user.years = JSON.stringify(user.years);
             // procedemos hacer el save.
             return this.userRepository.save(user);
 
@@ -169,6 +170,7 @@ export class UsersService {
                 // asignamos el password encriptado al objeto
                 user.password = password;
 
+                user.years = JSON.stringify(user.years);
                 // Actualizamos
                 return this.userRepository.update(user.id, user);
             }

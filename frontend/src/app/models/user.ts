@@ -8,6 +8,8 @@ export class User {
         public language?: string,
         public role?: string,
 
+        public years?: number[],
+        
         public minSpeed?: number,
         public maxSpeed?: number,
         public isConsumptionIFO?: boolean,
@@ -94,6 +96,8 @@ export class User {
         this.language = language || 'EN';
         this.role = role || '';
 
+        this.years = years || [];
+        
         this.minSpeed = minSpeed || 0;
         this.maxSpeed = maxSpeed || 0;
         this.isConsumptionIFO = isConsumptionIFO || false;

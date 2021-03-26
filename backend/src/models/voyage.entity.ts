@@ -43,7 +43,7 @@ export class VoyageFilterByYears {
 
 
 // estructura de excel de importacion de
-export class ImportVoyage{
+export class ImportVoyage {
     USERID: number;
     year: number;
     NV: number;
@@ -67,4 +67,6 @@ export class ImportVoyage{
     CALDERA_MGO: number;
     PP_MGO: number;
     GI_MGO: number;
+    FAENA_IFO: number;
+    FAENA_MGO: number;
 }

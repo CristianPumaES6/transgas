@@ -3,9 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Components CRUD
 import { LogInComponent } from './components/log-in/log-in.component';
+import { IsLoginGuard } from './guard/is-login.guard';
+
+// Guard
+
 
 const routes: Routes = [
-  { path: '', component: LogInComponent},
+  { path: '', component: LogInComponent, canActivate: [IsLoginGuard]},
   { path: 'application', redirectTo: '/application', pathMatch: 'full' },
   { path: 'application/**', redirectTo: '/application', pathMatch: 'full' },
 ];

@@ -7,10 +7,11 @@ import { ApplicationComponent } from '../application/application.component'
 import { DashboardComponent } from '../components/dashboard/dashboard.component'
 import { VoyageComponent } from '../components/voyages/voyage/voyage.component'
 import { UserComponent } from '../components/users/user/user.component';
+import { LoginGuard } from '../guard/login.guard';
 
 const routes: Routes = [
   {
-    path: 'application', component: ApplicationComponent,
+    path: 'application', component: ApplicationComponent, canActivate: [LoginGuard],
     children: [
       { path: '', component: DashboardComponent },
       // Dashboard de la pagina

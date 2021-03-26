@@ -6,7 +6,7 @@
       <h6 class="card-title tx-14 mb-3">
         {{ 'Legend' | translateMessage:translateCategory }}
         <span class="close-icon" (click)="viewFilter(false)">
-          <i class="icon-x3"></i>
+          <i class="icon-x2"></i>
         </span>
       </h6>
       <div class="row">
@@ -18,13 +18,25 @@
         </div>
       </div>
 
+
+
       <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
+
+
+        <mat-form-field>
+          <mat-label>{{'YEARS' | translateMessage:translateCategory}}</mat-label>
+          <mat-select [formControl]="frmSelectedYear" multiple>
+            <mat-option *ngFor="let yearUser of yearsOfUsers" [value]="yearUser" (click)="SelectComboYears()">
+              {{ yearUser }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
         <mat-form-field>
           <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
           <mat-select [(ngModel)]="selectUserId">
             <ng-template ngFor let-iUser [ngForOf]="getUsers" let-i="index">
-              <mat-option value="{{iUser.id}}" (click)="SelectComboBuque()">
+              <mat-option [value]="iUser.id" (click)="SelectComboBuque()">
                 {{ iUser.name}}
               </mat-option>
             </ng-template>
@@ -32,7 +44,6 @@
         </mat-form-field>
 
       </ng-template>
-
 
       <mat-form-field>
         <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
@@ -55,47 +66,51 @@
 
       <mat-form-field>
         <mat-label>{{'START_DATE' | translateMessage:translateCategory}}</mat-label>
-        <input matInput [matDatepicker]="picker3" [(ngModel)]="startDate">
-        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-        <mat-datepicker #picker3 startView="year"></mat-datepicker>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="startDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker startView="year"></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>{{'END_DATE' | translateMessage:translateCategory}}</mat-label>
-        <input matInput [matDatepicker]="picker4" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
-        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
-        <mat-datepicker #picker4 startView="year"></mat-datepicker>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2 startView="year"></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>{{'VOYAGE' | translateMessage:translateCategory}}</mat-label>
-        <mat-select [(ngModel)]="selectVoyage">
+
+        <mat-select [(ngModel)]="selectVoyageId">
+
+          <mat-option (click)="SelectComboVoyage()">None</mat-option>
           <ng-template ngFor let-iVoyage [ngForOf]="getVoyages" let-i="index">
-            <mat-option value="{{iVoyage.id}}" (click)="SelectComboVoyage(i)">
-              {{ "V" + iVoyage.voyageNumber +" Y" + iVoyage.year  }}
+            <mat-option [value]="iVoyage.id" (click)="SelectComboVoyage(i)">
+              {{ "V" + iVoyage.voyageNumber +" Y" + iVoyage.year }}
             </mat-option>
           </ng-template>
 
         </mat-select>
+
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
         <mat-select [formControl]="activityPerformed" multiple>
           <mat-select-trigger>
-            {{activityPerformed.value ? activityPerformed.value[0] : ''}}
+            {{(activityPerformed.value ? activityPerformed.value[0] : '' )| translateMessage:translateCategory}}
             <span *ngIf="activityPerformed.value?.length > 1" class="span-select">
               (+{{activityPerformed.value.length - 1}}
               {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
             </span>
           </mat-select-trigger>
-          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterActivity()">
+          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterByActivities()">
             {{ activity | translateMessage:translateCategory}}</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30"
-        (click)="ClearFilter()">{{ 'CLEAR' | translateMessage:translateCategory}}</button>
+      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{
+        'CLEAR' | translateMessage:translateCategory}}</button>
 
       <div class="row" style="opacity: 0;">
         <div class="col-6">
@@ -108,15 +123,11 @@
 
       <br><br>
       <div class="row">
+
         <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
           <span class="transgas-file-excel"></span>
         </div>
 
-
-        <a href="#" id="buttom_pdf" data-toggle="modal" data-target="#exampleModal" (click)="exportPdf()"
-          class="pr-3 pb-3">
-          <span class="transgas-document-file-pdf"></span>
-        </a>
 
 
         <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
@@ -185,15 +196,42 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'EQUIPMENT' | translateMessage:translateCategory }} </th>
+                    {{ 'EQUIPMENT' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'REAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }} </th>
+                    {{ 'TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }} </th>
+                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_DAILY_BALANCE_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -270,13 +308,15 @@
                   <th class="p-1 color-title-table border">Total</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionTotalMGO.mpal +consumptionTotalMGO.aux+ consumptionTotalMGO.boiler+ consumptionTotalMGO.pp + consumptionTotalMGO.gi + consumptionTotalMGO.other
-                  ,2)}}
+                    consumptionTotalMGO.mpal +consumptionTotalMGO.aux+ consumptionTotalMGO.boiler+
+                    consumptionTotalMGO.pp + consumptionTotalMGO.gi + consumptionTotalMGO.other
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionDaysRealMGO.mpal +consumptionDaysRealMGO.aux+ consumptionDaysRealMGO.boiler+ consumptionDaysRealMGO.pp + consumptionDaysRealMGO.gi + consumptionDaysRealMGO.other
-                  ,2)}}
+                    consumptionDaysRealMGO.mpal +consumptionDaysRealMGO.aux+ consumptionDaysRealMGO.boiler+
+                    consumptionDaysRealMGO.pp + consumptionDaysRealMGO.gi + consumptionDaysRealMGO.other
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
@@ -293,7 +333,10 @@
         [className]="!selectUser.isDisplayDataLSFO ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
         <div class="card card-body background-cuadro p-2">
           <h6 class="card-title tx-14 mb-1 text-center">
-            {{ 'DATA_TABLE_BY_EQUIPMENT_LSFO' | translateMessage:translateCategory }}
+
+            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_EQUIPMENT_IFO' : selectUser.isConsumptionVLSFO ?
+            'DATA_TABLE_BY_EQUIPMENT_VLSFO' : 'DATA_TABLE_BY_EQUIPMENT_LSFO') | translateMessage:translateCategory}}
+
           </h6>
           <div class="PerfectScrollbar-table-data-LSFO">
 
@@ -301,15 +344,42 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'EQUIPMENT' | translateMessage:translateCategory }} </th>
+                    {{ 'EQUIPMENT' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'REAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }} </th>
+                    {{ 'TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }} </th>
+                    {{ 'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory }}
+                    <span
+                      matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}</th>
+                    {{ 'DAILY_BALANCE' | translateMessage:translateCategory }}
+                    <span matTooltip="{{'TOOLTIP_DAILY_BALANCE_EQUIPMENT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -364,13 +434,15 @@
                   <th class="p-1 color-title-table border">Total</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionTotalIFO.mpal +consumptionTotalIFO.aux+ consumptionTotalIFO.boiler+   consumptionTotalIFO.other
-                  ,2)}}
+                    consumptionTotalIFO.mpal +consumptionTotalIFO.aux+ consumptionTotalIFO.boiler+
+                    consumptionTotalIFO.other
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-                  consumptionDaysRealIFO.mpal +consumptionDaysRealIFO.aux+ consumptionDaysRealIFO.boiler+ consumptionDaysRealIFO.other
-                  ,2)}}
+                    consumptionDaysRealIFO.mpal +consumptionDaysRealIFO.aux+ consumptionDaysRealIFO.boiler+
+                    consumptionDaysRealIFO.other
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
@@ -408,6 +480,16 @@
         <div class="card card-body">
 
           <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
+
+
+            <mat-form-field>
+              <mat-label>{{'YEARS' | translateMessage:translateCategory}}</mat-label>
+              <mat-select [formControl]="frmSelectedYear" multiple>
+                <mat-option *ngFor="let yearUser of yearsOfUsers" [value]="yearUser" (click)="SelectComboYears()">
+                  {{ yearUser }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
             <mat-form-field>
               <mat-label>{{'BUQUE' | translateMessage:translateCategory}}</mat-label>
@@ -459,6 +541,8 @@
             <mat-label>{{'VOYAGE' | translateMessage:translateCategory}}</mat-label>
 
             <mat-select [(ngModel)]="selectVoyageId">
+
+              <mat-option (click)="SelectComboVoyage()">None</mat-option>
               <ng-template ngFor let-iVoyage [ngForOf]="getVoyages" let-i="index">
                 <mat-option [value]="iVoyage.id" (click)="SelectComboVoyage(i)">
                   {{ "V" + iVoyage.voyageNumber +" Y" + iVoyage.year }}
@@ -485,8 +569,8 @@
             </mat-select>
           </mat-form-field>
 
-          <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30"
-            (click)="ClearFilter()">{{ 'CLEAR' | translateMessage:translateCategory}}</button>
+          <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{
+            'CLEAR' | translateMessage:translateCategory}}</button>
 
           <div class="row" style="opacity: 0;">
             <div class="col-6">
@@ -530,7 +614,10 @@
 
         <div class="card card-header background-cuadro p-2" id="picture6">
           <h6 class="card-title tx-14 mb-1 text-center">
-            {{'DATA_TABLE_BY_ACTIVITY_LSFO' | translateMessage:translateCategory}}</h6>
+            {{ (selectUser.isConsumptionIFO ? 'DATA_TABLE_BY_ACTIVITY_IFO' : selectUser.isConsumptionVLSFO ?
+            'DATA_TABLE_BY_ACTIVITY_VLSFO' :
+            'DATA_TABLE_BY_ACTIVITY_LSFO') | translateMessage:translateCategory}}
+          </h6>
 
           <div class="PerfectScrollbar-table-data-activity-lsfo">
 
@@ -538,29 +625,94 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</th>
+                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_ACTIVITY_PERFORMED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_TRAVEL_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TRAVEL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}</th>
+                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_FUEL_BALANCE' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
                     {{'BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
                   </th>
                 </tr>
               </thead>
@@ -793,33 +945,56 @@
                   <th class="p-1 color-title-table border">{{'TOTAL' | translateMessage:translateCategory}}</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalTimePerActivityIFO.loading +totalTimePerActivityIFO.discharge+ totalTimePerActivityIFO.ballast+ totalTimePerActivityIFO.laden + totalTimePerActivityIFO.economical + totalTimePerActivityIFO.anchor + totalTimePerActivityIFO.maneuver + totalTimePerActivityIFO.otherActivity
-              ,2)}}
+                    totalTimePerActivityIFO.loading +totalTimePerActivityIFO.discharge+ totalTimePerActivityIFO.ballast+
+                    totalTimePerActivityIFO.laden + totalTimePerActivityIFO.economical + totalTimePerActivityIFO.anchor
+                    + totalTimePerActivityIFO.maneuver + totalTimePerActivityIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalDistanceMilesByActivityPerformedIFO.loading +totalDistanceMilesByActivityPerformedIFO.discharge+ totalDistanceMilesByActivityPerformedIFO.ballast+ totalDistanceMilesByActivityPerformedIFO.laden + totalDistanceMilesByActivityPerformedIFO.economical + totalDistanceMilesByActivityPerformedIFO.anchor + totalDistanceMilesByActivityPerformedIFO.maneuver + totalDistanceMilesByActivityPerformedIFO.otherActivity
-              ,2)}}
+                    totalDistanceMilesByActivityPerformedIFO.loading
+                    +totalDistanceMilesByActivityPerformedIFO.discharge+
+                    totalDistanceMilesByActivityPerformedIFO.ballast+ totalDistanceMilesByActivityPerformedIFO.laden +
+                    totalDistanceMilesByActivityPerformedIFO.economical +
+                    totalDistanceMilesByActivityPerformedIFO.anchor + totalDistanceMilesByActivityPerformedIFO.maneuver
+                    + totalDistanceMilesByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionByActivityPerformedIFO.loading +voyageConsumptionByActivityPerformedIFO.discharge+ voyageConsumptionByActivityPerformedIFO.ballast + voyageConsumptionByActivityPerformedIFO.laden + voyageConsumptionByActivityPerformedIFO.economical + voyageConsumptionByActivityPerformedIFO.anchor + voyageConsumptionByActivityPerformedIFO.maneuver + voyageConsumptionByActivityPerformedIFO.otherActivity
-                ,2)}}
+                    voyageConsumptionByActivityPerformedIFO.loading +voyageConsumptionByActivityPerformedIFO.discharge+
+                    voyageConsumptionByActivityPerformedIFO.ballast + voyageConsumptionByActivityPerformedIFO.laden +
+                    voyageConsumptionByActivityPerformedIFO.economical + voyageConsumptionByActivityPerformedIFO.anchor
+                    + voyageConsumptionByActivityPerformedIFO.maneuver +
+                    voyageConsumptionByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionCharterByActivityPerformedIFO.loading +voyageConsumptionCharterByActivityPerformedIFO.discharge+ voyageConsumptionCharterByActivityPerformedIFO.ballast + voyageConsumptionCharterByActivityPerformedIFO.laden + voyageConsumptionCharterByActivityPerformedIFO.economical + voyageConsumptionCharterByActivityPerformedIFO.anchor + voyageConsumptionCharterByActivityPerformedIFO.maneuver + voyageConsumptionCharterByActivityPerformedIFO.otherActivity
-                ,2)}}
+                    voyageConsumptionCharterByActivityPerformedIFO.loading
+                    +voyageConsumptionCharterByActivityPerformedIFO.discharge+
+                    voyageConsumptionCharterByActivityPerformedIFO.ballast +
+                    voyageConsumptionCharterByActivityPerformedIFO.laden +
+                    voyageConsumptionCharterByActivityPerformedIFO.economical +
+                    voyageConsumptionCharterByActivityPerformedIFO.anchor +
+                    voyageConsumptionCharterByActivityPerformedIFO.maneuver +
+                    voyageConsumptionCharterByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              balanceConsumptionByActivityPerformedIFO.loading +balanceConsumptionByActivityPerformedIFO.discharge+ balanceConsumptionByActivityPerformedIFO.ballast + balanceConsumptionByActivityPerformedIFO.laden + balanceConsumptionByActivityPerformedIFO.economical + balanceConsumptionByActivityPerformedIFO.anchor + balanceConsumptionByActivityPerformedIFO.maneuver + balanceConsumptionByActivityPerformedIFO.otherActivity
-                ,2)}}
+                    balanceConsumptionByActivityPerformedIFO.loading
+                    +balanceConsumptionByActivityPerformedIFO.discharge+
+                    balanceConsumptionByActivityPerformedIFO.ballast + balanceConsumptionByActivityPerformedIFO.laden +
+                    balanceConsumptionByActivityPerformedIFO.economical +
+                    balanceConsumptionByActivityPerformedIFO.anchor + balanceConsumptionByActivityPerformedIFO.maneuver
+                    + balanceConsumptionByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <td class="p-1"></td>
                 </tr>
@@ -849,29 +1024,91 @@
               <thead>
                 <tr>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</th>
+                    {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_ACTIVITY_PERFORMED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_TIME_PER_ACTIVITY' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_MILES_NAVIGATED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_REAL_SPEED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_AVERAGE_SPEED_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_TRAVEL_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
-                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}</th>
+                    {{'REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}</th>
+                    {{'TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}
+
+                    <span matTooltip="{{'TOOLTIP_TIME_PER_NAVIGATION_CHARTER' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
-                    {{'TRAVEL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}</th>
+                    {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
-                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}</th>
+                    {{'FUEL_BALANCE' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_FUEL_BALANCE' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
+
+                  </th>
                   <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
                     {{'BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}
+                    <span matTooltip="{{'TOOLTIP_BALANCE_HOURS_SAILED' | translateMessage:translateCategory}}"
+                      matTooltipClass="multiline">
+                      <i class="icon-menu-help"></i>
+                    </span>
                   </th>
                 </tr>
               </thead>
@@ -1104,33 +1341,56 @@
                   <th class="p-1 color-title-table border">{{'TOTAL' | translateMessage:translateCategory}}</th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalTimePerActivityMGO.loading +totalTimePerActivityMGO.discharge+ totalTimePerActivityMGO.ballast+ totalTimePerActivityMGO.laden + totalTimePerActivityMGO.economical + totalTimePerActivityMGO.anchor + totalTimePerActivityMGO.maneuver + totalTimePerActivityMGO.otherActivity
-              ,2)}}
+                    totalTimePerActivityMGO.loading +totalTimePerActivityMGO.discharge+ totalTimePerActivityMGO.ballast+
+                    totalTimePerActivityMGO.laden + totalTimePerActivityMGO.economical + totalTimePerActivityMGO.anchor
+                    + totalTimePerActivityMGO.maneuver + totalTimePerActivityMGO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              totalDistanceMilesByActivityPerformedMGO.loading +totalDistanceMilesByActivityPerformedMGO.discharge+ totalDistanceMilesByActivityPerformedMGO.ballast+ totalDistanceMilesByActivityPerformedMGO.laden + totalDistanceMilesByActivityPerformedMGO.economical + totalDistanceMilesByActivityPerformedMGO.anchor + totalDistanceMilesByActivityPerformedMGO.maneuver + totalDistanceMilesByActivityPerformedIFO.otherActivity
-              ,2)}}
+                    totalDistanceMilesByActivityPerformedMGO.loading
+                    +totalDistanceMilesByActivityPerformedMGO.discharge+
+                    totalDistanceMilesByActivityPerformedMGO.ballast+ totalDistanceMilesByActivityPerformedMGO.laden +
+                    totalDistanceMilesByActivityPerformedMGO.economical +
+                    totalDistanceMilesByActivityPerformedMGO.anchor + totalDistanceMilesByActivityPerformedMGO.maneuver
+                    + totalDistanceMilesByActivityPerformedIFO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionByActivityPerformedMGO.loading +voyageConsumptionByActivityPerformedMGO.discharge+ voyageConsumptionByActivityPerformedMGO.ballast + voyageConsumptionByActivityPerformedMGO.laden + voyageConsumptionByActivityPerformedMGO.economical + voyageConsumptionByActivityPerformedMGO.anchor + voyageConsumptionByActivityPerformedMGO.maneuver + voyageConsumptionByActivityPerformedMGO.otherActivity
-                ,2)}}
+                    voyageConsumptionByActivityPerformedMGO.loading +voyageConsumptionByActivityPerformedMGO.discharge+
+                    voyageConsumptionByActivityPerformedMGO.ballast + voyageConsumptionByActivityPerformedMGO.laden +
+                    voyageConsumptionByActivityPerformedMGO.economical + voyageConsumptionByActivityPerformedMGO.anchor
+                    + voyageConsumptionByActivityPerformedMGO.maneuver +
+                    voyageConsumptionByActivityPerformedMGO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1"></th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              voyageConsumptionCharterByActivityPerformedMGO.loading +voyageConsumptionCharterByActivityPerformedMGO.discharge+ voyageConsumptionCharterByActivityPerformedMGO.ballast + voyageConsumptionCharterByActivityPerformedMGO.laden + voyageConsumptionCharterByActivityPerformedMGO.economical + voyageConsumptionCharterByActivityPerformedMGO.anchor + voyageConsumptionCharterByActivityPerformedMGO.maneuver + voyageConsumptionCharterByActivityPerformedMGO.otherActivity
-                ,2)}}
+                    voyageConsumptionCharterByActivityPerformedMGO.loading
+                    +voyageConsumptionCharterByActivityPerformedMGO.discharge+
+                    voyageConsumptionCharterByActivityPerformedMGO.ballast +
+                    voyageConsumptionCharterByActivityPerformedMGO.laden +
+                    voyageConsumptionCharterByActivityPerformedMGO.economical +
+                    voyageConsumptionCharterByActivityPerformedMGO.anchor +
+                    voyageConsumptionCharterByActivityPerformedMGO.maneuver +
+                    voyageConsumptionCharterByActivityPerformedMGO.otherActivity
+                    ,2)}}
                   </th>
                   <th class="p-1 color-title-table border">
                     {{MathRoundOneDecimal(
-              balanceConsumptionByActivityPerformedMGO.loading +balanceConsumptionByActivityPerformedMGO.discharge+ balanceConsumptionByActivityPerformedMGO.ballast + balanceConsumptionByActivityPerformedMGO.laden + balanceConsumptionByActivityPerformedMGO.economical + balanceConsumptionByActivityPerformedMGO.anchor + balanceConsumptionByActivityPerformedMGO.maneuver + balanceConsumptionByActivityPerformedMGO.otherActivity
-                ,2)}}
+                    balanceConsumptionByActivityPerformedMGO.loading
+                    +balanceConsumptionByActivityPerformedMGO.discharge+
+                    balanceConsumptionByActivityPerformedMGO.ballast + balanceConsumptionByActivityPerformedMGO.laden +
+                    balanceConsumptionByActivityPerformedMGO.economical +
+                    balanceConsumptionByActivityPerformedMGO.anchor + balanceConsumptionByActivityPerformedMGO.maneuver
+                    + balanceConsumptionByActivityPerformedMGO.otherActivity
+                    ,2)}}
                   </th>
                   <td class="p-1"></td>
                 </tr>

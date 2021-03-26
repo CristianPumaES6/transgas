@@ -44,12 +44,12 @@
               <span>{{loggedUser.role | translateMessage:translateCategory}}</span>
             </div>
 
-
+<!-- 
             <a routerLink="/application/perfil/{{loggedUser.id}}" class="dropdown-item">
               <i class="icon-edit-1"></i>
               {{'EDIT_PERFIL' | translateMessage:translateCategory}}
-            </a>
-            <a (click)="logout()" class="dropdown-item">
+            </a> -->
+            <a (click)="logout()" class="dropdown-item" style="cursor: pointer;">
               <i class="icon-logout-1"></i>
               {{'EXIT_PERFIL' | translateMessage:translateCategory}}
             </a>
@@ -71,7 +71,7 @@
 
   <div class="az-footer">
     <div class="container-fluid">
-      <span>&copy; 2020 Transgas v1.7 - Sailing Anality</span>
+      <span>&copy; 2020 Transgas v1.8 - Sailing Anality</span>
       <!-- <span>Designed by: ThemePixels</span> -->
       <span class="float-righ"> {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
         <span

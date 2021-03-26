@@ -24,6 +24,10 @@ export class UserEntity {
     @Column({ nullable: false })
     role: string;
 
+    // Los años lo pongo ocmo string pero es un arreglo de numeros.
+    @Column({ default: '' })
+    years: string;
+
 
 
     // CONFIG DE DATOS PARA EL CUADRO DEL DASHBOARD
@@ -200,6 +204,9 @@ export class UserEntity {
         language?: string,
         role?: string,
 
+
+        years?:string,
+
         minSpeed?: number,
         maxSpeed?: number,
         isConsumptionIFO?: boolean,
@@ -285,6 +292,7 @@ export class UserEntity {
         this.language = language || '';
         this.role = role || '';
 
+        this.years = years || '';
 
         this.minSpeed = minSpeed || 0;
         this.maxSpeed = maxSpeed || 0;
@@ -343,7 +351,7 @@ export class UserEntity {
         this.isDisplayVesselPerformanceMGO = isDisplayVesselPerformanceMGO || false;
 
         // Conusmo por equipo.
-        this.consumptionEquipmentME_MGO= consumptionEquipmentME_MGO || 0;
+        this.consumptionEquipmentME_MGO = consumptionEquipmentME_MGO || 0;
         this.consumptionEquipmentAE_MGO = consumptionEquipmentAE_MGO || 0;
         this.consumptionEquipmentBOILER_MGO = consumptionEquipmentBOILER_MGO || 0;
         this.consumptionEquipmentIG_MGO = consumptionEquipmentIG_MGO || 0;

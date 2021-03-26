@@ -30,6 +30,7 @@ export class VoyagesService {
                 // name && surname && nick && email
                 {
                     userId: voyage.userId,
+                    year: voyage.year,
                 }
             ],
             take: 1,
@@ -153,7 +154,7 @@ export class VoyagesService {
                 }
             ],
             order: {
-                voyageNumber: 'DESC',
+                id: 'ASC',
             }
         }).then(
             (result: Voyage[]) => {
@@ -215,7 +216,7 @@ export class VoyagesService {
                 // hacemos un where donde buscamos por id.
                 {
                     voyageNumber: voyageNumber,
-                    yearVoyage: yearVoyage
+                    year: yearVoyage
                 }
             ]
         }).then(resultFind => {

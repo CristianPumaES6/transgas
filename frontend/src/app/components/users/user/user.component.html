@@ -126,7 +126,16 @@
         <ng-template [ngIf]="(roleUser == 'ADMIN' || roleUser == 'SUPPORT') && user.role == 'BUQUE'">
 
           <hr>
-          <h2 class="az-content-title tx-24 mg-b-20 mg-t-10"><u>Ship configuration</u></h2>
+          <h2 class="az-content-title tx-24 mg-b-20 mg-t-10"><u>Ship configuration</u>
+            <div class="float-right">
+              {{TextYears(user.years)}}
+              <button mat-button color="primary" (click)="ClickAddYear()"
+                matTooltip="{{'NEW_YEAR' | translateMessage:translateCategory}}" [disabled]='disableEdit'>
+                {{'NEW_YEAR' | translateMessage:translateCategory}}
+              </button>
+
+            </div>
+          </h2>
           <div class="row">
 
             <div class="col-12 col-md-7 ">
@@ -270,12 +279,15 @@
                 </div>
 
               </div>
+
+
             </div>
 
 
             <div class="col-6 col-md-6 col-md-6 col-lg-6">
               <p class="m-0 grp-title-check font-weight-bold">
-                {{(user.isConsumptionIFO ? 'EQUIPMENT_IFO' :  user.isConsumptionVLSFO ? 'EQUIPMENT_VLSFO' : 'EQUIPMENT_LSFO') | translateMessage:translateCategory}}
+                {{(user.isConsumptionIFO ? 'EQUIPMENT_IFO' : user.isConsumptionVLSFO ? 'EQUIPMENT_VLSFO' :
+                'EQUIPMENT_LSFO') | translateMessage:translateCategory}}
               </p>
 
               <div class="row no-gutters">
@@ -308,6 +320,8 @@
 
 
           </div>
+
+
           <!-- Fin campos de velociades -->
 
           <!-- Campos de Consumo por contrato MGO -->
@@ -341,6 +355,7 @@
               </div>
             </div>
 
+            <!-- Cotranto por actividades -->
             <div class="row no-gutters col-12">
               <div class="col-6  row no-gutters">
 
@@ -411,13 +426,63 @@
                 </div>
               </div>
             </div>
+
+            <div class="row no-gutters col-12">
+              <div class="col-6 col-md-2">
+                <mat-form-field>
+                  <input matInput type="number"
+                    placeholder="{{'CONSUMPTIONEQUIPMENTME_MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentME_MGO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+              <div class="col-6 col-md-2">
+                <mat-form-field>
+                  <input matInput type="number"
+                    placeholder="{{'CONSUMPTIONEQUIPMENTAE_MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentAE_MGO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+              <div class="col-6 col-md-2">
+                <mat-form-field>
+                  <input matInput type="number"
+                    placeholder="{{'CONSUMPTIONEQUIPMENTBOILER_MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentBOILER_MGO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+
+              <div class="col-6 col-md-2">
+                <mat-form-field>
+                  <input matInput type="number"
+                    placeholder="{{'CONSUMPTIONEQUIPMENTIG_MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentIG_MGO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+
+              <div class="col-6 col-md-2">
+                <mat-form-field>
+                  <input matInput type="number"
+                    placeholder="{{'CONSUMPTIONEQUIPMENTPP_MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentPP_MGO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+
+              <div class="col-6 col-md-2">
+                <mat-form-field>
+                  <input matInput type="number"
+                    placeholder="{{'CONSUMPTIONEQUIPMENTOTHER_MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentOther_MGO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+
+            </div>
           </div>
 
           <!-- Campos de Consumo por contrato MGO -->
           <div class="row no-gutters">
 
             <p class="m-0 grp-title-check font-weight-bold">
-              {{(user.isConsumptionIFO ? 'PERFORMANCE_IFO' :  user.isConsumptionVLSFO ? 'PERFORMANCE_VLSFO' : 'PERFORMANCE_LSFO') | translateMessage:translateCategory}}
+              {{(user.isConsumptionIFO ? 'PERFORMANCE_IFO' : user.isConsumptionVLSFO ? 'PERFORMANCE_VLSFO' :
+              'PERFORMANCE_LSFO') | translateMessage:translateCategory}}
             </p>
 
             <!-- Campos de velociades -->
@@ -445,65 +510,112 @@
               </div>
             </div>
 
+            <!-- Cotranto por actividades -->
             <div class="row no-gutters col-12">
-              <div class="col-6 col-md">
-                <mat-form-field>
-                  <input matInput type="number"
-                    placeholder="{{'CONTRACT_LOADING' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.loadingConsumptionIFO" [disabled]='disableEdit'>
-                </mat-form-field>
-              </div>
-              <div class="col-6 col-md">
-                <mat-form-field>
-                  <input matInput type="number"
-                    placeholder="{{'CONTRACT_DOWNLOADING' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.dischargeConsumptionIFO" [disabled]='disableEdit'>
-                </mat-form-field>
-              </div>
-              <div style="display: none;">
-                <div class="col-6 col-md">
+              <div class="col-6  row no-gutters">
+
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_LOADING' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.loadingConsumptionIFO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_DOWNLOADING' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.dischargeConsumptionIFO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+                <div class="col-6 col-md-3">
                   <mat-form-field>
                     <input matInput type="number"
                       placeholder="{{'CONTRACT_SAILING_IN_BALLAST' | translateMessage:translateCategory}}"
                       [(ngModel)]="user.sailingBallastConsumptionIFO" [disabled]='disableEdit'>
                   </mat-form-field>
                 </div>
-                <div class="col-6 col-md">
+                <div class="col-6 col-md-3">
                   <mat-form-field>
                     <input matInput type="number"
                       placeholder="{{'CONTRACT_SAILING_WITH_LADEN' | translateMessage:translateCategory}}"
                       [(ngModel)]="user.sailingLoadConsumptionIFO" [disabled]='disableEdit'>
                   </mat-form-field>
                 </div>
-                <div class="col-6 col-md">
+
+              </div>
+              <div class="col-6  row no-gutters">
+
+
+                <div class="col-6 col-md-3">
                   <mat-form-field>
                     <input matInput type="number"
                       placeholder="{{'CONTRACT_ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}"
                       [(ngModel)]="user.sailingEconomicConsumptionIFO" [disabled]='disableEdit'>
                   </mat-form-field>
                 </div>
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_ANCHORED' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.anchoredConsumptionIFO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_MANEUVER' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.maneuverConsumptionIFO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+                <div class="col-6 col-md-3">
+                  <mat-form-field>
+                    <input matInput type="number"
+                      placeholder="{{'CONTRACT_OTHER_ACT' | translateMessage:translateCategory}}"
+                      [(ngModel)]="user.otherConsumptionIFO" [disabled]='disableEdit'>
+                  </mat-form-field>
+                </div>
+
               </div>
-              <div class="col-6 col-md">
+            </div>
+
+
+            <!-- COnsumo por maquina -->
+
+            <div class="row no-gutters col-12">
+              <div class="col-6 col-md-3">
                 <mat-form-field>
                   <input matInput type="number"
-                    placeholder="{{'CONTRACT_ANCHORED' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.anchoredConsumptionIFO" [disabled]='disableEdit'>
+                    placeholder="{{'CONSUMPTIONEQUIPMENTME_IFO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentME_IFO" [disabled]='disableEdit'>
                 </mat-form-field>
               </div>
-              <div class="col-6 col-md">
+
+              <div class="col-6 col-md-3">
                 <mat-form-field>
                   <input matInput type="number"
-                    placeholder="{{'CONTRACT_MANEUVER' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.maneuverConsumptionIFO" [disabled]='disableEdit'>
+                    placeholder="{{'CONSUMPTIONEQUIPMENTAE_IFO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentAE_IFO" [disabled]='disableEdit'>
                 </mat-form-field>
               </div>
-              <div class="col-6 col-md">
+
+              <div class="col-6 col-md-3">
                 <mat-form-field>
                   <input matInput type="number"
-                    placeholder="{{'CONTRACT_OTHER_ACT' | translateMessage:translateCategory}}"
-                    [(ngModel)]="user.otherConsumptionIFO" [disabled]='disableEdit'>
+                    placeholder="{{'CONSUMPTIONEQUIPMENTBOILER_IFO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentBOILER_IFO" [disabled]='disableEdit'>
                 </mat-form-field>
               </div>
+
+              <div class="col-6 col-md-3">
+                <mat-form-field>
+                  <input matInput type="number"
+                    placeholder="{{'CONSUMPTIONEQUIPMENTOTHER_MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="user.consumptionEquipmentOther_IFO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+
+
             </div>
           </div>
 
@@ -517,7 +629,8 @@
               <div class="row no-gutters">
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                   <mat-checkbox [(ngModel)]="user.isDisplayLSFOConsumption" [disabled]='disableEdit'>
-                    {{ (user.isConsumptionIFO ? 'IFO_CONSUMPTION' : user.isConsumptionVLSFO ? 'VLSFO_CONSUMPTION' : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
+                    {{ (user.isConsumptionIFO ? 'IFO_CONSUMPTION' : user.isConsumptionVLSFO ? 'VLSFO_CONSUMPTION' :
+                    'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
                   </mat-checkbox>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
@@ -538,12 +651,14 @@
 
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                   <mat-checkbox [(ngModel)]="user.isDisplayDataLSFO" [disabled]='disableEdit'>
-                    {{ (user.isConsumptionIFO ? 'DATA_IFO' : user.isConsumptionVLSFO ? 'DATA_VLSFO' : 'DATA_LSFO') | translateMessage:translateCategory}}
+                    {{ (user.isConsumptionIFO ? 'DATA_IFO' : user.isConsumptionVLSFO ? 'DATA_VLSFO' : 'DATA_LSFO') |
+                    translateMessage:translateCategory}}
                   </mat-checkbox>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                   <mat-checkbox [(ngModel)]="user.isDisplayVesselPerformanceLSFO" [disabled]='disableEdit'>
-                    {{ (user.isConsumptionIFO ? 'VESSEL_PERFORMANCE_IFO' : user.isConsumptionVLSFO ? 'VESSEL_PERFORMANCE_VLSFO' : 'VESSEL_PERFORMANCE_LSFO') | translateMessage:translateCategory}}
+                    {{ (user.isConsumptionIFO ? 'VESSEL_PERFORMANCE_IFO' : user.isConsumptionVLSFO ?
+                    'VESSEL_PERFORMANCE_VLSFO' : 'VESSEL_PERFORMANCE_LSFO') | translateMessage:translateCategory}}
                   </mat-checkbox>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">

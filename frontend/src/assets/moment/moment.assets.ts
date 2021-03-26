@@ -56,7 +56,22 @@ export function ComparePreviousDates(date1: any, date2: any): String {
     }
 
 }
+export function IsPrevious1Date(date1: any, date2: any): boolean {
 
+
+    if (!date1) return false;
+
+    let d1 = moment(date1, 'YYYY-MM-DD');
+    let d2 = moment(date2, 'YYYY-MM-DD');
+
+    let condition = d1.isSameOrBefore(d2);
+    if (condition) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
 
 export function DiffDates(date1: any, date2: any): number {
 
@@ -87,6 +102,24 @@ export function CompareAfterDates(date1: any, date2: any): String {
     }
 
 }
+
+
+export function IsAfter1Date(date1: any, date2: any): boolean {
+
+
+    if (!date1) return false;
+
+    let d1 = moment(date1, 'YYYY-MM-DD');
+    let d2 = moment(date2, 'YYYY-MM-DD');
+
+    let condition = d1.isSameOrAfter(d2);
+    if (condition) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
 // retorna true si es valido false si no lo es.
 
 export function validateDate(fecha: any): boolean {
@@ -108,4 +141,19 @@ export function TextMonthDayYear(date: any): string {
     let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ' ' + momentDate.format('YYYY')
 
     return result;
+}
+
+
+export function FisrtOldDayFromDate(date: any): any {
+    if (!date) return null;
+
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
+    const startOfMonth = momentDate.startOf('month').format('YYYY-MM-DD hh:mm');
+    const endOfMonth = momentDate.endOf('month').format('YYYY-MM-DD hh:mm');
+
+    return {
+        start: startOfMonth,
+        end: endOfMonth
+    }
 }

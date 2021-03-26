@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { AzList, azListDropdown, SettingAzList } from '../../../models/azlist';
 import { User } from '../../../models/user';
 
-
 // ============== COMUNES ==============
 // Components Shared
 import { AzListComponent } from "../../../shared/crud/az-list/az-list.component";
@@ -33,6 +32,7 @@ import { Port } from '../../../models/port';
 import { PortService } from '../../../services/port.service';
 import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
+import { OnlineOfflineService } from '../../../services/online-offline.service';
 
 
 @Component({
@@ -41,6 +41,9 @@ import { DailyReportService } from '../../../services/daily-report.service';
   styleUrls: ['./voyage.component.scss']
 })
 export class VoyageComponent implements OnInit {
+
+  public year: number = 0;
+
   // rol del usuario.
   public roleUser: string = '';
 
@@ -108,8 +111,30 @@ export class VoyageComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
+    private onlineOfflineService: OnlineOfflineService,
     public dialog: MatDialog,
-  ) { }
+  ) {
+
+    this.onlineOfflineService.emitterReloadData.subscribe(
+      (isOnline: boolean) => {
+        this.loadDataIndexedDB(this.selectUser);
+
+        this.List_Voyages_Ports_DailyReports = 'Voyages';
+        this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
+        this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
+        this.SettingAzList.isNew = true;
+        this.SettingAzList.isBack = false;
+        this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+        this.SettingAzList.toolTipBack = ''
+        this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
+        this.SettingAzList.activateSelectItemEmit2 = true;
+        this.selectPort = new Port();
+        this.title_header_media = '';
+        this.sub_title_header_media = '';
+
+      }
+    );
+  }
 
   ngOnInit(): void {
 
@@ -153,10 +178,12 @@ export class VoyageComponent implements OnInit {
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
+
       let user: User = new User();
 
       // Si el usuario es un buque lo filtramos.
       if (this.selectUser.role === 'BUQUE') {
+
         user.id = this.selectUser.id;
       }
 
@@ -168,8 +195,16 @@ export class VoyageComponent implements OnInit {
         }
       ).then(
         resultGetUser => {
-          if (!resultGetUser) throw 'ERROR_GET_USERS';
 
+          if (!resultGetUser) throw 'ERROR_GET_USERS';
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.databaseService.Sync();
+        }
+      ).then(
+        resultSync => {
+
+          // Revisamos si el result es el esperado.
+          if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
 
           // Seleccionaremos el primer buque del arreglo.
           let voyage: Voyage = new Voyage();
@@ -181,6 +216,16 @@ export class VoyageComponent implements OnInit {
 
             this.SettingAzList.isNew = true;
             this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+
+            if (firstUser.years && firstUser.years.length) {
+              this.year = firstUser.years[(firstUser.years.length || 1) - 1];
+              this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
+
+            } else {
+              this.year = 0;
+            }
+
+            voyage.year = this.year;
           } else {
             throw 'NO_BUQUE_REGISTER';
           }
@@ -192,15 +237,8 @@ export class VoyageComponent implements OnInit {
         }
       ).then(
         resulGetVoyages => {
-          if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
-
-          // Traigo a todos los User y lo instancio en el obj.
-          return this.databaseService.Sync();
-        }
-      ).then(
-        resultSync => {
           // Revisamos si el result es el esperado.
-          if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
+          if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
 
           // Hacemos Clear a la Tabla Users
           return this.databaseService.ClearUsersIndexedDB();
@@ -324,7 +362,7 @@ export class VoyageComponent implements OnInit {
 
         this.generateAzListByPorts(this.getPorts);
 
-        this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage', 'Port'];
+        this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year, 'Port'];
         this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'PORT_REGISTER');
         this.SettingAzList.isNew = true;
         this.SettingAzList.isBack = true;
@@ -414,10 +452,18 @@ export class VoyageComponent implements OnInit {
 
     this.loadingService.Open();
 
-    // RESET SETTING
+    // Al seleccionar un usuario se actualiza el lcombo select usetr.
+    this.selectUser = this.getUsers.find(user => user.id === userId);
+
+    // SI existe un arreglo de años lo seleccionamos.
+    if (this.selectUser.years && this.selectUser.years.length) {
+      this.year = this.selectUser.years[(this.selectUser.years.length || 1) - 1]
+    } else {
+      this.year = 0;
+    }
 
     this.List_Voyages_Ports_DailyReports = 'Voyages';
-    this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
+    this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
     this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
     this.SettingAzList.isNew = true;
     this.SettingAzList.isBack = false;
@@ -454,7 +500,7 @@ export class VoyageComponent implements OnInit {
           let voyage = new Voyage();
           voyage.userId = Number(this.selectUser.id);
           this.SettingAzList.isNew = this.selectUser.role === 'BUQUE' ? true : false;
-
+          voyage.year = this.year
           // Obtenemos los datos del usuario.
           return this.GetVoyagesDetail(voyage).pipe().toPromise();
         }
@@ -573,7 +619,7 @@ export class VoyageComponent implements OnInit {
       newVoyage.userId = this.selectUser.id;
       if (this.getVoyages && this.getVoyages.length > 0) { newVoyage.voyageNumber = this.getVoyages[0].voyageNumber + 1; }
       else { newVoyage.voyageNumber = 1; };
-      newVoyage.year = Number(getYear());
+      newVoyage.year = this.year;
       newVoyage.status = true;
 
 
@@ -744,7 +790,7 @@ export class VoyageComponent implements OnInit {
       // A lista se vuelve puertos
       this.List_Voyages_Ports_DailyReports = 'Voyages';
 
-      this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage'];
+      this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
       this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
       this.SettingAzList.isNew = true;
       this.SettingAzList.isBack = false;
@@ -1035,6 +1081,14 @@ export class VoyageComponent implements OnInit {
 
           let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
           if (!firstUser) throw 'NO_BUQUE_REGISTER';
+          
+          if (firstUser.years && firstUser.years.length) {
+            this.year = firstUser.years[(firstUser.years.length || 1) - 1];
+            this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
+
+          } else {
+            this.year = 0;
+          }
 
           if (!selectUser) {
             this.selectUser = firstUser;
@@ -1042,6 +1096,8 @@ export class VoyageComponent implements OnInit {
 
             this.SettingAzList.isNew = true;
             this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+
+            
           }
 
           // Generar lista por usuarios.
@@ -1364,7 +1420,7 @@ export class VoyageComponent implements OnInit {
 
       this.portService.Create(newPort).subscribe(
         (resultCreate: Port) => {
-          
+
           this.selectPort = resultCreate;
 
           // Actualizamos el nuevo viaje con el resultado.
@@ -1502,16 +1558,18 @@ export class VoyageComponent implements OnInit {
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
-
+      // ENcapsulamos el valor antes qie se elimine en el lservicio.
+      let totalReport = portToSave.totalReport;
       // Guardo el objeto obtenido
       this.portService.Save(portToSave).subscribe(
+
         (result: Port) => {
 
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE'));
-
+          portToSave.totalReport = totalReport;
           // le seteo el total de reporte por que este valor no viene desde el backend.
-          result.totalReport = portToSave.totalReport;
+          result.totalReport = totalReport;
 
           // Filtro y actualizo luego lo agrego al arreglo.
           this.getPorts = this.getPorts.map(
