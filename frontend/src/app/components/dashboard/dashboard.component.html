@@ -525,16 +525,16 @@
 
           <mat-form-field>
             <mat-label>{{'START_DATE' | translateMessage:translateCategory}}</mat-label>
-            <input matInput [matDatepicker]="picker" [(ngModel)]="startDate">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker startView="year"></mat-datepicker>
+            <input matInput [matDatepicker]="picker3" [(ngModel)]="startDate">
+            <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+            <mat-datepicker #picker3 startView="year"></mat-datepicker>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>{{'END_DATE' | translateMessage:translateCategory}}</mat-label>
-            <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2 startView="year"></mat-datepicker>
+            <input matInput [matDatepicker]="picker4" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
+            <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+            <mat-datepicker #picker4 startView="year"></mat-datepicker>
           </mat-form-field>
 
           <mat-form-field>
