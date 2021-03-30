@@ -1,3 +1,126 @@
-<p>dialog-list-report works!</p>
+<h6 class="tx-14">VOYAGE : {{filterVoyage.voyageNumber}}</h6>
+<h6 class="tx-14">
+    <mat-form-field>
+        <mat-label>Ports :</mat-label>
+        <mat-select [(ngModel)]="selectPortId">
+
+            <ng-template ngFor let-iPort [ngForOf]="data.voyage.ports" let-i="index">
+                <mat-option [value]="iPort.id" (click)="SelectPort(i)">
+                    {{ "Port N°" + iPort.portNumber }}
+                </mat-option>
+            </ng-template>
+
+        </mat-select>
+    </mat-form-field>
+</h6>
+
+
+<ng-template ngFor let-iPort [ngForOf]="filterVoyage.ports" let-i="index">
+
+    <div style="max-width: 400px;">
+
+        <mat-form-field class="w-50">
+            <mat-label>Departure :</mat-label>
+            <input matInput type="text" placeholder="Departure :" [(ngModel)]="iPort.departurePort">
+        </mat-form-field>
+        <mat-form-field class="w-50">
+            <mat-label>Arrival :</mat-label>
+            <input matInput type="text" placeholder="Arrival :" [(ngModel)]="iPort.arrivalPort">
+        </mat-form-field>
+
+    </div>
+    <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
+        <thead>
+            <tr>
+
+                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                    Date
+                </th>
+                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                    Hours
+                </th>
+                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                    Activity
+                </th>
+                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                    Observaciones
+                </th>
+                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                    Durations
+                </th>
+
+
+                <ng-template [ngIf]="data.isIFO_MGO_SPEED === 'MGO'">
+                    <th>
+                        Total MGO
+                    </th>
+                </ng-template>
+                <ng-template [ngIf]="data.isIFO_MGO_SPEED === 'SPEED'">
+                    <th>
+                        SPEED
+                    </th>
+                </ng-template>
+                <ng-template [ngIf]="data.isIFO_MGO_SPEED === 'IFO'">
+                    <th>
+                        Total
+                        {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+                        'VLSFO' :
+                        'LSFO') }}
+                    </th>
+                </ng-template>
+            </tr>
+        </thead>
+        <tbody>
+
+            <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="iPort.dailyReports">
+
+                <tr>
+                    <td class="p-1 color-title-table border">
+                        {{ FormatDate(dailyReport.date)}}
+                    </td>
+                    <td class="p-1 color-title-table border">
+                        {{ dailyReport.hour}}
+                    </td>
+                    <td class="p-1 color-title-table border">
+                        {{ dailyReport.activityPerformed}}
+                    </td>
+                    <td class="p-1 color-title-table border">
+                        {{ dailyReport.observation}}
+                    </td>
+                    <td class="p-1 color-title-table border">
+                        {{ dailyReport.steamingTime}}
+                    </td>
+
+
+                    <ng-template [ngIf]="data.isIFO_MGO_SPEED === 'MGO'">
+                        <td>
+                            {{TotalMGO(dailyReport)}}
+                        </td>
+                        
+                    </ng-template>
+                    <ng-template [ngIf]="data.isIFO_MGO_SPEED === 'SPEED'">
+                        <td>
+                            {{dailyReport.distance / (steamingTime||1) }}
+                        </td>
+                    </ng-template>
+                    <ng-template [ngIf]="data.isIFO_MGO_SPEED === 'IFO'">
+                        <td>
+                            {{TotalIFO(dailyReport)}}
+                        </td>
+                    </ng-template>
+
+
+
+                </tr>
+
+            </ng-template>
+
+        </tbody>
+
+    </table>
+
+    <li>{{iPort.departurePort}}</li>
+</ng-template>
+
 
 <button mat-raised-button (click)="onNoClick()">No</button>
