@@ -22,6 +22,8 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from '../../models/port';
 import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate } from '../../../assets/moment/moment.assets';
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
+import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -136,7 +138,9 @@ export class DashboardComponent implements OnInit {
     private loadingService: LoadingService,
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
-    private aSideService: ASideService) { }
+    private aSideService: ASideService,
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     console.log('ngOnInit()');
@@ -163,14 +167,11 @@ export class DashboardComponent implements OnInit {
         minScrollbarLength: 20
       });
 
-
-
       // PerfectScrollbar, para el elemento div az-contact-info-body del html.
       new PerfectScrollbar('.PerfectScrollbar-table-data-activity-lsfo', {
         suppressScrollY: true,
         minScrollbarLength: 20
       });
-
 
       // PerfectScrollbar, para el elemento div az-contact-info-body del html.
       new PerfectScrollbar('.PerfectScrollbar-table-data-activity-mgo', {
@@ -465,9 +466,9 @@ export class DashboardComponent implements OnInit {
       voyages = this.getVoyages;
 
       if (this.summaryBy == 'DAYS') {
-        debugger
+
         let diffDay = DiffDates(this.startDate, this.endDate);
-        debugger // AVERIGUAR SI ESTA RESTANDO BIEN LA FECHA 
+
         if (diffDay >= 50) {
           this.summaryBy = 'VOYAGES';
         }
@@ -1671,14 +1672,14 @@ export class DashboardComponent implements OnInit {
                   dataExtra.push(report)
 
                   this.dataIFO.push(
-                    { x: day, y: this.SumaIfo(report), speed: newSpeed, dataExtra: dataExtra }
+                    { x: day, y: this.SumaIfo(report), speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
                   );
                   this.dataMGO.push(
-                    { x: day, y: this.SumaMgo(report), speed: newSpeed, dataExtra: dataExtra }
+                    { x: day, y: this.SumaMgo(report), speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
                   );
                   let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2)
                   this.dataSPEED.push(
-                    { x: day, y: ySpeed, speed: newSpeed, dataExtra: dataExtra }
+                    { x: day, y: ySpeed, speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
                   );
 
                   if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
@@ -1785,6 +1786,20 @@ export class DashboardComponent implements OnInit {
               this.summaryBy = 'DAYS';
               this.GenerateReporteByDate();
 
+            } else if (this.summaryBy === 'DAYS') {
+
+
+              let identified = this.dataMGO[index].identified;
+
+
+              let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
+
+
+              let portId = identified[1]
+              let reportId = identified[2]
+
+
+              this.OpenDialogReport(voyage, portId, reportId, 'IFO');
             }
           }
         },
@@ -1801,7 +1816,6 @@ export class DashboardComponent implements OnInit {
         // Habilitamos la opcion para que sea responsive
         maintainAspectRatio: false,
         tooltips: {
-
           // Establece qué elementos aparecen en la información sobre herramientas.
           mode: 'nearest',
           // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
@@ -1824,11 +1838,16 @@ export class DashboardComponent implements OnInit {
               ];
 
             },
-          },
-
+          }
         },
         scales: null,
-
+        hover: {
+          onHover: function (e) {
+            var point = this.getElementAtEvent(e);
+            if (point.length) e.target.style.cursor = 'pointer';
+            else e.target.style.cursor = 'default';
+          }
+        }
       },
       lineaMax: 0
     };
@@ -1895,8 +1914,8 @@ export class DashboardComponent implements OnInit {
 
               this.generateVoyages = newVoyage;
               this.summaryBy = 'DAYS'
-              this.GenerateDataByFilter(newVoyage);
 
+              this.GenerateDataByFilter(newVoyage);
               this.GenerateDashboardBySumary(true)
             } else if (this.summaryBy === 'MONTHS') {
 
@@ -1911,6 +1930,16 @@ export class DashboardComponent implements OnInit {
               this.summaryBy = 'DAYS';
               this.GenerateReporteByDate();
 
+            } else if (this.summaryBy === 'DAYS') {
+
+              let identified = this.dataMGO[index].identified;
+
+              let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
+
+              let portId = identified[1];
+              let reportId = identified[2];
+
+              this.OpenDialogReport(voyage, portId, reportId, 'MGO');
             }
           }
         },
@@ -1981,6 +2010,13 @@ export class DashboardComponent implements OnInit {
 
         },
         scales: null,
+        hover: {
+          onHover: function (e) {
+            var point = this.getElementAtEvent(e);
+            if (point.length) e.target.style.cursor = 'pointer';
+            else e.target.style.cursor = 'default';
+          }
+        }
       },
       lineaMax: 0
     };
@@ -2063,6 +2099,17 @@ export class DashboardComponent implements OnInit {
               this.summaryBy = 'DAYS';
               this.GenerateReporteByDate();
 
+            } else if (this.summaryBy === 'DAYS') {
+
+              let identified = this.dataMGO[index].identified;
+
+              let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
+
+              let portId = identified[1]
+              let reportId = identified[2]
+
+
+              this.OpenDialogReport(voyage, portId, reportId, 'SPEED');
             }
           }
         },
@@ -2141,6 +2188,13 @@ export class DashboardComponent implements OnInit {
 
         },
         scales: null,
+        hover: {
+          onHover: function (e) {
+            var point = this.getElementAtEvent(e);
+            if (point.length) e.target.style.cursor = 'pointer';
+            else e.target.style.cursor = 'default';
+          }
+        }
       },
       lineaMax: 0
     };
@@ -2153,7 +2207,6 @@ export class DashboardComponent implements OnInit {
 
     return false;
   }
-
 
   public UpdateLineMGO(): boolean {
 
@@ -2694,6 +2747,35 @@ export class DashboardComponent implements OnInit {
     };
 
     Chart.pluginService.register(chartPluginLineaHorizontal);
+
+  }
+
+
+  public OpenDialogReport(voyage, selectPortId, reportId, isIFO_MGO_SPEED) {
+
+    let dialogListReport: IDialogListReport = {
+      voyage: JSON.parse(JSON.stringify(voyage)),
+      selectPortId: selectPortId,
+      reportId: reportId,
+      isIFO_MGO_SPEED: isIFO_MGO_SPEED,
+      selectUser: this.selectUser,
+    };
+
+
+    const dialogRef = this.dialog.open(DialogListReportComponent, {
+      data: dialogListReport
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+
+          alert('OKK')
+        }
+      });
+
 
   }
 
