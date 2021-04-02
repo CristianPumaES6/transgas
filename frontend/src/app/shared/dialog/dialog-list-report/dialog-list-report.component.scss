@@ -1,0 +1,107 @@
+
+.table {
+    overflow: hidden hidden;
+    color: black;
+  
+    // Clase de bootstrap estoy modificando solo el color del borde-
+    .border {
+      border-color: #155af5 !important;
+    }
+  
+    thead {
+      tr {
+        .color-title-table {
+          background: #002171;
+          color: #ffffff;
+  
+          &.blue-1 {
+            background: #375f9a;
+          }
+  
+          &.blue-2 {
+            background: #0040d8;
+          }
+  
+          &.blue-3 {
+            background: #001556;
+          }
+  
+        }
+  
+        th {
+          position: relative;
+          text-align: center;
+          span{
+            cursor: pointer;
+            position: absolute;
+            padding-left: 3px;
+          }
+        }
+  
+        td {
+          text-align: center;
+          cursor: pointer;
+          animation: all 0.5s;
+          transition: all 0.5s;
+        }
+      }
+    }
+  
+    tbody {
+      tr {
+        .color-title-table {
+          color: #173ea8;
+        }
+  
+        th {
+          text-align: center;
+          font-weight: bold;
+        }
+  
+        td {
+          text-align: center;
+          cursor: pointer;
+          animation: all 0.5s;
+          transition: all 0.5s;
+          font-weight: bold;
+        }
+  
+        &:hover {
+          td {
+            background: rgba(184, 209, 255, 0.2);
+  
+            &.color-red {
+              // color: red !important;
+              background: rgb(253, 103, 103)
+            }
+          }
+        }
+  
+        /*             td:hover {
+                    position: relative;
+                    background: red;
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        width: 100%;
+                        height: 10000px;
+                        background: rgba(0, 0, 0, 0.418);
+                        left: 0;
+                        top: -5000px;
+                        z-index: 1;
+                    }
+                } */
+      }
+    }
+  
+    tfoot {
+      tr {
+        .color-title-table {
+          text-align: center;
+          background: rgb(0, 50, 143);
+          color: #ffffff;
+        }
+      }
+    }
+  }
+  

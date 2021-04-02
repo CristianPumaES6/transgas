@@ -5,6 +5,7 @@ import { stringToDate } from '../../../../assets/moment/moment.assets';
 import { Voyage } from '../../../models/voyage';
 import { DailyReport } from '../../../models/daily-report';
 import { mathRound } from '../../../../assets/math/math.assets';
+import { LanguageService } from '../../../services/language.service';
 
 // Interface de la clase del componente
 export interface IDialogListReport {
@@ -26,12 +27,27 @@ export class DialogListReportComponent implements OnInit {
   // Constructores para setear valores al componente.
   constructor(
     public dialogRef: MatDialogRef<DialogListReportComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: IDialogListReport
+    @Inject(MAT_DIALOG_DATA) public data: IDialogListReport,
+    private languageService: LanguageService,
   ) { }
+
+  // Traducciones
+  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public translateCategory: string = 'dialog';
 
   public filterVoyage: Voyage = new Voyage();
   public selectPortId: number;
   public selectUser: User = new User();
+
+  // VARIABLES DEL HTML
+  public voyageNumber: number = 0;
+  public departurePort: string = '';
+  public arrivalPort: string = '';
+
+  public isMoreInformation: boolean = false;
+  public isViewMGO: boolean = false;
+  public isViewIFO: boolean = false;
+  public isViewSPEED: boolean = false;
 
   // Inicializamos el componente
   ngOnInit() {
@@ -46,6 +62,14 @@ export class DialogListReportComponent implements OnInit {
 
     console.log(this.filterVoyage);
 
+    let IFO_MGO_SPEED = this.data.isIFO_MGO_SPEED;
+    if (IFO_MGO_SPEED == 'IFO') {
+      this.isViewIFO = true;
+    } else if (IFO_MGO_SPEED == 'MGO') {
+      this.isViewMGO = true;
+    } else if (IFO_MGO_SPEED == 'SPEED') {
+      this.isViewSPEED = true;
+    }
   }
 
   // Evento no click.
@@ -92,5 +116,10 @@ export class DialogListReportComponent implements OnInit {
     // Retornamos el total de cosumo
     return mathRound(total, 2);
   }
+
+  public TwoDecimal(number): number {
+    return mathRound(number, 2);
+  }
+
 
 }
