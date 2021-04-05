@@ -37,7 +37,7 @@ export class DialogListReportComponent implements OnInit {
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dialog';
 
-  // VIaje con filtro
+  // Viaje filtrado
   public filterVoyage: Voyage = new Voyage();
 
   // Puerto seleccionado
@@ -54,6 +54,10 @@ export class DialogListReportComponent implements OnInit {
   public isViewMGO: boolean = false;
   public isViewIFO: boolean = false;
   public isViewSPEED: boolean = false;
+  public isViewAllVoyage: boolean = false;
+
+  // fecha por el cual hacer un filtro si decesamos hacer filtro por dia.
+  public dayTheReporteByFilter;
 
   // Inicializamos el componente
   ngOnInit() {
@@ -62,95 +66,32 @@ export class DialogListReportComponent implements OnInit {
     // Obtenemos la configuracion si es filtro por dia o todo el viaje.
     let isFilterByDay = this.data.typeFilter_Day;
 
-
     // Seleccionamos el puerto ID
     this.selectPortId = this.data.selectPortId;
 
-    // Hacemos una copia del viaje
-    this.filterVoyage = JSON.parse(JSON.stringify(this.data.voyage));
-
-    // Obtenemos la fecha del reporte.
-    let dayTheReporteByFilter;
     // Recorremos todos los puertos para recorrer los reportes y buscar el reportId
     this.data.voyage.ports.forEach(
       port => {
 
         // Verificamos que el stado del puerto sea true.
         if (port.status) {
+
           // Recorremos todos los reporte diarios.
           port.dailyReports.forEach(
             report => {
               if (report.id === this.data.reportId) {
-                dayTheReporteByFilter = FormatDate(report.date);
+                this.dayTheReporteByFilter = FormatDate(report.date);
               }
             }
-          )
+          );
+
         }
 
       }
     );
 
 
-
-    // Recorremos los puertos y hacemos filtros.
-    this.filterVoyage.ports = this.filterVoyage.ports.filter(
-      (port, iP) => {
-        // El estado del puerto debe ser true caso contrario ha sido eliminado
-        if (port.status) {
-
-          // recorremos tolos reportes generados.
-          port.dailyReports = port.dailyReports.filter(
-            (report, iR) => {
-
-
-              // Revisamos que el reporte no halla sido eliminado, caso contrario lo filtramos.
-              if (report.status) {
-
-                // Filtro por dia.
-                if (isFilterByDay) {
-
-                  if (FormatDate(report.date) === dayTheReporteByFilter) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-
-                } else {
-                  // caso contrario mostramos todo.
-                  return true;
-                }
-
-              } else {
-                return false;
-              }
-
-            }
-          )
-
-          // Si existen registros el filtro lo dejara pasar caso contrario no.
-          if (port.dailyReports.length) return true;
-          else return false;
-
-          
-        } else {
-          // Si el estado del puerto es false lo filtramos para que no aparesca.
-          return false;
-        }
-      }
-    )
-
-    this.selectUser = this.data.selectUser;
-
-    console.log(this.filterVoyage);
-
-    let IFO_MGO_SPEED = this.data.isIFO_MGO_SPEED;
-    if (IFO_MGO_SPEED == 'IFO') {
-      this.isViewIFO = true;
-    } else if (IFO_MGO_SPEED == 'MGO') {
-      this.isViewMGO = true;
-    } else if (IFO_MGO_SPEED == 'SPEED') {
-      this.isViewSPEED = true;
-    }
+    this.AplicateFilterVoyage(isFilterByDay);
 
   }
 
@@ -163,17 +104,12 @@ export class DialogListReportComponent implements OnInit {
 
   }
 
-
-
-
   // Mejorar esto
   public StringToDate(fecha: any): string {
 
     let formatfecha = stringToDate(fecha);
     return formatfecha;
   }
-
-
 
   // Total del consumo IFO
   public TotalIFO(dailyReport: DailyReport): number {
@@ -201,6 +137,74 @@ export class DialogListReportComponent implements OnInit {
 
   public TwoDecimal(number): number {
     return mathRound(number, 2);
+  }
+
+  public ClickCheckViewAllVoyage() {
+    console.log('ClickCheckViewAllVoyage()');
+
+    if (this.isViewAllVoyage) {
+      this.AplicateFilterVoyage(false)
+    } else {
+      this.AplicateFilterVoyage(true)
+    }
+  }
+
+  private AplicateFilterVoyage(isFilterByDay: boolean) {
+
+    console.log('AplicateFilterVoyage(isFilterByDay: boolean) ');
+
+    // Hacemos una copia del viaje
+    this.filterVoyage = JSON.parse(JSON.stringify(this.data.voyage));
+
+    // Recorremos los puertos y hacemos filtros.
+    this.filterVoyage.ports = this.filterVoyage.ports.filter(
+      (port, iP) => {
+        // El estado del puerto debe ser true caso contrario ha sido eliminado
+        if (port.status) {
+
+          // recorremos tolos reportes generados.
+          port.dailyReports = port.dailyReports.filter(
+            (report, iR) => {
+
+
+              // Revisamos que el reporte no halla sido eliminado, caso contrario lo filtramos.
+              if (report.status) {
+
+                debugger
+                // Filtro por dia.
+                if (isFilterByDay) {
+                  debugger
+                  if (FormatDate(report.date) === this.dayTheReporteByFilter) {
+                    debugger
+                    return true;
+                  } else {
+                    return false;
+                  }
+
+                } else {
+                  // caso contrario mostramos todo.
+                  return true;
+                }
+
+              } else {
+                return false;
+              }
+
+            }
+          )
+
+          // Si existen registros el filtro lo dejara pasar caso contrario no.
+          if (port.dailyReports.length) return true;
+          else return false;
+
+
+        } else {
+          // Si el estado del puerto es false lo filtramos para que no aparesca.
+          return false;
+        }
+      }
+    );
+    
   }
 
 

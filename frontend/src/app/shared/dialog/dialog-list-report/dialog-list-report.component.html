@@ -75,7 +75,15 @@
 
     <div class="col-6">
 
+        <p class="m-0 grp-title-check font-weight-bold"> &nbsp;</p>
 
+        <div class="row no-gutters float-right">
+
+            <mat-checkbox [(ngModel)]="isViewAllVoyage" class="pl-2" (change)="ClickCheckViewAllVoyage()">
+                {{'VIEW_ALL_VOYAGE' | translateMessage:translateCategory}}
+            </mat-checkbox>
+
+        </div>
 
     </div>
 </div>
