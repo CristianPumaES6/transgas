@@ -102,18 +102,17 @@
                     Durations
                 </th>
 
-
-                <ng-template [ngIf]="isViewMGO">
-                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                        Total MGO
-                    </th>
-                </ng-template>
                 <ng-template [ngIf]="isViewIFO">
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                         Total
                         {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
                         'VLSFO' :
                         'LSFO') }}
+                    </th>
+                </ng-template>
+                <ng-template [ngIf]="isViewMGO">
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                        Total MGO
                     </th>
                 </ng-template>
                 <ng-template [ngIf]="isViewSPEED">
@@ -129,7 +128,7 @@
 
                 <tr>
                     <td class="p-1 color-title-table border">
-                        {{ FormatDate(dailyReport.date)}}
+                        {{ StringToDate(dailyReport.date)}}
                     </td>
                     <td class="p-1 color-title-table border">
                         {{ dailyReport.hour}}
@@ -145,20 +144,16 @@
                     </td>
 
 
-                    <ng-template [ngIf]="isViewMGO">
-                        <td class="p-0 color-title-table border">
-                            <div class="d-block pt-1">
-                                {{TotalMGO(dailyReport)}}
-                            </div>
-                        </td>
-
-                    </ng-template>
                     <ng-template [ngIf]="isViewIFO">
                         <td class="p-1 color-title-table border">
-                            <div class="d-block pt-1">
-                                {{TotalIFO(dailyReport)}}
-                            </div>
+                            {{TotalIFO(dailyReport)}}
                         </td>
+                    </ng-template>
+                    <ng-template [ngIf]="isViewMGO">
+                        <td class="p-1 color-title-table border">
+                            {{TotalMGO(dailyReport)}}
+                        </td>
+
                     </ng-template>
                     <ng-template [ngIf]="isViewSPEED">
                         <td class="p-1 color-title-table border">

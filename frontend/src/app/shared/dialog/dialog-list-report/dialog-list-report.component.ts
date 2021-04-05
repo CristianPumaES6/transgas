@@ -6,6 +6,7 @@ import { Voyage } from '../../../models/voyage';
 import { DailyReport } from '../../../models/daily-report';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { LanguageService } from '../../../services/language.service';
+import { FormatDate } from 'dist/frontend/assets/moment/moment.assets';
 
 // Interface de la clase del componente
 export interface IDialogListReport {
@@ -14,6 +15,7 @@ export interface IDialogListReport {
   reportId: number,
   isIFO_MGO_SPEED: string,
   selectUser: User,
+  typeFilter_Day: boolean,
 }
 
 
@@ -35,8 +37,12 @@ export class DialogListReportComponent implements OnInit {
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dialog';
 
+  // VIaje con filtro
   public filterVoyage: Voyage = new Voyage();
+
+  // Puerto seleccionado
   public selectPortId: number;
+  // Usuario seleccionado
   public selectUser: User = new User();
 
   // VARIABLES DEL HTML
@@ -44,7 +50,7 @@ export class DialogListReportComponent implements OnInit {
   public departurePort: string = '';
   public arrivalPort: string = '';
 
-  public isMoreInformation: boolean = false;
+  // Checkbox
   public isViewMGO: boolean = false;
   public isViewIFO: boolean = false;
   public isViewSPEED: boolean = false;
@@ -53,12 +59,87 @@ export class DialogListReportComponent implements OnInit {
   ngOnInit() {
     console.log('ngOnInit() ');
 
+    // Obtenemos la configuracion si es filtro por dia o todo el viaje.
+    let isFilterByDay = this.data.typeFilter_Day;
+
+
+    // Seleccionamos el puerto ID
     this.selectPortId = this.data.selectPortId;
 
-    this.selectUser = this.data.selectUser;
+    // Hacemos una copia del viaje
+    this.filterVoyage = JSON.parse(JSON.stringify(this.data.voyage));
 
-    this.filterVoyage = this.data.voyage;
-    this.filterVoyage.ports = [this.filterVoyage.ports.find(port => port.id === this.selectPortId)];
+    // Obtenemos la fecha del reporte.
+    let dayTheReporteByFilter;
+    // Recorremos todos los puertos para recorrer los reportes y buscar el reportId
+    this.data.voyage.ports.forEach(
+      port => {
+
+        // Verificamos que el stado del puerto sea true.
+        if (port.status) {
+          // Recorremos todos los reporte diarios.
+          port.dailyReports.forEach(
+            report => {
+              if (report.id === this.data.reportId) {
+                dayTheReporteByFilter = FormatDate(report.date);
+              }
+            }
+          )
+        }
+
+      }
+    );
+
+
+
+    // Recorremos los puertos y hacemos filtros.
+    this.filterVoyage.ports = this.filterVoyage.ports.filter(
+      (port, iP) => {
+        // El estado del puerto debe ser true caso contrario ha sido eliminado
+        if (port.status) {
+
+          // recorremos tolos reportes generados.
+          port.dailyReports = port.dailyReports.filter(
+            (report, iR) => {
+
+
+              // Revisamos que el reporte no halla sido eliminado, caso contrario lo filtramos.
+              if (report.status) {
+
+                // Filtro por dia.
+                if (isFilterByDay) {
+
+                  if (FormatDate(report.date) === dayTheReporteByFilter) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+
+                } else {
+                  // caso contrario mostramos todo.
+                  return true;
+                }
+
+              } else {
+                return false;
+              }
+
+            }
+          )
+
+          // Si existen registros el filtro lo dejara pasar caso contrario no.
+          if (port.dailyReports.length) return true;
+          else return false;
+
+          
+        } else {
+          // Si el estado del puerto es false lo filtramos para que no aparesca.
+          return false;
+        }
+      }
+    )
+
+    this.selectUser = this.data.selectUser;
 
     console.log(this.filterVoyage);
 
@@ -70,6 +151,7 @@ export class DialogListReportComponent implements OnInit {
     } else if (IFO_MGO_SPEED == 'SPEED') {
       this.isViewSPEED = true;
     }
+
   }
 
   // Evento no click.
@@ -85,7 +167,7 @@ export class DialogListReportComponent implements OnInit {
 
 
   // Mejorar esto
-  public FormatDate(fecha: any): string {
+  public StringToDate(fecha: any): string {
 
     let formatfecha = stringToDate(fecha);
     return formatfecha;

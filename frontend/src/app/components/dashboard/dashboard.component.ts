@@ -1793,10 +1793,8 @@ export class DashboardComponent implements OnInit {
 
 
               let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
-
-
-              let portId = identified[1]
-              let reportId = identified[2]
+              let portId = identified[1];
+              let reportId = identified[2];
 
 
               this.OpenDialogReport(voyage, portId, reportId, 'IFO');
@@ -2751,7 +2749,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  public OpenDialogReport(voyage, selectPortId, reportId, isIFO_MGO_SPEED) {
+  private OpenDialogReport(voyage: Voyage, selectPortId: number, reportId: number, isIFO_MGO_SPEED: string) {
 
     let dialogListReport: IDialogListReport = {
       voyage: JSON.parse(JSON.stringify(voyage)),
@@ -2759,6 +2757,7 @@ export class DashboardComponent implements OnInit {
       reportId: reportId,
       isIFO_MGO_SPEED: isIFO_MGO_SPEED,
       selectUser: this.selectUser,
+      typeFilter_Day: true
     };
 
 
@@ -2772,7 +2771,7 @@ export class DashboardComponent implements OnInit {
 
         if (result) {
 
-          alert('OKK')
+          alert('OKK');
         }
       });
 
