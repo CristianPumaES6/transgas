@@ -1,41 +1,45 @@
-<div class="row">
-    <div class="col-6 row">
-        <div class="col-6">
-            <mat-form-field>
-                <mat-label>Voyage :</mat-label>
-                <input matInput type="text" placeholder="Departure :" [(ngModel)]="voyageNumber">
-            </mat-form-field>
+<ng-template [ngIf]="isViewAllVoyage">
+    
+    <div class="row">
+        <div class="col-6 row">
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Voyage :</mat-label>
+                    <input matInput type="text" placeholder="Departure :" [(ngModel)]="voyageNumber">
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Ports :</mat-label>
+                    <mat-select [(ngModel)]="selectPortId">
+
+                        <ng-template ngFor let-iPort [ngForOf]="data.voyage.ports" let-i="index">
+                            <mat-option [value]="iPort.id" (click)="SelectPort(i)">
+                                {{ "Port N°" + iPort.portNumber }}
+                            </mat-option>
+                        </ng-template>
+
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
-        <div class="col-6">
-            <mat-form-field>
-                <mat-label>Ports :</mat-label>
-                <mat-select [(ngModel)]="selectPortId">
-
-                    <ng-template ngFor let-iPort [ngForOf]="data.voyage.ports" let-i="index">
-                        <mat-option [value]="iPort.id" (click)="SelectPort(i)">
-                            {{ "Port N°" + iPort.portNumber }}
-                        </mat-option>
-                    </ng-template>
-
-                </mat-select>
-            </mat-form-field>
+        <div class="col-6 row no-gutters">
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Departure :</mat-label>
+                    <input matInput type="text" placeholder="Departure :" [(ngModel)]="departurePort">
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <mat-form-field>
+                    <mat-label>Arrival :</mat-label>
+                    <input matInput type="text" placeholder="Arrival :" [(ngModel)]="arrivalPort">
+                </mat-form-field>
+            </div>
         </div>
     </div>
-    <div class="col-6 row no-gutters">
-        <div class="col-6">
-            <mat-form-field>
-                <mat-label>Departure :</mat-label>
-                <input matInput type="text" placeholder="Departure :" [(ngModel)]="departurePort">
-            </mat-form-field>
-        </div>
-        <div class="col-6">
-            <mat-form-field>
-                <mat-label>Arrival :</mat-label>
-                <input matInput type="text" placeholder="Arrival :" [(ngModel)]="arrivalPort">
-            </mat-form-field>
-        </div>
-    </div>
-</div>
+
+</ng-template>
 
 <div class="row">
     <div class="col-6">
