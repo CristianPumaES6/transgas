@@ -88,25 +88,24 @@
     </div>
 </div>
 
-<ng-template ngFor let-iPort [ngForOf]="filterVoyage.ports" let-i="index">
+<div class="tableFixHead">
 
-    <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
+    <table class="table">
         <thead>
             <tr>
-
-                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                <th class="border pt-2">
                     Date
                 </th>
-                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                <th class="border pt-2">
                     Hours
                 </th>
-                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                <th class="border pt-2">
                     Activity
                 </th>
-                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                <th class="border pt-2">
                     Observaciones
                 </th>
-                <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                <th class="border pt-2">
                     Durations
                 </th>
 
@@ -132,51 +131,73 @@
         </thead>
         <tbody>
 
-            <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="iPort.dailyReports">
 
-                <tr>
-                    <td class="p-1 color-title-table border">
-                        {{ StringToDate(dailyReport.date)}}
-                    </td>
-                    <td class="p-1 color-title-table border">
-                        {{ dailyReport.hour}}
-                    </td>
-                    <td class="p-1 color-title-table border">
-                        {{ dailyReport.activityPerformed}}
-                    </td>
-                    <td class="p-1 color-title-table border">
-                        {{ dailyReport.observation}}
-                    </td>
-                    <td class="p-1 color-title-table border">
-                        {{ dailyReport.steamingTime}}
-                    </td>
+            <ng-template ngFor let-iPort [ngForOf]="filterVoyage.ports" let-i="index">
 
-
-                    <ng-template [ngIf]="isViewIFO">
-                        <td class="p-1 color-title-table border">
-                            {{TotalIFO(dailyReport)}}
-                        </td>
-                    </ng-template>
-                    <ng-template [ngIf]="isViewMGO">
-                        <td class="p-1 color-title-table border">
-                            {{TotalMGO(dailyReport)}}
-                        </td>
-
-                    </ng-template>
-                    <ng-template [ngIf]="isViewSPEED">
-                        <td class="p-1 color-title-table border">
-                            {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
-                        </td>
-                    </ng-template>
+                <tr class="blue-1">
+                    <td class="p-1 font-weight-bold border">
+                        Departure:
+                    </td>
+                    <td class="p-1 border">
+                        {{iPort.departurePort}}
+                    </td>
+                    <td class="p-1 font-weight-bold border">
+                        Arrival:
+                    </td>
+                    <td class="p-1 border">
+                        {{iPort.arrivalPort}}
+                    </td>
 
 
 
                 </tr>
 
-            </ng-template>
+                <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="iPort.dailyReports">
 
+                    <tr>
+                        <td class="p-1 font-small-1 border">
+                            {{ StringToDate(dailyReport.date)}}
+                        </td>
+                        <td class="p-1 font-small-1 border">
+                            {{ dailyReport.hour}}
+                        </td>
+                        <td class="p-1 font-small-1 border">
+                            {{ dailyReport.activityPerformed}}
+                        </td>
+                        <td class="p-1 font-small-1 border">
+                            {{ dailyReport.observation}}
+                        </td>
+                        <td class="p-1 font-small-1 border">
+                            {{ dailyReport.steamingTime}}
+                        </td>
+
+
+                        <ng-template [ngIf]="isViewIFO">
+                            <td class="p-1 color-title-table border">
+                                {{TotalIFO(dailyReport)}}
+                            </td>
+                        </ng-template>
+                        <ng-template [ngIf]="isViewMGO">
+                            <td class="p-1 color-title-table border">
+                                {{TotalMGO(dailyReport)}}
+                            </td>
+
+                        </ng-template>
+                        <ng-template [ngIf]="isViewSPEED">
+                            <td class="p-1 color-title-table border">
+                                {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
+                            </td>
+                        </ng-template>
+
+
+
+                    </tr>
+
+                </ng-template>
+
+            </ng-template>
         </tbody>
 
     </table>
 
-</ng-template>
+</div>

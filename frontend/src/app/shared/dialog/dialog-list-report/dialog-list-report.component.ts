@@ -7,6 +7,7 @@ import { DailyReport } from '../../../models/daily-report';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { LanguageService } from '../../../services/language.service';
 import { FormatDate } from 'dist/frontend/assets/moment/moment.assets';
+import PerfectScrollbar from 'perfect-scrollbar';
 
 // Interface de la clase del componente
 export interface IDialogListReport {
@@ -66,6 +67,8 @@ export class DialogListReportComponent implements OnInit {
     // Obtenemos la configuracion si es filtro por dia o todo el viaje.
     let isFilterByDay = this.data.typeFilter_Day;
 
+    this.selectUser = this.data.selectUser;
+
     // Seleccionamos el puerto ID
     this.selectPortId = this.data.selectPortId;
 
@@ -90,8 +93,23 @@ export class DialogListReportComponent implements OnInit {
       }
     );
 
+    let IFO_MGO_SPEED = this.data.isIFO_MGO_SPEED;
+    if (IFO_MGO_SPEED == 'IFO') {
+      this.isViewIFO = true;
+    } else if (IFO_MGO_SPEED == 'MGO') {
+      this.isViewMGO = true;
+    } else if (IFO_MGO_SPEED == 'SPEED') {
+      this.isViewSPEED = true;
+    }
 
     this.AplicateFilterVoyage(isFilterByDay);
+
+    // PerfectScrollbar, para el elemento div az-contact-info-body del html.
+    new PerfectScrollbar('.tableFixHead', {
+      suppressScrollX: true,
+      minScrollbarLength: 60
+    });
+
 
   }
 
@@ -204,7 +222,7 @@ export class DialogListReportComponent implements OnInit {
         }
       }
     );
-    
+
   }
 
 
