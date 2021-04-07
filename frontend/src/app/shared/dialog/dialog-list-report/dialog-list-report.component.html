@@ -1,207 +1,241 @@
-<ng-template [ngIf]="isViewAllVoyage">
-    
-    <div class="row">
-        <div class="col-6 row">
-            <div class="col-6">
-                <mat-form-field>
-                    <mat-label>Voyage :</mat-label>
-                    <input matInput type="text" placeholder="Departure :" [(ngModel)]="voyageNumber">
-                </mat-form-field>
-            </div>
-            <div class="col-6">
-                <mat-form-field>
-                    <mat-label>Ports :</mat-label>
-                    <mat-select [(ngModel)]="selectPortId">
+<div class="tamanio-dialog">
 
-                        <ng-template ngFor let-iPort [ngForOf]="data.voyage.ports" let-i="index">
-                            <mat-option [value]="iPort.id" (click)="SelectPort(i)">
-                                {{ "Port N°" + iPort.portNumber }}
-                            </mat-option>
-                        </ng-template>
 
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="col-6 row no-gutters">
-            <div class="col-6">
-                <mat-form-field>
-                    <mat-label>Departure :</mat-label>
-                    <input matInput type="text" placeholder="Departure :" [(ngModel)]="departurePort">
-                </mat-form-field>
-            </div>
-            <div class="col-6">
-                <mat-form-field>
-                    <mat-label>Arrival :</mat-label>
-                    <input matInput type="text" placeholder="Arrival :" [(ngModel)]="arrivalPort">
-                </mat-form-field>
-            </div>
-        </div>
-    </div>
-
-</ng-template>
-
-<div class="row">
-    <div class="col-6">
+    <ng-template [ngIf]="isViewAllVoyage">
 
         <p class="m-0 grp-title-check font-weight-bold">
-            {{'MORE_INFORMATION' | translateMessage:translateCategory}}
+            {{'FILTERS' | translateMessage:translateCategory}}
         </p>
-        <div class="row  no-gutters">
+        <div class="row">
+            <div class="col-6">
 
-            <ng-template
-                [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
-                <div class="col">
-                    <mat-checkbox [(ngModel)]="isViewIFO" class="pl-2">
-                        {{(selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' :
-                        'LSFO') | translateMessage:translateCategory}}
-                    </mat-checkbox>
+                <div class="row">
+                    <div class="col-6">
+                        <mat-form-field>
+                            <mat-label>Voyage :</mat-label>
+                            <input matInput type="text" placeholder="Departure :" [(ngModel)]="voyageNumber" disabled>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field>
+                            <mat-label>Ports :</mat-label>
+                            <mat-select [(ngModel)]="selectPortId">
 
+                                <mat-option (click)="ClickSelectPort()">None</mat-option>
+                                <ng-template ngFor let-iPort [ngForOf]="data.voyage.ports" let-i="index">
+                                    <mat-option [value]="iPort.id" (click)="ClickSelectPort(i)">
+                                        {{ "Port N°" + iPort.portNumber }}
+                                    </mat-option>
+                                </ng-template>
+
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
                 </div>
-            </ng-template>
 
-            <ng-template [ngIf]="selectUser.isConsumptionMGO">
-                <div class="col">
-                    <mat-checkbox [(ngModel)]="isViewMGO">
-                        {{'MGO' | translateMessage:translateCategory}}
-                    </mat-checkbox>
-                </div>
-            </ng-template>
+            </div>
+            <div class="col-6">
 
-            <div class="col">
-                <mat-checkbox [(ngModel)]="isViewSPEED" class="pl-2">
-                    {{'SPEED' | translateMessage:translateCategory}}
-                </mat-checkbox>
+                <mat-form-field>
+                    <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
+                    <mat-select [formControl]="activityPerformed" multiple>
+                        <mat-select-trigger>
+                            {{(activityPerformed.value ? activityPerformed.value[0] : '' )|
+                            translateMessage:translateCategory}}
+                            
+                            {{(activityPerformed.value && activityPerformed.value[1] ? ', '+(activityPerformed.value[1]|
+                                translateMessage:translateCategory) : '' )}}
+
+                            <span *ngIf="activityPerformed.value?.length > 2" class="span-select">
+                                (+{{activityPerformed.value.length - 2}}
+                                {{activityPerformed.value?.length === 3 ? 'other' : 'others'}})
+                            </span>
+                        </mat-select-trigger>
+                        <mat-option *ngFor="let activity of activityPerformedList" [value]="activity"
+                            (click)="ClickFilterByActivities()">
+                            {{ activity | translateMessage:translateCategory}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
             </div>
         </div>
 
-    </div>
+    </ng-template>
 
-    <div class="col-6">
+    <div class="row">
+        <div class="col-6">
 
-        <p class="m-0 grp-title-check font-weight-bold"> &nbsp;</p>
+            <p class="m-0 grp-title-check font-weight-bold">
+                {{'MORE_INFORMATION' | translateMessage:translateCategory}}
+            </p>
+            <div class="row  no-gutters">
 
-        <div class="row no-gutters float-right">
+                <ng-template
+                    [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
+                    <div class="col">
+                        <mat-checkbox [(ngModel)]="isViewIFO" class="pl-2">
+                            {{(selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' :
+                            'LSFO') | translateMessage:translateCategory}}
+                        </mat-checkbox>
 
-            <mat-checkbox [(ngModel)]="isViewAllVoyage" class="pl-2" (change)="ClickCheckViewAllVoyage()">
-                {{'VIEW_ALL_VOYAGE' | translateMessage:translateCategory}}
-            </mat-checkbox>
+                    </div>
+                </ng-template>
+
+                <ng-template [ngIf]="selectUser.isConsumptionMGO">
+                    <div class="col">
+                        <mat-checkbox [(ngModel)]="isViewMGO">
+                            {{'MGO' | translateMessage:translateCategory}}
+                        </mat-checkbox>
+                    </div>
+                </ng-template>
+
+                <div class="col">
+                    <mat-checkbox [(ngModel)]="isViewSPEED" class="pl-2">
+                        {{'SPEED' | translateMessage:translateCategory}}
+                    </mat-checkbox>
+                </div>
+            </div>
 
         </div>
 
+        <div class="col-6">
+
+            <p class="m-0 grp-title-check font-weight-bold"> &nbsp;</p>
+
+            <div class="row no-gutters float-right">
+
+                <mat-checkbox [(ngModel)]="isViewAllVoyage" class="pl-2" (change)="ClickCheckViewAllVoyage()">
+                    {{'VIEW_ALL_VOYAGE' | translateMessage:translateCategory}}
+                </mat-checkbox>
+
+            </div>
+
+        </div>
     </div>
-</div>
 
-<div class="tableFixHead">
+    <div class="tableFixHead">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="border pt-2">
-                    Date
-                </th>
-                <th class="border pt-2">
-                    Hours
-                </th>
-                <th class="border pt-2">
-                    Activity
-                </th>
-                <th class="border pt-2">
-                    Observaciones
-                </th>
-                <th class="border pt-2">
-                    Durations
-                </th>
+        <ng-template ngFor let-iPort [ngForOf]="filterVoyage.ports" let-i="index">
 
-                <ng-template [ngIf]="isViewIFO">
-                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                        Total
-                        {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
-                        'VLSFO' :
-                        'LSFO') }}
-                    </th>
-                </ng-template>
-                <ng-template [ngIf]="isViewMGO">
-                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                        Total MGO
-                    </th>
-                </ng-template>
-                <ng-template [ngIf]="isViewSPEED">
-                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                        SPEED
-                    </th>
-                </ng-template>
-            </tr>
-        </thead>
-        <tbody>
-
-
-            <ng-template ngFor let-iPort [ngForOf]="filterVoyage.ports" let-i="index">
-
-                <tr class="blue-1">
-                    <td class="p-1 font-weight-bold border">
+            <div class="row no-gutters pb-1">
+                <div class="col-2">
+                    <span class="font-weight-bold">
+                        Port N° :
+                    </span>
+                    {{iPort.portNumber}}
+                </div>
+                <div class="col-5">
+                    <span class="font-weight-bold">
                         Departure:
-                    </td>
-                    <td class="p-1 border">
-                        {{iPort.departurePort}}
-                    </td>
-                    <td class="p-1 font-weight-bold border">
+                    </span>
+                    {{iPort.departurePort}}
+                </div>
+                <div class="col-5">
+                    <span class="font-weight-bold">
                         Arrival:
-                    </td>
-                    <td class="p-1 border">
-                        {{iPort.arrivalPort}}
-                    </td>
+                    </span>
+                    {{iPort.arrivalPort}}
+
+                </div>
+
+            </div>
+
+            <table class="table">
 
 
 
-                </tr>
-
-                <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="iPort.dailyReports">
+                <thead>
 
                     <tr>
-                        <td class="p-1 font-small-1 border">
-                            {{ StringToDate(dailyReport.date)}}
-                        </td>
-                        <td class="p-1 font-small-1 border">
-                            {{ dailyReport.hour}}
-                        </td>
-                        <td class="p-1 font-small-1 border">
-                            {{ dailyReport.activityPerformed}}
-                        </td>
-                        <td class="p-1 font-small-1 border">
-                            {{ dailyReport.observation}}
-                        </td>
-                        <td class="p-1 font-small-1 border">
-                            {{ dailyReport.steamingTime}}
-                        </td>
-
+                        <th class="border pt-2">
+                            Date
+                        </th>
+                        <th class="border pt-2">
+                            Hours
+                        </th>
+                        <th class="border pt-2">
+                            Activity
+                        </th>
+                        <th class="border pt-2">
+                            Observaciones
+                        </th>
+                        <th class="border pt-2">
+                            Durations
+                        </th>
 
                         <ng-template [ngIf]="isViewIFO">
-                            <td class="p-1 color-title-table border">
-                                {{TotalIFO(dailyReport)}}
-                            </td>
+                            <th class="border pt-2">
+                                Total
+                                {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+                                'VLSFO' :
+                                'LSFO') }}
+                            </th>
                         </ng-template>
                         <ng-template [ngIf]="isViewMGO">
-                            <td class="p-1 color-title-table border">
-                                {{TotalMGO(dailyReport)}}
-                            </td>
-
+                            <th class="border pt-2">
+                                Total MGO
+                            </th>
                         </ng-template>
                         <ng-template [ngIf]="isViewSPEED">
-                            <td class="p-1 color-title-table border">
-                                {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
-                            </td>
+                            <th class="border pt-2">
+                                SPEED
+                            </th>
                         </ng-template>
-
-
-
                     </tr>
+                </thead>
+                <tbody>
 
-                </ng-template>
 
-            </ng-template>
-        </tbody>
 
-    </table>
+                    <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="iPort.dailyReports">
+
+                        <tr>
+                            <td class="p-1 font-small-1 border">
+                                {{ StringToDate(dailyReport.date)}}
+                            </td>
+                            <td class="p-1 font-small-1 border">
+                                {{ dailyReport.hour}}
+                            </td>
+                            <td class="p-1 font-small-1 border">
+                                {{ dailyReport.activityPerformed}}
+                            </td>
+                            <td class="p-1 font-small-1 border">
+                                {{ dailyReport.observation}}
+                            </td>
+                            <td class="p-1 font-small-1 border">
+                                {{ dailyReport.steamingTime}}
+                            </td>
+
+
+                            <ng-template [ngIf]="isViewIFO">
+                                <td class="p-1 color-title-table border">
+                                    {{TotalIFO(dailyReport)}}
+                                </td>
+                            </ng-template>
+                            <ng-template [ngIf]="isViewMGO">
+                                <td class="p-1 color-title-table border">
+                                    {{TotalMGO(dailyReport)}}
+                                </td>
+
+                            </ng-template>
+                            <ng-template [ngIf]="isViewSPEED">
+                                <td class="p-1 color-title-table border">
+                                    {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
+                                </td>
+                            </ng-template>
+
+
+
+                        </tr>
+
+                    </ng-template>
+
+                </tbody>
+
+            </table>
+
+        </ng-template>
+
+    </div>
 
 </div>

@@ -2757,7 +2757,8 @@ export class DashboardComponent implements OnInit {
       reportId: reportId,
       isIFO_MGO_SPEED: isIFO_MGO_SPEED,
       selectUser: this.selectUser,
-      typeFilter_Day: true
+      typeFilter_Day: true,
+      filterActivities: this.activityPerformed.value || []
     };
 
 

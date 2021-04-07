@@ -8,6 +8,7 @@ import { mathRound } from '../../../../assets/math/math.assets';
 import { LanguageService } from '../../../services/language.service';
 import { FormatDate } from 'dist/frontend/assets/moment/moment.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
+import { FormControl } from '@angular/forms';
 
 // Interface de la clase del componente
 export interface IDialogListReport {
@@ -17,6 +18,7 @@ export interface IDialogListReport {
   isIFO_MGO_SPEED: string,
   selectUser: User,
   typeFilter_Day: boolean,
+  filterActivities: string[]
 }
 
 
@@ -57,6 +59,10 @@ export class DialogListReportComponent implements OnInit {
   public isViewSPEED: boolean = false;
   public isViewAllVoyage: boolean = false;
 
+  public activityPerformed = new FormControl();
+  public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
+
+
   // fecha por el cual hacer un filtro si decesamos hacer filtro por dia.
   public dayTheReporteByFilter;
 
@@ -71,6 +77,11 @@ export class DialogListReportComponent implements OnInit {
 
     // Seleccionamos el puerto ID
     this.selectPortId = this.data.selectPortId;
+    // Numero de viaje.
+    this.voyageNumber = this.data.voyage.voyageNumber;
+    // seleccionamos las actividades que nos envian.
+    this.activityPerformed = new FormControl(this.data.filterActivities || []);
+
 
     // Recorremos todos los puertos para recorrer los reportes y buscar el reportId
     this.data.voyage.ports.forEach(
@@ -102,7 +113,8 @@ export class DialogListReportComponent implements OnInit {
       this.isViewSPEED = true;
     }
 
-    this.AplicateFilterVoyage(isFilterByDay);
+    // no filtramos los por duerto ya que queremos que todos los reportes registrados ese dia se muestren.
+    this.AplicateFilterVoyage(isFilterByDay, false);
 
     // PerfectScrollbar, para el elemento div az-contact-info-body del html.
     new PerfectScrollbar('.tableFixHead', {
@@ -118,9 +130,6 @@ export class DialogListReportComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  SelectPort(): void {
-
-  }
 
   // Mejorar esto
   public StringToDate(fecha: any): string {
@@ -157,17 +166,53 @@ export class DialogListReportComponent implements OnInit {
     return mathRound(number, 2);
   }
 
+  // Al darle click a CheckAllVoyage 
   public ClickCheckViewAllVoyage() {
     console.log('ClickCheckViewAllVoyage()');
 
+
     if (this.isViewAllVoyage) {
-      this.AplicateFilterVoyage(false)
+      // deseleccionamos el portId
+      this.selectPortId = 0;
+      // reset activityPerformed
+      this.activityPerformed = new FormControl();
+
+      this.AplicateFilterVoyage(false, false);
     } else {
-      this.AplicateFilterVoyage(true)
+
+      // Seleccionamos el puerto ID
+      this.selectPortId = this.data.selectPortId;
+      // seleccionamos las actividades que nos envian.
+      this.activityPerformed = new FormControl(this.data.filterActivities || []);
+
+      this.AplicateFilterVoyage(true, false);
     }
   }
 
-  private AplicateFilterVoyage(isFilterByDay: boolean) {
+
+  // Al seleccionar un puerto filtramos el viaje, caso contrario mostramos todo el viaje.
+  public ClickSelectPort(indexPort?: number): void {
+    if (indexPort == null) {
+      this.AplicateFilterVoyage(false, false);
+    } else {
+      this.AplicateFilterVoyage(false, true);
+    }
+  }
+
+  // Click filtro por actividad.
+  public ClickFilterByActivities() {
+
+    // Si existe un puerto seleccionado filtramos por puerto
+    if (this.selectPortId && this.selectPortId > 0) {
+      this.AplicateFilterVoyage(false, true);
+    } else {
+      // si no existe ningun puerto seleccionado, hacemos un filtro normal.
+      this.AplicateFilterVoyage(false, false);
+    }
+  }
+
+  // Aplicar filtro al viaje.
+  private AplicateFilterVoyage(isFilterByDay: boolean, isFilterByPort: boolean) {
 
     console.log('AplicateFilterVoyage(isFilterByDay: boolean) ');
 
@@ -180,20 +225,28 @@ export class DialogListReportComponent implements OnInit {
         // El estado del puerto debe ser true caso contrario ha sido eliminado
         if (port.status) {
 
+          // Si se esta activado el filtro por puerto verificamos que el puerto sea el mismo.
+          if (isFilterByPort && port.id !== this.selectPortId) {
+            return false;
+          }
+
           // recorremos tolos reportes generados.
           port.dailyReports = port.dailyReports.filter(
             (report, iR) => {
 
 
               // Revisamos que el reporte no halla sido eliminado, caso contrario lo filtramos.
-              if (report.status) {
+              if (report.status && (
+                // verificamos que el puerto sea el seleccionado ono este seleccionado.
+                (!this.activityPerformed.value || this.activityPerformed.value.length === 0) ||
+                this.activityPerformed.value.find(activity => activity === report.activityPerformed)
+              )
+              ) {
 
-                debugger
+
                 // Filtro por dia.
-                if (isFilterByDay) {
-                  debugger
+                if (isFilterByDay && !isFilterByPort) {
                   if (FormatDate(report.date) === this.dayTheReporteByFilter) {
-                    debugger
                     return true;
                   } else {
                     return false;

@@ -79,8 +79,6 @@ export class VoyageComponent implements OnInit {
   public selectDailyReport: DailyReport = new DailyReport();
   public getDailyReports: DailyReport[] = [];
 
-
-
   // Texto de la cabecera del body
   public title_header_media: string = '';
   public sub_title_header_media: string = '';
@@ -134,6 +132,7 @@ export class VoyageComponent implements OnInit {
 
       }
     );
+    
   }
 
   ngOnInit(): void {
