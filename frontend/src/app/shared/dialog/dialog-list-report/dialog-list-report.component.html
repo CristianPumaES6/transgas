@@ -77,7 +77,6 @@
                             {{(selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' :
                             'LSFO') | translateMessage:translateCategory}}
                         </mat-checkbox>
-
                     </div>
                 </ng-template>
 
@@ -135,17 +134,12 @@
                         Arrival:
                     </span>
                     {{iPort.arrivalPort}}
-
                 </div>
-
             </div>
 
             <table class="table">
 
-
-
                 <thead>
-
                     <tr>
                         <th class="border pt-2">
                             Date
@@ -162,7 +156,6 @@
                         <th class="border pt-2">
                             Durations
                         </th>
-
                         <ng-template [ngIf]="isViewIFO">
                             <th class="border pt-2">
                                 Total
@@ -185,8 +178,6 @@
                 </thead>
                 <tbody>
 
-
-
                     <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="iPort.dailyReports">
 
                         <tr>
@@ -205,8 +196,6 @@
                             <td class="p-1 font-small-1 border">
                                 {{ dailyReport.steamingTime}}
                             </td>
-
-
                             <ng-template [ngIf]="isViewIFO">
                                 <td class="p-1 color-title-table border">
                                     {{TotalIFO(dailyReport)}}
@@ -216,16 +205,12 @@
                                 <td class="p-1 color-title-table border">
                                     {{TotalMGO(dailyReport)}}
                                 </td>
-
                             </ng-template>
                             <ng-template [ngIf]="isViewSPEED">
                                 <td class="p-1 color-title-table border">
                                     {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
                                 </td>
                             </ng-template>
-
-
-
                         </tr>
 
                     </ng-template>
