@@ -10,27 +10,30 @@
             <div class="col-6">
 
                 <div class="row">
+
                     <div class="col-6">
                         <mat-form-field>
-                            <mat-label>Voyage :</mat-label>
+                            <mat-label>{{'VOYAGE' | translateMessage:translateCategory}} :</mat-label>
                             <input matInput type="text" placeholder="Departure :" [(ngModel)]="voyageNumber" disabled>
                         </mat-form-field>
                     </div>
+
                     <div class="col-6">
                         <mat-form-field>
-                            <mat-label>Ports :</mat-label>
+                            <mat-label>{{'PORTS' | translateMessage:translateCategory}} :</mat-label>
                             <mat-select [(ngModel)]="selectPortId">
 
                                 <mat-option (click)="ClickSelectPort()">None</mat-option>
                                 <ng-template ngFor let-iPort [ngForOf]="data.voyage.ports" let-i="index">
                                     <mat-option [value]="iPort.id" (click)="ClickSelectPort(i)">
-                                        {{ "Port N°" + iPort.portNumber }}
+                                        {{'PORT_N' | translateMessage:translateCategory}} {{ iPort.portNumber }}
                                     </mat-option>
                                 </ng-template>
 
                             </mat-select>
                         </mat-form-field>
                     </div>
+
                 </div>
 
             </div>
@@ -42,9 +45,9 @@
                         <mat-select-trigger>
                             {{(activityPerformed.value ? activityPerformed.value[0] : '' )|
                             translateMessage:translateCategory}}
-                            
+
                             {{(activityPerformed.value && activityPerformed.value[1] ? ', '+(activityPerformed.value[1]|
-                                translateMessage:translateCategory) : '' )}}
+                            translateMessage:translateCategory) : '' )}}
 
                             <span *ngIf="activityPerformed.value?.length > 2" class="span-select">
                                 (+{{activityPerformed.value.length - 2}}
@@ -125,13 +128,13 @@
                 </div>
                 <div class="col-5">
                     <span class="font-weight-bold">
-                        Departure:
+                        {{'DEPARTURE' | translateMessage:translateCategory}}
                     </span>
                     {{iPort.departurePort}}
                 </div>
                 <div class="col-5">
                     <span class="font-weight-bold">
-                        Arrival:
+                        {{'ARRIVAL' | translateMessage:translateCategory}}
                     </span>
                     {{iPort.arrivalPort}}
                 </div>
@@ -142,23 +145,25 @@
                 <thead>
                     <tr>
                         <th class="border pt-2">
-                            Date
+                            {{'DATE' | translateMessage:translateCategory}}
+
                         </th>
                         <th class="border pt-2">
-                            Hours
+                            {{'HOUR' | translateMessage:translateCategory}}
+
                         </th>
                         <th class="border pt-2">
-                            Activity
+                            {{'ACTIVITY' | translateMessage:translateCategory}}
                         </th>
                         <th class="border pt-2">
-                            Observaciones
+                            {{'OBSERVATION' | translateMessage:translateCategory}}
                         </th>
                         <th class="border pt-2">
-                            Durations
+                            {{'DURATION' | translateMessage:translateCategory}}
                         </th>
                         <ng-template [ngIf]="isViewIFO">
                             <th class="border pt-2">
-                                Total
+                                T.
                                 {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
                                 'VLSFO' :
                                 'LSFO') }}
@@ -166,12 +171,12 @@
                         </ng-template>
                         <ng-template [ngIf]="isViewMGO">
                             <th class="border pt-2">
-                                Total MGO
+                                T. MGO
                             </th>
                         </ng-template>
                         <ng-template [ngIf]="isViewSPEED">
                             <th class="border pt-2">
-                                SPEED
+                                {{'SPEED' | translateMessage:translateCategory}}
                             </th>
                         </ng-template>
                     </tr>
@@ -188,7 +193,7 @@
                                 {{ dailyReport.hour}}
                             </td>
                             <td class="p-1 font-small-1 border">
-                                {{ dailyReport.activityPerformed}}
+                                {{ dailyReport.activityPerformed | translateMessage:translateCategory}}
                             </td>
                             <td class="p-1 font-small-1 border">
                                 {{ dailyReport.observation}}
@@ -197,17 +202,17 @@
                                 {{ dailyReport.steamingTime}}
                             </td>
                             <ng-template [ngIf]="isViewIFO">
-                                <td class="p-1 color-title-table border">
+                                <td class="p-1 font-small-1 border">
                                     {{TotalIFO(dailyReport)}}
                                 </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewMGO">
-                                <td class="p-1 color-title-table border">
+                                <td class="p-1 font-small-1 border">
                                     {{TotalMGO(dailyReport)}}
                                 </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewSPEED">
-                                <td class="p-1 color-title-table border">
+                                <td class="p-1 font-small-1 border">
                                     {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
                                 </td>
                             </ng-template>
