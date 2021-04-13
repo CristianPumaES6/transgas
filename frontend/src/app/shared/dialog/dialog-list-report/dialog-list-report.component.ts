@@ -278,5 +278,53 @@ export class DialogListReportComponent implements OnInit {
 
   }
 
+  public ToolTipMoreInformation(isIFO_MGO_SPEED: string, report: DailyReport) {
+    let result = '';
+
+    if (isIFO_MGO_SPEED === 'IFO') {
+
+      if (this.selectUser.isMEIFO) {
+        result += '    M.E: ' + this.TwoDecimal(report.mplaIfo)
+      }
+      if (this.selectUser.isAEIFO) {
+        result += '    A.E: ' + this.TwoDecimal(report.auxIfo)
+      }
+      if (this.selectUser.isBoilerIFO) {
+        result += '    Boiler: ' + this.TwoDecimal(report.boilerIfo)
+      }
+      if (this.selectUser.isOtherIFO) {
+        result += '    Other: ' + this.TwoDecimal(report.otherIfo)
+      }
+
+    } else if (isIFO_MGO_SPEED === 'MGO') {
+
+
+      if (this.selectUser.isMEMGO) {
+        result += '    M.E: ' + this.TwoDecimal(report.mplaMgo)
+      }
+      if (this.selectUser.isAEMGO) {
+        result += '    A.E: ' + this.TwoDecimal(report.auxMgo)
+      }
+      if (this.selectUser.isBoilerMGO) {
+        result += '    Boiler: ' + this.TwoDecimal(report.boilerMgo)
+      }
+      if (this.selectUser.isIGMGO) {
+        result += '    G.I: ' + this.TwoDecimal(report.giMgo)
+      }
+      if (this.selectUser.isPowerPMGO) {
+        result += '    Power P: ' + this.TwoDecimal(report.ppMgo)
+      }
+      if (this.selectUser.isOtherMGO) {
+        result += '    Other: ' + this.TwoDecimal(report.otherMgo)
+      }
+
+    } else if (isIFO_MGO_SPEED === 'SPEED') {
+      result += '    Distance: ' + this.TwoDecimal(report.distance)
+
+    }
+
+    return result;
+  }
+
 
 }

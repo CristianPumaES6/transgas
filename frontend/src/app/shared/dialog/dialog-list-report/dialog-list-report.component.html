@@ -202,17 +202,17 @@
                                 {{ dailyReport.steamingTime}}
                             </td>
                             <ng-template [ngIf]="isViewIFO">
-                                <td class="p-1 font-small-1 border">
+                                <td class="p-1 font-small-1 border" matTooltip="{{ToolTipMoreInformation('IFO',dailyReport)}}">
                                     {{TotalIFO(dailyReport)}}
                                 </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewMGO">
-                                <td class="p-1 font-small-1 border">
+                                <td class="p-1 font-small-1 border" matTooltip="{{ToolTipMoreInformation('MGO',dailyReport)}}">
                                     {{TotalMGO(dailyReport)}}
                                 </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewSPEED">
-                                <td class="p-1 font-small-1 border">
+                                <td class="p-1 font-small-1 border" matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}">
                                     {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
                                 </td>
                             </ng-template>
