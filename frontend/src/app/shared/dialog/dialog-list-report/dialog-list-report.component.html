@@ -1,6 +1,10 @@
 <div class="tamanio-dialog">
 
 
+    <button mat-icon-button color="primary" (click)="Close()" class="close-icon">
+        <i class="icon-x2"></i>
+    </button>
+
     <ng-template [ngIf]="isViewAllVoyage">
 
         <p class="m-0 grp-title-check font-weight-bold">
@@ -202,17 +206,20 @@
                                 {{ dailyReport.steamingTime}}
                             </td>
                             <ng-template [ngIf]="isViewIFO">
-                                <td class="p-1 font-small-1 border" matTooltip="{{ToolTipMoreInformation('IFO',dailyReport)}}">
+                                <td class="p-1 font-small-1 border"
+                                    matTooltip="{{ToolTipMoreInformation('IFO',dailyReport)}}">
                                     {{TotalIFO(dailyReport)}}
                                 </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewMGO">
-                                <td class="p-1 font-small-1 border" matTooltip="{{ToolTipMoreInformation('MGO',dailyReport)}}">
+                                <td class="p-1 font-small-1 border"
+                                    matTooltip="{{ToolTipMoreInformation('MGO',dailyReport)}}">
                                     {{TotalMGO(dailyReport)}}
                                 </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewSPEED">
-                                <td class="p-1 font-small-1 border" matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}">
+                                <td class="p-1 font-small-1 border"
+                                    matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}">
                                     {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
                                 </td>
                             </ng-template>

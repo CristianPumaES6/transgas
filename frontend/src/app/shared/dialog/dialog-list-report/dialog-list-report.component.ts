@@ -126,7 +126,7 @@ export class DialogListReportComponent implements OnInit {
   }
 
   // Evento no click.
-  onNoClick(): void {
+  public Close(): void {
     this.dialogRef.close();
   }
 
