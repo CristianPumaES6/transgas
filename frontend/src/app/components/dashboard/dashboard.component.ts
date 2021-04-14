@@ -274,10 +274,10 @@ export class DashboardComponent implements OnInit {
 
         // Filtramos para que solos los busques se visualizen
         this.getUsers = resultUser.filter((userItem: User) => {
-          if (userItem.role === 'ADMIN' || userItem.role === 'SUPPORT') {
-            return false;
+          if (userItem.role === 'BUQUE') {
+            return true;
           }
-          return true;
+          return false;
         });
 
         // Segun el resultado retornamos la respuesta.

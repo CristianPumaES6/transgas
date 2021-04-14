@@ -109,7 +109,11 @@
                   <ng-template [ngIf]="roleUser == 'SUPPORT'">
                     <mat-option value="SUPPORT">{{'SUPPORT' | translateMessage:translateCategory}}</mat-option>
                   </ng-template>
+                  <ng-template [ngIf]="roleUser == 'SUPPORT' || roleUser == 'ADMIN' || roleUser == 'OWNER'">
+                    <mat-option value="OWNER">{{'OWNER' | translateMessage:translateCategory}}</mat-option>
+                  </ng-template>
                   <mat-option value="BUQUE">{{'BUQUE' | translateMessage:translateCategory}}</mat-option>
+
                 </mat-select>
 
                 <mat-error *ngIf="errorHandling('role', 'required')">

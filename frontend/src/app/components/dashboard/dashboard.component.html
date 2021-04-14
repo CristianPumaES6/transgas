@@ -20,7 +20,7 @@
 
 
 
-      <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
+      <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' || roleUser == 'OWNER' ">
 
 
         <mat-form-field>
@@ -479,8 +479,7 @@
       <div class="row no-gutters mb-2">
         <div class="card card-body">
 
-          <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' ">
-
+          <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' || roleUser == 'OWNER' ">
 
             <mat-form-field>
               <mat-label>{{'YEARS' | translateMessage:translateCategory}}</mat-label>
@@ -505,6 +504,7 @@
           </ng-template>
 
           <mat-form-field>
+
             <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
             <mat-select [(ngModel)]="summaryBy">
 
@@ -521,6 +521,7 @@
                 {{'DAYS' | translateMessage:translateCategory}}
               </mat-option>
             </mat-select>
+
           </mat-form-field>
 
           <mat-form-field>
