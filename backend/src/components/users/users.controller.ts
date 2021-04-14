@@ -96,7 +96,7 @@ export class UsersController {
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que los datos sean los necesarios.
-                if (headerToken && (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') && user) {
+                if (headerToken && (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' ||  headerToken.role == 'OWNER') && user) {
 
                     // Ejecutamos el servicio de obtener sailingAnalities.
                     return this._usersService.Gets(user);
