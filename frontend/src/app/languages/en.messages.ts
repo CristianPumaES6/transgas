@@ -389,3 +389,31 @@ export const dashboard: any = {
     TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT: 'Daily consumption of equipment per contract.',
     TOOLTIP_DAILY_BALANCE_EQUIPMENT: 'Consumption balance.\n( DAILY CONSUMPTION (MT) - DAILY CONSUMPTION (MT) (CHARTER) )'
 }
+
+export const dialog: any = {
+    TYPE_CONSUMPTION: 'Type consumption',
+    MORE_INFORMATION: 'More information :',
+    VIEW_ALL_VOYAGE: 'See All Voyage',
+    FILTERS: 'Filters :',
+    VOYAGE: 'Voyage',
+    PORTS: 'Ports',
+    PORT_N: 'Port N°',
+    ACTIVITY_PERFORMED: 'Activity Performed',
+    // Opciones de Actividades realizadas / Activity performend
+    LOADING: 'Loading',
+    DOWNLOADING: 'Discharge',
+    SAILING_IN_BALLAST: 'Sailing in ballast',
+    SAILING_WITH_LADEN: 'Sailing with laden',
+    ECONOMICAL_NAVIGATION: 'Economical navigation',
+    ANCHORED: 'Anchored',
+    MANEUVER: 'Maneuver',
+    OTHER_ACT: 'Other act.',
+    OBSERVATION: 'Observation',
+    DURATION: 'Duration',
+    ACTIVITY: 'Activity',
+    HOUR: 'Hour',
+    DATE: 'Date',
+    SPEED: 'Speed',
+    DEPARTURE: 'Departure :',
+    ARRIVAL: 'Arrival :',
+}
