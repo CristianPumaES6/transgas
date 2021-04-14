@@ -113,6 +113,7 @@ export const user: any = {
     ADMIN: 'Admin',
     SUPPORT: 'Support',
     BUQUE: 'Buque',
+    OWNER: 'Owner',
     // Mensaje personalizados.
     SUCCESS_USER_SAVE: 'User saved successfully.',
     SUCCESS_USER_SAVE_LOCAL: 'User successfully saved local.',
