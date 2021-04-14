@@ -1,27 +1,35 @@
 <div class="container-personalizate">
   <div class="az-iconbar">
-    <a href="https://www.transgas.com.pe/"  target="_blank" class="az-iconbar-logo">
+    <a href="https://www.transgas.com.pe/" target="_blank" class="az-iconbar-logo">
       <i class="icon-transgas-icono"></i>
     </a>
     <nav class="nav">
-      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'dashboard'}"
-        (click)="selectNavLink('dashboard')">
+      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'dashboard'}" (click)="selectNavLink('dashboard')"
+        matTooltip="Dashboard">
         <i class="icon-menu-dashboard"></i>
       </a>
-      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'voyages'}" (click)="selectNavLink('voyages')">
-        <i class="icon-menu-port">
-        </i>
-      </a>
+
+      <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT' || loggedUser.role == 'BUQUE'">
+        <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'voyages'}" (click)="selectNavLink('voyages')"
+          matTooltip="Voyage">
+          <i class="icon-menu-port">
+          </i>
+        </a>
+      </ng-template>
 
       <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
-        <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'users'}" (click)="selectNavLink('users')">
+        <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'users'}" (click)="selectNavLink('users')"
+          matTooltip="Users">
           <i class="icon-menu-user"></i>
         </a>
       </ng-template>
 
     </nav>
     <div class="az-iconbar-bottom">
-      <a href="" class="az-iconbar-help" [ngClass]="{'active' : navLink === 'helps'}" (click)="selectNavLink('helps')"><i class="icon-menu-help"></i></a>
+      <a href="" class="az-iconbar-help" [ngClass]="{'active' : navLink === 'helps'}" (click)="selectNavLink('helps')"
+        matTooltip="Help">
+        <i class="icon-menu-help"></i>
+      </a>
       <span class="az-img-user online"><img src="{{loggedUser.filename||'../../../../assets/500x500.png'}}"
           alt=""></span>
     </div><!-- az-iconbar-bottom -->
