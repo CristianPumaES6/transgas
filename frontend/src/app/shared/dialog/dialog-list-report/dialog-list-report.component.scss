@@ -11,14 +11,16 @@
 }
 
 .tamanio-dialog {
-  position: relative;
   width: 900px;
-  .close-icon {
-    position: absolute;
-    top: -15px;
-    right: 0px;
-    cursor: pointer;
-    z-index: 10;
+  .div-relative {
+    position: relative;
+    .close-icon {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      cursor: pointer;
+      z-index: 10;
+    }
   }
 }
 
