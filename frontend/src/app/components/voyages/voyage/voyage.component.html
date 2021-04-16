@@ -106,7 +106,8 @@
                       {{'HOUR' | translateMessage:translateCategory}}</th>
                     <th *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                      {{(selectUser.isConsumptionIFO?'TOTAL_IFO':selectUser.isConsumptionVLSFO ? 'TOTAL_VLSFO' : 'TOTAL_LSFO') | translateMessage:translateCategory}}
+                      {{(selectUser.isConsumptionIFO?'TOTAL_IFO':selectUser.isConsumptionVLSFO ? 'TOTAL_VLSFO' :
+                      'TOTAL_LSFO') | translateMessage:translateCategory}}
                     </th>
                     <th *ngIf="selectUser.isConsumptionMGO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
@@ -225,7 +226,7 @@
 
               <div class="col-1">
                 <div class="force-right pt-3">
-                  <a class="ml-3" href="" (click)="ActivateBunkering(false)"
+                  <a class="ml-0 ml-3-md" href="" (click)="ActivateBunkering(false)"
                     matTooltip="{{'NO_BUNKERING' | translateMessage:translateCategory}}">
                     <i class="icon-cancel2"></i> <i class="icon-gas-station"></i>
                   </a>
@@ -241,7 +242,8 @@
               <div class="col row no-gutters">
 
                 <p class="m-0 grp-title">
-                  {{(selectUser.isConsumptionIFO?'CONSUMPTION_IFO': selectUser.isConsumptionVLSFO ? 'CONSUMPTION_VLSFO' : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
+                  {{(selectUser.isConsumptionIFO?'CONSUMPTION_IFO': selectUser.isConsumptionVLSFO ? 'CONSUMPTION_VLSFO'
+                  : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
                 </p>
 
                 <div class="col-12 row no-gutters personalizate">
@@ -337,7 +339,7 @@
               <ng-template [ngIf]="!isBunkering">
                 <div class="col-1">
                   <div class="force-right pt-3">
-                    <a class="ml-3" href="" (click)="ActivateBunkering(true)"
+                    <a class="ml-0 ml-3-md " href="" (click)="ActivateBunkering(true)"
                       matTooltip="{{'BUNKERING' | translateMessage:translateCategory}}">
                       <i class="icon-gas-station"></i>
                     </a>
