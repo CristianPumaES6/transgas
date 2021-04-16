@@ -2218,17 +2218,28 @@ export class DashboardComponent implements OnInit {
     // Vaciamos la configuracion de las lines MGO
     this.configLineaMGO.options.lines = [];
 
-    if (this.selectUser.isConsumptionMGO) {
+    if (this.summaryBy === 'DAYS') {
 
-      if (this.selectUser.maxMGOConsumption > 0) {
-        this.configLineaMGO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxMGOConsumption,
-          color: 'red',
-          label: ''
-        });
+      if (this.selectUser.isConsumptionMGO) {
+        if (this.selectUser.maxMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxMGOConsumption,
+            color: 'red',
+            label: ''
+          });
+        }
 
+        if (this.selectUser.minMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minMGOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
       }
+
     }
 
 
@@ -2384,14 +2395,26 @@ export class DashboardComponent implements OnInit {
 
     // Verificamos que exista una confifuracion para LSFO
     if (this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionVLSFO) {
-      // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
-      if (this.selectUser.maxIFOConsumption > 0) {
-        this.configLineaIFO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxIFOConsumption,
-          color: 'red',
-          label: ''
-        });
+
+      if (this.summaryBy === 'DAYS') {
+        // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
+        if (this.selectUser.maxIFOConsumption > 0) {
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxIFOConsumption,
+            color: 'red',
+            label: ''
+          });
+        }
+        if (this.selectUser.minIFOConsumption > 0) {
+
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minIFOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
       }
 
       this.configLineaIFO.options.tooltips = {
@@ -2539,25 +2562,27 @@ export class DashboardComponent implements OnInit {
     // Vaciamos la configuracion de las lines MGO
     this.configLineaSPEED.options.lines = [];
 
-    // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
-    if (this.selectUser.maxSpeed > 0) {
-      this.configLineaSPEED.options.lines.push({
-        type: 'horizontal',
-        y: this.selectUser.maxSpeed,
-        color: 'red',
-        label: ''
-      });
-    }
-    // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
-    if (this.selectUser.minSpeed > 0) {
-      this.configLineaSPEED.options.lines.push({
-        type: 'horizontal',
-        y: this.selectUser.minSpeed,
-        color: '#39FF14',
-        label: ''
-      });
-    }
 
+    if (this.summaryBy === 'DAYS') {
+      // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
+      if (this.selectUser.maxSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.maxSpeed,
+          color: 'red',
+          label: ''
+        });
+      }
+      // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
+      if (this.selectUser.minSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.minSpeed,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+    }
 
 
     this.configLineaSPEED.options.tooltips = {
