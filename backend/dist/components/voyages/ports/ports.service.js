@@ -26,7 +26,8 @@ let PortsService = class PortsService {
             where: [
                 {
                     userId: port.userId,
-                    voyageId: port.voyageId
+                    voyageId: port.voyageId,
+                    status: true
                 }
             ],
             take: 1,

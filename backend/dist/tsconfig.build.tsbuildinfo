@@ -2867,7 +2867,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "3b458c37b9227fe1a4b36abb9ea8df2246ae5047fbfbb78196016d6bcaf64ed8",
+        "version": "332460ffeaf3ec2af0585ca7d78bf33690ad21f07545edc14e4fb0bf149e0f36",
         "signature": "a820e3eb6937ee5b094bf5625298c8fe262622952f2a1a581d213fadf469edb2",
         "affectsGlobalScope": false
       },
@@ -3052,7 +3052,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/users/users.controller.ts": {
-        "version": "c66c8f8e2b07de42511479525b244140e935255dc1b00bc8280a7a58406c6254",
+        "version": "addbf46956982f6132fa5aea26348b050f39fd2271d40b11e6bc6747197f0477",
         "signature": "5485a63523e33912dacb0c03cea7b842c5b2703665d8161b63be88e5b10207c0",
         "affectsGlobalScope": false
       },
@@ -3112,12 +3112,12 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "b893f03db70b30140ff39f3e1b67497e1c55c21ddddeecc401ab598ed953c44f",
+        "version": "6cebacd4115f257b392b792e63f2452bdd19cda75150493576ace906a88df524",
         "signature": "258ffe2ec140b88564333ae4922cadc48d091c1e4da121808f5fcae52127f546",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.service.ts": {
-        "version": "dca356593a05f84db85bd310e6575da49d4548a7770636d3505962ee5fd7d134",
+        "version": "9e21c020335ff8c223eb91c96bad951bf78690ecd5f707a89a5d01cdf4253081",
         "signature": "f01794985ab56a8f891f6314290da120c4767c456b1264ddc20d9ff4dba0f903",
         "affectsGlobalScope": false
       },
@@ -3127,7 +3127,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "63dc3bb52778dc731ab93d50d34d65577725f493beb09ab9ca9a4f9c97f1410c",
+        "version": "8a26fc24c439feba8bc4dd8a1586ebc2ac687030fb444deb4ac970ab1d67e80b",
         "signature": "73b941819318f118eeaac1a054dc6893b71b71ffa9f2d483a75989bb13d6358c",
         "affectsGlobalScope": false
       },

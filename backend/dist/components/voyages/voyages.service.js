@@ -29,6 +29,7 @@ let VoyagesService = class VoyagesService {
                 {
                     userId: voyage.userId,
                     year: voyage.year,
+                    status: true,
                 }
             ],
             take: 1,

@@ -44,7 +44,7 @@ let VoyagesController = class VoyagesController {
                     throw new Error('MISSING_FIELS');
                 }
                 else {
-                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') {
                     }
                     else if ((Number(voyageFilterByYears.userId) !== Number(headerToken.id)))
                         throw new Error('ERROR_USERID_FAIL');

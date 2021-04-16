@@ -62,7 +62,7 @@ let UsersController = class UsersController {
     async Gets(headers, user) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         return promises_assets_1.DummyPromise().then((resultDummy) => {
-            if (headerToken && (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') && user) {
+            if (headerToken && (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') && user) {
                 return this._usersService.Gets(user);
             }
             else {
