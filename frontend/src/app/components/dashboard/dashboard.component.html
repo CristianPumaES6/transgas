@@ -859,7 +859,9 @@
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.ballast,2)}}
                   </td>
                   <td class="p-1 border"
-                    [ngClass]="{'color-red': averageSpeedByActivityPerformedIFO.ballast < averageSpeedCharterByActivityPerformedIFO.ballast}">
+                    [ngClass]="{
+                    'color-max': averageSpeedByActivityPerformedIFO.ballast != 0 && averageSpeedCharterByActivityPerformedIFO.ballast != 0  && averageSpeedByActivityPerformedIFO.ballast > averageSpeedCharterByActivityPerformedIFO.ballast,
+                    'color-min':  averageSpeedByActivityPerformedIFO.ballast != 0 && averageSpeedCharterByActivityPerformedIFO.ballast != 0  && averageSpeedByActivityPerformedIFO.ballast < averageSpeedCharterByActivityPerformedIFO.ballast }">
                     {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.ballast,2)}}</td>
                   <td class="p-1 border">
                     {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.ballast,2)}}
@@ -887,7 +889,9 @@
                   <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.laden,2)}}
                   </td>
                   <td class="p-1 border"
-                    [ngClass]="{'color-red': averageSpeedByActivityPerformedIFO.laden < averageSpeedCharterByActivityPerformedIFO.laden}">
+                    [ngClass]="{
+                    'color-max': averageSpeedByActivityPerformedIFO.laden != 0 && averageSpeedCharterByActivityPerformedIFO.laden != 0  && averageSpeedByActivityPerformedIFO.laden > averageSpeedCharterByActivityPerformedIFO.laden,
+                    'color-min':  averageSpeedByActivityPerformedIFO.laden != 0 && averageSpeedCharterByActivityPerformedIFO.laden != 0  && averageSpeedByActivityPerformedIFO.laden < averageSpeedCharterByActivityPerformedIFO.laden }">
                     {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.laden,2)}}</td>
                   <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.laden,2)}}
                   </td>
@@ -916,7 +920,9 @@
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.economical,2)}}
                   </td>
                   <td class="p-1 border"
-                    [ngClass]="{'color-red': averageSpeedByActivityPerformedIFO.economical < averageSpeedCharterByActivityPerformedIFO.economical}">
+                    [ngClass]="{
+                    'color-max': averageSpeedByActivityPerformedIFO.economical != 0 && averageSpeedCharterByActivityPerformedIFO.economical != 0 && averageSpeedByActivityPerformedIFO.economical > averageSpeedCharterByActivityPerformedIFO.economical,
+                    'color-min':  averageSpeedByActivityPerformedIFO.economical != 0 && averageSpeedCharterByActivityPerformedIFO.economical != 0 && averageSpeedByActivityPerformedIFO.economical < averageSpeedCharterByActivityPerformedIFO.economical }">
                     {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.economical,2)}}
                   </td>
                   <td class="p-1 border">
@@ -1255,7 +1261,9 @@
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.ballast,2)}}
                   </td>
                   <td class="p-1 border"
-                    [ngClass]="{'color-red': averageSpeedByActivityPerformedMGO.ballast < averageSpeedCharterByActivityPerformedMGO.ballast}">
+                    [ngClass]="{
+                    'color-max': averageSpeedByActivityPerformedMGO.ballast != 0 && averageSpeedCharterByActivityPerformedMGO.ballast != 0 && averageSpeedByActivityPerformedMGO.ballast > averageSpeedCharterByActivityPerformedMGO.ballast,
+                    'color-min': averageSpeedByActivityPerformedMGO.ballast != 0 && averageSpeedCharterByActivityPerformedMGO.ballast != 0 && averageSpeedByActivityPerformedMGO.ballast < averageSpeedCharterByActivityPerformedMGO.ballast }">
                     {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.ballast,2)}}</td>
                   <td class="p-1 border">
                     {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.ballast,2)}}
@@ -1283,7 +1291,9 @@
                   <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.laden,2)}}
                   </td>
                   <td class="p-1 border"
-                    [ngClass]="{'color-red': averageSpeedByActivityPerformedMGO.laden < averageSpeedCharterByActivityPerformedMGO.laden}">
+                    [ngClass]="{
+                    'color-max': averageSpeedByActivityPerformedMGO.laden != 0 && averageSpeedCharterByActivityPerformedMGO.laden != 0 && averageSpeedByActivityPerformedMGO.laden > averageSpeedCharterByActivityPerformedMGO.laden,
+                    'color-min':  averageSpeedByActivityPerformedMGO.laden != 0 && averageSpeedCharterByActivityPerformedMGO.laden != 0 && averageSpeedByActivityPerformedMGO.laden < averageSpeedCharterByActivityPerformedMGO.laden }">
                     {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.laden,2)}}</td>
                   <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.laden,2)}}
                   </td>
@@ -1312,7 +1322,9 @@
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.economical,2)}}
                   </td>
                   <td class="p-1 border"
-                    [ngClass]="{'color-red': averageSpeedByActivityPerformedMGO.economical < averageSpeedCharterByActivityPerformedMGO.economical}">
+                    [ngClass]="{
+                    'color-max': averageSpeedByActivityPerformedMGO.economical != 0 && averageSpeedCharterByActivityPerformedMGO.economical != 0 && averageSpeedByActivityPerformedMGO.economical > averageSpeedCharterByActivityPerformedMGO.economical,
+                    'color-min':  averageSpeedByActivityPerformedMGO.economical != 0 && averageSpeedCharterByActivityPerformedMGO.economical != 0 && averageSpeedByActivityPerformedMGO.economical < averageSpeedCharterByActivityPerformedMGO.economical }">
                     {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.economical,2)}}
                   </td>
                   <td class="p-1 border">
