@@ -6,7 +6,7 @@ import { Voyage } from '../../../models/voyage';
 import { DailyReport } from '../../../models/daily-report';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { LanguageService } from '../../../services/language.service';
-import { FormatDate } from 'dist/frontend/assets/moment/moment.assets';
+import { FormatDate } from '../../../../assets/moment/moment.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { FormControl } from '@angular/forms';
 
