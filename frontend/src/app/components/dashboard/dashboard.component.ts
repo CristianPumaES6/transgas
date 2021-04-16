@@ -1823,7 +1823,7 @@ export class DashboardComponent implements OnInit {
               return tooltipItem[0].xLabel;
             },
             label: (tooltipItem, data) => {
-              return 'Consumption LSFO: ' + tooltipItem.value;
+              return 'Consumption LSFO: ' + mathRound(tooltipItem.value, 2);
             },
             footer: (tooltipItem, data) => {
               let index = tooltipItem[0].index;
@@ -2287,7 +2287,7 @@ export class DashboardComponent implements OnInit {
 
           let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
 
-          let result = 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+          let result = 'Consumption ' + typeConsumption + ' : ' + mathRound(tooltipItem.value, 2);
 
           return result;
         },
@@ -2302,8 +2302,8 @@ export class DashboardComponent implements OnInit {
             let voyage = this.generateVoyages[ubication[0]];
             result = [
               'T. Ports : ' + voyage.totalPort,
-              'Distance : ' + voyage.totalSpeed.distance,
-              'Time : ' + voyage.totalSpeed.steamingTime,
+              'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+              'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
               'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'PORTS') {
@@ -2314,8 +2314,8 @@ export class DashboardComponent implements OnInit {
             result = [
               'Departure : ' + port.departurePort,
               'Arrival : ' + port.arrivalPort,
-              'Distance : ' + port.speed.distance,
-              'Time : ' + port.speed.steamingTime,
+              'Distance : ' + mathRound(port.speed.distance, 2),
+              'Time : ' + mathRound(port.speed.steamingTime, 2),
               'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'MONTHS') {
@@ -2325,8 +2325,8 @@ export class DashboardComponent implements OnInit {
 
             //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime,
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
               'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
             ];
           }
@@ -2348,8 +2348,8 @@ export class DashboardComponent implements OnInit {
             });
 
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime,
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
               'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
               'T. Reports : ' + totalReport,
               'Activities : ' + activities,
@@ -2461,7 +2461,7 @@ export class DashboardComponent implements OnInit {
           label: (tooltipItem, data) => {
 
             let typeConsumption = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+            return 'Consumption ' + typeConsumption + ' : ' + mathRound(tooltipItem.value, 2);
           },
           footer: (tooltipItem, data) => {
             let index = tooltipItem[0].index;
@@ -2474,8 +2474,8 @@ export class DashboardComponent implements OnInit {
               let voyage = this.generateVoyages[ubication[0]];
               result = [
                 'T. Ports : ' + voyage.totalPort,
-                'Distance : ' + voyage.totalSpeed.distance,
-                'Time : ' + voyage.totalSpeed.steamingTime,
+                'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+                'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
                 'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
               ];
             } else if (this.summaryBy === 'PORTS') {
@@ -2486,8 +2486,8 @@ export class DashboardComponent implements OnInit {
               result = [
                 'Departure : ' + port.departurePort,
                 'Arrival : ' + port.arrivalPort,
-                'Distance : ' + port.speed.distance,
-                'Time : ' + port.speed.steamingTime,
+                'Distance : ' + mathRound(port.speed.distance, 2),
+                'Time : ' + mathRound(port.speed.steamingTime, 2),
                 'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
               ];
             } else if (this.summaryBy === 'MONTHS') {
@@ -2495,8 +2495,8 @@ export class DashboardComponent implements OnInit {
               let speed = data.datasets[0].data[index].speed;
 
               result = [
-                'Distance : ' + speed.distance,
-                'Time : ' + speed.steamingTime,
+                'Distance : ' + mathRound(speed.distance, 2),
+                'Time : ' + mathRound(speed.steamingTime, 2),
                 'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
               ];
             }
@@ -2517,8 +2517,8 @@ export class DashboardComponent implements OnInit {
               });
 
               result = [
-                'Distance : ' + speed.distance,
-                'Time : ' + speed.steamingTime,
+                'Distance : ' + mathRound(speed.distance, 2),
+                'Time : ' + mathRound(speed.steamingTime, 2),
                 'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
                 'T. Reports : ' + totalReport,
                 'Activities : ' + activities,
@@ -2627,7 +2627,7 @@ export class DashboardComponent implements OnInit {
         },
         label: (tooltipItem, data) => {
 
-          let typeConsumption = 'Speed : ' + tooltipItem.value;
+          let typeConsumption = 'Speed : ' + mathRound(tooltipItem.value, 2);
           return typeConsumption;
         },
         footer: (tooltipItem, data) => {
@@ -2642,8 +2642,8 @@ export class DashboardComponent implements OnInit {
 
             result = [
               'T. Ports : ' + voyage.totalPort,
-              'Distance : ' + voyage.totalSpeed.distance,
-              'Time : ' + voyage.totalSpeed.steamingTime,
+              'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+              'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'PORTS') {
 
@@ -2654,15 +2654,15 @@ export class DashboardComponent implements OnInit {
               'Departure : ' + port.departurePort,
               'Arrival : ' + port.arrivalPort,
               'Distance : ' + port.speed.distance,
-              'Time : ' + port.speed.steamingTime,
+              'Time : ' + mathRound(port.speed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'MONTHS') {
 
             let speed = data.datasets[0].data[index].speed;
 
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2)
             ];
           }
           else if (this.summaryBy === 'DAYS') {
@@ -2682,8 +2682,8 @@ export class DashboardComponent implements OnInit {
             });
 
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime,
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
               'T. Reports : ' + totalReport,
               'Activities : ' + activities,
               'Observations : ' + observations
