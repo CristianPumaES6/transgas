@@ -1,10 +1,10 @@
-body{
+body {
   background-color: red;
 }
 
 .color-red {
   // color: red !important;
-  background: rgb(255, 123, 123)
+  background: rgb(255, 123, 123);
 }
 
 .background-content-linea {
@@ -135,13 +135,12 @@ canvas {
         &.blue-3 {
           background: #001556;
         }
-
       }
 
       th {
         position: relative;
         text-align: center;
-        span{
+        span {
           cursor: pointer;
           position: absolute;
           padding-left: 3px;
@@ -182,7 +181,13 @@ canvas {
 
           &.color-red {
             // color: red !important;
-            background: rgb(253, 103, 103)
+            background: rgb(253, 103, 103);
+          }
+          &.color-max {
+            background: rgb(253, 103, 103);
+          }
+          &.color-min {
+            background-color: rgb(42, 235, 67);
           }
         }
       }
@@ -236,19 +241,16 @@ canvas {
   position: relative;
 }
 
-
 .outline-none {
   outline: none;
   box-shadow: none;
 }
-
 
 @media (min-width: 768px) {
   .component-fixed-bottom {
     display: none;
   }
 }
-
 
 .component-filter {
   @media (min-width: 768px) {
@@ -270,7 +272,6 @@ canvas {
   }
 
   &.component-filter-none {
-
     .card-body {
       margin: 0px;
       height: 0px;
@@ -292,4 +293,11 @@ canvas {
 .close-icon {
   cursor: pointer;
   float: right;
+}
+
+.color-max {
+  background: rgb(255, 123, 123);
+}
+.color-min {
+  background-color: rgb(133, 252, 97);
 }
