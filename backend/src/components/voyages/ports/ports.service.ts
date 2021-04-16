@@ -19,7 +19,8 @@ export class PortsService {
                 // name && surname && nick && email
                 {
                     userId: port.userId,
-                    voyageId: port.voyageId
+                    voyageId: port.voyageId,
+                    status: true
                 }
             ],
             take: 1,
@@ -169,7 +170,7 @@ export class PortsService {
     // Permite consultar si el puerto existe en el viaje,
     // Retorna underfined si el puerto no existe.
     async ThereIsThisPortInTheVoyage(numeroPuerto: number, voyageId: number): Promise<Port> {
-        
+
         return await this.portRepository.findOne({
             where: [
                 // hacemos un where donde buscamos por id.
