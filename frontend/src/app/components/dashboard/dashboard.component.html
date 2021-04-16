@@ -867,7 +867,11 @@
                   <th class="p-1 color-title-table border">
                     {{'SAILING_IN_BALLAST' | translateMessage:translateCategory}}
                   </th>
-                  <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.ballast,2)}}</td>
+                  <td class="p-1 border"
+                    [ngClass]="{
+                  'color-max': totalTimePerActivityIFO.ballast != 0 && timePerNavigationCharterByActivityPerformedIFO.ballast != 0  && totalTimePerActivityIFO.ballast > timePerNavigationCharterByActivityPerformedIFO.ballast,
+                  'color-min':  totalTimePerActivityIFO.ballast != 0 && timePerNavigationCharterByActivityPerformedIFO.ballast != 0  && totalTimePerActivityIFO.ballast < timePerNavigationCharterByActivityPerformedIFO.ballast }">
+                    {{MathRoundOneDecimal(totalTimePerActivityIFO.ballast,2)}}</td>
                   <td class="p-1 border">
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.ballast,2)}}
                   </td>
@@ -909,7 +913,11 @@
                   <th class="p-1 color-title-table border">
                     {{'SAILING_WITH_LADEN' | translateMessage:translateCategory}}
                   </th>
-                  <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.laden,2)}}</td>
+                  <td class="p-1 border"
+                    [ngClass]="{
+                'color-max': totalTimePerActivityIFO.laden != 0 && timePerNavigationCharterByActivityPerformedIFO.laden != 0  && totalTimePerActivityIFO.laden > timePerNavigationCharterByActivityPerformedIFO.laden,
+                'color-min':  totalTimePerActivityIFO.laden != 0 && timePerNavigationCharterByActivityPerformedIFO.laden != 0  && totalTimePerActivityIFO.laden < timePerNavigationCharterByActivityPerformedIFO.laden }">
+                    {{MathRoundOneDecimal(totalTimePerActivityIFO.laden,2)}}</td>
                   <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.laden,2)}}
                   </td>
                   <td class="p-1 border"
@@ -951,7 +959,11 @@
                   <th class="p-1 color-title-table border">
                     {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}
                   </th>
-                  <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.economical,2)}}</td>
+                  <td class="p-1 border"
+                    [ngClass]="{
+                      'color-max': totalTimePerActivityIFO.economical != 0 && timePerNavigationCharterByActivityPerformedIFO.economical != 0  && totalTimePerActivityIFO.economical > timePerNavigationCharterByActivityPerformedIFO.economical,
+                      'color-min':  totalTimePerActivityIFO.economical != 0 && timePerNavigationCharterByActivityPerformedIFO.economical != 0  && totalTimePerActivityIFO.economical < timePerNavigationCharterByActivityPerformedIFO.economical }">
+                    {{MathRoundOneDecimal(totalTimePerActivityIFO.economical,2)}}</td>
                   <td class="p-1 border">
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.economical,2)}}
                   </td>
@@ -1336,7 +1348,11 @@
                   <th class="p-1 color-title-table border">
                     {{'SAILING_IN_BALLAST' | translateMessage:translateCategory}}
                   </th>
-                  <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.ballast,2)}}</td>
+                  <td class="p-1 border"
+                    [ngClass]="{
+                    'color-max': totalTimePerActivityMGO.ballast != 0 && timePerNavigationCharterByActivityPerformedMGO.ballast != 0  && totalTimePerActivityMGO.ballast > timePerNavigationCharterByActivityPerformedMGO.ballast,
+                    'color-min':  totalTimePerActivityMGO.ballast != 0 && timePerNavigationCharterByActivityPerformedMGO.ballast != 0  && totalTimePerActivityMGO.ballast < timePerNavigationCharterByActivityPerformedMGO.ballast }">
+                    {{MathRoundOneDecimal(totalTimePerActivityMGO.ballast,2)}}</td>
                   <td class="p-1 border">
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.ballast,2)}}
                   </td>
@@ -1379,7 +1395,11 @@
                     {{'SAILING_WITH_LADEN' | translateMessage:translateCategory}}
                   </th>
                   <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.laden,2)}}</td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.laden,2)}}
+                  <td class="p-1 border"
+                    [ngClass]="{
+                  'color-max': totalTimePerActivityMGO.laden != 0 && timePerNavigationCharterByActivityPerformedMGO.laden != 0  && totalTimePerActivityMGO.laden > timePerNavigationCharterByActivityPerformedMGO.laden,
+                  'color-min':  totalTimePerActivityMGO.laden != 0 && timePerNavigationCharterByActivityPerformedMGO.laden != 0  && totalTimePerActivityMGO.laden < timePerNavigationCharterByActivityPerformedMGO.laden }">
+                    {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.laden,2)}}
                   </td>
                   <td class="p-1 border"
                     [ngClass]="{
@@ -1421,7 +1441,10 @@
                     {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}
                   </th>
                   <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.economical,2)}}</td>
-                  <td class="p-1 border">
+                  <td class="p-1 border"
+                    [ngClass]="{
+                'color-max': totalTimePerActivityMGO.economical != 0 && timePerNavigationCharterByActivityPerformedMGO.economical != 0  && totalTimePerActivityMGO.economical > timePerNavigationCharterByActivityPerformedMGO.economical,
+                'color-min':  totalTimePerActivityMGO.economical != 0 && timePerNavigationCharterByActivityPerformedMGO.economical != 0  && totalTimePerActivityMGO.economical < timePerNavigationCharterByActivityPerformedMGO.economical }">
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.economical,2)}}
                   </td>
                   <td class="p-1 border"
