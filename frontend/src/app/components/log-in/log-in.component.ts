@@ -67,7 +67,7 @@ export class LogInComponent implements OnInit {
 
   public Login(): boolean {
     console.log('Login()');
-    
+
     this.loadingService.Open();
 
     // Mando a hacer el login
@@ -78,9 +78,14 @@ export class LogInComponent implements OnInit {
           if (result) {
             // Muestro notificación
             this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_LOGIN').replace('{{NAME}}', result.name));
+            // Al logearse un buque te redirecciona al modulo de voyages
+            if (result.role === 'BUQUE') {
+              this.router.navigate(['./application/voyages'], { relativeTo: this.activatedRoute });
+            } else {
 
-            // Todo OK, navego al home
-            this.router.navigate(['./application'], { relativeTo: this.activatedRoute });
+              // Todo OK, navego al home
+              this.router.navigate(['./application'], { relativeTo: this.activatedRoute });
+            }
           } else {
             // Algo fallo, muestro mensaje de error
             throw 'LOGIN_FAILED';
