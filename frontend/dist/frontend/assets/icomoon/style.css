@@ -1,0 +1,321 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../../assets/icomoon/fonts/icomoon.eot?ydrgws');
+  src:  url('../../assets/icomoon/fonts/icomoon.eot?ydrgws#iefix') format('embedded-opentype'),
+    url('../../assets/icomoon/fonts/icomoon.ttf?ydrgws') format('truetype'),
+    url('../../assets/icomoon/fonts/icomoon.woff?ydrgws') format('woff'),
+    url('../../assets/icomoon/fonts/icomoon.svg?ydrgws#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-filter:before {
+  content: "\e92a";
+}
+.icon-back-1:before {
+  content: "\e929";
+}
+.icon-x2:before {
+  content: "\e91e";
+}
+.icon-save:before {
+  content: "\e91d";
+}
+.icon-refresh:before {
+  content: "\e91c";
+}
+.icon-upload-photo:before {
+  content: "\e91b";
+}
+.icon-punto-circulo:before {
+  content: "\e921";
+}
+.icon-menu-help:before {
+  content: "\e919";
+}
+.icon-menu-port:before {
+  content: "\e918";
+}
+.icon-archivo-pdf:before {
+  content: "\e92b";
+}
+.icon-archivo-excel:before {
+  content: "\e92c";
+}
+.icon-archivo-excel-1 .path1:before {
+  content: "\e92d";
+  color: rgb(236, 239, 241);
+}
+.icon-archivo-excel-1 .path2:before {
+  content: "\e92e";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path3:before {
+  content: "\e92f";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path4:before {
+  content: "\e930";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path5:before {
+  content: "\e931";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path6:before {
+  content: "\e933";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path7:before {
+  content: "\e934";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path8:before {
+  content: "\e935";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path9:before {
+  content: "\e936";
+  margin-left: -1em;
+  color: rgb(56, 142, 60);
+}
+.icon-archivo-excel-1 .path10:before {
+  content: "\e937";
+  margin-left: -1em;
+  color: rgb(46, 125, 50);
+}
+.icon-archivo-excel-1 .path11:before {
+  content: "\e938";
+  margin-left: -1em;
+  color: rgb(250, 250, 250);
+}
+.icon-logout-1:before {
+  content: "\e922";
+}
+.icon-back-4:before {
+  content: "\e920";
+}
+.icon-edit-2:before {
+  content: "\e91f";
+}
+.icon-menu-dashboard:before {
+  content: "\e917";
+}
+.icon-crane-1:before {
+  content: "\e91a";
+}
+.icon-port:before {
+  content: "\e923";
+}
+.icon-ship1:before {
+  content: "\e924";
+}
+.icon-gas-station:before {
+  content: "\e925";
+}
+.icon-codewars:before {
+  content: "\e926";
+}
+.icon-codeship:before {
+  content: "\e911";
+}
+.icon-transgas-icono:before {
+  content: "\e916";
+}
+.icon-sort-alpha-asc:before {
+  content: "\f15d";
+}
+.icon-menu-user:before {
+  content: "\e915";
+}
+.icon-flag:before {
+  content: "\e927";
+}
+.icon-flag1:before {
+  content: "\e928";
+}
+.icon-edit-pencil:before {
+  content: "\e910";
+}
+.icon-trash:before {
+  content: "\e900";
+}
+.icon-remove:before {
+  content: "\e900";
+}
+.icon-delete:before {
+  content: "\e900";
+}
+.icon-garbage:before {
+  content: "\e900";
+}
+.icon-trashcan:before {
+  content: "\e901";
+}
+.icon-garbage1:before {
+  content: "\e901";
+}
+.icon-delete1:before {
+  content: "\e901";
+}
+.icon-remove1:before {
+  content: "\e901";
+}
+.icon-bin:before {
+  content: "\e901";
+}
+.icon-uninstall:before {
+  content: "\e901";
+}
+.icon-add:before {
+  content: "\e902";
+}
+.icon-calculate:before {
+  content: "\e902";
+}
+.icon-copy:before {
+  content: "\e902";
+}
+.icon-create:before {
+  content: "\e902";
+}
+.icon-add1:before {
+  content: "\e903";
+}
+.icon-calculate1:before {
+  content: "\e903";
+}
+.icon-copy1:before {
+  content: "\e903";
+}
+.icon-create1:before {
+  content: "\e903";
+}
+.icon-video-camera:before {
+  content: "\e914";
+}
+.icon-folder-minus:before {
+  content: "\e932";
+}
+.icon-floppy-disk:before {
+  content: "\e962";
+}
+.icon-bin1:before {
+  content: "\e9ac";
+}
+.icon-bin2:before {
+  content: "\e9ad";
+}
+.icon-clipboard:before {
+  content: "\e9b8";
+}
+.icon-flag2:before {
+  content: "\e9cc";
+}
+.icon-wondering2:before {
+  content: "\e9fc";
+}
+.icon-warning:before {
+  content: "\ea07";
+}
+.icon-cancel-circle:before {
+  content: "\ea0d";
+}
+.icon-trash1:before {
+  content: "\e904";
+}
+.icon-trash-2:before {
+  content: "\e905";
+}
+.icon-delete_forever:before {
+  content: "\e906";
+}
+.icon-delete2:before {
+  content: "\e907";
+}
+.icon-remove4:before {
+  content: "\e908";
+}
+.icon-create_new_folder:before {
+  content: "\e909";
+}
+.icon-navigation:before {
+  content: "\e90a";
+}
+.icon-nautical-vessel:before {
+  content: "\e90a";
+}
+.icon-vessel:before {
+  content: "\e90a";
+}
+.icon-wheel:before {
+  content: "\e90a";
+}
+.icon-cancel:before {
+  content: "\e90b";
+}
+.icon-close:before {
+  content: "\e90b";
+}
+.icon-remove2:before {
+  content: "\e90b";
+}
+.icon-dismiss:before {
+  content: "\e90b";
+}
+.icon-minus:before {
+  content: "\e90c";
+}
+.icon-remove3:before {
+  content: "\e90c";
+}
+.icon-delete3:before {
+  content: "\e90c";
+}
+.icon-edit:before {
+  content: "\e90d";
+}
+.icon-pencil:before {
+  content: "\e90d";
+}
+.icon-write:before {
+  content: "\e90d";
+}
+.icon-writing:before {
+  content: "\e90d";
+}
+.icon-sailing-boat-water:before {
+  content: "\e912";
+}
+.icon-sailing-boat-water1:before {
+  content: "\e913";
+}
+.icon-document-edit:before {
+  content: "\e90e";
+}
+.icon-document-edit1:before {
+  content: "\e90f";
+}
