@@ -899,7 +899,11 @@
                       'color-min':  (balanceConsumptionByActivityPerformedIFO.ballast < 0)}">
                     {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.ballast,2)}}
                   </td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.ballast,2)}}</td>
+                  <td class="p-1 border" [ngClass]="
+                    {
+                      'color-max': (balanceTimeByActivityPerformedIFO.ballast > 0),
+                      'color-min':  (balanceTimeByActivityPerformedIFO.ballast < 0)}">
+                    {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.ballast,2)}}</td>
                 </tr>
                 <tr>
                   <th class="p-1 color-title-table border">
@@ -937,7 +941,11 @@
                     'color-min':  (balanceConsumptionByActivityPerformedIFO.laden < 0)}">
                     {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.laden,2)}}
                   </td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.laden,2)}}</td>
+                  <td class="p-1 border" [ngClass]="
+                  {
+                    'color-max': (balanceTimeByActivityPerformedIFO.laden > 0),
+                    'color-min':  (balanceTimeByActivityPerformedIFO.laden < 0)}">
+                    {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.laden,2)}}</td>
                 </tr>
                 <tr>
                   <th class="p-1 color-title-table border">
@@ -978,7 +986,11 @@
                     'color-min':  (balanceConsumptionByActivityPerformedIFO.economical < 0)}">
                     {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.economical,2)}}
                   </td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.economical,2)}}
+                  <td class="p-1 border" [ngClass]="
+                  {
+                    'color-max': (balanceTimeByActivityPerformedIFO.economical > 0),
+                    'color-min':  (balanceTimeByActivityPerformedIFO.economical < 0)}">
+                    {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.economical,2)}}
                   </td>
                 </tr>
                 <tr>
@@ -1356,7 +1368,11 @@
                       'color-min':  (balanceConsumptionByActivityPerformedMGO.ballast < 0)}">
                     {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.ballast,2)}}
                   </td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.ballast,2)}}</td>
+                  <td class="p-1 border" [ngClass]="
+                  {
+                    'color-max': (balanceTimeByActivityPerformedMGO.ballast > 0),
+                    'color-min':  (balanceTimeByActivityPerformedMGO.ballast < 0)}">
+                    {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.ballast,2)}}</td>
                 </tr>
                 <tr>
                   <th class="p-1 color-title-table border">
@@ -1394,7 +1410,11 @@
                     'color-min':  (balanceConsumptionByActivityPerformedMGO.laden < 0)}">
                     {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.laden,2)}}
                   </td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.laden,2)}}</td>
+                  <td class="p-1 border" [ngClass]="
+                  {
+                    'color-max': (balanceTimeByActivityPerformedMGO.laden > 0),
+                    'color-min':  (balanceTimeByActivityPerformedMGO.laden < 0)}">
+                    {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.laden,2)}}</td>
                 </tr>
                 <tr>
                   <th class="p-1 color-title-table border">
@@ -1435,7 +1455,11 @@
                     'color-min':  (balanceConsumptionByActivityPerformedMGO.economical < 0)}">
                     {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.economical,2)}}
                   </td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.economical,2)}}
+                  <td class="p-1 border" [ngClass]="
+                  {
+                    'color-max': (balanceTimeByActivityPerformedMGO.economical > 0),
+                    'color-min':  (balanceTimeByActivityPerformedMGO.economical < 0)}">
+                    {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.economical,2)}}
                   </td>
                 </tr>
                 <tr>

@@ -383,7 +383,7 @@ export const dashboard: any = {
     TOOLTIP_TIME_PER_NAVIGATION_CHARTER: 'Navigation time calculated at the speed of the contract.\n( TOTAL DISTANCE (MILES) / AVERAGE SPEED (MILES/HRS) (CHARTER) )',
     TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT: 'Navigation consumption calculated with the contract data.\n( DAILY CONSUMPTION (MT) (CHARTER) x ( TIME PER NAVIGATION (HRS) (CHARTER) or TOTAL TIME PER ACTIVITY (HRS) ) /  24 )',
     TOOLTIP_FUEL_BALANCE: 'Consumption balance.\n( TOTAL CONSUMPTION (MT) - TOTAL CONSUMPTION (MT) (CHARTER))',
-    TOOLTIP_BALANCE_HOURS_SAILED: 'Navigation time balance.\n( TIME PER NAVIGATION (HRS) (CHARTER) - TOTAL TIME PER ACTIVITY (HRS) )',
+    TOOLTIP_BALANCE_HOURS_SAILED: 'Navigation time balance.\n( TOTAL TIME PER ACTIVITY (HRS) - TIME PER NAVIGATION (HRS) (CHARTER) )',
     TOOLTIP_EQUIPMENT: 'Equipment.',
     TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER: 'Total equipment consumption.',
     TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
