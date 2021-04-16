@@ -378,17 +378,18 @@ export const dashboard: any = {
     TOOLTIP_AVERAGE_REAL_SPEED: 'Average speed \n ( TOTAL DISTANCE (MILES) / TOTAL TIME PER ACTIVITY (HRS) ) ',
     TOOLTIP_AVERAGE_SPEED_CHARTER: 'Vessel contract speed.',
     TOOLTIP_REAL_TOTAL_CONSUMPTION: 'Total consumption recorded per activity.',
-    TOOLTIP_REAL_DAILY_CONSUMPTION: 'Daily consumption\n( (TOTAL CONSUMPTION (MT) x NUMBER OF DAYS)/TOTAL TIME PER ACTIVITY (HRS) ) ',
+    TOOLTIP_REAL_DAILY_CONSUMPTION: 'Daily consumption\n( (TOTAL CONSUMPTION (MT) x 24)/TOTAL TIME PER ACTIVITY (HRS) ) ',
     TOOLTIP_DAILY_CONSUMPTION_CHARTER: 'Daily consumption per contract.',
     TOOLTIP_TIME_PER_NAVIGATION_CHARTER: 'Navigation time calculated at the speed of the contract.\n( TOTAL DISTANCE (MILES) / AVERAGE SPEED (MILES/HRS) (CHARTER) )',
-    TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT: 'Navigation consumption calculated with the contract data.\n( DAILY CONSUMPTION (MT) (CHARTER) x ( TIME PER NAVIGATION (HRS) (CHARTER) or TOTAL TIME PER ACTIVITY (HRS) ) /  NUMBER OF DAYS )',
+    TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT: 'Navigation consumption calculated with the contract data.\n( DAILY CONSUMPTION (MT) (CHARTER) x ( TIME PER NAVIGATION (HRS) (CHARTER) or TOTAL TIME PER ACTIVITY (HRS) ) /  24 )',
     TOOLTIP_FUEL_BALANCE: 'Consumption balance.\n( DAILY CONSUMPTION (MT) (CHARTER) - TOTAL CONSUMPTION (MT))',
     TOOLTIP_BALANCE_HOURS_SAILED: 'Navigation time balance.\n( TIME PER NAVIGATION (HRS) (CHARTER) - TOTAL TIME PER ACTIVITY (HRS) )',
     TOOLTIP_EQUIPMENT: 'Equipment.',
     TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER: 'Total equipment consumption.',
-    TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n( TOTAL CONSUMPTION (MT) / NUMBER OF DAYS )',
+    TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
     TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT: 'Daily consumption of equipment per contract.',
-    TOOLTIP_DAILY_BALANCE_EQUIPMENT: 'Consumption balance.\n( DAILY CONSUMPTION (MT) - DAILY CONSUMPTION (MT) (CHARTER) )'
+    TOOLTIP_DAILY_BALANCE_EQUIPMENT: 'Consumption balance.\n( DAILY CONSUMPTION (MT) - DAILY CONSUMPTION (MT) (CHARTER) )',
+    TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)'
 }
 
 export const dialog: any = {
