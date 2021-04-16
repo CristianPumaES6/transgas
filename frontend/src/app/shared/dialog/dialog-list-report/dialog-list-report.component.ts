@@ -117,11 +117,7 @@ export class DialogListReportComponent implements OnInit {
     this.AplicateFilterVoyage(isFilterByDay, false);
 
     // PerfectScrollbar, para el elemento div az-contact-info-body del html.
-    new PerfectScrollbar('.tableFixHead', {
-      suppressScrollX: true,
-      minScrollbarLength: 60
-    });
-
+    new PerfectScrollbar('.tableFixHead');
 
   }
 
