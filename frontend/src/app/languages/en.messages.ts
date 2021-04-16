@@ -311,6 +311,9 @@ export const voyage: any = {
     TOTAL_VLSFO: 'Total VLSFO',
     TOTAL_IFO: 'Total IFO',
     TOTAL_MGO: 'Total MGO',
+    NO_BUNKERING: 'No bunkering',
+    DELETE_REPORT:'Delete Report',
+    EDIT_REPORT:'Edit Report'
 }
 
 export const dashboard: any = {

@@ -1823,7 +1823,7 @@ export class DashboardComponent implements OnInit {
               return tooltipItem[0].xLabel;
             },
             label: (tooltipItem, data) => {
-              return 'Consumption LSFO: ' + tooltipItem.value;
+              return 'Consumption LSFO: ' + mathRound(tooltipItem.value, 2);
             },
             footer: (tooltipItem, data) => {
               let index = tooltipItem[0].index;
@@ -2218,17 +2218,28 @@ export class DashboardComponent implements OnInit {
     // Vaciamos la configuracion de las lines MGO
     this.configLineaMGO.options.lines = [];
 
-    if (this.selectUser.isConsumptionMGO) {
+    if (this.summaryBy === 'DAYS') {
 
-      if (this.selectUser.maxMGOConsumption > 0) {
-        this.configLineaMGO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxMGOConsumption,
-          color: 'red',
-          label: ''
-        });
+      if (this.selectUser.isConsumptionMGO) {
+        if (this.selectUser.maxMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxMGOConsumption,
+            color: 'red',
+            label: ''
+          });
+        }
 
+        if (this.selectUser.minMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minMGOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
       }
+
     }
 
 
@@ -2276,7 +2287,7 @@ export class DashboardComponent implements OnInit {
 
           let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
 
-          let result = 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+          let result = 'Consumption ' + typeConsumption + ' : ' + mathRound(tooltipItem.value, 2);
 
           return result;
         },
@@ -2291,8 +2302,8 @@ export class DashboardComponent implements OnInit {
             let voyage = this.generateVoyages[ubication[0]];
             result = [
               'T. Ports : ' + voyage.totalPort,
-              'Distance : ' + voyage.totalSpeed.distance,
-              'Time : ' + voyage.totalSpeed.steamingTime,
+              'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+              'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
               'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'PORTS') {
@@ -2303,8 +2314,8 @@ export class DashboardComponent implements OnInit {
             result = [
               'Departure : ' + port.departurePort,
               'Arrival : ' + port.arrivalPort,
-              'Distance : ' + port.speed.distance,
-              'Time : ' + port.speed.steamingTime,
+              'Distance : ' + mathRound(port.speed.distance, 2),
+              'Time : ' + mathRound(port.speed.steamingTime, 2),
               'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'MONTHS') {
@@ -2314,8 +2325,8 @@ export class DashboardComponent implements OnInit {
 
             //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime,
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
               'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
             ];
           }
@@ -2337,8 +2348,8 @@ export class DashboardComponent implements OnInit {
             });
 
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime,
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
               'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
               'T. Reports : ' + totalReport,
               'Activities : ' + activities,
@@ -2384,14 +2395,26 @@ export class DashboardComponent implements OnInit {
 
     // Verificamos que exista una confifuracion para LSFO
     if (this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionVLSFO) {
-      // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
-      if (this.selectUser.maxIFOConsumption > 0) {
-        this.configLineaIFO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxIFOConsumption,
-          color: 'red',
-          label: ''
-        });
+
+      if (this.summaryBy === 'DAYS') {
+        // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
+        if (this.selectUser.maxIFOConsumption > 0) {
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxIFOConsumption,
+            color: 'red',
+            label: ''
+          });
+        }
+        if (this.selectUser.minIFOConsumption > 0) {
+
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minIFOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
       }
 
       this.configLineaIFO.options.tooltips = {
@@ -2438,7 +2461,7 @@ export class DashboardComponent implements OnInit {
           label: (tooltipItem, data) => {
 
             let typeConsumption = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            return 'Consumption ' + typeConsumption + ' : ' + tooltipItem.value;
+            return 'Consumption ' + typeConsumption + ' : ' + mathRound(tooltipItem.value, 2);
           },
           footer: (tooltipItem, data) => {
             let index = tooltipItem[0].index;
@@ -2451,8 +2474,8 @@ export class DashboardComponent implements OnInit {
               let voyage = this.generateVoyages[ubication[0]];
               result = [
                 'T. Ports : ' + voyage.totalPort,
-                'Distance : ' + voyage.totalSpeed.distance,
-                'Time : ' + voyage.totalSpeed.steamingTime,
+                'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+                'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
                 'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
               ];
             } else if (this.summaryBy === 'PORTS') {
@@ -2463,8 +2486,8 @@ export class DashboardComponent implements OnInit {
               result = [
                 'Departure : ' + port.departurePort,
                 'Arrival : ' + port.arrivalPort,
-                'Distance : ' + port.speed.distance,
-                'Time : ' + port.speed.steamingTime,
+                'Distance : ' + mathRound(port.speed.distance, 2),
+                'Time : ' + mathRound(port.speed.steamingTime, 2),
                 'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
               ];
             } else if (this.summaryBy === 'MONTHS') {
@@ -2472,8 +2495,8 @@ export class DashboardComponent implements OnInit {
               let speed = data.datasets[0].data[index].speed;
 
               result = [
-                'Distance : ' + speed.distance,
-                'Time : ' + speed.steamingTime,
+                'Distance : ' + mathRound(speed.distance, 2),
+                'Time : ' + mathRound(speed.steamingTime, 2),
                 'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
               ];
             }
@@ -2494,8 +2517,8 @@ export class DashboardComponent implements OnInit {
               });
 
               result = [
-                'Distance : ' + speed.distance,
-                'Time : ' + speed.steamingTime,
+                'Distance : ' + mathRound(speed.distance, 2),
+                'Time : ' + mathRound(speed.steamingTime, 2),
                 'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
                 'T. Reports : ' + totalReport,
                 'Activities : ' + activities,
@@ -2539,25 +2562,27 @@ export class DashboardComponent implements OnInit {
     // Vaciamos la configuracion de las lines MGO
     this.configLineaSPEED.options.lines = [];
 
-    // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
-    if (this.selectUser.maxSpeed > 0) {
-      this.configLineaSPEED.options.lines.push({
-        type: 'horizontal',
-        y: this.selectUser.maxSpeed,
-        color: 'red',
-        label: ''
-      });
-    }
-    // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
-    if (this.selectUser.minSpeed > 0) {
-      this.configLineaSPEED.options.lines.push({
-        type: 'horizontal',
-        y: this.selectUser.minSpeed,
-        color: '#39FF14',
-        label: ''
-      });
-    }
 
+    if (this.summaryBy === 'DAYS') {
+      // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
+      if (this.selectUser.maxSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.maxSpeed,
+          color: 'red',
+          label: ''
+        });
+      }
+      // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
+      if (this.selectUser.minSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.minSpeed,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+    }
 
 
     this.configLineaSPEED.options.tooltips = {
@@ -2602,7 +2627,7 @@ export class DashboardComponent implements OnInit {
         },
         label: (tooltipItem, data) => {
 
-          let typeConsumption = 'Speed : ' + tooltipItem.value;
+          let typeConsumption = 'Speed : ' + mathRound(tooltipItem.value, 2);
           return typeConsumption;
         },
         footer: (tooltipItem, data) => {
@@ -2617,8 +2642,8 @@ export class DashboardComponent implements OnInit {
 
             result = [
               'T. Ports : ' + voyage.totalPort,
-              'Distance : ' + voyage.totalSpeed.distance,
-              'Time : ' + voyage.totalSpeed.steamingTime,
+              'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+              'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'PORTS') {
 
@@ -2629,15 +2654,15 @@ export class DashboardComponent implements OnInit {
               'Departure : ' + port.departurePort,
               'Arrival : ' + port.arrivalPort,
               'Distance : ' + port.speed.distance,
-              'Time : ' + port.speed.steamingTime,
+              'Time : ' + mathRound(port.speed.steamingTime, 2),
             ];
           } else if (this.summaryBy === 'MONTHS') {
 
             let speed = data.datasets[0].data[index].speed;
 
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2)
             ];
           }
           else if (this.summaryBy === 'DAYS') {
@@ -2657,8 +2682,8 @@ export class DashboardComponent implements OnInit {
             });
 
             result = [
-              'Distance : ' + speed.distance,
-              'Time : ' + speed.steamingTime,
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
               'T. Reports : ' + totalReport,
               'Activities : ' + activities,
               'Observations : ' + observations

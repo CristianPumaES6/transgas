@@ -71,7 +71,7 @@
     </ng-template>
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-8 col-md-6">
 
             <p class="m-0 grp-title-check font-weight-bold">
                 {{'MORE_INFORMATION' | translateMessage:translateCategory}}
@@ -105,7 +105,7 @@
 
         </div>
 
-        <div class="col-6">
+        <div class="col-4 col-md-6">
 
             <p class="m-0 grp-title-check font-weight-bold"> &nbsp;</p>
 
@@ -125,19 +125,19 @@
         <ng-template ngFor let-iPort [ngForOf]="filterVoyage.ports" let-i="index">
 
             <div class="row no-gutters pb-1">
-                <div class="col-2">
+                <div class="col col-md-2">
                     <span class="font-weight-bold">
                         Port N° :
                     </span>
                     {{iPort.portNumber}}
                 </div>
-                <div class="col-5">
+                <div class="col col-md-5">
                     <span class="font-weight-bold">
                         {{'DEPARTURE' | translateMessage:translateCategory}}
                     </span>
                     {{iPort.departurePort}}
                 </div>
-                <div class="col-5">
+                <div class="col col-md-5">
                     <span class="font-weight-bold">
                         {{'ARRIVAL' | translateMessage:translateCategory}}
                     </span>

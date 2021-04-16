@@ -12,6 +12,9 @@
 
 .tamanio-dialog {
   width: 900px;
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
   .div-relative {
     position: relative;
     .close-icon {
@@ -32,6 +35,10 @@
   overflow-y: hidden;
   overflow-x: hidden;
   max-height: 400px;
+  @media (max-width: 800px) {
+    max-height: 200px;
+    max-width: 400px;
+  }
 
   thead {
     tr {
