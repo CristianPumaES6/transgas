@@ -132,7 +132,7 @@ export class VoyageComponent implements OnInit {
 
       }
     );
-    
+
   }
 
   ngOnInit(): void {
@@ -177,7 +177,7 @@ export class VoyageComponent implements OnInit {
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
-
+      
       let user: User = new User();
 
       // Si el usuario es un buque lo filtramos.
@@ -229,7 +229,7 @@ export class VoyageComponent implements OnInit {
             throw 'NO_BUQUE_REGISTER';
           }
 
-
+          this.loadingService.Open()
           // Traigo a todos los User y lo instancio en el obj.
           // GeyVoyage obtiene todos los puertos.
           return this.GetVoyagesDetail(voyage).pipe().toPromise();
@@ -500,6 +500,7 @@ export class VoyageComponent implements OnInit {
           voyage.userId = Number(this.selectUser.id);
           this.SettingAzList.isNew = this.selectUser.role === 'BUQUE' ? true : false;
           voyage.year = this.year
+          this.loadingService.Open();
           // Obtenemos los datos del usuario.
           return this.GetVoyagesDetail(voyage).pipe().toPromise();
         }
@@ -1080,7 +1081,7 @@ export class VoyageComponent implements OnInit {
 
           let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
           if (!firstUser) throw 'NO_BUQUE_REGISTER';
-          
+
           if (firstUser.years && firstUser.years.length) {
             this.year = firstUser.years[(firstUser.years.length || 1) - 1];
             this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
@@ -1096,7 +1097,7 @@ export class VoyageComponent implements OnInit {
             this.SettingAzList.isNew = true;
             this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
 
-            
+
           }
 
           // Generar lista por usuarios.
