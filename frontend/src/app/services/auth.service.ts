@@ -45,6 +45,7 @@ export class AuthService {
     private languageService: LanguageService,
     private authGuardService: AuthGuardService,
   ) {
+    console.log('Constructor');
 
     // Intento obtener datos almacenados en localStorage
     try {
