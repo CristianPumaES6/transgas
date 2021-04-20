@@ -68,17 +68,19 @@ export class ApplicationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-this.webSocketService.listen('').subscribe((data)=>{
-  console.log('--------');
-  console.log('--------');
-  console.log('--------');
-  console.log('--------');
-  console.log(data);
-  console.log('--------');
-  console.log('--------');
-  console.log('--------');
-  console.log('--------');
-})
+
+
+    this.webSocketService.listen('connection').subscribe((data)=>{
+      console.log('--------');
+      console.log('--------');
+      console.log('--------');
+      console.log('--------');
+      console.log(data);
+      console.log('--------');
+      console.log('--------');
+      console.log('--------');
+      console.log('--------');
+    })
 
     console.log('ngOnInit()');
 
