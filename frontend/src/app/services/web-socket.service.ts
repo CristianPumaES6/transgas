@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';/* 
-import * as io from 'socket.io-client'; */
-import { Socket } from 'socket.io-client';
+import { Observable } from 'rxjs';
+import * as io from 'socket.io-client'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
-
+  // url del ws
   readonly url:string = 'ws://localhost:4000';
 
-  io: SocketIOClientStatic;
-  
-  socket:any;
+  // socket
+  public socket:any;
 
   constructor() {
+    // Asignamos la url del ws.
     this.socket = io(this.url);
   }
 
