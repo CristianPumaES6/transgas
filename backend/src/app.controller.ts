@@ -93,7 +93,7 @@ export class AppController {
     );;
   }
 
-  @Post('loggedUsers')
+  @Post('loggedUsersIsActive')
   async loggedUsers(@Headers() headers, @Body() loggedUser: LoggedUser){
 
     return await DummyPromise().then(
@@ -107,7 +107,8 @@ export class AppController {
           // Retornamos una Respuesta exitosa.
           return {
               status: HttpStatus.OK,
-              message: 'OK REGISTER'
+              message: 'OK REGISTER',
+              data: results,
           };
       }
     ).catch(

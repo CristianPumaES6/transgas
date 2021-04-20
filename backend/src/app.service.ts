@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { AppGateway } from './app.gateway';
+import { GetDate } from './assets/moment.assets';
 import { LoggedUser } from './models/loggedUser';
 @Injectable()
 export class AppService {
@@ -35,12 +36,17 @@ export class AppService {
         return logeate.token === loggedUser.token
       });
 
-    // este usuario existe?
+    // Este usuario existe?
     if(isUserExit){
+      loggedUser.lastConnection= GetDate();
      return false;
     }else{
-      // si no existe 
+      loggedUser.firstConnection = GetDate();
+      loggedUser.lastConnection = GetDate();
+      // Si no existe 
       this.AddUserLogeated(loggedUser);
+      console.log(this.loggedUsers);
+      
       return true;
     }
   }
