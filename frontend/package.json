@@ -34,7 +34,7 @@
     "moment-timezone": "^0.5.33",
     "perfect-scrollbar": "^1.5.0",
     "rxjs": "~6.5.5",
-    "socket.io-client": "^2.4.0",
+    "socket.io-client": "^4.0.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
   },
@@ -46,6 +46,7 @@
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
+    "@types/socket.io-client": "^1.4.36",
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
