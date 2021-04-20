@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request, HttpException, HttpStatus, Param, Header, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, HttpException, HttpStatus, Param, Headers, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 
@@ -11,6 +11,7 @@ import { UsersService } from './components/users/users.service';
 
 // Assets || Si es una class lo tego que poner en el constructor y como provverdor del modulo
 import { DummyPromise } from './assets/promises.assets';
+import { LoggedUser } from './models/loggedUser';
 
 @Controller()
 export class AppController {
@@ -92,4 +93,37 @@ export class AppController {
     );;
   }
 
+  @Post('loggedUsers')
+  async loggedUsers(@Headers() headers, @Body() loggedUser: LoggedUser){
+
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this.appService.IsUserLogeatedExit(loggedUser);
+      }
+    ).then(
+      (results: boolean) => {
+
+          // Retornamos una Respuesta exitosa.
+          return {
+              status: HttpStatus.OK,
+              message: 'OK REGISTER'
+          };
+      }
+    ).catch(
+      err => {
+          // Obtengo mensajes de error
+          const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+          const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+          // Caso contrario retornamos un error
+          throw new HttpException({
+              status: HttpStatus.ACCEPTED,
+              error: clientMsg,
+              message: errorMsg,
+          }, HttpStatus.ACCEPTED);
+      }
+  );
+  }
 }
