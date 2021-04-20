@@ -16,7 +16,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   // Detectamos una conexion.
-  handleConnection(client) {
+  public handleConnection(client) {
 
     // Lo mostramos en consola que un usuario se a conectado.
     this.logger.log('New client connected');
@@ -26,7 +26,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   // Detectamos si un usuario se a desconectado.
-  handleDisconnect(client) {
+  public handleDisconnect(client) {
     // Mostramos en consola que un usuario se a desconectado.
     this.logger.log('Client disconnected');
   }
