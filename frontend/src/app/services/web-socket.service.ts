@@ -19,20 +19,23 @@ export class WebSocketService {
 
   
   // Si queremos agregar un evento de escuagra agregamos esto.
-  public listen(eventName:string){
+  public listen(eventName:string) {
 
     // Asignamos un observable para que este a la escucha de algun emit.
-    return new Observable((suscriber)=>{
+    return new Observable(
+      (suscriber) => {
 
-      // Encendemos el Socket con un evento expecifico.
-      this.socket.on(eventName,
-        (data)=>{
-          // La informacion que nos devuelva el emit.
-          // se lo enviaremos al Observable.
-          suscriber.next(data);
-        }
-      );
-    });
+        // Encendemos el Socket con un evento expecifico.
+        this.socket.on(eventName,
+          (data)=>{
+            // La informacion que nos devuelva el emit.
+            // se lo enviaremos al Observable.
+            suscriber.next(data);
+          }
+        );
+
+      }
+    );
 
   }
   
