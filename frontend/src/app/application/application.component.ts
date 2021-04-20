@@ -81,14 +81,24 @@ export class ApplicationComponent implements OnInit {
     // Obtenemos los datos de la session.
     this.loggedUser = this.authService.GetLoggedUser();
 
-    // 
-    this.webSocketService.listen('connection').subscribe((data)=>{
+    // La aplicacion estara a la escucha de alguna connectio.
+    // Si escucha una nueva conexion enviara un update de su estado.
+    this.webSocketService.listen('connection').subscribe(
+      (data)=>{
 
-      if(data == 'connected'){
-        this.webSocketService.emit('register_connection',{user:this.loggedUser.name})
+        if(data == 'connected'){
+          // Registramos la conectividad del usuario.
+          this.authService.RegisterUserConnection(
+            {
+              token:localStorage.getItem('Session'),
+              userName:this.loggedUser.name
+            }
+          ).pipe().toPromise();
+
+        }
+
       }
-
-    });
+    );
 
 
 

@@ -27,6 +27,7 @@ import * as TimeZone from 'moment-timezone';
 
 // Config
 import { AuthGuardService } from './auth-guard.service';
+import { LoggedUser } from '../models/loggedUser';
 
 
 @Injectable({
@@ -136,4 +137,33 @@ export class AuthService {
 
   }
 
+
+  // Este servicio registra el logeo de un usuario.
+  RegisterUserConnection(loggedUser:LoggedUser): Observable<boolean> {
+
+    // Armo el request
+    let url: string = EnvConfig.API + '/loggedUsersIsActive';
+
+    let headers: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json'
+      });
+    let body: string = JSON.stringify(loggedUser);
+    let options: any = { headers: headers, responseType: 'json' };
+
+    return this.httpClient.post(url, body, options)
+      .pipe(map(
+        (response: any) => {
+
+          // Verificamos que la respuesta.
+          if (response.status && response.status === 200) {
+              return response.data;
+          } else {
+              throw response.description || response.error || '';
+          }
+
+        }
+      ));
+
+  }
 }
