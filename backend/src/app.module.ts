@@ -15,6 +15,9 @@ import { AuthModule } from './components/auth/auth.module';
 import { Moment } from 'moment';
 import { VoyagesModule } from './components/voyages/voyages.module';
 
+
+import { AppGateway } from './app.gateway';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -28,6 +31,6 @@ import { VoyagesModule } from './components/voyages/voyages.module';
     VoyagesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppGateway],
 })
 export class AppModule { }
