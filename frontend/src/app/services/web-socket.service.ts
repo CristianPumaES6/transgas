@@ -1,28 +1,46 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import * as io from 'socket.io-client';
+import { Observable } from 'rxjs';/* 
+import * as io from 'socket.io-client'; */
+import { Socket } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
 
-  socket:any;
   readonly url:string = 'ws://localhost:4000';
 
-  constructor() {
-    this.socket= io(this.url)
-   }
+  io: SocketIOClientStatic;
+  
+  socket:any;
 
-  listen(eventName:string){
-    return new Observable((suscriber)=>{
-      this.socket.on(eventName,(data)=>{
-        suscriber.next(data);
-      });
-    });
+  constructor() {
+    this.socket = io(this.url);
   }
-    
-  emit(eventName,data:any){
+
+  
+  // Si queremos agregar un evento de escuagra agregamos esto.
+  public listen(eventName:string){
+
+    // Asignamos un observable para que este a la escucha de algun emit.
+    return new Observable((suscriber)=>{
+
+      // Encendemos el Socket con un evento expecifico.
+      this.socket.on(eventName,
+        (data)=>{
+          // La informacion que nos devuelva el emit.
+          // se lo enviaremos al Observable.
+          suscriber.next(data);
+        }
+      );
+    });
+
+  }
+  
+  // Si queremos emitir un evento.
+  // nombre del evento y informacion que deseamos enviar.
+  public emit(eventName:string,data:any){
+    // Usamos socket para emitir el evento al server.
     this.socket.emit(eventName,data);
   }
   
