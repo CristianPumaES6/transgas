@@ -8,7 +8,7 @@ import { UsersService } from './users.service';
 import { DummyPromise } from '../../assets/promises.assets';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { diskStorage } from 'multer';
-import { getDate } from '../../assets/moment.assets';
+import { GetDate } from '../../assets/moment.assets';
 
 
 // Entity
@@ -227,7 +227,7 @@ export class UsersController {
 
 
                     user.userIdCreated = headerToken.id;
-                    user.dateCreated = getDate();
+                    user.dateCreated = GetDate();
                     delete user.userIdUpdated;
                     delete user.dateUpdated;
                     user.status = Boolean(user.status);
@@ -356,7 +356,7 @@ export class UsersController {
                     delete user.userIdCreated;
                     delete user.dateCreated;
                     user.userIdUpdated = headerToken.id;
-                    user.dateUpdated = getDate();
+                    user.dateUpdated = GetDate();
 
                     user.status = Boolean(user.status);
 

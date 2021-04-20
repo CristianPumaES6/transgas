@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { JwtDecode } from 'src/assets/jwtDecode.assets';
-import { getDate } from 'src/assets/moment.assets';
+import { GetDate } from 'src/assets/moment.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { DailyReport } from 'src/models/daily-report.entity';
 import { UserEntity } from 'src/models/user.entity';
@@ -147,7 +147,7 @@ export class DailyReportsController {
 
                     // Auditoria.
                     dailyReport.userIdCreated = headerToken.id;
-                    dailyReport.dateCreated = getDate();
+                    dailyReport.dateCreated = GetDate();
                     delete dailyReport.userIdUpdated;
                     delete dailyReport.dateUpdated;
                     dailyReport.status = Boolean(dailyReport.status);
@@ -223,7 +223,7 @@ export class DailyReportsController {
                     delete dailyReport.userIdCreated;
                     delete dailyReport.dateCreated;
                     dailyReport.userIdUpdated = headerToken.id;
-                    dailyReport.dateUpdated = getDate();
+                    dailyReport.dateUpdated = GetDate();
                     dailyReport.status = Boolean(dailyReport.status);
 
 
@@ -296,7 +296,7 @@ export class DailyReportsController {
                 delete result.userIdCreated;
                 delete result.dateCreated;
                 result.userIdUpdated = headerToken.id;
-                result.dateUpdated = getDate();
+                result.dateUpdated = GetDate();
 
                 // 
                 return this._dailyReportsService.Delete(result);

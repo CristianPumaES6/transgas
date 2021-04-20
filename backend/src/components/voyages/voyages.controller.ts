@@ -10,7 +10,7 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertDDMMYYYToYYYYMMDD, getDate } from '../../assets/moment.assets';
+import { ConvertDDMMYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport } from '../../models/daily-report.entity';
@@ -270,7 +270,7 @@ export class VoyagesController {
                     delete voyage.id;
                     // Auditoria.
                     voyage.userIdCreated = headerToken.id;
-                    voyage.dateCreated = getDate();
+                    voyage.dateCreated = GetDate();
                     delete voyage.userIdUpdated;
                     delete voyage.dateUpdated;
                     voyage.status = Boolean(voyage.status);
@@ -329,7 +329,7 @@ export class VoyagesController {
                     delete voyage.userIdCreated;
                     delete voyage.dateCreated;
                     voyage.userIdUpdated = headerToken.id;
-                    voyage.dateUpdated = getDate();
+                    voyage.dateUpdated = GetDate();
                     voyage.status = Boolean(voyage.status);
                     // Ejecutamos la funcion que actualiza el obj en la bd.
                     return this._voyagesService.Update(voyage);
@@ -405,7 +405,7 @@ export class VoyagesController {
                 delete result.userIdCreated;
                 delete result.dateCreated;
                 result.userIdUpdated = headerToken.id;
-                result.dateUpdated = getDate();
+                result.dateUpdated = GetDate();
                 return this._voyagesService.Delete(result);
             }
         ).then(
@@ -467,7 +467,7 @@ export class VoyagesController {
                     newVoyage.year = importVoyage.year;
                     // Auditoria.
                     newVoyage.userIdCreated = headerToken.id;
-                    newVoyage.dateCreated = getDate();
+                    newVoyage.dateCreated = GetDate();
                     delete newVoyage.userIdUpdated;
                     delete newVoyage.dateUpdated;
                     newVoyage.status = true;
@@ -506,7 +506,7 @@ export class VoyagesController {
                     newPort.arrivalPort = importVoyage.Arrival;
                     // Auditoria.
                     newPort.userIdCreated = headerToken.id;
-                    newPort.dateCreated = getDate();
+                    newPort.dateCreated = GetDate();
                     delete newPort.userIdUpdated;
                     delete newPort.dateUpdated;
                     newPort.status = true;
@@ -601,7 +601,7 @@ export class VoyagesController {
 
             // Auditoria.
             newReport.userIdCreated = headerToken.id;
-            newReport.dateCreated = getDate();
+            newReport.dateCreated = GetDate();
             delete newReport.userIdUpdated;
             delete newReport.dateUpdated;
             newReport.status = true;
