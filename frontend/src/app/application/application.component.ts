@@ -25,6 +25,7 @@ import { UserService } from '../services/user.service';
 
 import { DatabaseService } from '../services/database.service';
 
+// Importamos los servicio del webSocket
 import { WebSocketService } from './../services/web-socket.service';
 
 
@@ -37,15 +38,19 @@ import { User } from '../models/user';
 })
 export class ApplicationComponent implements OnInit {
 
+  // Usuario logeado.
   public loggedUser: User = {};
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'application';
 
+  // esta variable ayuda a saber si la aplicacion se encuantra en linea.
   public isOnline: boolean = !!window.navigator.onLine;
   public getUsers: User[] = [];
 
+
+   
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -65,27 +70,27 @@ export class ApplicationComponent implements OnInit {
         this.isOnline = isOnline;
       }
     );
+
   }
 
+
+  // al iniciar este componente se ejecuta lo siguiente.
   ngOnInit(): void {
-
-
-    this.webSocketService.listen('connection').subscribe((data)=>{
-      console.log('--------');
-      console.log('--------');
-      console.log('--------');
-      console.log('--------');
-      console.log(data);
-      console.log('--------');
-      console.log('--------');
-      console.log('--------');
-      console.log('--------');
-    })
-
     console.log('ngOnInit()');
 
     // Obtenemos los datos de la session.
     this.loggedUser = this.authService.GetLoggedUser();
+
+    // 
+    this.webSocketService.listen('connection').subscribe((data)=>{
+
+      if(data == 'connected'){
+        this.webSocketService.emit('register_connection',{user:this.loggedUser.name})
+      }
+
+    });
+
+
 
     // This template is mobile first so active menu in navbar
     // has submenu displayed by default but not in desktop
