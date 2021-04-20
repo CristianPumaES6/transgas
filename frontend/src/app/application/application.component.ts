@@ -25,6 +25,9 @@ import { UserService } from '../services/user.service';
 
 import { DatabaseService } from '../services/database.service';
 
+import { WebSocketService } from './../services/web-socket.service';
+
+
 // Models
 import { User } from '../models/user';
 @Component({
@@ -50,6 +53,7 @@ export class ApplicationComponent implements OnInit {
     private languageService: LanguageService,
     private authService: AuthService,
     readonly onlineOfflineService: OnlineOfflineService,
+    private webSocketService: WebSocketService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -64,6 +68,18 @@ export class ApplicationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+this.webSocketService.listen('').subscribe((data)=>{
+  console.log('--------');
+  console.log('--------');
+  console.log('--------');
+  console.log('--------');
+  console.log(data);
+  console.log('--------');
+  console.log('--------');
+  console.log('--------');
+  console.log('--------');
+})
+
     console.log('ngOnInit()');
 
     // Obtenemos los datos de la session.
