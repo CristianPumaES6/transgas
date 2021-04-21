@@ -1,1 +1,41 @@
-<p>list-of-connected-users works!</p>
+
+<table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
+    <thead>
+      <tr>
+
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            index
+        </th>
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            userName
+        </th>
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            firstConnection
+        </th>
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            lastConnection
+        </th>
+       
+      </tr>
+    </thead>
+    <tbody>
+
+        <ng-template ngFor let-iLoggedUser [ngForOf]="getLoggedUsers" let-i="index">
+            <tr>
+                <td class="p-1 color-title-table border">
+                    {{i}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    {{iLoggedUser.userName}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    {{iLoggedUser.firstConnection}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    {{iLoggedUser.lastConnection}}
+                </td>
+            </tr>
+        </ng-template>
+
+    </tbody>
+</table>

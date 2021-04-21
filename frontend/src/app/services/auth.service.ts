@@ -142,11 +142,12 @@ export class AuthService {
   RegisterUserConnection(loggedUser:LoggedUser): Observable<boolean> {
 
     // Armo el request
-    let url: string = EnvConfig.API + '/loggedUsersIsActive';
+    let url: string = EnvConfig.API + '/loggedUsers';
 
     let headers: HttpHeaders = new HttpHeaders(
       {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        //'Authorization': 'Bearer ' + this.userService.GetToken(),
       });
     let body: string = JSON.stringify(loggedUser);
     let options: any = { headers: headers, responseType: 'json' };
@@ -166,4 +167,34 @@ export class AuthService {
       ));
 
   }
+
+
+
+    // Obtiene todos los objetos segun el filtro enviado.
+    GetUserConnection(): Observable<LoggedUser[]> {
+      // Armo el request
+      let url: string = EnvConfig.API + '/loggedUsers';
+      let headers: HttpHeaders = new HttpHeaders(
+          {
+              'Content-Type': 'application/json',
+              //'Authorization': 'Bearer ' + this.userService.GetToken(),
+          });
+      let options: any = { headers: headers, responseType: 'json' };
+
+      // Mando consulta al API
+      return this.httpClient.get(url, options).pipe(
+          map(
+              (response: any) => {
+                  if (response.status && response.status === 200) {
+                      return response.data;
+                  } else {
+                      throw response.description || response.error || '';
+                  }
+              }
+          ), catchError((err) => {
+              return this.authGuardService.HandleError(err);
+          })
+      );
+  }
+
 }
