@@ -55,10 +55,15 @@ export class AppService {
     this.loggedUsers.push(loggedUser);
     return true;
   }
+
   private UpdateUserLogeated(loggedUser:LoggedUser):boolean{
 
-
     return true;
+  }
+
+
+  public GetLoggedUsers(){
+    return this.loggedUsers;
   }
 
 }

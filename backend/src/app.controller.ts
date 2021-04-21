@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request, HttpException, HttpStatus, Param, Headers, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, HttpException, HttpStatus, Param, Headers, Res, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 
@@ -93,38 +93,75 @@ export class AppController {
     );;
   }
 
-  @Post('loggedUsersIsActive')
-  async loggedUsers(@Headers() headers, @Body() loggedUser: LoggedUser){
+  @Post('loggedUsers')
+  async loggedUsers(@Headers() headers, @Body() loggedUser: LoggedUser): Promise<any>{
 
     return await DummyPromise().then(
-      (resultDummy: Boolean) => {
+        (resultDummy: Boolean) => {
 
-        return this.appService.IsUserLogeatedExit(loggedUser);
-      }
-    ).then(
-      (results: boolean) => {
+          return this.appService.IsUserLogeatedExit(loggedUser);
+        }
+      ).then(
+        (results: boolean) => {
 
-          // Retornamos una Respuesta exitosa.
-          return {
-              status: HttpStatus.OK,
-              message: 'OK REGISTER',
-              data: results,
-          };
-      }
-    ).catch(
-      err => {
-          // Obtengo mensajes de error
-          const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-          const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            // Retornamos una Respuesta exitosa.
+            return {
+                status: HttpStatus.OK,
+                message: 'OK REGISTER',
+                data: results,
+            };
+        }
+      ).catch(
+        err => {
+            // Obtengo mensajes de error
+            const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
 
 
-          // Caso contrario retornamos un error
-          throw new HttpException({
-              status: HttpStatus.ACCEPTED,
-              error: clientMsg,
-              message: errorMsg,
-          }, HttpStatus.ACCEPTED);
-      }
-  );
+            // Caso contrario retornamos un error
+            throw new HttpException({
+                status: HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, HttpStatus.ACCEPTED);
+        }
+      );
   }
+  
+  @Get('loggedUsers')
+  async GetLoggedUsers(@Headers() headers, @Query() loggedUser: LoggedUser): Promise<any>{
+      
+      
+      return await DummyPromise().then(
+          (resultDummy: Boolean) => {
+
+            return this.appService.GetLoggedUsers();
+          }
+        ).then(
+          (resultLoggedUsers: LoggedUser[]) => {
+
+              // Retornamos una Respuesta exitosa.
+              return {
+                  status: HttpStatus.OK,
+                  message: 'OK REGISTER',
+                  data: resultLoggedUsers,
+              };
+          }
+        ).catch(
+          err => {
+              // Obtengo mensajes de error
+              const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+              const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+              // Caso contrario retornamos un error
+              throw new HttpException({
+                  status: HttpStatus.ACCEPTED,
+                  error: clientMsg,
+                  message: errorMsg,
+              }, HttpStatus.ACCEPTED);
+          }
+      );
+  }
+
 }
