@@ -21,6 +21,7 @@ import { DatabaseService } from '../services/database.service';
 import { VoyageComponent } from '../components/voyages/voyage/voyage.component';
 import { DialogListReportComponent } from '../shared/dialog/dialog-list-report/dialog-list-report.component';
 import { ListOfConnectedUsersComponent } from '../shared/list-of-connected-users/list-of-connected-users.component';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ListOfConnectedUsersComponent } from '../shared/list-of-connected-users
     GlobalModule,
     CommonModule,
     ApplicationRoutingModule,
+    GoogleMapsModule
   ],
   providers: [ASideService, DatabaseService],
   bootstrap: [ApplicationComponent]
