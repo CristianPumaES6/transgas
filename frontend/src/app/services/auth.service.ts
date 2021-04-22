@@ -126,7 +126,6 @@ export class AuthService {
     return this.loggedUser;
   }
 
-
   Logout(): boolean {
 
     localStorage.clear();
@@ -137,6 +136,35 @@ export class AuthService {
 
   }
 
+  // Este servicio registra el logeo de un usuario.
+  EmitConnect(): Observable<boolean> {
+
+    // Armo el request
+    let url: string = EnvConfig.API + '/emitConnect';
+
+    let headers: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json',
+        //'Authorization': 'Bearer ' + this.userService.GetToken(),
+      });
+    let body: string = '';
+    let options: any = { headers: headers, responseType: 'json' };
+
+    return this.httpClient.post(url, body, options)
+      .pipe(map(
+        (response: any) => {
+
+          // Verificamos que la respuesta.
+          if (response.status && response.status === 200) {
+              return response.data;
+          } else {
+              throw response.description || response.error || '';
+          }
+
+        }
+      ));
+
+  }
 
   // Este servicio registra el logeo de un usuario.
   RegisterUserConnection(loggedUser:LoggedUser): Observable<boolean> {
@@ -168,10 +196,8 @@ export class AuthService {
 
   }
 
-
-
-    // Obtiene todos los objetos segun el filtro enviado.
-    GetUserConnection(): Observable<LoggedUser[]> {
+  // Obtiene todos los objetos segun el filtro enviado.
+  GetUserConnection(): Observable<LoggedUser[]> {
       // Armo el request
       let url: string = EnvConfig.API + '/loggedUsers';
       let headers: HttpHeaders = new HttpHeaders(

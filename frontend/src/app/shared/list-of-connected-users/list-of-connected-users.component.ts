@@ -63,7 +63,14 @@ export class ListOfConnectedUsersComponent implements OnInit {
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
+      
       Promise.resolve(true).then(
+        result => {
+
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.EmitConnect().pipe().toPromise();
+        }
+      ).then(
         result => {
 
           // Traigo a todos los User y lo instancio en el obj.
@@ -125,6 +132,21 @@ export class ListOfConnectedUsersComponent implements OnInit {
   }
 
 
+
+  // GetUsers: Cargo todos los Users para el listado de Users.
+  private EmitConnect(): Observable<boolean> {
+    console.log('EmitConnect()');
+
+    // Consulto la lista de paises para cargar combo
+    return this.authService.EmitConnect().pipe(map(
+      (resultEmitConnect: boolean) => {
+
+
+        // Segun el resultado retornamos la respuesta.
+        return resultEmitConnect;
+      }
+    ));
+  }
 
   // GetUsers: Cargo todos los Users para el listado de Users.
   private GetLoggedUsers(): Observable<boolean> {

@@ -165,8 +165,8 @@ export class AppController {
       );
   }
 
-  @Get('emitConnect')
-  async EmitConnect(){
+  @Post('emitConnect')
+  async EmitConnect(): Promise<any>{
     
     return await DummyPromise().then(
       (resultDummy: Boolean) => {
