@@ -29,6 +29,7 @@ import { AppGateway } from './app.gateway';
     UsersModule,
     AuthModule,
     VoyagesModule,
+    AppGateway,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

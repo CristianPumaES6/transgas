@@ -27,7 +27,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     // Emitimos al cliente un mensaje.
     client.emit('connection', 'connected');
-  
   }
 
   // Detectamos si un usuario se a desconectado.

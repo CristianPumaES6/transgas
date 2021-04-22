@@ -86,7 +86,7 @@ export class AppService {
       }
     );
 
-    this.gateway.wss.emit('connection', 'connected');
+    this.gateway.wss.emit('connection2', 'connected');
     return true;
   }
 
