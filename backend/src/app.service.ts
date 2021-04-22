@@ -37,12 +37,18 @@ export class AppService {
       });
 
     // Este usuario existe?
-    if(isUserExit){
-      loggedUser.lastConnection= GetDate();
-     return false;
-    }else{
+    if(isUserExit) {
+
+      loggedUser.lastConnection = GetDate();
+
+      this.UpdateUserLogeated(loggedUser);
+      
+      return false;
+    } else {
+
       loggedUser.firstConnection = GetDate();
       loggedUser.lastConnection = GetDate();
+
       // Si no existe 
       this.AddUserLogeated(loggedUser);
       console.log(this.loggedUsers);
@@ -58,12 +64,30 @@ export class AppService {
 
   private UpdateUserLogeated(loggedUser:LoggedUser):boolean{
 
+    if (loggedUser.lat == 0 && loggedUser.lng == 0) {
+    } else {
+
+    }
+
+    // Tenemos que actualizare 
     return true;
   }
 
 
-  public GetLoggedUsers(){
+  public GetLoggedUsers(): LoggedUser[]{
     return this.loggedUsers;
+  }
+
+  public EmitConnect() : boolean{
+        
+    this.loggedUsers.forEach(
+      loggedUser => {
+        loggedUser.isActive = false;
+      }
+    );
+
+    this.gateway.wss.emit('connection', 'connected');
+    return true;
   }
 
 }

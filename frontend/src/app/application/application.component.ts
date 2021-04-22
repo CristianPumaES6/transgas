@@ -94,6 +94,8 @@ export class ApplicationComponent implements OnInit {
             /* la geolocalización está disponible */
             navigator.geolocation.getCurrentPosition(
               (position) => {
+
+                // Guardamos la ubicacion del navegador
                 lat = position.coords.latitude;
                 lng = position.coords.longitude;
               }

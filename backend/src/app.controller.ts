@@ -99,6 +99,7 @@ export class AppController {
     return await DummyPromise().then(
         (resultDummy: Boolean) => {
 
+
           return this.appService.IsUserLogeatedExit(loggedUser);
         }
       ).then(
@@ -131,21 +132,21 @@ export class AppController {
   @Get('loggedUsers')
   async GetLoggedUsers(@Headers() headers, @Query() loggedUser: LoggedUser): Promise<any>{
       
-      
       return await DummyPromise().then(
-          (resultDummy: Boolean) => {
-
-            return this.appService.GetLoggedUsers();
-          }
-        ).then(
+        result => {
+          //
+          console.log('Fin de la sincronizacion.');
+          return this.appService.GetLoggedUsers();
+        }
+      ).then(
           (resultLoggedUsers: LoggedUser[]) => {
 
-              // Retornamos una Respuesta exitosa.
-              return {
-                  status: HttpStatus.OK,
-                  message: 'OK REGISTER',
-                  data: resultLoggedUsers,
-              };
+            // Retornamos una Respuesta exitosa.
+            return {
+                status: HttpStatus.OK,
+                message: 'OK REGISTER',
+                data: resultLoggedUsers,
+            };
           }
         ).catch(
           err => {
@@ -162,6 +163,42 @@ export class AppController {
               }, HttpStatus.ACCEPTED);
           }
       );
+  }
+
+  @Get('emitConnect')
+  async EmitConnect(){
+    
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this.appService.EmitConnect();
+      }
+    ).then(
+      (resultEmitConnect: boolean) => {
+
+          // Retornamos una Respuesta exitosa.
+          return {
+              status: HttpStatus.OK,
+              message: 'Send Emit Connect',
+              data: resultEmitConnect,
+          };
+      }
+    ).catch(
+      err => {
+          // Obtengo mensajes de error
+          const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+          const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+          // Caso contrario retornamos un error
+          throw new HttpException({
+              status: HttpStatus.ACCEPTED,
+              error: clientMsg,
+              message: errorMsg,
+          }, HttpStatus.ACCEPTED);
+      }
+    );
+
   }
 
 }
