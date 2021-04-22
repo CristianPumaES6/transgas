@@ -86,12 +86,30 @@ export class ApplicationComponent implements OnInit {
     this.webSocketService.listen('connection').subscribe(
       (data)=>{
 
+        let lat = 0;
+        let lng = 0;
         if(data == 'connected'){
+
+          if ("geolocation" in navigator) {
+            /* la geolocalización está disponible */
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+              }
+            )
+          } else {
+            /* la geolocalización NO está disponible */
+          }
+
           // Registramos la conectividad del usuario.
           this.authService.RegisterUserConnection(
             {
               token:localStorage.getItem('Session'),
-              userName:this.loggedUser.name
+              userName:this.loggedUser.name,
+              lat:lat,
+              lng:lng,
+              isActive:true
             }
           ).pipe().toPromise();
 
