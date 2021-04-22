@@ -15,13 +15,16 @@
         <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
             lastConnection
         </th>
-       
+       <th>
+           ubication
+       </th>
       </tr>
     </thead>
     <tbody>
 
         <ng-template ngFor let-iLoggedUser [ngForOf]="getLoggedUsers" let-i="index">
             <tr>
+
                 <td class="p-1 color-title-table border">
                     {{i}}
                 </td>
@@ -34,6 +37,12 @@
                 <td class="p-1 color-title-table border">
                     {{iLoggedUser.lastConnection}}
                 </td>
+                <td class="p-1 color-title-table border">
+                    <button mat-icon-button (click)="SelectUser(i)">
+                        <mat-icon>?</mat-icon>
+                      </button>
+                </td>
+
             </tr>
         </ng-template>
 

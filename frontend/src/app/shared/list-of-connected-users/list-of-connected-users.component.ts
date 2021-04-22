@@ -6,6 +6,7 @@ import { LoggedUser } from 'src/app/models/loggedUser';
 import { AuthService } from 'src/app/services/auth.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { LoadingService } from 'src/app/services/loading.service';
+
 @Component({
   selector: 'app-list-of-connected-users',
   templateUrl: './list-of-connected-users.component.html',
@@ -79,30 +80,7 @@ export class ListOfConnectedUsersComponent implements OnInit {
       ).then(
         result => {
           console.log('--- INICIO NAVIGATOR ---');
-          
-          // Obtenemos los datos del navigator.
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              this.center = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-              }
-
-              this.marker = {
-                position: {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude,
-                },
-                label: {
-                  color: 'red',
-                  text: 'Marker label ',
-                },
-                title: 'Marker title ',
-                options: { animation: google.maps.Animation.BOUNCE },
-              };
-            }
-          );
-          
+      
 
           return true;
         }
@@ -131,7 +109,33 @@ export class ListOfConnectedUsersComponent implements OnInit {
 
   }
 
+  public SelectUser(index){
 
+    console.log('SelectUser(index)');
+    console.log(this.getLoggedUsers);
+    console.log(index);
+    console.log(this.getLoggedUsers[index]);
+    console.log(this.getLoggedUsers[index].lng);
+    
+    this.center = {
+      lat: this.getLoggedUsers[index].lat,
+      lng: this.getLoggedUsers[index].lng,
+    }
+
+    this.marker = {
+      position: {
+        lat: this.getLoggedUsers[index].lat,
+        lng: this.getLoggedUsers[index].lng,
+      },
+      label: {
+        color: 'red',
+        text: 'Marker label ',
+      },
+      title: 'Marker title ',
+      options: { animation: google.maps.Animation.BOUNCE },
+    };
+
+  }
 
   // GetUsers: Cargo todos los Users para el listado de Users.
   private EmitConnect(): Observable<boolean> {
