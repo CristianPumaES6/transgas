@@ -40,7 +40,20 @@
     </tbody>
 </table>
 
+<br>
 
 <google-map width="750px"
-            height="450px">
+            height="450px"
+            [zoom]="zoom"
+            [center]="center"
+            [options]="options">
+
+    <map-marker [position]="marker.position"></map-marker>
+  
 </google-map>
+
+
+
+<!-- Use custom zoom buttons -->
+<button (click)="zoomIn()">Zoom in</button>
+<button (click)="zoomOut()">Zoom out</button>

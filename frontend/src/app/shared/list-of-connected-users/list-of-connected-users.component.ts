@@ -13,12 +13,39 @@ import { LoadingService } from 'src/app/services/loading.service';
 })
 export class ListOfConnectedUsersComponent implements OnInit {
 
-  public getLoggedUsers:LoggedUser[]=[];
-
   //======== VARIABLES DE TRADUCCION=============
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'users';
   //=================[ FIN ]=====================
+
+  // Usuarios logeados
+  public getLoggedUsers:LoggedUser[]=[];
+
+  // zomm actual
+  public zoom = 12;
+  public center: google.maps.LatLngLiteral;
+  public options: google.maps.MapOptions = {
+    mapTypeId: 'hybrid',
+    zoomControl: false,
+    scrollwheel: false,
+    disableDoubleClickZoom: true,
+    maxZoom: 15,
+    minZoom: 8,
+  };
+
+  // Configuracion Maker 
+  public marker = {
+    position: {
+      lat: 0,
+      lng: 0,
+    },
+    label: {
+      color: '',
+      text: '',
+    },
+    title: '',
+    options: { animation: google.maps.Animation.BOUNCE },
+  };
 
   constructor(
     private readonly authService: AuthService,
@@ -44,8 +71,37 @@ export class ListOfConnectedUsersComponent implements OnInit {
         }
       ).then(
         result => {
+          console.log('--- INICIO NAVIGATOR ---');
+          
+          // Obtenemos los datos del navigator.
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              this.center = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              }
+
+              this.marker = {
+                position: {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude,
+                },
+                label: {
+                  color: 'red',
+                  text: 'Marker label ',
+                },
+                title: 'Marker title ',
+                options: { animation: google.maps.Animation.BOUNCE },
+              };
+            }
+          );
           
 
+          return true;
+        }
+      ).then(
+        result => {
+          
           // Activamos el loading.
           this.loadingService.Close();
 
@@ -62,6 +118,7 @@ export class ListOfConnectedUsersComponent implements OnInit {
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
           // Deshabilito el spinner de loading
           this.loadingService.Close();
+
         });
     }
 
@@ -86,5 +143,13 @@ export class ListOfConnectedUsersComponent implements OnInit {
     ));
   }
 
+
+  public zoomIn() {
+    if (this.zoom < this.options.maxZoom) this.zoom++
+  }
+
+  public zoomOut() {
+    if (this.zoom > this.options.minZoom) this.zoom--
+  }
 
 }
