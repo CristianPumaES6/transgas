@@ -134,8 +134,6 @@ export class AppController {
       
       return await DummyPromise().then(
         result => {
-          //
-          console.log('Fin de la sincronizacion.');
           return this.appService.GetLoggedUsers();
         }
       ).then(

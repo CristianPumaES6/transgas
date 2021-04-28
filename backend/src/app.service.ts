@@ -38,36 +38,50 @@ export class AppService {
 
     // Este usuario existe?
     if(isUserExit) {
-
-      loggedUser.lastConnection = GetDate();
-
       this.UpdateUserLogeated(loggedUser);
       
       return false;
     } else {
 
-      loggedUser.firstConnection = GetDate();
-      loggedUser.lastConnection = GetDate();
-
       // Si no existe 
       this.AddUserLogeated(loggedUser);
-      console.log(this.loggedUsers);
       
       return true;
     }
   }
 
   private AddUserLogeated(loggedUser:LoggedUser):boolean{
+
+    loggedUser.firstConnection = GetDate();
+    loggedUser.lastConnection = GetDate();
+    loggedUser.isActive = true;
     this.loggedUsers.push(loggedUser);
+
     return true;
+
   }
 
   private UpdateUserLogeated(loggedUser:LoggedUser):boolean{
 
-    if (loggedUser.lat == 0 && loggedUser.lng == 0) {
-    } else {
+    
+    this.loggedUsers.forEach( logged => {
+      // Verificamos que el token sea el mismo para actualizar su longitud y latitud.
+      if ( logged.token === loggedUser.token ) {
 
-    }
+        // Actualizamos la ultima hora de conexion.
+        logged.lastConnection = GetDate();
+
+        // si la latitud y la longitud es la misma no actualizo.
+        if (loggedUser.lat == 0 && loggedUser.lng == 0) {
+        } else {
+          // actualizamos la latiud y la longitud.
+          logged.lat = loggedUser.lat;
+          logged.lat = loggedUser.lng;
+        }
+
+        logged.isActive = true;
+      }
+    });
 
     // Tenemos que actualizare 
     return true;

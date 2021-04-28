@@ -88,7 +88,7 @@ export class ApplicationComponent implements OnInit {
 
         let lat = 0;
         let lng = 0;
-        if(data == 'connected'){
+        if(data == 'connected') {
 
           if ("geolocation" in navigator) {
             /* la geolocalización está disponible */
@@ -98,23 +98,34 @@ export class ApplicationComponent implements OnInit {
                 // Guardamos la ubicacion del navegador
                 lat = position.coords.latitude;
                 lng = position.coords.longitude;
+
+                // Registramos la conectividad del usuario.
+                this.authService.RegisterUserConnection(
+                  {
+                    token:localStorage.getItem('Session'),
+                    userName:this.loggedUser.name,
+                    lat:lat,
+                    lng:lng,
+                    isActive:true
+                  }
+                ).pipe().toPromise();
+
               }
             )
           } else {
             /* la geolocalización NO está disponible */
+            // Registramos la conectividad del usuario.
+            this.authService.RegisterUserConnection(
+              {
+                token:localStorage.getItem('Session'),
+                userName:this.loggedUser.name,
+                lat:lat,
+                lng:lng,
+                isActive:true
+              }
+            ).pipe().toPromise();
+
           }
-
-          // Registramos la conectividad del usuario.
-          this.authService.RegisterUserConnection(
-            {
-              token:localStorage.getItem('Session'),
-              userName:this.loggedUser.name,
-              lat:lat,
-              lng:lng,
-              isActive:true
-            }
-          ).pipe().toPromise();
-
         }
 
       }
@@ -152,6 +163,7 @@ export class ApplicationComponent implements OnInit {
                 ).pipe().toPromise();
               }
             )
+
           } else {
 
             /* la geolocalización NO está disponible */

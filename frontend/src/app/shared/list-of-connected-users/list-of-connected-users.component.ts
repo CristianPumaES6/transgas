@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,8 +13,10 @@ import { LoadingService } from 'src/app/services/loading.service';
   templateUrl: './list-of-connected-users.component.html',
   styleUrls: ['./list-of-connected-users.component.scss']
 })
-export class ListOfConnectedUsersComponent implements OnInit {
+export class ListOfConnectedUsersComponent implements OnInit{
 
+  @ViewChild('myDivContent') htmlMyDivContent: ElementRef;
+  
   //======== VARIABLES DE TRADUCCION=============
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'users';
@@ -24,8 +27,8 @@ export class ListOfConnectedUsersComponent implements OnInit {
 
   // zomm actual
   public zoom = 12;
-  public center: google.maps.LatLngLiteral;
-  public options: google.maps.MapOptions = {
+  public center;
+  public options: {
     mapTypeId: 'hybrid',
     zoomControl: false,
     scrollwheel: false,
@@ -45,18 +48,27 @@ export class ListOfConnectedUsersComponent implements OnInit {
       text: '',
     },
     title: '',
-    options: { animation: google.maps.Animation.BOUNCE },
+    options: { animation: null }//{ animation: google.maps.Animation.BOUNCE },
   };
 
   constructor(
     private readonly authService: AuthService,
     private loadingService: LoadingService,
     private languageService: LanguageService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private _renderer2: Renderer2, 
     ) { }
 
   ngOnInit(): void {
+  
     console.log('ngOnInit()');
+
+    let script = this._renderer2.createElement('script');
+    script.type = 'application/javascript';
+    script.src = 'https://maps.google.com/maps/api/js?sensor=false';
+
+    // this.htmlMyDivContent.nativeElement.innerHTML = "Hello Angular 10!";
+    // this._renderer2.appendChild(this.htmlMyDivContent, script);
 
     // Activamos el loading.
     this.loadingService.Open();
@@ -64,31 +76,22 @@ export class ListOfConnectedUsersComponent implements OnInit {
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
-      
       Promise.resolve(true).then(
         result => {
-
           // Traigo a todos los User y lo instancio en el obj.
           return this.EmitConnect().pipe().toPromise();
         }
       ).then(
         result => {
-
-          // Traigo a todos los User y lo instancio en el obj.
-          return this.GetLoggedUsers().pipe().toPromise();
-        }
-      ).then(
-        result => {
-          console.log('--- INICIO NAVIGATOR ---');
-      
-
-          return true;
-        }
-      ).then(
-        result => {
           
-          // Activamos el loading.
-          this.loadingService.Close();
+          setTimeout( () => {
+
+              // Traigo a todos los User y lo instancio en el obj.
+              this.GetLoggedUsers().pipe().toPromise();
+              // Activamos el loading.
+              this.loadingService.Close();
+
+            }, 5000 );
 
         }
       ).catch(
@@ -114,9 +117,9 @@ export class ListOfConnectedUsersComponent implements OnInit {
     console.log('SelectUser(index)');
     console.log(this.getLoggedUsers);
     console.log(index);
-    console.log(this.getLoggedUsers[index]);
+    console.log(this.getLoggedUsers[index].lat);
     console.log(this.getLoggedUsers[index].lng);
-    
+
     this.center = {
       lat: this.getLoggedUsers[index].lat,
       lng: this.getLoggedUsers[index].lng,
@@ -132,7 +135,9 @@ export class ListOfConnectedUsersComponent implements OnInit {
         text: 'Marker label ',
       },
       title: 'Marker title ',
-      options: { animation: google.maps.Animation.BOUNCE },
+      options: {
+         animation: google.maps.Animation.BOUNCE 
+      },
     };
 
   }
