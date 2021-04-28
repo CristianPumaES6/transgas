@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request, HttpException, HttpStatus, Param, Header, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, HttpException, HttpStatus, Param, Headers, Res, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 
@@ -11,6 +11,7 @@ import { UsersService } from './components/users/users.service';
 
 // Assets || Si es una class lo tego que poner en el constructor y como provverdor del modulo
 import { DummyPromise } from './assets/promises.assets';
+import { LoggedUser } from './models/loggedUser';
 
 @Controller()
 export class AppController {
@@ -90,6 +91,112 @@ export class AppController {
         }, HttpStatus.ACCEPTED);
       }
     );;
+  }
+
+  @Post('loggedUsers')
+  async loggedUsers(@Headers() headers, @Body() loggedUser: LoggedUser): Promise<any>{
+
+    return await DummyPromise().then(
+        (resultDummy: Boolean) => {
+
+
+          return this.appService.IsUserLogeatedExit(loggedUser);
+        }
+      ).then(
+        (results: boolean) => {
+
+            // Retornamos una Respuesta exitosa.
+            return {
+                status: HttpStatus.OK,
+                message: 'OK REGISTER',
+                data: results,
+            };
+        }
+      ).catch(
+        err => {
+            // Obtengo mensajes de error
+            const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+            // Caso contrario retornamos un error
+            throw new HttpException({
+                status: HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, HttpStatus.ACCEPTED);
+        }
+      );
+  }
+  
+  @Get('loggedUsers')
+  async GetLoggedUsers(@Headers() headers, @Query() loggedUser: LoggedUser): Promise<any>{
+      
+      return await DummyPromise().then(
+        result => {
+          return this.appService.GetLoggedUsers();
+        }
+      ).then(
+          (resultLoggedUsers: LoggedUser[]) => {
+
+            // Retornamos una Respuesta exitosa.
+            return {
+                status: HttpStatus.OK,
+                message: 'OK REGISTER',
+                data: resultLoggedUsers,
+            };
+          }
+        ).catch(
+          err => {
+              // Obtengo mensajes de error
+              const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+              const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+              // Caso contrario retornamos un error
+              throw new HttpException({
+                  status: HttpStatus.ACCEPTED,
+                  error: clientMsg,
+                  message: errorMsg,
+              }, HttpStatus.ACCEPTED);
+          }
+      );
+  }
+
+  @Post('emitConnect')
+  async EmitConnect(): Promise<any>{
+    
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this.appService.EmitConnect();
+      }
+    ).then(
+      (resultEmitConnect: boolean) => {
+
+          // Retornamos una Respuesta exitosa.
+          return {
+              status: HttpStatus.OK,
+              message: 'Send Emit Connect',
+              data: resultEmitConnect,
+          };
+      }
+    ).catch(
+      err => {
+          // Obtengo mensajes de error
+          const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+          const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+          // Caso contrario retornamos un error
+          throw new HttpException({
+              status: HttpStatus.ACCEPTED,
+              error: clientMsg,
+              message: errorMsg,
+          }, HttpStatus.ACCEPTED);
+      }
+    );
+
   }
 
 }

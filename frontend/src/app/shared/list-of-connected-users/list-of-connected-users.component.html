@@ -1,0 +1,80 @@
+
+<table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
+    <thead>
+      <tr>
+
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            index
+        </th>
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            userName
+        </th>
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            firstConnection
+        </th>
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            lastConnection
+        </th>
+        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+            Is Active
+        </th>
+       <th>
+           ubication
+       </th>
+      </tr>
+    </thead>
+    <tbody>
+
+        <ng-template ngFor let-iLoggedUser [ngForOf]="getLoggedUsers" let-i="index">
+            <tr>
+
+                <td class="p-1 color-title-table border">
+                    {{i}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    {{iLoggedUser.userName}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    {{iLoggedUser.firstConnection}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    {{iLoggedUser.lastConnection}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    {{iLoggedUser.isActive}}
+                </td>
+                <td class="p-1 color-title-table border">
+                    <button mat-icon-button (click)="SelectUser(i)">
+                        <mat-icon>?</mat-icon>
+                    </button>
+                </td>
+
+            </tr>
+        </ng-template>
+
+    </tbody>
+</table>
+
+<br>
+
+<ng-template [ngIf]="false">
+
+    <google-map width="750px"
+                height="450px"
+                [zoom]="zoom"
+                [center]="center"
+                [options]="options">
+
+        <map-marker [position]="marker.position"></map-marker>
+    
+    </google-map>
+
+</ng-template>
+
+<!-- Use custom zoom buttons -->
+<button (click)="zoomIn()">Zoom in</button>
+<button (click)="zoomOut()">Zoom out</button>
+
+
+<!-- En este elemento agregaremos los script. -->
+<div #myDivContent></div>

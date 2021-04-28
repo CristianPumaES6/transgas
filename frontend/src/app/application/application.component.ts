@@ -25,6 +25,10 @@ import { UserService } from '../services/user.service';
 
 import { DatabaseService } from '../services/database.service';
 
+// Importamos los servicio del webSocket
+import { WebSocketService } from './../services/web-socket.service';
+
+
 // Models
 import { User } from '../models/user';
 @Component({
@@ -34,15 +38,19 @@ import { User } from '../models/user';
 })
 export class ApplicationComponent implements OnInit {
 
+  // Usuario logeado.
   public loggedUser: User = {};
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'application';
 
+  // esta variable ayuda a saber si la aplicacion se encuantra en linea.
   public isOnline: boolean = !!window.navigator.onLine;
   public getUsers: User[] = [];
 
+
+   
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -50,6 +58,7 @@ export class ApplicationComponent implements OnInit {
     private languageService: LanguageService,
     private authService: AuthService,
     readonly onlineOfflineService: OnlineOfflineService,
+    private webSocketService: WebSocketService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -61,13 +70,123 @@ export class ApplicationComponent implements OnInit {
         this.isOnline = isOnline;
       }
     );
+
   }
 
+
+  // al iniciar este componente se ejecuta lo siguiente.
   ngOnInit(): void {
     console.log('ngOnInit()');
 
     // Obtenemos los datos de la session.
     this.loggedUser = this.authService.GetLoggedUser();
+
+    // La aplicacion estara a la escucha de alguna connectio.
+    // Si escucha una nueva conexion enviara un update de su estado.
+    this.webSocketService.listen('connection').subscribe(
+      (data)=>{
+
+        let lat = 0;
+        let lng = 0;
+        if(data == 'connected') {
+
+          if ("geolocation" in navigator) {
+            /* la geolocalización está disponible */
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+
+                // Guardamos la ubicacion del navegador
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+
+                // Registramos la conectividad del usuario.
+                this.authService.RegisterUserConnection(
+                  {
+                    token:localStorage.getItem('Session'),
+                    userName:this.loggedUser.name,
+                    lat:lat,
+                    lng:lng,
+                    isActive:true
+                  }
+                ).pipe().toPromise();
+
+              }
+            )
+          } else {
+            /* la geolocalización NO está disponible */
+            // Registramos la conectividad del usuario.
+            this.authService.RegisterUserConnection(
+              {
+                token:localStorage.getItem('Session'),
+                userName:this.loggedUser.name,
+                lat:lat,
+                lng:lng,
+                isActive:true
+              }
+            ).pipe().toPromise();
+
+          }
+        }
+
+      }
+    );
+
+    this.webSocketService.listen('connection2').subscribe(
+      (data)=>{
+
+        let lat = 0;
+        let lng = 0;
+
+        console.log('connection 2 incio');
+
+          if ("geolocation" in navigator) {
+
+            /* la geolocalización está disponible */
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+
+                console.log('respuesta getCurrentPosition');
+                // Guardamos la ubicacion del navegador
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+
+
+                // Registramos la conectividad del usuario.
+                this.authService.RegisterUserConnection(
+                  {
+                    token: localStorage.getItem('Session'),
+                    userName: this.loggedUser.name,
+                    lat: lat,
+                    lng: lng,
+                    isActive: true
+                  }
+                ).pipe().toPromise();
+              }
+            )
+
+          } else {
+
+            /* la geolocalización NO está disponible */
+            console.log(' no estro al getCurrentPosition');
+            
+            // Registramos la conectividad del usuario.
+            this.authService.RegisterUserConnection(
+              {
+                token: localStorage.getItem('Session'),
+                userName: this.loggedUser.name,
+                lat: lat,
+                lng: lng,
+                isActive: true
+              }
+            ).pipe().toPromise();
+
+          }
+
+          console.log('registrar el usuario de ocneccion.')
+          
+
+      }
+    );
 
     // This template is mobile first so active menu in navbar
     // has submenu displayed by default but not in desktop

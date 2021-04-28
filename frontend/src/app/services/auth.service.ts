@@ -27,6 +27,7 @@ import * as TimeZone from 'moment-timezone';
 
 // Config
 import { AuthGuardService } from './auth-guard.service';
+import { LoggedUser } from '../models/loggedUser';
 
 
 @Injectable({
@@ -45,6 +46,7 @@ export class AuthService {
     private languageService: LanguageService,
     private authGuardService: AuthGuardService,
   ) {
+    console.log('Constructor');
 
     // Intento obtener datos almacenados en localStorage
     try {
@@ -124,7 +126,6 @@ export class AuthService {
     return this.loggedUser;
   }
 
-
   Logout(): boolean {
 
     localStorage.clear();
@@ -133,6 +134,93 @@ export class AuthService {
 
     return false;
 
+  }
+
+  // Este servicio registra el logeo de un usuario.
+  EmitConnect(): Observable<boolean> {
+
+    // Armo el request
+    let url: string = EnvConfig.API + '/emitConnect';
+
+    let headers: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json',
+        //'Authorization': 'Bearer ' + this.userService.GetToken(),
+      });
+    let body: string = '';
+    let options: any = { headers: headers, responseType: 'json' };
+
+    return this.httpClient.post(url, body, options)
+      .pipe(map(
+        (response: any) => {
+
+          // Verificamos que la respuesta.
+          if (response.status && response.status === 200) {
+              return response.data;
+          } else {
+              throw response.description || response.error || '';
+          }
+
+        }
+      ));
+
+  }
+
+  // Este servicio registra el logeo de un usuario.
+  RegisterUserConnection(loggedUser:LoggedUser): Observable<boolean> {
+
+    // Armo el request
+    let url: string = EnvConfig.API + '/loggedUsers';
+
+    let headers: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json',
+        //'Authorization': 'Bearer ' + this.userService.GetToken(),
+      });
+    let body: string = JSON.stringify(loggedUser);
+    let options: any = { headers: headers, responseType: 'json' };
+
+    return this.httpClient.post(url, body, options)
+      .pipe(map(
+        (response: any) => {
+
+          // Verificamos que la respuesta.
+          if (response.status && response.status === 200) {
+              return response.data;
+          } else {
+              throw response.description || response.error || '';
+          }
+
+        }
+      ));
+
+  }
+
+  // Obtiene todos los objetos segun el filtro enviado.
+  GetUserConnection(): Observable<LoggedUser[]> {
+      // Armo el request
+      let url: string = EnvConfig.API + '/loggedUsers';
+      let headers: HttpHeaders = new HttpHeaders(
+          {
+              'Content-Type': 'application/json',
+              //'Authorization': 'Bearer ' + this.userService.GetToken(),
+          });
+      let options: any = { headers: headers, responseType: 'json' };
+
+      // Mando consulta al API
+      return this.httpClient.get(url, options).pipe(
+          map(
+              (response: any) => {
+                  if (response.status && response.status === 200) {
+                      return response.data;
+                  } else {
+                      throw response.description || response.error || '';
+                  }
+              }
+          ), catchError((err) => {
+              return this.authGuardService.HandleError(err);
+          })
+      );
   }
 
 }

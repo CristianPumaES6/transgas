@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { JwtDecode } from 'src/assets/jwtDecode.assets';
-import { getDate } from 'src/assets/moment.assets';
+import { GetDate } from 'src/assets/moment.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { Port } from 'src/models/port.entity';
 import { UserEntity } from 'src/models/user.entity';
@@ -195,7 +195,7 @@ export class PortsController {
                     delete port.id;
                     // Auditoria.
                     port.userIdCreated = headerToken.id;
-                    port.dateCreated = getDate();
+                    port.dateCreated = GetDate();
                     delete port.userIdUpdated;
                     delete port.dateUpdated;
                     port.status = Boolean(port.status);
@@ -254,7 +254,7 @@ export class PortsController {
                     delete port.userIdCreated;
                     delete port.dateCreated;
                     port.userIdUpdated = headerToken.id;
-                    port.dateUpdated = getDate();
+                    port.dateUpdated = GetDate();
                     port.status = Boolean(port.status);
 
 
@@ -334,7 +334,7 @@ export class PortsController {
                 delete result.userIdCreated;
                 delete result.dateCreated;
                 result.userIdUpdated = headerToken.id;
-                result.dateUpdated = getDate();
+                result.dateUpdated = GetDate();
 
                 return this._portsService.Delete(result);
             }
