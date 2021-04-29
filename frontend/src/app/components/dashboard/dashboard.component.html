@@ -123,16 +123,15 @@
 
       <br><br>
       <div class="row">
-
-        <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
-          <span class="transgas-file-excel"></span>
-        </div>
+        <a href="#" id="buttom_Excel" (click)="ExportExcel()" class="pr-3 pb-3">
+          <span class="icon-archivo-excel"></span>
+        </a>
 
 
 
         <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
-          (click)="SelectionmodalDisplayView()" class="pr-3 pb-3">
-          <span class="transgas-2000-eye"></span>
+          (click)="ExportPDF()" class="pr-3 pb-3">
+          <span class="icon-archivo-pdf"></span>
         </a>
       </div>
 
@@ -663,16 +662,18 @@
           <br><br>
           <div class="row">
 
-            <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
-              <span class="transgas-file-excel"></span>
+            <div class="row">
+              <a href="#" id="buttom_Excel" (click)="ExportExcel()" class="pr-3 pb-3">
+                <span class="icon-archivo-excel"></span>
+              </a>
+      
+      
+      
+              <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
+                (click)="ExportPDF()" class="pr-3 pb-3">
+                <span class="icon-archivo-pdf"></span>
+              </a>
             </div>
-
-
-
-            <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
-              (click)="SelectionmodalDisplayView()" class="pr-3 pb-3">
-              <span class="transgas-2000-eye"></span>
-            </a>
           </div>
 
 

@@ -24,6 +24,7 @@ import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDat
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
 import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ExcelService } from '../../services/excel.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -139,7 +140,8 @@ export class DashboardComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private excelService: ExcelService
   ) { }
 
   ngOnInit(): void {
@@ -551,13 +553,16 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  public exportExcel(): boolean {
+  public ExportExcel(): boolean {
     console.log('exportExcel();');
+
+
+    this.excelService.GenerateExcel();
 
     return false;
   }
 
-  public exportPdf(): boolean {
+  public ExportPDF(): boolean {
     console.log('exportPdf()');
 
     return false;
