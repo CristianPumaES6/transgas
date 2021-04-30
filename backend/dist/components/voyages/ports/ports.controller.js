@@ -127,7 +127,7 @@ let PortsController = class PortsController {
                 }
                 delete port.id;
                 port.userIdCreated = headerToken.id;
-                port.dateCreated = moment_assets_1.getDate();
+                port.dateCreated = moment_assets_1.GetDate();
                 delete port.userIdUpdated;
                 delete port.dateUpdated;
                 port.status = Boolean(port.status);
@@ -163,7 +163,7 @@ let PortsController = class PortsController {
                 delete port.userIdCreated;
                 delete port.dateCreated;
                 port.userIdUpdated = headerToken.id;
-                port.dateUpdated = moment_assets_1.getDate();
+                port.dateUpdated = moment_assets_1.GetDate();
                 port.status = Boolean(port.status);
                 return this._portsService.Update(port);
             }
@@ -207,7 +207,7 @@ let PortsController = class PortsController {
             delete result.userIdCreated;
             delete result.dateCreated;
             result.userIdUpdated = headerToken.id;
-            result.dateUpdated = moment_assets_1.getDate();
+            result.dateUpdated = moment_assets_1.GetDate();
             return this._portsService.Delete(result);
         }).then((resultDelete) => {
             return {

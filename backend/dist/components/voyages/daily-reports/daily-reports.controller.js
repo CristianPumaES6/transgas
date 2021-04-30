@@ -105,7 +105,7 @@ let DailyReportsController = class DailyReportsController {
                 dailyReport.steamingTime = dailyReport.steamingTime || 0;
                 dailyReport.distance = dailyReport.distance || 0;
                 dailyReport.userIdCreated = headerToken.id;
-                dailyReport.dateCreated = moment_assets_1.getDate();
+                dailyReport.dateCreated = moment_assets_1.GetDate();
                 delete dailyReport.userIdUpdated;
                 delete dailyReport.dateUpdated;
                 dailyReport.status = Boolean(dailyReport.status);
@@ -155,7 +155,7 @@ let DailyReportsController = class DailyReportsController {
                 delete dailyReport.userIdCreated;
                 delete dailyReport.dateCreated;
                 dailyReport.userIdUpdated = headerToken.id;
-                dailyReport.dateUpdated = moment_assets_1.getDate();
+                dailyReport.dateUpdated = moment_assets_1.GetDate();
                 dailyReport.status = Boolean(dailyReport.status);
                 return this._dailyReportsService.Update(dailyReport);
             }
@@ -194,7 +194,7 @@ let DailyReportsController = class DailyReportsController {
             delete result.userIdCreated;
             delete result.dateCreated;
             result.userIdUpdated = headerToken.id;
-            result.dateUpdated = moment_assets_1.getDate();
+            result.dateUpdated = moment_assets_1.GetDate();
             return this._dailyReportsService.Delete(result);
         }).then((resultDelete) => {
             return {

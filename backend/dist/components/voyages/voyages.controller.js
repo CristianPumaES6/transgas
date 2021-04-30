@@ -185,7 +185,7 @@ let VoyagesController = class VoyagesController {
                     throw new Error('ERROR_USERID_FAIL');
                 delete voyage.id;
                 voyage.userIdCreated = headerToken.id;
-                voyage.dateCreated = moment_assets_1.getDate();
+                voyage.dateCreated = moment_assets_1.GetDate();
                 delete voyage.userIdUpdated;
                 delete voyage.dateUpdated;
                 voyage.status = Boolean(voyage.status);
@@ -221,7 +221,7 @@ let VoyagesController = class VoyagesController {
                 delete voyage.userIdCreated;
                 delete voyage.dateCreated;
                 voyage.userIdUpdated = headerToken.id;
-                voyage.dateUpdated = moment_assets_1.getDate();
+                voyage.dateUpdated = moment_assets_1.GetDate();
                 voyage.status = Boolean(voyage.status);
                 return this._voyagesService.Update(voyage);
             }
@@ -264,7 +264,7 @@ let VoyagesController = class VoyagesController {
             delete result.userIdCreated;
             delete result.dateCreated;
             result.userIdUpdated = headerToken.id;
-            result.dateUpdated = moment_assets_1.getDate();
+            result.dateUpdated = moment_assets_1.GetDate();
             return this._voyagesService.Delete(result);
         }).then((resultDelete) => {
             return {
@@ -302,7 +302,7 @@ let VoyagesController = class VoyagesController {
                         newVoyage.userId = importVoyage.USERID;
                         newVoyage.year = importVoyage.year;
                         newVoyage.userIdCreated = headerToken.id;
-                        newVoyage.dateCreated = moment_assets_1.getDate();
+                        newVoyage.dateCreated = moment_assets_1.GetDate();
                         delete newVoyage.userIdUpdated;
                         delete newVoyage.dateUpdated;
                         newVoyage.status = true;
@@ -326,7 +326,7 @@ let VoyagesController = class VoyagesController {
                         newPort.departurePort = importVoyage.Departure;
                         newPort.arrivalPort = importVoyage.Arrival;
                         newPort.userIdCreated = headerToken.id;
-                        newPort.dateCreated = moment_assets_1.getDate();
+                        newPort.dateCreated = moment_assets_1.GetDate();
                         delete newPort.userIdUpdated;
                         delete newPort.dateUpdated;
                         newPort.status = true;
@@ -411,7 +411,7 @@ let VoyagesController = class VoyagesController {
                     newReport.activityPerformed = 'OTHER_ACT';
                 }
                 newReport.userIdCreated = headerToken.id;
-                newReport.dateCreated = moment_assets_1.getDate();
+                newReport.dateCreated = moment_assets_1.GetDate();
                 delete newReport.userIdUpdated;
                 delete newReport.dateUpdated;
                 newReport.status = true;

@@ -18,6 +18,7 @@ const passport_1 = require("@nestjs/passport");
 const app_service_1 = require("./app.service");
 const auth_service_1 = require("./components/auth/auth.service");
 const promises_assets_1 = require("./assets/promises.assets");
+const loggedUser_1 = require("./models/loggedUser");
 let AppController = class AppController {
     constructor(appService, authService) {
         this.appService = appService;
@@ -67,6 +68,63 @@ let AppController = class AppController {
         });
         ;
     }
+    async loggedUsers(headers, loggedUser) {
+        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+            return this.appService.IsUserLogeatedExit(loggedUser);
+        }).then((results) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK REGISTER',
+                data: results,
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
+    async GetLoggedUsers(headers, loggedUser) {
+        return await promises_assets_1.DummyPromise().then(result => {
+            return this.appService.GetLoggedUsers();
+        }).then((resultLoggedUsers) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK REGISTER',
+                data: resultLoggedUsers,
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
+    async EmitConnect() {
+        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+            return this.appService.EmitConnect();
+        }).then((resultEmitConnect) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'Send Emit Connect',
+                data: resultEmitConnect,
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
 };
 __decorate([
     common_1.Get('pruebas'),
@@ -90,6 +148,26 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "login", null);
+__decorate([
+    common_1.Post('loggedUsers'),
+    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, loggedUser_1.LoggedUser]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "loggedUsers", null);
+__decorate([
+    common_1.Get('loggedUsers'),
+    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, loggedUser_1.LoggedUser]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetLoggedUsers", null);
+__decorate([
+    common_1.Post('emitConnect'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "EmitConnect", null);
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,

@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConvertDDMMYYYToYYYYMMDD = exports.getDate = void 0;
+exports.ConvertDDMMYYYToYYYYMMDD = exports.GetDate = void 0;
 const moment = require("moment");
 const momentTimezone = require("moment-timezone");
 moment.locale();
 momentTimezone().tz("America/Los_Angeles").format();
-function getDate() {
+function GetDate() {
     return moment().format();
 }
-exports.getDate = getDate;
+exports.GetDate = GetDate;
 function ConvertDDMMYYYToYYYYMMDD(dateDDMMYYY) {
     let date = moment(dateDDMMYYY, "MM/DD/YYYY");
     return new Date(date.format("YYYY/MM/DD"));

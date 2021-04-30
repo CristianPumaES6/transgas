@@ -5,7 +5,7 @@ moment.locale();
 momentTimezone().tz("America/Los_Angeles").format();
 
 // AL ser una class lo tengo que poner en el constructor para que pueda ser utilizado.
-export function getDate(): any {
+export function GetDate(): any {
 
     // lo desencripto
     return moment().format();
@@ -138,7 +138,7 @@ export function TextMonthYear(date: any): string {
 
 export function TextMonthDayYear(date: any): string {
     let momentDate = moment(date, 'MM-DD-YYYY');
-    let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ' ' + momentDate.format('YYYY')
+    let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ', ' + momentDate.format('YYYY')
 
     return result;
 }

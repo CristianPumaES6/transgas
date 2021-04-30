@@ -156,7 +156,7 @@ let UsersController = class UsersController {
                 user.consumptionEquipmentBOILER_IFO = user.consumptionEquipmentBOILER_IFO || 0;
                 user.consumptionEquipmentOther_IFO = user.consumptionEquipmentOther_IFO || 0;
                 user.userIdCreated = headerToken.id;
-                user.dateCreated = moment_assets_1.getDate();
+                user.dateCreated = moment_assets_1.GetDate();
                 delete user.userIdUpdated;
                 delete user.dateUpdated;
                 user.status = Boolean(user.status);
@@ -251,7 +251,7 @@ let UsersController = class UsersController {
                 delete user.userIdCreated;
                 delete user.dateCreated;
                 user.userIdUpdated = headerToken.id;
-                user.dateUpdated = moment_assets_1.getDate();
+                user.dateUpdated = moment_assets_1.GetDate();
                 user.status = Boolean(user.status);
                 return this._usersService.UpdateUserNickUnique(user);
             }
