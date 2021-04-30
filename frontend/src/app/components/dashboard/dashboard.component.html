@@ -123,16 +123,17 @@
 
       <br><br>
       <div class="row">
-        <a href="#" id="buttom_Excel" (click)="ExportExcel()" class="pr-3 pb-3">
+        <a (click)="ExportExcel()" class="pr-3 pb-3 buttom_Excel">
           <span class="icon-archivo-excel"></span>
         </a>
 
 
 
-        <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
-          (click)="ExportPDF()" class="pr-3 pb-3">
-          <span class="icon-archivo-pdf"></span>
-        </a>
+        <ng-template [ngIf]="!!selectVoyageId">
+          <a (click)="ExportPDF()" class="pr-3 pb-3 buttom_pdf">
+            <span class="icon-archivo-pdf"></span>
+          </a>
+        </ng-template>
       </div>
 
 
@@ -663,16 +664,17 @@
           <div class="row">
 
             <div class="row">
-              <a href="#" id="buttom_Excel" (click)="ExportExcel()" class="pr-3 pb-3">
+              <a (click)="ExportExcel()" class="pr-3 pb-3 buttom_Excel">
                 <span class="icon-archivo-excel"></span>
               </a>
       
       
-      
-              <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
-                (click)="ExportPDF()" class="pr-3 pb-3">
-                <span class="icon-archivo-pdf"></span>
-              </a>
+              <ng-template [ngIf]="!!selectVoyageId">
+                <a (click)="ExportPDF()" class="pr-3 pb-3 buttom_pdf">
+                  <span class="icon-archivo-pdf"></span>
+                </a>
+              </ng-template>
+
             </div>
           </div>
 

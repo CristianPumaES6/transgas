@@ -138,7 +138,7 @@ export function TextMonthYear(date: any): string {
 
 export function TextMonthDayYear(date: any): string {
     let momentDate = moment(date, 'MM-DD-YYYY');
-    let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ' ' + momentDate.format('YYYY')
+    let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ', ' + momentDate.format('YYYY')
 
     return result;
 }
