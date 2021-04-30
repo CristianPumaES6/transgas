@@ -22,7 +22,6 @@ frontend/karma.conf.js
 frontend/ngsw-config.json
 frontend/package-lock.json
 frontend/README.md
-frontend/tsconfig.app.json
 frontend/tsconfig.base.json
 frontend/tsconfig.json
 frontend/tsconfig.spec.json
