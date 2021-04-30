@@ -557,7 +557,7 @@ export class DashboardComponent implements OnInit {
     console.log('exportExcel();');
 
 
-    this.excelService.GenerateExcel();
+    this.excelService.ExportReportDaily(this.generateVoyages);
 
     return false;
   }
