@@ -29,9 +29,11 @@ import { AppGateway } from './app.gateway';
     UsersModule,
     AuthModule,
     VoyagesModule,
-    AppGateway,
+    // AppGateway,// por mientras queeste desactivado
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway],
+  providers: [AppService, 
+    // AppGateway // por mientras queeste desactivado
+  ],
 })
 export class AppModule { }

@@ -7,7 +7,7 @@ import { LoggedUser } from './models/loggedUser';
 export class AppService {
 
   constructor(
-    private gateway: AppGateway,
+   // private gateway: AppGateway, // Por mientras que este desactivado.
   ) {
     
     // Creamos un escucha para registrar un nuevo usuario.
@@ -92,6 +92,7 @@ export class AppService {
     return this.loggedUsers;
   }
 
+  // Cuando hay una nueva conexion verficamos todos los que esten conectados,
   public EmitConnect() : boolean{
         
     this.loggedUsers.forEach(
@@ -100,7 +101,7 @@ export class AppService {
       }
     );
 
-    this.gateway.wss.emit('connection2', 'connected');
+  //   this.gateway.wss.emit('connection2', 'connected'); // Que este desactivado.
     return true;
   }
 
