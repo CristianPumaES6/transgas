@@ -175,7 +175,7 @@ export class DashboardComponent implements OnInit {
   public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
 
-
+  // Constructor
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,

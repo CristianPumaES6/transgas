@@ -1,4 +1,6 @@
+// Modelo generico del componente Dashboard.
 
+// Modelo de las actividades realizadas.
 export class ActivityPerformed {
     constructor(
         public loading?: number,
@@ -21,6 +23,7 @@ export class ActivityPerformed {
     }
 }
 
+// Modelo de consumo por equipo MGO
 export class ConsumptionMachineMGO {
     constructor(
         public mpal?: number,
@@ -42,6 +45,8 @@ export class ConsumptionMachineMGO {
 }
 
 
+
+// Modelo de consumo por equipo IFO
 export class ConsumptionMachineIFO {
     constructor(
         public mpal?: number,
