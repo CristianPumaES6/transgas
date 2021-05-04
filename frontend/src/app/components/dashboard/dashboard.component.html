@@ -1,3 +1,4 @@
+<!-- Diseño del filtro, solo para dispositivos moviles. -->
 <div class="component-filter" [ngClass]="{'component-filter-none': !isViewFilter}">
 
   <div class="row no-gutters">
@@ -142,13 +143,18 @@
 
 </div>
 
+
+<!-- Hambirgesa para que nuestro filtro se muestre -->
 <div class="component-fixed-bottom fixed-bottom text-right pb-2 pr-2">
   <button class="outline-none" aria-label="Example icon button with a bookmark icon" (click)="viewFilter(true)"
     mat-mini-fab color="primary">
-    <mat-icon class="icon-filter"></mat-icon>
+    <mat-icon class="icon-filter"> </mat-icon>
   </button>
 </div>
 
+
+
+<!-- Contenedor de toda la vista del dashboard. -->
 <div class="body-full-container">
 
   <div
