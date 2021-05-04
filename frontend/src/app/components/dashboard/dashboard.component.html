@@ -97,12 +97,12 @@
 
       <mat-form-field>
         <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
-        <mat-select [formControl]="activityPerformed" multiple>
+        <mat-select [formControl]="frmCActivityPerformed" multiple>
           <mat-select-trigger>
-            {{(activityPerformed.value ? activityPerformed.value[0] : '' )| translateMessage:translateCategory}}
-            <span class="span-select" *ngIf="activityPerformed.value?.length > 1">
-              (+{{activityPerformed.value.length - 1}}
-              {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
+            {{(frmCActivityPerformed.value ? frmCActivityPerformed.value[0] : '' )| translateMessage:translateCategory}}
+            <span class="span-select" *ngIf="frmCActivityPerformed.value?.length > 1">
+              (+{{frmCActivityPerformed.value.length - 1}}
+              {{frmCActivityPerformed.value?.length === 2 ? 'other' : 'others'}})
             </span>
           </mat-select-trigger>
           <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterByActivities()">
@@ -541,7 +541,7 @@
     </div>
 
 
-
+    <!-- Filtro en el body solo se muestra en pantallas grandes. -->
     <div class="no-gutters
     col-2
     d-none d-sm-none d-md-block">
@@ -640,12 +640,13 @@
 
           <mat-form-field>
             <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
-            <mat-select [formControl]="activityPerformed" multiple>
+            <mat-select [formControl]="frmCActivityPerformed" multiple>
               <mat-select-trigger>
-                {{(activityPerformed.value ? activityPerformed.value[0] : '' )| translateMessage:translateCategory}}
-                <span class="span-select" *ngIf="activityPerformed.value?.length > 1">
-                  (+{{activityPerformed.value.length - 1}}
-                  {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
+                {{(frmCActivityPerformed.value ? frmCActivityPerformed.value[0] : '' )|
+                translateMessage:translateCategory}}
+                <span class="span-select" *ngIf="frmCActivityPerformed.value?.length > 1">
+                  (+{{frmCActivityPerformed.value.length - 1}}
+                  {{frmCActivityPerformed.value?.length === 2 ? 'other' : 'others'}})
                 </span>
               </mat-select-trigger>
               <mat-option *ngFor="let activity of activityPerformedList" [value]="activity"
@@ -688,6 +689,7 @@
         </div><!-- card -->
       </div>
     </div>
+    <!-- Fin del filtro en el body solo se muestra en pantallas grandes. -->
 
   </div>
 

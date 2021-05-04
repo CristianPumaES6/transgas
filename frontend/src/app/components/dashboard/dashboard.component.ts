@@ -58,9 +58,12 @@ export class DashboardComponent implements OnInit {
   public isViewFilter: boolean = true;
 
 
-  // Formulario control <= cambiar esto por frmactivityPerformed luego ocntinuo.
-  public activityPerformed = new FormControl();
+  // variable que controla el combo ActivityPerformed
+  public frmCActivityPerformed = new FormControl();
+  // lista de actividades
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
+  
+  
   public disableEdit = false;
   public summaryBy: string = 'VOYAGES';
   // Variables de traduccion
@@ -554,9 +557,9 @@ export class DashboardComponent implements OnInit {
     this.startDate = null;
     this.endDate = null;
 
-    if (this.activityPerformed && this.activityPerformed.value && this.activityPerformed.value) {
+    if (this.frmCActivityPerformed && this.frmCActivityPerformed.value && this.frmCActivityPerformed.value) {
       // Reset filtro.
-      this.activityPerformed = new FormControl();
+      this.frmCActivityPerformed = new FormControl();
     }
 
     this.selectVoyageId = 0;
@@ -934,8 +937,8 @@ export class DashboardComponent implements OnInit {
                     }
 
                     if (
-                      (!this.activityPerformed.value || this.activityPerformed.value.length === 0) ||
-                      this.activityPerformed.value.find(activity => activity === report.activityPerformed)
+                      (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0) ||
+                      this.frmCActivityPerformed.value.find(activity => activity === report.activityPerformed)
                     ) {
 
 
@@ -2931,7 +2934,7 @@ export class DashboardComponent implements OnInit {
       isIFO_MGO_SPEED: isIFO_MGO_SPEED,
       selectUser: this.selectUser,
       typeFilter_Day: true,
-      filterActivities: this.activityPerformed.value || []
+      filterActivities: this.frmCActivityPerformed.value || []
     };
 
 
