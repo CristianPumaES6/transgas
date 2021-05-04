@@ -53,8 +53,12 @@ import * as Html2canvas from 'html2canvas';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-
+  // permite saber si el filtro se debe mostrar o no. 
+  // recordemos que el filtro solo se muestra en pantallas pequeñas.
   public isViewFilter: boolean = true;
+
+
+  // Formulario control <= cambiar esto por frmactivityPerformed luego ocntinuo.
   public activityPerformed = new FormControl();
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
   public disableEdit = false;
