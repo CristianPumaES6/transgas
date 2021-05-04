@@ -53,35 +53,45 @@ import * as Html2canvas from 'html2canvas';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+
+  // Variables de traduccion
+  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public translateCategory: string = 'dashboard';
+
+  // rol del usuario logeado.
+  public roleUser: string = '';
+
+
   // Permite saber si el filtro se debe mostrar o no. 
   // Recordemos que el filtro solo se muestra en pantallas pequeñas.
   public isViewFilter: boolean = true;
+
+
+  // Años que tiene el usuario.
+  public yearsOfUsers: number[] = [];
+  // Combo del select year.
+  public frmSelectedYear = new FormControl();
 
 
   // Variable que controla el combo ActivityPerformed
   public frmCActivityPerformed = new FormControl();
   // Lista de actividades
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
-  
-  
+
+
   // Variable del ng-model del combo SummaryBy
   // nos ayuda a saber que tipo de resumen queremos mostrar.
   public selectSummaryBy: string = 'VOYAGES';
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
 
 
-  // Variables de traduccion
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
-  public translateCategory: string = 'dashboard';
-
-
-  public roleUser: string = '';
-  public cantDiasDashboard: number = 0;
-
 
   // Usuarios.
+  // Todos los usuarios obtenidos por el getUsers.
   public getUsers: User[] = [];
-  public selectUserId: number = 0;
+  // UserId seleccionado.
+  public selectUserId: number = 0; // esta variable podria desaparecer esta de mas, por que el id del usuario ya lo tenemos en la variable selectUser
+  // Usuario seleccionado.
   public selectUser: User = new User();
 
   // Filtro por fecha inicio y fin
@@ -91,24 +101,31 @@ export class DashboardComponent implements OnInit {
   // El viaje generado suma total.
   public generateVoyages: Voyage[] = [];
 
+  // Viajes
   public getVoyages: Voyage[] = [];
+  // Viaje id seleccionado
   public selectVoyageId: number = 0;
+  // Viaje seleccionado.
   public selectVoyage: Voyage = new Voyage();
 
-
+  // Texto del reporte.
   public xLabelReport: any[] = [];
 
+  // Configuracion del chartIFO
   public configLineaIFO: any; // configuracion del elemento
   public chartLineIFO: any; // LINEA
-  public dataIFO = [];
+  public dataIFO = []; // Data
 
+  // Configuracion del chartMGO
   public configLineaMGO: any; // configuracion del elemento
   public chartLineMGO: any; // LINEA
-  public dataMGO = [];
+  public dataMGO = []; // Data
 
-  public configLineaSPEED: any;
+
+  // Configuracion del SPEED
+  public configLineaSPEED: any; // configuracion del elemento
   public chartLineSPEED: any; // LINEA
-  public dataSPEED = [];
+  public dataSPEED = []; // Data
 
 
   // Consumo IFO POR ACTIVIDAD
@@ -128,7 +145,7 @@ export class DashboardComponent implements OnInit {
   public balanceConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
   public balanceTimeByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
 
-  // CONSUMER MGO
+  // CONSUMER MGO por actividad
   public totalTimePerActivityMGO: ActivityPerformed = new ActivityPerformed();
   public totalDistanceMilesByActivityPerformedMGO: ActivityPerformed = new ActivityPerformed();
 
@@ -158,10 +175,6 @@ export class DashboardComponent implements OnInit {
   public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
 
-  // años
-  public yearsOfUsers: number[] = [];
-  public selectedYearsOfUsers: number[] = [];
-  public frmSelectedYear = new FormControl();
 
   constructor(
     private router: Router,
