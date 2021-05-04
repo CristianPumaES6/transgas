@@ -123,17 +123,17 @@
 
       <br><br>
       <div class="row">
-
-        <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
-          <span class="transgas-file-excel"></span>
-        </div>
-
-
-
-        <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
-          (click)="SelectionmodalDisplayView()" class="pr-3 pb-3">
-          <span class="transgas-2000-eye"></span>
+        <a (click)="ExportExcel()" class="pr-3 pb-3 buttom_Excel">
+          <span class="icon-archivo-excel"></span>
         </a>
+
+
+
+        <ng-template [ngIf]="!!selectVoyageId">
+          <a (click)="ExportPDF()" class="pr-3 pb-3 buttom_pdf">
+            <span class="icon-archivo-pdf"></span>
+          </a>
+        </ng-template>
       </div>
 
 
@@ -663,16 +663,19 @@
           <br><br>
           <div class="row">
 
-            <div id="buttom_Excel" (click)="exportExcel()" class="pr-3 pb-3">
-              <span class="transgas-file-excel"></span>
+            <div class="row">
+              <a (click)="ExportExcel()" class="pr-3 pb-3 buttom_Excel">
+                <span class="icon-archivo-excel"></span>
+              </a>
+      
+      
+              <ng-template [ngIf]="!!selectVoyageId">
+                <a (click)="ExportPDF()" class="pr-3 pb-3 buttom_pdf">
+                  <span class="icon-archivo-pdf"></span>
+                </a>
+              </ng-template>
+
             </div>
-
-
-
-            <a href="#" id="buttom_DisplayView" data-toggle="modal" data-target="#modalDisplayView"
-              (click)="SelectionmodalDisplayView()" class="pr-3 pb-3">
-              <span class="transgas-2000-eye"></span>
-            </a>
           </div>
 
 

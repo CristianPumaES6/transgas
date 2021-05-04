@@ -58,7 +58,7 @@ export class ApplicationComponent implements OnInit {
     private languageService: LanguageService,
     private authService: AuthService,
     readonly onlineOfflineService: OnlineOfflineService,
-    private webSocketService: WebSocketService,
+    //private webSocketService: WebSocketService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -83,7 +83,7 @@ export class ApplicationComponent implements OnInit {
 
     // La aplicacion estara a la escucha de alguna connectio.
     // Si escucha una nueva conexion enviara un update de su estado.
-    this.webSocketService.listen('connection').subscribe(
+  /*  this.webSocketService.listen('connection').subscribe(
       (data)=>{
 
         let lat = 0;
@@ -91,7 +91,7 @@ export class ApplicationComponent implements OnInit {
         if(data == 'connected') {
 
           if ("geolocation" in navigator) {
-            /* la geolocalización está disponible */
+            // la geolocalización está disponible 
             navigator.geolocation.getCurrentPosition(
               (position) => {
 
@@ -113,7 +113,7 @@ export class ApplicationComponent implements OnInit {
               }
             )
           } else {
-            /* la geolocalización NO está disponible */
+            // la geolocalización NO está disponible /
             // Registramos la conectividad del usuario.
             this.authService.RegisterUserConnection(
               {
@@ -141,7 +141,7 @@ export class ApplicationComponent implements OnInit {
 
           if ("geolocation" in navigator) {
 
-            /* la geolocalización está disponible */
+            // la geolocalización está disponible 
             navigator.geolocation.getCurrentPosition(
               (position) => {
 
@@ -166,7 +166,7 @@ export class ApplicationComponent implements OnInit {
 
           } else {
 
-            /* la geolocalización NO está disponible */
+            / la geolocalización NO está disponible
             console.log(' no estro al getCurrentPosition');
             
             // Registramos la conectividad del usuario.
@@ -187,6 +187,8 @@ export class ApplicationComponent implements OnInit {
 
       }
     );
+
+    */
 
     // This template is mobile first so active menu in navbar
     // has submenu displayed by default but not in desktop

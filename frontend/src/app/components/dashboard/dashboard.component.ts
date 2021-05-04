@@ -20,10 +20,15 @@ import * as Chart from 'chart.js';
 import { mathRound } from '../../../assets/math/math.assets';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Port } from '../../models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate } from '../../../assets/moment/moment.assets';
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
 import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ExcelService } from '../../services/excel.service';
+
+
+import {jsPDF} from 'jspdf'
+import * as Html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-dashboard',
@@ -139,7 +144,8 @@ export class DashboardComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private excelService: ExcelService
   ) { }
 
   ngOnInit(): void {
@@ -551,15 +557,136 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  public exportExcel(): boolean {
+  public ExportExcel(): boolean {
     console.log('exportExcel();');
+
+
+    this.excelService.ExportReportDaily(this.generateVoyages);
 
     return false;
   }
 
-  public exportPdf(): boolean {
-    console.log('exportPdf()');
+  public async ExportPDF(): Promise<boolean> {
 
+    for await (const voyage of this.generateVoyages) {
+
+
+      for await (const port of voyage.ports) {
+
+        console.log('exportPdf()');
+        const doc = new jsPDF();
+
+        // width 210
+        // Heigth 297
+        let height = 38;
+        doc.addImage("./assets/icons/logotransgas.png", "JPEG", (210 - 50) / 2, height, 50, 50)
+        height+=55;
+        
+        height+=10;
+        var width = doc.internal.pageSize.getWidth()
+        doc.setFontSize(35);
+        doc.setTextColor(22, 33, 77);
+        doc.setFont('Helvetica','bold');
+        doc.text('Vessel Performance Report', width/2, height, { align: 'center' })
+
+
+        height+=10;
+        doc.setFontSize(18);
+        doc.setTextColor(40);
+        doc.setFont('Helvetica','bold');
+        doc.text('Prepared For:', width/2, height, { align: 'center' })
+        
+        height+=12;
+        doc.setFontSize(30);
+        doc.setTextColor(22, 33, 77);
+        doc.setFont('Helvetica','bold');
+        doc.text(this.selectUser.name, width/2, height, { align: 'center' })
+    
+        height+=20;
+        doc.setFontSize(18);
+        doc.setTextColor(40);
+        doc.setFont('Helvetica','bold');
+        doc.text('N° Port: '+port.portNumber, width/2, height, { align: 'center' })
+        
+
+        height+=12;
+        doc.setFontSize(30);
+        doc.setTextColor(22, 33, 77);
+        doc.setFont('Helvetica','bold');
+        doc.text(port.departurePort +" to "+port.arrivalPort, width/2, height, { align: 'center' })
+
+
+        height+=10;
+        doc.setFontSize(18);
+        doc.setTextColor(40);
+        doc.setFont('Helvetica','bold');
+        doc.text("ATD: "+FormatDate(port.dailyReports[0].date) +" " + port.dailyReports[0].hour, width/2, height, { align: 'center' })
+
+        height+=10;
+        doc.setFontSize(10);
+        doc.setTextColor(40);
+        doc.setFont('Helvetica','bold');
+        doc.text("Date: "+TextMonthDayYear(FormatDate(GetDate())), width/2, height, { align: 'center' })
+
+
+        // Dibujaremos los cuadrados.
+        height+=20;
+        // Filled red square with black borders
+        doc.setDrawColor(0);
+        doc.setFillColor(255, 255, 255);
+        doc.rect(10, height, 210-(10*2), 50, "FD");
+
+        // Cuadro chiquito donde esta el titulo.
+        height-=5;
+        doc.setDrawColor(0);
+        doc.setFillColor(22, 33, 77);
+        doc.rect(30, height, 210-(56*2), 8, "FD");
+        // Texto
+        doc.setFontSize(10);
+        doc.setTextColor("ffffff");
+        doc.setFont('Helvetica','bold');
+        doc.text("Report Summary - Normal Speed Conditions (Laden)", 35, height+5, { align: 'left' })
+
+        // Posicion normal dentro del cuadro.
+        height+=5;
+        height+=10;
+
+        doc.setFontSize(12);
+        doc.setTextColor(0,0,0);
+        doc.setFont('Helvetica','bold');
+        doc.text("Original Warranted Values ", 75, height, { align: 'left' })
+        doc.text("Calculation Results", 140, height, { align: 'left' })
+
+        height+=10;
+        doc.setTextColor(0,0,0);
+        doc.text("Speed", 15, height, { align: 'left' })
+        doc.setTextColor(22, 33, 77);
+        doc.text("about "+this.selectUser.contractSpeedSailingLadenMGO+" Knots", 75, height, { align: 'left' })
+        doc.setTextColor("960e0e");
+        doc.text("---- Hours Lost", 140, height, { align: 'left' })
+
+        height+=10;
+        doc.setTextColor(0,0,0);
+        doc.text("Fuel Consumption", 15, height, { align: 'left' })
+        doc.setTextColor(22, 33, 77);
+        doc.text("about "+this.selectUser.contractSpeedSailingLadenIFO+" MT/Day", 75, height, { align: 'left' })
+        doc.setTextColor(0,0,0);
+        doc.text("Within Guaranteed Limits", 140, height, { align: 'left' })
+
+        height+=10;
+        doc.setTextColor(0,0,0);
+        doc.text("Diesel Consumption", 15, height, { align: 'left' })
+        doc.setTextColor(22, 33, 77);
+        doc.text("about "+this.selectUser.contractSpeedSailingLadenMGO+" MT/Day", 75, height, { align: 'left' })
+        doc.setTextColor("960e0e");
+        doc.text("---- MT - OverConsumed", 140, height, { align: 'left' })
+
+
+
+        doc.save(this.selectUser.name+"_V"+voyage.voyageNumber+ "_P"+port.portNumber+"-"+port.departurePort+"-"+port.arrivalPort +".pdf")
+      }
+
+    }
     return false;
   }
 

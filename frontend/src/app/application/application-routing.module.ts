@@ -21,7 +21,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'voyages', component: VoyageComponent },
       { path: 'users', component: UserComponent },
-      { path: 'helps', component: ListOfConnectedUsersComponent },
+      { path: 'helps', component: DashboardComponent },
     ]
   }
 ];
