@@ -48,20 +48,16 @@
 
       <mat-form-field>
         <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
-        <mat-select [(ngModel)]="summaryBy">
+        <mat-select [(ngModel)]="selectSummaryBy">
 
-          <mat-option value="{{'VOYAGES'}}" (click)="ClickSummaryBy()">
-            {{'VOYAGES' | translateMessage:translateCategory}}
-          </mat-option>
-          <mat-option value="{{'PORTS'}}" (click)="ClickSummaryBy()">
-            {{'PORTS' | translateMessage:translateCategory}}
-          </mat-option>
-          <mat-option value="{{'MONTHS'}}" (click)="ClickSummaryBy()">
-            {{'MONTHS' | translateMessage:translateCategory}}
-          </mat-option>
-          <mat-option value="{{'DAYS'}}" (click)="ClickSummaryBy()">
-            {{'DAYS' | translateMessage:translateCategory}}
-          </mat-option>
+          
+          <ng-template ngFor let-iTypeSummaryVoyage [ngForOf]="typeSummaryVoyageList" let-i="index">
+            <mat-option value="{{iTypeSummaryVoyage}}" (click)="ClickSummaryBy()">
+              {{iTypeSummaryVoyage | translateMessage:translateCategory}}
+            </mat-option>
+          </ng-template>
+
+          
         </mat-select>
       </mat-form-field>
 
@@ -589,22 +585,18 @@
 
           <mat-form-field>
 
-            <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
-            <mat-select [(ngModel)]="summaryBy">
 
-              <mat-option value="{{'VOYAGES'}}" (click)="ClickSummaryBy()">
-                {{'VOYAGES' | translateMessage:translateCategory}}
-              </mat-option>
-              <mat-option value="{{'PORTS'}}" (click)="ClickSummaryBy()">
-                {{'PORTS' | translateMessage:translateCategory}}
-              </mat-option>
-              <mat-option value="{{'MONTHS'}}" (click)="ClickSummaryBy()">
-                {{'MONTHS' | translateMessage:translateCategory}}
-              </mat-option>
-              <mat-option value="{{'DAYS'}}" (click)="ClickSummaryBy()">
-                {{'DAYS' | translateMessage:translateCategory}}
-              </mat-option>
+            <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
+            <mat-select [(ngModel)]="selectSummaryBy">
+
+              <ng-template ngFor let-iTypeSummaryVoyage [ngForOf]="typeSummaryVoyageList" let-i="index">
+                <mat-option value="{{iTypeSummaryVoyage}}" (click)="ClickSummaryBy()">
+                  {{iTypeSummaryVoyage | translateMessage:translateCategory}}
+                </mat-option>
+              </ng-template>
+
             </mat-select>
+            
 
           </mat-form-field>
 
@@ -1741,35 +1733,35 @@
 
 
         <br>
-        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayLSFOConsumption" [disabled]="disableEdit">
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayLSFOConsumption">
           LSFO
           CONSUMPTION
         </mat-checkbox>
         <br>
-        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayMGOConsumption" [disabled]="disableEdit"> MGO
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayMGOConsumption"> MGO
           CONSUMPTION
         </mat-checkbox>
         <br>
-        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayAverageSpeed" [disabled]="disableEdit">
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayAverageSpeed">
           AVERAGE
           SPEED
         </mat-checkbox>
 
         <br>
-        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayDataMGO" [disabled]="disableEdit"> DATA MGO
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayDataMGO"> DATA MGO
         </mat-checkbox>
         <br>
 
-        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayDataLSFO" [disabled]="disableEdit"> DATA
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayDataLSFO"> DATA
           LSFO
         </mat-checkbox>
 
         <br>
-        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayVesselPerformanceLSFO" [disabled]="disableEdit">
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayVesselPerformanceLSFO">
           VESSEL PERFORMANCE LSFO
         </mat-checkbox>
         <br>
-        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayVesselPerformanceMGO" [disabled]="disableEdit">
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayVesselPerformanceMGO">
           VESSEL PERFORMANCE MGO
         </mat-checkbox>
 
