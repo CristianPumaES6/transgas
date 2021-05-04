@@ -108,7 +108,7 @@ export class DashboardComponent implements OnInit {
   // Viaje seleccionado.
   public selectVoyage: Voyage = new Voyage();
 
-  // Texto del reporte.
+  // Texto del reporte, punto por punto.
   public xLabelReport: any[] = [];
 
   // Configuracion del chartIFO
@@ -243,7 +243,7 @@ export class DashboardComponent implements OnInit {
       result => {
         // Agregamos el plugin de la linea del Chart.
         this.PluginChartLine();
-       
+
         // Generamos las lineas en el canvas
         this.GenetareLineIFO();
         this.GenetareLineMGO();
@@ -1249,6 +1249,8 @@ export class DashboardComponent implements OnInit {
   // Configuracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
   // esta configuracion depente del selectSummary
   public ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
+
+    // Variable que retornara la configuracion
     let config: any = {};
 
     if (this.selectSummaryBy === 'VOYAGES') {
@@ -1905,26 +1907,28 @@ export class DashboardComponent implements OnInit {
     // Test
     console.log('GenetareLineIFO()');
 
-    console.log(this.xLabelReport);
-
+    // Agregamos la configuracion del chartIFO.
     this.configLineaIFO = {
       type: 'line',
       data: {
-        labels: this.xLabelReport,
+        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
         datasets: [{
-          label: this.languageService.GetMessage(this.translateCategory, 'TITLE_COMSUMPTION_IFO'),
+          label: '', // Lo pongo vacio por que en el update se colocara el valor.
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
-          data: this.dataIFO,
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
           fill: false,
         }]
       },
-      options: {
-        onClick: (event, legendItem) => {
-
+      options: { // Otras opciones dentro del Chart
+        onClick: (event, legendItem) => { // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
+          // Verifico que al click que le demos exista un Item.
           if (legendItem && legendItem.length) {
+
+            // Obtenemos la ubicacion.
             let index = legendItem[0]._index;
 
+            // Revisar esto. 
             if (this.selectSummaryBy === 'VOYAGES') {
 
               let ubication = this.dataIFO[index].ubication;
@@ -1982,45 +1986,22 @@ export class DashboardComponent implements OnInit {
               this.OpenDialogReport(voyage, portId, reportId, 'IFO');
             }
           }
+
         },
-        legend: {
+        legend: { // La leyenda es el texto que esta arriva del cuadro.
           display: true,
           onClick: (event, legendItem) => {
             console.log('onClick:' + legendItem.text);
           },
           labels: {
-            fontColor: 'rgb(255,255,255)',
-            fontStyle: 'bold',
+            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
+            fontStyle: 'bold', // Tipo de texto de la leyenda.
           }
         },
         // Habilitamos la opcion para que sea responsive
         maintainAspectRatio: false,
-        tooltips: {
-          // Establece qué elementos aparecen en la información sobre herramientas.
-          mode: 'nearest',
-          // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
-          intersect: false,
-          callbacks: {
-            title: (tooltipItem, data) => {
-              return tooltipItem[0].xLabel;
-            },
-            label: (tooltipItem, data) => {
-              return 'Consumption LSFO: ' + mathRound(tooltipItem.value, 2);
-            },
-            footer: (tooltipItem, data) => {
-              let index = tooltipItem[0].index;
-              let reportDetail: Voyage[] = data.datasets[0].reportDetail;
-
-
-              return [
-                'Voyage N° : ' + reportDetail[index].voyageNumber,
-                'Consume :' + reportDetail[index].totalIFO,
-              ];
-
-            },
-          }
-        },
-        scales: null,
+        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
+        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
         hover: {
           onHover: function (e) {
             var point = this.getElementAtEvent(e);
@@ -2029,19 +2010,15 @@ export class DashboardComponent implements OnInit {
           }
         }
       },
-      lineaMax: 0
+      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
     };
 
-    this.configLineaIFO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaIFO.lineaMax, 0) + 2);
-
-
-
+    // Encapculamos el elemento del dom.
     let canvaLineIFO: any = document.getElementById('lineIFO');
+    // Convertimos el canvaLineIfo en 2d
     let ctxLineIFO = canvaLineIFO.getContext('2d');
 
     this.chartLineIFO = new Chart(ctxLineIFO, this.configLineaIFO);
-
-    console.log('FIN GenetareLineIFO()');
 
     return false;
   }
@@ -2560,7 +2537,6 @@ export class DashboardComponent implements OnInit {
   }
 
   public UpdateLineIFO(): boolean {
-
     // Testing
     console.log('UpdateLineIFO');
 
@@ -2568,38 +2544,41 @@ export class DashboardComponent implements OnInit {
     // Actualizamos los labels
     this.configLineaIFO.data.labels = this.xLabelReport;
 
-    this.configLineaIFO.data.datasets[0].data = this.dataIFO;
-
+    // Actualizamos el titulo
     this.configLineaIFO.data.datasets[0].label = this.languageService.GetMessage(this.translateCategory, (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO'));
 
-    // Vaciamos la configuracion de las lines MGO
+    // Actualizamos la dataIFO
+    this.configLineaIFO.data.datasets[0].data = this.dataIFO;
+
+
+
+    // Vaciamos la configuracion de las lines IFO
+    // La linea es el campo que agregamos en el plugin.
     this.configLineaIFO.options.lines = [];
 
     // Verificamos que exista una confifuracion para LSFO
     if (this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionVLSFO) {
 
-      if (this.selectSummaryBy === 'DAYS') {
-        // Si el consumo maximo es mayor a 0 lo pintamos si no no hace falta.
-        if (this.selectUser.maxIFOConsumption > 0) {
-          this.configLineaIFO.options.lines.push({
-            type: 'horizontal',
-            y: this.selectUser.maxIFOConsumption,
-            color: 'red',
-            label: ''
-          });
-        }
-        if (this.selectUser.minIFOConsumption > 0) {
+      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+      if (this.selectUser.maxIFOConsumption > 0) {
+        this.configLineaIFO.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.maxIFOConsumption,
+          color: 'red',
+          label: ''
+        });
+      };
 
-          this.configLineaIFO.options.lines.push({
-            type: 'horizontal',
-            y: this.selectUser.minIFOConsumption,
-            color: '#39FF14',
-            label: ''
-          });
-        }
+      if (this.selectUser.minIFOConsumption > 0) {
+        this.configLineaIFO.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.minIFOConsumption,
+          color: '#39FF14',
+          label: ''
+        });
       }
 
-      this.configLineaIFO.options.tooltips = {
+      this.configLineaIFO.options.tooltips = { // Revisar la configuracion del Tooltip, podriamos hacerlo mas pequeño.
 
         // Establece qué elementos aparecen en la información sobre herramientas.
         mode: 'nearest',
@@ -2713,10 +2692,9 @@ export class DashboardComponent implements OnInit {
 
           },
         }
-      }
+      } // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
 
     }
-
 
     if (this.configLineaIFO.lineaMax < this.selectUser.maxIFOConsumption) {
       this.configLineaIFO.lineaMax = this.selectUser.maxIFOConsumption;
