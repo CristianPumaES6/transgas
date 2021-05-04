@@ -189,6 +189,7 @@ export class DashboardComponent implements OnInit {
     private excelService: ExcelService
   ) { }
 
+  // Esta funcion se inicializa primero, es parte de angular.
   ngOnInit(): void {
     console.log('ngOnInit()');
 
@@ -197,7 +198,12 @@ export class DashboardComponent implements OnInit {
 
     // Rol del usurio logeado.
     this.roleUser = this.userService.GetIdentity().role;
-    // PerfectScrooll
+
+    // Revisar <= esto cada cuadro se deberia de agregar el Scrool solo si ese user permite visualizar
+    // hacer pruebas que pasa si no tiene el componente display.
+    // podria ir despues ?
+    // Porque no va despues.
+    // PerfectScrooll Se agregan los Scrool
     setTimeout(() => {
       new PerfectScrollbar('.body-full-container', {
         suppressScrollX: true
@@ -228,9 +234,16 @@ export class DashboardComponent implements OnInit {
 
     }, 500)
 
+
+    // Inicializamos la promesa.
+    // El modulo de dashboard funciona solo con internet.
+
+    // Si tenemos internet se ejecuta lo siguiente.
     Promise.resolve(true).then(
       result => {
+        // Agregamos el plugin de la linea del Chart.
         this.PluginChartLine();
+       
         // Generamos las lineas en el canvas
         this.GenetareLineIFO();
         this.GenetareLineMGO();
