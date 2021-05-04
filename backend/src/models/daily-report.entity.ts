@@ -15,6 +15,7 @@ export class DailyReport {
     // Viaje ID
     @Column()
     portId: number;
+    // El daily report tambien puede retornar un puerto.
     @ManyToOne(type => Port, port => port.id )
     port: Port;
 

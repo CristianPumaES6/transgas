@@ -1,4 +1,6 @@
+// El DailyReport es una entidad en la BD.
 
+// Mejora => las entidades que existen en BD, deberian llevar la palabra Entity, para saber que es una entidad, esto se deberia de aplicar a todas las entidades de BD.
 export class DailyReport {
 
     constructor(
@@ -6,18 +8,22 @@ export class DailyReport {
         public id?: number,
         // UserId que registra el dato
         public userId?: number,
-        // Viaje ID
+        // Puerto ID
         public portId?: number,
-        // Actividades realizadas
+        // Actividades realizada
         public activityPerformed?: string,
         // Fecha de registro
         public date?: Date,
         // Hora
         public hour?: string,
+
+
         // Recarga de IFO
         public bunkeringIfo?: number,
         // Recarga de MGO
         public bunkeringMgo?: number,
+
+
         // Consumo mplaIfo
         public mplaIfo?: number,
         // Consumo auxIfo
@@ -26,6 +32,7 @@ export class DailyReport {
         public boilerIfo?: number,
         // Otros consumos Ifo
         public otherIfo?: number,
+
         // Consumo mplaMgo
         public mplaMgo?: number,
         // Consumo auxMgo
@@ -38,6 +45,8 @@ export class DailyReport {
         public giMgo?: number,
         // Consumo otherMgo
         public otherMgo?: number,
+
+
         // Tempo navegando
         public steamingTime?: number,
         // Distancia
@@ -92,11 +101,16 @@ export class DailyReport {
         this.syncStatus = '';
     }
 
+    // estos campos se estan agregando para tener el total de consumo
+    // ya no segmentado por maquina.
     public robIfo = 0;
     public robMgo = 0;
 }
 
 
+// En el daily report tambien podemos tener el modelo de velocida.
+// el cual se obtiene mediante un calculo.
+// distancia entre tiempo.
 export class Speed {
 
     constructor(
@@ -109,6 +123,7 @@ export class Speed {
         this.steamingTime = steamingTime || 0;
     }
 
+    // funcion para agregar mas distancia y tiempo a la variable.
     public add(addDistance, addSteamingTime) {
         this.distance = this.distance + addDistance;
         this.steamingTime = this.steamingTime + addSteamingTime;

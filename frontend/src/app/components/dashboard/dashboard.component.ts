@@ -1,32 +1,49 @@
+// Dependencias de angular
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import { MatDialog } from '@angular/material/dialog';
+
+
+// RXJS
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { DailyReport, Speed } from '../../models/daily-report';
+
+
+// Model
 import { User } from '../../models/user';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage';
-import { ASideService } from '../../services/a-side.service';
-import { DailyReportService } from '../../services/daily-report.service';
-import { LanguageService } from '../../services/language.service';
-import { LoadingService } from '../../services/loading.service';
-import { PortService } from '../../services/port.service';
+import { Port } from '../../models/port';
+import { DailyReport, Speed } from '../../models/daily-report';
+// Modelo genericos, modelos que se usan.
+import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
+
+
+// Service 
 import { UserService } from '../../services/user.service';
 import { VoyageService } from '../../services/voyage.service';
-
-
-import * as Chart from 'chart.js';
-import { mathRound } from '../../../assets/math/math.assets';
-import PerfectScrollbar from 'perfect-scrollbar';
-import { Port } from '../../models/port';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate } from '../../../assets/moment/moment.assets';
-import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
-import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
-import { MatDialog } from '@angular/material/dialog';
+import { PortService } from '../../services/port.service';
+import { DailyReportService } from '../../services/daily-report.service';
+// Servicios Import 
+import { ASideService } from '../../services/a-side.service';
+import { LanguageService } from '../../services/language.service';
+import { LoadingService } from '../../services/loading.service';
+// Servicio para exportar la estructura de excel.
 import { ExcelService } from '../../services/excel.service';
 
 
+// Assets
+import { mathRound } from '../../../assets/math/math.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate } from '../../../assets/moment/moment.assets';
+
+
+// Componentes
+import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
+
+
+import * as Chart from 'chart.js';
+import PerfectScrollbar from 'perfect-scrollbar';
 import { jsPDF } from 'jspdf'
 import * as Html2canvas from 'html2canvas';
 
