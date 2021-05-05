@@ -547,21 +547,29 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  // Seleccionamos los viajes.  
   public SelectComboVoyage(index?: number): boolean {
-
     console.log('SelectComboVoyage()');
 
+    // Creamos nueva variable que nos permitira hacer el filtro por viaje sin dañar a nuestra variable temporal.
     let newVoyages = [];
-    this.selectSummaryBy = 'DAYS';
+
     if (index == null) {
+      // Si no selecciono ningun viaje le mandamos todo el getVoyage.
       newVoyages = this.getVoyages;
 
       this.selectSummaryBy = 'VOYAGES';
     } else {
+      // Si selecciono un viaje.
+      // El resumen se vera por dia.
+      this.selectSummaryBy = 'DAYS';
+      // solo agregamos el viaje que se selecciono.
       newVoyages.push(this.getVoyages[index]);
     }
 
+    // Le mandamos nuetra variable para que genere la data por filtros de actividades.
     this.GenerateDataByFilter(newVoyages);
+    // Generamos la data para mostrar en los cuadros del dashboard.
     this.GenerateDashboardBySumary(true);
 
     return false;
