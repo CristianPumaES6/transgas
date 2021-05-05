@@ -191,6 +191,7 @@ export class DashboardComponent implements OnInit {
 
   // Esta funcion se inicializa primero, es parte de angular.
   ngOnInit(): void {
+    // ngOnInit()
     console.log('ngOnInit()');
 
     // Activamos el loading.
@@ -370,39 +371,67 @@ export class DashboardComponent implements OnInit {
 
   }
 
+
+  // SelectComboYear: Invoca una busqueda al servidor.
   public SelectComboYears() {
 
-    this.loadingService.Open();
+    console.log('SelectComboYears()');
+
+    // Promise
     Promise.resolve(true).then(
       result => {
-        this.selectVoyageId = null;
-        // Seleccionaremos el primer buque del arreglo.
-        let filter: VoyageFilterByYears = new VoyageFilterByYears();
 
+        // Habilitamos el loading service.
+        this.loadingService.Open();
+
+        // Deseleccionamos el filtro por viajes.
+        this.selectVoyageId = null;
+
+       // Armamos el filtro para obtener los viajes por años.
+        let filter: VoyageFilterByYears = new VoyageFilterByYears();
         filter.userId = this.selectUserId;
+
+        // Verificamos si se a seleccionado algun año del frmSelectedYear
         if (this.frmSelectedYear.value && this.frmSelectedYear.value.length > 0) {
+          // si es asi lo recorremos y se lo agregamos al filtro.
           this.frmSelectedYear.value.forEach(year => {
             filter.years.push(year);
           });
-        }
+        };
 
         // Traigo a todos los User y lo instancio en el obj.
         // GeyVoyage obtiene todos los puertos.
         return this.GetVoyagesByYears(filter).pipe().toPromise();
       }
     ).then(
-      reulst => {
+      resultGetVoyagesByYears => {
+        // Verificamos el resultado.
+        if(!resultGetVoyagesByYears) throw 'ERROR_GET_VOYAGES';
+
+        // Cambiamos el SumaryBy por viajes.
         this.selectSummaryBy = 'VOYAGES';
 
+        // Generamos la data por filtro
         this.GenerateDataByFilter(this.getVoyages);
-
-        this.GenerateDashboardBySumary(true)
-
+        // Generar dashboard por tipo de resumen.
+        this.GenerateDashboardBySumary(true);
 
         // Activamos el loading.
         this.loadingService.Close();
       }
-    );
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      });
 
   }
 
