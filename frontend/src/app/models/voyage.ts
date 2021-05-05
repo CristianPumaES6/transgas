@@ -48,6 +48,8 @@ export class Voyage {
     dayEnd: String;
 }
 
+// Modelo para la consulta de viajes por años.
+// Es un modeo generico.
 export class VoyageFilterByYears {
 
     constructor(

@@ -312,8 +312,8 @@ export const voyage: any = {
     TOTAL_IFO: 'Total IFO',
     TOTAL_MGO: 'Total MGO',
     NO_BUNKERING: 'No bunkering',
-    DELETE_REPORT:'Delete Report',
-    EDIT_REPORT:'Edit Report'
+    DELETE_REPORT: 'Delete Report',
+    EDIT_REPORT: 'Edit Report'
 }
 
 export const dashboard: any = {
@@ -392,7 +392,9 @@ export const dashboard: any = {
     TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
     TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT: 'Daily consumption of equipment per contract.',
     TOOLTIP_DAILY_BALANCE_EQUIPMENT: 'Consumption balance.\n( DAILY CONSUMPTION (MT) - DAILY CONSUMPTION (MT) (CHARTER) )',
-    TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)'
+    TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
+    NO_YEARS_REGISTER: 'The selected vessel does not have a year to display the data.',
+    ERROR_GET_VOYAGES: 'Cound not get voyage data.',
 }
 
 export const dialog: any = {

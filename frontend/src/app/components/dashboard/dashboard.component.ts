@@ -196,9 +196,6 @@ export class DashboardComponent implements OnInit {
     // Activamos el loading.
     this.loadingService.Open();
 
-    // Rol del usurio logeado.
-    this.roleUser = this.userService.GetIdentity().role;
-
     // Revisar <= esto cada cuadro se deberia de agregar el Scrool solo si ese user permite visualizar
     // hacer pruebas que pasa si no tiene el componente display.
     // podria ir despues ?
@@ -244,14 +241,18 @@ export class DashboardComponent implements OnInit {
         // Agregamos el plugin de la linea del Chart.
         this.PluginChartLine();
 
-        // Generamos las lineas en el canvas
+        // Generamos las lineas en el canvas, luego las actualizaremos con data real.
         this.GenetareLineIFO();
         this.GenetareLineMGO();
         this.GenetareLineSPEED();
 
         // Instanciamos el obj que usaremos en la consulta de registro de viajes
         let user: User = new User();
-        // Si no eres un admin solo puedes registrar voajes con tu userId logeado.
+
+        // Rol del usurio logeado.
+        this.roleUser = this.userService.GetIdentity().role;
+
+        // Si no eres un admin solo puedes registrar viajes con el userId logeado.
         if (this.roleUser === 'BUQUE') {
           user.id = this.userService.GetIdentity().id;
           user.name = this.userService.GetIdentity().name;
@@ -262,45 +263,17 @@ export class DashboardComponent implements OnInit {
       }
     ).then(
       (result) => {
+        if (!result) throw 'ERROR_GET_USERS';
 
         // Seleccionaremos el primer buque del arreglo.
-        let filter: VoyageFilterByYears = new VoyageFilterByYears();
         let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
 
-
-
-
-        if (firstUser) {
-          let years = firstUser.years;
-          let OldYearUser: number;
-          if (years && years.length > 0) {
-            this.yearsOfUsers = years;
-            OldYearUser = this.yearsOfUsers[firstUser.years.length - 1]
-            this.frmSelectedYear.setValue([OldYearUser]);
-          } else {
-            this.yearsOfUsers = [];
-            this.frmSelectedYear.setValue([]);
-          };
-
-          this.selectUser = firstUser;
-          this.selectUserId = firstUser.id;
-          filter.userId = this.selectUser.id;
-          filter.years = [OldYearUser];
-        } else {
-          throw 'NO_BUQUE_REGISTER';
-        }
-
-        // Traigo a todos los User y lo instancio en el obj.
-        // GeyVoyage obtiene todos los puertos.
-        return this.GetVoyagesByYears(filter).pipe().toPromise();
+        return this.SelectUser(firstUser.id);
       }
     ).then(
       result => {
 
-        this.GenerateDataByFilter(this.getVoyages);
-
-        this.GenerateDashboardBySumary(true);
-
+        if (!result) throw 'ERROR_SELECT_USER';
 
         // Activamos el loading.
         this.loadingService.Close();
@@ -326,7 +299,6 @@ export class DashboardComponent implements OnInit {
   private GetUsers(user: User): Observable<boolean> {
     // Test
     console.log('GetUsers(user: User)');
-    console.log(user);
 
     // Obtenemos todos los usuarios
     return this.userService.GetUsers(user).pipe(map(
@@ -434,7 +406,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public SelectComboBuque(): boolean {
+  public SelectComboBuque(userId): boolean {
     console.log('SelectComboBuque()');
 
     Promise.resolve(true).then(
@@ -442,50 +414,101 @@ export class DashboardComponent implements OnInit {
         // Activamos el loading.
         this.loadingService.Open();
 
-        // Seleccionamos al usuairo
-        this.selectUser = this.getUsers.find(user => user.id === this.selectUserId);
-        return true;
+        return this.SelectUser(this.selectUserId);
+      }).then(
+        result => {
+          if (!result) throw 'ERROR_COMBO_BUQUE';
+          // Activamos el loading.
+          this.loadingService.Close();
+        }
+      ).catch(
+        err => {
 
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
+
+    console.log('FIN SelectComboBuque()');
+    return false;
+  }
+
+  // Selecciona al usuario, 
+  // Selecciona su ultimo año,
+  // Obtiene todos los datos del reporte.
+  // Y lo muestra en los cuadros.
+  private async SelectUser(userId: number): Promise<boolean> {
+
+    return await Promise.resolve(true).then(
+      result => {
+        // Seleccionamos al usuairo segun el selectUserId
+        return this.getUsers.find(user => user.id === userId);
       }
     ).then(
-      result => {
+      resultUser => {
+        // Verificamos que exista el usuario.
+        if (!resultUser) { throw 'NO_BUQUE_REGISTER'; }
 
-        // Seleccionaremos el primer buque del arreglo.
-        let filter: VoyageFilterByYears = new VoyageFilterByYears();
+        // Seleccionamos el usuario.
+        this.selectUserId = userId;
+        this.selectUser = resultUser;
 
-
+        // Obtenemos todos los años del buque seleccionado.
         let years = this.selectUser.years;
+
+        // Ultimo año del buque.
         let OldYearUser: number;
+
+        // Verificamos que tenga almenos un registro, de año.
         if (years && years.length > 0) {
+          // Asignamos todos los años a la variable.
           this.yearsOfUsers = years;
-          OldYearUser = this.yearsOfUsers[this.selectUser.years.length - 1]
+          // Seleccionamos el ultimo año.
+          OldYearUser = this.yearsOfUsers[years.length - 1];
+          // Agregamos ese valor al combo del selectYear.
           this.frmSelectedYear.setValue([OldYearUser]);
         } else {
+          // Años del usuario esta vacio.
           this.yearsOfUsers = [];
+          // SetValues vacio.
           this.frmSelectedYear.setValue([]);
+
+          // Revisar aqui deberia notificar que este buque no tiene años, registrados.
+          // Al no tener años registrados no deberia poder permitir registrar reportes ni generar viajes.
+          // ni ingresar al modulo voyage.
+          throw 'NO_YEARS_REGISTER'; // No existen años registrados.
         };
 
-        filter.userId = this.selectUserId;
+        // Armamos el modelo para hacer la consulta.
+        let filter: VoyageFilterByYears = new VoyageFilterByYears();
+        filter.userId = userId;
         filter.years = [OldYearUser];
+
         // Traigo a todos los User y lo instancio en el obj.
         // GeyVoyage obtiene todos los puertos.
         return this.GetVoyagesByYears(filter).pipe().toPromise();
       }
     ).then(
-      reulst => {
+      resultGetVoyageByYears => {
+
+        if (!resultGetVoyageByYears) throw 'ERROR_GET_VOYAGES';
 
 
+        // Generar data por filtro.
         this.GenerateDataByFilter(this.getVoyages);
-
+        // Generar dashboard por tipo de resumen.
         this.GenerateDashboardBySumary(true)
 
 
-        // Activamos el loading.
-        this.loadingService.Close();
-      }
-    )
+        return true;
+      });
 
-    return false;
   }
 
   public SelectComboVoyage(index?: number): boolean {
