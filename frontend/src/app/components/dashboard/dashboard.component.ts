@@ -575,31 +575,52 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  // Generar reportes por fecha.
+  // Generar reportes por filtro de fecha.
   public GenerateReporteByDate(): boolean {
 
     console.log('GenerateReporteByDate()');
 
     this.loadingService.Open();
 
-
     Promise.resolve(true).then(
       () => {
-
+        // revisar que la fecha sean correctas.
         this.selectVoyageId = null;
 
-        setTimeout(() => {
-          this.GenerateDataByFilter(this.getVoyages, true);
+        // Validamos las fechas.
+        if(!this.startDate) throw 'NULL_START_DATE';
+        if(!this.endDate) throw 'NULL_END_DATE';
+        // Verificamos que la fecha inicio sea antes que la fecha fin.
+        if(IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
 
-          this.GenerateDashboardBySumary(false);
-
-
-          this.loadingService.Close();
-        }, 100);
-
-
+        return true;
       }
-    )
+    ).then(
+      result => {
+
+        // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
+        // Podria ser un return.
+        this.GenerateDataByFilter(this.getVoyages, true);
+
+        this.GenerateDashboardBySumary(false);
+
+
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
     return false;
   }
 
