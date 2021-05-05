@@ -327,11 +327,12 @@ export class DashboardComponent implements OnInit {
     return this.voyageService.GetsVoyageByYears(filter).pipe(map(
       (resultVoyages: Voyage[]) => {
 
+        // Verificamos que nos retorne los viajes.
         if (resultVoyages) {
           resultVoyages.forEach(
             voyage => {
 
-
+              // Ordenamos los puertos. de menor a mayor.
               voyage.ports.sort(function (aPort, bPort) {
                 if (aPort.id > bPort.id) {
                   return 1;
@@ -343,8 +344,11 @@ export class DashboardComponent implements OnInit {
                 return 0;
               });
 
+              // Recorremos los puertos.
               voyage.ports.forEach(
                 port => {
+
+                  // Ordenamos lor reportes diarios.
                   port.dailyReports.sort(function (aReport, bReport) {
                     if (aReport.id > bReport.id) {
                       return 1;
@@ -435,19 +439,22 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public SelectComboBuque(userId): boolean {
-    console.log('SelectComboBuque()');
+  // SelectComboBuque: Selecciona un buque
+  public SelectComboBuque(userId: number): boolean {
+    console.log('SelectComboBuque(userId)');
 
     Promise.resolve(true).then(
       result => {
         // Activamos el loading.
         this.loadingService.Open();
 
+        // Invocamos nuestra funcion SelectUser.
         return this.SelectUser(this.selectUserId);
       }).then(
         result => {
+          // Verificamos que todo este OK.
           if (!result) throw 'ERROR_COMBO_BUQUE';
-          // Activamos el loading.
+          // Cerramos el loading.
           this.loadingService.Close();
         }
       ).catch(
