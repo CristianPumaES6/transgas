@@ -387,7 +387,7 @@ export class DashboardComponent implements OnInit {
         // Deseleccionamos el filtro por viajes.
         this.selectVoyageId = null;
 
-       // Armamos el filtro para obtener los viajes por años.
+        // Armamos el filtro para obtener los viajes por años.
         let filter: VoyageFilterByYears = new VoyageFilterByYears();
         filter.userId = this.selectUserId;
 
@@ -406,7 +406,7 @@ export class DashboardComponent implements OnInit {
     ).then(
       resultGetVoyagesByYears => {
         // Verificamos el resultado.
-        if(!resultGetVoyagesByYears) throw 'ERROR_GET_VOYAGES';
+        if (!resultGetVoyagesByYears) throw 'ERROR_GET_VOYAGES';
 
         // Cambiamos el SumaryBy por viajes.
         this.selectSummaryBy = 'VOYAGES';
