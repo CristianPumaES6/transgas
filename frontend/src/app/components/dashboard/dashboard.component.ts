@@ -588,10 +588,10 @@ export class DashboardComponent implements OnInit {
         this.selectVoyageId = null;
 
         // Validamos las fechas.
-        if(!this.startDate) throw 'NULL_START_DATE';
-        if(!this.endDate) throw 'NULL_END_DATE';
+        if (!this.startDate) throw 'NULL_START_DATE';
+        if (!this.endDate) throw 'NULL_END_DATE';
         // Verificamos que la fecha inicio sea antes que la fecha fin.
-        if(IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
+        if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
 
         return true;
       }
