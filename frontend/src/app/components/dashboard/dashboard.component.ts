@@ -575,6 +575,34 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  // Generar reportes por fecha.
+  public GenerateReporteByDate(): boolean {
+
+    console.log('GenerateReporteByDate()');
+
+    this.loadingService.Open();
+
+
+    Promise.resolve(true).then(
+      () => {
+
+        this.selectVoyageId = null;
+
+        setTimeout(() => {
+          this.GenerateDataByFilter(this.getVoyages, true);
+
+          this.GenerateDashboardBySumary(false);
+
+
+          this.loadingService.Close();
+        }, 100);
+
+
+      }
+    )
+    return false;
+  }
+
   public FilterByActivities() {
     let voyages: Voyage[] = [];
 
@@ -811,31 +839,6 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  public GenerateReporteByDate(): boolean {
-    console.log('GenerateReporteByDate()');
-
-    this.loadingService.Open();
-
-
-    Promise.resolve(true).then(
-      () => {
-
-        this.selectVoyageId = null;
-
-        setTimeout(() => {
-          this.GenerateDataByFilter(this.getVoyages, true);
-
-          this.GenerateDashboardBySumary(false);
-
-
-          this.loadingService.Close();
-        }, 100);
-
-
-      }
-    )
-    return false;
-  }
 
   public SelectionmodalDisplayView(): boolean {
     console.log('SelectionmodalDisplayView()');
