@@ -577,19 +577,20 @@ export class DashboardComponent implements OnInit {
 
   // Generar reportes por filtro de fecha.
   public GenerateReporteByDate(): boolean {
-
     console.log('GenerateReporteByDate()');
 
     this.loadingService.Open();
 
+    // Iniciamos las promesas.
     Promise.resolve(true).then(
-      () => {
+      result => {
         // revisar que la fecha sean correctas.
         this.selectVoyageId = null;
 
         // Validamos las fechas.
-        if (!this.startDate) throw 'NULL_START_DATE';
-        if (!this.endDate) throw 'NULL_END_DATE';
+        // Si no es valida enviamos error.
+        if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
+        if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
         // Verificamos que la fecha inicio sea antes que la fecha fin.
         if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
 
@@ -603,7 +604,6 @@ export class DashboardComponent implements OnInit {
         this.GenerateDataByFilter(this.getVoyages, true);
 
         this.GenerateDashboardBySumary(false);
-
 
         this.loadingService.Close();
       }
@@ -621,52 +621,101 @@ export class DashboardComponent implements OnInit {
         this.loadingService.Close();
       }
     );
+
+    console.log('FIN GenerateReporteByDate2');
+
     return false;
   }
 
+  // Genera reportes segun filtro las actividades seleccionadas.
   public FilterByActivities() {
+    console.log('FilterByActivities()');
+
+    this.loadingService.Open();
+
+    // viajes
     let voyages: Voyage[] = [];
+    // esta variable nos dira si el filtro es por fecha.
+    let isFilterWithDate: boolean = false;
 
-    // SI existe un viaje seleccionamos lo seleccionamos para reducir el arreglo
-    if (this.selectVoyageId) {
+    Promise.resolve(true).then(
+      () => {
+        // Verificamos si existe un viaje seleccionado.
+        if (this.selectVoyageId) {
 
-      let voyageSelect = this.getVoyages.find(voyage => voyage.id == this.selectVoyageId);
-      voyages.push(voyageSelect);
+          // filtramos el viaje segun el id del viaje seleccionado.
+          let voyageSelect = this.getVoyages.find(voyage => voyage.id == this.selectVoyageId);
 
-      this.GenerateDataByFilter(voyages);
-      this.GenerateDashboardBySumary(true);
+          // Verificamos que se halla encontrado el viaje.
+          if (!voyageSelect) throw 'VOYAGE_NOT_FOUND';
 
-    } else if (validateDate(this.startDate) && validateDate(this.endDate)) {
+          // lo agregamos 
+          voyages.push(voyageSelect);
 
-      // Caso contrario el filtro se hara en todos los viajes.
-      voyages = this.getVoyages;
 
-      if (this.selectSummaryBy == 'DAYS') {
-
-        let diffDay = DiffDates(this.startDate, this.endDate);
-
-        if (diffDay >= 50) {
-          this.selectSummaryBy = 'VOYAGES';
         }
+        // Si no existe un viaje, verificamos si el filtro es por fecha.
+        else if (this.startDate || this.endDate) {
+
+          // Deseleccionamos el voyageId
+          this.selectVoyageId = null;
+
+          // Validamos las fechas.
+          // Si no es valida enviamos error.
+          if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
+          if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
+          // Verificamos que la fecha inicio sea antes que la fecha fin.
+          if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
+          // activamos que el filtro sea por fecha.
+          isFilterWithDate = true;
+          // ya que el filtro se hara con la fecha le enviaremos toda la data de viaje.
+          voyages = this.getVoyages;
+
+        } else {
+
+          // Caso contrario el filtro se hara con todos los viajes.
+          // Ya que no existe ningun rango de fecha
+          // ni viaje seleccionado.
+          voyages = this.getVoyages;
+
+          // Si el sumary es DAYS lo convertimos a viajes.
+          if (this.selectSummaryBy == 'DAYS') {
+            this.selectSummaryBy = 'VOYAGES';
+          }
+
+        }
+
+        return true;
       }
+    ).then(
+      result => {
 
-      this.GenerateDataByFilter(voyages, true);
-      this.GenerateDashboardBySumary(false);
+        // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
+        // Podria ser un return.
+        this.GenerateDataByFilter(voyages, isFilterWithDate);
 
-    } else {
+        this.GenerateDashboardBySumary(false);
 
-      // Caso contrario el filtro se hara en todos los viajes.
-      voyages = this.getVoyages;
+        console.log(' FIN FilterByActivities()');
 
-      // Si el sumary es DAYS lo convertimos a viajes.
-      if (this.selectSummaryBy == 'DAYS') {
-        this.selectSummaryBy = 'VOYAGES';
+        // Cerramos el loading.
+        this.loadingService.Close();
+
       }
+    ).catch(
+      err => {
 
-      this.GenerateDataByFilter(voyages);
-      this.GenerateDashboardBySumary(true);
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-    }
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
 
     console.log('FilterByActivities()');
 

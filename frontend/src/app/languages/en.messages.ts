@@ -395,9 +395,10 @@ export const dashboard: any = {
     TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
     NO_YEARS_REGISTER: 'The selected vessel does not have a year to display the data.',
     ERROR_GET_VOYAGES: 'Cound not get voyage data.',
-    NULL_START_DATE:'Check the start date filter.',
+    NULL_START_DATE: 'Check the start date filter.',
     NULL_END_DATE: 'Check the end date filter.',
-    ERROR_START_DATE: 'The start date cannot be higher than the end date.'
+    ERROR_START_DATE: 'The start date cannot be higher than the end date.',
+    VOYAGE_NOT_FOUND: 'The selected voyage was not found.'
 }
 
 export const dialog: any = {
