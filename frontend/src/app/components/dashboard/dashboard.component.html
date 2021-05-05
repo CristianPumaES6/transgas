@@ -50,14 +50,14 @@
         <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
         <mat-select [(ngModel)]="selectSummaryBy">
 
-          
+
           <ng-template ngFor let-iTypeSummaryVoyage [ngForOf]="typeSummaryVoyageList" let-i="index">
             <mat-option value="{{iTypeSummaryVoyage}}" (click)="ClickSummaryBy()">
               {{iTypeSummaryVoyage | translateMessage:translateCategory}}
             </mat-option>
           </ng-template>
 
-          
+
         </mat-select>
       </mat-form-field>
 
@@ -587,7 +587,7 @@
               </ng-template>
 
             </mat-select>
-            
+
 
           </mat-form-field>
 
