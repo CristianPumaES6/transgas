@@ -101,7 +101,7 @@
               {{frmCActivityPerformed.value?.length === 2 ? 'other' : 'others'}})
             </span>
           </mat-select-trigger>
-          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterByActivities()">
+          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="SelectFilterByActivities()">
             {{ activity | translateMessage:translateCategory}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -633,7 +633,7 @@
                 </span>
               </mat-select-trigger>
               <mat-option *ngFor="let activity of activityPerformedList" [value]="activity"
-                (click)="FilterByActivities()">
+                (click)="SelectFilterByActivities()">
                 {{ activity | translateMessage:translateCategory}}</mat-option>
             </mat-select>
           </mat-form-field>
