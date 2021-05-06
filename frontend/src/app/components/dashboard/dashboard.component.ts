@@ -562,11 +562,38 @@ export class DashboardComponent implements OnInit {
     )
   }
 
+  // ClickSummaryBy : aqui se selecciona un tipo de resumen.
+  public ClickSummaryBy() {
+    console.log(' ClickSummaryBy():');
+
+
+    this.loadingService.Open();
+
+
+    Promise.resolve(true).then(
+      () => {
+
+        setTimeout(() => {
+          console.log('OKKK');
+
+          console.log('INICA EL SUMARRY');
+
+          this.GenerateDashboardBySumary(true);
+
+          this.loadingService.Close();
+        }, 100);
+
+
+      }
+    )
+
+  }
+
   // Seleccionamos los viajes.  
   public SelectComboVoyage(index?: number) {
     console.log('SelectComboVoyage()');
 
-    return Promise.resolve(true).then(
+    Promise.resolve(true).then(
       result => {
 
         // Abrimos el loading.
@@ -794,31 +821,6 @@ export class DashboardComponent implements OnInit {
     console.log('FilterByActivities()');
   }
 
-  public ClickSummaryBy() {
-    console.log(' ClickSummaryBy():');
-
-
-    this.loadingService.Open();
-
-
-    Promise.resolve(true).then(
-      () => {
-
-        setTimeout(() => {
-          console.log('OKKK');
-
-          console.log('INICA EL SUMARRY');
-
-          this.GenerateDashboardBySumary(true);
-
-          this.loadingService.Close();
-        }, 100);
-
-
-      }
-    )
-
-  }
 
   public ClearFilter(): boolean {
 
