@@ -1064,7 +1064,7 @@ export class DashboardComponent implements OnInit {
       ).then(
         result => {
           // Revisamos el resultado.
-          if(!result) throw 'NOT_OK';
+          if (!result) throw 'NOT_OK';
 
           // AQUI ASIGNAMOS LOS VALORES POR ACTIVIDAD
           // TOTAL TIME PER ACTIVITY - this.totalTimePerActivityIFO
