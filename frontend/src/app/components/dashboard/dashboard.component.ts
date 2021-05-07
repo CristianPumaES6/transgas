@@ -424,11 +424,15 @@ export class DashboardComponent implements OnInit {
         // Mostramos el siguiente error.
         if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
 
+        // Generamos el dashboard por tipo de resumen.
+        return this.GenerateDashboardBySumary(true);
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Validamos el resultado del generate Dashboard.
+        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        // Generar dashboard por tipo de resumen.
-        this.GenerateDashboardBySumary(true);
-
-        // Activamos el loading.
+        // Loading cerrar.
         this.loadingService.Close();
       }
     ).catch(
@@ -554,8 +558,13 @@ export class DashboardComponent implements OnInit {
         if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
 
 
-        // Generar dashboard por tipo de resumen.
-        this.GenerateDashboardBySumary(true);
+        // Generamos el dashboard por tipo de resumen.
+        return this.GenerateDashboardBySumary(true);
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Validamos el resultado del generate Dashboard.
+        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
         return true;
       }
@@ -566,26 +575,31 @@ export class DashboardComponent implements OnInit {
   public ClickSummaryBy() {
     console.log(' ClickSummaryBy():');
 
-
+    // Abrimos el loading
     this.loadingService.Open();
 
-
-    Promise.resolve(true).then(
+    // Hacemos un setTimeOut para 
+    setTimeout(
       () => {
+        // Inicializamos la promesa.
+        Promise.resolve(true)
+          .then(
+            () => {
+              // Generamos el dashboard por tipo de resumen.
+              return this.GenerateDashboardBySumary(true);
+            }
+          ).then(
+            resultGenerateDashboard => {
+              // Validamos el resultado del generate Dashboard.
+              if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        setTimeout(() => {
-          console.log('OKKK');
-
-          console.log('INICA EL SUMARRY');
-
-          this.GenerateDashboardBySumary(true);
-
-          this.loadingService.Close();
-        }, 100);
-
-
-      }
-    )
+              // Loading cerrar.
+              this.loadingService.Close();
+            }
+          )
+      },
+      100
+    );
 
   }
 
@@ -623,12 +637,16 @@ export class DashboardComponent implements OnInit {
         // Revisamos que se halla generado correctamente el filtro.
         if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
 
-        // Generar dashboard por tipo de resumen.
-        this.GenerateDashboardBySumary(true);
+        // Generamos el dashboard por tipo de resumen.
+        return this.GenerateDashboardBySumary(true);
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Validamos el resultado del generate Dashboard.
+        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        // Cerramos el loading
+        // Loading cerrar.
         this.loadingService.Close();
-
       }
     ).catch(
       err => {
@@ -680,12 +698,16 @@ export class DashboardComponent implements OnInit {
         if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
 
 
-        // Generar dashboard por tipo de resumen.
-        this.GenerateDashboardBySumary(false);
+        // Generamos el dashboard por tipo de resumen.
+        return this.GenerateDashboardBySumary(true);
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Validamos el resultado del generate Dashboard.
+        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        // Cerramos el loading
+        // Loading cerrar.
         this.loadingService.Close();
-
       }
     ).catch(
       err => {
@@ -727,96 +749,100 @@ export class DashboardComponent implements OnInit {
     // Pongo este setTineOut como truco por que el loading no esta cargando.
     // SI LLEGAN A SABER POR QUE, ESCRIBANLO.
     // La unica pista que tengo, puede ser por un tema del asincrono y sincrono.
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      // Iniciamos la promesa
-      Promise.resolve(true).then(
-        () => {
-          // Verificamos si existe un viaje seleccionado.
-          if (this.selectVoyageId) {
+        // Iniciamos la promesa
+        Promise.resolve(true).then(
+          () => {
+            // Verificamos si existe un viaje seleccionado.
+            if (this.selectVoyageId) {
 
-            // filtramos el viaje segun el id del viaje seleccionado.
-            let voyageSelect = this.getVoyages.find(voyage => voyage.id == this.selectVoyageId);
+              // filtramos el viaje segun el id del viaje seleccionado.
+              let voyageSelect = this.getVoyages.find(voyage => voyage.id == this.selectVoyageId);
 
-            // Verificamos que se halla encontrado el viaje.
-            if (!voyageSelect) throw 'VOYAGE_NOT_FOUND';
+              // Verificamos que se halla encontrado el viaje.
+              if (!voyageSelect) throw 'VOYAGE_NOT_FOUND';
 
-            // lo agregamos 
-            voyages.push(voyageSelect);
+              // lo agregamos 
+              voyages.push(voyageSelect);
 
 
-          }
-          // Si no existe un viaje, verificamos si el filtro es por fecha.
-          // EXACTAMENTE ESTO, NO NOS INDICA QUE EL FILTRO A SIDO POR FECHA
-          else if (this.startDate || this.endDate) {
+            }
+            // Si no existe un viaje, verificamos si el filtro es por fecha.
+            // EXACTAMENTE ESTO, NO NOS INDICA QUE EL FILTRO A SIDO POR FECHA
+            else if (this.startDate || this.endDate) {
 
-            // Deseleccionamos el voyageId
-            this.selectVoyageId = null;
+              // Deseleccionamos el voyageId
+              this.selectVoyageId = null;
 
-            // Validamos las fechas.
-            // Si no es valida enviamos error.
-            if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
-            if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
-            // Verificamos que la fecha inicio sea antes que la fecha fin.
-            if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
-            // activamos que el filtro sea por fecha.
-            isFilterWithDate = true;
-            // ya que el filtro se hara con la fecha le enviaremos toda la data de viaje.
-            voyages = this.getVoyages;
+              // Validamos las fechas.
+              // Si no es valida enviamos error.
+              if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
+              if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
+              // Verificamos que la fecha inicio sea antes que la fecha fin.
+              if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
+              // activamos que el filtro sea por fecha.
+              isFilterWithDate = true;
+              // ya que el filtro se hara con la fecha le enviaremos toda la data de viaje.
+              voyages = this.getVoyages;
 
-          } else {
+            } else {
 
-            // Caso contrario el filtro se hara con todos los viajes.
-            // Ya que no existe ningun rango de fecha
-            // ni viaje seleccionado.
-            voyages = this.getVoyages;
+              // Caso contrario el filtro se hara con todos los viajes.
+              // Ya que no existe ningun rango de fecha
+              // ni viaje seleccionado.
+              voyages = this.getVoyages;
 
-            // Si el sumary es DAYS lo convertimos a viajes.
-            if (this.selectSummaryBy == 'DAYS') {
-              this.selectSummaryBy = 'VOYAGES';
+              // Si el sumary es DAYS lo convertimos a viajes.
+              if (this.selectSummaryBy == 'DAYS') {
+                this.selectSummaryBy = 'VOYAGES';
+              }
+
             }
 
+            return true;
           }
+        ).then(
+          result => {
+            if (!result) throw 'NOT_OK'
+            // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
+            // Podria ser un return.
+            return this.GenerateDataByFilter(voyages, isFilterWithDate);
+          }
+        ).then(
+          result => {
+            // Revisamos que la data del filtro se halla generado correctamente.
+            if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
 
-          return true;
-        }
-      ).then(
-        result => {
-          if (!result) throw 'NOT_OK'
-          // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
-          // Podria ser un return.
-          return this.GenerateDataByFilter(voyages, isFilterWithDate);
-        }
-      ).then(
-        result => {
-          // Revisamos que la data del filtro se halla generado correctamente.
-          if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
+            // Generamos el dashboard por tipo de resumen.
+            return this.GenerateDashboardBySumary(true);
+          }
+        ).then(
+          resultGenerateDashboard => {
+            // Validamos el resultado del generate Dashboard.
+            if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-          // Generar dashboard por tipo de resumen.
-          this.GenerateDashboardBySumary(true);
+            // Loading cerrar.
+            this.loadingService.Close();
+          }
+        ).catch(
+          err => {
 
-          // Cerramos el loading
-          this.loadingService.Close();
+            // Manejo el error
+            let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
+            console.error(msg);
+            console.dir(err);
 
-        }
-      ).catch(
-        err => {
+            this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+            // Deshabilito el spinner de loading
+            this.loadingService.Close();
 
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+          }
+        );
 
-          console.error(msg);
-          console.dir(err);
-
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-
-        }
-      );
-
-    }, 100)
+      }, 100);
 
     console.log('FilterByActivities()');
   }
@@ -1780,29 +1806,49 @@ export class DashboardComponent implements OnInit {
     return config;
   }
 
-  public GenerateDashboardBySumary(setDate: boolean) {
+  // Genera los datos del Dashboard por Summary
+  private async GenerateDashboardBySumary(setDate: boolean): Promise<boolean> {
     console.log('GenerateDashboardBySumary()');
 
-    let filter = this.selectSummaryBy;
+    // retornamoremos el resultado de la promesa.
+    return await Promise.resolve(true).then(
+      result => {
+        // Generamos  la data del dashboard segun el tipo de resumen.
 
-    if (filter === 'VOYAGES') {
-      this.GenerateDashBoardByVoyages(setDate);
-    } else if (filter === 'PORTS') {
-      this.GenerateDashBoardByPorts(setDate);
-    } else if (filter === 'MONTHS') {
-      this.GenerateDashBoardByMonths(setDate);
-    } else if (filter === 'DAYS') {
-      this.GenerateDashBoardByDays(setDate);
-    }
+        // Tipo de resumen.
+        let typeSummary = this.selectSummaryBy;
 
-    // Actualizamos los cuadros del dashboard.
-    this.UpdateLineIFO();
-    this.UpdateLineMGO();
-    this.UpdateLineSPEED();
+        // Filtro de resumen.
+        if (typeSummary === 'VOYAGES') {
+          this.GenerateDashBoardByVoyages(setDate);
+        } else if (typeSummary === 'PORTS') {
+          this.GenerateDashBoardByPorts(setDate);
+        } else if (typeSummary === 'MONTHS') {
+          this.GenerateDashBoardByMonths(setDate);
+        } else if (typeSummary === 'DAYS') {
+          this.GenerateDashBoardByDays(setDate);
+        }
 
-    console.log('GenerateDashboardBySumary() FINNNNNNNNNNN');
+        // return true.
+        return true;
+      }
+    ).then(
+      result => {
+        // Validamos el resultado.
+        if (!result) throw 'NOT_OK';
 
+        // UPDATE CHART.
+        this.UpdateLineIFO();
+        this.UpdateLineMGO();
+        this.UpdateLineSPEED();
+
+        // Console logear.
+        console.log('GenerateDashboardBySumary() FIN');
+        return true;
+      }
+    )
   }
+
 
   // Generar data para el dashboard desde el arreglo de reportes
   public GenerateDashBoardByVoyages(setDate: boolean) {
