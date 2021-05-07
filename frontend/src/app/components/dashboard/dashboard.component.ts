@@ -452,7 +452,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // SelectComboBuque: Selecciona un buque
-  public SelectComboBuque(userId: number): boolean {
+  public SelectComboBuque(userId: number) {
     console.log('SelectComboBuque(userId)');
 
     Promise.resolve(true).then(
@@ -485,7 +485,6 @@ export class DashboardComponent implements OnInit {
         });
 
     console.log('FIN SelectComboBuque()');
-    return false;
   }
 
   // Selecciona al usuario, 
@@ -603,7 +602,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  // Seleccionamos los viajes.  
+  // SelectComboVoyage(index): Filtramos la data de los viajes por el viaje seleccionado. 
   public SelectComboVoyage(index?: number) {
     console.log('SelectComboVoyage()');
 
@@ -663,7 +662,7 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  // Generar reportes por filtro de fecha.
+  //GenerateReporteByDate():  Generar reportes por filtro de fecha.
   public GenerateReporteByDate(): boolean {
     console.log('GenerateReporteByDate()');
 
@@ -848,26 +847,65 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  public ClearFilter(): boolean {
+  //  ClearFilter(): 
+  public ClearFilter() {
 
-    this.startDate = null;
-    this.endDate = null;
+    // Iniciamos la promesa
+    Promise.resolve(true).then(
+      result => {
+        // Activamos el loading.
+        this.loadingService.Open();
 
-    if (this.frmCActivityPerformed && this.frmCActivityPerformed.value && this.frmCActivityPerformed.value) {
-      // Reset filtro.
-      this.frmCActivityPerformed = new FormControl();
-    }
+        // RESET Las variables de filtro.
+        this.startDate = null;
+        this.endDate = null;
+        this.selectVoyageId = 0;
+        this.selectVoyage = new Voyage();
+        this.selectSummaryBy = 'VOYAGES';
 
-    this.selectVoyageId = 0;
-    this.selectVoyage = new Voyage();
+        // Verificamos si el filtro de actividades esta activo, para resetearlo.
+        if (this.frmCActivityPerformed && this.frmCActivityPerformed.value && this.frmCActivityPerformed.value) {
+          // Reset filtro.
+          this.frmCActivityPerformed = new FormControl();
+        }
 
+        // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
+        // Podria ser un return.
+        return this.GenerateDataByFilter(this.getVoyages);
+      }
+    ).then(
+      result => {
+        // Revisamos que la data del filtro se halla generado correctamente.
+        if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
 
-    this.selectSummaryBy = 'VOYAGES';
+        // Generamos el dashboard por tipo de resumen.
+        return this.GenerateDashboardBySumary(true);
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Validamos el resultado del generate Dashboard.
+        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-    this.GenerateDataByFilter(this.getVoyages);
+        // Validamos el resultado del generate Dashboard.
+        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-    this.GenerateDashboardBySumary(true);
-    return false;
+        // Loading cerrar.
+        this.loadingService.Close();
+      }).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
   }
 
   public viewFilter(isView: boolean) {
