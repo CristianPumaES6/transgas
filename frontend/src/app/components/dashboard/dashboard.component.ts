@@ -1711,210 +1711,63 @@ export class DashboardComponent implements OnInit {
   public ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
 
     // Variable que retornara la configuracion
-    let config: any = {};
+    let config: any = {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+          max: lineaMax,
+        },
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }],
+      xAxes: [{
+        type: '',// ES SE MODIFICA ABAJO // 'category' or 'time'
+        //  time: {} // Se modificara abajo.
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+        },
+        position: 'bottom', // NO QUE HACE ESTO
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }]
+    };
 
-    if (this.selectSummaryBy === 'VOYAGES') {
 
-      config = {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-            max: lineaMax,
-          },
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }],
-        xAxes: [{
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-          },
-          type: 'category',
-          position: 'bottom',
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }]
-      };
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORT') {
 
-    } else if (this.selectSummaryBy === 'PORTS') {
-
-      config = {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-            max: lineaMax,
-          },
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }],
-        xAxes: [{
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-          },
-          type: 'category',
-          position: 'bottom',
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }]
-      };
+      config.xAxes[0].type = 'category';
 
     } else if (this.selectSummaryBy === 'MONTHS') {
 
-      config = {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-            max: lineaMax,
-          },
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }],
-        xAxes: [{
-          type: 'time',
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-          },
-          time: {
-            displayFormats: {
-              day: 'MM/YY'
-            },
-            tooltipFormat: 'MM/DD/YY',
-            unit: 'month',
-          },
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }]
-      };
+      config.xAxes[0].type = 'time';
+      config.xAxes[0].time = {
+
+        displayFormats: {
+          day: 'MM/YY'
+        },
+        tooltipFormat: 'MM/DD/YY',
+        unit: 'month',
+
+      }
 
     } else if (this.selectSummaryBy === 'DAYS') {
 
-      config = {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-            max: lineaMax,
-          },
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }],
-        xAxes: [{
-          type: 'time',
-          ticks: {
-            beginAtZero: true,
-            fontColor: '#b8d1ff',
-          },
-          time:
-          {
-            displayFormats: {
-              day: 'MM/DD'
-            },
-            tooltipFormat: 'MM/DD',
-            unit: 'day',
-          },
-          gridLines: {
-            display: true,
-            color: '#b8d1ff'
-          },
-        }]
-      };
+      config.xAxes[0].type = 'time';
+      config.xAxes[0].time = {
 
-    } else {
+        displayFormats: {
+          day: 'MM/YY'
+        },
+        tooltipFormat: 'MM/DD',
+        unit: 'day',
 
-      /*   config = {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              fontColor: '#b8d1ff',
-            },
-            gridLines: {
-              display: true,
-              color: '#b8d1ff'
-            },
-          }],
-          xAxes: [{
-            ticks: {
-              beginAtZero: true,
-              fontColor: '#b8d1ff',
-            },
-            type: 'time',
-            position: 'bottom',
-            time: {
-              displayFormats: {
-                day: 'MM/DD'
-              },
-              tooltipFormat: 'MM/DD',
-              unit: 'day',
-            },
-            gridLines: {
-              display: true,
-              color: '#b8d1ff'
-            },
-          }]
-        };
-  
-  
-        if (isSpeed) {
-  
-          if (lineaMax > 0) {
-            config.yAxes = [{
-              ticks: {
-                beginAtZero: true,
-                steps: 10,
-                stepValue: 5,
-                max: lineaMax,
-                fontColor: '#b8d1ff',
-              },
-              gridLines: {
-                display: true,
-                color: '#b8d1ff'
-              },
-            }];
-  
-          }
-        }
-  
-        // Segun la cantidad de datos, estara personalizada.
-        if (dataReport.length < 60) {
-  
-          config.xAxes[0].time = {
-            displayFormats: {
-              day: 'MM/DD'
-            },
-            tooltipFormat: 'MM/DD',
-            unit: 'day',
-          };
-  
-        } else {
-  
-          config.xAxes[0].time = {
-            displayFormats: {
-              day: 'MM/YY'
-            },
-            tooltipFormat: 'MM/DD/YY',
-            unit: 'month',
-          };
-  
-        } */
+      }
 
     }
 
@@ -2384,7 +2237,7 @@ export class DashboardComponent implements OnInit {
 
   // Generar linea en los canvas.
   public GenetareLineIFO(): boolean {
-    
+
     // Test
     console.log('GenetareLineIFO()');
 
