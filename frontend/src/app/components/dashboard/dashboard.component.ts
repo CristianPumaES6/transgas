@@ -2234,7 +2234,8 @@ export class DashboardComponent implements OnInit {
 
   }
 
-
+// ESTO LO VEREMOS DESPUES.
+// REVISAR 
   // Generar linea en los canvas.
   public GenetareLineIFO(): boolean {
 
@@ -3204,6 +3205,9 @@ export class DashboardComponent implements OnInit {
 
     return false;
   }
+  // FIN DE VER DESPUES
+
+
 
   // Suma los campos ifo()
   private SumaIfo(report: DailyReport): number {
