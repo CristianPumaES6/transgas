@@ -6,7 +6,7 @@
 
       <h6 class="card-title tx-14 mb-3">
         {{ 'Legend' | translateMessage:translateCategory }}
-        <span class="close-icon" (click)="viewFilter(false)">
+        <span class="close-icon" (click)="ViewFilter(false)">
           <i class="icon-x2"></i>
         </span>
       </h6>
@@ -111,14 +111,14 @@
 
       <br><br>
       <div class="row">
-        <a class="pr-3 pb-3 buttom_Excel" (click)="ExportExcel()">
+        <a class="pr-3 pb-3 buttom_Excel" (click)="ClickExportExcel()">
           <span class="icon-archivo-excel"></span>
         </a>
 
 
 
         <ng-template [ngIf]="!!selectVoyageId">
-          <a class="pr-3 pb-3 buttom_pdf" (click)="ExportPDF()">
+          <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
             <span class="icon-archivo-pdf"></span>
           </a>
         </ng-template>
@@ -133,7 +133,7 @@
 
 <!-- Hambirgesa para que nuestro filtro se muestre -->
 <div class="component-fixed-bottom fixed-bottom text-right pb-2 pr-2">
-  <button class="outline-none" aria-label="Example icon button with a bookmark icon" (click)="viewFilter(true)"
+  <button class="outline-none" aria-label="Example icon button with a bookmark icon" (click)="ViewFilter(true)"
     mat-mini-fab color="primary">
     <mat-icon class="icon-filter"> </mat-icon>
   </button>
@@ -647,13 +647,13 @@
           <div class="row">
 
             <div class="row">
-              <a class="pr-3 pb-3 buttom_Excel" (click)="ExportExcel()">
+              <a class="pr-3 pb-3 buttom_Excel" (click)="ClickExportExcel()">
                 <span class="icon-archivo-excel"></span>
               </a>
 
 
               <ng-template [ngIf]="!!selectVoyageId">
-                <a class="pr-3 pb-3 buttom_pdf" (click)="ExportPDF()">
+                <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
                   <span class="icon-archivo-pdf"></span>
                 </a>
               </ng-template>

@@ -297,8 +297,8 @@ export class ExcelService {
     }
     
 
-
-    workbook.xlsx.writeBuffer().then((data) => {
+    // Escribimos el excel
+    await workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, 'Report.xlsx');
     });  

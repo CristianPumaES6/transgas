@@ -846,7 +846,6 @@ export class DashboardComponent implements OnInit {
     console.log('FilterByActivities()');
   }
 
-
   //  ClearFilter(): 
   public ClearFilter() {
 
@@ -908,85 +907,170 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public viewFilter(isView: boolean) {
+  // ViewFilter() : Esta funcion abre y cierra el filtro, el filtro movil solo funciona
+  // En pantallas chiquitas.
+  public ViewFilter(isView: boolean) {
     console.log('viewFilter(isView: boolean)');
-
+    // se si queres ver o no el filtro.
     this.isViewFilter = isView;
   }
 
+  // ClickExportExcel() : Esta funcion genera el exxcel
+  public ClickExportExcel() {
 
-  public ExportExcel(): boolean {
-    console.log('exportExcel();');
+    // Iniciamos las promesas.
+    Promise.resolve(true).then(
+      result => {
+        // Abrimos el loading.
+        this.loadingService.Open();
 
 
-    this.excelService.ExportReportDaily(this.generateVoyages);
+        // Generatamos el report daily.
+        return this.excelService.ExportReportDaily(this.generateVoyages);
 
-    return false;
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Verificamos que se halla exportado correctamente.
+        if (!resultGenerateDashboard) throw 'ERROR_EXPORT_REPORT_DAILY';
+
+        // Loading cerrar.
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
+
+
   }
 
-  public async ExportPDF(): Promise<boolean> {
+  // ClickExportPDF() : Funcion que se ejecuta al dar click a exportar pdf, esto invoca a la funcion que genera el pdf.
+  public ClickExportPDF(){
 
+    // Iniciamos las promesas.
+    Promise.resolve(true).then(
+      result => {
+        // Abrimos el loading.
+        this.loadingService.Open();
+
+
+        // Generatamos el report daily.
+        return this.ExportPDF();
+
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Verificamos que se halla exportado correctamente.
+        if (!resultGenerateDashboard) throw 'ERROR_EXPORT_REPORT_DAILY';
+
+        // Loading cerrar.
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
+
+
+  }
+  // ExportPDF() : Esta opcion exporta el pdf.
+  // AQUI UNA MEJORA.
+  // HAY MEJORA esto toma por defecto el generateVOyages, hay que revisar que deberia tomar.
+  private async ExportPDF(): Promise<boolean> {
+
+    // El tamaño de un documento es 210 y 297
+    // width 210
+    // Heigth 297
+
+    // recorremos los viajes 
     for await (const voyage of this.generateVoyages) {
 
-
+      // Recorremos los puertos.
       for await (const port of voyage.ports) {
-
-        console.log('exportPdf()');
+        // Armamos el objeto de JSPDF
         const doc = new jsPDF();
+        // tamaño de pdf.
+        var widthPDF = doc.internal.pageSize.getWidth();
 
-        // width 210
-        // Heigth 297
+
+        // Nos ubicamos a una altura.
         let height = 38;
-        doc.addImage("./assets/icons/logotransgas.png", "JPEG", (210 - 50) / 2, height, 50, 50)
+        // ubicamos la imagen con un tamaño de 50 x 50
+        doc.addImage("./assets/icons/logotransgas.png", "JPEG", (widthPDF - 50) / 2, height, 50, 50)
+        // le sumamos la altura.
         height += 55;
 
+        // le sumamos la altura.
         height += 10;
-        var width = doc.internal.pageSize.getWidth()
         doc.setFontSize(35);
         doc.setTextColor(22, 33, 77);
         doc.setFont('Helvetica', 'bold');
-        doc.text('Vessel Performance Report', width / 2, height, { align: 'center' })
+        doc.text('Vessel Performance Report', widthPDF / 2, height, { align: 'center' })
 
-
+        // le sumamos la altura.
         height += 10;
         doc.setFontSize(18);
         doc.setTextColor(40);
         doc.setFont('Helvetica', 'bold');
-        doc.text('Prepared For:', width / 2, height, { align: 'center' })
+        doc.text('Prepared For:', widthPDF / 2, height, { align: 'center' })
 
+        // le sumamos la altura.
         height += 12;
         doc.setFontSize(30);
         doc.setTextColor(22, 33, 77);
         doc.setFont('Helvetica', 'bold');
-        doc.text(this.selectUser.name, width / 2, height, { align: 'center' })
+        doc.text(this.selectUser.name, widthPDF / 2, height, { align: 'center' })
 
+        // le sumamos la altura.
         height += 20;
         doc.setFontSize(18);
         doc.setTextColor(40);
         doc.setFont('Helvetica', 'bold');
-        doc.text('N° Port: ' + port.portNumber, width / 2, height, { align: 'center' })
+        doc.text('N° Port: ' + port.portNumber, widthPDF / 2, height, { align: 'center' })
 
-
+        // le sumamos la altura.
         height += 12;
         doc.setFontSize(30);
         doc.setTextColor(22, 33, 77);
         doc.setFont('Helvetica', 'bold');
-        doc.text(port.departurePort + " to " + port.arrivalPort, width / 2, height, { align: 'center' })
+        doc.text(port.departurePort + " to " + port.arrivalPort, widthPDF / 2, height, { align: 'center' })
 
-
+        // le sumamos la altura.
         height += 10;
         doc.setFontSize(18);
         doc.setTextColor(40);
         doc.setFont('Helvetica', 'bold');
-        doc.text("ATD: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, width / 2, height, { align: 'center' })
+        doc.text("ATD: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, widthPDF / 2, height, { align: 'center' })
 
+        // le sumamos la altura.
         height += 10;
         doc.setFontSize(10);
         doc.setTextColor(40);
         doc.setFont('Helvetica', 'bold');
-        doc.text("Date: " + TextMonthDayYear(FormatDate(GetDate())), width / 2, height, { align: 'center' })
+        doc.text("Date: " + TextMonthDayYear(FormatDate(GetDate())), widthPDF / 2, height, { align: 'center' })
 
-
+        // Le sumamos la altura.
         // Dibujaremos los cuadrados.
         height += 20;
         // Filled red square with black borders
@@ -1045,14 +1129,7 @@ export class DashboardComponent implements OnInit {
       }
 
     }
-    return false;
-  }
-
-
-  public SelectionmodalDisplayView(): boolean {
-    console.log('SelectionmodalDisplayView()');
-
-    return false;
+    return true;
   }
 
   // Genera la data del viaje con filtro y resumen.
