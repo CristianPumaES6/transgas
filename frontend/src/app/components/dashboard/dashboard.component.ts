@@ -1708,7 +1708,7 @@ export class DashboardComponent implements OnInit {
 
   // Configuracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
   // esta configuracion depente del selectSummary
-  public ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
+  private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
 
     // Variable que retornara la configuracion
     let config: any = {
@@ -2859,6 +2859,7 @@ export class DashboardComponent implements OnInit {
       this.configLineaMGO.lineaMax = this.selectUser.maxMGOConsumption;
     }
 
+    // Agregamos la configuracion de las escalas.
     this.configLineaMGO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaMGO.lineaMax, 0) + 2);
 
     this.chartLineMGO.update();
@@ -3031,6 +3032,8 @@ export class DashboardComponent implements OnInit {
     }
 
 
+
+    // Agregamos la configuracion de las escalas.
     this.configLineaIFO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaIFO.lineaMax, 0) + 2);
     //
     this.chartLineIFO.update();
@@ -3193,6 +3196,8 @@ export class DashboardComponent implements OnInit {
     }
 
 
+
+    // Agregamos la configuracion de las escalas.
     this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
 
     this.chartLineSPEED.update();
