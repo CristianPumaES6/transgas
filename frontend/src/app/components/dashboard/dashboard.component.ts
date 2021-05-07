@@ -956,7 +956,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // ClickExportPDF() : Funcion que se ejecuta al dar click a exportar pdf, esto invoca a la funcion que genera el pdf.
-  public ClickExportPDF(){
+  public ClickExportPDF() {
 
     // Iniciamos las promesas.
     Promise.resolve(true).then(
