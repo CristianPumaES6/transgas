@@ -2384,6 +2384,7 @@ export class DashboardComponent implements OnInit {
 
   // Generar linea en los canvas.
   public GenetareLineIFO(): boolean {
+    
     // Test
     console.log('GenetareLineIFO()');
 
@@ -2646,7 +2647,7 @@ export class DashboardComponent implements OnInit {
           }
 
         },
-        scales: null,
+        scales: null, // 
         hover: {
           onHover: function (e) {
             var point = this.getElementAtEvent(e);
@@ -2657,8 +2658,6 @@ export class DashboardComponent implements OnInit {
       },
       lineaMax: 0
     };
-
-    this.configLineaMGO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaMGO.lineaMax, 0) + 2);
 
     let canvaLineMGO: any = document.getElementById('lineMGO');
     let ctxLineMGO = canvaLineMGO.getContext('2d');
@@ -2835,8 +2834,6 @@ export class DashboardComponent implements OnInit {
       },
       lineaMax: 0
     };
-    this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
-
     let canvaLineSPEED: any = document.getElementById('lineSPEED');
     let ctxLineSPEED: any = canvaLineSPEED.getContext('2d');
 
