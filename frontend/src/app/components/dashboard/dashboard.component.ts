@@ -1798,7 +1798,7 @@ export class DashboardComponent implements OnInit {
         if (typeSummary === 'VOYAGES') {
           this.GenerateDashBoardByVoyages(setDate);
         } else if (typeSummary === 'PORTS') {
-          this.GenerateDashBoardByPorts(setDate);
+          this.GenerateDashBoardByVoyages(setDate);
         } else if (typeSummary === 'MONTHS') {
           this.GenerateDashBoardByMonths(setDate);
         } else if (typeSummary === 'DAYS') {
@@ -1827,7 +1827,7 @@ export class DashboardComponent implements OnInit {
 
 
   // Generar data para el dashboard desde el arreglo de reportes
-  public GenerateDashBoardByVoyages(setDate: boolean) {
+  private GenerateDashBoardByVoyages(setDate: boolean) {
     // Texto x de los reportes.
     this.xLabelReport = [];
 
@@ -1853,7 +1853,7 @@ export class DashboardComponent implements OnInit {
 
     // Generar Viajes.
     this.generateVoyages.forEach(
-      (voyage, iv) => {
+      (voyage, iV) => {
 
         // Generamos el texto para los labels del Chart
         let txtLabelChart: string = '';
@@ -1869,21 +1869,22 @@ export class DashboardComponent implements OnInit {
           // El total de consumo debe de ser mayor para poder pintarlo.
           if (voyage.totalIFO > 0) {
             this.dataIFO.push(
-              { x: txtLabelChart, y: voyage.totalIFO, ubication: [iv] }
+              { x: txtLabelChart, y: voyage.totalIFO, ubication: [iV] }
             );
           }
 
           // El total de consumo debe de ser mayor para poder pintarlo.
           if (voyage.totalMGO > 0) {
             this.dataMGO.push(
-              { x: txtLabelChart, y: voyage.totalMGO, ubication: [iv] }
+              { x: txtLabelChart, y: voyage.totalMGO, ubication: [iV] }
             );
           }
 
+          // El total de velocidad debe de ser mayor para poder pintarlo.
           let speed = mathRound(voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1), 2);
           if (speed > 0) {
             this.dataSPEED.push(
-              { x: txtLabelChart, y: speed, ubication: [iv] }
+              { x: txtLabelChart, y: speed, ubication: [iV] }
             );
           }
 
@@ -1901,86 +1902,66 @@ export class DashboardComponent implements OnInit {
           // Comparamos si la data actual es la de inicio o fin.
           startDate = ComparePreviousDates(startDate, voyage.dayStart)
           endDate = CompareAfterDates(endDate, voyage.dayEnd)
-  
-        } else {
+
+        } 
+          // Verificamos si el sumary es por Puerto Mes o dias
+        else if (this.selectSummaryBy === 'PORTS' || this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
+
+          // Recorremos los puertos.
+          voyage.ports.forEach(
+            (port, iP) => {
+
+              if (this.selectSummaryBy === 'PORTS') {
+
+                // Armamos el texto de label para lista de puertos.
+                txtLabelChart = 'V' + voyage.voyageNumber + ' ' + 'P' + port.portNumber + ' Y' + ('' + voyage.year).slice(-2);
+
+                // Lo agregamos al arreglo.
+                this.xLabelReport.push(txtLabelChart);
+
+                // El total de consumo debe de ser mayor para poder pintarlo.
+                if (port.robIfo > 0) {
+                  this.dataIFO.push(
+                    { x: txtLabelChart, y: port.robIfo, ubication: [iV, iP] }
+                  );
+                }
+                // El total de consumo debe de ser mayor para poder pintarlo.
+                if (port.robMgo > 0) {
+                  this.dataMGO.push(
+                    { x: txtLabelChart, y: port.robMgo, ubication: [iV, iP] }
+                  );
+                }
+                // El total de velocidad debe de ser mayor para poder pintarlo.
+                let speed = mathRound(port.speed.distance / (port.speed.steamingTime || 1), 2);
+                if (speed > 0) {
+                  this.dataSPEED.push(
+                    { x: txtLabelChart, y: speed, ubication: [iV, iP] }
+                  );
+                }
+
+                // Verificamos si la linea maxima es menor para actualizarlo.
+                if (port.robIfo > this.configLineaIFO.lineaMax) {
+                  this.configLineaIFO.lineaMax = port.robIfo;
+                }
+                if (port.robMgo > this.configLineaMGO.lineaMax) {
+                  this.configLineaMGO.lineaMax = port.robMgo;
+                }
+                if (speed > this.configLineaSPEED.lineaMax) {
+                  this.configLineaSPEED.lineaMax = speed;
+                }
+
+                // Comparamos si la data actual es la de inicio o fin.
+                startDate = ComparePreviousDates(startDate, port.dayStart)
+                endDate = CompareAfterDates(endDate, port.dayEnd)
+
+              }
+            })
 
         }
 
       }
     );
 
-
-    if (setDate) {
-      this.startDate = startDate;
-      this.endDate = endDate;
-    }
-
-  }
-  // Generar data para el dashboard desde el arreglo de reportes
-  public GenerateDashBoardByPorts(setDate: boolean) {
-
-    this.xLabelReport = [];
-    this.dataIFO = [];
-    this.dataMGO = [];
-    this.dataSPEED = [];
-
-    let startDate;
-    let endDate;
-
-
-    this.configLineaIFO.lineaMax = 0;
-    this.configLineaMGO.lineaMax = 0;
-    this.configLineaSPEED.lineaMax = 0;
-
-    this.generateVoyages.forEach(
-      (voyage: Voyage, iV) => {
-
-        voyage.ports.forEach(
-          (port, iP) => {
-            let txtX = 'V' + voyage.voyageNumber + ' ' + 'P' + port.portNumber + ' Y' + ('' + voyage.year).slice(-2);
-
-            this.xLabelReport.push(txtX);
-
-            if (port.robIfo > 0) {
-              this.dataIFO.push(
-                { x: txtX, y: port.robIfo, ubication: [iV, iP] }
-              );
-            }
-            if (port.robMgo > 0) {
-              this.dataMGO.push(
-                { x: txtX, y: port.robMgo, ubication: [iV, iP] }
-              );
-            }
-
-            let speed = mathRound(port.speed.distance / (port.speed.steamingTime || 1), 2);
-            if (speed > 0) {
-              this.dataSPEED.push(
-                { x: txtX, y: speed, ubication: [iV, iP] }
-              );
-            }
-
-
-            if (port.robIfo > this.configLineaIFO.lineaMax) {
-              this.configLineaIFO.lineaMax = port.robIfo;
-            }
-            if (port.robMgo > this.configLineaMGO.lineaMax) {
-              this.configLineaMGO.lineaMax = port.robMgo;
-            }
-
-            if (speed > this.configLineaSPEED.lineaMax) {
-              this.configLineaSPEED.lineaMax = speed;
-            }
-
-            startDate = ComparePreviousDates(startDate, port.dayStart)
-            endDate = CompareAfterDates(endDate, port.dayEnd)
-          }
-        )
-
-
-
-      }
-
-    );
 
     if (setDate) {
       this.startDate = startDate;
