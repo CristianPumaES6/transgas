@@ -1833,15 +1833,21 @@ export class DashboardComponent implements OnInit {
 
     // Data de los chart.
     this.dataIFO = [];
-    this.dataMGO = [];
-    this.dataSPEED = [];
-
     // Configuracion de la linea maxima.
     this.configLineaIFO.lineaMax = 0;
+
+    // Data de los chart.
+    this.dataMGO = [];
+    // Configuracion de la linea maxima.
     this.configLineaMGO.lineaMax = 0;
+
+    // Data de los chart.
+    this.dataSPEED = [];
+    // Configuracion de la linea maxima.
     this.configLineaSPEED.lineaMax = 0;
 
-    // Fecha inicio y fin.
+
+    // Fecha inicio y fin de la data.
     let startDate;
     let endDate;
 
@@ -1849,45 +1855,58 @@ export class DashboardComponent implements OnInit {
     this.generateVoyages.forEach(
       (voyage, iv) => {
 
-        let txtX = 'V' + voyage.voyageNumber + ' Y' + ('' + voyage.year).slice(-2);
-        this.xLabelReport.push(txtX);
+        // Generamos el texto para los labels del Chart
+        let txtLabelChart: string = '';
 
-        if (voyage.totalIFO > 0) {
-          this.dataIFO.push(
-            { x: txtX, y: voyage.totalIFO, ubication: [iv] }
-          );
+        // Verificamos si el sumary es por años
+        if (this.selectSummaryBy === 'VOYAGES') {
+          // Armamos el texto de label para viajes.
+          txtLabelChart = 'V' + voyage.voyageNumber + ' Y' + ('' + voyage.year).slice(-2);
+
+          // Lo agregamos al arreglo.
+          this.xLabelReport.push(txtLabelChart);
+
+          // El total de consumo debe de ser mayor para poder pintarlo.
+          if (voyage.totalIFO > 0) {
+            this.dataIFO.push(
+              { x: txtLabelChart, y: voyage.totalIFO, ubication: [iv] }
+            );
+          }
+
+          // El total de consumo debe de ser mayor para poder pintarlo.
+          if (voyage.totalMGO > 0) {
+            this.dataMGO.push(
+              { x: txtLabelChart, y: voyage.totalMGO, ubication: [iv] }
+            );
+          }
+
+          let speed = mathRound(voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1), 2);
+          if (speed > 0) {
+            this.dataSPEED.push(
+              { x: txtLabelChart, y: speed, ubication: [iv] }
+            );
+          }
+
+          // Verificamos si la linea maxima es menor para actualizarlo.
+          if (voyage.totalIFO > this.configLineaIFO.lineaMax) {
+            this.configLineaIFO.lineaMax = voyage.totalIFO;
+          }
+          if (voyage.totalMGO > this.configLineaMGO.lineaMax) {
+            this.configLineaMGO.lineaMax = voyage.totalMGO;
+          }
+          if (speed > this.configLineaSPEED.lineaMax) {
+            this.configLineaSPEED.lineaMax = speed;
+          }
+
+          // Comparamos si la data actual es la de inicio o fin.
+          startDate = ComparePreviousDates(startDate, voyage.dayStart)
+          endDate = CompareAfterDates(endDate, voyage.dayEnd)
+  
+        } else {
+
         }
-
-        if (voyage.totalMGO > 0) {
-          this.dataMGO.push(
-            { x: txtX, y: voyage.totalMGO, ubication: [iv] }
-          );
-        }
-
-        let speed = mathRound(voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1), 2);
-        if (speed > 0) {
-          this.dataSPEED.push(
-            { x: txtX, y: speed, ubication: [iv] }
-          );
-        }
-
-        if (voyage.totalIFO > this.configLineaIFO.lineaMax) {
-          this.configLineaIFO.lineaMax = voyage.totalIFO;
-        }
-        if (voyage.totalMGO > this.configLineaMGO.lineaMax) {
-          this.configLineaMGO.lineaMax = voyage.totalMGO;
-        }
-
-        if (speed > this.configLineaSPEED.lineaMax) {
-          this.configLineaSPEED.lineaMax = speed;
-        }
-
-
-        startDate = ComparePreviousDates(startDate, voyage.dayStart)
-        endDate = CompareAfterDates(endDate, voyage.dayEnd)
 
       }
-
     );
 
 
