@@ -35,7 +35,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYear, TextMonthDayYear, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -112,9 +112,9 @@ export class DashboardComponent implements OnInit {
   public xLabelReport: any[] = [];
 
   // Configuracion del chartIFO
-  public configLineaIFO: any; // configuracion del elemento
+  public configLineaIFO: Chart.ChartConfiguration; // Configuracion del elemento
   public chartLineIFO: any; // LINEA
-  public dataIFO = []; // Data
+  public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
   // Configuracion del chartMGO
   public configLineaMGO: any; // configuracion del elemento
@@ -1068,7 +1068,7 @@ export class DashboardComponent implements OnInit {
         doc.setFontSize(10);
         doc.setTextColor(40);
         doc.setFont('Helvetica', 'bold');
-        doc.text("Date: " + TextMonthDayYear(FormatDate(GetDate())), widthPDF / 2, height, { align: 'center' })
+        doc.text("Date: " + TextMonthDayYearFormatYYYYMMDD(FormatDate(GetDate())), widthPDF / 2, height, { align: 'center' }) // REVISAR ESTO. el formato de la fecha no es correcto.
 
         // Le sumamos la altura.
         // Dibujaremos los cuadrados.
@@ -1228,6 +1228,8 @@ export class DashboardComponent implements OnInit {
               let totalConsumptionByVoyageMGO = 0;
               // total de puertos registrados en el viaje.
               let totalPortByVoyage = 0;
+              // total de reportes registrados en el viaje.
+              let totalReportByVoyage = 0;
               // total de distancia y tiempo del viaje.
               let totalSpeedByVoyage: Speed = new Speed();
 
@@ -1404,6 +1406,7 @@ export class DashboardComponent implements OnInit {
                             this.consumptionTotalIFO.other += report.otherIfo;
                             // FIN Consumo IFO
 
+                            totalReportByPort += 1
 
                           } else {
                             // Esto se ejecuta cuando seleccionas una actividad y esta actividad no es el reporte actual.
@@ -1426,18 +1429,22 @@ export class DashboardComponent implements OnInit {
                     // retornamos false al filtro.
                     if (!port.dailyReports.length) return false;
 
-                    // Sumamos un puerto al total de puertos.
-                    totalPortByVoyage = totalPortByVoyage + 1;
 
                     // Asignamos los consumos por puertos.
                     port.robIfo = totalConsumptionByPortIFO;
                     port.robMgo = totalConsumptionByPortMGO;
                     port.speed = totalSpeedByPort;
 
+                    // total de reportes registrado en el viaje.
+                    port.totalReport = totalReportByPort;
+
                     // Agregamos el dia donde inicia y finaliza el registro de los reportes en puerto
                     port.dayStart = dayStartByPort;
                     port.dayEnd = dayEndByPort;
 
+                    // Sumamos un puerto al total de puertos.
+                    totalPortByVoyage = totalPortByVoyage + 1;
+                    totalReportByVoyage = totalReportByVoyage + port.totalReport;
                     // Comparamos si el dia es antes o despues para agregarlo.
                     dayStartByVoyage = ComparePreviousDates(dayStartByVoyage, dayStartByPort);
                     dayEndByVoyage = CompareAfterDates(dayEndByVoyage, dayEndByPort);
@@ -1469,6 +1476,7 @@ export class DashboardComponent implements OnInit {
               // Asignamos el total al viaje
               voyage.totalSpeed = totalSpeedByVoyage;
               voyage.totalPort = totalPortByVoyage;
+              voyage.totalReport = totalReportByVoyage;
               voyage.dayStart = dayStartByVoyage;
               voyage.dayEnd = dayEndByVoyage;
 
@@ -1820,18 +1828,24 @@ export class DashboardComponent implements OnInit {
 
   // Generar data para el dashboard desde el arreglo de reportes
   public GenerateDashBoardByVoyages(setDate: boolean) {
-
+    // Texto x de los reportes.
     this.xLabelReport = [];
+
+    // Data de los chart.
     this.dataIFO = [];
     this.dataMGO = [];
     this.dataSPEED = [];
 
+    // Configuracion de la linea maxima.
     this.configLineaIFO.lineaMax = 0;
     this.configLineaMGO.lineaMax = 0;
     this.configLineaSPEED.lineaMax = 0;
 
+    // Fecha inicio y fin.
     let startDate;
     let endDate;
+
+    // Generar Viajes.
     this.generateVoyages.forEach(
       (voyage, iv) => {
 
@@ -1956,33 +1970,39 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public GenerateDashBoardByMonths(setDate: boolean) {
+  public GenerateDashBoardByMonths(setDate) {// Revisar, parametro eliminar.
 
+    // Data de los cuadros de Chart
     this.xLabelReport = [];
     this.dataIFO = [];
     this.dataMGO = [];
     this.dataSPEED = [];
 
-
+    // Maximo de la linea, para que el cuadro no se vea escondido.
     this.configLineaIFO.lineaMax = 0;
     this.configLineaMGO.lineaMax = 0;
     this.configLineaSPEED.lineaMax = 0;
 
-    let startDate;
-    let endDate;
-
+    // Creamos esta variable para que nos avise cuando hay un nuevo registro
+    let isAddNewVoyage: boolean = false;
     this.generateVoyages.forEach(
       (voyage, iV) => {
 
+        // Activamos, para saber que es nuevo viaje.
+        isAddNewVoyage = true;
+
+        // Creamos esta variable para que nos avise cuando hay un nuevo registro
+        let isAddNewPort: boolean = false;
         voyage.ports.forEach(
           (port, iP) => {
+
+            // Activamos, para saber que es nuevo puerto.
+            isAddNewPort = true;
 
             port.dailyReports.forEach(
               (report, iR) => {
 
                 let day = report.date;
-
-
                 let resultSearch = this.xLabelReport.find(
                   (xDay, iL) => {
 
@@ -1998,20 +2018,32 @@ export class DashboardComponent implements OnInit {
                       speedI.add(report.distance, report.steamingTime);
 
                       this.dataIFO[iL].speed = speedI;
+                      if (isAddNewVoyage) {
+                        // Lo desactivamos para que vuelva a entrar.
+                        isAddNewVoyage = false;
+                        this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                      }
+                      if (isAddNewPort) {
+                        // Lo desactivamos para que vuelva a entrar.
+                        isAddNewPort = false;
+                        this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
+                      }
+                      // Le sumamos el total de reporte
+                      this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
+
+
                       this.dataMGO[iL].speed = speedI;
                       this.dataSPEED[iL].speed = speedI;
 
                       // Actualizamos el vlaor por la posicion.
-                      this.dataIFO[iL].y = this.dataIFO[iL].y + this.SumaIfo(report)
-                      this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
+                      this.dataMGO[iL].y = Number(this.dataMGO[iL].y) + this.SumaMgo(report)
 
                       let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
                       this.dataSPEED[iL].y = ySpeed;
 
 
-
                       if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
-                        this.configLineaIFO.lineaMax = this.dataIFO[iL].y;
+                        this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
                       }
                       if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
                         this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
@@ -2019,10 +2051,6 @@ export class DashboardComponent implements OnInit {
                       if (ySpeed > this.configLineaSPEED.lineaMax) {
                         this.configLineaSPEED.lineaMax = ySpeed;
                       }
-
-
-                      startDate = ComparePreviousDates(startDate, report.date)
-                      endDate = CompareAfterDates(endDate, report.date)
 
 
                       return true;
@@ -2033,26 +2061,29 @@ export class DashboardComponent implements OnInit {
 
                 );
 
-
+                // Si el puerto
                 if (!resultSearch) {
 
-                  // console.log('GenerateDataForDashboard()');
+                  // todos los meses almenos tenfras un viaje
+                  // asi que si o si lo agregams.
+                  isAddNewVoyage = false;
+                  isAddNewPort = false;
 
                   // agregamos la fecha a nuestro arreglo.
                   this.xLabelReport.push(day);
 
                   let newSpeed = new Speed(report.distance, report.steamingTime);
                   this.dataIFO.push(
-                    { x: day, y: this.SumaIfo(report), speed: newSpeed }
+                    { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                   );
 
                   this.dataMGO.push(
-                    { x: day, y: this.SumaMgo(report), speed: newSpeed }
+                    { x: day, y: this.SumaMgo(report), speed: newSpeed, ubication: [iV, iP, iR] }
                   );
 
                   let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2)
                   this.dataSPEED.push(
-                    { x: day, y: ySpeed, speed: newSpeed }
+                    { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
                   );
 
 
@@ -2063,15 +2094,11 @@ export class DashboardComponent implements OnInit {
                   if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
                     this.configLineaMGO.lineaMax = this.SumaMgo(report);
                   }
-
                   if (ySpeed > this.configLineaSPEED.lineaMax) {
                     this.configLineaSPEED.lineaMax = ySpeed;
                   }
 
 
-
-                  startDate = ComparePreviousDates(startDate, report.date)
-                  endDate = CompareAfterDates(endDate, report.date)
 
                 }
 
@@ -2089,11 +2116,6 @@ export class DashboardComponent implements OnInit {
 
     );
 
-    if (setDate) {
-
-      this.startDate = startDate;
-      this.endDate = endDate;
-    }
 
   }
 
@@ -2109,20 +2131,27 @@ export class DashboardComponent implements OnInit {
     this.configLineaMGO.lineaMax = 0;
     this.configLineaSPEED.lineaMax = 0;
 
-    let startDate;
-    let endDate;
 
+    // Creamos esta variable para que nos avise cuando hay un nuevo registro
+    let isAddNewVoyage: boolean = false;
     this.generateVoyages.forEach(
       (voyage, iV) => {
 
+        // Activamos, para saber que es nuevo viaje.
+        isAddNewVoyage = true;
+
+        // Creamos esta variable para que nos avise cuando hay un nuevo registro
+        let isAddNewPort: boolean = false;
         voyage.ports.forEach(
           (port, iP) => {
 
+            // Activamos, para saber que es nuevo puerto.
+            isAddNewPort = true;
+
             port.dailyReports.forEach(
               (report, iR) => {
+
                 let day = report.date;
-
-
                 let resultSearch = this.xLabelReport.find(
                   (xDay, iL) => {
 
@@ -2134,12 +2163,27 @@ export class DashboardComponent implements OnInit {
                       speedI.add(report.distance, report.steamingTime);
 
                       this.dataIFO[iL].speed = speedI;
+                      this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report)
+                      if (isAddNewVoyage) {
+                        // Lo desactivamos para que vuelva a entrar.
+                        isAddNewVoyage = false;
+                        this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                      }
+                      if (isAddNewPort) {
+                        // Lo desactivamos para que vuelva a entrar.
+                        isAddNewPort = false;
+                        this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
+                      }
+                      // Le sumamos el total de reporte
+                      this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
+
+
                       this.dataMGO[iL].speed = speedI;
+                      this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
+
                       this.dataSPEED[iL].speed = speedI;
 
                       // Actualizamos el vlaor por la posicion.
-                      this.dataIFO[iL].y = this.dataIFO[iL].y + this.SumaIfo(report)
-                      this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
                       let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
                       this.dataSPEED[iL].y = ySpeed;
 
@@ -2153,7 +2197,7 @@ export class DashboardComponent implements OnInit {
                       this.dataSPEED[iL].dataExtra = dataExtra;
 
                       if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
-                        this.configLineaIFO.lineaMax = this.dataIFO[iL].y;
+                        this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
                       }
                       if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
                         this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
@@ -2162,9 +2206,6 @@ export class DashboardComponent implements OnInit {
                         this.configLineaSPEED.lineaMax = ySpeed;
                       }
 
-
-                      startDate = ComparePreviousDates(startDate, report.date)
-                      endDate = CompareAfterDates(endDate, report.date)
 
 
                       return true;
@@ -2178,18 +2219,22 @@ export class DashboardComponent implements OnInit {
 
                 if (!resultSearch) {
 
-                  // console.log('GenerateDataForDashboard()');
+                  // todos los meses almenos tenfras un viaje
+                  // asi que si o si lo agregams.
+                  isAddNewVoyage = false;
+                  isAddNewPort = false;
 
                   // agregamos la fecha a nuestro arreglo.
                   this.xLabelReport.push(day);
 
-                  let newSpeed = new Speed(report.distance, report.steamingTime);
-                  let dataExtra = [];
+                  let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
+                  // y los ocmentarios registrados.
 
                   dataExtra.push(report)
 
+                  let newSpeed = new Speed(report.distance, report.steamingTime);
                   this.dataIFO.push(
-                    { x: day, y: this.SumaIfo(report), speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
+                    { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
                   );
                   this.dataMGO.push(
                     { x: day, y: this.SumaMgo(report), speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
@@ -2209,9 +2254,6 @@ export class DashboardComponent implements OnInit {
                     this.configLineaSPEED.lineaMax = ySpeed;
                   }
 
-                  startDate = ComparePreviousDates(startDate, report.date)
-                  endDate = CompareAfterDates(endDate, report.date)
-
                 }
 
 
@@ -2227,15 +2269,10 @@ export class DashboardComponent implements OnInit {
 
     );
 
-    if (setDate) {
-      this.startDate = startDate;
-      this.endDate = endDate;
-    }
-
   }
 
-// ESTO LO VEREMOS DESPUES.
-// REVISAR 
+  // ESTO LO VEREMOS DESPUES.
+  // REVISAR 
   // Generar linea en los canvas.
   public GenetareLineIFO(): boolean {
 
@@ -2256,12 +2293,15 @@ export class DashboardComponent implements OnInit {
         }]
       },
       options: { // Otras opciones dentro del Chart
-        onClick: (event, legendItem) => { // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
+        onClick: (event, activeElement) => { // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
           // Verifico que al click que le demos exista un Item.
-          if (legendItem && legendItem.length) {
+          if (activeElement && activeElement.length) {
+
+            // Obtenemos la posicion 0 del activeElement
+            let actEle: any = activeElement[0];
 
             // Obtenemos la ubicacion.
-            let index = legendItem[0]._index;
+            let index = actEle._index;
 
             // Revisar esto. 
             if (this.selectSummaryBy === 'VOYAGES') {
@@ -2338,10 +2378,18 @@ export class DashboardComponent implements OnInit {
         tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
         scales: {},// Lo pongo vacio por que en el update se colocara el valor.
         hover: {
-          onHover: function (e) {
+          onHover: function (e: MouseEvent) {
+
+            // puntos GetElementAtaEvent
             var point = this.getElementAtEvent(e);
-            if (point.length) e.target.style.cursor = 'pointer';
-            else e.target.style.cursor = 'default';
+
+            // event targer.
+            let eventTarget = e.target as HTMLCanvasElement;
+
+
+            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
+            if (point.length) eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+            else eventTarget.style.cursor = 'default';
           }
         }
       },
@@ -2764,11 +2812,11 @@ export class DashboardComponent implements OnInit {
           } else if (this.selectSummaryBy === 'MONTHS') {
 
             result = tooltipItem[0].xLabel;
-            result = TextMonthYear(result);
+            result = TextMonthYearFormatYYYYMMDD(result); // REVISAR NO ES CORRECTO
           } else if (this.selectSummaryBy === 'DAYS') {
 
             result = tooltipItem[0].xLabel;
-            result = TextMonthDayYear(result)
+            result = TextMonthDayYearFormatYYYYMMDD(result) // REVISAR ESTO NO ES CORRECTO RECLACAR IFO.
           }
 
           return result;
@@ -2917,105 +2965,141 @@ export class DashboardComponent implements OnInit {
         // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
         intersect: false,
         callbacks: {
-          title: (tooltipItem, data) => {
+          title: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
 
+            // Obtenemos la posicion del item.
             let index = tooltipItem[0].index;
 
-            let result = "";
+            // Resultado que se mostrara en el titulo.
+            let result = '';
 
+            // DataSets.
+            let dataSets: Chart.ChartDataSets = data.datasets[0];
+            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+            let ubication = chartPoint.ubication;
+
+            // Verificamos como esta el filtro actualmente.
+            // Si es por Viajes, Puertos, Meses o dias.
             if (this.selectSummaryBy === 'VOYAGES') {
-
-              let ubication = data.datasets[0].data[index].ubication;
-              let viaje = this.generateVoyages[ubication[0]]
-
+              // Viajes.
+              let viaje = this.generateVoyages[ubication[0]];
               result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
 
             } else if (this.selectSummaryBy === 'PORTS') {
 
-              let ubication = data.datasets[0].data[index].ubication;
-
+              // Obtenemos el viaje.
               let viaje = this.generateVoyages[ubication[0]];
+              // Obtenemos el puerto.
               let port = viaje.ports[ubication[1]];
-
+              // Result
               result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
 
             } else if (this.selectSummaryBy === 'MONTHS') {
 
-              result = tooltipItem[0].xLabel;
-              result = TextMonthYear(result);
+              // Obtenemos el viaje.
+              let viaje = this.generateVoyages[ubication[0]];
+              // Obtenemos el puerto.
+              let port = viaje.ports[ubication[1]];
+
+              // No existe la ubicacion en month y day
+              let dailyReport = port.dailyReports[ubication[2]];
+
+              // dos veces estamos aplicando el formato.
+              result = TextMonthYearFormatYYYYMMDD(dailyReport.date);
             } else if (this.selectSummaryBy === 'DAYS') {
 
-              result = tooltipItem[0].xLabel;
-              result = TextMonthDayYear(result)
+              // Obtenemos el viaje.
+              let viaje = this.generateVoyages[ubication[0]];
+              // Obtenemos el puerto.
+              let port = viaje.ports[ubication[1]];
+
+              // No existe la ubicacion en month y day
+              let dailyReport = port.dailyReports[ubication[2]];
+
+              // dos veces estamos aplicando el formato.
+              result = TextMonthDayYearFormatYYYYMMDD(dailyReport.date);
             }
 
             return result;
-          },
-          label: (tooltipItem, data) => {
 
-            let typeConsumption = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            return 'Consumption ' + typeConsumption + ' : ' + mathRound(tooltipItem.value, 2);
           },
-          footer: (tooltipItem, data) => {
+          label: (tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData) => {
+
+            // Obtenemos la posicion del item.
+            let index = tooltipItem.index;
+
+            // Resultado que se mostrara en el titulo.
+            let result = '';
+
+            // DataSets.
+            let dataSets: Chart.ChartDataSets = data.datasets[0];
+            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+            let ubication = chartPoint.ubication;
+
+            // Tipo de consumo.
+            let typeConsumption = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+
+
+            return 'Dayli consumption ' + mathRound(Number(tooltipItem.value), 2);
+          },
+          footer: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
+            // Obtenemos la posicion del item.
             let index = tooltipItem[0].index;
 
+            // Resultado que se mostrara en el titulo.
             let result = [];
+
+            // DataSets.
+            let dataSets: Chart.ChartDataSets = data.datasets[0];
+            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+            let ubication = chartPoint.ubication;
+
+            // Voyage.
             if (this.selectSummaryBy === 'VOYAGES') {
-
-              let ubication = data.datasets[0].data[index].ubication;
-
+              debugger
               let voyage = this.generateVoyages[ubication[0]];
+              debugger
               result = [
                 'T. Ports : ' + voyage.totalPort,
-                'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
-                'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
+                'T. Reports : ' + voyage.totalReport,
+                'T. Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+                'T. Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
                 'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
               ];
             } else if (this.selectSummaryBy === 'PORTS') {
 
-              let ubication = data.datasets[0].data[index].ubication;
+              let voyage = this.generateVoyages[ubication[0]];
+              let port = voyage.ports[ubication[1]];
 
-              let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
               result = [
                 'Departure : ' + port.departurePort,
                 'Arrival : ' + port.arrivalPort,
-                'Distance : ' + mathRound(port.speed.distance, 2),
-                'Time : ' + mathRound(port.speed.steamingTime, 2),
+                'T. Reports : ' + voyage.totalReport,
+                'T. Distance : ' + mathRound(port.speed.distance, 2),
+                'T. Time : ' + mathRound(port.speed.steamingTime, 2),
                 'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
               ];
             } else if (this.selectSummaryBy === 'MONTHS') {
 
-              let speed = data.datasets[0].data[index].speed;
+
 
               result = [
-                'Distance : ' + mathRound(speed.distance, 2),
-                'Time : ' + mathRound(speed.steamingTime, 2),
-                'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
+                'T. Ports : ' + chartPoint.totalPort,
+                'T. Reports : ' + chartPoint.totalReport,
+                'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
+                'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
+                'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
               ];
-            }
-            else if (this.selectSummaryBy === 'DAYS') {
-
-              let dataExtra = data.datasets[0].data[index].dataExtra;
-
-              let speed = new Speed();
-              let activities = '';
-              let observations = '';
-              let totalReport = 0;
-
-              dataExtra.forEach((report: DailyReport) => {
-                activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
-                observations = observations + ', ' + report.observation;
-                speed.add(report.distance, report.steamingTime);
-                totalReport = totalReport + 1;
-              });
+            } else if (this.selectSummaryBy === 'DAYS') {
 
               result = [
-                'Distance : ' + mathRound(speed.distance, 2),
-                'Time : ' + mathRound(speed.steamingTime, 2),
-                'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
-                'T. Reports : ' + totalReport,
-                'Activities : ' + activities,
-                'Observations : ' + observations
+                'T. Ports : ' + chartPoint.totalPort,
+                'T. Reports : ' + chartPoint.totalReport,
+                'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
+                'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
+                'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
+                'Activities : ' + 'FALTA LAS ACTIDIDADES', // revisar // agregar las actividades
+                'Observations : ' + 'FALTA LAS OBSERVACIONES:' // revisar agregar las observaciones
               ];
             }
 
@@ -3110,11 +3194,12 @@ export class DashboardComponent implements OnInit {
           } else if (this.selectSummaryBy === 'MONTHS') {
 
             result = tooltipItem[0].xLabel;
-            result = TextMonthYear(result);
+            result = TextMonthYearFormatYYYYMMDD(result);// REVISAR NO ES CORRECTO
           } else if (this.selectSummaryBy === 'DAYS') {
 
             result = tooltipItem[0].xLabel;
-            result = TextMonthDayYear(result)
+
+            result = TextMonthDayYearFormatYYYYMMDD(result)// REVISAR NO ES CORRECTO, EL FORMATO,
           }
 
           return result;
