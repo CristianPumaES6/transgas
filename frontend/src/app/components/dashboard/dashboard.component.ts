@@ -1826,7 +1826,8 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  // Generar data para el dashboard desde el arreglo de reportes
+  // GenerateDashBoardByVoyages(): genera data para los chart.
+  // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
   private GenerateDashBoardByVoyages(setDate: boolean) {
     // Texto x de los reportes.
     this.xLabelReport = [];
@@ -1902,10 +1903,12 @@ export class DashboardComponent implements OnInit {
             this.configLineaSPEED.lineaMax = speed;
           }
 
-          // Comparamos si la data actual es la de inicio o fin.
-          startDate = ComparePreviousDates(startDate, voyage.dayStart)
-          endDate = CompareAfterDates(endDate, voyage.dayEnd)
-
+          // deseamos setear la fecha de inicio y fin?
+          if (setDate) {
+            // Comparamos si la data actual es la de inicio o fin.
+            startDate = ComparePreviousDates(startDate, voyage.dayStart)
+            endDate = CompareAfterDates(endDate, voyage.dayEnd)
+          }
         }
         // Verificamos si el sumary es por Puerto Mes o dias
         else if (this.selectSummaryBy === 'PORTS' || this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
@@ -1959,10 +1962,12 @@ export class DashboardComponent implements OnInit {
                   this.configLineaSPEED.lineaMax = speed;
                 }
 
-                // Comparamos si la data actual es la de inicio o fin.
-                startDate = ComparePreviousDates(startDate, port.dayStart)
-                endDate = CompareAfterDates(endDate, port.dayEnd)
-
+                // deseamos setear la fecha de inicio y fin?
+                if (setDate) {
+                  // Comparamos si la data actual es la de inicio o fin.
+                  startDate = ComparePreviousDates(startDate, port.dayStart)
+                  endDate = CompareAfterDates(endDate, port.dayEnd)
+                }
               } else if (this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
 
                 // Activamos, para saber que es nuevo puerto.
@@ -2052,6 +2057,11 @@ export class DashboardComponent implements OnInit {
 
                         // Le agregamos los datos de velocidad.
                         let newSpeed = new Speed(report.distance, report.steamingTime);
+                        // Agregamos los datos de velocidad.
+                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+                        this.dataSPEED.push(
+                          { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
+                        );
 
                         // agregamos los datos IFO
                         this.dataIFO.push(
@@ -2063,11 +2073,6 @@ export class DashboardComponent implements OnInit {
                           { x: day, y: this.SumaMgo(report), speed: newSpeed, ubication: [iV, iP, iR] }
                         );
 
-                        // Agregamos los datos de velocidad.
-                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
-                        this.dataSPEED.push(
-                          { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
-                        );
 
 
                         // // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
@@ -2336,17 +2341,17 @@ export class DashboardComponent implements OnInit {
         scales: {},// Lo pongo vacio por que en el update se colocara el valor.
         hover: {
           onHover: function (e: MouseEvent) {
-
             // puntos GetElementAtaEvent
             var point = this.getElementAtEvent(e);
 
             // event targer.
             let eventTarget = e.target as HTMLCanvasElement;
-
-
             ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
-            if (point.length) eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
-            else eventTarget.style.cursor = 'default';
+            if (point.length) {
+              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+            } else {
+              eventTarget.style.cursor = 'default';
+            }
           }
         }
       },
@@ -3013,9 +3018,9 @@ export class DashboardComponent implements OnInit {
 
             // Voyage.
             if (this.selectSummaryBy === 'VOYAGES') {
-              debugger
+
               let voyage = this.generateVoyages[ubication[0]];
-              debugger
+
               result = [
                 'T. Ports : ' + voyage.totalPort,
                 'T. Reports : ' + voyage.totalReport,
