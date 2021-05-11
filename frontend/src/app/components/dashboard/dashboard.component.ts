@@ -1800,7 +1800,7 @@ export class DashboardComponent implements OnInit {
         } else if (typeSummary === 'PORTS') {
           this.GenerateDashBoardByVoyages(setDate);
         } else if (typeSummary === 'MONTHS') {
-          this.GenerateDashBoardByMonths(setDate);
+          this.GenerateDashBoardByVoyages(setDate);
         } else if (typeSummary === 'DAYS') {
           this.GenerateDashBoardByDays(setDate);
         }
@@ -1846,10 +1846,14 @@ export class DashboardComponent implements OnInit {
     // Configuracion de la linea maxima.
     this.configLineaSPEED.lineaMax = 0;
 
-
     // Fecha inicio y fin de la data.
     let startDate;
     let endDate;
+
+
+    // Creamos esta variable para que nos avise cuando hay un nuevo registro
+    // esta variable solo se usa en los filtro Sumary por mes y dia.
+    let isAddNewVoyage: boolean = false;
 
     // Generar Viajes.
     this.generateVoyages.forEach(
@@ -1857,7 +1861,6 @@ export class DashboardComponent implements OnInit {
 
         // Generamos el texto para los labels del Chart
         let txtLabelChart: string = '';
-
         // Verificamos si el sumary es por años
         if (this.selectSummaryBy === 'VOYAGES') {
           // Armamos el texto de label para viajes.
@@ -1903,9 +1906,15 @@ export class DashboardComponent implements OnInit {
           startDate = ComparePreviousDates(startDate, voyage.dayStart)
           endDate = CompareAfterDates(endDate, voyage.dayEnd)
 
-        } 
-          // Verificamos si el sumary es por Puerto Mes o dias
+        }
+        // Verificamos si el sumary es por Puerto Mes o dias
         else if (this.selectSummaryBy === 'PORTS' || this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
+
+          // Activamos, para saber que es nuevo viaje.
+          isAddNewVoyage = true;
+
+          // Creamos esta variable para que nos avise cuando hay un nuevo registro
+          let isAddNewPort: boolean = false;
 
           // Recorremos los puertos.
           voyage.ports.forEach(
@@ -1954,7 +1963,129 @@ export class DashboardComponent implements OnInit {
                 startDate = ComparePreviousDates(startDate, port.dayStart)
                 endDate = CompareAfterDates(endDate, port.dayEnd)
 
+              } else if (this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
+
+                // Activamos, para saber que es nuevo puerto.
+                isAddNewPort = true;
+                // Recorremos todos los reportes
+                port.dailyReports.forEach(
+                  (report, iR) => {
+
+                    // obtenemos la fecha del reporte.
+                    let day = report.date;
+
+                    // Buscamos si el mes ya se encuantra registrado.
+                    let resultSearch = this.xLabelReport.find(
+                      (xDay, iL) => {
+
+                        // Verificamos la fecha actual.
+
+                        if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
+                          // Obtenemos los datos de velocidad.
+                          let speedI: Speed = this.dataSPEED[iL].speed;
+                          // Agregamos la distancia y velocidad.
+                          speedI.add(report.distance, report.steamingTime);
+                          // Actualizamos los datos de la velocidad
+                          this.dataIFO[iL].speed = speedI;
+
+                          // consultamos
+                          // Es para agregar un nuevo viaje?
+                          if (isAddNewVoyage) {
+                            // Lo desactivamos para que vuelva a entrar.
+                            isAddNewVoyage = false;
+                            this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                          }
+                          // Es para agregar un nuevo puerto
+                          if (isAddNewPort) {
+                            // Lo desactivamos para que vuelva a entrar.
+                            isAddNewPort = false;
+                            // Total de puerto.
+                            this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
+                          }
+                          // Le sumamos el total de reporte
+                          this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
+
+                          // Actualizamos la velocidad para la data MGO y SPEED
+                          this.dataMGO[iL].speed = speedI;
+                          this.dataSPEED[iL].speed = speedI;
+
+
+                          // Actualizamos el vlaor por la posicion.
+                          this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report);
+                          this.dataMGO[iL].y = Number(this.dataMGO[iL].y) + this.SumaMgo(report);
+                          let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
+                          this.dataSPEED[iL].y = ySpeed;
+
+
+                          // Verificamos que la linea maxima sea mayor al valor del chart-
+                          if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
+                            this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
+                          }
+                          if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
+                            this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
+                          }
+                          if (ySpeed > this.configLineaSPEED.lineaMax) {
+                            this.configLineaSPEED.lineaMax = ySpeed;
+                          }
+
+                          // retornamos tru para agregarlo al filtro
+                          return true;
+                        }
+                        // Caso contrario retornamos false, para que no lo agrege al filtro.
+                        return false;
+                      }
+
+                    );
+
+                    // Verificamos si se encontro un resultado ese mes.
+                    if (!resultSearch) {
+
+                      // todos los meses almenos tendran un viaje
+                      // asi que si o si lo agregams.
+                      isAddNewVoyage = false;
+                      isAddNewPort = false;
+
+                      // agregamos la fecha a nuestro arreglo.
+                      this.xLabelReport.push(day);
+
+                      // Le agregamos los datos de velocidad.
+                      let newSpeed = new Speed(report.distance, report.steamingTime);
+
+                      // agregamos los datos IFO
+                      this.dataIFO.push(
+                        { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                      );
+
+                      // Agregamos los datos MGO
+                      this.dataMGO.push(
+                        { x: day, y: this.SumaMgo(report), speed: newSpeed, ubication: [iV, iP, iR] }
+                      );
+
+                      // Agregamos los datos de velocidad.
+                      let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+                      this.dataSPEED.push(
+                        { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
+                      );
+
+
+                      // // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+                      if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
+                        this.configLineaIFO.lineaMax = this.SumaIfo(report);
+                      }
+                      if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
+                        this.configLineaMGO.lineaMax = this.SumaMgo(report);
+                      }
+                      if (ySpeed > this.configLineaSPEED.lineaMax) {
+                        this.configLineaSPEED.lineaMax = ySpeed;
+                      }
+
+                    }
+
+                  }
+                );
+
               }
+
             })
 
         }
@@ -1962,7 +2093,7 @@ export class DashboardComponent implements OnInit {
       }
     );
 
-
+    // Si la configuracion es para setar fecha lo seteamos.
     if (setDate) {
       this.startDate = startDate;
       this.endDate = endDate;
@@ -1970,154 +2101,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public GenerateDashBoardByMonths(setDate) {// Revisar, parametro eliminar.
-
-    // Data de los cuadros de Chart
-    this.xLabelReport = [];
-    this.dataIFO = [];
-    this.dataMGO = [];
-    this.dataSPEED = [];
-
-    // Maximo de la linea, para que el cuadro no se vea escondido.
-    this.configLineaIFO.lineaMax = 0;
-    this.configLineaMGO.lineaMax = 0;
-    this.configLineaSPEED.lineaMax = 0;
-
-    // Creamos esta variable para que nos avise cuando hay un nuevo registro
-    let isAddNewVoyage: boolean = false;
-    this.generateVoyages.forEach(
-      (voyage, iV) => {
-
-        // Activamos, para saber que es nuevo viaje.
-        isAddNewVoyage = true;
-
-        // Creamos esta variable para que nos avise cuando hay un nuevo registro
-        let isAddNewPort: boolean = false;
-        voyage.ports.forEach(
-          (port, iP) => {
-
-            // Activamos, para saber que es nuevo puerto.
-            isAddNewPort = true;
-
-            port.dailyReports.forEach(
-              (report, iR) => {
-
-                let day = report.date;
-                let resultSearch = this.xLabelReport.find(
-                  (xDay, iL) => {
-
-                    // Verificamos la fecha actual.
-
-                    if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
-                      /* this.dataIFO[iL].x = day;
-                      this.dataMGO[iL].x = day;
-                      this.dataSPEED[iL].x = day;
-
- */
-                      let speedI: Speed = this.dataSPEED[iL].speed;
-                      speedI.add(report.distance, report.steamingTime);
-
-                      this.dataIFO[iL].speed = speedI;
-                      if (isAddNewVoyage) {
-                        // Lo desactivamos para que vuelva a entrar.
-                        isAddNewVoyage = false;
-                        this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
-                      }
-                      if (isAddNewPort) {
-                        // Lo desactivamos para que vuelva a entrar.
-                        isAddNewPort = false;
-                        this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
-                      }
-                      // Le sumamos el total de reporte
-                      this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
-
-
-                      this.dataMGO[iL].speed = speedI;
-                      this.dataSPEED[iL].speed = speedI;
-
-                      // Actualizamos el vlaor por la posicion.
-                      this.dataMGO[iL].y = Number(this.dataMGO[iL].y) + this.SumaMgo(report)
-
-                      let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
-                      this.dataSPEED[iL].y = ySpeed;
-
-
-                      if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
-                        this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
-                      }
-                      if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
-                        this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
-                      }
-                      if (ySpeed > this.configLineaSPEED.lineaMax) {
-                        this.configLineaSPEED.lineaMax = ySpeed;
-                      }
-
-
-                      return true;
-                    }
-
-                    return false;
-                  }
-
-                );
-
-                // Si el puerto
-                if (!resultSearch) {
-
-                  // todos los meses almenos tenfras un viaje
-                  // asi que si o si lo agregams.
-                  isAddNewVoyage = false;
-                  isAddNewPort = false;
-
-                  // agregamos la fecha a nuestro arreglo.
-                  this.xLabelReport.push(day);
-
-                  let newSpeed = new Speed(report.distance, report.steamingTime);
-                  this.dataIFO.push(
-                    { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
-                  );
-
-                  this.dataMGO.push(
-                    { x: day, y: this.SumaMgo(report), speed: newSpeed, ubication: [iV, iP, iR] }
-                  );
-
-                  let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2)
-                  this.dataSPEED.push(
-                    { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
-                  );
-
-
-
-                  if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
-                    this.configLineaIFO.lineaMax = this.SumaIfo(report);
-                  }
-                  if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
-                    this.configLineaMGO.lineaMax = this.SumaMgo(report);
-                  }
-                  if (ySpeed > this.configLineaSPEED.lineaMax) {
-                    this.configLineaSPEED.lineaMax = ySpeed;
-                  }
-
-
-
-                }
-
-
-
-              }
-            );
-
-          }
-        )
-
-
-
-      }
-
-    );
-
-
-  }
 
   public GenerateDashBoardByDays(setDate: boolean) {
 
