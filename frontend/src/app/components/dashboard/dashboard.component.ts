@@ -1802,7 +1802,7 @@ export class DashboardComponent implements OnInit {
         } else if (typeSummary === 'MONTHS') {
           this.GenerateDashBoardByVoyages(setDate);
         } else if (typeSummary === 'DAYS') {
-          this.GenerateDashBoardByDays(setDate);
+          this.GenerateDashBoardByVoyages(false);
         }
 
         // return true.
@@ -1974,109 +1974,235 @@ export class DashboardComponent implements OnInit {
                     // obtenemos la fecha del reporte.
                     let day = report.date;
 
-                    // Buscamos si el mes ya se encuantra registrado.
-                    let resultSearch = this.xLabelReport.find(
-                      (xDay, iL) => {
+                    // Si el resumen del filtro es por mes.
+                    if (this.selectSummaryBy === 'MONTHS') {
 
-                        // Verificamos la fecha actual.
+                      // Buscamos si el mes ya se encuantra registrado.
+                      let resultSearch = this.xLabelReport.find(
+                        (xDay, iL) => {
 
-                        if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
-                          // Obtenemos los datos de velocidad.
-                          let speedI: Speed = this.dataSPEED[iL].speed;
-                          // Agregamos la distancia y velocidad.
-                          speedI.add(report.distance, report.steamingTime);
-                          // Actualizamos los datos de la velocidad
-                          this.dataIFO[iL].speed = speedI;
+                          // Verificamos el mes ya se encuentra registrado.
+                          if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
+                            // Obtenemos los datos de velocidad.
+                            let speedI: Speed = this.dataSPEED[iL].speed;
+                            // Agregamos la distancia y velocidad.
+                            speedI.add(report.distance, report.steamingTime);
+                            // Actualizamos los datos de la velocidad
+                            this.dataIFO[iL].speed = speedI;
 
-                          // consultamos
-                          // Es para agregar un nuevo viaje?
-                          if (isAddNewVoyage) {
-                            // Lo desactivamos para que vuelva a entrar.
-                            isAddNewVoyage = false;
-                            this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                            // consultamos
+                            // Es para agregar un nuevo viaje?
+                            if (isAddNewVoyage) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewVoyage = false;
+                              this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                            }
+                            // Es para agregar un nuevo puerto
+                            if (isAddNewPort) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewPort = false;
+                              // Total de puerto.
+                              this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
+                            }
+                            // Le sumamos el total de reporte
+                            this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
+
+                            // Actualizamos la velocidad para la data MGO y SPEED
+                            this.dataMGO[iL].speed = speedI;
+                            this.dataSPEED[iL].speed = speedI;
+
+
+                            // Actualizamos el vlaor por la posicion.
+                            this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report);
+                            this.dataMGO[iL].y = Number(this.dataMGO[iL].y) + this.SumaMgo(report);
+                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
+                            this.dataSPEED[iL].y = ySpeed;
+
+
+                            // Verificamos que la linea maxima sea mayor al valor del chart-
+                            if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
+                              this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
+                            }
+                            if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
+                              this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
+                            }
+                            if (ySpeed > this.configLineaSPEED.lineaMax) {
+                              this.configLineaSPEED.lineaMax = ySpeed;
+                            }
+
+                            // retornamos tru para agregarlo al filtro
+                            return true;
                           }
-                          // Es para agregar un nuevo puerto
-                          if (isAddNewPort) {
-                            // Lo desactivamos para que vuelva a entrar.
-                            isAddNewPort = false;
-                            // Total de puerto.
-                            this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
-                          }
-                          // Le sumamos el total de reporte
-                          this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
-
-                          // Actualizamos la velocidad para la data MGO y SPEED
-                          this.dataMGO[iL].speed = speedI;
-                          this.dataSPEED[iL].speed = speedI;
-
-
-                          // Actualizamos el vlaor por la posicion.
-                          this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report);
-                          this.dataMGO[iL].y = Number(this.dataMGO[iL].y) + this.SumaMgo(report);
-                          let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
-                          this.dataSPEED[iL].y = ySpeed;
-
-
-                          // Verificamos que la linea maxima sea mayor al valor del chart-
-                          if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
-                            this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
-                          }
-                          if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
-                            this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
-                          }
-                          if (ySpeed > this.configLineaSPEED.lineaMax) {
-                            this.configLineaSPEED.lineaMax = ySpeed;
-                          }
-
-                          // retornamos tru para agregarlo al filtro
-                          return true;
+                          // Caso contrario retornamos false, para que no lo agrege al filtro.
+                          return false;
                         }
-                        // Caso contrario retornamos false, para que no lo agrege al filtro.
-                        return false;
-                      }
 
-                    );
-
-                    // Verificamos si se encontro un resultado ese mes.
-                    if (!resultSearch) {
-
-                      // todos los meses almenos tendran un viaje
-                      // asi que si o si lo agregams.
-                      isAddNewVoyage = false;
-                      isAddNewPort = false;
-
-                      // agregamos la fecha a nuestro arreglo.
-                      this.xLabelReport.push(day);
-
-                      // Le agregamos los datos de velocidad.
-                      let newSpeed = new Speed(report.distance, report.steamingTime);
-
-                      // agregamos los datos IFO
-                      this.dataIFO.push(
-                        { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                       );
 
-                      // Agregamos los datos MGO
-                      this.dataMGO.push(
-                        { x: day, y: this.SumaMgo(report), speed: newSpeed, ubication: [iV, iP, iR] }
+                      // Verificamos si se encontro un resultado ese mes.
+                      if (!resultSearch) {
+
+                        // todos los meses almenos tendran un viaje
+                        // asi que si o si lo agregams.
+                        isAddNewVoyage = false;
+                        isAddNewPort = false;
+
+                        // agregamos la fecha a nuestro arreglo.
+                        this.xLabelReport.push(day);
+
+                        // Le agregamos los datos de velocidad.
+                        let newSpeed = new Speed(report.distance, report.steamingTime);
+
+                        // agregamos los datos IFO
+                        this.dataIFO.push(
+                          { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                        );
+
+                        // Agregamos los datos MGO
+                        this.dataMGO.push(
+                          { x: day, y: this.SumaMgo(report), speed: newSpeed, ubication: [iV, iP, iR] }
+                        );
+
+                        // Agregamos los datos de velocidad.
+                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+                        this.dataSPEED.push(
+                          { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
+                        );
+
+
+                        // // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+                        if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
+                          this.configLineaIFO.lineaMax = this.SumaIfo(report);
+                        }
+                        if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
+                          this.configLineaMGO.lineaMax = this.SumaMgo(report);
+                        }
+                        if (ySpeed > this.configLineaSPEED.lineaMax) {
+                          this.configLineaSPEED.lineaMax = ySpeed;
+                        }
+
+                      }
+                    }
+                    // Si el resumen del filtro es por dias.
+                    else if (this.selectSummaryBy === 'DAYS') {
+
+                      // Buscamos si el dia ya se encuantra registrado.
+                      let resultSearch = this.xLabelReport.find(
+                        (xDay, iL) => {
+
+                          // Verificamos si el dia ya se encuentra registrado.
+                          if (FormatDate(day) === FormatDate(xDay)) {
+
+
+                            // consultamos
+                            // Es para agregar un nuevo viaje?
+                            if (isAddNewVoyage) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewVoyage = false;
+                              this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                            }
+                            // Es para agregar un nuevo puerto
+                            if (isAddNewPort) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewPort = false;
+                              this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
+                            }
+                            // Le sumamos el total de reporte
+                            this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
+
+
+                            // Obtenemos los datos de velocidad.
+                            let speedI: Speed = this.dataSPEED[iL].speed;
+                            // Agregamos la distancia y velocidad.
+                            speedI.add(report.distance, report.steamingTime);
+                            // Actualizamos los datos de la velocidad
+                            this.dataIFO[iL].speed = speedI;
+                            // Sumamos el total de cosnumo.
+                            this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report)
+
+                            // Actualizamos la velocidad para la data MGO y SPEED
+                            this.dataMGO[iL].speed = speedI;
+                            this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
+                            // Actualizamos los datos de la velocidad
+                            this.dataSPEED[iL].speed = speedI;
+
+                            // Actualizamos el vlaor por la posicion.
+                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
+                            this.dataSPEED[iL].y = ySpeed;
+
+                            // Creamos la data extra.
+                            let dataExtra = this.dataIFO[iL].dataExtra;
+                            // le hacemos push a la data extra.
+                            dataExtra.push(report);
+
+                            // Agregamos la data extra a la data del chart.
+                            this.dataIFO[iL].dataExtra = dataExtra;
+                            this.dataMGO[iL].dataExtra = dataExtra;
+                            this.dataSPEED[iL].dataExtra = dataExtra;
+
+
+                            // Verificamos que la linea maxima sea mayor al valor del chart-
+                            if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
+                              this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
+                            }
+                            if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
+                              this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
+                            }
+                            if (ySpeed > this.configLineaSPEED.lineaMax) {
+                              this.configLineaSPEED.lineaMax = ySpeed;
+                            }
+
+
+
+                            // retornamos tru para agregarlo al filtro
+                            return true;
+                          }
+                          // Caso contrario retornamos false, para que no lo agrege al filtro.
+                          return false;
+                        }
+
                       );
 
-                      // Agregamos los datos de velocidad.
-                      let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
-                      this.dataSPEED.push(
-                        { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
-                      );
 
+                      // Verificamos si se encontro un resultado ese mes.
+                      if (!resultSearch) {
 
-                      // // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
-                      if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
-                        this.configLineaIFO.lineaMax = this.SumaIfo(report);
-                      }
-                      if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
-                        this.configLineaMGO.lineaMax = this.SumaMgo(report);
-                      }
-                      if (ySpeed > this.configLineaSPEED.lineaMax) {
-                        this.configLineaSPEED.lineaMax = ySpeed;
+                        // todos los meses almenos tenfras un viaje
+                        // asi que si o si lo agregams.
+                        isAddNewVoyage = false;
+                        isAddNewPort = false;
+
+                        // agregamos la fecha a nuestro arreglo.
+                        this.xLabelReport.push(day);
+
+                        let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
+                        // y los ocmentarios registrados.
+                        dataExtra.push(report)
+
+                        // asignamos los datos a los dataChart.
+                        let newSpeed = new Speed(report.distance, report.steamingTime);
+                        this.dataIFO.push(
+                          { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
+                        );
+                        this.dataMGO.push(
+                          { x: day, y: this.SumaMgo(report), speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
+                        );
+                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2)
+                        this.dataSPEED.push(
+                          { x: day, y: ySpeed, speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
+                        );
+
+                        // Verificamos que la configuracion de la linea maxima se  mayor al valor del chart.
+                        if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
+                          this.configLineaIFO.lineaMax = this.SumaIfo(report);
+                        }
+                        if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
+                          this.configLineaMGO.lineaMax = this.SumaMgo(report);
+                        }
+                        if (ySpeed > this.configLineaSPEED.lineaMax) {
+                          this.configLineaSPEED.lineaMax = ySpeed;
+                        }
+
                       }
 
                     }
@@ -2101,158 +2227,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-
-  public GenerateDashBoardByDays(setDate: boolean) {
-
-    this.xLabelReport = [];
-    this.dataIFO = [];
-    this.dataMGO = [];
-    this.dataSPEED = [];
-
-
-    this.configLineaIFO.lineaMax = 0;
-    this.configLineaMGO.lineaMax = 0;
-    this.configLineaSPEED.lineaMax = 0;
-
-
-    // Creamos esta variable para que nos avise cuando hay un nuevo registro
-    let isAddNewVoyage: boolean = false;
-    this.generateVoyages.forEach(
-      (voyage, iV) => {
-
-        // Activamos, para saber que es nuevo viaje.
-        isAddNewVoyage = true;
-
-        // Creamos esta variable para que nos avise cuando hay un nuevo registro
-        let isAddNewPort: boolean = false;
-        voyage.ports.forEach(
-          (port, iP) => {
-
-            // Activamos, para saber que es nuevo puerto.
-            isAddNewPort = true;
-
-            port.dailyReports.forEach(
-              (report, iR) => {
-
-                let day = report.date;
-                let resultSearch = this.xLabelReport.find(
-                  (xDay, iL) => {
-
-                    // Verificamos la fecha actual.
-
-                    if (FormatDate(day) === FormatDate(xDay)) {
-
-                      let speedI: Speed = this.dataSPEED[iL].speed;
-                      speedI.add(report.distance, report.steamingTime);
-
-                      this.dataIFO[iL].speed = speedI;
-                      this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report)
-                      if (isAddNewVoyage) {
-                        // Lo desactivamos para que vuelva a entrar.
-                        isAddNewVoyage = false;
-                        this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
-                      }
-                      if (isAddNewPort) {
-                        // Lo desactivamos para que vuelva a entrar.
-                        isAddNewPort = false;
-                        this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
-                      }
-                      // Le sumamos el total de reporte
-                      this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
-
-
-                      this.dataMGO[iL].speed = speedI;
-                      this.dataMGO[iL].y = this.dataMGO[iL].y + this.SumaMgo(report)
-
-                      this.dataSPEED[iL].speed = speedI;
-
-                      // Actualizamos el vlaor por la posicion.
-                      let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
-                      this.dataSPEED[iL].y = ySpeed;
-
-
-
-                      let dataExtra = this.dataIFO[iL].dataExtra;
-                      dataExtra.push(report);
-
-                      this.dataIFO[iL].dataExtra = dataExtra;
-                      this.dataMGO[iL].dataExtra = dataExtra;
-                      this.dataSPEED[iL].dataExtra = dataExtra;
-
-                      if (this.dataIFO[iL].y > this.configLineaIFO.lineaMax) {
-                        this.configLineaIFO.lineaMax = Number(this.dataIFO[iL].y);
-                      }
-                      if (this.dataMGO[iL].y > this.configLineaMGO.lineaMax) {
-                        this.configLineaMGO.lineaMax = this.dataMGO[iL].y;
-                      }
-                      if (ySpeed > this.configLineaSPEED.lineaMax) {
-                        this.configLineaSPEED.lineaMax = ySpeed;
-                      }
-
-
-
-                      return true;
-                    }
-
-                    return false;
-                  }
-
-                );
-
-
-                if (!resultSearch) {
-
-                  // todos los meses almenos tenfras un viaje
-                  // asi que si o si lo agregams.
-                  isAddNewVoyage = false;
-                  isAddNewPort = false;
-
-                  // agregamos la fecha a nuestro arreglo.
-                  this.xLabelReport.push(day);
-
-                  let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
-                  // y los ocmentarios registrados.
-
-                  dataExtra.push(report)
-
-                  let newSpeed = new Speed(report.distance, report.steamingTime);
-                  this.dataIFO.push(
-                    { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
-                  );
-                  this.dataMGO.push(
-                    { x: day, y: this.SumaMgo(report), speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
-                  );
-                  let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2)
-                  this.dataSPEED.push(
-                    { x: day, y: ySpeed, speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
-                  );
-
-                  if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
-                    this.configLineaIFO.lineaMax = this.SumaIfo(report);
-                  }
-                  if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
-                    this.configLineaMGO.lineaMax = this.SumaMgo(report);
-                  }
-                  if (ySpeed > this.configLineaSPEED.lineaMax) {
-                    this.configLineaSPEED.lineaMax = ySpeed;
-                  }
-
-                }
-
-
-              }
-            );
-
-          }
-        )
-
-
-
-      }
-
-    );
-
-  }
 
   // ESTO LO VEREMOS DESPUES.
   // REVISAR 
