@@ -994,6 +994,7 @@ export class DashboardComponent implements OnInit {
 
 
   }
+
   // ExportPDF() : Esta opcion exporta el pdf.
   // AQUI UNA MEJORA.
   // HAY MEJORA esto toma por defecto el generateVOyages, hay que revisar que deberia tomar.
@@ -1861,19 +1862,33 @@ export class DashboardComponent implements OnInit {
 
         // Generamos el texto para los labels del Chart
         let txtLabelChart: string = '';
+
         // Verificamos si el sumary es por años
         if (this.selectSummaryBy === 'VOYAGES') {
+
           // Armamos el texto de label para viajes.
           txtLabelChart = 'V' + voyage.voyageNumber + ' Y' + ('' + voyage.year).slice(-2);
 
           // Lo agregamos al arreglo.
           this.xLabelReport.push(txtLabelChart);
 
+          // Formular para el consumo diario.
           // El total de consumo debe de ser mayor para poder pintarlo.
           if (voyage.totalIFO > 0) {
+
+            let consumptionDailyIFO = voyage.totalSpeed.steamingTime ? ( voyage.totalIFO * 24 ) / voyage.totalSpeed.steamingTime : 0;
+
+            // Formular para el consumo diario.
+         
             this.dataIFO.push(
-              { x: txtLabelChart, y: voyage.totalIFO, ubication: [iV] }
+              { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV] }
             );
+
+            // Verificamos si la linea maxima es menor para actualizarlo.
+            if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
+              this.configLineaIFO.lineaMax = consumptionDailyIFO;
+            }
+
           }
 
           // El total de consumo debe de ser mayor para poder pintarlo.
@@ -1891,10 +1906,6 @@ export class DashboardComponent implements OnInit {
             );
           }
 
-          // Verificamos si la linea maxima es menor para actualizarlo.
-          if (voyage.totalIFO > this.configLineaIFO.lineaMax) {
-            this.configLineaIFO.lineaMax = voyage.totalIFO;
-          }
           if (voyage.totalMGO > this.configLineaMGO.lineaMax) {
             this.configLineaMGO.lineaMax = voyage.totalMGO;
           }
@@ -2852,6 +2863,7 @@ export class DashboardComponent implements OnInit {
                 'T. Ports : ' + voyage.totalPort,
                 'T. Reports : ' + voyage.totalReport,
                 'T. Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+                'T. Consumption : ' + mathRound(voyage.totalIFO, 2),
                 'T. Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
                 'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
               ];
@@ -3265,7 +3277,6 @@ export class DashboardComponent implements OnInit {
     return mgo;
   }
 
-
   public MathRoundOneDecimal(valor, cantDecimales: number) {
     if (!valor) { return 0; }
 
@@ -3318,7 +3329,6 @@ export class DashboardComponent implements OnInit {
     Chart.pluginService.register(chartPluginLineaHorizontal);
 
   }
-
 
   private OpenDialogReport(voyage: Voyage, selectPortId: number, reportId: number, isIFO_MGO_SPEED: string) {
 
