@@ -2706,178 +2706,6 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  public UpdateLineMGO(): boolean {
-
-    // Test
-    console.log('UpdateLineMGO');
-
-    // Actualizamos los labels
-    this.configLineaMGO.data.labels = this.xLabelReport;
-    this.configLineaMGO.data.datasets[0].data = this.dataMGO;
-
-    // Vaciamos la configuracion de las lines MGO
-    this.configLineaMGO.options.lines = [];
-
-    if (this.selectSummaryBy === 'DAYS') {
-
-      if (this.selectUser.isConsumptionMGO) {
-        if (this.selectUser.maxMGOConsumption > 0) {
-          this.configLineaMGO.options.lines.push({
-            type: 'horizontal',
-            y: this.selectUser.maxMGOConsumption,
-            color: 'red',
-            label: ''
-          });
-        }
-
-        if (this.selectUser.minMGOConsumption > 0) {
-          this.configLineaMGO.options.lines.push({
-            type: 'horizontal',
-            y: this.selectUser.minMGOConsumption,
-            color: '#39FF14',
-            label: ''
-          });
-        }
-      }
-
-    }
-
-
-    this.configLineaMGO.options.tooltips = {
-
-      // Establece qué elementos aparecen en la información sobre herramientas.
-      mode: 'nearest',
-      // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
-      intersect: false,
-      callbacks: {
-        title: (tooltipItem, data) => {
-          let index = tooltipItem[0].index;
-
-          let result = "";
-
-          if (this.selectSummaryBy === 'VOYAGES') {
-
-            let ubication = data.datasets[0].data[index].ubication;
-            let viaje = this.generateVoyages[ubication[0]]
-
-            result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
-
-          } else if (this.selectSummaryBy === 'PORTS') {
-
-            let ubication = data.datasets[0].data[index].ubication;
-
-            let viaje = this.generateVoyages[ubication[0]];
-            let port = viaje.ports[ubication[1]];
-
-            result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
-
-          } else if (this.selectSummaryBy === 'MONTHS') {
-
-            result = tooltipItem[0].xLabel;
-            result = TextMonthYearFormatYYYYMMDD(result); // REVISAR NO ES CORRECTO
-          } else if (this.selectSummaryBy === 'DAYS') {
-
-            result = tooltipItem[0].xLabel;
-            result = TextMonthDayYearFormatYYYYMMDD(result) // REVISAR ESTO NO ES CORRECTO RECLACAR IFO.
-          }
-
-          return result;
-        },
-        label: (tooltipItem, data) => {
-
-          let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
-
-          let result = 'Consumption ' + typeConsumption + ' : ' + mathRound(tooltipItem.value, 2);
-
-          return result;
-        },
-        footer: (tooltipItem, data) => {
-          let index = tooltipItem[0].index;
-
-          let result = [];
-          if (this.selectSummaryBy === 'VOYAGES') {
-
-            let ubication = data.datasets[0].data[index].ubication;
-
-            let voyage = this.generateVoyages[ubication[0]];
-            result = [
-              'T. Ports : ' + voyage.totalPort,
-              'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
-              'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
-              'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
-            ];
-          } else if (this.selectSummaryBy === 'PORTS') {
-
-            let ubication = data.datasets[0].data[index].ubication;
-
-            let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-            result = [
-              'Departure : ' + port.departurePort,
-              'Arrival : ' + port.arrivalPort,
-              'Distance : ' + mathRound(port.speed.distance, 2),
-              'Time : ' + mathRound(port.speed.steamingTime, 2),
-              'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
-            ];
-          } else if (this.selectSummaryBy === 'MONTHS') {
-
-
-            let speed = data.datasets[0].data[index].speed;
-
-            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
-            result = [
-              'Distance : ' + mathRound(speed.distance, 2),
-              'Time : ' + mathRound(speed.steamingTime, 2),
-              'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
-            ];
-          }
-          else if (this.selectSummaryBy === 'DAYS') {
-
-
-            let dataExtra = data.datasets[0].data[index].dataExtra;
-
-            let speed = new Speed();
-            let activities = '';
-            let observations = '';
-            let totalReport = 0;
-
-            dataExtra.forEach((report: DailyReport) => {
-              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
-              observations = observations + ', ' + report.observation;
-              speed.add(report.distance, report.steamingTime);
-              totalReport = totalReport + 1;
-            });
-
-            result = [
-              'Distance : ' + mathRound(speed.distance, 2),
-              'Time : ' + mathRound(speed.steamingTime, 2),
-              'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
-              'T. Reports : ' + totalReport,
-              'Activities : ' + activities,
-              'Observations : ' + observations
-            ];
-
-          }
-
-
-          return result;
-
-        },
-      },
-    }
-
-
-    if (this.configLineaMGO.lineaMax < this.selectUser.maxMGOConsumption) {
-      this.configLineaMGO.lineaMax = this.selectUser.maxMGOConsumption;
-    }
-
-    // Agregamos la configuracion de las escalas.
-    this.configLineaMGO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaMGO.lineaMax, 0) + 2);
-
-    this.chartLineMGO.update();
-
-    return false;
-  }
-
   public UpdateLineIFO(): boolean {
     // Testing
     console.log('UpdateLineIFO');
@@ -3087,6 +2915,178 @@ export class DashboardComponent implements OnInit {
     //
     return false;
 
+  }
+
+  public UpdateLineMGO(): boolean {
+
+    // Test
+    console.log('UpdateLineMGO');
+
+    // Actualizamos los labels
+    this.configLineaMGO.data.labels = this.xLabelReport;
+    this.configLineaMGO.data.datasets[0].data = this.dataMGO;
+
+    // Vaciamos la configuracion de las lines MGO
+    this.configLineaMGO.options.lines = [];
+
+    if (this.selectSummaryBy === 'DAYS') {
+
+      if (this.selectUser.isConsumptionMGO) {
+        if (this.selectUser.maxMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxMGOConsumption,
+            color: 'red',
+            label: ''
+          });
+        }
+
+        if (this.selectUser.minMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minMGOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
+      }
+
+    }
+
+
+    this.configLineaMGO.options.tooltips = {
+
+      // Establece qué elementos aparecen en la información sobre herramientas.
+      mode: 'nearest',
+      // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
+      intersect: false,
+      callbacks: {
+        title: (tooltipItem, data) => {
+          let index = tooltipItem[0].index;
+
+          let result = "";
+
+          if (this.selectSummaryBy === 'VOYAGES') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+            let viaje = this.generateVoyages[ubication[0]]
+
+            result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.selectSummaryBy === 'PORTS') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+
+            let viaje = this.generateVoyages[ubication[0]];
+            let port = viaje.ports[ubication[1]];
+
+            result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.selectSummaryBy === 'MONTHS') {
+
+            result = tooltipItem[0].xLabel;
+            result = TextMonthYearFormatYYYYMMDD(result); // REVISAR NO ES CORRECTO
+          } else if (this.selectSummaryBy === 'DAYS') {
+
+            result = tooltipItem[0].xLabel;
+            result = TextMonthDayYearFormatYYYYMMDD(result) // REVISAR ESTO NO ES CORRECTO RECLACAR IFO.
+          }
+
+          return result;
+        },
+        label: (tooltipItem, data) => {
+
+          let typeConsumption = this.selectUser.isConsumptionMGO ? 'MGO' : 'MGO';
+
+          let result = 'Consumption ' + typeConsumption + ' : ' + mathRound(tooltipItem.value, 2);
+
+          return result;
+        },
+        footer: (tooltipItem, data) => {
+          let index = tooltipItem[0].index;
+
+          let result = [];
+          if (this.selectSummaryBy === 'VOYAGES') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+
+            let voyage = this.generateVoyages[ubication[0]];
+            result = [
+              'T. Ports : ' + voyage.totalPort,
+              'Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+              'Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
+              'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
+            ];
+          } else if (this.selectSummaryBy === 'PORTS') {
+
+            let ubication = data.datasets[0].data[index].ubication;
+
+            let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = [
+              'Departure : ' + port.departurePort,
+              'Arrival : ' + port.arrivalPort,
+              'Distance : ' + mathRound(port.speed.distance, 2),
+              'Time : ' + mathRound(port.speed.steamingTime, 2),
+              'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
+            ];
+          } else if (this.selectSummaryBy === 'MONTHS') {
+
+
+            let speed = data.datasets[0].data[index].speed;
+
+            //let port = this.generateVoyages[ubication[0]].ports[ubication[1]];
+            result = [
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
+              'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
+            ];
+          }
+          else if (this.selectSummaryBy === 'DAYS') {
+
+
+            let dataExtra = data.datasets[0].data[index].dataExtra;
+
+            let speed = new Speed();
+            let activities = '';
+            let observations = '';
+            let totalReport = 0;
+
+            dataExtra.forEach((report: DailyReport) => {
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              observations = observations + ', ' + report.observation;
+              speed.add(report.distance, report.steamingTime);
+              totalReport = totalReport + 1;
+            });
+
+            result = [
+              'Distance : ' + mathRound(speed.distance, 2),
+              'Time : ' + mathRound(speed.steamingTime, 2),
+              'Speed : ' + mathRound(speed.distance / speed.steamingTime, 2),
+              'T. Reports : ' + totalReport,
+              'Activities : ' + activities,
+              'Observations : ' + observations
+            ];
+
+          }
+
+
+          return result;
+
+        },
+      },
+    }
+
+
+    if (this.configLineaMGO.lineaMax < this.selectUser.maxMGOConsumption) {
+      this.configLineaMGO.lineaMax = this.selectUser.maxMGOConsumption;
+    }
+
+    // Agregamos la configuracion de las escalas.
+    this.configLineaMGO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaMGO.lineaMax, 0) + 2);
+
+    this.chartLineMGO.update();
+
+    return false;
   }
 
   public UpdateLineSPEED(): boolean {
