@@ -1872,14 +1872,13 @@ export class DashboardComponent implements OnInit {
           // Lo agregamos al arreglo.
           this.xLabelReport.push(txtLabelChart);
 
-          // Formular para el consumo diario.
           // El total de consumo debe de ser mayor para poder pintarlo.
           if (voyage.totalIFO > 0) {
 
+            // Formular para el consumo diario.
             let consumptionDailyIFO = voyage.totalSpeed.steamingTime ? ( voyage.totalIFO * 24 ) / voyage.totalSpeed.steamingTime : 0;
 
-            // Formular para el consumo diario.
-         
+            // Se lo agregaoms a la data IFO
             this.dataIFO.push(
               { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV] }
             );
@@ -1943,9 +1942,20 @@ export class DashboardComponent implements OnInit {
 
                 // El total de consumo debe de ser mayor para poder pintarlo.
                 if (port.robIfo > 0) {
+
+                  // Formular para el consumo diario.
+                  let consumptionDailyIFO = port.speed.steamingTime ? ( port.robIfo * 24 ) / port.speed.steamingTime : 0;
+
+                  // Informacion para la dataIFO
                   this.dataIFO.push(
-                    { x: txtLabelChart, y: port.robIfo, ubication: [iV, iP] }
+                    { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV, iP] }
                   );
+
+                  // Verificamos si la linea maxima es menor para actualizarlo.
+                  if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
+                    this.configLineaIFO.lineaMax = consumptionDailyIFO;
+                  }
+                  
                 }
                 // El total de consumo debe de ser mayor para poder pintarlo.
                 if (port.robMgo > 0) {
@@ -1961,10 +1971,6 @@ export class DashboardComponent implements OnInit {
                   );
                 }
 
-                // Verificamos si la linea maxima es menor para actualizarlo.
-                if (port.robIfo > this.configLineaIFO.lineaMax) {
-                  this.configLineaIFO.lineaMax = port.robIfo;
-                }
                 if (port.robMgo > this.configLineaMGO.lineaMax) {
                   this.configLineaMGO.lineaMax = port.robMgo;
                 }
@@ -2877,6 +2883,7 @@ export class DashboardComponent implements OnInit {
                 'Arrival : ' + port.arrivalPort,
                 'T. Reports : ' + voyage.totalReport,
                 'T. Distance : ' + mathRound(port.speed.distance, 2),
+                'T. Consumption : ' + mathRound(port.robIfo, 2),
                 'T. Time : ' + mathRound(port.speed.steamingTime, 2),
                 'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
               ];
