@@ -1825,7 +1825,6 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-
   // GenerateDashBoardByVoyages(): genera data para los chart.
   // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
   private GenerateDashBoardByVoyages(setDate: boolean) {
@@ -2236,7 +2235,7 @@ export class DashboardComponent implements OnInit {
   // ESTO LO VEREMOS DESPUES.
   // REVISAR 
   // Generar linea en los canvas.
-  public GenetareLineIFO(): boolean {
+  private GenetareLineIFO(): boolean {
 
     // Test
     console.log('GenetareLineIFO()');
@@ -2368,7 +2367,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  public GenetareLineMGO(): boolean {
+  private GenetareLineMGO(): boolean {
     console.log('GenetareLineMGO()');
 
 
@@ -2532,7 +2531,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  public GenetareLineSPEED(): boolean {
+  private GenetareLineSPEED(): boolean {
     // Test
     console.log('GenetareLineSPEED()');
 
@@ -2706,7 +2705,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  public UpdateLineIFO(): boolean {
+  private UpdateLineIFO(): boolean {
     // Testing
     console.log('UpdateLineIFO');
 
@@ -2917,7 +2916,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public UpdateLineMGO(): boolean {
+  private UpdateLineMGO(): boolean {
 
     // Test
     console.log('UpdateLineMGO');
@@ -3089,7 +3088,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
-  public UpdateLineSPEED(): boolean {
+  private UpdateLineSPEED(): boolean {
 
     // Testing
     console.log('UpdateLineSPEED()');
@@ -3274,11 +3273,12 @@ export class DashboardComponent implements OnInit {
     return result;
 
   }
+
   public Testt() {
     alert("DI O CLICK");
   }
 
-  public PluginChartLine() {
+  private PluginChartLine() {
 
     // Agregamos un plugin para saver los niveles.
     const chartPluginLineaHorizontal = {
