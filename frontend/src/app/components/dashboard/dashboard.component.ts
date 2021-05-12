@@ -2032,9 +2032,17 @@ export class DashboardComponent implements OnInit {
                             this.dataMGO[iL].speed = speedI;
                             this.dataSPEED[iL].speed = speedI;
 
-
                             // Actualizamos el vlaor por la posicion.
-                            this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report);
+                            let totalConsumptioIFO = this.dataIFO[iL].totalConsumption + this.SumaIfo(report);
+                            // Formula DayliConsumption
+                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptioIFO * 24) / speedI.steamingTime : 0; 
+                            
+                            // Actualizamos los datos al dataIfo Chart.
+                             this.dataIFO[iL].totalConsumption = totalConsumptioIFO;
+                            this.dataIFO[iL].y = dayliConsumptionIFO;
+
+
+
                             this.dataMGO[iL].y = Number(this.dataMGO[iL].y) + this.SumaMgo(report);
                             let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
                             this.dataSPEED[iL].y = ySpeed;
@@ -2079,9 +2087,13 @@ export class DashboardComponent implements OnInit {
                           { x: day, y: ySpeed, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
 
-                        // agregamos los datos IFO
+                        let totalConsumptioIFO = this.SumaIfo(report);
+                        // Formula DayliConsumption
+                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptioIFO * 24) / newSpeed.steamingTime : 0; 
+                        
+                        // Agregamos los datos IFO
                         this.dataIFO.push(
-                          { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                          { x: day, y: dayliConsumptionIFO , totalConsumption: totalConsumptioIFO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
 
                         // Agregamos los datos MGO
@@ -2889,12 +2901,11 @@ export class DashboardComponent implements OnInit {
               ];
             } else if (this.selectSummaryBy === 'MONTHS') {
 
-
-
               result = [
                 'T. Ports : ' + chartPoint.totalPort,
                 'T. Reports : ' + chartPoint.totalReport,
                 'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
+                'T. Consumption : ' + mathRound(chartPoint.totalConsumption, 2),
                 'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
                 'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
               ];
