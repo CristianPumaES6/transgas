@@ -1771,9 +1771,9 @@ export class DashboardComponent implements OnInit {
       config.xAxes[0].time = {
 
         displayFormats: {
-          day: 'MM/YY'
+          day: 'MM/DD'
         },
-        tooltipFormat: 'MM/DD',
+        tooltipFormat: 'MM/DD/YY',
         unit: 'day',
 
       }
@@ -1790,21 +1790,8 @@ export class DashboardComponent implements OnInit {
     // retornamoremos el resultado de la promesa.
     return await Promise.resolve(true).then(
       result => {
-        // Generamos  la data del dashboard segun el tipo de resumen.
 
-        // Tipo de resumen.
-        let typeSummary = this.selectSummaryBy;
-
-        // Filtro de resumen.
-        if (typeSummary === 'VOYAGES') {
-          this.GenerateDashBoardByVoyages(setDate);
-        } else if (typeSummary === 'PORTS') {
-          this.GenerateDashBoardByVoyages(setDate);
-        } else if (typeSummary === 'MONTHS') {
-          this.GenerateDashBoardByVoyages(setDate);
-        } else if (typeSummary === 'DAYS') {
-          this.GenerateDashBoardByVoyages(false);
-        }
+          this.GenerateDataForChart(setDate);
 
         // return true.
         return true;
@@ -1826,9 +1813,9 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  // GenerateDashBoardByVoyages(): genera data para los chart.
+  // GenerateDataForChart(): genera data para los chart.
   // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
-  private GenerateDashBoardByVoyages(setDate: boolean) {
+  private GenerateDataForChart(setDate: boolean) {
     // Texto x de los reportes.
     this.xLabelReport = [];
 
@@ -1955,7 +1942,7 @@ export class DashboardComponent implements OnInit {
                   if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
                     this.configLineaIFO.lineaMax = consumptionDailyIFO;
                   }
-                  
+
                 }
                 // El total de consumo debe de ser mayor para poder pintarlo.
                 if (port.robMgo > 0) {
@@ -2034,13 +2021,13 @@ export class DashboardComponent implements OnInit {
 
                             // Actualizamos el vlaor por la posicion.
                             let totalConsumptioIFO = this.dataIFO[iL].totalConsumption + this.SumaIfo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptioIFO * 24) / speedI.steamingTime : 0; 
-                            
-                            // Actualizamos los datos al dataIfo Chart.
-                             this.dataIFO[iL].totalConsumption = totalConsumptioIFO;
-                            this.dataIFO[iL].y = dayliConsumptionIFO;
 
+                            // Formula DayliConsumption
+                            let dayliConsumptionIFO = speedI.steamingTime ? ( totalConsumptioIFO * 24 ) / speedI.steamingTime : 0;
+
+                            // Actualizamos los datos al dataIfo Chart.
+                            this.dataIFO[iL].totalConsumption = totalConsumptioIFO;
+                            this.dataIFO[iL].y = dayliConsumptionIFO;
 
 
                             this.dataMGO[iL].y = Number(this.dataMGO[iL].y) + this.SumaMgo(report);
@@ -2088,12 +2075,13 @@ export class DashboardComponent implements OnInit {
                         );
 
                         let totalConsumptioIFO = this.SumaIfo(report);
+
                         // Formula DayliConsumption
-                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptioIFO * 24) / newSpeed.steamingTime : 0; 
-                        
+                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptioIFO * 24) / newSpeed.steamingTime : 0;
+
                         // Agregamos los datos IFO
                         this.dataIFO.push(
-                          { x: day, y: dayliConsumptionIFO , totalConsumption: totalConsumptioIFO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                          { x: day, y: dayliConsumptionIFO, totalConsumption: totalConsumptioIFO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
 
                         // Agregamos los datos MGO
@@ -2148,10 +2136,19 @@ export class DashboardComponent implements OnInit {
                             let speedI: Speed = this.dataSPEED[iL].speed;
                             // Agregamos la distancia y velocidad.
                             speedI.add(report.distance, report.steamingTime);
+
+                            // Consumption
+                            let totalConsumptioIFO = this.dataIFO[iL].totalConsumption + this.SumaIfo(report);
+                            // Formula DayliConsumption
+                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptioIFO * 24) / speedI.steamingTime : 0;
+
                             // Actualizamos los datos de la velocidad
                             this.dataIFO[iL].speed = speedI;
                             // Sumamos el total de cosnumo.
                             this.dataIFO[iL].y = Number(this.dataIFO[iL].y) + this.SumaIfo(report)
+
+                            this.dataIFO[iL].totalConsumption = totalConsumptioIFO;
+                            this.dataIFO[iL].y = dayliConsumptionIFO;
 
                             // Actualizamos la velocidad para la data MGO y SPEED
                             this.dataMGO[iL].speed = speedI;
@@ -2196,7 +2193,6 @@ export class DashboardComponent implements OnInit {
 
                       );
 
-
                       // Verificamos si se encontro un resultado ese mes.
                       if (!resultSearch) {
 
@@ -2214,9 +2210,17 @@ export class DashboardComponent implements OnInit {
 
                         // asignamos los datos a los dataChart.
                         let newSpeed = new Speed(report.distance, report.steamingTime);
+
+                        // Consumption
+                        let totalConsumptioIFO = this.SumaIfo(report);
+                        // Formula DayliConsumption
+                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptioIFO * 24) / newSpeed.steamingTime : 0;
+
+                        // Agregamos los datos IFO
                         this.dataIFO.push(
-                          { x: day, y: this.SumaIfo(report), totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
+                          { x: day, y: dayliConsumptionIFO, totalConsumption: totalConsumptioIFO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
                         );
+
                         this.dataMGO.push(
                           { x: day, y: this.SumaMgo(report), speed: newSpeed, dataExtra: dataExtra, ubication: [iV, iP, iR], identified: [voyage.id, port.id, report.id] }
                         );
@@ -2251,6 +2255,7 @@ export class DashboardComponent implements OnInit {
 
       }
     );
+
 
     // Si la configuracion es para setar fecha lo seteamos.
     if (setDate) {
@@ -2915,6 +2920,7 @@ export class DashboardComponent implements OnInit {
                 'T. Ports : ' + chartPoint.totalPort,
                 'T. Reports : ' + chartPoint.totalReport,
                 'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
+                'T. Consumption : ' + mathRound(chartPoint.totalConsumption, 2),
                 'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
                 'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
                 'Activities : ' + 'FALTA LAS ACTIDIDADES', // revisar // agregar las actividades
@@ -3290,6 +3296,7 @@ export class DashboardComponent implements OnInit {
     let ifo = report.mplaIfo + report.auxIfo + report.boilerIfo + report.otherIfo;
     return ifo;
   }
+
   private SumaMgo(report: DailyReport): number {
     let mgo = report.mplaMgo + report.auxMgo + report.boilerMgo + report.ppMgo + report.giMgo + report.otherMgo;
     return mgo;
@@ -3300,7 +3307,6 @@ export class DashboardComponent implements OnInit {
 
     let result = mathRound(valor, 2)
     return result;
-
   }
 
   public Testt() {
