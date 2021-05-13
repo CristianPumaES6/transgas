@@ -113,18 +113,18 @@ export class DashboardComponent implements OnInit {
 
   // Configuracion del chartIFO
   public configLineaIFO: Chart.ChartConfiguration; // Configuracion del elemento
-  public chartLineIFO: any; // LINEA
+  public chartLineIFO: Chart; // LINEA
   public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
   // Configuracion del chartMGO
   public configLineaMGO: any; // configuracion del elemento
-  public chartLineMGO: any; // LINEA
-  public dataMGO = []; // Data
+  public chartLineMGO: Chart; // LINEA
+  public dataMGO: Chart.ChartPoint[] = []; // Data
 
 
   // Configuracion del SPEED
   public configLineaSPEED: any; // configuracion del elemento
-  public chartLineSPEED: any; // LINEA
+  public chartLineSPEED: Chart; // LINEA
   public dataSPEED = []; // Data
 
 
@@ -1877,9 +1877,19 @@ export class DashboardComponent implements OnInit {
 
           // El total de consumo debe de ser mayor para poder pintarlo.
           if (voyage.totalMGO > 0) {
+
+            // Formular para el consumo diario.
+            let consumptionDailyMGO = voyage.totalSpeed.steamingTime ? (voyage.totalMGO * 24) / voyage.totalSpeed.steamingTime : 0;
+
+            // Se lo agregaoms a la data MGO
             this.dataMGO.push(
-              { x: txtLabelChart, y: voyage.totalMGO, ubication: [iV] }
+              { x: txtLabelChart, y: consumptionDailyMGO, ubication: [iV] }
             );
+
+            // Verificamos si la linea maxima es menor para actualizarlo.
+            if (consumptionDailyMGO > this.configLineaMGO.lineaMax) {
+              this.configLineaMGO.lineaMax = consumptionDailyMGO;
+            }
           }
 
           // El total de velocidad debe de ser mayor para poder pintarlo.
@@ -1888,9 +1898,6 @@ export class DashboardComponent implements OnInit {
             this.dataSPEED.push(
               { x: txtLabelChart, y: speed, ubication: [iV] }
             );
-          }
-          if (voyage.totalMGO > this.configLineaMGO.lineaMax) {
-            this.configLineaMGO.lineaMax = voyage.totalMGO;
           }
           if (speed > this.configLineaSPEED.lineaMax) {
             this.configLineaSPEED.lineaMax = speed;
@@ -1943,10 +1950,21 @@ export class DashboardComponent implements OnInit {
                 }
                 // El total de consumo debe de ser mayor para poder pintarlo.
                 if (port.robMgo > 0) {
+
+                  // Formular para el consumo diario.
+                  let consumptionDailyMGO = port.speed.steamingTime ? (port.robMgo * 24) / port.speed.steamingTime : 0;
+
+                  // Informacion para la dataIFO
                   this.dataMGO.push(
-                    { x: txtLabelChart, y: port.robMgo, ubication: [iV, iP] }
+                    { x: txtLabelChart, y: consumptionDailyMGO, ubication: [iV, iP] }
                   );
+
+                   // Verificamos si la linea maxima es menor para actualizarlo.
+                   if (consumptionDailyMGO > this.configLineaMGO.lineaMax) {
+                    this.configLineaMGO.lineaMax = consumptionDailyMGO;
+                  }
                 }
+
                 // El total de velocidad debe de ser mayor para poder pintarlo.
                 let speed = mathRound(port.speed.distance / (port.speed.steamingTime || 1), 2);
                 if (speed > 0) {
@@ -1955,9 +1973,6 @@ export class DashboardComponent implements OnInit {
                   );
                 }
 
-                if (port.robMgo > this.configLineaMGO.lineaMax) {
-                  this.configLineaMGO.lineaMax = port.robMgo;
-                }
                 if (speed > this.configLineaSPEED.lineaMax) {
                   this.configLineaSPEED.lineaMax = speed;
                 }
@@ -2037,11 +2052,11 @@ export class DashboardComponent implements OnInit {
                             this.dataIFO[iL].y = dayliConsumptionIFO;
 
                             // MGO
-                            let totalConsumptioMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
+                            let totalConsumptionMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
                             // Formula DayliConsumption
-                            let dayliConsumptionMGO = speedI.steamingTime ? (totalConsumptioMGO * 24) / speedI.steamingTime : 0;
+                            let dayliConsumptionMGO = speedI.steamingTime ? (totalConsumptionMGO * 24) / speedI.steamingTime : 0;
                             // Actualizamos los datos al dataMGO Chart.
-                            this.dataMGO[iL].totalConsumptionIFO = totalConsumptioMGO;
+                            this.dataMGO[iL].totalConsumptionMGO = totalConsumptionMGO;
                             this.dataMGO[iL].y = dayliConsumptionMGO;
 
 
@@ -2096,12 +2111,12 @@ export class DashboardComponent implements OnInit {
 
                         // DATOS MGO
                         // Calculamos el total de consumo ifo
-                        let totalConsumptioMGO = this.SumaMgo(report);
+                        let totalConsumptionMGO = this.SumaMgo(report);
                         // Formula DayliConsumption
-                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptioMGO * 24) / newSpeed.steamingTime : 0;
+                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
                         // Agregamos los datos MGO
                         this.dataMGO.push(
-                          { x: day, y: dayliConsumptionMGO, totalConsumptioMGO: totalConsumptioMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
 
 
@@ -2253,21 +2268,21 @@ export class DashboardComponent implements OnInit {
 
                         // DATOS MGO
                         // Calculamos el total de consumo ifo
-                        let totalConsumptioMGO = this.SumaMgo(report);
+                        let totalConsumptionMGO = this.SumaMgo(report);
                         // Formula DayliConsumption
-                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptioMGO * 24) / newSpeed.steamingTime : 0;
+                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
                         // Agregamos los datos MGO
                         this.dataMGO.push(
-                          { x: day, y: dayliConsumptionMGO, totalConsumptioMGO: totalConsumptioMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
+                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
                         );
 
 
                         // Verificamos que la configuracion de la linea maxima se  mayor al valor del chart.
-                        if (this.SumaIfo(report) > this.configLineaIFO.lineaMax) {
-                          this.configLineaIFO.lineaMax = this.SumaIfo(report);
+                        if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                          this.configLineaIFO.lineaMax = dayliConsumptionIFO;
                         }
-                        if (this.SumaMgo(report) > this.configLineaMGO.lineaMax) {
-                          this.configLineaMGO.lineaMax = this.SumaMgo(report);
+                        if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                          this.configLineaMGO.lineaMax = dayliConsumptionMGO;
                         }
                         if (ySpeed > this.configLineaSPEED.lineaMax) {
                           this.configLineaSPEED.lineaMax = ySpeed;
