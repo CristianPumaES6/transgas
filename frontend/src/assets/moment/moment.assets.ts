@@ -155,6 +155,7 @@ export function TextMonthDayYearFormatYYYYMMDD(date: any): string {
 }
 
 
+// retorna el primero y ultimo dia del mes de la fecha enviada.
 export function FisrtOldDayFromDate(date: any): any {
     if (!date) return null;
 
