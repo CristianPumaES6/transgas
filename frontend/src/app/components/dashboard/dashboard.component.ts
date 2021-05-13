@@ -2944,6 +2944,23 @@ export class DashboardComponent implements OnInit {
               ];
             } else if (this.selectSummaryBy === 'DAYS') {
 
+              // Revisar esto lo podriamos desaparecer si se lo agregamos al
+              // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
+              let dataExtra = chartPoint.dataExtra;
+
+              let speed = new Speed();
+              let activities = '';
+              let observations = '';
+              let totalReport = 0;
+
+              dataExtra.forEach((report: DailyReport) => {
+                activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+                observations = observations + ', ' + report.observation;
+                speed.add(report.distance, report.steamingTime);
+                totalReport = totalReport + 1;
+              });
+
+
               result = [
                 'T. Ports : ' + chartPoint.totalPort,
                 'T. Reports : ' + chartPoint.totalReport,
@@ -2951,8 +2968,8 @@ export class DashboardComponent implements OnInit {
                 'T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2),
                 'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
                 'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
-                'Activities : ' + 'FALTA LAS ACTIDIDADES', // revisar // agregar las actividades
-                'Observations : ' + 'FALTA LAS OBSERVACIONES:' // revisar agregar las observaciones
+                'Activities : ' + activities, // revisar // agregar las actividades
+                'Observations : ' + observations// revisar agregar las observaciones
               ];
             }
 
@@ -3138,6 +3155,23 @@ export class DashboardComponent implements OnInit {
               ];
             } else if (this.selectSummaryBy === 'DAYS') {
 
+
+              // Revisar esto lo podriamos desaparecer si se lo agregamos al
+              // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
+              let dataExtra = chartPoint.dataExtra;
+
+              let speed = new Speed();
+              let activities = '';
+              let observations = '';
+              let totalReport = 0;
+
+              dataExtra.forEach((report: DailyReport) => {
+                activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+                observations = observations + ', ' + report.observation;
+                speed.add(report.distance, report.steamingTime);
+                totalReport = totalReport + 1;
+              });
+
               result = [
                 'T. Ports : ' + chartPoint.totalPort,
                 'T. Reports : ' + chartPoint.totalReport,
@@ -3145,8 +3179,8 @@ export class DashboardComponent implements OnInit {
                 'T. Consumption : ' + mathRound(chartPoint.totalConsumptionMGO, 2),
                 'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
                 'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
-                'Activities : ' + 'FALTA LAS ACTIDIDADES', // revisar // agregar las actividades
-                'Observations : ' + 'FALTA LAS OBSERVACIONES:' // revisar agregar las observaciones
+                'Activities : ' + activities, // revisar // agregar las actividades
+                'Observations : ' + observations // revisar agregar las observaciones
               ];
             }
 
@@ -3258,27 +3292,27 @@ export class DashboardComponent implements OnInit {
           return result;
         },
         footer: (tooltipItem, data) => {
-         // Obtenemos la posicion del item.
+          // Obtenemos la posicion del item.
           let index = tooltipItem[0].index;
 
-            // Resultado que se mostrara en el titulo.
+          // Resultado que se mostrara en el titulo.
           let result = [];
-          
-            // DataSets.
-            let dataSets: Chart.ChartDataSets = data.datasets[0];
-            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
-            let ubication = chartPoint.ubication;
+
+          // DataSets.
+          let dataSets: Chart.ChartDataSets = data.datasets[0];
+          let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+          let ubication = chartPoint.ubication;
 
           if (this.selectSummaryBy === 'VOYAGES') {
-      
+
             let voyage = this.generateVoyages[ubication[0]];
 
-            result = [       
-                'T. Ports : ' + voyage.totalPort,
-                'T. Reports : ' + voyage.totalReport,
-                'T. Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
-                'T. Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
-              ];
+            result = [
+              'T. Ports : ' + voyage.totalPort,
+              'T. Reports : ' + voyage.totalReport,
+              'T. Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+              'T. Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
+            ];
           } else if (this.selectSummaryBy === 'PORTS') {
             let voyage = this.generateVoyages[ubication[0]];
             let port = voyage.ports[ubication[1]];
@@ -3298,10 +3332,12 @@ export class DashboardComponent implements OnInit {
               'T. Reports : ' + chartPoint.totalReport,
               'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
               'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
-             ];
+            ];
           }
           else if (this.selectSummaryBy === 'DAYS') {
 
+            // Revisar esto lo podriamos desaparecer si se lo agregamos al
+            // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
             let dataExtra = chartPoint.dataExtra;
 
             let speed = new Speed();
