@@ -97,6 +97,8 @@ export class DashboardComponent implements OnInit {
   // Filtro por fecha inicio y fin
   public startDate: Date;
   public endDate: Date;
+  // Esta variable nos ayudara a saber si es un filtro po fecha.
+  public isSetDateFilter: Boolean = false;
 
   // El viaje generado suma total.
   public generateVoyages: Voyage[] = [];
@@ -606,122 +608,148 @@ export class DashboardComponent implements OnInit {
   public SelectComboVoyage(index?: number) {
     console.log('SelectComboVoyage()');
 
-    Promise.resolve(true).then(
-      result => {
+    // Abrimos el loading.
+    this.loadingService.Open();
 
-        // Abrimos el loading.
-        this.loadingService.Open();
 
-        // Creamos nueva variable que nos permitira hacer el filtro por viaje sin dañar a nuestra variable temporal.
-        let newVoyages = [];
+    setTimeout(
+      () => {
 
-        if (index == null) {
-          // Si no selecciono ningun viaje le mandamos todo el getVoyage.
-          newVoyages = this.getVoyages;
 
-          this.selectSummaryBy = 'VOYAGES';
-        } else {
-          // Si selecciono un viaje.
-          // El resumen se vera por dia.
-          this.selectSummaryBy = 'DAYS';
-          // solo agregamos el viaje que se selecciono.
-          newVoyages.push(this.getVoyages[index]);
-        }
 
-        // Le mandamos nuetra variable para que genere la data por filtros de actividades.
-        return this.GenerateDataByFilter(newVoyages);
+        Promise.resolve(true).then(
+          result => {
+
+            // Creamos nueva variable que nos permitira hacer el filtro por viaje sin dañar a nuestra variable temporal.
+            let newVoyages = [];
+
+            if (index == null) {
+              // Si no selecciono ningun viaje le mandamos todo el getVoyage.
+              newVoyages = this.getVoyages;
+
+              this.selectSummaryBy = 'VOYAGES';
+            } else {
+              // Si selecciono un viaje.
+              // El resumen se vera por dia.
+              this.selectSummaryBy = 'DAYS';
+              // solo agregamos el viaje que se selecciono.
+              newVoyages.push(this.getVoyages[index]);
+            }
+
+            // Le mandamos nuetra variable para que genere la data por filtros de actividades.
+            return this.GenerateDataByFilter(newVoyages);
+          }
+        ).then(
+          result => {
+            // Revisamos que se halla generado correctamente el filtro.
+            if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
+
+            // Generamos el dashboard por tipo de resumen.
+            return this.GenerateDashboardBySumary(true);
+          }
+        ).then(
+          resultGenerateDashboard => {
+            // Validamos el resultado del generate Dashboard.
+            if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
+
+            // Loading cerrar.
+            this.loadingService.Close();
+          }
+        ).catch(
+          err => {
+
+            // Manejo el error
+            let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+            console.error(msg);
+            console.dir(err);
+
+            this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+            // Deshabilito el spinner de loading
+            this.loadingService.Close();
+          });
+
+
       }
-    ).then(
-      result => {
-        // Revisamos que se halla generado correctamente el filtro.
-        if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
+    )
+  }
 
-        // Generamos el dashboard por tipo de resumen.
-        return this.GenerateDashboardBySumary(true);
-      }
-    ).then(
-      resultGenerateDashboard => {
-        // Validamos el resultado del generate Dashboard.
-        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
+  public ClickFilterWithDate() {
 
-        // Loading cerrar.
-        this.loadingService.Close();
-      }
-    ).catch(
-      err => {
+    console.log('ClickFilterWithDate()');
 
-        // Manejo el error
-        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+    this.isSetDateFilter = true;
 
-        console.error(msg);
-        console.dir(err);
-
-        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-        // Deshabilito el spinner de loading
-        this.loadingService.Close();
-      });
+    this.GenerateReporteByDate();
   }
 
   //GenerateReporteByDate():  Generar reportes por filtro de fecha.
-  public GenerateReporteByDate(): boolean {
+  private GenerateReporteByDate(): boolean {
     console.log('GenerateReporteByDate()');
 
     this.loadingService.Open();
 
-    // Iniciamos las promesas.
-    Promise.resolve(true).then(
-      result => {
-        // revisar que la fecha sean correctas.
-        this.selectVoyageId = null;
-
-        // Validamos las fechas.
-        // Si no es valida enviamos error.
-        if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
-        if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
-        // Verificamos que la fecha inicio sea antes que la fecha fin.
-        if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
-
-        return true;
-      }
-    ).then(
-      result => {
-
-        // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
-        // Podria ser un return.
-
-        // Le mandamos nuetra variable para que genere la data por filtros de actividades.
-        return this.GenerateDataByFilter(this.getVoyages, true);
-      }
-    ).then(
-      result => {
-        if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
+    setTimeout(() => {
 
 
-        // Generamos el dashboard por tipo de resumen.
-        return this.GenerateDashboardBySumary(true);
-      }
-    ).then(
-      resultGenerateDashboard => {
-        // Validamos el resultado del generate Dashboard.
-        if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        // Loading cerrar.
-        this.loadingService.Close();
-      }
-    ).catch(
-      err => {
+      // Iniciamos las promesas.
+      Promise.resolve(true).then(
+        result => {
+          // revisar que la fecha sean correctas.
+          this.selectVoyageId = null;
 
-        // Manejo el error
-        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+          // Validamos las fechas.
+          // Si no es valida enviamos error.
+          if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
+          if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
+          // Verificamos que la fecha inicio sea antes que la fecha fin.
+          if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
 
-        console.error(msg);
-        console.dir(err);
+          return true;
+        }
+      ).then(
+        result => {
 
-        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-        // Deshabilito el spinner de loading
-        this.loadingService.Close();
-      }
-    );
+          // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
+          // Podria ser un return.
+
+          // Le mandamos nuetra variable para que genere la data por filtros de actividades.
+          return this.GenerateDataByFilter(this.getVoyages, true);
+        }
+      ).then(
+        result => {
+          if (!result) throw 'ERROR_GENERATE_DATA_BY_FILTER()'
+
+
+          // Generamos el dashboard por tipo de resumen.
+          return this.GenerateDashboardBySumary(true);
+        }
+      ).then(
+        resultGenerateDashboard => {
+          // Validamos el resultado del generate Dashboard.
+          if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
+
+          // Loading cerrar.
+          this.loadingService.Close();
+        }
+      ).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        }
+      );
+
+
+    }, 100)
 
     console.log('FIN GenerateReporteByDate2');
 
@@ -1786,7 +1814,7 @@ export class DashboardComponent implements OnInit {
   // Genera los datos del Dashboard por Summary
   private async GenerateDashboardBySumary(setDate: boolean): Promise<boolean> {
     console.log('GenerateDashboardBySumary()');
-
+    
     // retornamoremos el resultado de la promesa.
     return await Promise.resolve(true).then(
       result => {
