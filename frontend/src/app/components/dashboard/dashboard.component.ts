@@ -390,6 +390,9 @@ export class DashboardComponent implements OnInit {
         // Habilitamos el loading service.
         this.loadingService.Open();
 
+        // Avisamos que el filtro por fecha ya no se aplica.
+        this.isSetDateFilter = false;
+
         // Deseleccionamos el filtro por viajes.
         this.selectVoyageId = null;
 
@@ -461,6 +464,10 @@ export class DashboardComponent implements OnInit {
       result => {
         // Activamos el loading.
         this.loadingService.Open();
+
+        // Avisamos que el filtro por fecha ya no se aplica.
+        // Desactivamos el filtro por fecha.
+        this.isSetDateFilter = false;
 
         // Invocamos nuestra funcion SelectUser.
         return this.SelectUser(this.selectUserId);
@@ -611,7 +618,9 @@ export class DashboardComponent implements OnInit {
     // Abrimos el loading.
     this.loadingService.Open();
 
-
+    // Avisamos que el filtro por fecha ya no se aplica.
+    // Desactivamos el filtro por fecha
+    this.isSetDateFilter = false;
     setTimeout(
       () => {
 
@@ -619,7 +628,7 @@ export class DashboardComponent implements OnInit {
           result => {
 
             // Parseamos el getJSON:
-            let parseVoyages : Voyage[] =  JSON.parse(JSON.stringify(this.getVoyages));
+            let parseVoyages: Voyage[] = JSON.parse(JSON.stringify(this.getVoyages));
 
             // Creamos nueva variable que nos permitira hacer el filtro por viaje sin dañar a nuestra variable temporal.
             let newVoyages = [];
@@ -630,9 +639,9 @@ export class DashboardComponent implements OnInit {
 
               this.selectSummaryBy = 'VOYAGES';
             } else {
-              
+
               // seleccionamos el viaje.
-              let selectVoyage : Voyage = parseVoyages[index];
+              let selectVoyage: Voyage = parseVoyages[index];
 
               // Si selecciono un viaje.
               // El resumen se vera por dia.||
@@ -882,12 +891,17 @@ export class DashboardComponent implements OnInit {
 
   //  ClearFilter(): 
   public ClearFilter() {
+    console.log('ClearFilter()');
+
 
     // Iniciamos la promesa
     Promise.resolve(true).then(
       result => {
         // Activamos el loading.
         this.loadingService.Open();
+
+        // Avisamos que el filtro por fecha ya no se aplica.
+        this.isSetDateFilter = false;
 
         // RESET Las variables de filtro.
         this.startDate = null;
@@ -1820,7 +1834,7 @@ export class DashboardComponent implements OnInit {
   // Genera los datos del Dashboard por Summary
   private async GenerateDashboardBySumary(setDate: boolean): Promise<boolean> {
     console.log('GenerateDashboardBySumary()');
-    
+
     // retornamoremos el resultado de la promesa.
     return await Promise.resolve(true).then(
       result => {
@@ -2031,7 +2045,7 @@ export class DashboardComponent implements OnInit {
 
                     // Si el resumen del filtro es por mes.
                     if (this.selectSummaryBy === 'MONTHS') {
-                                            
+
                       // deseamos setear la fecha de inicio y fin?
                       if (setDate) {
                         // Comparamos si la data actual es la de inicio o fin.
@@ -2186,7 +2200,7 @@ export class DashboardComponent implements OnInit {
                         startDate = ComparePreviousDates(startDate, report.date)
                         endDate = CompareAfterDates(endDate, report.date)
                       }
-                      
+
 
                       // Buscamos si el dia ya se encuantra registrado.
                       let resultSearch = this.xLabelReport.find(
