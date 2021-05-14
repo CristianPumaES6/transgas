@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit {
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dashboard';
 
-  // rol del usuario logeado.
+  // Rol del usuario logeado.
   public roleUser: string = '';
 
 
@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
 
 
   // Variable del ng-model del combo SummaryBy
-  // nos ayuda a saber que tipo de resumen queremos mostrar.
+  // Nos ayuda a saber que tipo de resumen queremos mostrar.
   public selectSummaryBy: string = 'VOYAGES';
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
 
@@ -615,25 +615,30 @@ export class DashboardComponent implements OnInit {
     setTimeout(
       () => {
 
-
-
         Promise.resolve(true).then(
           result => {
+
+            // Parseamos el getJSON:
+            let parseVoyages : Voyage[] =  JSON.parse(JSON.stringify(this.getVoyages));
 
             // Creamos nueva variable que nos permitira hacer el filtro por viaje sin dañar a nuestra variable temporal.
             let newVoyages = [];
 
             if (index == null) {
               // Si no selecciono ningun viaje le mandamos todo el getVoyage.
-              newVoyages = this.getVoyages;
+              newVoyages = parseVoyages;
 
               this.selectSummaryBy = 'VOYAGES';
             } else {
+              
+              // seleccionamos el viaje.
+              let selectVoyage : Voyage = parseVoyages[index];
+
               // Si selecciono un viaje.
-              // El resumen se vera por dia.
+              // El resumen se vera por dia.||
               this.selectSummaryBy = 'DAYS';
               // solo agregamos el viaje que se selecciono.
-              newVoyages.push(this.getVoyages[index]);
+              newVoyages.push(selectVoyage);
             }
 
             // Le mandamos nuetra variable para que genere la data por filtros de actividades.
@@ -674,6 +679,7 @@ export class DashboardComponent implements OnInit {
     )
   }
 
+  // ClickFilterWithDate(): esta funcion se invoca al dar enter en los filtros por fecha.
   public ClickFilterWithDate() {
 
     console.log('ClickFilterWithDate()');
@@ -2166,6 +2172,14 @@ export class DashboardComponent implements OnInit {
                     // Si el resumen del filtro es por dias.
                     else if (this.selectSummaryBy === 'DAYS') {
 
+                      // deseamos setear la fecha de inicio y fin?
+                      if (setDate) {
+                        // Comparamos si la data actual es la de inicio o fin.
+                        startDate = ComparePreviousDates(startDate, report.date)
+                        endDate = CompareAfterDates(endDate, report.date)
+                      }
+                      
+
                       // Buscamos si el dia ya se encuantra registrado.
                       let resultSearch = this.xLabelReport.find(
                         (xDay, iL) => {
@@ -2319,6 +2333,7 @@ export class DashboardComponent implements OnInit {
                         }
 
                       }
+
 
                     }
 
