@@ -2031,6 +2031,14 @@ export class DashboardComponent implements OnInit {
 
                     // Si el resumen del filtro es por mes.
                     if (this.selectSummaryBy === 'MONTHS') {
+                                            
+                      // deseamos setear la fecha de inicio y fin?
+                      if (setDate) {
+                        // Comparamos si la data actual es la de inicio o fin.
+                        startDate = ComparePreviousDates(startDate, report.date)
+                        endDate = CompareAfterDates(endDate, report.date)
+                      }
+
 
                       // Buscamos si el mes ya se encuantra registrado.
                       let resultSearch = this.xLabelReport.find(
