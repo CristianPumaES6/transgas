@@ -693,8 +693,7 @@ export class DashboardComponent implements OnInit {
 
     console.log('ClickFilterWithDate()');
 
-    this.isSetDateFilter = true;
-
+    // Invocamos la funcion para generar reporte por fecha.
     this.GenerateReporteByDate();
   }
 
@@ -707,6 +706,8 @@ export class DashboardComponent implements OnInit {
     setTimeout(() => {
 
 
+      // avisamos, se esta seteando una fecha.
+      this.isSetDateFilter = true;
 
       // Iniciamos las promesas.
       Promise.resolve(true).then(
@@ -2457,6 +2458,7 @@ export class DashboardComponent implements OnInit {
 
               // Generamos la data segun el filtro.
               this.GenerateDataByFilter(newVoyage);
+
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
@@ -2467,12 +2469,14 @@ export class DashboardComponent implements OnInit {
 
               // retorna el primero y ultimo dia del mes de la fecha enviada.
               let result = FisrtOldDayFromDate(ubication);
+
               // Seteamos el inicio y fin de la fecha.
               this.startDate = new Date(result.start);
               this.endDate = new Date(result.end);
 
               // Tipo de resumen por dia.
               this.selectSummaryBy = 'DAYS';
+
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
