@@ -63,3 +63,17 @@ export class ConsumptionMachineIFO {
     }
 }
 
+
+// esta clase se usa para el filtro de dashboard, para las cajas de texto fecha inicio y fin.
+export class FilterWithDate {
+
+    constructor(
+        public isFilterWithDate?: boolean,
+        public startDate?: Date,
+        public endDate?: Date
+    ) {
+        this.isFilterWithDate = isFilterWithDate || false;
+        this.startDate = startDate || null;
+        this.endDate = endDate || null;
+    }
+}

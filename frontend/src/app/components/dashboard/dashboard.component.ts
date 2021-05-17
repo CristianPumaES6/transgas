@@ -17,7 +17,7 @@ import { Voyage, VoyageFilterByYears } from '../../models/voyage';
 import { Port } from '../../models/port';
 import { DailyReport, Speed } from '../../models/daily-report';
 // Modelo genericos, modelos que se usan.
-import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO } from '../../models/dashboard';
+import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO, FilterWithDate } from '../../models/dashboard';
 
 
 // Service 
@@ -25,10 +25,12 @@ import { UserService } from '../../services/user.service';
 import { VoyageService } from '../../services/voyage.service';
 import { PortService } from '../../services/port.service';
 import { DailyReportService } from '../../services/daily-report.service';
+
 // Servicios Import 
 import { ASideService } from '../../services/a-side.service';
 import { LanguageService } from '../../services/language.service';
 import { LoadingService } from '../../services/loading.service';
+
 // Servicio para exportar la estructura de excel.
 import { ExcelService } from '../../services/excel.service';
 
@@ -98,7 +100,7 @@ export class DashboardComponent implements OnInit {
   public startDate: Date;
   public endDate: Date;
   // Esta variable nos ayudara a saber si es un filtro po fecha.
-  public isSetDateFilter: Boolean = false;
+  public isSetDateFilter: FilterWithDate = new FilterWithDate();
 
   // El viaje generado suma total.
   public generateVoyages: Voyage[] = [];
@@ -391,7 +393,8 @@ export class DashboardComponent implements OnInit {
         this.loadingService.Open();
 
         // Avisamos que el filtro por fecha ya no se aplica.
-        this.isSetDateFilter = false;
+        // Si seleccionamos el combo de fecha el filtro de fecha se cancela.
+        this.isSetDateFilter = new FilterWithDate();
 
         // Deseleccionamos el filtro por viajes.
         this.selectVoyageId = null;
@@ -467,7 +470,8 @@ export class DashboardComponent implements OnInit {
 
         // Avisamos que el filtro por fecha ya no se aplica.
         // Desactivamos el filtro por fecha.
-        this.isSetDateFilter = false;
+        // Si se selecciona un buque el filtro por fecha se resetea
+        this.isSetDateFilter = new FilterWithDate();
 
         // Invocamos nuestra funcion SelectUser.
         return this.SelectUser(this.selectUserId);
@@ -620,7 +624,8 @@ export class DashboardComponent implements OnInit {
 
     // Avisamos que el filtro por fecha ya no se aplica.
     // Desactivamos el filtro por fecha
-    this.isSetDateFilter = false;
+    // Si seleccionamos un viaje EL FILTRO POR FECHA SE DESACTIVA.
+    this.isSetDateFilter = new FilterWithDate();
     setTimeout(
       () => {
 
@@ -701,13 +706,14 @@ export class DashboardComponent implements OnInit {
   private GenerateReporteByDate(): boolean {
     console.log('GenerateReporteByDate()');
 
+    // habilitamos el open loading.
     this.loadingService.Open();
 
     setTimeout(() => {
 
 
       // avisamos, se esta seteando una fecha.
-      this.isSetDateFilter = true;
+      this.isSetDateFilter = new FilterWithDate(true,this.startDate,this.endDate);
 
       // Iniciamos las promesas.
       Promise.resolve(true).then(
@@ -902,7 +908,7 @@ export class DashboardComponent implements OnInit {
         this.loadingService.Open();
 
         // Avisamos que el filtro por fecha ya no se aplica.
-        this.isSetDateFilter = false;
+        this.isSetDateFilter = new FilterWithDate();
 
         // RESET Las variables de filtro.
         this.startDate = null;
@@ -1192,6 +1198,12 @@ export class DashboardComponent implements OnInit {
     let generalStartDate: String;
     let generalEndDate: String;
 
+    // Verificamos si tenemos el filtro por fecha si es asi le asignamos la fecha de inicio y fin.
+    if(this.isSetDateFilter.isFilterWithDate){
+      this.startDate = this.isSetDateFilter.startDate;
+      this.endDate = this.isSetDateFilter.endDate;
+    }
+
     // Retornaremos lo que nos revuelva la promesa.
     // Aárte le agregamos un await para que espere, la respuesta.
     return await Promise.resolve(true)
@@ -1315,10 +1327,11 @@ export class DashboardComponent implements OnInit {
 
                           // Verificamos si es un filtro con fecha.
                           // Verificamos que la fecha de inicio y fin sean los correctos.
-                          // ademas de ver si la fecha de inicio esta antes de la fecha fin.
-                          if (isFilterWithDate && this.startDate && this.endDate && (!IsAfter1Date(report.date, this.startDate) || !IsPrevious1Date(report.date, this.endDate))) {
-                            return false;
-                          }
+                          // Ademas de ver si la fecha de inicio esta antes de la fecha fin.
+                          if (this.isSetDateFilter && this.isSetDateFilter.isFilterWithDate && this.startDate && this.endDate && (!IsAfter1Date(report.date, this.startDate) || !IsPrevious1Date(report.date, this.endDate))) {
+                              return false;
+                            }
+
 
                           // Total de consumo por reporte IFO y MGO.
                           let totalConsumptionByReportIFO = this.SumaIfo(report);
@@ -2693,6 +2706,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  // GenetareLineSPEED(): Generar linea en los canvas.
   private GenetareLineSPEED(): boolean {
     // Test
     console.log('GenetareLineSPEED()');
@@ -3449,6 +3463,7 @@ export class DashboardComponent implements OnInit {
 
     return false;
   }
+
   // FIN DE VER DESPUES
 
 
