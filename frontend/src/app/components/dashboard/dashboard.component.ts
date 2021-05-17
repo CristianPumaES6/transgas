@@ -713,7 +713,7 @@ export class DashboardComponent implements OnInit {
 
 
       // avisamos, se esta seteando una fecha.
-      this.isSetDateFilter = new FilterWithDate(true,this.startDate,this.endDate);
+      this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
       // Iniciamos las promesas.
       Promise.resolve(true).then(
@@ -1199,7 +1199,7 @@ export class DashboardComponent implements OnInit {
     let generalEndDate: String;
 
     // Verificamos si tenemos el filtro por fecha si es asi le asignamos la fecha de inicio y fin.
-    if(this.isSetDateFilter.isFilterWithDate){
+    if (this.isSetDateFilter.isFilterWithDate) {
       this.startDate = this.isSetDateFilter.startDate;
       this.endDate = this.isSetDateFilter.endDate;
     }
@@ -1329,8 +1329,8 @@ export class DashboardComponent implements OnInit {
                           // Verificamos que la fecha de inicio y fin sean los correctos.
                           // Ademas de ver si la fecha de inicio esta antes de la fecha fin.
                           if (this.isSetDateFilter && this.isSetDateFilter.isFilterWithDate && this.startDate && this.endDate && (!IsAfter1Date(report.date, this.startDate) || !IsPrevious1Date(report.date, this.endDate))) {
-                              return false;
-                            }
+                            return false;
+                          }
 
 
                           // Total de consumo por reporte IFO y MGO.
