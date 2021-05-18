@@ -2925,162 +2925,7 @@ export class DashboardComponent implements OnInit {
       }
 
       // Configuracion Tooltips
-      this.configLineaIFO.options.tooltips = { // Revisar la configuracion del Tooltip, podriamos hacerlo mas pequeño.
-
-        // Establece qué elementos aparecen en la información sobre herramientas.
-        mode: 'nearest',
-        // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
-        intersect: false,
-        callbacks: {
-          title: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
-
-            // Obtenemos la posicion del item.
-            let index = tooltipItem[0].index;
-
-            // Resultado que se mostrara en el titulo.
-            let result = '';
-
-            // DataSets.
-            let dataSets: Chart.ChartDataSets = data.datasets[0];
-            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
-            let ubication = chartPoint.ubication;
-
-            // Verificamos como esta el filtro actualmente.
-            // Si es por Viajes, Puertos, Meses o dias.
-            if (this.selectSummaryBy === 'VOYAGES') {
-              // Viajes.
-              let viaje = this.generateVoyages[ubication[0]];
-              result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
-
-            } else if (this.selectSummaryBy === 'PORTS') {
-
-              // Obtenemos el viaje.
-              let viaje = this.generateVoyages[ubication[0]];
-              // Obtenemos el puerto.
-              let port = viaje.ports[ubication[1]];
-              // Result
-              result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
-
-            } else if (this.selectSummaryBy === 'MONTHS') {
-
-              // Obtenemos el viaje.
-              let viaje = this.generateVoyages[ubication[0]];
-              // Obtenemos el puerto.
-              let port = viaje.ports[ubication[1]];
-
-              // No existe la ubicacion en month y day
-              let dailyReport = port.dailyReports[ubication[2]];
-
-              // dos veces estamos aplicando el formato.
-              result = TextMonthYearFormatYYYYMMDD(dailyReport.date);
-            } else if (this.selectSummaryBy === 'DAYS') {
-
-              // Obtenemos el viaje.
-              let viaje = this.generateVoyages[ubication[0]];
-              // Obtenemos el puerto.
-              let port = viaje.ports[ubication[1]];
-
-              // No existe la ubicacion en month y day
-              let dailyReport = port.dailyReports[ubication[2]];
-
-              // dos veces estamos aplicando el formato.
-              result = TextMonthDayYearFormatYYYYMMDD(dailyReport.date);
-            }
-
-            return result;
-
-          },
-          label: (tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData) => {
-            // Resultado que se mostrara en el titulo.
-            let result = 'Dayli consumption ' + mathRound(Number(tooltipItem.value), 2);
-            return result;
-          },
-          footer: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
-            // Obtenemos la posicion del item.
-            let index = tooltipItem[0].index;
-
-            // Resultado que se mostrara en el titulo.
-            let result = [];
-
-            // DataSets.
-            let dataSets: Chart.ChartDataSets = data.datasets[0];
-            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
-            let ubication = chartPoint.ubication;
-
-            // Voyage.
-            if (this.selectSummaryBy === 'VOYAGES') {
-
-              let voyage = this.generateVoyages[ubication[0]];
-
-              result = [
-                'T. Ports : ' + voyage.totalPort,
-                'T. Reports : ' + voyage.totalReport,
-                'T. Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
-                'T. Consumption : ' + mathRound(voyage.totalIFO, 2),
-                'T. Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
-                'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
-              ];
-            } else if (this.selectSummaryBy === 'PORTS') {
-
-              let voyage = this.generateVoyages[ubication[0]];
-              let port = voyage.ports[ubication[1]];
-
-              result = [
-                'Departure : ' + port.departurePort,
-                'Arrival : ' + port.arrivalPort,
-                'T. Reports : ' + voyage.totalReport,
-                'T. Distance : ' + mathRound(port.speed.distance, 2),
-                'T. Consumption : ' + mathRound(port.robIfo, 2),
-                'T. Time : ' + mathRound(port.speed.steamingTime, 2),
-                'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
-              ];
-            } else if (this.selectSummaryBy === 'MONTHS') {
-
-              result = [
-                'T. Ports : ' + chartPoint.totalPort,
-                'T. Reports : ' + chartPoint.totalReport,
-                'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
-                'T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2),
-                'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
-                'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
-              ];
-            } else if (this.selectSummaryBy === 'DAYS') {
-
-              // Revisar esto lo podriamos desaparecer si se lo agregamos al
-              // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
-              let dataExtra = chartPoint.dataExtra;
-
-              let speed = new Speed();
-              let activities = '';
-              let observations = '';
-              let totalReport = 0;
-
-              dataExtra.forEach((report: DailyReport) => {
-                activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
-                observations = observations + ', ' + report.observation;
-                speed.add(report.distance, report.steamingTime);
-                totalReport = totalReport + 1;
-              });
-
-
-              result = [
-                'T. Ports : ' + chartPoint.totalPort,
-                'T. Reports : ' + chartPoint.totalReport,
-                'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
-                'T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2),
-                'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
-                'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
-                'Activities : ' + activities, // revisar // agregar las actividades
-                'Observations : ' + observations// revisar agregar las observaciones
-              ];
-            }
-
-
-            return result;
-
-          },
-        }
-      } // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
+      this.configLineaIFO.options.tooltips = this.GetToolTipConfig(); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
 
     }
 
@@ -3309,6 +3154,170 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  private GetToolTipConfig(): Chart.ChartTooltipOptions {
+    
+    let tooltips : Chart.ChartTooltipOptions;
+    
+    
+   return  tooltips = { // Revisar la configuracion del Tooltip, podriamos hacerlo mas pequeño.
+
+      // Establece qué elementos aparecen en la información sobre herramientas.
+      mode: 'nearest',
+      // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
+      intersect: false,
+      callbacks: {
+        title: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
+
+          // Obtenemos la posicion del item.
+          let index = tooltipItem[0].index;
+
+          // Resultado que se mostrara en el titulo.
+          let result = '';
+
+          // DataSets.
+          let dataSets: Chart.ChartDataSets = data.datasets[0];
+          let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+          let ubication = chartPoint.ubication;
+
+          // Verificamos como esta el filtro actualmente.
+          // Si es por Viajes, Puertos, Meses o dias.
+          if (this.selectSummaryBy === 'VOYAGES') {
+            // Viajes.
+            let viaje = this.generateVoyages[ubication[0]];
+            result = 'V' + viaje.voyageNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.selectSummaryBy === 'PORTS') {
+
+            // Obtenemos el viaje.
+            let viaje = this.generateVoyages[ubication[0]];
+            // Obtenemos el puerto.
+            let port = viaje.ports[ubication[1]];
+            // Result
+            result = 'V' + viaje.voyageNumber + ' P' + port.portNumber + ' Y' + ('' + viaje.year).slice(-2);
+
+          } else if (this.selectSummaryBy === 'MONTHS') {
+
+            // Obtenemos el viaje.
+            let viaje = this.generateVoyages[ubication[0]];
+            // Obtenemos el puerto.
+            let port = viaje.ports[ubication[1]];
+
+            // No existe la ubicacion en month y day
+            let dailyReport = port.dailyReports[ubication[2]];
+
+            // dos veces estamos aplicando el formato.
+            result = TextMonthYearFormatYYYYMMDD(dailyReport.date);
+          } else if (this.selectSummaryBy === 'DAYS') {
+
+            // Obtenemos el viaje.
+            let viaje = this.generateVoyages[ubication[0]];
+            // Obtenemos el puerto.
+            let port = viaje.ports[ubication[1]];
+
+            // No existe la ubicacion en month y day
+            let dailyReport = port.dailyReports[ubication[2]];
+
+            // dos veces estamos aplicando el formato.
+            result = TextMonthDayYearFormatYYYYMMDD(dailyReport.date);
+          }
+
+          return result;
+
+        },
+        label: (tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData) => {
+          // Resultado que se mostrara en el titulo.
+          let result = 'Dayli consumption ' + mathRound(Number(tooltipItem.value), 2);
+          return result;
+        },
+        footer: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
+          // Obtenemos la posicion del item.
+          let index = tooltipItem[0].index;
+
+          // Resultado que se mostrara en el titulo.
+          let result = [];
+
+          // DataSets.
+          let dataSets: Chart.ChartDataSets = data.datasets[0];
+          let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+          let ubication = chartPoint.ubication;
+
+          // Voyage.
+          if (this.selectSummaryBy === 'VOYAGES') {
+
+            let voyage = this.generateVoyages[ubication[0]];
+
+            result = [
+              'T. Ports : ' + voyage.totalPort,
+              'T. Reports : ' + voyage.totalReport,
+              'T. Distance : ' + mathRound(voyage.totalSpeed.distance, 2),
+              'T. Consumption : ' + mathRound(voyage.totalIFO, 2),
+              'T. Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2),
+              'Speed : ' + mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2),
+            ];
+          } else if (this.selectSummaryBy === 'PORTS') {
+
+            let voyage = this.generateVoyages[ubication[0]];
+            let port = voyage.ports[ubication[1]];
+
+            result = [
+              'Departure : ' + port.departurePort,
+              'Arrival : ' + port.arrivalPort,
+              'T. Reports : ' + voyage.totalReport,
+              'T. Distance : ' + mathRound(port.speed.distance, 2),
+              'T. Consumption : ' + mathRound(port.robIfo, 2),
+              'T. Time : ' + mathRound(port.speed.steamingTime, 2),
+              'Speed : ' + mathRound(port.speed.distance / port.speed.steamingTime, 2),
+            ];
+          } else if (this.selectSummaryBy === 'MONTHS') {
+
+            result = [
+              'T. Ports : ' + chartPoint.totalPort,
+              'T. Reports : ' + chartPoint.totalReport,
+              'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
+              'T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2),
+              'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
+              'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
+            ];
+          } else if (this.selectSummaryBy === 'DAYS') {
+
+            // Revisar esto lo podriamos desaparecer si se lo agregamos al
+            // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
+            let dataExtra = chartPoint.dataExtra;
+
+            let speed = new Speed();
+            let activities = '';
+            let observations = '';
+            let totalReport = 0;
+
+            dataExtra.forEach((report: DailyReport) => {
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              observations = observations + ', ' + report.observation;
+              speed.add(report.distance, report.steamingTime);
+              totalReport = totalReport + 1;
+            });
+
+
+            result = [
+              'T. Ports : ' + chartPoint.totalPort,
+              'T. Reports : ' + chartPoint.totalReport,
+              'T. Distance : ' + mathRound(chartPoint.speed.distance, 2),
+              'T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2),
+              'T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2),
+              'Speed : ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2),
+              'Activities : ' + activities, // revisar // agregar las actividades
+              'Observations : ' + observations// revisar agregar las observaciones
+            ];
+          }
+
+
+          return result;
+
+        },
+      }
+    }
+
+  }
+  
   private UpdateLineSPEED(): boolean {
     console.log('UpdateLineSPEED()');
 
