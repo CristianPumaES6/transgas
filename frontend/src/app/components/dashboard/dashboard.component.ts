@@ -1947,10 +1947,12 @@ export class DashboardComponent implements OnInit {
             this.dataIFO.push(
               { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV] }
             );
+
             // Verificamos si la linea maxima es menor para actualizarlo.
             if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
               this.configLineaIFO.lineaMax = consumptionDailyIFO;
             }
+
           }
 
           // El total de consumo debe de ser mayor para poder pintarlo.
@@ -1968,6 +1970,7 @@ export class DashboardComponent implements OnInit {
             if (consumptionDailyMGO > this.configLineaMGO.lineaMax) {
               this.configLineaMGO.lineaMax = consumptionDailyMGO;
             }
+
           }
 
           // El total de velocidad debe de ser mayor para poder pintarlo.
@@ -1977,17 +1980,18 @@ export class DashboardComponent implements OnInit {
             this.dataSPEED.push(
               { x: txtLabelChart, y: speed, ubication: [iV] }
             );
-          }
+          };
+
           if (speed > this.configLineaSPEED.lineaMax) {
             this.configLineaSPEED.lineaMax = speed;
-          }
+          };
 
           // deseamos setear la fecha de inicio y fin?
           if (setDate) {
             // Comparamos si la data actual es la de inicio o fin.
             startDate = ComparePreviousDates(startDate, voyage.dayStart)
             endDate = CompareAfterDates(endDate, voyage.dayEnd)
-          }
+          };
         }
         // Verificamos si el sumary es por Puerto Mes o dias
         else if (this.selectSummaryBy === 'PORTS' || this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
@@ -2885,7 +2889,6 @@ export class DashboardComponent implements OnInit {
   private UpdateLineIFO(): boolean {
     console.log('UpdateLineIFO');
 
-
     // Actualizamos los labels
     this.configLineaIFO.data.labels = this.xLabelReport;
 
@@ -3089,6 +3092,7 @@ export class DashboardComponent implements OnInit {
     this.configLineaIFO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaIFO.lineaMax, 0) + 2);
     //
     this.chartLineIFO.update();
+
     //
     return false;
 
