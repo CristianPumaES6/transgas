@@ -684,9 +684,11 @@ export class DashboardComponent implements OnInit {
             console.dir(err);
 
             this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
             // Deshabilito el spinner de loading
             this.loadingService.Close();
-          });
+          }
+        );
 
 
       }
@@ -698,11 +700,41 @@ export class DashboardComponent implements OnInit {
 
     console.log('ClickFilterWithDate()');
 
-    // Invocamos la funcion para generar reporte por fecha.
-    this.GenerateReporteByDate();
+
+    // Iniciamos las promesas.
+    Promise.resolve(true).then(
+      () => {
+
+        // Si no es valida enviamos error.
+        if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
+        if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
+        // Verificamos que la fecha inicio sea antes que la fecha fin.
+        if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
+
+        // avisamos, se esta seteando una fecha.
+        this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
+
+        // Invocamos la funcion para generar reporte por fecha.
+        this.GenerateReporteByDate();
+      }
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
+
   }
 
-  //GenerateReporteByDate():  Generar reportes por filtro de fecha.
+  // GenerateReporteByDate():  Generar reportes por filtro de fecha.
   private GenerateReporteByDate(): boolean {
     console.log('GenerateReporteByDate()');
 
@@ -711,9 +743,6 @@ export class DashboardComponent implements OnInit {
 
     setTimeout(() => {
 
-
-      // avisamos, se esta seteando una fecha.
-      this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
       // Iniciamos las promesas.
       Promise.resolve(true).then(
@@ -737,7 +766,7 @@ export class DashboardComponent implements OnInit {
           // Podria ser un return.
 
           // Le mandamos nuetra variable para que genere la data por filtros de actividades.
-          return this.GenerateDataByFilter(this.getVoyages, true);
+          return this.GenerateDataByFilter(this.getVoyages);
         }
       ).then(
         result => {
@@ -788,9 +817,6 @@ export class DashboardComponent implements OnInit {
     // variable que obtendra todos los viajes.
     let voyages: Voyage[] = [];
 
-    // ESTA VARIABLE EXACTAMENTE NO NOS DICE SI ES POR FECHA YA QUE DEFRNETE EN LA SEGUNDA OBCION DETECTA LA FECHA.
-    // esta variable nos dira si el filtro es por fecha.
-    let isFilterWithDate: boolean = false;
 
     // Abrimos el loading.
     this.loadingService.Open();
@@ -807,7 +833,7 @@ export class DashboardComponent implements OnInit {
             // Verificamos si existe un viaje seleccionado.
             if (this.selectVoyageId) {
 
-              // filtramos el viaje segun el id del viaje seleccionado.
+              // Filtramos el viaje segun el id del viaje seleccionado.
               let voyageSelect = this.getVoyages.find(voyage => voyage.id == this.selectVoyageId);
 
               // Verificamos que se halla encontrado el viaje.
@@ -816,23 +842,17 @@ export class DashboardComponent implements OnInit {
               // lo agregamos 
               voyages.push(voyageSelect);
 
-
             }
             // Si no existe un viaje, verificamos si el filtro es por fecha.
             // EXACTAMENTE ESTO, NO NOS INDICA QUE EL FILTRO A SIDO POR FECHA
-            else if (this.startDate || this.endDate) {
+            else if (this.isSetDateFilter.isFilterWithDate) {
+
+              // Le ponemos la fecha del filtro.
+              this.startDate = this.isSetDateFilter.startDate;
+              this.endDate = this.isSetDateFilter.endDate;
 
               // Deseleccionamos el voyageId
               this.selectVoyageId = null;
-
-              // Validamos las fechas.
-              // Si no es valida enviamos error.
-              if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
-              if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
-              // Verificamos que la fecha inicio sea antes que la fecha fin.
-              if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
-              // activamos que el filtro sea por fecha.
-              isFilterWithDate = true;
               // ya que el filtro se hara con la fecha le enviaremos toda la data de viaje.
               voyages = this.getVoyages;
 
@@ -854,10 +874,11 @@ export class DashboardComponent implements OnInit {
           }
         ).then(
           result => {
-            if (!result) throw 'NOT_OK'
+            if (!result) throw 'NOT_OK';
+
             // Revisar esto por que podriamos validar si se esta generando correctamente la databyfilter
             // Podria ser un return.
-            return this.GenerateDataByFilter(voyages, isFilterWithDate);
+            return this.GenerateDataByFilter(voyages);
           }
         ).then(
           result => {
@@ -893,7 +914,7 @@ export class DashboardComponent implements OnInit {
 
       }, 100);
 
-    console.log('FilterByActivities()');
+    console.log('Fin FilterByActivities()');
   }
 
   //  ClearFilter(): 
@@ -1193,16 +1214,11 @@ export class DashboardComponent implements OnInit {
   private async GenerateDataByFilter(aRvoyages: Voyage[], isFilterWithDate?: boolean): Promise<boolean> {
     console.log('GenerateDataByFilter()');
 
-    // Rango de fecha de inicio y fin 
+    // Rango de fecha de inicio y fin
     // Esta variable nos ayudara saber cuando si nicio el reporte y cuando termino.
     let generalStartDate: String;
     let generalEndDate: String;
 
-    // Verificamos si tenemos el filtro por fecha si es asi le asignamos la fecha de inicio y fin.
-    if (this.isSetDateFilter.isFilterWithDate) {
-      this.startDate = this.isSetDateFilter.startDate;
-      this.endDate = this.isSetDateFilter.endDate;
-    }
 
     // Retornaremos lo que nos revuelva la promesa.
     // Aárte le agregamos un await para que espere, la respuesta.
