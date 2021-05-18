@@ -597,6 +597,7 @@ export class DashboardComponent implements OnInit {
         Promise.resolve(true)
           .then(
             () => {
+
               // Generamos el dashboard por tipo de resumen.
               return this.GenerateDashboardBySumary(true);
             }
@@ -1825,8 +1826,7 @@ export class DashboardComponent implements OnInit {
       }]
     };
 
-
-    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORT') {
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
 
       config.xAxes[0].type = 'category';
 
@@ -2887,7 +2887,7 @@ export class DashboardComponent implements OnInit {
 
   // UpdateLineIFO() : Actualiza el chart de IFO.
   private UpdateLineIFO(): boolean {
-    console.log('UpdateLineIFO');
+    console.log('UpdateLineIFO()');
 
     // Actualizamos los labels
     this.configLineaIFO.data.labels = this.xLabelReport;
