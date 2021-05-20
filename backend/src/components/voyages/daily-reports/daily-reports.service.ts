@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DailyReport } from 'src/models/daily-report.entity';
+import { DailyReport, GetROBByUser } from 'src/models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
@@ -68,6 +68,36 @@ export class DailyReportsService {
                 return result;
             }
         )
+    }
+
+    // Retorna todos los viajes segun filtro.
+    async GetROBByUser(userId: number): Promise<GetROBByUser> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+                
+                .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+                .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+                .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+                .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+                
+                .where('daily_report.status = :status', { status: 1})
+                
+                .getRawOne()
+                .then(
+                    (result: any) => {
+
+                        let getROBByUser : GetROBByUser = <GetROBByUser>{};
+
+                        getROBByUser.total_ifo = result.total_ifo;
+                        getROBByUser.total_mgo = result.total_mgo;
+                        getROBByUser.total_bunkering_ifo = result.total_bunkering_ifo;
+                        getROBByUser.total_bunkering_mgo = result.total_bunkering_mgo;
+
+                        return getROBByUser;
+                    }
+                );
     }
 
     // Actualiza un voyage

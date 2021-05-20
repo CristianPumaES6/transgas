@@ -109,3 +109,12 @@ export class DailyReport {
     status: boolean;
 
 }
+
+export class GetROBByUser{
+
+    total_ifo: number;
+    total_mgo: number;
+    total_bunkering_ifo: number;
+    total_bunkering_mgo: number;
+    
+}
