@@ -531,152 +531,114 @@
         <div class="card card-body background-cuadro p-2">
           <h6 class="card-title tx-14 mb-1 text-center">
             {{ 'TITLE_PINTURE_ROB' | translateMessage:translateCategory }}
-         
+
           </h6>
           <div class="PerfectScrollbar-table-data-LSFO">
 
             <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
               <thead>
                 <tr>
-                  <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                   {{ (selectUser.isConsumptionIFO ? 'CONSUMPTION_IFO' : selectUser.isConsumptionVLSFO ?
-                    'CONSUMPTION_VLSFO' :
-                    'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
-               
-                    <span matTooltip="{{'TOOLTIP_EQUIPMENT' | translateMessage:translateCategory}}"
-                      matTooltipClass="multiline">
-                      <i class="icon-menu-help"></i>
-                    </span>
-                  </th>
-                  <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ (selectUser.isConsumptionIFO ? 'BUNKERING_IFO' : selectUser.isConsumptionVLSFO ?
-                    'BUNKERING_VLSFO' :
-                    'BUNKERING_LSFO') | translateMessage:translateCategory}}
-                    <span
-                      matTooltip="{{'TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT' | translateMessage:translateCategory}}"
-                      matTooltipClass="multiline">
-                      <i class="icon-menu-help"></i>
-                    </span>
-                  </th>
-                  <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'ROB_IFO' | translateMessage:translateCategory }}
-                    <span matTooltip="{{'TOOLTIP_DAILY_BALANCE_EQUIPMENT' | translateMessage:translateCategory}}"
-                      matTooltipClass="multiline">
-                      <i class="icon-menu-help"></i>
-                    </span>
-                  </th>
-                  <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                    {{ 'CONSUMPTION_MGO' | translateMessage:translateCategory }}
-                    <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER' | translateMessage:translateCategory}}"
-                      matTooltipClass="multiline">
-                      <i class="icon-menu-help"></i>
-                    </span>
-                  </th>
-                  <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                    {{ 'BUNKERING_MGO' | translateMessage:translateCategory }}
-                    <span
-                      matTooltip="{{'TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT' | translateMessage:translateCategory}}"
-                      matTooltipClass="multiline">
-                      <i class="icon-menu-help"></i>
-                    </span>
-                  </th>
-                  <th class="color-title-table blue-2 font-small-1 border align-top pt-1">
-                    {{ 'ROB_MGO' | translateMessage:translateCategory }}
-                    <span matTooltip="{{'TOOLTIP_DAILY_BALANCE_EQUIPMENT' | translateMessage:translateCategory}}"
-                      matTooltipClass="multiline">
-                      <i class="icon-menu-help"></i>
-                    </span>
-                  </th>
+
+                  <ng-template
+                    [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
+
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ (selectUser.isConsumptionIFO ? 'CONSUMPTION_IFO' : selectUser.isConsumptionVLSFO ?
+                      'CONSUMPTION_VLSFO' :
+                      'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
+
+                      <span matTooltip="{{'TOOLTIP_CONSUMPTION_IFO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ (selectUser.isConsumptionIFO ? 'BUNKERING_IFO' : selectUser.isConsumptionVLSFO ?
+                      'BUNKERING_VLSFO' :
+                      'BUNKERING_LSFO') | translateMessage:translateCategory}}
+                      <span
+                        matTooltip="{{'TOOLTIP_BUNKERING_IFO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      {{ 'ROB_IFO' | translateMessage:translateCategory }}
+                      <span matTooltip="{{'TOOLTIP_ROB_IFO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                  </ng-template>
+
+                  <ng-template [ngIf]="selectUser.isConsumptionMGO">
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ 'CONSUMPTION_MGO' | translateMessage:translateCategory }}
+                      <span matTooltip="{{'TOOLTIP_CONSUMPTION_MGO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ 'BUNKERING_MGO' | translateMessage:translateCategory }}
+                      <span
+                        matTooltip="{{'TOOLTIP_BUNKERING_MGO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      {{ 'ROB_MGO' | translateMessage:translateCategory }}
+                      <span matTooltip="{{'TOOLTIP_ROB_MGO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                  </ng-template>
                 </tr>
               </thead>
               <tbody>
 
-                <ng-template [ngIf]="selectUser.isMEIFO">
-                  <tr>
+                <tr>
+
+                  <ng-template
+                    [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
                     <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_ifo, 1)}}</th>
                     <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo, 1)}}</th>
-                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo - getROBByUser.total_ifo, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo -
+                      getROBByUser.total_ifo, 1)}}</th>
+                  </ng-template>
 
+                  <ng-template [ngIf]="selectUser.isConsumptionMGO">
                     <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_mgo, 1)}}</th>
                     <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo, 1)}}</th>
-                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo - getROBByUser.total_mgo, 1)}}</th>
-                  </tr>
-                </ng-template>
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo -
+                      getROBByUser.total_mgo, 1)}}</th>
 
 
-                <ng-template [ngIf]="selectUser.isAEIFO">
-                  <tr>
-                    <th class="p-1 color-title-table border">A.E</th>
-
-                    <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.aux,2)}}</td>
-                    <td class="p-1 border"
-                      [ngClass]="{
-                    'color-max': (consumptionDaysByContractIFO.aux != 0 && consumptionDaysByContractIFO.aux < consumptionDaysRealIFO.aux),
-                    'color-min': (consumptionDaysByContractIFO.aux != 0 && consumptionDaysByContractIFO.aux > consumptionDaysRealIFO.aux)}">
-                      {{MathRoundOneDecimal(consumptionDaysRealIFO.aux,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.aux,2)}}</td>
-                    <td class="p-1 border" [ngClass]="{
-                      'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) < 0)}">
-                      {{MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2)}}</td>
-                  </tr>
-                </ng-template>
-
-                <ng-template [ngIf]="selectUser.isBoilerIFO">
-                  <tr>
-                    <th class="p-1 color-title-table border">Boiler</th>
-
-                    <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.boiler,2)}}</td>
-                    <td class="p-1 border"
-                      [ngClass]="{
-                    'color-max': (consumptionDaysByContractIFO.boiler != 0 && consumptionDaysByContractIFO.boiler < consumptionDaysRealIFO.boiler),
-                    'color-min': (consumptionDaysByContractIFO.boiler != 0 && consumptionDaysByContractIFO.boiler > consumptionDaysRealIFO.boiler)}">
-                      {{MathRoundOneDecimal(consumptionDaysRealIFO.boiler,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.boiler,2)}}</td>
-                    <td class="p-1 border" [ngClass]="{
-                      'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) < 0)}">
-                      {{MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2)}}</td>
-                  </tr>
-                </ng-template>
-
-                <ng-template [ngIf]="selectUser.isOtherIFO">
-                  <tr>
-                    <th class="p-1 color-title-table border">OTHER</th>
-
-                    <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.other,2)}}</td>
-                    <td class="p-1 border"
-                      [ngClass]="{
-                    'color-max': (consumptionDaysByContractIFO.other != 0 && consumptionDaysByContractIFO.other < consumptionDaysRealIFO.other),
-                    'color-min': (consumptionDaysByContractIFO.other != 0 && consumptionDaysByContractIFO.other > consumptionDaysRealIFO.other)}">
-                      {{MathRoundOneDecimal(consumptionDaysRealIFO.other,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.other,2)}}</td>
-                    <td class="p-1 border" [ngClass]="{
-                      'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) < 0)}">
-                      {{MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2)}}</td>
-                  </tr>
-                </ng-template>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th class="p-1 color-title-table border">Total</th>
-                  <th class="p-1 color-title-table border">
-                    {{MathRoundOneDecimal(
-                    consumptionTotalIFO.mpal +consumptionTotalIFO.aux+ consumptionTotalIFO.boiler+
-                    consumptionTotalIFO.other
-                    ,2)}}
-                  </th>
-                  <th class="p-1 color-title-table border">
-                    {{MathRoundOneDecimal(
-                    consumptionDaysRealIFO.mpal +consumptionDaysRealIFO.aux+ consumptionDaysRealIFO.boiler+
-                    consumptionDaysRealIFO.other
-                    ,2)}}
-                  </th>
-                  <th class="p-1"></th>
-                  <th class="p-1"></th>
+                  </ng-template>
                 </tr>
-              </tfoot>
+                <br>
+
+                <tr>
+
+                  <ng-template
+                    [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.ifoConsumption, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.ifoBunkering, 1)}}</th>
+                    <th class="p-1 border"></th>
+                  </ng-template>
+
+                  <ng-template [ngIf]="selectUser.isConsumptionMGO">
+
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.mgoConsumption, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.mgoBunkering, 1)}}</th>
+                    <th class="p-1 border"></th>
+                  </ng-template>
+
+                </tr>
+
+              </tbody>
             </table>
           </div>
         </div><!-- card-header -->

@@ -17,7 +17,7 @@ import { Voyage, VoyageFilterByYears } from '../../models/voyage';
 import { Port } from '../../models/port';
 import { DailyReport, GetROBByUser, Speed } from '../../models/daily-report';
 // Modelo genericos, modelos que se usan.
-import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO, FilterWithDate } from '../../models/dashboard';
+import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO, FilterWithDate, ConsumptionAndBunkering } from '../../models/dashboard';
 
 
 // Service 
@@ -180,6 +180,9 @@ export class DashboardComponent implements OnInit {
   public consumptionDaysRealIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
+
+  // Cuadro Consumption and bunkering
+  public consumptionAndBunkering: ConsumptionAndBunkering = new ConsumptionAndBunkering();
 
   // Constructor
   constructor(
@@ -1311,6 +1314,8 @@ export class DashboardComponent implements OnInit {
           this.consumptionDaysByContractIFO = new ConsumptionMachineIFO(0, 0, 0, 0, 0);
           this.consumptionDailyBalanceIFO = new ConsumptionMachineIFO();
 
+          // reset consumption and bunkering.
+          this.consumptionAndBunkering = new ConsumptionAndBunkering();
 
           return true;
         }
@@ -1517,6 +1522,11 @@ export class DashboardComponent implements OnInit {
                             this.consumptionTotalIFO.other += report.otherIfo;
                             // FIN Consumo IFO
 
+                            // Agregamos el consumo total y bunkering.
+                            this.consumptionAndBunkering.ifoConsumption += this.SumaIfo( report );
+                            this.consumptionAndBunkering.mgoConsumption += this.SumaMgo( report );
+                            this.consumptionAndBunkering.ifoBunkering += report.bunkeringIfo;
+                            this.consumptionAndBunkering.mgoBunkering += report.bunkeringMgo;
                             totalReportByPort += 1
 
                           } else {
@@ -1726,6 +1736,7 @@ export class DashboardComponent implements OnInit {
           this.balanceTimeByActivityPerformedIFO.anchor = this.timePerNavigationCharterByActivityPerformedIFO.anchor ? this.totalTimePerActivityIFO.anchor - this.timePerNavigationCharterByActivityPerformedIFO.anchor : 0;
           this.balanceTimeByActivityPerformedIFO.maneuver = this.timePerNavigationCharterByActivityPerformedIFO.maneuver ? this.totalTimePerActivityIFO.maneuver - this.timePerNavigationCharterByActivityPerformedIFO.maneuver : 0;
           this.balanceTimeByActivityPerformedIFO.otherActivity = this.timePerNavigationCharterByActivityPerformedIFO.otherActivity ? this.totalTimePerActivityIFO.otherActivity - this.timePerNavigationCharterByActivityPerformedIFO.otherActivity : 0;
+
 
           // retornamos true para validar.
           return true;

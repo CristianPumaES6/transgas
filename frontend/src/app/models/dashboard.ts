@@ -77,3 +77,19 @@ export class FilterWithDate {
         this.endDate = endDate || null;
     }
 }
+
+
+// Estructura del cuadro Consumption
+export class ConsumptionAndBunkering{
+    constructor(
+        public ifoConsumption?: number,
+        public mgoConsumption?: number,
+        public ifoBunkering?: number,
+        public mgoBunkering?: number
+    ) {
+        this.ifoConsumption = ifoConsumption || 0;
+        this.mgoConsumption = mgoConsumption || 0;
+        this.ifoBunkering = ifoBunkering || 0;
+        this.mgoBunkering = mgoBunkering || 0;
+    }
+}

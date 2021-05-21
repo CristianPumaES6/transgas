@@ -415,7 +415,12 @@ export const dashboard: any = {
     BUNKERING_MGO: 'MGO Bunkering',
     ROB_IFO: 'ROB IFO',
     ROB_MGO: 'ROB MGO',
-    
+    TOOLTIP_CONSUMPTION_IFO: 'Total consumption.',
+    TOOLTIP_CONSUMPTION_MGO: 'Total consumption.',
+    TOOLTIP_BUNKERING_IFO: 'Total bunkering.',
+    TOOLTIP_BUNKERING_MGO: 'Total bunkering.',
+    TOOLTIP_ROB_IFO: 'ROB',
+    TOOLTIP_ROB_MGO: 'ROB'
 }
 
 export const dialog: any = {
