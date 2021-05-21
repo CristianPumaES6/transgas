@@ -1,4 +1,4 @@
-import { DailyReport } from 'src/models/daily-report.entity';
+import { DailyReport, GetROBByUser } from 'src/models/daily-report.entity';
 import { Repository } from 'typeorm';
 export declare class DailyReportsService {
     private _dailyReportRepository;
@@ -6,6 +6,8 @@ export declare class DailyReportsService {
     Create(dailyReport: DailyReport): Promise<DailyReport>;
     Get(id: Number): Promise<DailyReport>;
     Gets(dailyReport: DailyReport): Promise<DailyReport[]>;
+    GetROBByUser(userId: number): Promise<GetROBByUser>;
+    GetBunkeringByUser(userId: number): Promise<GetROBByUser>;
     Update(dailyReport: DailyReport): Promise<DailyReport>;
     Delete(dailyReport: DailyReport): Promise<DailyReport>;
 }

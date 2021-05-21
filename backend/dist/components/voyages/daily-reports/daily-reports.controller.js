@@ -81,6 +81,70 @@ let DailyReportsController = class DailyReportsController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    GetROBByBuque(headers, userId) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (userId) {
+                return true;
+            }
+            else
+                throw new Error('MISSING_FIELS');
+        }).then((resultValidate) => {
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                return true;
+            }
+            else if (userId !== headerToken.id)
+                throw new Error('ERROR_USERID_FAIL');
+        }).then((resultValidate) => {
+            return this._dailyReportsService.GetROBByUser(userId);
+        }).then((results) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: results
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
+    GetBunkeringByBuque(headers, userId) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (userId) {
+                return true;
+            }
+            else
+                throw new Error('MISSING_FIELS');
+        }).then((resultValidate) => {
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                return true;
+            }
+            else if (userId !== headerToken.id)
+                throw new Error('ERROR_USERID_FAIL');
+        }).then((resultValidate) => {
+            return this._dailyReportsService.GetBunkeringByUser(userId);
+        }).then((results) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: results
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
     Create(headers, dailyReport) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         return promises_assets_1.DummyPromise().then((resultDummy) => {
@@ -227,6 +291,20 @@ __decorate([
     __metadata("design:paramtypes", [Object, daily_report_entity_1.DailyReport]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "Gets", null);
+__decorate([
+    common_1.Get('get-rob/:userId'),
+    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], DailyReportsController.prototype, "GetROBByBuque", null);
+__decorate([
+    common_1.Get('get-bunkering/:userId'),
+    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], DailyReportsController.prototype, "GetBunkeringByBuque", null);
 __decorate([
     common_1.Post('create'),
     __param(0, common_1.Headers()), __param(1, common_1.Body()),

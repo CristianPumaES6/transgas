@@ -129,21 +129,33 @@ export function validateDate(fecha: any): boolean {
     return result;
 }
 
-export function TextMonthYear(date: any): string {
-    let momentDate = moment(date, 'MM-DD-YYYY');
+// ESTA FUNCION DEVUELVE EN TEXTO EL MES Y AÑO DE UN FORMATO EXPECIFICO.
+export function TextMonthYearFormatYYYYMMDD(date: any): string {
+
+    // Convertimos el string en formato moment,
+    // Con el formato YYYY MM DD
+    let momentDate = moment(date, 'YYYY-MM-DD');
+  
     let result = momentDate.format('MMMM') + ' ' + momentDate.format('YYYY')
 
     return result;
 }
 
-export function TextMonthDayYear(date: any): string {
-    let momentDate = moment(date, 'MM-DD-YYYY');
+
+// ESTA FUNCION DEVUELVE EN TEXTO EL DIA, EL MES Y AÑO DE UN FORMATO EXPECIFICO.
+export function TextMonthDayYearFormatYYYYMMDD(date: any): string {
+
+    // Convertimos el string en formato moment,
+    // Con el formato YYYY MM DD
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
     let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ', ' + momentDate.format('YYYY')
 
     return result;
 }
 
 
+// retorna el primero y ultimo dia del mes de la fecha enviada.
 export function FisrtOldDayFromDate(date: any): any {
     if (!date) return null;
 
@@ -156,4 +168,14 @@ export function FisrtOldDayFromDate(date: any): any {
         start: startOfMonth,
         end: endOfMonth
     }
+}
+
+
+export function FormatYYYYMMDD(date: any): string {
+
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
+    let result = momentDate.format('MM-DD-YYYY')
+
+    return result;
 }

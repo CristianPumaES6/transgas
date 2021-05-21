@@ -29,3 +29,9 @@ export declare class DailyReport {
     dateUpdated: string;
     status: boolean;
 }
+export declare class GetROBByUser {
+    total_ifo: number;
+    total_mgo: number;
+    total_bunkering_ifo: number;
+    total_bunkering_mgo: number;
+}

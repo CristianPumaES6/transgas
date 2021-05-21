@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1619790297232,
+  "timestamp": 1621618982400,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,15 +11,15 @@
         "ignoreVary": true
       },
       "urls": [
-        "/4.bc8d3472eff45b771e22.js",
+        "/4.45f2e93c133754d7521d.js",
         "/5.ee327bbdff0b77a1bd7d.js",
         "/6.0c8937eda115d88f2826.js",
         "/favicon.ico",
         "/index.html",
-        "/main.3a354126ba47a920204c.js",
+        "/main.366ffe28256626c0f1f5.js",
         "/manifest.webmanifest",
         "/polyfills.a4021de53358bb0fec14.js",
-        "/runtime.b20561f34e247dec9283.js",
+        "/runtime.3b3b2aeac8293d11f771.js",
         "/scripts.568694a568f45ab03c95.js",
         "/styles.1cb2e3d183f15e446e5d.css"
       ],
@@ -63,7 +63,7 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/4.bc8d3472eff45b771e22.js": "3522cd77ff432d94ce4dee3302b62799910f884d",
+    "/4.45f2e93c133754d7521d.js": "72263f17aa4db0a2f85a108e310c09aa38de0deb",
     "/5.ee327bbdff0b77a1bd7d.js": "a9590225b41b7e0292cd7c76df1616dafc6c6db0",
     "/6.0c8937eda115d88f2826.js": "edff4ee494deea79e42f4258d0ae970da4a1e598",
     "/ADRIAN2.d21af11d11f94c0c4d87.jpg": "fd2bb44cd4cefea75db71891cb751f4d580bf5e4",
@@ -89,13 +89,13 @@
     "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/assets/icons/logotransgas.png": "102c1544f6c0cc366933ea17f6dd7bc810ad8df2",
     "/assets/math/math.assets.ts": "b30b5471d8f25f82aaf9cec1a7767a457339fb20",
-    "/assets/moment/moment.assets.ts": "9d94978b8135e45a02dddba3a5d1241da0af7837",
+    "/assets/moment/moment.assets.ts": "53c99fc0f54c790f93d90633a969f73745f4d65d",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/index.html": "39363cbba9428122dfd655f96e777c9c82b79d27",
-    "/main.3a354126ba47a920204c.js": "9663cd18518fe172104e838aa268af34cf8f3482",
+    "/index.html": "9244d9d8ab5a7e92c5372ce0165bf06648060a81",
+    "/main.366ffe28256626c0f1f5.js": "09ad72e354f155e1374667172c290ad8d9d08820",
     "/manifest.webmanifest": "0b3d9c9c197f62a811a348af8287ae117b75c300",
     "/polyfills.a4021de53358bb0fec14.js": "b47435a9ef2a4829f2f9dfd35599bde3614981b1",
-    "/runtime.b20561f34e247dec9283.js": "cf39f0c85d7d83dc28ccb850fa3c274f5f4b3495",
+    "/runtime.3b3b2aeac8293d11f771.js": "73065efbd7ccbcb1122768307e09141b203e8332",
     "/scripts.568694a568f45ab03c95.js": "2791ef2944fcf448bce24e9ec345fcaebbae3add",
     "/styles.1cb2e3d183f15e446e5d.css": "b820e6018a0e732b4066a9daf67f3b9a71439ed9"
   },

@@ -57,6 +57,45 @@ let DailyReportsService = class DailyReportsService {
             return result;
         });
     }
+    async GetROBByUser(userId) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+            .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+            .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .getRawOne()
+            .then((result) => {
+            let getROBByUser = {};
+            getROBByUser.total_ifo = result.total_ifo || 0;
+            getROBByUser.total_mgo = result.total_mgo || 0;
+            getROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+            getROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+            return getROBByUser;
+        });
+    }
+    async GetBunkeringByUser(userId) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select('daily_report.date', 'date')
+            .addSelect('daily_report.hour', 'hour')
+            .addSelect('daily_report.activityPerformed', 'activityPerformed')
+            .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .getRawMany()
+            .then((result) => {
+            return result;
+        });
+    }
     async Update(dailyReport) {
         return await this._dailyReportRepository.findOne({
             where: [

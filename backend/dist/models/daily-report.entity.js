@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DailyReport = void 0;
+exports.GetROBByUser = exports.DailyReport = void 0;
 const typeorm_1 = require("typeorm");
 const port_entity_1 = require("./port.entity");
 let DailyReport = class DailyReport {
@@ -130,4 +130,7 @@ DailyReport = __decorate([
     typeorm_1.Entity()
 ], DailyReport);
 exports.DailyReport = DailyReport;
+class GetROBByUser {
+}
+exports.GetROBByUser = GetROBByUser;
 //# sourceMappingURL=daily-report.entity.js.map
