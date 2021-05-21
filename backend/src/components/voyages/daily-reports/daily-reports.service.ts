@@ -108,6 +108,35 @@ export class DailyReportsService {
                 );
     }
 
+    // Retorna todos los viajes segun filtro.
+    async GetBunkeringByUser(userId: number): Promise<GetROBByUser> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+                
+                .select('daily_report.date', 'date')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+              
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status',  { status: 1 })
+                .andWhere('voyage.status = :status',  { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId : userId})
+                .getRawMany()
+                .then(
+                    (result: any) => {
+
+                        return result;
+                    }
+                );
+    }
+
     // Actualiza un voyage
     async Update(dailyReport: DailyReport): Promise<DailyReport> {
 
