@@ -82,7 +82,14 @@ export class DailyReportsService {
                 .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
                 .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
                 
-                .where('daily_report.status = :status', { status: 1})
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status',  { status: 1 })
+                .andWhere('voyage.status = :status',  { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId : userId})
                 
                 .getRawOne()
                 .then(
@@ -90,10 +97,11 @@ export class DailyReportsService {
 
                         let getROBByUser : GetROBByUser = <GetROBByUser>{};
 
-                        getROBByUser.total_ifo = result.total_ifo;
-                        getROBByUser.total_mgo = result.total_mgo;
-                        getROBByUser.total_bunkering_ifo = result.total_bunkering_ifo;
-                        getROBByUser.total_bunkering_mgo = result.total_bunkering_mgo;
+                        // Si no existen valores le doy cero por defecto. 
+                        getROBByUser.total_ifo = result.total_ifo || 0;
+                        getROBByUser.total_mgo = result.total_mgo || 0;
+                        getROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+                        getROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
 
                         return getROBByUser;
                     }
