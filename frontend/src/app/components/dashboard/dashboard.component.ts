@@ -385,8 +385,8 @@ export class DashboardComponent implements OnInit {
 
   }
 
-   // GetUsers: Cargo todos los Users para el listado de Users.
-   private GetROBByUser(userId:number): Observable<boolean> {
+  // GetUsers: Cargo todos los Users para el listado de Users.
+  private GetROBByUser(userId: number): Observable<boolean> {
     // Test
     console.log('GetROB(userId: number)');
 
@@ -394,7 +394,7 @@ export class DashboardComponent implements OnInit {
     return this.dailyReportService.GetROBByUser(userId).pipe(map(
       (resultUser: GetROBByUser) => {
 
-        if(!resultUser) throw 'ERROR_GetROBByUser'
+        if (!resultUser) throw 'ERROR_GetROBByUser'
 
         this.getROBByUser = resultUser;
 
@@ -1353,6 +1353,10 @@ export class DashboardComponent implements OnInit {
               // fecha donde termino el registro.
               let dayEndByVoyage: String;
 
+              // Total de abastecimiento.
+              let totalBunkeringIFOByVoyage: number = 0;
+              let totalBunkeringMGOByVoyage: number = 0;
+
               // Recorremos y hacemos un filtro a todos los puertos
               voyage.ports = voyage.ports.filter(
                 (port: Port, index, ports) => {
@@ -1367,6 +1371,10 @@ export class DashboardComponent implements OnInit {
                   // Fecha donde se inicio y finaliza el puerto.
                   let dayStartByPort: String;
                   let dayEndByPort: String;
+
+                  // Total de abastecimiento.
+                  let totalBunkeringIFOByPort: number = 0;
+                  let totalBunkeringMGOByPort: number = 0;
 
                   // Verificamos que el puerto este activo.
                   if (port.status) {
@@ -1394,6 +1402,7 @@ export class DashboardComponent implements OnInit {
                           dayStartByPort = ComparePreviousDates(dayStartByPort, report.date);
                           // Verificamos si ell nuevo dia es posterior al que tenemos actualmente.
                           dayEndByPort = CompareAfterDates(dayEndByPort, report.date);
+
 
 
                           // FILTRO POR ACTIVIDAD
@@ -1499,10 +1508,10 @@ export class DashboardComponent implements OnInit {
                             (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0) ||
                             this.frmCActivityPerformed.value.find(activity => activity === report.activityPerformed)
                           ) {
-
+  
                             // Sumamos el consumo.
-                            totalConsumptionByPortIFO = totalConsumptionByPortIFO + totalConsumptionByReportIFO;
-                            totalConsumptionByPortMGO = totalConsumptionByPortMGO + totalConsumptionByReportMGO;
+                            totalConsumptionByPortIFO += + totalConsumptionByReportIFO;
+                            totalConsumptionByPortMGO += totalConsumptionByReportMGO;
                             // Agregamos los datos de distancia y tiempo 
                             totalSpeedByPort.add(report.distance, report.steamingTime);
 
@@ -1522,12 +1531,20 @@ export class DashboardComponent implements OnInit {
                             this.consumptionTotalIFO.other += report.otherIfo;
                             // FIN Consumo IFO
 
+                            let sumIFO = this.SumaIfo(report);
+                            let sumMGO = this.SumaMgo(report);
+
                             // Agregamos el consumo total y bunkering.
-                            this.consumptionAndBunkering.ifoConsumption += this.SumaIfo( report );
-                            this.consumptionAndBunkering.mgoConsumption += this.SumaMgo( report );
+                            this.consumptionAndBunkering.ifoConsumption += sumIFO;
+                            this.consumptionAndBunkering.mgoConsumption += sumMGO;
                             this.consumptionAndBunkering.ifoBunkering += report.bunkeringIfo;
                             this.consumptionAndBunkering.mgoBunkering += report.bunkeringMgo;
                             totalReportByPort += 1
+
+                          
+                              // SUMAMOS LOS ABASTECIMIENTOS:
+                              totalBunkeringIFOByPort += report.bunkeringIfo;
+                              totalBunkeringMGOByPort += report.bunkeringMgo;
 
                           } else {
                             // Esto se ejecuta cuando seleccionas una actividad y esta actividad no es el reporte actual.
@@ -1563,6 +1580,12 @@ export class DashboardComponent implements OnInit {
                     port.dayStart = dayStartByPort;
                     port.dayEnd = dayEndByPort;
 
+
+                    // Agregamos el dia donde inicia y finaliza el registro de los reportes en puerto
+                    port.totalBunkeringIFO = totalBunkeringIFOByPort;
+                    port.totalBunkeringMGO = totalBunkeringMGOByPort;
+
+
                     // Sumamos un puerto al total de puertos.
                     totalPortByVoyage = totalPortByVoyage + 1;
                     totalReportByVoyage = totalReportByVoyage + port.totalReport;
@@ -1574,6 +1597,10 @@ export class DashboardComponent implements OnInit {
                     totalConsumptionByVoyageIFO = totalConsumptionByVoyageIFO + totalConsumptionByPortIFO;
                     totalConsumptionByVoyageMGO = totalConsumptionByVoyageMGO + totalConsumptionByPortMGO;
                     totalSpeedByVoyage.add(totalSpeedByPort.distance, totalSpeedByPort.steamingTime);
+
+                    // Total bunkering IFO
+                    totalBunkeringIFOByVoyage += totalBunkeringIFOByPort;
+                    totalBunkeringMGOByVoyage += totalBunkeringMGOByPort;
 
                     return true;
 
@@ -1600,6 +1627,9 @@ export class DashboardComponent implements OnInit {
               voyage.totalReport = totalReportByVoyage;
               voyage.dayStart = dayStartByVoyage;
               voyage.dayEnd = dayEndByVoyage;
+
+              voyage.totalBunkeringIFO = totalBunkeringIFOByVoyage;
+              voyage.totalBunkeringMGO = totalBunkeringMGOByVoyage;
 
               // Comparamos que sea la primera y ultima fecha.
               generalStartDate = ComparePreviousDates(generalStartDate, voyage.dayStart);
@@ -2184,7 +2214,7 @@ export class DashboardComponent implements OnInit {
 
                             // MGO
                             let totalConsumptionMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
-                            
+
                             // Formula DayliConsumption
                             let dayliConsumptionMGO = speedI.steamingTime ? (totalConsumptionMGO * 24) / speedI.steamingTime : 0;
                             // Daily consumptionMGO
@@ -2362,7 +2392,7 @@ export class DashboardComponent implements OnInit {
                             this.dataSPEED[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
 
-                            
+
                             // REVISAR ESTO ; DATA EXTRA CREO QUE DEBERIA MOS ELIMINARLO.
                             // Creamos la data extra.
                             // La data extra es la misma para los 3 chart.
@@ -3182,7 +3212,23 @@ export class DashboardComponent implements OnInit {
             if (voyage.totalReport > 1) {
               result.push('T. Reports : ' + voyage.totalReport);
             }
+            if (
+              (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
+              && voyage.totalBunkeringIFO > 0) {
 
+                let textIFOorVLSFOorLSFO = 'T. Bunkering ';
+                textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+                textIFOorVLSFOorLSFO += ' : ' +  + mathRound(voyage.totalBunkeringIFO, 2);
+                result.push(textIFOorVLSFOorLSFO);
+  
+            }
+            if (this.selectUser.isConsumptionMGO
+              && voyage.totalBunkeringMGO > 0
+            ) {
+
+              result.push('T. Bunkering MGO : ' + mathRound(voyage.totalBunkeringMGO, 2));
+                
+            }
 
             // Mostraremos los 2 tipos de combustible.
             if (
@@ -3325,7 +3371,7 @@ export class DashboardComponent implements OnInit {
             let observations = '';
             let totalReport = 0;
 
-            
+
             dataExtra.forEach((report: DailyReport) => {
               activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
               observations = observations + ', ' + report.observation;
@@ -3342,7 +3388,7 @@ export class DashboardComponent implements OnInit {
               result.push('T. Ports : ' + chartPoint.totalPort);
             }
             if (chartPoint.totalReport > 1) {
-              result.push('T. Reports : ' + chartPoint.totalReport + '  ... ' +totalReport);
+              result.push('T. Reports : ' + chartPoint.totalReport + '  ... ' + totalReport);
             }
 
 

@@ -51,4 +51,8 @@ export class Port {
     public speed: Speed;
     public dayStart: String;
     public dayEnd: String;
+
+    public totalBunkeringIFO: number;
+    public totalBunkeringMGO: number;
+
 }

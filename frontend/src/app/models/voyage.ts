@@ -42,6 +42,8 @@ export class Voyage {
     totalMGO: number;
     totalIFO: number;
     totalSpeed: Speed;
+    totalBunkeringIFO: number;
+    totalBunkeringMGO: number;
     // Numero total de puertos
     totalPort: number = 0;
     dayStart: String;
