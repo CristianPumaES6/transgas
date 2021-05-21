@@ -2225,19 +2225,19 @@ export class DashboardComponent implements OnInit {
                             // Actualizamos los datos al dataIfo Chart.
                             this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataIFO[iL].totalBunkeringIFO +=  report.bunkeringIfo;
-                            this.dataIFO[iL].totalBunkeringMGO +=  report.bunkeringMgo;
+                            this.dataIFO[iL].totalBunkeringIFO += report.bunkeringIfo;
+                            this.dataIFO[iL].totalBunkeringMGO += report.bunkeringMgo;
 
                             // Actualizamos los datos al dataMGO Chart.
                             this.dataMGO[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataMGO[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataMGO[iL].totalBunkeringIFO +=  report.bunkeringIfo;
-                            this.dataMGO[iL].totalBunkeringMGO +=  report.bunkeringMgo;
+                            this.dataMGO[iL].totalBunkeringIFO += report.bunkeringIfo;
+                            this.dataMGO[iL].totalBunkeringMGO += report.bunkeringMgo;
 
                             this.dataSPEED[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataSPEED[iL].totalBunkeringIFO +=  report.bunkeringIfo;
-                            this.dataSPEED[iL].totalBunkeringMGO +=  report.bunkeringMgo;
+                            this.dataSPEED[iL].totalBunkeringIFO += report.bunkeringIfo;
+                            this.dataSPEED[iL].totalBunkeringMGO += report.bunkeringMgo;
 
 
                             // Verificamos que la linea maxima sea mayor al valor del chart-
@@ -2383,11 +2383,11 @@ export class DashboardComponent implements OnInit {
                             let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + this.SumaIfo(report);
                             // Formula DayliConsumption
                             let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
-                            
+
                             // Sumamos el Bunkering
                             let totalBunkeringIFO = this.dataIFO[iL].totalBunkeringIFO + report.bunkeringIfo;
                             let totalBunkeringMGO = this.dataIFO[iL].totalBunkeringMGO + report.bunkeringMgo;
-                            
+
                             // Actualizamos los datos al dataIfo Chart.
                             this.dataIFO[iL].y = dayliConsumptionIFO;
 
@@ -2498,7 +2498,7 @@ export class DashboardComponent implements OnInit {
                         );
                         // Agregamos los datos MGO
                         this.dataMGO.push(
-                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO,  totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO,totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
+                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
                         );
 
 
