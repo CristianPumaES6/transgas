@@ -39,3 +39,9 @@ Ejemplo : daily-report.service.ts
 
 3.- Ponerlo en ella funcion que deseamos que consulte.
         dashboard.component.ts
+
+
+
+FRONT UX
+
+1 .- Buscar el lugar donde queremos que se muestre.

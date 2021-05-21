@@ -341,6 +341,7 @@ export const dashboard: any = {
     TITLE_DAILY_COMSUMPTION_IFO: 'IFO DAILY CONSUMPTION',
     TITLE_DAILY_COMSUMPTION_LSFO: 'LSFO DAILY CONSUMPTION',
     TITLE_DAILY_COMSUMPTION_VLSFO: 'VLSFO DAILY CONSUMPTION',
+    TITLE_PINTURE_ROB: 'CONSUMPTION AND BUNKERING',
     IFO_CONSUMPTION: 'LSFO CONSUMPTION',
     CONSUMPTION: 'Comsumption',
     TITLE_COMSUMPTION_TRAVEL_SUMMARY: 'DATA LSFO',
@@ -402,7 +403,19 @@ export const dashboard: any = {
     NULL_START_DATE: 'Check the start date filter.',
     NULL_END_DATE: 'Check the end date filter.',
     ERROR_START_DATE: 'The start date cannot be higher than the end date.',
-    VOYAGE_NOT_FOUND: 'The selected voyage was not found.'
+    VOYAGE_NOT_FOUND: 'The selected voyage was not found.',
+    // DATOS DEL CUADRO DE ROB AND BUNKERING
+    CONSUMPTION_IFO: 'IFO Consumption',
+    CONSUMPTION_LSFO: 'LSFO Consumption',
+    CONSUMPTION_VLSFO: 'VLSFO Consumption ',
+    CONSUMPTION_MGO: 'MGO Consumption',
+    BUNKERING_IFO: 'IFO Bunkering',
+    BUNKERING_LSFO: 'LSFO Bunkering',
+    BUNKERING_VLSFO: 'VLSFO Bunkering',
+    BUNKERING_MGO: 'MGO Bunkering',
+    ROB_IFO: 'ROB IFO',
+    ROB_MGO: 'ROB MGO',
+    
 }
 
 export const dialog: any = {
