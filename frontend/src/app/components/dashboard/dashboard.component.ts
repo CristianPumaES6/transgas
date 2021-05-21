@@ -15,7 +15,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import { User } from '../../models/user';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage';
 import { Port } from '../../models/port';
-import { DailyReport, Speed } from '../../models/daily-report';
+import { DailyReport, GetROBByUser, Speed } from '../../models/daily-report';
 // Modelo genericos, modelos que se usan.
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO, FilterWithDate } from '../../models/dashboard';
 
@@ -95,6 +95,8 @@ export class DashboardComponent implements OnInit {
   public selectUserId: number = 0; // esta variable podria desaparecer esta de mas, por que el id del usuario ya lo tenemos en la variable selectUser
   // Usuario seleccionado.
   public selectUser: User = new User();
+  // consumo total del buque seleccionado.
+  public getROBByUser: GetROBByUser = new GetROBByUser();
 
   // Filtro por fecha inicio y fin
   public startDate: Date;
@@ -184,6 +186,7 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
+    private dailyReportService: DailyReportService,
     private voyageService: VoyageService,
     private loadingService: LoadingService,
     private languageService: LanguageService,
@@ -379,6 +382,26 @@ export class DashboardComponent implements OnInit {
 
   }
 
+   // GetUsers: Cargo todos los Users para el listado de Users.
+   private GetROBByUser(userId:number): Observable<boolean> {
+    // Test
+    console.log('GetROB(userId: number)');
+
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetROBByUser(userId).pipe(map(
+      (resultUser: GetROBByUser) => {
+
+        if(!resultUser) throw 'ERROR_GetROBByUser'
+
+        this.getROBByUser = resultUser;
+
+        // Segun el resultado retornamos la respuesta.
+        return (resultUser !== null);
+      }
+    ));
+
+  }
+
 
   // SelectComboYear: Invoca una busqueda al servidor.
   public SelectComboYears() {
@@ -560,6 +583,14 @@ export class DashboardComponent implements OnInit {
       resultGetVoyageByYears => {
 
         if (!resultGetVoyageByYears) throw 'ERROR_GET_VOYAGES';
+
+        // GeyVoyage obtiene todos los puertos.
+        return this.GetROBByUser(userId).pipe().toPromise();
+      }
+    ).then(
+      resultGetROBByUser => {
+        // Verificamos que se halla consultado correctamente.
+        if (!resultGetROBByUser) throw 'ERROR_GetROBByUser';
 
         // Generamos la data por filtro
         return this.GenerateDataByFilter(this.getVoyages);

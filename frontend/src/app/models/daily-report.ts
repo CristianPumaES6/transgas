@@ -130,3 +130,19 @@ export class Speed {
     }
 
 }
+
+// Estructura del servicio.
+export class GetROBByUser{
+    constructor(
+        public total_ifo?: number,
+        public total_mgo?: number,
+        public total_bunkering_ifo?: number,
+        public total_bunkering_mgo?: number
+    ) {
+        this.total_ifo = total_ifo || 0;
+        this.total_mgo = total_mgo || 0;
+        this.total_bunkering_ifo = total_bunkering_ifo || 0;
+        this.total_bunkering_mgo = total_bunkering_mgo || 0;
+    }
+    
+}

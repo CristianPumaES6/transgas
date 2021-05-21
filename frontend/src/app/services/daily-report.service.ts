@@ -10,7 +10,7 @@ import { UserService } from './user.service';
 import { AuthGuardService } from './auth-guard.service';
 
 // Modelos
-import { DailyReport } from '../models/daily-report';
+import { DailyReport, GetROBByUser } from '../models/daily-report';
 
 @Injectable({ providedIn: 'root' })
 export class DailyReportService {
@@ -96,7 +96,7 @@ export class DailyReportService {
         delete dailyReport.syncStatus;
         delete dailyReport.robIfo;
         delete dailyReport.robMgo;
-        
+
         // Parseo el obj para poder enviarlo en el request
         let body: string = JSON.stringify(dailyReport);
         let options: any = { headers: headers, responseType: 'json' };
@@ -173,6 +173,36 @@ export class DailyReportService {
                 }
             ),
             catchError((err) => this.authGuardService.HandleError(err))
+        );
+    }
+
+
+
+    // Obtenemos el consumo actual
+    GetROBByUser(userId: Number): Observable<GetROBByUser> {
+        // Armo el request
+        let url: string = this.url + '/daily-reports/get-rob/' + userId;
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    // Verifico si la respuesta fue correcta.
+                    if (response.status && response.status === 200) {
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
+                return this.authGuardService.HandleError(err);
+            })
         );
     }
 
