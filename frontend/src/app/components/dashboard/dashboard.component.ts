@@ -1508,7 +1508,7 @@ export class DashboardComponent implements OnInit {
                             (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0) ||
                             this.frmCActivityPerformed.value.find(activity => activity === report.activityPerformed)
                           ) {
-  
+
                             // Sumamos el consumo.
                             totalConsumptionByPortIFO += + totalConsumptionByReportIFO;
                             totalConsumptionByPortMGO += totalConsumptionByReportMGO;
@@ -1541,10 +1541,10 @@ export class DashboardComponent implements OnInit {
                             this.consumptionAndBunkering.mgoBunkering += report.bunkeringMgo;
                             totalReportByPort += 1
 
-                          
-                              // SUMAMOS LOS ABASTECIMIENTOS:
-                              totalBunkeringIFOByPort += report.bunkeringIfo;
-                              totalBunkeringMGOByPort += report.bunkeringMgo;
+
+                            // SUMAMOS LOS ABASTECIMIENTOS:
+                            totalBunkeringIFOByPort += report.bunkeringIfo;
+                            totalBunkeringMGOByPort += report.bunkeringMgo;
 
                           } else {
                             // Esto se ejecuta cuando seleccionas una actividad y esta actividad no es el reporte actual.
@@ -2221,15 +2221,23 @@ export class DashboardComponent implements OnInit {
                             this.dataMGO[iL].y = dayliConsumptionMGO;
 
 
+
                             // Actualizamos los datos al dataIfo Chart.
                             this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataIFO[iL].totalBunkeringIFO +=  report.bunkeringIfo;
+                            this.dataIFO[iL].totalBunkeringMGO +=  report.bunkeringMgo;
+
                             // Actualizamos los datos al dataMGO Chart.
                             this.dataMGO[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataMGO[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataMGO[iL].totalBunkeringIFO +=  report.bunkeringIfo;
+                            this.dataMGO[iL].totalBunkeringMGO +=  report.bunkeringMgo;
 
                             this.dataSPEED[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataSPEED[iL].totalBunkeringIFO +=  report.bunkeringIfo;
+                            this.dataSPEED[iL].totalBunkeringMGO +=  report.bunkeringMgo;
 
 
                             // Verificamos que la linea maxima sea mayor al valor del chart-
@@ -2283,16 +2291,19 @@ export class DashboardComponent implements OnInit {
                         // Formula DayliConsumption
                         let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
 
+                        // ROB total.
+                        let totalBunkeringIFO = report.bunkeringIfo;
+                        let totalBunkeringMGO = report.bunkeringMgo;
                         // Agregamos los datos IFO
                         this.dataIFO.push(
-                          { x: day, y: dayliConsumptionIFO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                          { x: day, y: dayliConsumptionIFO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
                         // Agregamos los datos MGO
                         this.dataMGO.push(
-                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
                         this.dataSPEED.push(
-                          { x: day, y: ySpeed, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                          { x: day, y: ySpeed, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
 
 
@@ -3212,22 +3223,24 @@ export class DashboardComponent implements OnInit {
             if (voyage.totalReport > 1) {
               result.push('T. Reports : ' + voyage.totalReport);
             }
+
+            // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
               && voyage.totalBunkeringIFO > 0) {
 
-                let textIFOorVLSFOorLSFO = 'T. Bunkering ';
-                textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-                textIFOorVLSFOorLSFO += ' : ' +  + mathRound(voyage.totalBunkeringIFO, 2);
-                result.push(textIFOorVLSFOorLSFO);
-  
+              let textIFOorVLSFOorLSFO = 'T. Bunkering ';
+              textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+              textIFOorVLSFOorLSFO += ' : ' + + mathRound(voyage.totalBunkeringIFO, 2);
+              result.push(textIFOorVLSFOorLSFO);
+
             }
             if (this.selectUser.isConsumptionMGO
               && voyage.totalBunkeringMGO > 0
             ) {
 
               result.push('T. Bunkering MGO : ' + mathRound(voyage.totalBunkeringMGO, 2));
-                
+
             }
 
             // Mostraremos los 2 tipos de combustible.
@@ -3278,6 +3291,21 @@ export class DashboardComponent implements OnInit {
             }
 
 
+            // TOTAL BUNKERING
+            if (
+              (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
+              && port.totalBunkeringIFO > 0) {
+              let textIFOorVLSFOorLSFO = 'T. Bunkering ';
+              textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+              textIFOorVLSFOorLSFO += ' : ' + + mathRound(port.totalBunkeringIFO, 2);
+              result.push(textIFOorVLSFOorLSFO);
+            }
+            if (this.selectUser.isConsumptionMGO
+              && port.totalBunkeringMGO > 0
+            ) {
+              result.push('T. Bunkering MGO : ' + mathRound(port.totalBunkeringMGO, 2));
+            }
+
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
@@ -3323,6 +3351,20 @@ export class DashboardComponent implements OnInit {
               result.push('T. Reports : ' + chartPoint.totalReport);
             }
 
+            // TOTAL BUNKERING
+            if (
+              (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
+              && chartPoint.totalBunkeringIFO > 0) {
+              let textIFOorVLSFOorLSFO = 'T. Bunkering ';
+              textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+              textIFOorVLSFOorLSFO += ' : ' + + mathRound(chartPoint.totalBunkeringIFO, 2);
+              result.push(textIFOorVLSFOorLSFO);
+            }
+            if (this.selectUser.isConsumptionMGO
+              && chartPoint.totalBunkeringMGO > 0
+            ) {
+              result.push('T. Bunkering MGO : ' + mathRound(chartPoint.totalBunkeringMGO, 2));
+            }
 
             // Mostraremos los 2 tipos de combustible.
             if (
