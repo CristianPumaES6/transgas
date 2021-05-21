@@ -12,15 +12,13 @@ export interface EnvConfig {
 };  */
 
 
-export const EnvConfig: EnvConfig = {
+/* export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: ''
 }; 
+ */
 
-
-/* 
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: ''
 };
- */
