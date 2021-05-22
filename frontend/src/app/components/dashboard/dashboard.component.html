@@ -528,11 +528,56 @@
 
       <div id="PintureROB"
         [className]="!selectUser.isDisplayDataLSFO ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
+       
+       
         <div class="card card-body background-cuadro p-2">
+
           <h6 class="card-title tx-14 mb-1 text-center">
             {{ 'TITLE_PINTURE_ROB' | translateMessage:translateCategory }}
 
           </h6>
+
+          <div class="container">
+            <div class="col-6 text-center">
+             
+              <div class="text-center">ROB</div>
+              <h1 class="card-title pricing-card-title"> 
+                {{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo -
+                getROBByUser.total_ifo, 1)}}
+                <small class="text-muted">/ {{ selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+                  'VLSFO' :
+                  'LSFO'}}
+                </small>
+              </h1>
+
+       
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>By Filter:</li>
+
+                <li>{{MathRoundOneDecimal(consumptionAndBunkering.ifoConsumption, 1)}} consumption</li>
+                <li>{{MathRoundOneDecimal(consumptionAndBunkering.ifoBunkering, 1)}} bunkering</li>
+              </ul>
+            
+            </div>
+            <div class="col-6 text-center">
+              <div class="text-center">ROB</div>
+
+              <h1 class="card-title pricing-card-title"> 
+                {{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo -
+                getROBByUser.total_mgo, 1)}}
+                <small class="text-muted">/ MGO</small>
+              </h1>
+         
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>By Filter:</li>
+
+                <li>{{MathRoundOneDecimal(consumptionAndBunkering.mgoConsumption, 1)}} consumption</li>
+                <li>{{MathRoundOneDecimal(consumptionAndBunkering.mgoBunkering, 1)}} bunkering</li>
+              </ul>
+              
+            </div>
+          </div>
+            
           <div class="PerfectScrollbar-table-data-LSFO">
 
             <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
