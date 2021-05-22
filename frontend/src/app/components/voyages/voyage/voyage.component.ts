@@ -746,6 +746,7 @@ export class VoyageComponent implements OnInit {
               this.selectPort = this.selectPort.id ? this.initialPort : new Port();
             } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
               this.selectDailyReport = this.selectDailyReport.id ? this.initialDailyReport : new DailyReport();
+              this.lastRecordedHour = null;
               this.List_Voyages_Ports_DailyReports = 'Ports';
             }
 
@@ -2369,27 +2370,7 @@ export class VoyageComponent implements OnInit {
     console.log('Initialize()');
 
 
-    this.databaseService.getLastReportDailys().then(
-      result => {
 
-
-        let now = new Date();
-        let hours = ("0" + now.getHours()).slice(-2);
-        let minutes = ("0" + now.getMinutes()).slice(-2);
-
-        this.selectDailyReport.date = GetDate();
-        this.selectDailyReport.hour = hours + ':' + minutes;
-
-        this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
-
-        this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(ConvertDateAndHourAndReturnDiffHour(this.selectDailyReport.date, this.selectDailyReport.hour, this.lastRecordedHour), 2);
-
-
-
-        //"2014-01-02T11:42:13";//result.date;
-
-      }
-    )
     // Inicializo su valor.
     this.disableEdit = true;
 
@@ -2400,6 +2381,27 @@ export class VoyageComponent implements OnInit {
       // actualizo el valor del InitializeSailingAnality.
       this.initialPort = this.Collect();
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+
+
+      if(!this.selectDailyReport.id){
+
+        this.databaseService.getLastReportDailys().then(
+          result => {
+
+            let now = new Date();
+            let hours = ("0" + now.getHours()).slice(-2);
+            let minutes = ("0" + now.getMinutes()).slice(-2);
+    
+            this.selectDailyReport.date = GetDate();
+            this.selectDailyReport.hour = hours + ':' + minutes;
+    
+            this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
+    
+            this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(ConvertDateAndHourAndReturnDiffHour(this.selectDailyReport.date, this.selectDailyReport.hour, this.lastRecordedHour), 2);
+    
+          }
+        )
+          }
 
       // actualizo el valor del InitializeSailingAnality.
       this.initialDailyReport = this.Collect();
