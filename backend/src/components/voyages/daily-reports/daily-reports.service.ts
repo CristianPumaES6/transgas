@@ -115,7 +115,7 @@ export class DailyReportsService {
         return await
             this._dailyReportRepository.createQueryBuilder('daily_report')
                 
-                .select('daily_report.date', 'date')
+            .select('daily_report.date', 'date')
                 .addSelect('daily_report.hour', 'hour')
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
@@ -128,6 +128,8 @@ export class DailyReportsService {
                 .andWhere('voyage.status = :status',  { status: 1 })
 
                 .andWhere('daily_report.userId = :userId', { userId : userId})
+                .orderBy('daily_report.date', 'DESC')
+                .limit(5)
                 .getRawMany()
                 .then(
                     (result: any) => {
