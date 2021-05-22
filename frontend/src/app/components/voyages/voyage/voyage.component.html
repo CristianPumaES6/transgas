@@ -164,7 +164,14 @@
 
           <div class="row pl-2 pb-2">
 
-            <div class="col-4 row no-gutters">
+
+            <div class="col-3 row no-gutters">
+              <mat-form-field>
+                <input matInput type="datetime-local" placeholder="{{'LAST_RECORDED_HOUR' | translateMessage:translateCategory}}"
+                  [(ngModel)]="lastRecordedHour">
+              </mat-form-field>
+            </div>
+            <div class="col-3 row no-gutters">
               <mat-form-field>
                 <mat-label>{{'DATE' | translateMessage:translateCategory}}</mat-label>
                 <input matInput [matDatepicker]="picker" [(ngModel)]="selectDailyReport.date">
@@ -172,13 +179,15 @@
                 <mat-datepicker #picker startView="year"></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col-4 row no-gutters">
-              <mat-form-field>
-                <input matInput type="time" placeholder="{{'HOUR' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectDailyReport.hour">
-              </mat-form-field>
+            <div class="col-3 row no-gutters">
+
+                <mat-form-field>
+                  <input matInput type="time" placeholder="{{'HOUR' | translateMessage:translateCategory}}"
+                    [(ngModel)]="selectDailyReport.hour">
+                </mat-form-field>
+              
             </div>
-            <div class="col-4 row no-gutters">
+            <div class="col-3 row no-gutters">
               <mat-form-field>
                 <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
                 <mat-select [(ngModel)]="selectDailyReport.activityPerformed" name="activityPerformed">
@@ -354,7 +363,7 @@
 
             <div class="col">
               <mat-form-field>
-                <input matInput type="number" placeholder="{{'STEAMING_TIME' | translateMessage:translateCategory}}"
+                <input matInput type="number" placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}}"
                   [(ngModel)]="selectDailyReport.steamingTime">
               </mat-form-field>
             </div>

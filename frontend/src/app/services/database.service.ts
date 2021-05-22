@@ -833,6 +833,24 @@ export class DatabaseService {
 
     }
 
+    public async getLastReportDailys(): Promise<DailyReport> {
+        console.log('getLastReportDailys()');
+
+        return await this.db.dailyReports.toArray().then(
+            (results: DailyReport[]) => {
+
+                return results.reverse();
+
+            }
+        ).then(
+            (results: DailyReport[]) => {
+
+                return results[0];
+
+            }
+        );
+    }
+
     // Agregar DailyReport por indexedDB
     public async addDailyReportIndexedDB(dailyReport: DailyReport): Promise<DailyReport> {
         console.log('addDailyReportIndexedDB(dailyReport: DailyReport)');

@@ -24,7 +24,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -33,6 +33,7 @@ import { PortService } from '../../../services/port.service';
 import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
+import { ConvertDateAndHourAndReturnDiffHour, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from 'dist/frontend/assets/moment/moment.assets';
 
 
 @Component({
@@ -96,6 +97,7 @@ export class VoyageComponent implements OnInit {
 
   public isBunkering: boolean = false;
 
+  public lastRecordedHour: any;
 
   constructor(
     private router: Router,
@@ -177,7 +179,7 @@ export class VoyageComponent implements OnInit {
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
-      
+
       let user: User = new User();
 
       // Si el usuario es un buque lo filtramos.
@@ -668,6 +670,7 @@ export class VoyageComponent implements OnInit {
 
   }
 
+  // ESTE CLICK SAVE SE USAN EN PORT; VOYAGE: DAILY
   public ClickSave() {
     console.log('ClickSave()');
 
@@ -827,6 +830,7 @@ export class VoyageComponent implements OnInit {
 
   }
 
+  // Click a la opcion agregar nuevo reporte, icono dentro de la lista de viaje,
   public ClickAddReport(event: AzList) {
     console.log('ClickAddReport()');
 
@@ -865,6 +869,7 @@ export class VoyageComponent implements OnInit {
       this.toolTipEnableForm = 'ENABLE_REPORT';
 
       this.selectDailyReport = new DailyReport();
+
       this.Initialize();
 
       this.disableEdit = false;
@@ -2363,6 +2368,28 @@ export class VoyageComponent implements OnInit {
   private Initialize(): void {
     console.log('Initialize()');
 
+
+    this.databaseService.getLastReportDailys().then(
+      result => {
+
+
+        let now = new Date();
+        let hours = ("0" + now.getHours()).slice(-2);
+        let minutes = ("0" + now.getMinutes()).slice(-2);
+
+        this.selectDailyReport.date = GetDate();
+        this.selectDailyReport.hour = hours + ':' + minutes;
+
+        this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
+
+        this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(ConvertDateAndHourAndReturnDiffHour(this.selectDailyReport.date, this.selectDailyReport.hour, this.lastRecordedHour), 2);
+
+
+
+        //"2014-01-02T11:42:13";//result.date;
+
+      }
+    )
     // Inicializo su valor.
     this.disableEdit = true;
 
@@ -2474,6 +2501,13 @@ export class VoyageComponent implements OnInit {
     }
 
     return false;
+  }
+
+  public MathRoundOneDecimal(valor, cantDecimales: number) {
+    if (!valor) { return 0; }
+
+    let result = mathRound(valor, 2)
+    return result;
   }
 
 
