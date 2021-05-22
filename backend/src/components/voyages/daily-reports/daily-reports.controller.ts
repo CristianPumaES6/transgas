@@ -204,7 +204,7 @@ export class DailyReportsController {
             (resultValidate: Boolean) => {
                 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._dailyReportsService.GetBunkeringByUser(userId);
+                return this._dailyReportsService.GetBunkeringByUserIFO(userId);
             }
         ).then(
             (results: GetROBByUser) => {
