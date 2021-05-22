@@ -17,9 +17,9 @@ export class ExcelService {
   public translateCategory: string = 'dashboard';
   constructor(
     private languageService: LanguageService
-    ) { }
+  ) { }
 
-  public GenerateExcel(){
+  public GenerateExcel() {
 
     // Generamos la data 
     const title = 'Car Sell Report';
@@ -111,16 +111,16 @@ export class ExcelService {
     workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, 'CarData.xlsx');
-    });  
+    });
 
 
   };
 
 
-  public async ExportReportDaily(Voyages: Voyage[] ): Promise<boolean> {
+  public async ExportReportDaily(Voyages: Voyage[]): Promise<boolean> {
 
     const title = 'CONSUMPTION FORMAT';
-    const header = ['PORT N°' ,'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
+    const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
 
 
     // Creamos una nueva hoja de trabajo
@@ -133,9 +133,9 @@ export class ExcelService {
 
       // Creamos la hoja de trabajo.
       let worksheet = workbook.addWorksheet('Voyage ' + voyage.voyageNumber);
-   
-      
-      
+
+
+
       worksheet.columns = [
         { width: 10 },
         { width: 30 },
@@ -171,11 +171,11 @@ export class ExcelService {
       worksheet.addRow([]);
 
       worksheet.addRow([
-        '','','','','','','',
-        'NAVIGATION DATA','','','',
-        'VLSFO CONSUMPTION IN MT','','','',
+        '', '', '', '', '', '', '',
+        'NAVIGATION DATA', '', '', '',
+        'VLSFO CONSUMPTION IN MT', '', '', '',
         'MGO CONSUMPTION IN MT'
-                        ]);
+      ]);
 
       // Fila vacia
       worksheet.mergeCells('H3:K3');
@@ -218,57 +218,57 @@ export class ExcelService {
       let fila = 4;
       let totalTimePerActivityIFO: ActivityPerformed = new ActivityPerformed();
       let totalDistanceMilesByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
-    
+
       let averageSpeedByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
       let averageSpeedCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
-    
+
       let voyageConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
       let dayliConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
-    
+
       let dayliConsumptionCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
       let timePerNavigationCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
       let voyageConsumptionCharterByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
-    
+
       let balanceConsumptionByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
       let balanceTimeByActivityPerformedIFO: ActivityPerformed = new ActivityPerformed();
-    
+
       for await (const port of voyage.ports) {
         let inicioFila = fila;
-        
+
         for await (const dailyReport of port.dailyReports) {
           fila++;
 
-          let totalIFO = dailyReport.mplaIfo+dailyReport.auxIfo+dailyReport.boilerIfo;
-          let totalMGO = dailyReport.mplaMgo+dailyReport.auxMgo+dailyReport.boilerMgo+dailyReport.ppMgo+dailyReport.giMgo;
+          let totalIFO = dailyReport.mplaIfo + dailyReport.auxIfo + dailyReport.boilerIfo;
+          let totalMGO = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.boilerMgo + dailyReport.ppMgo + dailyReport.giMgo;
           worksheet.addRow([
             port.portNumber,
-            port.departurePort,port.arrivalPort,
-            FormatDate(dailyReport.date),dailyReport.hour,
-            this.languageService.GetMessage(this.translateCategory,  dailyReport.activityPerformed),
+            port.departurePort, port.arrivalPort,
+            FormatDate(dailyReport.date), dailyReport.hour,
+            this.languageService.GetMessage(this.translateCategory, dailyReport.activityPerformed),
             dailyReport.observation,
-            mathRound(dailyReport.distance,2),
-            mathRound(dailyReport.steamingTime,2),
-            mathRound((dailyReport.distance>0 && dailyReport.steamingTime>0? dailyReport.distance / dailyReport.steamingTime : 0),2),
+            mathRound(dailyReport.distance, 2),
+            mathRound(dailyReport.steamingTime, 2),
+            mathRound((dailyReport.distance > 0 && dailyReport.steamingTime > 0 ? dailyReport.distance / dailyReport.steamingTime : 0), 2),
             dailyReport.beaufour,
-            mathRound(dailyReport.mplaIfo,2),
-            mathRound(dailyReport.auxIfo,2),
-            mathRound(dailyReport.boilerIfo,2),
-            mathRound(totalIFO,2),
-            mathRound(dailyReport.mplaMgo,2),
-            mathRound(dailyReport.auxMgo,2),
-            mathRound(dailyReport.boilerMgo,2),
-            mathRound(dailyReport.ppMgo,2),
-            mathRound(dailyReport.giMgo,2),
-            mathRound(totalMGO,2)
+            mathRound(dailyReport.mplaIfo, 2),
+            mathRound(dailyReport.auxIfo, 2),
+            mathRound(dailyReport.boilerIfo, 2),
+            mathRound(totalIFO, 2),
+            mathRound(dailyReport.mplaMgo, 2),
+            mathRound(dailyReport.auxMgo, 2),
+            mathRound(dailyReport.boilerMgo, 2),
+            mathRound(dailyReport.ppMgo, 2),
+            mathRound(dailyReport.giMgo, 2),
+            mathRound(totalMGO, 2)
           ]);
-          this.AllFill(worksheet,fila,'f1f6ff');
+          this.AllFill(worksheet, fila, 'f1f6ff');
         }
 
-        worksheet.mergeCells('A'+(inicioFila+1)+':A'+fila);
-        worksheet.mergeCells('B'+(inicioFila+1)+':B'+fila);
-        worksheet.mergeCells('C'+(inicioFila+1)+':C'+fila);
+        worksheet.mergeCells('A' + (inicioFila + 1) + ':A' + fila);
+        worksheet.mergeCells('B' + (inicioFila + 1) + ':B' + fila);
+        worksheet.mergeCells('C' + (inicioFila + 1) + ':C' + fila);
       }
-        
+
       fila++;
       worksheet.addRow([]);
       fila++;
@@ -277,31 +277,31 @@ export class ExcelService {
       worksheet.addRow([]);
 
 
-     /* fila++;
-      worksheet.addRow(['','','',
-                        'ACTIVITY PERFORMED','TOTAL TIME PER ACTIVITY (HRS)','TOTAL DISTANCE (MILES)','AVERAGE SPEED (MILES/HRS)','AVERAGE SPEED (MILES/HRS) (CHARTER)','TOTAL CONSUMPTION (MT)','DAILY CONSUMPTION (MT)','DAILY CONSUMPTION (MT) (CHARTER)','TIME PER NAVIGATION (HRS) (CHARTER)','TOTAL CONSUMPTION (MT) (CHARTER)','BALANCE CONSUMPTION (MT)','BALANCE TIME (HRS)']);
-      this.StyleCellHeader(worksheet,'D'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'E'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'F'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'G'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'H'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'I'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'J'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'K'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'L'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'M'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'N'+fila,'375f9a');
-      this.StyleCellHeader(worksheet,'O'+fila,'375f9a')
-*/
+      /* fila++;
+       worksheet.addRow(['','','',
+                         'ACTIVITY PERFORMED','TOTAL TIME PER ACTIVITY (HRS)','TOTAL DISTANCE (MILES)','AVERAGE SPEED (MILES/HRS)','AVERAGE SPEED (MILES/HRS) (CHARTER)','TOTAL CONSUMPTION (MT)','DAILY CONSUMPTION (MT)','DAILY CONSUMPTION (MT) (CHARTER)','TIME PER NAVIGATION (HRS) (CHARTER)','TOTAL CONSUMPTION (MT) (CHARTER)','BALANCE CONSUMPTION (MT)','BALANCE TIME (HRS)']);
+       this.StyleCellHeader(worksheet,'D'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'E'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'F'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'G'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'H'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'I'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'J'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'K'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'L'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'M'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'N'+fila,'375f9a');
+       this.StyleCellHeader(worksheet,'O'+fila,'375f9a')
+ */
 
     }
-    
 
 
-    workbook.xlsx.writeBuffer().then((data) => {
+    // Escribimos el excel
+    await workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, 'Report.xlsx');
-    });  
+    });
 
 
     return true
@@ -309,83 +309,83 @@ export class ExcelService {
   };
 
 
-  private StyleCellHeader(worksheet:any,cell:string,bg:string) {
+  private StyleCellHeader(worksheet: any, cell: string, bg: string) {
     // Border
     worksheet.getCell(cell).fill = {
       type: 'pattern',
-      pattern:'solid',
-      fgColor:{ argb:bg },
+      pattern: 'solid',
+      fgColor: { argb: bg },
     };
     // font
     worksheet.getCell(cell).font = {
-      color: {argb: "FFFFFF"},
+      color: { argb: "FFFFFF" },
       size: 11,
-      bold: true 
+      bold: true
     };
     // Border
-    worksheet.getCell(cell).border = { 
-      top: { style: 'medium', color: {argb:'155af5'} },
-      left: { style: 'medium', color: {argb:'155af5'} },
-      bottom: { style: 'medium', color: {argb:'155af5'} },
-      right: { style: 'medium', color: {argb:'155af5'} } 
+    worksheet.getCell(cell).border = {
+      top: { style: 'medium', color: { argb: '155af5' } },
+      left: { style: 'medium', color: { argb: '155af5' } },
+      bottom: { style: 'medium', color: { argb: '155af5' } },
+      right: { style: 'medium', color: { argb: '155af5' } }
     }
     // Alinear
-    worksheet.getCell(cell).alignment = { 
-      vertical: 'middle', 
+    worksheet.getCell(cell).alignment = {
+      vertical: 'middle',
       horizontal: 'center',
       wrapText: true
     };
   };
 
-  private AllFill(worksheet:any,numberCell,bg:string){
-    
-    this.StyleCellBodyTable(worksheet, 'A'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'B'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'C'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'D'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'E'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'F'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'G'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'H'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'I'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'J'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'K'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'L'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'M'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'N'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'O'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'P'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'Q'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'R'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'S'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'T'+numberCell, bg);
-    this.StyleCellBodyTable(worksheet, 'U'+numberCell, bg);
+  private AllFill(worksheet: any, numberCell, bg: string) {
+
+    this.StyleCellBodyTable(worksheet, 'A' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'B' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'C' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'D' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'E' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'F' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'G' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'H' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'I' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'J' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'K' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'L' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'M' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'N' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'O' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'P' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'Q' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'R' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'S' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'T' + numberCell, bg);
+    this.StyleCellBodyTable(worksheet, 'U' + numberCell, bg);
   }
-//
-  private StyleCellBodyTable(worksheet:any,cell:string,bg:string) {
+  //
+  private StyleCellBodyTable(worksheet: any, cell: string, bg: string) {
     // Border
     worksheet.getCell(cell).fill = {
       type: 'pattern',
-      pattern:'solid',
-      fgColor:{ argb:bg },
+      pattern: 'solid',
+      fgColor: { argb: bg },
     };
     // font
     worksheet.getCell(cell).font = {
-      color: {argb: "000f3e"},
+      color: { argb: "000f3e" },
       size: 11,
-      bold: false 
+      bold: false
     };
     // Border
-    worksheet.getCell(cell).border = { 
-      top: { style: 'hair', color: {argb:'155af5'} },
-      left: { style: 'hair', color: {argb:'155af5'} },
-      bottom: { style: 'hair', color: {argb:'155af5'} },
-      right: { style: 'hair', color: {argb:'155af5'} } 
+    worksheet.getCell(cell).border = {
+      top: { style: 'hair', color: { argb: '155af5' } },
+      left: { style: 'hair', color: { argb: '155af5' } },
+      bottom: { style: 'hair', color: { argb: '155af5' } },
+      right: { style: 'hair', color: { argb: '155af5' } }
     }
     // Alinear
-    worksheet.getCell(cell).alignment = { 
-      vertical: 'middle', 
-      horizontal: 'center' 
+    worksheet.getCell(cell).alignment = {
+      vertical: 'middle',
+      horizontal: 'center'
     };
   };
   // 3119898 *225

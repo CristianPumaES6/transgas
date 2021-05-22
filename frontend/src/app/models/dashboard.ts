@@ -1,4 +1,6 @@
+// Modelo generico del componente Dashboard.
 
+// Modelo de las actividades realizadas.
 export class ActivityPerformed {
     constructor(
         public loading?: number,
@@ -21,6 +23,7 @@ export class ActivityPerformed {
     }
 }
 
+// Modelo de consumo por equipo MGO
 export class ConsumptionMachineMGO {
     constructor(
         public mpal?: number,
@@ -42,6 +45,8 @@ export class ConsumptionMachineMGO {
 }
 
 
+
+// Modelo de consumo por equipo IFO
 export class ConsumptionMachineIFO {
     constructor(
         public mpal?: number,
@@ -58,3 +63,33 @@ export class ConsumptionMachineIFO {
     }
 }
 
+
+// esta clase se usa para el filtro de dashboard, para las cajas de texto fecha inicio y fin.
+export class FilterWithDate {
+
+    constructor(
+        public isFilterWithDate?: boolean,
+        public startDate?: Date,
+        public endDate?: Date
+    ) {
+        this.isFilterWithDate = isFilterWithDate || false;
+        this.startDate = startDate || null;
+        this.endDate = endDate || null;
+    }
+}
+
+
+// Estructura del cuadro Consumption
+export class ConsumptionAndBunkering{
+    constructor(
+        public ifoConsumption?: number,
+        public mgoConsumption?: number,
+        public ifoBunkering?: number,
+        public mgoBunkering?: number
+    ) {
+        this.ifoConsumption = ifoConsumption || 0;
+        this.mgoConsumption = mgoConsumption || 0;
+        this.ifoBunkering = ifoBunkering || 0;
+        this.mgoBunkering = mgoBunkering || 0;
+    }
+}

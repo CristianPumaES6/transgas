@@ -15,6 +15,7 @@ export class DailyReport {
     // Viaje ID
     @Column()
     portId: number;
+    // El daily report tambien puede retornar un puerto.
     @ManyToOne(type => Port, port => port.id )
     port: Port;
 
@@ -107,4 +108,13 @@ export class DailyReport {
     @Column({ nullable: false })
     status: boolean;
 
+}
+
+export class GetROBByUser{
+
+    total_ifo: number;
+    total_mgo: number;
+    total_bunkering_ifo: number;
+    total_bunkering_mgo: number;
+    
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DailyReport } from 'src/models/daily-report.entity';
+import { DailyReport, GetROBByUser } from 'src/models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
@@ -70,6 +70,105 @@ export class DailyReportsService {
         )
     }
 
+    // Retorna todos los viajes segun filtro.
+    async GetROBByUser(userId: number): Promise<GetROBByUser> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+                
+                .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+                .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+                .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+                .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+                
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status',  { status: 1 })
+                .andWhere('voyage.status = :status',  { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId : userId})
+                
+                .getRawOne()
+                .then(
+                    (result: any) => {
+
+                        let getROBByUser : GetROBByUser = <GetROBByUser>{};
+
+                        // Si no existen valores le doy cero por defecto. 
+                        getROBByUser.total_ifo = result.total_ifo || 0;
+                        getROBByUser.total_mgo = result.total_mgo || 0;
+                        getROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+                        getROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+
+                        return getROBByUser;
+                    }
+                );
+    }
+
+    // Retorna todos los viajes segun filtro.
+    async GetBunkeringByUserIFO(userId: number): Promise<GetROBByUser> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select('daily_report.date', 'date')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+              
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status',  { status: 1 })
+                .andWhere('voyage.status = :status',  { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId : userId})
+                .andWhere('daily_report.bunkeringIfo > 0', {})
+                .orderBy('daily_report.date', 'DESC')
+                .limit(5)
+                .getRawMany()
+                .then(
+                    (result: any) => {
+
+                        return result;
+                    }
+                );
+    }
+    // Retorna todos los viajes segun filtro.
+    async GetBunkeringByUserMGO(userId: number): Promise<GetROBByUser> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+                
+            .select('daily_report.date', 'date')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
+              
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status',  { status: 1 })
+                .andWhere('voyage.status = :status',  { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId : userId})
+                .andWhere('daily_report.bunkeringMgo > 0', {} )
+                .orderBy('daily_report.date', 'DESC')
+                .limit(5)
+                .getRawMany()
+                .then(
+                    (result: any) => {
+
+                        return result;
+                    }
+                );
+    }
     // Actualiza un voyage
     async Update(dailyReport: DailyReport): Promise<DailyReport> {
 

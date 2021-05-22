@@ -312,8 +312,8 @@ export const voyage: any = {
     TOTAL_IFO: 'Total IFO',
     TOTAL_MGO: 'Total MGO',
     NO_BUNKERING: 'No bunkering',
-    DELETE_REPORT:'Delete Report',
-    EDIT_REPORT:'Edit Report'
+    DELETE_REPORT: 'Delete Report',
+    EDIT_REPORT: 'Edit Report'
 }
 
 export const dashboard: any = {
@@ -337,6 +337,11 @@ export const dashboard: any = {
     TITLE_COMSUMPTION_IFO: 'IFO CONSUMPTION',
     TITLE_COMSUMPTION_VLSFO: 'VLSFO CONSUMPTION',
     TITLE_COMSUMPTION_MGO: 'MGO CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_MGO: 'MGO DAILY CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_IFO: 'IFO DAILY CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_LSFO: 'LSFO DAILY CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_VLSFO: 'VLSFO DAILY CONSUMPTION',
+    TITLE_PINTURE_ROB: 'CONSUMPTION AND BUNKERING',
     IFO_CONSUMPTION: 'LSFO CONSUMPTION',
     CONSUMPTION: 'Comsumption',
     TITLE_COMSUMPTION_TRAVEL_SUMMARY: 'DATA LSFO',
@@ -392,7 +397,30 @@ export const dashboard: any = {
     TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
     TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT: 'Daily consumption of equipment per contract.',
     TOOLTIP_DAILY_BALANCE_EQUIPMENT: 'Consumption balance.\n( DAILY CONSUMPTION (MT) - DAILY CONSUMPTION (MT) (CHARTER) )',
-    TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)'
+    TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
+    NO_YEARS_REGISTER: 'The selected vessel does not have a year to display the data.',
+    ERROR_GET_VOYAGES: 'Cound not get voyage data.',
+    NULL_START_DATE: 'Check the start date filter.',
+    NULL_END_DATE: 'Check the end date filter.',
+    ERROR_START_DATE: 'The start date cannot be higher than the end date.',
+    VOYAGE_NOT_FOUND: 'The selected voyage was not found.',
+    // DATOS DEL CUADRO DE ROB AND BUNKERING
+    CONSUMPTION_IFO: 'IFO Consumption',
+    CONSUMPTION_LSFO: 'LSFO Consumption',
+    CONSUMPTION_VLSFO: 'VLSFO Consumption ',
+    CONSUMPTION_MGO: 'MGO Consumption',
+    BUNKERING_IFO: 'IFO Bunkering',
+    BUNKERING_LSFO: 'LSFO Bunkering',
+    BUNKERING_VLSFO: 'VLSFO Bunkering',
+    BUNKERING_MGO: 'MGO Bunkering',
+    ROB_IFO: 'ROB IFO',
+    ROB_MGO: 'ROB MGO',
+    TOOLTIP_CONSUMPTION_IFO: 'Total consumption.',
+    TOOLTIP_CONSUMPTION_MGO: 'Total consumption.',
+    TOOLTIP_BUNKERING_IFO: 'Total bunkering.',
+    TOOLTIP_BUNKERING_MGO: 'Total bunkering.',
+    TOOLTIP_ROB_IFO: 'ROB',
+    TOOLTIP_ROB_MGO: 'ROB'
 }
 
 export const dialog: any = {

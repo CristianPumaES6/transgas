@@ -42,12 +42,16 @@ export class Voyage {
     totalMGO: number;
     totalIFO: number;
     totalSpeed: Speed;
+    totalBunkeringIFO: number;
+    totalBunkeringMGO: number;
     // Numero total de puertos
     totalPort: number = 0;
     dayStart: String;
     dayEnd: String;
 }
 
+// Modelo para la consulta de viajes por años.
+// Es un modeo generico.
 export class VoyageFilterByYears {
 
     constructor(

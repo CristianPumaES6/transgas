@@ -1,3 +1,4 @@
+<!-- Diseño del filtro, solo para dispositivos moviles. -->
 <div class="component-filter" [ngClass]="{'component-filter-none': !isViewFilter}">
 
   <div class="row no-gutters">
@@ -5,7 +6,7 @@
 
       <h6 class="card-title tx-14 mb-3">
         {{ 'Legend' | translateMessage:translateCategory }}
-        <span class="close-icon" (click)="viewFilter(false)">
+        <span class="close-icon" (click)="ViewFilter(false)">
           <i class="icon-x2"></i>
         </span>
       </h6>
@@ -47,20 +48,16 @@
 
       <mat-form-field>
         <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
-        <mat-select [(ngModel)]="summaryBy">
+        <mat-select [(ngModel)]="selectSummaryBy">
 
-          <mat-option value="{{'VOYAGES'}}" (click)="ClickSummaryBy()">
-            {{'VOYAGES' | translateMessage:translateCategory}}
-          </mat-option>
-          <mat-option value="{{'PORTS'}}" (click)="ClickSummaryBy()">
-            {{'PORTS' | translateMessage:translateCategory}}
-          </mat-option>
-          <mat-option value="{{'MONTHS'}}" (click)="ClickSummaryBy()">
-            {{'MONTHS' | translateMessage:translateCategory}}
-          </mat-option>
-          <mat-option value="{{'DAYS'}}" (click)="ClickSummaryBy()">
-            {{'DAYS' | translateMessage:translateCategory}}
-          </mat-option>
+
+          <ng-template ngFor let-iTypeSummaryVoyage [ngForOf]="typeSummaryVoyageList" let-i="index">
+            <mat-option value="{{iTypeSummaryVoyage}}" (click)="ClickSummaryBy()">
+              {{iTypeSummaryVoyage | translateMessage:translateCategory}}
+            </mat-option>
+          </ng-template>
+
+
         </mat-select>
       </mat-form-field>
 
@@ -73,7 +70,7 @@
 
       <mat-form-field>
         <mat-label>{{'END_DATE' | translateMessage:translateCategory}}</mat-label>
-        <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" (keyup.enter)="ClickFilterWithDate()">
         <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
         <mat-datepicker #picker2 startView="year"></mat-datepicker>
       </mat-form-field>
@@ -96,41 +93,33 @@
 
       <mat-form-field>
         <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
-        <mat-select [formControl]="activityPerformed" multiple>
+        <mat-select [formControl]="frmCActivityPerformed" multiple>
           <mat-select-trigger>
-            {{(activityPerformed.value ? activityPerformed.value[0] : '' )| translateMessage:translateCategory}}
-            <span *ngIf="activityPerformed.value?.length > 1" class="span-select">
-              (+{{activityPerformed.value.length - 1}}
-              {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
+            {{(frmCActivityPerformed.value ? frmCActivityPerformed.value[0] : '' )| translateMessage:translateCategory}}
+            <span class="span-select" *ngIf="frmCActivityPerformed.value?.length > 1">
+              (+{{frmCActivityPerformed.value.length - 1}}
+              {{frmCActivityPerformed.value?.length === 2 ? 'other' : 'others'}})
             </span>
           </mat-select-trigger>
-          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity" (click)="FilterByActivities()">
+          <mat-option *ngFor="let activity of activityPerformedList" [value]="activity"
+            (click)="SelectFilterByActivities()">
             {{ activity | translateMessage:translateCategory}}</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{
+      <button class="btn btn-outline-primary mg-b-30" id="btn_clear" type="button" (click)="ClearFilter()">{{
         'CLEAR' | translateMessage:translateCategory}}</button>
-
-      <div class="row" style="opacity: 0;">
-        <div class="col-6">
-          <h6 class="font-small-3">
-            <span>Day :</span>{{cantDiasDashboard}}
-          </h6>
-        </div>
-      </div>
-
 
       <br><br>
       <div class="row">
-        <a (click)="ExportExcel()" class="pr-3 pb-3 buttom_Excel">
+        <a class="pr-3 pb-3 buttom_Excel" (click)="ClickExportExcel()">
           <span class="icon-archivo-excel"></span>
         </a>
 
 
 
         <ng-template [ngIf]="!!selectVoyageId">
-          <a (click)="ExportPDF()" class="pr-3 pb-3 buttom_pdf">
+          <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
             <span class="icon-archivo-pdf"></span>
           </a>
         </ng-template>
@@ -142,13 +131,18 @@
 
 </div>
 
+
+<!-- Hambirgesa para que nuestro filtro se muestre -->
 <div class="component-fixed-bottom fixed-bottom text-right pb-2 pr-2">
-  <button (click)="viewFilter(true)" class="outline-none" mat-mini-fab color="primary"
-    aria-label="Example icon button with a bookmark icon">
-    <mat-icon class="icon-filter"></mat-icon>
+  <button class="outline-none" aria-label="Example icon button with a bookmark icon" (click)="ViewFilter(true)"
+    mat-mini-fab color="primary">
+    <mat-icon class="icon-filter"> </mat-icon>
   </button>
 </div>
 
+
+
+<!-- Contenedor de toda la vista del dashboard. -->
 <div class="body-full-container">
 
   <div
@@ -532,10 +526,197 @@
       </div><!-- col-3 -->
 
 
+      <div id="PintureROB"
+        [className]="!selectUser.isDisplayDataLSFO ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
+
+
+        <div class="card card-body background-cuadro p-2">
+
+          <div class="container mt-2">
+            <ng-template
+              [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
+              <div class="col-6 text-center">
+
+                <div class="card-title tx-14 mb-1 color-blue-3">ROB</div>
+                <h1 class="card-title pricing-card-title color-blue-3">
+                  {{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo -
+                  getROBByUser.total_ifo, 1)}}
+                  <small class="text-muted">/ {{ selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+                    'VLSFO' :
+                    'LSFO'}}
+                  </small>
+                </h1>
+
+
+                <ng-template
+                  [ngIf]="consumptionAndBunkering.ifoConsumption > 0 || consumptionAndBunkering.ifoBunkering > 0">
+
+                  <ul class="list-unstyled mt-3 mb-4">
+                    <li class="color-blue-3 font-weight-bold">By Filter:</li>
+
+
+                    <ng-template [ngIf]="consumptionAndBunkering.ifoConsumption > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.ifoConsumption, 1)}}
+                        consumption</li>
+                    </ng-template>
+                    <ng-template [ngIf]="consumptionAndBunkering.ifoBunkering > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.ifoBunkering, 1)}}
+                        bunkering</li>
+                    </ng-template>
+                  </ul>
+                </ng-template>
+
+              </div>
+            </ng-template>
+
+
+
+            <ng-template [ngIf]="selectUser.isConsumptionMGO">
+
+              <div class="col-6 text-center">
+                <div class="card-title tx-14 mb-1 color-blue-3">ROB</div>
+
+                <h1 class="card-title pricing-card-title color-blue-3">
+                  {{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo -
+                  getROBByUser.total_mgo, 1)}}
+                  <small class="text-muted">/ MGO</small>
+                </h1>
+
+                <ng-template
+                  [ngIf]="consumptionAndBunkering.mgoConsumption > 0 || consumptionAndBunkering.mgoBunkering > 0">
+
+                  <ul class="list-unstyled mt-3 mb-4">
+                    <li class="color-blue-3 font-weight-bold">By Filter:</li>
+                    <ng-template [ngIf]="consumptionAndBunkering.mgoConsumption > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.mgoConsumption, 1)}}
+                        consumption</li>
+                    </ng-template>
+                    <ng-template [ngIf]="consumptionAndBunkering.mgoBunkering > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.mgoBunkering, 1)}}
+                        bunkering</li>
+                    </ng-template>
+
+                  </ul>
+                </ng-template>
+
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="PerfectScrollbar-table-data-LSFO d-none">
+
+            <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
+              <thead>
+                <tr>
+
+                  <ng-template
+                    [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
+
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ (selectUser.isConsumptionIFO ? 'CONSUMPTION_IFO' : selectUser.isConsumptionVLSFO ?
+                      'CONSUMPTION_VLSFO' :
+                      'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
+
+                      <span matTooltip="{{'TOOLTIP_CONSUMPTION_IFO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ (selectUser.isConsumptionIFO ? 'BUNKERING_IFO' : selectUser.isConsumptionVLSFO ?
+                      'BUNKERING_VLSFO' :
+                      'BUNKERING_LSFO') | translateMessage:translateCategory}}
+                      <span matTooltip="{{'TOOLTIP_BUNKERING_IFO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      {{ 'ROB_IFO' | translateMessage:translateCategory }}
+                      <span matTooltip="{{'TOOLTIP_ROB_IFO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                  </ng-template>
+
+                  <ng-template [ngIf]="selectUser.isConsumptionMGO">
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ 'CONSUMPTION_MGO' | translateMessage:translateCategory }}
+                      <span matTooltip="{{'TOOLTIP_CONSUMPTION_MGO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{ 'BUNKERING_MGO' | translateMessage:translateCategory }}
+                      <span matTooltip="{{'TOOLTIP_BUNKERING_MGO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                    <th class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      {{ 'ROB_MGO' | translateMessage:translateCategory }}
+                      <span matTooltip="{{'TOOLTIP_ROB_MGO' | translateMessage:translateCategory}}"
+                        matTooltipClass="multiline">
+                        <i class="icon-menu-help"></i>
+                      </span>
+                    </th>
+                  </ng-template>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr>
+
+                  <ng-template
+                    [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_ifo, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo -
+                      getROBByUser.total_ifo, 1)}}</th>
+                  </ng-template>
+
+                  <ng-template [ngIf]="selectUser.isConsumptionMGO">
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_mgo, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo -
+                      getROBByUser.total_mgo, 1)}}</th>
+
+
+                  </ng-template>
+                </tr>
+                <br>
+
+                <tr>
+
+                  <ng-template
+                    [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.ifoConsumption, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.ifoBunkering, 1)}}</th>
+                    <th class="p-1 border"></th>
+                  </ng-template>
+
+                  <ng-template [ngIf]="selectUser.isConsumptionMGO">
+
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.mgoConsumption, 1)}}</th>
+                    <th class="p-1 border">{{MathRoundOneDecimal(consumptionAndBunkering.mgoBunkering, 1)}}</th>
+                    <th class="p-1 border"></th>
+                  </ng-template>
+
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div><!-- card-header -->
+      </div><!-- col-3 -->
+
+
     </div>
 
 
-
+    <!-- Filtro en el body solo se muestra en pantallas grandes. -->
     <div class="no-gutters
     col-2
     d-none d-sm-none d-md-block">
@@ -583,22 +764,18 @@
 
           <mat-form-field>
 
-            <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
-            <mat-select [(ngModel)]="summaryBy">
 
-              <mat-option value="{{'VOYAGES'}}" (click)="ClickSummaryBy()">
-                {{'VOYAGES' | translateMessage:translateCategory}}
-              </mat-option>
-              <mat-option value="{{'PORTS'}}" (click)="ClickSummaryBy()">
-                {{'PORTS' | translateMessage:translateCategory}}
-              </mat-option>
-              <mat-option value="{{'MONTHS'}}" (click)="ClickSummaryBy()">
-                {{'MONTHS' | translateMessage:translateCategory}}
-              </mat-option>
-              <mat-option value="{{'DAYS'}}" (click)="ClickSummaryBy()">
-                {{'DAYS' | translateMessage:translateCategory}}
-              </mat-option>
+            <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
+            <mat-select [(ngModel)]="selectSummaryBy">
+
+              <ng-template ngFor let-iTypeSummaryVoyage [ngForOf]="typeSummaryVoyageList" let-i="index">
+                <mat-option value="{{iTypeSummaryVoyage}}" (click)="ClickSummaryBy()">
+                  {{iTypeSummaryVoyage | translateMessage:translateCategory}}
+                </mat-option>
+              </ng-template>
+
             </mat-select>
+
 
           </mat-form-field>
 
@@ -611,7 +788,7 @@
 
           <mat-form-field>
             <mat-label>{{'END_DATE' | translateMessage:translateCategory}}</mat-label>
-            <input matInput [matDatepicker]="picker4" [(ngModel)]="endDate" (keyup.enter)="GenerateReporteByDate()">
+            <input matInput [matDatepicker]="picker4" [(ngModel)]="endDate" (keyup.enter)="ClickFilterWithDate()">
             <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
             <mat-datepicker #picker4 startView="year"></mat-datepicker>
           </mat-form-field>
@@ -634,43 +811,37 @@
 
           <mat-form-field>
             <mat-label>{{ 'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
-            <mat-select [formControl]="activityPerformed" multiple>
+            <mat-select [formControl]="frmCActivityPerformed" multiple>
               <mat-select-trigger>
-                {{(activityPerformed.value ? activityPerformed.value[0] : '' )| translateMessage:translateCategory}}
-                <span *ngIf="activityPerformed.value?.length > 1" class="span-select">
-                  (+{{activityPerformed.value.length - 1}}
-                  {{activityPerformed.value?.length === 2 ? 'other' : 'others'}})
+                {{(frmCActivityPerformed.value ? frmCActivityPerformed.value[0] : '' )|
+                translateMessage:translateCategory}}
+                <span class="span-select" *ngIf="frmCActivityPerformed.value?.length > 1">
+                  (+{{frmCActivityPerformed.value.length - 1}}
+                  {{frmCActivityPerformed.value?.length === 2 ? 'other' : 'others'}})
                 </span>
               </mat-select-trigger>
               <mat-option *ngFor="let activity of activityPerformedList" [value]="activity"
-                (click)="FilterByActivities()">
+                (click)="SelectFilterByActivities()">
                 {{ activity | translateMessage:translateCategory}}</mat-option>
             </mat-select>
           </mat-form-field>
 
-          <button type="button" id="btn_clear" class="btn btn-outline-primary mg-b-30" (click)="ClearFilter()">{{
+          <button class="btn btn-outline-primary mg-b-30" id="btn_clear" type="button" (click)="ClearFilter()">{{
             'CLEAR' | translateMessage:translateCategory}}</button>
 
-          <div class="row" style="opacity: 0;">
-            <div class="col-6">
-              <h6 class="font-small-3">
-                <span>Day :</span>{{cantDiasDashboard}}
-              </h6>
-            </div>
-          </div>
 
 
           <br><br>
           <div class="row">
 
             <div class="row">
-              <a (click)="ExportExcel()" class="pr-3 pb-3 buttom_Excel">
+              <a class="pr-3 pb-3 buttom_Excel" (click)="ClickExportExcel()">
                 <span class="icon-archivo-excel"></span>
               </a>
-      
-      
+
+
               <ng-template [ngIf]="!!selectVoyageId">
-                <a (click)="ExportPDF()" class="pr-3 pb-3 buttom_pdf">
+                <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
                   <span class="icon-archivo-pdf"></span>
                 </a>
               </ng-template>
@@ -682,6 +853,7 @@
         </div><!-- card -->
       </div>
     </div>
+    <!-- Fin del filtro en el body solo se muestra en pantallas grandes. -->
 
   </div>
 
@@ -741,7 +913,7 @@
                       <i class="icon-menu-help"></i>
                     </span>
                   </th>
-                  <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
+                  <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
                     {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
                     <span matTooltip="{{'TOOLTIP_REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}"
                       matTooltipClass="multiline">
@@ -1253,7 +1425,7 @@
                       <i class="icon-menu-help"></i>
                     </span>
                   </th>
-                  <th class="color-title-table blue-2 border font-small-2 align-top pt-1">
+                  <th class="color-title-table blue-1 border font-small-2 align-top pt-1">
                     {{'REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
                     <span matTooltip="{{'TOOLTIP_REAL_TOTAL_CONSUMPTION' | translateMessage:translateCategory}}"
                       matTooltipClass="multiline">
@@ -1395,7 +1567,7 @@
                     {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.ballast,2)}}
                   </td>
                   <td class="p-1 border"
-                  [ngClass]="{
+                    [ngClass]="{
                     'color-max': averageSpeedByActivityPerformedMGO.ballast != 0 && averageSpeedCharterByActivityPerformedMGO.ballast != 0  && averageSpeedByActivityPerformedMGO.ballast < averageSpeedCharterByActivityPerformedMGO.ballast,
                     'color-min': averageSpeedByActivityPerformedMGO.ballast != 0 && averageSpeedCharterByActivityPerformedMGO.ballast != 0  && averageSpeedByActivityPerformedMGO.ballast > averageSpeedCharterByActivityPerformedMGO.ballast }">
                     {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.ballast,2)}}</td>
@@ -1509,8 +1681,8 @@
                   </td>
                   <td class="p-1 border"
                     [ngClass]="{
-              'color-max': dayliConsumptionByActivityPerformedMGO.economical != 0 && dayliConsumptionCharterByActivityPerformedMGO.economical != 0  && dayliConsumptionByActivityPerformedMGO.economical > dayliConsumptionCharterByActivityPerformedMGO.economical,
-              'color-min':  dayliConsumptionByActivityPerformedMGO.economical != 0 && dayliConsumptionCharterByActivityPerformedMGO.economical != 0  && dayliConsumptionByActivityPerformedMGO.economical < dayliConsumptionCharterByActivityPerformedMGO.economical }">
+                                                  'color-max': dayliConsumptionByActivityPerformedMGO.economical != 0 && dayliConsumptionCharterByActivityPerformedMGO.economical != 0  && dayliConsumptionByActivityPerformedMGO.economical > dayliConsumptionCharterByActivityPerformedMGO.economical,
+                                                  'color-min':  dayliConsumptionByActivityPerformedMGO.economical != 0 && dayliConsumptionCharterByActivityPerformedMGO.economical != 0  && dayliConsumptionByActivityPerformedMGO.economical < dayliConsumptionCharterByActivityPerformedMGO.economical }">
                     {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.economical,2)}}
                   </td>
                   <td class="p-1 border">
@@ -1537,8 +1709,7 @@
                 <tr>
                   <th class="p-1 color-title-table border">{{'ANCHORED' | translateMessage:translateCategory}}</th>
                   <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.anchor,2)}}</td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,2)}}
-                  </td>
+                  <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,2)}}</td>
                   <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.anchor,2)}}</td>
                   <td class="p-1 border">
                     {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.anchor,2)}}
@@ -1715,14 +1886,14 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="modalDisplayView" tabindex="-1" role="dialog" aria-labelledby="modalDisplayViewLabel"
-  aria-hidden="true">
+<div class="modal fade" id="modalDisplayView" role="dialog" aria-hidden="true" aria-labelledby="modalDisplayViewLabel"
+  tabindex="-1">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalDisplayViewLabel">
           DISPLAY DASHBOARD</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button class="close" data-dismiss="modal" type="button" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -1733,43 +1904,43 @@
 
 
         <br>
-        <mat-checkbox [(ngModel)]="selectUser.isDisplayLSFOConsumption" class="pl-2" [disabled]='disableEdit'>
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayLSFOConsumption">
           LSFO
           CONSUMPTION
         </mat-checkbox>
         <br>
-        <mat-checkbox [(ngModel)]="selectUser.isDisplayMGOConsumption" class="pl-2" [disabled]='disableEdit'> MGO
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayMGOConsumption"> MGO
           CONSUMPTION
         </mat-checkbox>
         <br>
-        <mat-checkbox [(ngModel)]="selectUser.isDisplayAverageSpeed" class="pl-2" [disabled]='disableEdit'>
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayAverageSpeed">
           AVERAGE
           SPEED
         </mat-checkbox>
 
         <br>
-        <mat-checkbox [(ngModel)]="selectUser.isDisplayDataMGO" class="pl-2" [disabled]='disableEdit'> DATA MGO
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayDataMGO"> DATA MGO
         </mat-checkbox>
         <br>
 
-        <mat-checkbox [(ngModel)]="selectUser.isDisplayDataLSFO" [disabled]='disableEdit' class="pl-2"> DATA
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayDataLSFO"> DATA
           LSFO
         </mat-checkbox>
 
         <br>
-        <mat-checkbox [(ngModel)]="selectUser.isDisplayVesselPerformanceLSFO" class="pl-2" [disabled]='disableEdit'>
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayVesselPerformanceLSFO">
           VESSEL PERFORMANCE LSFO
         </mat-checkbox>
         <br>
-        <mat-checkbox [(ngModel)]="selectUser.isDisplayVesselPerformanceMGO" class="pl-2" [disabled]='disableEdit'>
+        <mat-checkbox class="pl-2" [(ngModel)]="selectUser.isDisplayVesselPerformanceMGO">
           VESSEL PERFORMANCE MGO
         </mat-checkbox>
 
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+        <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancel</button>
+        <button class="btn btn-primary" data-dismiss="modal" type="button">Ok</button>
       </div>
     </div>
   </div>
