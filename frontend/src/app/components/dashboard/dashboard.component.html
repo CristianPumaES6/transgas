@@ -528,57 +528,82 @@
 
       <div id="PintureROB"
         [className]="!selectUser.isDisplayDataLSFO ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
-       
-       
+
+
         <div class="card card-body background-cuadro p-2">
 
-          <h6 class="card-title tx-14 mb-1 text-center">
-            {{ 'TITLE_PINTURE_ROB' | translateMessage:translateCategory }}
+          <div class="container mt-2">
+            <ng-template
+              [ngIf]="selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO ||  this.selectUser.isConsumptionLSFO">
+              <div class="col-6 text-center">
 
-          </h6>
+                <div class="card-title tx-14 mb-1 color-blue-3">ROB</div>
+                <h1 class="card-title pricing-card-title color-blue-3">
+                  {{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo -
+                  getROBByUser.total_ifo, 1)}}
+                  <small class="text-muted">/ {{ selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+                    'VLSFO' :
+                    'LSFO'}}
+                  </small>
+                </h1>
 
-          <div class="container">
-            <div class="col-6 text-center">
-             
-              <div class="text-center">ROB</div>
-              <h1 class="card-title pricing-card-title"> 
-                {{MathRoundOneDecimal(getROBByUser.total_bunkering_ifo -
-                getROBByUser.total_ifo, 1)}}
-                <small class="text-muted">/ {{ selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
-                  'VLSFO' :
-                  'LSFO'}}
-                </small>
-              </h1>
 
-       
-              <ul class="list-unstyled mt-3 mb-4">
-                <li>By Filter:</li>
+                <ng-template
+                  [ngIf]="consumptionAndBunkering.ifoConsumption > 0 || consumptionAndBunkering.ifoBunkering > 0">
 
-                <li>{{MathRoundOneDecimal(consumptionAndBunkering.ifoConsumption, 1)}} consumption</li>
-                <li>{{MathRoundOneDecimal(consumptionAndBunkering.ifoBunkering, 1)}} bunkering</li>
-              </ul>
-            
-            </div>
-            <div class="col-6 text-center">
-              <div class="text-center">ROB</div>
+                  <ul class="list-unstyled mt-3 mb-4">
+                    <li class="color-blue-3 font-weight-bold">By Filter:</li>
 
-              <h1 class="card-title pricing-card-title"> 
-                {{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo -
-                getROBByUser.total_mgo, 1)}}
-                <small class="text-muted">/ MGO</small>
-              </h1>
-         
-              <ul class="list-unstyled mt-3 mb-4">
-                <li>By Filter:</li>
 
-                <li>{{MathRoundOneDecimal(consumptionAndBunkering.mgoConsumption, 1)}} consumption</li>
-                <li>{{MathRoundOneDecimal(consumptionAndBunkering.mgoBunkering, 1)}} bunkering</li>
-              </ul>
-              
-            </div>
+                    <ng-template [ngIf]="consumptionAndBunkering.ifoConsumption > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.ifoConsumption, 1)}}
+                        consumption</li>
+                    </ng-template>
+                    <ng-template [ngIf]="consumptionAndBunkering.ifoBunkering > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.ifoBunkering, 1)}}
+                        bunkering</li>
+                    </ng-template>
+                  </ul>
+                </ng-template>
+
+              </div>
+            </ng-template>
+
+
+
+            <ng-template [ngIf]="selectUser.isConsumptionMGO">
+
+              <div class="col-6 text-center">
+                <div class="card-title tx-14 mb-1 color-blue-3">ROB</div>
+
+                <h1 class="card-title pricing-card-title color-blue-3">
+                  {{MathRoundOneDecimal(getROBByUser.total_bunkering_mgo -
+                  getROBByUser.total_mgo, 1)}}
+                  <small class="text-muted">/ MGO</small>
+                </h1>
+
+                <ng-template
+                  [ngIf]="consumptionAndBunkering.mgoConsumption > 0 || consumptionAndBunkering.mgoBunkering > 0">
+
+                  <ul class="list-unstyled mt-3 mb-4">
+                    <li class="color-blue-3 font-weight-bold">By Filter:</li>
+                    <ng-template [ngIf]="consumptionAndBunkering.mgoConsumption > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.mgoConsumption, 1)}}
+                        consumption</li>
+                    </ng-template>
+                    <ng-template [ngIf]="consumptionAndBunkering.mgoBunkering > 0">
+                      <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.mgoBunkering, 1)}}
+                        bunkering</li>
+                    </ng-template>
+
+                  </ul>
+                </ng-template>
+
+              </div>
+            </ng-template>
           </div>
-            
-          <div class="PerfectScrollbar-table-data-LSFO">
+
+          <div class="PerfectScrollbar-table-data-LSFO d-none">
 
             <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
               <thead>
@@ -601,8 +626,7 @@
                       {{ (selectUser.isConsumptionIFO ? 'BUNKERING_IFO' : selectUser.isConsumptionVLSFO ?
                       'BUNKERING_VLSFO' :
                       'BUNKERING_LSFO') | translateMessage:translateCategory}}
-                      <span
-                        matTooltip="{{'TOOLTIP_BUNKERING_IFO' | translateMessage:translateCategory}}"
+                      <span matTooltip="{{'TOOLTIP_BUNKERING_IFO' | translateMessage:translateCategory}}"
                         matTooltipClass="multiline">
                         <i class="icon-menu-help"></i>
                       </span>
@@ -626,8 +650,7 @@
                     </th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{ 'BUNKERING_MGO' | translateMessage:translateCategory }}
-                      <span
-                        matTooltip="{{'TOOLTIP_BUNKERING_MGO' | translateMessage:translateCategory}}"
+                      <span matTooltip="{{'TOOLTIP_BUNKERING_MGO' | translateMessage:translateCategory}}"
                         matTooltipClass="multiline">
                         <i class="icon-menu-help"></i>
                       </span>
@@ -708,9 +731,6 @@
             </div>
             <div class="col-6">
               <span class="cudrado-green"><i></i></span> <label class="">Min</label>
-            </div>
-            <div>
-              {{getROBByUser.total_ifo}}
             </div>
           </div>
         </div>
@@ -1689,8 +1709,7 @@
                 <tr>
                   <th class="p-1 color-title-table border">{{'ANCHORED' | translateMessage:translateCategory}}</th>
                   <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.anchor,2)}}</td>
-                  <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,2)}}
-                  </td>
+                  <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,2)}}</td>
                   <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.anchor,2)}}</td>
                   <td class="p-1 border">
                     {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.anchor,2)}}
