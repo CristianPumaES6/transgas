@@ -285,7 +285,7 @@ export class DashboardComponent implements OnInit {
       result => {
 
         if (!result) throw 'ERROR_SELECT_USER';
-
+        this.ExportPDF()
         // Activamos el loading.
         this.loadingService.Close();
       }
@@ -1114,133 +1114,139 @@ export class DashboardComponent implements OnInit {
     // El tamaño de un documento es 210 y 297
     // width 210
     // Heigth 297
+    let voyage = this.generateVoyages[0]
+    let port = voyage.ports[0];
+
+
+    // Armamos el objeto de JSPDF
+    const doc = new jsPDF();
+    // tamaño de pdf.
+    var widthPDF = doc.internal.pageSize.getWidth();
+    var heightPDF = doc.internal.pageSize.getHeight();
+
+    // Nos ubicamos a una altura.
+    let height = 38;
+    // ubicamos la imagen con un tamaño de 50 x 50
+    doc.addImage("./assets/icons/logotransgas.png", "JPEG", (widthPDF - 50) / 2, height, 50, 50)
+    // le sumamos la altura.
+    height += 55;
+
+    // le sumamos la altura.
+    height += 10;
+    doc.setFontSize(35);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('Vessel Performance Report', widthPDF / 2, height, { align: 'center' })
+
+    // le sumamos la altura.
+    height += 10;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('Prepared For:', widthPDF / 2, height, { align: 'center' })
+
+    // le sumamos la altura.
+    height += 12;
+    doc.setFontSize(30);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(this.selectUser.name, widthPDF / 2, height, { align: 'center' })
+
+    // le sumamos la altura.
+    height += 20;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('N° Port: ' + port.portNumber, widthPDF / 2, height, { align: 'center' })
+
+    // le sumamos la altura.
+    height += 12;
+    doc.setFontSize(30);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(port.departurePort + " to " + port.arrivalPort, widthPDF / 2, height, { align: 'center' })
+
+    // le sumamos la altura.
+    height += 10;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("ATD: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, widthPDF / 2, height, { align: 'center' })
+
+    // le sumamos la altura.
+    height += 10;
+    doc.setFontSize(10);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("ATA: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, widthPDF / 2, height, { align: 'center' })
+
+    // Le sumamos la altura.
+    // Dibujaremos los cuadrados.
+    height += 20;
+    // Filled red square with black borders
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    doc.rect(10, height, 210 - (10 * 2), 50, "FD");
+
+    // Cuadro chiquito donde esta el titulo.
+    height -= 5;
+    doc.setDrawColor(0);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(30, height, 210 - (56 * 2), 8, "FD");
+    // Texto
+    doc.setFontSize(10);
+    doc.setTextColor("ffffff");
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Report Summary - Normal Speed Conditions (Laden)", 35, height + 5, { align: 'left' })
+
+    // Posicion normal dentro del cuadro.
+    height += 5;
+    height += 10;
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Original Warranted Values ", 75, height, { align: 'left' })
+    doc.text("Calculation Results", 140, height, { align: 'left' })
+
+    height += 10;
+    doc.setTextColor(0, 0, 0);
+    doc.text("Speed", 15, height, { align: 'left' })
+    doc.setTextColor(22, 33, 77);
+    doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " Knots", 75, height, { align: 'left' })
+    doc.setTextColor("960e0e");
+    doc.text("---- Hours Lost", 140, height, { align: 'left' })
+
+    height += 10;
+    doc.setTextColor(0, 0, 0);
+    doc.text("Fuel Consumption", 15, height, { align: 'left' })
+    doc.setTextColor(22, 33, 77);
+    doc.text("about " + this.selectUser.contractSpeedSailingLadenIFO + " MT/Day", 75, height, { align: 'left' })
+    doc.setTextColor(0, 0, 0);
+    doc.text("Within Guaranteed Limits", 140, height, { align: 'left' })
+
+    height += 10;
+    doc.setTextColor(0, 0, 0);
+    doc.text("Diesel Consumption", 15, height, { align: 'left' })
+    doc.setTextColor(22, 33, 77);
+    doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " MT/Day", 75, height, { align: 'left' })
+    doc.setTextColor("960e0e");
+    doc.text("---- MT - OverConsumed", 140, height, { align: 'left' })
+
+
+
+    doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
+
 
     // recorremos los viajes 
-    for await (const voyage of this.generateVoyages) {
-
-      // Recorremos los puertos.
-      for await (const port of voyage.ports) {
-        // Armamos el objeto de JSPDF
-        const doc = new jsPDF();
-        // tamaño de pdf.
-        var widthPDF = doc.internal.pageSize.getWidth();
-
-
-        // Nos ubicamos a una altura.
-        let height = 38;
-        // ubicamos la imagen con un tamaño de 50 x 50
-        doc.addImage("./assets/icons/logotransgas.png", "JPEG", (widthPDF - 50) / 2, height, 50, 50)
-        // le sumamos la altura.
-        height += 55;
-
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(35);
-        doc.setTextColor(22, 33, 77);
-        doc.setFont('Helvetica', 'bold');
-        doc.text('Vessel Performance Report', widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(18);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text('Prepared For:', widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 12;
-        doc.setFontSize(30);
-        doc.setTextColor(22, 33, 77);
-        doc.setFont('Helvetica', 'bold');
-        doc.text(this.selectUser.name, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 20;
-        doc.setFontSize(18);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text('N° Port: ' + port.portNumber, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 12;
-        doc.setFontSize(30);
-        doc.setTextColor(22, 33, 77);
-        doc.setFont('Helvetica', 'bold');
-        doc.text(port.departurePort + " to " + port.arrivalPort, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(18);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text("ATD: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(10);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text("Date: " + TextMonthDayYearFormatYYYYMMDD(FormatDate(GetDate())), widthPDF / 2, height, { align: 'center' }) // REVISAR ESTO. el formato de la fecha no es correcto.
-
-        // Le sumamos la altura.
-        // Dibujaremos los cuadrados.
-        height += 20;
-        // Filled red square with black borders
-        doc.setDrawColor(0);
-        doc.setFillColor(255, 255, 255);
-        doc.rect(10, height, 210 - (10 * 2), 50, "FD");
-
-        // Cuadro chiquito donde esta el titulo.
-        height -= 5;
-        doc.setDrawColor(0);
-        doc.setFillColor(22, 33, 77);
-        doc.rect(30, height, 210 - (56 * 2), 8, "FD");
-        // Texto
-        doc.setFontSize(10);
-        doc.setTextColor("ffffff");
-        doc.setFont('Helvetica', 'bold');
-        doc.text("Report Summary - Normal Speed Conditions (Laden)", 35, height + 5, { align: 'left' })
-
-        // Posicion normal dentro del cuadro.
-        height += 5;
-        height += 10;
-
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.setFont('Helvetica', 'bold');
-        doc.text("Original Warranted Values ", 75, height, { align: 'left' })
-        doc.text("Calculation Results", 140, height, { align: 'left' })
-
-        height += 10;
-        doc.setTextColor(0, 0, 0);
-        doc.text("Speed", 15, height, { align: 'left' })
-        doc.setTextColor(22, 33, 77);
-        doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " Knots", 75, height, { align: 'left' })
-        doc.setTextColor("960e0e");
-        doc.text("---- Hours Lost", 140, height, { align: 'left' })
-
-        height += 10;
-        doc.setTextColor(0, 0, 0);
-        doc.text("Fuel Consumption", 15, height, { align: 'left' })
-        doc.setTextColor(22, 33, 77);
-        doc.text("about " + this.selectUser.contractSpeedSailingLadenIFO + " MT/Day", 75, height, { align: 'left' })
-        doc.setTextColor(0, 0, 0);
-        doc.text("Within Guaranteed Limits", 140, height, { align: 'left' })
-
-        height += 10;
-        doc.setTextColor(0, 0, 0);
-        doc.text("Diesel Consumption", 15, height, { align: 'left' })
-        doc.setTextColor(22, 33, 77);
-        doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " MT/Day", 75, height, { align: 'left' })
-        doc.setTextColor("960e0e");
-        doc.text("---- MT - OverConsumed", 140, height, { align: 'left' })
-
-
-
-        doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
-      }
-
-    }
+    /*    for await (const voyage of this.generateVoyages) {
+   
+         // Recorremos los puertos.
+         for await (const port of voyage.ports) {  
+           // AQUI VA TODO EL CODIGO
+         }
+   
+       } */
     return true;
   }
 
