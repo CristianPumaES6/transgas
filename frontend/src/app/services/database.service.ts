@@ -833,7 +833,7 @@ export class DatabaseService {
 
     }
 
-    public async getLastReportDailys(): Promise<DailyReport> {
+    public async GetLastReportDailys(): Promise<DailyReport> {
         console.log('getLastReportDailys()');
 
         return await this.db.dailyReports.toArray().then(

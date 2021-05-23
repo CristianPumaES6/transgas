@@ -169,13 +169,13 @@
               <mat-form-field>
                 <input matInput type="datetime-local"
                   placeholder="{{'LAST_RECORDED_HOUR' | translateMessage:translateCategory}}"
-                  [(ngModel)]="lastRecordedHour">
+                  [(ngModel)]="lastRecordedHour" (click)="onKeyUpEvent($event)">
               </mat-form-field>
             </div>
             <div class="col-3 row no-gutters">
               <mat-form-field>
                 <mat-label>{{'DATE' | translateMessage:translateCategory}}</mat-label>
-                <input matInput [matDatepicker]="picker" [(ngModel)]="selectDailyReport.date">
+                <input matInput [matDatepicker]="picker" [(ngModel)]="selectDailyReport.date"  (change)="onKeyUpEvent()">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker startView="year"></mat-datepicker>
               </mat-form-field>
@@ -184,7 +184,7 @@
 
               <mat-form-field>
                 <input matInput type="time" placeholder="{{'HOUR' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectDailyReport.hour">
+                  [(ngModel)]="selectDailyReport.hour"    (change)="onKeyUpEvent()">
               </mat-form-field>
 
             </div>

@@ -135,7 +135,7 @@ export function TextMonthYearFormatYYYYMMDD(date: any): string {
     // Convertimos el string en formato moment,
     // Con el formato YYYY MM DD
     let momentDate = moment(date, 'YYYY-MM-DD');
-  
+
     let result = momentDate.format('MMMM') + ' ' + momentDate.format('YYYY')
 
     return result;
@@ -177,5 +177,55 @@ export function FormatYYYYMMDD(date: any): string {
 
     let result = momentDate.format('MM-DD-YYYY')
 
+    return result;
+}
+
+
+export function FormatYYYYMMDDToSTRING(date: any): string {
+
+    
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
+    let result = momentDate.format('YYYY-MM-DD')
+    
+    return result;
+}
+
+// ESTA FUNCION junta una fehca y le setea una ora.
+export function ConvertirDateHourToMoment(date: any, hour: any): moment.Moment {
+
+    // Convertimos el string en formato moment,
+    // Con el formato YYYY MM DD
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
+    momentDate.add(hour);
+
+
+    let momentLastDaily = moment(momentDate, 'YYYY-MM-DD hh:mm');
+
+    return momentLastDaily;
+}
+// ESTA FUNCION junta una fehca y le setea una ora.
+export function ConvertirDateToMoment(date: any): moment.Moment {
+
+    // Convertimos el string en formato moment,
+    // Con el formato YYYY MM DD
+    let momentDate = moment(date, 'YYYY-MM-DD hh:mm');
+
+
+
+    let momentLastDaily = moment(momentDate, 'YYYY-MM-DD hh:mm');
+
+    return momentLastDaily;
+}
+
+export function DiferentHourTwoMoment(moment1: moment.Moment, moment2: moment.Moment): number {
+
+    let result: number;
+
+    let minutes = moment1.diff(moment2, 'minutes');
+    let hours = minutes / 60;
+
+    result = hours;
     return result;
 }

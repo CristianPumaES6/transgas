@@ -33,7 +33,8 @@ import { PortService } from '../../../services/port.service';
 import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
-import { ConvertDateAndHourAndReturnDiffHour, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from 'dist/frontend/assets/moment/moment.assets';
+import { ConvertirDateHourToMoment,DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
+import * as moment from 'moment';
 
 
 @Component({
@@ -2383,9 +2384,9 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
 
-      if(!this.selectDailyReport.id){
+      if( !this.selectDailyReport.id ) {
 
-        this.databaseService.getLastReportDailys().then(
+        this.databaseService.GetLastReportDailys().then(
           result => {
 
             let now = new Date();
@@ -2397,8 +2398,8 @@ export class VoyageComponent implements OnInit {
     
             this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
     
-            this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(ConvertDateAndHourAndReturnDiffHour(this.selectDailyReport.date, this.selectDailyReport.hour, this.lastRecordedHour), 2);
-    
+            
+            this.GenerateTimeOperation();
           }
         )
           }
@@ -2407,6 +2408,28 @@ export class VoyageComponent implements OnInit {
       this.initialDailyReport = this.Collect();
     }
 
+  }
+
+  public onKeyUpEvent(event?:any): void {
+    
+    if(this.selectDailyReport.hour.length>0 && validateDate(this.selectDailyReport.date)){
+      this.GenerateTimeOperation();
+    }
+
+  }
+
+  private GenerateTimeOperation(): void{
+
+    let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
+    let momendate = moment(this.lastRecordedHour);
+    
+    
+    let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
+
+
+    // El tiempo de operacion se genera por la diferencia de fecha
+    this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(diferentHour, 2);
+    
   }
 
   private Collect(): any {
