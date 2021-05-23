@@ -282,6 +282,8 @@ export const voyage: any = {
     CONSUMPTION_LSFO: 'Consumption LSFO',
     CONSUMPTION_VLSFO: 'Consumption VLSFO',
     STEAMING_TIME: 'Steaming time',
+    TIME_OPERATION: 'Time operation',
+    LAST_RECORDED_HOUR: 'Last recorded hour',
     DISTANCE: 'Distance',
     BEFOURT: 'Befourt',
     OBSERVATIONS: 'Observations',

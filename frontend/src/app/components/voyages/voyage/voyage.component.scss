@@ -1,5 +1,7 @@
 @import "../../../variable";
-
+.PerfectScrollbar-reportTable{
+  overflow: scroll;
+}
 .modi {
   &.table {
     overflow: hidden hidden;

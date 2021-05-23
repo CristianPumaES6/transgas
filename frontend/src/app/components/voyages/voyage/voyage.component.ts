@@ -24,7 +24,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -33,6 +33,8 @@ import { PortService } from '../../../services/port.service';
 import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
+import { ConvertirDateHourToMoment,DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
+import * as moment from 'moment';
 
 
 @Component({
@@ -96,6 +98,7 @@ export class VoyageComponent implements OnInit {
 
   public isBunkering: boolean = false;
 
+  public lastRecordedHour: any;
 
   constructor(
     private router: Router,
@@ -171,13 +174,14 @@ export class VoyageComponent implements OnInit {
       new PerfectScrollbar('.az-contact-info-body', {
         suppressScrollX: true
       });
+
     }, 500)
 
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (!!window.navigator.onLine) {
 
-      
+
       let user: User = new User();
 
       // Si el usuario es un buque lo filtramos.
@@ -668,6 +672,7 @@ export class VoyageComponent implements OnInit {
 
   }
 
+  // ESTE CLICK SAVE SE USAN EN PORT; VOYAGE: DAILY
   public ClickSave() {
     console.log('ClickSave()');
 
@@ -743,6 +748,7 @@ export class VoyageComponent implements OnInit {
               this.selectPort = this.selectPort.id ? this.initialPort : new Port();
             } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
               this.selectDailyReport = this.selectDailyReport.id ? this.initialDailyReport : new DailyReport();
+              this.lastRecordedHour = null;
               this.List_Voyages_Ports_DailyReports = 'Ports';
             }
 
@@ -827,6 +833,7 @@ export class VoyageComponent implements OnInit {
 
   }
 
+  // Click a la opcion agregar nuevo reporte, icono dentro de la lista de viaje,
   public ClickAddReport(event: AzList) {
     console.log('ClickAddReport()');
 
@@ -865,6 +872,7 @@ export class VoyageComponent implements OnInit {
       this.toolTipEnableForm = 'ENABLE_REPORT';
 
       this.selectDailyReport = new DailyReport();
+
       this.Initialize();
 
       this.disableEdit = false;
@@ -2363,6 +2371,8 @@ export class VoyageComponent implements OnInit {
   private Initialize(): void {
     console.log('Initialize()');
 
+
+
     // Inicializo su valor.
     this.disableEdit = true;
 
@@ -2374,10 +2384,53 @@ export class VoyageComponent implements OnInit {
       this.initialPort = this.Collect();
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
+
+      if( !this.selectDailyReport.id ) {
+
+        this.databaseService.GetLastReportDailys().then(
+          result => {
+
+            let now = new Date();
+            let hours = ("0" + now.getHours()).slice(-2);
+            let minutes = ("0" + now.getMinutes()).slice(-2);
+    
+            this.selectDailyReport.date = GetDate();
+            this.selectDailyReport.hour = hours + ':' + minutes;
+    
+            this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
+    
+            
+            this.GenerateTimeOperation();
+          }
+        )
+          }
+
       // actualizo el valor del InitializeSailingAnality.
       this.initialDailyReport = this.Collect();
     }
 
+  }
+
+  public onKeyUpEvent(event?:any): void {
+    
+    if(this.selectDailyReport.hour.length>0 && validateDate(this.selectDailyReport.date)){
+      this.GenerateTimeOperation();
+    }
+
+  }
+
+  private GenerateTimeOperation(): void{
+
+    let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
+    let momendate = moment(this.lastRecordedHour);
+    
+    
+    let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
+
+
+    // El tiempo de operacion se genera por la diferencia de fecha
+    this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(diferentHour, 2);
+    
   }
 
   private Collect(): any {
@@ -2474,6 +2527,13 @@ export class VoyageComponent implements OnInit {
     }
 
     return false;
+  }
+
+  public MathRoundOneDecimal(valor, cantDecimales: number) {
+    if (!valor) { return 0; }
+
+    let result = mathRound(valor, 2)
+    return result;
   }
 
 
