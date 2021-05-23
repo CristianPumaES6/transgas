@@ -174,6 +174,7 @@ export class VoyageComponent implements OnInit {
       new PerfectScrollbar('.az-contact-info-body', {
         suppressScrollX: true
       });
+
     }, 500)
 
 
