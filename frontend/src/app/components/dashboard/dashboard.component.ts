@@ -1115,7 +1115,7 @@ export class DashboardComponent implements OnInit {
     // width 210
     // Heigth 297
     let voyage = this.generateVoyages[0]
-    let port = voyage.ports[0];
+    let port = voyage.ports[1];
 
 
     // Armamos el objeto de JSPDF
@@ -1150,10 +1150,19 @@ export class DashboardComponent implements OnInit {
     doc.setFontSize(30);
     doc.setTextColor(22, 33, 77);
     doc.setFont('Helvetica', 'bold');
-    doc.text(this.selectUser.name, widthPDF / 2, height, { align: 'center' })
+
+    let rolTraslate = this.languageService.GetMessage(this.translateCategory, this.selectUser.role);
+    doc.text(rolTraslate + ' ' + this.selectUser.name, widthPDF / 2, height, { align: 'center' })
 
     // le sumamos la altura.
     height += 20;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('N° Voyage: ' + voyage.voyageNumber, widthPDF / 2, height, { align: 'center' })
+
+    // le sumamos la altura.
+    height += 10;
     doc.setFontSize(18);
     doc.setTextColor(40);
     doc.setFont('Helvetica', 'bold');
@@ -1166,19 +1175,25 @@ export class DashboardComponent implements OnInit {
     doc.setFont('Helvetica', 'bold');
     doc.text(port.departurePort + " to " + port.arrivalPort, widthPDF / 2, height, { align: 'center' })
 
+    // Obtenemos la ultima hora del reporte.
+    // Verificamos que este
+    let getstartEnd = this.GetStartrReportAndEndReportThePort(port);
+
+
+
     // le sumamos la altura.
     height += 10;
     doc.setFontSize(18);
     doc.setTextColor(40);
     doc.setFont('Helvetica', 'bold');
-    doc.text("ATD: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, widthPDF / 2, height, { align: 'center' })
+    doc.text("ATD: " + FormatDate(getstartEnd.startReport.date) + " " + getstartEnd.startReport.hour, widthPDF / 2, height, { align: 'center' })
 
     // le sumamos la altura.
     height += 10;
     doc.setFontSize(10);
     doc.setTextColor(40);
     doc.setFont('Helvetica', 'bold');
-    doc.text("ATA: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, widthPDF / 2, height, { align: 'center' })
+    doc.text("ATA: " + FormatDate(getstartEnd.endReport.date) + " " + getstartEnd.endReport.hour, widthPDF / 2, height, { align: 'center' })
 
     // Le sumamos la altura.
     // Dibujaremos los cuadrados.
@@ -1213,25 +1228,56 @@ export class DashboardComponent implements OnInit {
     doc.setTextColor(0, 0, 0);
     doc.text("Speed", 15, height, { align: 'left' })
     doc.setTextColor(22, 33, 77);
-    doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " Knots", 75, height, { align: 'left' })
-    doc.setTextColor("960e0e");
-    doc.text("---- Hours Lost", 140, height, { align: 'left' })
+    doc.text("about " + this.selectUser.contractSpeedSailingLadenIFO + " Knots", 75, height, { align: 'left' })
+
+
+
+    // Calcularemos la hora tarde o antes
+    let getInfoByActivity = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
+
+    // Si el tiempo es que el tiempo fue mayor que la del contrato lo pintamos de rojo.
+    if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
+
+      let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
+      doc.setTextColor("960e0e");
+      doc.text(this.MathRoundOneDecimal(diffHour, 2) + " Hours Lost", 140, height, { align: 'left' })
+
+    } else {
+      let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
+      doc.setTextColor(0, 0, 0);
+      doc.text(this.MathRoundOneDecimal(diffHour, 2) + ' Hours before', 140, height, { align: 'left' })
+
+    }
+
 
     height += 10;
     doc.setTextColor(0, 0, 0);
     doc.text("Fuel Consumption", 15, height, { align: 'left' })
     doc.setTextColor(22, 33, 77);
-    doc.text("about " + this.selectUser.contractSpeedSailingLadenIFO + " MT/Day", 75, height, { align: 'left' })
-    doc.setTextColor(0, 0, 0);
-    doc.text("Within Guaranteed Limits", 140, height, { align: 'left' })
+    doc.text("about " + this.selectUser.sailingLoadConsumptionIFO + " MT/Day", 75, height, { align: 'left' })
+
+    // si el consumo diario es mayor que la del contrao lo pintamos de rojo
+    if (getInfoByActivity.ifoDailyConsumption > getInfoByActivity.ifoDailyConsumptionByCharter) {
+
+      doc.setTextColor("960e0e");
+      doc.text("Outside the guaranteed limits", 140, height, { align: 'left' })
+
+    } else {
+
+      doc.setTextColor(0, 0, 0);
+      doc.text("Within Guaranteed Limits", 140, height, { align: 'left' })
+
+    }
 
     height += 10;
     doc.setTextColor(0, 0, 0);
     doc.text("Diesel Consumption", 15, height, { align: 'left' })
     doc.setTextColor(22, 33, 77);
-    doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " MT/Day", 75, height, { align: 'left' })
-    doc.setTextColor("960e0e");
-    doc.text("---- MT - OverConsumed", 140, height, { align: 'left' })
+    doc.text("about " + this.selectUser.sailingLoadConsumptionMGO + " MT/Day", 75, height, { align: 'left' })
+
+    //doc.setTextColor("960e0e");
+    doc.setTextColor(0, 0, 0);
+    doc.text("----", 140, height, { align: 'left' })
 
 
 
@@ -1239,15 +1285,89 @@ export class DashboardComponent implements OnInit {
 
 
     // recorremos los viajes 
-    /*    for await (const voyage of this.generateVoyages) {
+    /*
+    for await (const voyage of this.generateVoyages) {
    
-         // Recorremos los puertos.
-         for await (const port of voyage.ports) {  
-           // AQUI VA TODO EL CODIGO
-         }
+      // Recorremos los puertos.
+      for await (const port of voyage.ports) {  
+        // AQUI VA TODO EL CODIGO
+      }
    
-       } */
+    }
+    */
+
     return true;
+  }
+
+  private GetStartrReportAndEndReportThePort(port: Port): any {
+    let startReport;
+    let endReport;
+
+    if (port.dailyReports.length > 0) {
+
+      startReport = port.dailyReports[0];
+      endReport = port.dailyReports[port.dailyReports.length - 1];
+
+    }
+
+
+
+    return {
+      startReport: startReport,
+      endReport: endReport,
+    }
+  }
+
+  // 
+  //SAILING_WITH_LADEN
+  private GetInfoByActivity(port: Port, activityPerformed: string, selectUser: User): any {
+
+    // Consumo total del puerto.
+    let distancia = 0;
+    let time = 0;
+    let timeByCharter = 0;
+    let ifoConsumption = 0;
+    let ifoDailyConsumption = 0;
+    let ifoDailyConsumptionByCharter = 0;
+
+    // Recorremos los reportes para obtener el tiempo y la distancia.
+    port.dailyReports.forEach(
+      report => {
+        // verificamos que este activo
+        if (report.status === true) {
+          // Solo sumamos el tiempo y la distancia.
+          if (report.activityPerformed === activityPerformed) {
+            distancia += report.distance;
+            time += report.steamingTime;
+            ifoConsumption += this.SumaIfo(report);
+          }
+        }
+      }
+    )
+
+    // Buscamos el contrato por actividad
+    let speedByCharter = 0;
+
+
+    if (activityPerformed === 'SAILING_WITH_LADEN') {
+      speedByCharter = selectUser.contractSpeedSailingLadenIFO;
+      ifoDailyConsumption = ifoConsumption * 24 / time;
+      ifoDailyConsumptionByCharter = selectUser.sailingLoadConsumptionIFO;
+    }
+
+
+    timeByCharter = distancia / speedByCharter;
+
+
+    // 
+    return {
+      distancia: distancia, // Distancia total recorrida en el puerto en esa actividad.
+      time: time, // Tiempo total recorrida en el puerto en esa actividad.
+      timeByCharter: timeByCharter, // Tiempo calculado por contrato.
+      ifoConsumption: ifoConsumption, // Consumo total del combustible IFO
+      ifoDailyConsumption: ifoDailyConsumption, // consumo diario real
+      ifoDailyConsumptionByCharter: ifoDailyConsumptionByCharter // consumo diario por contrato
+    }
   }
 
   // Genera la data del viaje con filtro y resumen.
