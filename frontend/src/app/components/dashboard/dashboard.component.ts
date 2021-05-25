@@ -1439,14 +1439,13 @@ export class DashboardComponent implements OnInit {
     doc.setFontSize(10);
     doc.setTextColor(22, 33, 77);
     doc.setFont('Helvetica', 'bold');
-    doc.text("Overall Performance", widthPDF - 10 - ancho - 27 + 5, positionHeight, { align: 'left' });
-
+    doc.text("Overall Performance",10 + 90 + 5 +(ancho/2), positionHeight, { align: 'center' });
 
     positionHeight += 15;
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
     doc.setFont('Helvetica', 'bold');
-    doc.text("Transit Distance :", 70, positionHeight, { align: 'right' });
+    doc.text("Transit Distance :", 80, positionHeight, { align: 'right' });
     doc.setFont('Helvetica', 'normal');
     doc.text(this.MathRoundOneDecimal(getInfoByActivity.distancia, 2) + '', 130, positionHeight, { align: 'right' });
     doc.text('NM', 135, positionHeight, { align: 'left' });
@@ -1454,7 +1453,7 @@ export class DashboardComponent implements OnInit {
 
     positionHeight += 6;
     doc.setFont('Helvetica', 'bold');
-    doc.text("Transit Time :", 70, positionHeight, { align: 'right' });
+    doc.text("Transit Time :", 80, positionHeight, { align: 'right' });
     doc.setFont('Helvetica', 'normal');
     doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
     doc.text('Hours', 135, positionHeight, { align: 'left' });
@@ -1462,7 +1461,7 @@ export class DashboardComponent implements OnInit {
 
     positionHeight += 6;
     doc.setFont('Helvetica', 'bold');
-    doc.text("Average Speed :", 70, positionHeight, { align: 'right' });
+    doc.text("Average Speed :", 80, positionHeight, { align: 'right' });
     doc.setFont('Helvetica', 'normal');
     let averageSpeedPerformed = getInfoByActivity.distancia / (getInfoByActivity.time || 1);
     doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
@@ -1479,14 +1478,14 @@ export class DashboardComponent implements OnInit {
 
     positionHeight += 4.7;
     doc.setFont('Helvetica', 'bold');
-    doc.text("Performance Speed :", 70, positionHeight, { align: 'right' });
+    doc.text("Performance Speed :", 80, positionHeight, { align: 'right' });
     doc.setTextColor(22, 33, 77);
     doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
     doc.text('Knots', 135, positionHeight, { align: 'left' });
 
     positionHeight += 6;
     doc.setTextColor(0, 0, 0);
-    doc.text("Allowable Charter Speed :", 70, positionHeight, { align: 'right' });
+    doc.text("Allowable Charter Speed :", 80, positionHeight, { align: 'right' });
     doc.setTextColor(22, 33, 77);
     doc.text(this.selectUser.contractSpeedSailingLadenIFO + '', 130, positionHeight, { align: 'right' });
     doc.text('Knots', 135, positionHeight, { align: 'left' });
@@ -1502,14 +1501,14 @@ export class DashboardComponent implements OnInit {
 
     positionHeight += 5;
     doc.setTextColor(0, 0, 0);
-    doc.text("Performance Time :", 70, positionHeight, { align: 'right' });
+    doc.text("Performance Time :", 80, positionHeight, { align: 'right' });
     doc.setTextColor(22, 33, 77);
     doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
     doc.text('Hours', 135, positionHeight, { align: 'left' });
 
     positionHeight += 6;
     doc.setTextColor(0, 0, 0);
-    doc.text("Allowable Charter Time :", 70, positionHeight, { align: 'right' });
+    doc.text("Allowable Charter Time :", 80, positionHeight, { align: 'right' });
     doc.setTextColor(22, 33, 77);
     doc.text(this.MathRoundOneDecimal(getInfoByActivity.distancia / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
     doc.text('Hours', 135, positionHeight, { align: 'left' });
@@ -1540,6 +1539,129 @@ export class DashboardComponent implements OnInit {
     }
 
 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Tercer cuadro.
+    positionHeight += 35;
+    positionWidth = 10;
+    ancho = 70;
+    doc.setFontSize(10);
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(255, 242, 139);
+    doc.rect(10, positionHeight, ancho, 5.5, "FD");
+
+    positionHeight += 4;
+    doc.setTextColor(0, 0, 0);
+    doc.text('Laden / Normal Conditions', 12, positionHeight, { align: 'left' });
+
+    // Rectangulo grande celeste
+    positionHeight += 2;
+    ancho = widthPDF - 20;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(219, 229, 245);
+    doc.rect(10, positionHeight, ancho, 60, "FD");
+
+    // Rectangulo chico plomo
+    positionHeight -= 8;
+    ancho = 60;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(214, 214, 214);
+    doc.rect(10 + 90 + 5, positionHeight, ancho, 10, "FD");
+
+    // Texto del cuadro
+    positionHeight += 5;
+    doc.setFontSize(10);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Fuel "  + (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO'), 10 + 90 + 5 +(ancho/2), positionHeight, { align: 'center' });
+
+
+    positionHeight += 15;
+    ancho = widthPDF - 20 - 20;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(214, 214, 214);
+    doc.rect(20, positionHeight, ancho, 13.5, "FD");
+
+
+    positionHeight += 4.7;
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text("Warranted Daily Consumption :", 80, positionHeight, { align: 'right' });
+    doc.setTextColor(22, 33, 77);
+    doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumptionByCharter,2) + '', 130, positionHeight, { align: 'right' });
+    doc.text('MT', 135, positionHeight, { align: 'left' });
+
+    positionHeight += 6;
+    doc.setTextColor(0, 0, 0);
+    doc.text("Actual Daily Consumption :", 80, positionHeight, { align: 'right' });
+    doc.setTextColor(22, 33, 77);
+    doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption,2) + '', 130, positionHeight, { align: 'right' });
+    doc.text('MT', 135, positionHeight, { align: 'left' });
+
+
+    // Segundo cuadro
+    positionHeight += 4.1;
+    ancho = widthPDF - 20 - 20;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(214, 214, 214);
+    doc.rect(20, positionHeight, ancho, 13.5, "FD");
+
+    positionHeight += 5;
+    doc.setTextColor(0, 0, 0);
+    doc.text("Warranted Total Consumption :", 80, positionHeight, { align: 'right' });
+    doc.setTextColor(22, 33, 77);
+    doc.text(this.MathRoundOneDecimal(getInfoByActivity.totalConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
+    doc.text('MT', 135, positionHeight, { align: 'left' });
+
+    positionHeight += 6;
+    doc.setTextColor(0, 0, 0);
+    doc.text("Actual Total Consumption :", 80, positionHeight, { align: 'right' });
+    doc.setTextColor(22, 33, 77);
+    doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoConsumption, 2) + '', 130, positionHeight, { align: 'right' });
+    doc.text('MT', 135, positionHeight, { align: 'left' });
+
+    // Segundo cuadro
+    positionHeight += 4.1;
+    ancho = widthPDF - 20 - 20;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(214, 214, 214);
+    doc.rect(20, positionHeight, ancho, 10, "FD");
+
+
+    positionHeight += 7;
+    doc.setFontSize(15);
+    doc.setFont('Helvetica', 'bold');
+    if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
+
+      let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
+      doc.setTextColor("960e0e");
+      doc.setTextColor(255, 0, 0);
+      doc.text('Overall Fuel Oil Consumption Out Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+    
+    } else {
+
+      let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
+      doc.setTextColor(0, 128, 0);
+      doc.text('Overall Fuel Oil Consumption WITHIN Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+    
+    }
+
+
+    
     doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
 
 
@@ -1590,7 +1712,7 @@ export class DashboardComponent implements OnInit {
     let ifoConsumption = 0;
     let ifoDailyConsumption = 0;
     let ifoDailyConsumptionByCharter = 0;
-
+let totalConsumptionByCharter = 0;
     // Recorremos los reportes para obtener el tiempo y la distancia.
     port.dailyReports.forEach(
       (report: DailyReport) => {
@@ -1619,7 +1741,7 @@ export class DashboardComponent implements OnInit {
 
     timeByCharter = distancia / speedByCharter;
 
-
+    totalConsumptionByCharter =ifoDailyConsumptionByCharter  * timeByCharter / 24;
     // 
     return {
       distancia: distancia, // Distancia total recorrida en el puerto en esa actividad.
@@ -1627,7 +1749,8 @@ export class DashboardComponent implements OnInit {
       timeByCharter: timeByCharter, // Tiempo calculado por contrato.
       ifoConsumption: ifoConsumption, // Consumo total del combustible IFO
       ifoDailyConsumption: ifoDailyConsumption, // consumo diario real
-      ifoDailyConsumptionByCharter: ifoDailyConsumptionByCharter // consumo diario por contrato
+      ifoDailyConsumptionByCharter: ifoDailyConsumptionByCharter ,// consumo diario por contrato
+      totalConsumptionByCharter:totalConsumptionByCharter
     }
   }
 
