@@ -43,10 +43,11 @@ import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDat
 // Componentes
 import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
 
-
+// 
 import * as Chart from 'chart.js';
 import PerfectScrollbar from 'perfect-scrollbar';
-import { jsPDF } from 'jspdf'
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import * as Html2canvas from 'html2canvas';
 
 @Component({
@@ -1439,7 +1440,7 @@ export class DashboardComponent implements OnInit {
     doc.setFontSize(10);
     doc.setTextColor(22, 33, 77);
     doc.setFont('Helvetica', 'bold');
-    doc.text("Overall Performance",10 + 90 + 5 +(ancho/2), positionHeight, { align: 'center' });
+    doc.text("Overall Performance", 10 + 90 + 5 + (ancho / 2), positionHeight, { align: 'center' });
 
     positionHeight += 15;
     doc.setFontSize(10);
@@ -1539,7 +1540,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    
+
 
 
 
@@ -1587,7 +1588,7 @@ export class DashboardComponent implements OnInit {
     doc.setFontSize(10);
     doc.setTextColor(22, 33, 77);
     doc.setFont('Helvetica', 'bold');
-    doc.text("Fuel "  + (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO'), 10 + 90 + 5 +(ancho/2), positionHeight, { align: 'center' });
+    doc.text("Fuel " + (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO'), 10 + 90 + 5 + (ancho / 2), positionHeight, { align: 'center' });
 
 
     positionHeight += 15;
@@ -1602,14 +1603,14 @@ export class DashboardComponent implements OnInit {
     doc.setTextColor(0, 0, 0);
     doc.text("Warranted Daily Consumption :", 80, positionHeight, { align: 'right' });
     doc.setTextColor(22, 33, 77);
-    doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumptionByCharter,2) + '', 130, positionHeight, { align: 'right' });
+    doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
     doc.text('MT', 135, positionHeight, { align: 'left' });
 
     positionHeight += 6;
     doc.setTextColor(0, 0, 0);
     doc.text("Actual Daily Consumption :", 80, positionHeight, { align: 'right' });
     doc.setTextColor(22, 33, 77);
-    doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption,2) + '', 130, positionHeight, { align: 'right' });
+    doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2) + '', 130, positionHeight, { align: 'right' });
     doc.text('MT', 135, positionHeight, { align: 'left' });
 
 
@@ -1648,20 +1649,34 @@ export class DashboardComponent implements OnInit {
     if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
 
       let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
-      doc.setTextColor("960e0e");
       doc.setTextColor(255, 0, 0);
       doc.text('Overall Fuel Oil Consumption Out Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
-    
+
     } else {
 
       let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
       doc.setTextColor(0, 128, 0);
       doc.text('Overall Fuel Oil Consumption WITHIN Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
-    
+
     }
-
-
     
+    let pageFooter = heightPDF - 10;
+  
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
+    pageFooter += 4;
+
+    doc.setFontSize(8);
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(22, 33, 77);
+
+    doc.text('Page 2', 10, pageFooter, { align: 'left' });
+    doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF -10, pageFooter, { align: 'right' });
+
+   
+
+
     doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
 
 
@@ -1712,7 +1727,7 @@ export class DashboardComponent implements OnInit {
     let ifoConsumption = 0;
     let ifoDailyConsumption = 0;
     let ifoDailyConsumptionByCharter = 0;
-let totalConsumptionByCharter = 0;
+    let totalConsumptionByCharter = 0;
     // Recorremos los reportes para obtener el tiempo y la distancia.
     port.dailyReports.forEach(
       (report: DailyReport) => {
@@ -1741,7 +1756,7 @@ let totalConsumptionByCharter = 0;
 
     timeByCharter = distancia / speedByCharter;
 
-    totalConsumptionByCharter =ifoDailyConsumptionByCharter  * timeByCharter / 24;
+    totalConsumptionByCharter = ifoDailyConsumptionByCharter * timeByCharter / 24;
     // 
     return {
       distancia: distancia, // Distancia total recorrida en el puerto en esa actividad.
@@ -1749,8 +1764,8 @@ let totalConsumptionByCharter = 0;
       timeByCharter: timeByCharter, // Tiempo calculado por contrato.
       ifoConsumption: ifoConsumption, // Consumo total del combustible IFO
       ifoDailyConsumption: ifoDailyConsumption, // consumo diario real
-      ifoDailyConsumptionByCharter: ifoDailyConsumptionByCharter ,// consumo diario por contrato
-      totalConsumptionByCharter:totalConsumptionByCharter
+      ifoDailyConsumptionByCharter: ifoDailyConsumptionByCharter,// consumo diario por contrato
+      totalConsumptionByCharter: totalConsumptionByCharter
     }
   }
 
