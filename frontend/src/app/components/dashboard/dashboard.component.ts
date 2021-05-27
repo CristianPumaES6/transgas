@@ -37,7 +37,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -49,6 +49,8 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import * as Html2canvas from 'html2canvas';
+
+import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 
 @Component({
   selector: 'app-dashboard',
@@ -1282,7 +1284,6 @@ export class DashboardComponent implements OnInit {
     doc.setFont('Helvetica', 'bold');
     doc.text("----", 140, height, { align: 'left' });
 
-
     doc.addPage();
 
 
@@ -1381,7 +1382,6 @@ export class DashboardComponent implements OnInit {
 
 
     // SETEAMOS VALORES
-
     positionHeight -= 10;
     doc.setFontSize(10);
     doc.setTextColor(22, 33, 77);
@@ -1659,9 +1659,9 @@ export class DashboardComponent implements OnInit {
       doc.text('Overall Fuel Oil Consumption WITHIN Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
 
     }
-    
+
     let pageFooter = heightPDF - 10;
-  
+
     doc.setDrawColor(22, 33, 77);
     doc.setFillColor(22, 33, 77);
     doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
@@ -1672,9 +1672,251 @@ export class DashboardComponent implements OnInit {
     doc.setTextColor(22, 33, 77);
 
     doc.text('Page 2', 10, pageFooter, { align: 'left' });
-    doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF -10, pageFooter, { align: 'right' });
+    doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
 
-   
+
+    doc.addPage();
+
+    ///////////////////////////
+    //////// INICIO CABECERA////
+    positionHeight = 10;
+    positionWidth = 10;
+
+    // ubicamos la imagen con un tamaño de 50 x 50
+    doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+    positionHeight += 5;
+    positionWidth = 60;
+
+    // Texto
+    doc.setFontSize(18);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bolditalic');
+    doc.text("Vessel Performance Report", positionWidth, positionHeight, { align: 'left' })
+
+    // Rectangular
+    positionHeight += 2;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(positionWidth, positionHeight, widthPDF - positionWidth - 10, 0.5, "FD");
+
+
+
+    positionHeight += 10;
+    doc.setFontSize(10);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Lima Phone: +51-1-716-7600       Miami Phone: +1 954-575-1414       Email: transgas@transgas.com.pe", widthPDF - 10, positionHeight, { align: 'right' })
+
+
+    // Raya debajo de los numeros de telefono.
+    positionHeight += 2;
+    positionWidth = 10;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(10, positionHeight, widthPDF - 20, 0.5, "FD");
+
+
+
+    positionHeight += 6;
+    doc.setFontSize(15);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('Voyage Summary', widthPDF / 2, positionHeight, { align: 'center' })
+
+    ///////////////////////////
+    //////// FIN CABECERA////
+
+    positionHeight += 20;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("M/V", 10, positionHeight, { align: 'left' })
+    doc.setFontSize(17);
+    doc.text('Buque ' + this.selectUser.name, 20, positionHeight, { align: 'left' })
+
+
+    // Preparado por
+    positionHeight += 8;
+    doc.setFontSize(8);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'italic');
+    doc.text("Prepared for", 10, positionHeight, { align: 'left' })
+
+    //
+    positionHeight += 4.5;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
+
+    // Colocamos el rectangulo
+    positionHeight -= 20;
+    positionWidth = 10;
+    ancho = 120;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(219, 229, 245);
+    doc.rect(widthPDF - 10 - ancho, positionHeight, ancho, 25, "FD");
+
+    // Colocamos el texto departure
+    positionHeight += 8.5;
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('Helvetica', 'normal');
+    doc.text("Departure Port   :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+    positionHeight += 10;
+    doc.text("Destination Port :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+
+    // Regresamos a la posicion anteriror
+    positionHeight -= 10;
+    doc.text("ATD :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+    positionHeight += 10;
+    doc.text("ATA :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+
+
+    // SETEAMOS VALORES
+
+    positionHeight -= 10;
+    doc.setFontSize(10);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(port.departurePort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+    positionHeight += 10;
+    doc.text(port.arrivalPort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+    // Regresamos a la posicion anteriror
+    positionHeight -= 10;
+    doc.text(FormatDate(getstartEnd.startReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+    positionHeight += 10;
+    doc.text(FormatDate(getstartEnd.endReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+
+    positionHeight -= 10;
+    doc.text(getstartEnd.startReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+    positionHeight += 10;
+    doc.text(getstartEnd.endReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+
+
+    positionHeight -= 10;
+    doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+    positionHeight += 10;
+    doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+
+
+
+    positionHeight += 20;
+
+    let head = [['Date / Time', 'Load / Speed Conditions', 'Time ( hrs )', 'Dist ( nm )', 'Avg', 'Charter', 'Beaufort']]
+    let data = [];
+
+    // Reportes.
+    let reports: DailyReport[] = getInfoByActivity.reports;
+    reports.forEach(
+      report => {
+
+        data.push([
+          FormatYYYYMMDD(report.date) + ' ' + report.hour,
+          this.languageService.GetMessage(this.translateCategory, report.activityPerformed),
+          String(report.steamingTime),
+          String(report.distance),
+          this.MathRoundOneDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
+          String(this.selectUser.contractSpeedSailingLadenIFO),
+          report.beaufour
+
+        ])
+      }
+    );
+
+    let options: UserOptions = {};
+    options.startY = positionHeight;
+    options.head = head;
+    options.body = data;
+    options.margin = [0, 0, 0, 10, 0, 0]
+
+    options.didParseCell = (data: CellHookData) => {
+
+      let section = data.section;
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+      if (section == 'body') {
+        let rowIndex = data.row.index;
+        let columIndex = data.column.index;
+        let raw = data.row.raw;
+
+        if (columIndex == 4) {
+
+          if (Number(cell.text) >= Number(raw[5])) {
+            cell.styles.fillColor = [133, 252, 97];
+          } else {
+            cell.styles.fillColor = [255, 123, 123];
+          }
+        }
+      }
+
+
+    };
+
+    /*     doc.setDrawColor(22, 33, 77);
+        doc.setFillColor(219, 229, 245);
+       */
+
+    options.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 50,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 37,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 25,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 25,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77]
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 16,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 16,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 21,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+    };
+    options.headStyles = {
+      halign: 'center',
+      valign: 'middle',
+      lineWidth: 0.15,
+      lineColor: [22, 33, 77]
+    };
+
+    autoTable(doc, options);
 
 
     doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
@@ -1728,6 +1970,8 @@ export class DashboardComponent implements OnInit {
     let ifoDailyConsumption = 0;
     let ifoDailyConsumptionByCharter = 0;
     let totalConsumptionByCharter = 0;
+    let reports: DailyReport[] = [];
+
     // Recorremos los reportes para obtener el tiempo y la distancia.
     port.dailyReports.forEach(
       (report: DailyReport) => {
@@ -1738,6 +1982,8 @@ export class DashboardComponent implements OnInit {
             distancia += report.distance;
             time += report.steamingTime;
             ifoConsumption += this.SumaIfo(report);
+            //lo agregamos al reporte.
+            reports.push(report);
           }
         }
       }
@@ -1765,7 +2011,8 @@ export class DashboardComponent implements OnInit {
       ifoConsumption: ifoConsumption, // Consumo total del combustible IFO
       ifoDailyConsumption: ifoDailyConsumption, // consumo diario real
       ifoDailyConsumptionByCharter: ifoDailyConsumptionByCharter,// consumo diario por contrato
-      totalConsumptionByCharter: totalConsumptionByCharter
+      totalConsumptionByCharter: totalConsumptionByCharter,
+      reports: reports
     }
   }
 
