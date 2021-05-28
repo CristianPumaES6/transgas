@@ -45,7 +45,7 @@ export class DialogListReportComponent implements OnInit {
 
   // Puerto seleccionado
   public selectPortId: number;
-  // Usuario seleccionado
+  // Usuario seleccionado 
   public selectUser: User = new User();
 
   // VARIABLES DEL HTML
