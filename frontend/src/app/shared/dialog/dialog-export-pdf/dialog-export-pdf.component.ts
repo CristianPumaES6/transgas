@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import jsPDF from 'jspdf';
 import { Port } from '../../../models/port';
 import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
@@ -77,6 +78,46 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
   public ClickSelectPort() {
+
+  }
+
+  // Cuando le das click al boton exportar pdf
+  public ClickExportPDF() {
+    // Exportar pdf
+    this.ExportPDFVesselPerformance();
+  }
+
+  // Funcion que exporta el pdf.
+  private ExportPDFVesselPerformance(): Promise<boolean>{
+
+    // Armamos el objeto de JSPDF
+    const doc = new jsPDF();
+
+    // tamaño de pdf.
+    var widthPDF = doc.internal.pageSize.getWidth();
+    var heightPDF = doc.internal.pageSize.getHeight();
+
+    // Variables con los datos a trabajar.
+    let voyage:Voyage;
+    let port:Port;
+
+
+    // Promise
+    return Promise.resolve(true).then(
+      result => {
+        // seleccionamos los puertos
+        if (this.selectVoyageId && this.selectPortId){
+          // Buscamos los viajes.
+          voyage = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
+          port = voyage.ports.find(port => port.id === this.selectPortId);
+        } else {
+          // Selecciona un viaje y un puerto.
+          throw 'Select a voyage and a port.'
+        }
+
+        return true;
+      }
+    );
 
   }
 
