@@ -1803,7 +1803,7 @@ export class DashboardComponent implements OnInit {
 
     positionHeight += 20;
 
-    let head = [['Date / Time', 'Load / Speed Conditions', 'Time ( hrs )', 'Dist ( nm )', 'Avg', 'Charter', 'Beaufort']]
+    let head = [['Posn Type','Date / Time', 'Load / Speed Conditions', 'Time ( hrs )', 'Dist ( nm )', 'Avg', 'Charter', 'Beaufort']]
     let data = [];
 
     // Reportes.
@@ -1812,6 +1812,7 @@ export class DashboardComponent implements OnInit {
       report => {
 
         data.push([
+          'A',
           FormatYYYYMMDD(report.date) + ' ' + report.hour,
           this.languageService.GetMessage(this.translateCategory, report.activityPerformed),
           String(report.steamingTime),
@@ -1841,9 +1842,9 @@ export class DashboardComponent implements OnInit {
         let columIndex = data.column.index;
         let raw = data.row.raw;
 
-        if (columIndex == 4) {
+        if (columIndex == 5) {
 
-          if (Number(cell.text) >= Number(raw[5])) {
+          if (Number(cell.text) >= Number(raw[6])) {
             cell.styles.fillColor = [133, 252, 97];
           } else {
             cell.styles.fillColor = [255, 123, 123];
@@ -1862,21 +1863,21 @@ export class DashboardComponent implements OnInit {
       0: {
         halign: 'center',
         fontStyle: 'bold',
-        cellWidth: 50,
+        cellWidth: 15,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
       1: {
         halign: 'center',
         fontStyle: 'bold',
-        cellWidth: 37,
+        cellWidth: 38,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
       2: {
         halign: 'center',
         fontStyle: 'bold',
-        cellWidth: 25,
+        cellWidth: 34,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -1884,14 +1885,14 @@ export class DashboardComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         cellWidth: 25,
-        lineWidth: 0.2,
+        lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
       4: {
         halign: 'center',
         fontStyle: 'bold',
-        cellWidth: 16,
-        lineWidth: 0.15,
+        cellWidth: 25,
+        lineWidth: 0.2,
         lineColor: [22, 33, 77]
       },
       5: {
@@ -1902,6 +1903,13 @@ export class DashboardComponent implements OnInit {
         lineColor: [22, 33, 77]
       },
       6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        cellWidth: 16,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      7: {
         halign: 'center',
         fontStyle: 'bold',
         cellWidth: 21,
@@ -1916,7 +1924,58 @@ export class DashboardComponent implements OnInit {
       lineColor: [22, 33, 77]
     };
 
+
     autoTable(doc, options);
+    // Tamaño de la cabecera.
+    positionHeight +=11.4;
+    
+// Tamaño de la tabla
+    positionHeight += (3*7.6);
+
+    // Le sumamos la separacion entre la tabla y el siguiente texto
+    positionHeight += 6;
+    doc.setFontSize(8);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'italic');
+    // Agregamos una tamaño ṕara el width
+    positionWidth= 10;
+    let widthForTree=(widthPDF -20) /3;
+    positionWidth += (widthForTree / 2);
+    doc.text('"A" = Actual Reported Ship Position', positionWidth, positionHeight, { align: 'center' })
+    positionWidth+=widthForTree;
+    doc.text('"ATD" = Actual Time of Departure', positionWidth, positionHeight, { align: 'center' })
+    positionWidth+=widthForTree;
+    doc.text('"ATA" = Actual Time of Arrival', positionWidth, positionHeight, { align: 'center' })
+
+    // Agregamos una tamaño ṕara el width
+    positionHeight += 2;
+    positionWidth = 10;
+    ancho = widthForTree-20;
+    positionWidth += 10;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(214, 214, 214);
+    doc.setFillColor(133, 252, 97);
+    doc.rect(positionWidth, positionHeight, ancho, 7, "FD");
+
+    positionWidth += widthForTree;
+    doc.setFillColor(208, 227, 255);
+    doc.rect(positionWidth, positionHeight, ancho, 7, "FD");
+
+    positionWidth += widthForTree;
+    doc.setFillColor(255, 123, 123);
+    doc.rect(positionWidth, positionHeight, ancho, 7, "FD");
+
+    positionHeight += 4.5;
+    positionWidth = 10;
+    widthForTree=(widthPDF -20) /3;
+
+    positionWidth += (widthForTree / 2);
+    doc.text('Defined Good Weather Period', positionWidth, positionHeight, { align: 'center' })
+    positionWidth+=widthForTree;
+    doc.text('Vessel within ECA Limits', positionWidth, positionHeight, { align: 'center' })
+    positionWidth+=widthForTree;
+    doc.text('Stoppage Period', positionWidth, positionHeight, { align: 'center' })
+
 
 
     doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
