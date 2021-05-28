@@ -43,6 +43,9 @@ import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDat
 // Componentes
 import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
 
+// Componentes
+import { IDialogExportPdf, DialogExportPdfComponent } from '../../shared/dialog/dialog-export-pdf/dialog-export-pdf.component';
+
 // 
 import * as Chart from 'chart.js';
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -1080,13 +1083,13 @@ export class DashboardComponent implements OnInit {
 
 
         // Generatamos el report daily.
-        return this.ExportPDF();
-
+       // return this.ExportPDF();
+return this.OpenDialogExportPDF(this.getVoyages,this.generateVoyages[0],this.generateVoyages[0].ports[0],this.selectUser);
       }
     ).then(
       resultGenerateDashboard => {
         // Verificamos que se halla exportado correctamente.
-        if (!resultGenerateDashboard) throw 'ERROR_EXPORT_REPORT_DAILY';
+        //if (!resultGenerateDashboard) throw 'ERROR_EXPORT_REPORT_DAILY';
 
         // Loading cerrar.
         this.loadingService.Close();
@@ -4401,7 +4404,6 @@ export class DashboardComponent implements OnInit {
   }
 
   public Testt() {
-    alert("DI O CLICK");
   }
 
   private PluginChartLine() {
@@ -4459,6 +4461,35 @@ export class DashboardComponent implements OnInit {
 
 
     const dialogRef = this.dialog.open(DialogListReportComponent, {
+      data: dialogListReport
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+
+          alert('OKK');
+        }
+      });
+
+
+  }
+
+
+  private OpenDialogExportPDF(voyages:Voyage[], voyage: Voyage, port:Port, selectUser:User ) {
+
+    let dialogListReport: IDialogExportPdf = {
+      voyages: voyages,
+      voyage: JSON.parse(JSON.stringify(voyage)),
+      selectUser: selectUser,
+      port: port,
+      selectVoyageId:this.selectVoyageId,
+    };
+
+
+    const dialogRef = this.dialog.open(DialogExportPdfComponent, {
       data: dialogListReport
     });
 

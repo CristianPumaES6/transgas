@@ -8,9 +8,9 @@ import { DialogListReportComponent } from '../dialog-list-report/dialog-list-rep
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
-  voyage: Voyage,
-  port: Port,
+  voyages: Voyage[],
   selectUser: User,
+  selectVoyageId: number,
 }
 
 @Component({
@@ -37,8 +37,47 @@ export class DialogExportPdfComponent implements OnInit {
   // Usuario seleccionado
   public selectUser:User=new User();
 
+  // Varibles del formulario
+  public selectVoyageId:number = 0;
+  public selectPortId:number = 0;
+  public selectTypeExport:string = '';
+
+  // Viajes y puertos.
+  public voyages:Voyage[] = [];
+  public ports:Port[]=[];
+
   ngOnInit(): void {
+    // seleccionar usuario.
     this.selectUser = this.data.selectUser;
+
+    // Viajes
+    this.voyages = this.data.voyages;
+    this.selectVoyageId = this.data.selectVoyageId;
+
+    // SI existe un viaje seleccioando lo buscamos.
+    if(this.selectVoyageId){
+      // Buscamos el viaje.
+      let voyageSelect = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
+      // agregamos los puertos del viaje.
+      this.ports = voyageSelect.ports;
+    }
+    
+    // Seleccionamos el tipo de exportacion.
+    this.selectTypeExport = 'VESSEL_PERFORMANCE';
+  }
+
+  // Se ejecuta cada vez que se cambia de viaje.
+  public ClickSelectVoyage() {
+    // Verificamos si se selecciono un viaje.
+    if(this.selectVoyageId){
+      let voyage = this.voyages.find(voyage=> voyage.id===this.selectVoyageId);
+      this.ports = voyage.ports;
+
+    }
+  }
+
+  public ClickSelectPort() {
+
   }
 
 }
