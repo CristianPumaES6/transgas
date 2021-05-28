@@ -1084,7 +1084,7 @@ export class DashboardComponent implements OnInit {
 
         // Generatamos el report daily.
        // return this.ExportPDF();
-return this.OpenDialogExportPDF(this.getVoyages,this.generateVoyages[0],this.generateVoyages[0].ports[0],this.selectUser);
+return this.OpenDialogExportPDF(this.getVoyages,this.selectUser);
       }
     ).then(
       resultGenerateDashboard => {
@@ -4478,13 +4478,11 @@ return this.OpenDialogExportPDF(this.getVoyages,this.generateVoyages[0],this.gen
   }
 
 
-  private OpenDialogExportPDF(voyages:Voyage[], voyage: Voyage, port:Port, selectUser:User ) {
+  private OpenDialogExportPDF(voyages:Voyage[], selectUser:User ) {
 
     let dialogListReport: IDialogExportPdf = {
       voyages: voyages,
-      voyage: JSON.parse(JSON.stringify(voyage)),
       selectUser: selectUser,
-      port: port,
       selectVoyageId:this.selectVoyageId,
     };
 
