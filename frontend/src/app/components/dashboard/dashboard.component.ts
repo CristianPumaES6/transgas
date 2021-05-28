@@ -291,7 +291,7 @@ export class DashboardComponent implements OnInit {
       result => {
 
         if (!result) throw 'ERROR_SELECT_USER';
-        
+
         // Activamos el loading.
         this.loadingService.Close();
       }
@@ -1083,8 +1083,8 @@ export class DashboardComponent implements OnInit {
 
 
         // Generatamos el report daily.
-       // return this.ExportPDF();
-return this.OpenDialogExportPDF(this.getVoyages,this.selectUser);
+        // return this.ExportPDF();
+        return this.OpenDialogExportPDF(this.getVoyages, this.selectUser);
       }
     ).then(
       resultGenerateDashboard => {
@@ -1115,7 +1115,7 @@ return this.OpenDialogExportPDF(this.getVoyages,this.selectUser);
   // ExportPDF() : Esta opcion exporta el pdf.
   // AQUI UNA MEJORA.
   // HAY MEJORA esto toma por defecto el generateVOyages, hay que revisar que deberia tomar.
-  
+
 
   private GetStartrReportAndEndReportThePort(port: Port): any {
 
@@ -3596,12 +3596,12 @@ return this.OpenDialogExportPDF(this.getVoyages,this.selectUser);
   }
 
 
-  private OpenDialogExportPDF(voyages:Voyage[], selectUser:User ) {
+  private OpenDialogExportPDF(voyages: Voyage[], selectUser: User) {
 
     let dialogListReport: IDialogExportPdf = {
       voyages: voyages,
       selectUser: selectUser,
-      selectVoyageId:this.selectVoyageId,
+      selectVoyageId: this.selectVoyageId,
     };
 
 
