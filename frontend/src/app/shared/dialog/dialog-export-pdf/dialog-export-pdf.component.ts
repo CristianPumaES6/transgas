@@ -103,11 +103,9 @@ export class DialogExportPdfComponent implements OnInit {
         if (!result) throw 'ERROR_EXPORT_PDF_VESSEL_PERFORMANCE';
 
         return true;
-        
       }
     ).catch(
       err => {
-
         // Manejo el error
         let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
@@ -137,7 +135,14 @@ export class DialogExportPdfComponent implements OnInit {
     let voyage: Voyage;
     let port: Port;
 
+    // Obtener el reporte de inicio y el reporte de fin.
+    let getstartEndReport: any;
+
+    // Posicion de altura del height.
     let positionHeight: number = 0;
+
+    // Obtener informacion por actividad
+    let getInfoByActivity: any;
 
     // Promise
     return Promise.resolve(true)
@@ -148,6 +153,9 @@ export class DialogExportPdfComponent implements OnInit {
             // Buscamos los viajes.
             voyage = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
             port = voyage.ports.find(port => port.id === this.selectPortId);
+            // Obtenemos el primer reporte y ultimo.
+            getstartEndReport = this.GetStartReportAndEndReportThePort(port);
+
           } else {
             // Selecciona un viaje y un puerto.
             throw 'Select a voyage and a port.'
@@ -212,34 +220,27 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text(port.departurePort + " to " + port.arrivalPort, widthPDF / 2, positionHeight, { align: 'center' })
 
-          // Obtenemos la ultima hora del reporte.
-          // Verificamos que este
-          let getstartEnd = this.GetStartrReportAndEndReportThePort(port);
-
-
 
           // le sumamos la altura.
           positionHeight += 10;
           doc.setFontSize(18);
           doc.setTextColor(40);
           doc.setFont('Helvetica', 'bold');
-          doc.text("ATD: " + FormatDate(getstartEnd.startReport.date) + " " + getstartEnd.startReport.hour, widthPDF / 2, positionHeight, { align: 'center' })
+          doc.text("ATD: " + FormatDate(getstartEndReport.startReport.date) + " " + getstartEndReport.startReport.hour, widthPDF / 2, positionHeight, { align: 'center' })
 
           // le sumamos la altura.
           positionHeight += 10;
           doc.setFontSize(10);
           doc.setTextColor(40);
           doc.setFont('Helvetica', 'bold');
-          doc.text("ATA: " + FormatDate(getstartEnd.endReport.date) + " " + getstartEnd.endReport.hour, widthPDF / 2, positionHeight, { align: 'center' })
+          doc.text("ATA: " + FormatDate(getstartEndReport.endReport.date) + " " + getstartEndReport.endReport.hour, widthPDF / 2, positionHeight, { align: 'center' })
 
           // Le sumamos la altura.
           // Dibujaremos los cuadrados.
           positionHeight += 20;
-          // Filled red square with black borders
           doc.setDrawColor(0);
           doc.setFillColor(255, 255, 255);
           doc.rect(10, positionHeight, 210 - (10 * 2), 50, "FD");
-
           // Cuadro chiquito donde esta el titulo.
           positionHeight -= 5;
           doc.setDrawColor(0);
@@ -269,7 +270,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           // Calcularemos la hora tarde o antes
-          let getInfoByActivity: any = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
+          getInfoByActivity = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
 
           // Si el tiempo es que el tiempo fue mayor que la del contrato lo pintamos de rojo.
           if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
@@ -320,6 +321,389 @@ export class DialogExportPdfComponent implements OnInit {
 
           return true;
         }
+      ).then(
+        result => {
+
+          // Agregamos una pagina
+          doc.addPage();
+
+          //////////////////////////////////
+          //////// INICIAMOS LA CABECERA////
+          //////////////////////////////////
+          let positionHeight = 10;
+          let positionWidth = 10;
+
+          // ubicamos la imagen con un tamaño de 50 x 50
+          doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+          positionHeight += 5;
+          positionWidth = 60;
+
+          // Texto
+          doc.setFontSize(18);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bolditalic');
+          doc.text("Vessel Performance Report", positionWidth, positionHeight, { align: 'left' })
+
+          // Rectangular
+          positionHeight += 2;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(positionWidth, positionHeight, widthPDF - positionWidth - 10, 0.5, "FD");
+
+          // Numeros de telefono y correo.
+          positionHeight += 10;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Lima Phone: +51-1-716-7600       Miami Phone: +1 954-575-1414       Email: transgas@transgas.com.pe", widthPDF - 10, positionHeight, { align: 'right' })
+
+
+          // Raya debajo de los numeros de telefono.
+          positionHeight += 2;
+          positionWidth = 10;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(10, positionHeight, widthPDF - 20, 0.5, "FD");
+
+          //////////////////////////////////
+          ////////// FIN CABECERA //////////
+          //////////////////////////////////
+
+
+          // Titulo del pdf.
+          positionHeight += 6;
+          doc.setFontSize(15);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text('Overall Performance Analysis', widthPDF / 2, positionHeight, { align: 'center' })
+
+
+          ///////////////////////////////////////
+          ///////// Inicio del 1° Cuadro ////////
+          ///////////////////////////////////////
+          // BUQUE
+          positionHeight += 20;
+          doc.setFontSize(13);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("M/V", 10, positionHeight, { align: 'left' })
+          doc.setFontSize(17);
+          doc.text('Buque ' + this.selectUser.name, 20, positionHeight, { align: 'left' })
+
+
+          // Preparado por
+          positionHeight += 8;
+          doc.setFontSize(8);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'italic');
+          doc.text("Prepared for", 10, positionHeight, { align: 'left' })
+
+          // Transgas Shipping
+          positionHeight += 4.5;
+          doc.setFontSize(13);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
+
+          // Colocamos el rectangulo
+          positionHeight -= 20;
+          positionWidth = 10;
+          let ancho = 120;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(219, 229, 245);
+          doc.rect(widthPDF - 10 - ancho, positionHeight, ancho, 25, "FD");
+
+          // Colocamos los destinos de partida y llegada.
+          positionHeight += 8.5;
+          doc.setFontSize(10);
+          doc.setTextColor(0, 0, 0);
+          doc.setFont('Helvetica', 'normal');
+          doc.text("Departure Port   :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text("Destination Port :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+
+          // Regresamos a la posicion anteriror
+          positionHeight -= 10;
+          doc.text("ATD :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text("ATA :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+
+          // SETEAMOS VALORES
+          positionHeight -= 10;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text(port.departurePort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(port.arrivalPort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+          // Regresamos a la posicion anteriror y colocamos la fecha de inicio y fin
+          positionHeight -= 10;
+          doc.text(FormatDate(getstartEndReport.startReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(FormatDate(getstartEndReport.endReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+          // Regresamos a la posicion anterior y colocamos la fecha de inicio y fin.
+          positionHeight -= 10;
+          doc.text(getstartEndReport.startReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(getstartEndReport.endReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+
+          positionHeight -= 10;
+          doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+          positionHeight += 20;
+
+
+
+          // Segundo cuadro.
+          positionWidth = 10;
+          ancho = 70;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(255, 242, 139);
+          doc.rect(10, positionHeight, ancho, 5.5, "FD");
+
+          positionHeight += 4;
+          doc.setTextColor(0, 0, 0);
+          doc.text('Laden / Normal Conditions', 12, positionHeight, { align: 'left' });
+
+          // Rectangulo grande celeste
+          positionHeight += 2;
+          ancho = widthPDF - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(219, 229, 245);
+          doc.rect(10, positionHeight, ancho, 80, "FD");
+
+          // Rectangulo chico plomo
+          positionHeight -= 8;
+          ancho = 60;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(10 + 90 + 5, positionHeight, ancho, 10, "FD");
+
+          // Texto del cuadro
+          positionHeight += 5;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Overall Performance", 10 + 90 + 5 + (ancho / 2), positionHeight, { align: 'center' });
+
+          positionHeight += 15;
+          doc.setFontSize(10);
+          doc.setTextColor(0, 0, 0);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Transit Distance :", 80, positionHeight, { align: 'right' });
+          doc.setFont('Helvetica', 'normal');
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distancia, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('NM', 135, positionHeight, { align: 'left' });
+
+
+          positionHeight += 6;
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Transit Time :", 80, positionHeight, { align: 'right' });
+          doc.setFont('Helvetica', 'normal');
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('Hours', 135, positionHeight, { align: 'left' });
+
+
+          positionHeight += 6;
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Average Speed :", 80, positionHeight, { align: 'right' });
+          doc.setFont('Helvetica', 'normal');
+          let averageSpeedPerformed = getInfoByActivity.distancia / (getInfoByActivity.time || 1);
+          doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('Knots', 135, positionHeight, { align: 'left' });
+
+
+
+          positionHeight += 5;
+          ancho = widthPDF - 20 - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(20, positionHeight, ancho, 13.5, "FD");
+
+
+          positionHeight += 4.7;
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Performance Speed :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('Knots', 135, positionHeight, { align: 'left' });
+
+          positionHeight += 6;
+          doc.setTextColor(0, 0, 0);
+          doc.text("Allowable Charter Speed :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.selectUser.contractSpeedSailingLadenIFO + '', 130, positionHeight, { align: 'right' });
+          doc.text('Knots', 135, positionHeight, { align: 'left' });
+
+
+
+          // Segundo cuadro
+          positionHeight = 136;
+          ancho = widthPDF - 20 - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(20, positionHeight, ancho, 13.5, "FD");
+
+          positionHeight += 5;
+          doc.setTextColor(0, 0, 0);
+          doc.text("Performance Time :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('Hours', 135, positionHeight, { align: 'left' });
+
+          positionHeight += 6;
+          doc.setTextColor(0, 0, 0);
+          doc.text("Allowable Charter Time :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distancia / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('Hours', 135, positionHeight, { align: 'left' });
+
+          // Segundo cuadro
+          positionHeight += 4.1;
+          ancho = widthPDF - 20 - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(20, positionHeight, ancho, 10, "FD");
+
+
+          positionHeight += 7;
+          doc.setFontSize(15);
+          doc.setFont('Helvetica', 'bold');
+          if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
+
+            let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
+            doc.setTextColor("960e0e");
+            doc.setTextColor(255, 0, 0);
+            doc.text(this.MathRoundOneDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
+            doc.text('Hours Lost', 135, positionHeight, { align: 'left' });
+          } else {
+            let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
+            doc.setTextColor(0, 128, 0);
+            doc.text(this.MathRoundOneDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
+            doc.text('Hours before', 135, positionHeight, { align: 'left' });
+          }
+
+
+          // Tercer cuadro.
+          positionHeight += 35;
+          positionWidth = 10;
+          ancho = 70;
+          doc.setFontSize(10);
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(255, 242, 139);
+          doc.rect(10, positionHeight, ancho, 5.5, "FD");
+
+          positionHeight += 4;
+          doc.setTextColor(0, 0, 0);
+          doc.text('Laden / Normal Conditions', 12, positionHeight, { align: 'left' });
+
+          // Rectangulo grande celeste
+          positionHeight += 2;
+          ancho = widthPDF - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(219, 229, 245);
+          doc.rect(10, positionHeight, ancho, 60, "FD");
+
+          // Rectangulo chico plomo
+          positionHeight -= 8;
+          ancho = 60;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(10 + 90 + 5, positionHeight, ancho, 10, "FD");
+
+          // Texto del cuadro
+          positionHeight += 5;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Fuel " + (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO'), 10 + 90 + 5 + (ancho / 2), positionHeight, { align: 'center' });
+
+
+          positionHeight += 15;
+          ancho = widthPDF - 20 - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(20, positionHeight, ancho, 13.5, "FD");
+
+
+          positionHeight += 4.7;
+          doc.setFont('Helvetica', 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text("Warranted Daily Consumption :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('MT', 135, positionHeight, { align: 'left' });
+
+          positionHeight += 6;
+          doc.setTextColor(0, 0, 0);
+          doc.text("Actual Daily Consumption :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('MT', 135, positionHeight, { align: 'left' });
+
+
+          // Segundo cuadro
+          positionHeight += 4.1;
+          ancho = widthPDF - 20 - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(20, positionHeight, ancho, 13.5, "FD");
+
+          positionHeight += 5;
+          doc.setTextColor(0, 0, 0);
+          doc.text("Warranted Total Consumption :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.totalConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('MT', 135, positionHeight, { align: 'left' });
+
+          positionHeight += 6;
+          doc.setTextColor(0, 0, 0);
+          doc.text("Actual Total Consumption :", 80, positionHeight, { align: 'right' });
+          doc.setTextColor(22, 33, 77);
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoConsumption, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text('MT', 135, positionHeight, { align: 'left' });
+
+          // Segundo cuadro
+          positionHeight += 4.1;
+          ancho = widthPDF - 20 - 20;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.rect(20, positionHeight, ancho, 10, "FD");
+
+
+          positionHeight += 7;
+          doc.setFontSize(15);
+          doc.setFont('Helvetica', 'bold');
+          if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
+
+            let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
+            doc.setTextColor(255, 0, 0);
+            doc.text('Overall Fuel Oil Consumption Out Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+
+          } else {
+
+            let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
+            doc.setTextColor(0, 128, 0);
+            doc.text('Overall Fuel Oil Consumption WITHIN Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+
+          }
+
+          let pageFooter = heightPDF - 10;
+
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
+          pageFooter += 4;
+
+          doc.setFontSize(8);
+          doc.setFont('Helvetica', 'normal');
+          doc.setTextColor(22, 33, 77);
+
+          doc.text('Page 2', 10, pageFooter, { align: 'left' });
+          doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
+
+        }
       )
       // Aqui descargamos el documento de pdf.
       .then(
@@ -336,7 +720,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
   // Obtiene el primer y ultimo reporte ingresado.
-  private GetStartrReportAndEndReportThePort(port: Port): any {
+  private GetStartReportAndEndReportThePort(port: Port): any {
 
     let startReport: DailyReport;
     let endReport: DailyReport;
