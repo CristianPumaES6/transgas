@@ -691,7 +691,7 @@ export class DashboardComponent implements OnInit {
 
               // Si selecciono un viaje.
               // El resumen se vera por dia.||
-              this.selectSummaryBy = 'DAYS';
+              this.selectSummaryBy = 'PORTS';
               // solo agregamos el viaje que se selecciono.
               newVoyages.push(selectVoyage);
             }
