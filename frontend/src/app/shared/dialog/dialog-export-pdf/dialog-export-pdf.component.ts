@@ -1,13 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
+import { Chart } from 'chart.js';
+import { GetMonthYearFromDate } from 'dist/frontend/assets/moment/moment.assets';
 import jsPDF from 'jspdf';
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 
-import { DailyReport } from 'src/app/models/daily-report';
+import { DailyReport, Speed } from 'src/app/models/daily-report';
 import { LoadingService } from 'src/app/services/loading.service';
 import { mathRound } from 'src/assets/math/math.assets';
-import { FormatDate, FormatYYYYMMDD } from 'src/assets/moment/moment.assets';
+import { FormatDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from 'src/assets/moment/moment.assets';
 import { Port } from '../../../models/port';
 import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
@@ -58,6 +60,17 @@ export class DialogExportPdfComponent implements OnInit {
   public voyages: Voyage[] = [];
   public ports: Port[] = [];
 
+  /////////////////////////////////////
+  //////    GENERAR REPORTE   /////////
+  /////////////////////////////////////
+  // Texto del reporte, punto por punto.
+  public xLabelReport: any[] = [];
+  // Configuracion del chartIFO
+  public configLineaSpeed: Chart.ChartConfiguration; // Configuracion del elemento
+  public chartLineSpeed: Chart; // LINEA
+  public dataSpeed: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
+
+
   ngOnInit(): void {
     // seleccionar usuario.
     this.selectUser = this.data.selectUser;
@@ -76,6 +89,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Seleccionamos el tipo de exportacion.
     this.selectTypeExport = 'VESSEL_PERFORMANCE';
+    this.GenetareLineSpeed();
   }
 
   // Se ejecuta cada vez que se cambia de viaje.
@@ -89,11 +103,13 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
   public ClickSelectPort() {
-
+    console.log('UpdateLineSpeed');
   }
 
   // Cuando le das click al boton exportar pdf
   public ClickExportPDF() {
+    console.log('ClickExportPDF()');
+
     Promise.resolve(true).then(
       result => {
 
@@ -274,7 +290,7 @@ export class DialogExportPdfComponent implements OnInit {
           // Calcularemos la hora tarde o antes
           getInfoByActivity = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
 
-          // Si el tiempo es que el tiempo fue mayor que la del contrato lo pintamos de rojo.
+          // Si el tiempo es mayor que la del contrato lo pintamos de rojo.
           if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
 
             let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
@@ -282,6 +298,7 @@ export class DialogExportPdfComponent implements OnInit {
             doc.text(this.MathRoundOneDecimal(diffHour, 2) + " Hours Lost", 140, positionHeight, { align: 'left' })
 
           } else {
+            // Caso contrario verde
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
             doc.text(this.MathRoundOneDecimal(diffHour, 2) + ' Hours before', 140, positionHeight, { align: 'left' })
@@ -324,6 +341,7 @@ export class DialogExportPdfComponent implements OnInit {
           return true;
         }
       ).then(
+        // SEGUNDA PAGINA
         result => {
 
           // Agregamos una pagina
@@ -358,6 +376,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(22, 33, 77);
           doc.setFont('Helvetica', 'bold');
           doc.text("Lima Phone: +51-1-716-7600       Miami Phone: +1 954-575-1414       Email: transgas@transgas.com.pe", widthPDF - 10, positionHeight, { align: 'right' })
+
 
 
           // Raya debajo de los numeros de telefono.
@@ -708,7 +727,7 @@ export class DialogExportPdfComponent implements OnInit {
         }
       ).then(
         result => {
-
+          // TERCERA PAGINA
           doc.addPage();
 
           //////////////////////////////////
@@ -836,7 +855,7 @@ export class DialogExportPdfComponent implements OnInit {
           positionHeight += 10;
           doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
           positionHeight += 20;
-          
+
 
           let head = [['Posn Type', 'Date / Time', 'Load / Speed Conditions', 'Time ( hrs )', 'Dist ( nm )', 'Avg', 'Charter', 'Beaufort']]
           let data = [];
@@ -898,7 +917,7 @@ export class DialogExportPdfComponent implements OnInit {
             0: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 15,
+              cellWidth: 14,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
@@ -912,7 +931,7 @@ export class DialogExportPdfComponent implements OnInit {
             2: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 34,
+              cellWidth: 36,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
@@ -926,28 +945,28 @@ export class DialogExportPdfComponent implements OnInit {
             4: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 25,
+              cellWidth: 24,
               lineWidth: 0.2,
               lineColor: [22, 33, 77]
             },
             5: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 16,
+              cellWidth: 17,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             6: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 16,
+              cellWidth: 17,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             7: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 21,
+              cellWidth: 19,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
@@ -961,11 +980,11 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           autoTable(doc, options);
+          
           // Tamaño de la cabecera.
           positionHeight += 11.4;
-
           // Tamaño de la tabla
-          positionHeight += (3 * 7.6);
+          positionHeight += (getInfoByActivity.reports.length * 7.6);
 
           // Le sumamos la separacion entre la tabla y el siguiente texto
           positionHeight += 6;
@@ -1013,6 +1032,12 @@ export class DialogExportPdfComponent implements OnInit {
 
 
         }
+      ).then(
+        result => {
+
+
+          return this.UpdateLineSpeed();
+        }
       )
       // Aqui descargamos el documento de pdf.
       .then(
@@ -1027,6 +1052,315 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
+  private GenerateChartSpeed(): any {
+
+  }
+
+  // GenetareLineIFO(): Generar linea en los canvas.
+  private GenetareLineSpeed(): boolean {
+    console.log('GenetareLineIFO()');
+
+    // Agregamos la configuracion del chartIFO.
+    this.configLineaSpeed = {
+      type: 'line',
+      data: {
+        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
+        datasets: [{
+          label: '', // Lo pongo vacio por que en el update se colocara el valor.
+          backgroundColor: 'rgb(255,205,6)',
+          borderColor: 'rgb(255,205,6)',
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
+          fill: false,
+        }]
+      },
+      options: { // Otras opciones dentro del Chart
+        legend: { // La leyenda es el texto que esta arriva del cuadro.
+          display: true,
+          onClick: (event, legendItem) => {
+            console.log('onClick:' + legendItem.text);
+          },
+          labels: {
+            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
+            fontStyle: 'bold', // Tipo de texto de la leyenda.
+          }
+        },
+        // Habilitamos la opcion para que sea responsive
+        maintainAspectRatio: false,
+        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
+        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
+        hover: {
+          onHover: function (e: MouseEvent) {
+            // puntos GetElementAtaEvent
+            var point = this.getElementAtEvent(e);
+
+            // event targer.
+            let eventTarget = e.target as HTMLCanvasElement;
+            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
+            if (point.length) {
+              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+            } else {
+              eventTarget.style.cursor = 'default';
+            }
+          }
+        }
+      },
+      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
+    };
+
+    // Encapculamos el elemento del dom.
+    let canvaLineSpeed: any = document.getElementById('lineaSpeed');
+    // Convertimos el canvaLineIfo en 2d
+    let ctxLineSpeed = canvaLineSpeed.getContext('2d');
+    // 
+    this.chartLineSpeed = new Chart(ctxLineSpeed, this.configLineaSpeed);
+
+    return false;
+  }
+
+
+  private UpdateLineSpeed(): boolean {
+    console.log('UpdateLineSPEED()');
+
+
+    // Actualizamos los labels
+    this.configLineaSpeed.data.labels = this.xLabelReport;
+
+    // Actualizamos la dataSPEED
+    this.configLineaSpeed.data.datasets[0].data = this.dataSpeed;
+
+    // Vaciamos la configuracion de las lines SPEED
+    // La linea es el campo que agregamos en el plugin.
+    this.configLineaSpeed.options.lines = [];
+
+    // Configuracion Tooltips
+    this.configLineaSpeed.options.tooltips = this.GetToolTipConfig('SPEED');
+
+    if (this.configLineaSpeed.lineaMax < this.selectUser.maxSpeed) {
+      this.configLineaSpeed.lineaMax = this.selectUser.maxSpeed;
+    }
+
+    // Agregamos la configuracion de las escalas.
+    this.configLineaSpeed.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSpeed.lineaMax, 0) + 2);
+
+    this.chartLineSpeed.update();
+
+    return true;
+  }
+
+  private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
+
+    // resultado de tooltip
+    let tooltips: Chart.ChartTooltipOptions;
+
+    // Revisar la configuracion del Tooltip, podriamos hacerlo mas pequeño.
+    return tooltips = {
+      // Establece qué elementos aparecen en la información sobre herramientas.
+      mode: 'nearest',
+      // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
+      intersect: false,
+      callbacks: {
+        title: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
+
+          // Obtenemos la posicion del item.
+          let index = tooltipItem[0].index;
+
+          // Resultado que se mostrara en el titulo.
+          let result = '';
+
+          // DataSets.
+          let dataSets: Chart.ChartDataSets = data.datasets[0];
+          let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+          let ubication = chartPoint.ubication;
+
+
+          // Obtenemos el viaje.
+          let viaje = this.voyages[ubication[0]];
+          // Obtenemos el puerto.
+          let port = viaje.ports[ubication[1]];
+
+          // No existe la ubicacion en month y day
+          let dailyReport = port.dailyReports[ubication[2]];
+
+          // dos veces estamos aplicando el formato.
+          result = TextMonthDayYearFormatYYYYMMDD(dailyReport.date);
+
+
+          return result;
+
+        },
+        label: (tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData) => {
+          // REVISAR LOS TOOLTIP DEL CHART SPEED ESTABA PENSANDO QUE TODOS TENGAN LOS MISMOS DATOS
+          // QUE MUESTREN LA VELOCIDAD Y LOS CONSUMO MGO Y IFO APARTE 
+          // GITHUB VER COMO OBTENIA EL VLSFO Y IFO 
+          // Resultado que se mostrara en el titulo.
+
+          let result = '';
+          if (configIFOorMGOorSPEED === 'IFO') {
+            result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+            result = result + ' Dayli consumption : ';
+          } else if (configIFOorMGOorSPEED === 'MGO') {
+            result = 'MGO Dayli consumption : ';
+          } else if (configIFOorMGOorSPEED === 'SPEED') {
+            result = 'Average Speed : ';
+          }
+          // Le agrgamos el vlaor.
+          result = result + mathRound(Number(tooltipItem.value), 2)
+
+          return result;
+
+        },
+        footer: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
+          // Obtenemos la posicion del item.
+          let index = tooltipItem[0].index;
+
+          // Resultado que se mostrara en el titulo.
+          let result = [];
+
+          // DataSets.
+          let dataSets: Chart.ChartDataSets = data.datasets[0];
+          let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+          let ubication = chartPoint.ubication;
+
+
+          // Revisar esto lo podriamos desaparecer si se lo agregamos al
+          // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
+          let dataExtra = chartPoint.dataExtra;
+
+          let speed = new Speed();
+          let activities = '';
+          let observations = '';
+          let totalReport = 0;
+
+
+          dataExtra.forEach((report: DailyReport) => {
+            activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+            observations = observations + ', ' + report.observation;
+            speed.add(report.distance, report.steamingTime);
+            totalReport = totalReport + 1;
+          });
+
+
+
+
+          // para mostrar los datos deben de ser mayor a 1,
+          // recordemos que todos los reportes estan en un puerto y un viaje.
+          if (chartPoint.totalPort > 1) {
+            result.push('T. Ports : ' + chartPoint.totalPort);
+          }
+          if (chartPoint.totalReport > 1) {
+            result.push('T. Reports : ' + chartPoint.totalReport);
+          }
+
+
+          // TOTAL BUNKERING
+          if (
+            (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
+            && chartPoint.totalBunkeringIFO > 0) {
+            let textIFOorVLSFOorLSFO = 'T. Bunkering ';
+            textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+            textIFOorVLSFOorLSFO += ' : ' + + mathRound(chartPoint.totalBunkeringIFO, 2);
+            result.push(textIFOorVLSFOorLSFO);
+          }
+          if (this.selectUser.isConsumptionMGO
+            && chartPoint.totalBunkeringMGO > 0
+          ) {
+            result.push('T. Bunkering MGO : ' + mathRound(chartPoint.totalBunkeringMGO, 2));
+          }
+
+          // Mostraremos los 2 tipos de combustible.
+          if (
+            (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
+            && chartPoint.totalConsumptionIFO > 0) {
+
+            let textIFOorVLSFOorLSFO = 'T. Consumption ';
+            textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+            textIFOorVLSFOorLSFO += ' : ' + mathRound(chartPoint.totalConsumptionIFO, 2);
+            result.push(textIFOorVLSFOorLSFO);
+
+          }
+          if (this.selectUser.isConsumptionMGO
+            && chartPoint.totalConsumptionMGO > 0
+          ) {
+
+            result.push('T. Consumption MGO: ' + mathRound(chartPoint.totalConsumptionMGO, 2));
+
+          }
+
+          if (chartPoint.speed.steamingTime > 0) {
+            result.push('T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2));
+          }
+          if (chartPoint.speed.distance > 0) {
+            result.push('T. Distance : ' + mathRound(chartPoint.speed.distance, 2));
+          }
+
+
+          let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
+          if (calSpeed && calSpeed > 0) {
+            result.push('Speed : ' + calSpeed);
+          }
+
+          if (activities.length > 4) {
+            result.push('Activities : ' + activities);
+          }
+
+          if (observations.length > 4) {
+            result.push('Observations : ' + observations);
+          }
+
+          return result;
+
+        },
+      }
+    }
+
+  }
+
+  // Configuracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
+  // esta configuracion depente del selectSummary
+  private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
+
+    // Variable que retornara la configuracion
+    let config: any = {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+          max: lineaMax,
+        },
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }],
+      xAxes: [{
+        type: '',// ES SE MODIFICA ABAJO // 'category' or 'time'
+        //  time: {} // Se modificara abajo.
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+        },
+        position: 'bottom', // NO QUE HACE ESTO
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }]
+    };
+
+    config.xAxes[0].type = 'time';
+    config.xAxes[0].time = {
+
+      displayFormats: {
+        day: 'MM/DD'
+      },
+      tooltipFormat: 'MM/DD/YY',
+      unit: 'day',
+
+    }
+
+
+    return config;
+  }
 
   // Obtiene el primer y ultimo reporte ingresado.
   private GetStartReportAndEndReportThePort(port: Port): any {
@@ -1052,10 +1386,8 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
-
-
   // 
-  //SAILING_WITH_LADEN
+  // SAILING_WITH_LADEN
   private GetInfoByActivity(port: Port, activityPerformed: string, selectUser: User): any {
 
     // Consumo total del puerto.
@@ -1080,6 +1412,96 @@ export class DialogExportPdfComponent implements OnInit {
             ifoConsumption += this.SumaIfo(report);
             //lo agregamos al reporte.
             reports.push(report);
+
+                    // obtenemos la fecha del reporte.
+                    let day = report.date;
+
+
+                      // Buscamos si el mes ya se encuantra registrado.
+                      let resultSearch = this.xLabelReport.find(
+                        (xDay, iL) => {
+
+                          // Verificamos el mes ya se encuentra registrado.
+                          if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
+
+                            // Obtenemos los datos de velocidad.
+                            let speedI: Speed = this.dataSpeed[iL].speed;
+
+                            // Agregamos la distancia y velocidad.
+                            speedI.add(report.distance, report.steamingTime);
+                            // calculamos la velocidad.
+                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
+                            // Actualizamos el calculo de la velocidad.
+                            this.dataSpeed[iL].y = ySpeed;
+
+                            // ACTUALIZMAOS EL VALOR POR POSICION.
+                            // Actualizamos los datos de la velocidad
+                            this.dataSpeed[iL].speed = speedI;
+                            
+
+                            // IFO
+                            let totalConsumptionIFO = this.dataSpeed[iL].totalConsumptionIFO + this.SumaIfo(report);
+                            // Formula DayliConsumption
+                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
+                            this.dataSpeed[iL].y = dayliConsumptionIFO;
+
+
+                            // Actualizamos los datos al dataIfo Chart.
+                            this.dataSpeed[iL].totalConsumptionIFO = totalConsumptionIFO;
+                            this.dataSpeed[iL].totalBunkeringIFO += report.bunkeringIfo;
+                            this.dataSpeed[iL].totalBunkeringMGO += report.bunkeringMgo;
+
+                            // Verificamos que la linea maxima sea mayor al valor del chart-
+/*                             if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                              this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                            } */
+
+                            // Verificamos que la linea maxima sea mayor al valor del chart-
+                            if (ySpeed > this.configLineaSpeed.lineaMax) {
+                              this.configLineaSpeed.lineaMax = ySpeed;
+                            }
+                            // retornamos tru para agregarlo al filtro
+                            return true;
+                          }
+                          // Caso contrario retornamos false, para que no lo agrege al filtro.
+                          return false;
+                        }
+
+                      );
+
+                      // Verificamos si se encontro un resultado ese mes.
+                      if (!resultSearch) {
+
+                        // agregamos la fecha a nuestro arreglo.
+                        this.xLabelReport.push(day);
+
+                        // Le agregamos los datos de velocidad.
+                        let newSpeed = new Speed(report.distance, report.steamingTime);
+                        // Agregamos los datos de velocidad.
+                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+
+
+                        // DATOS IFO
+                        // Calculamos el total de consumo ifo
+                        let totalConsumptionIFO = this.SumaIfo(report);
+                        // Formula DayliConsumption
+                
+
+                        // ROB total.
+                        let totalBunkeringIFO = report.bunkeringIfo;
+                        let totalBunkeringMGO = report.bunkeringMgo;
+                        // Agregamos los datos SPEED
+                        this.dataSpeed.push(
+                          { x: day, y: ySpeed, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed}
+                        );
+
+
+                        // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+                        if (ySpeed > this.configLineaSpeed.lineaMax) {
+                          this.configLineaSpeed.lineaMax = ySpeed;
+                        }
+
+                      }
           }
         }
       }
