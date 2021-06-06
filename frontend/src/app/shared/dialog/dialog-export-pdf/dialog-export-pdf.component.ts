@@ -980,7 +980,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           autoTable(doc, options);
-          
+
           // Tamaño de la cabecera.
           positionHeight += 11.4;
           // Tamaño de la tabla
@@ -1121,7 +1121,6 @@ export class DialogExportPdfComponent implements OnInit {
   private UpdateLineSpeed(): boolean {
     console.log('UpdateLineSPEED()');
 
-
     // Actualizamos los labels
     this.configLineaSpeed.data.labels = this.xLabelReport;
 
@@ -1170,19 +1169,9 @@ export class DialogExportPdfComponent implements OnInit {
           // DataSets.
           let dataSets: Chart.ChartDataSets = data.datasets[0];
           let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
-          let ubication = chartPoint.ubication;
-
-
-          // Obtenemos el viaje.
-          let viaje = this.voyages[ubication[0]];
-          // Obtenemos el puerto.
-          let port = viaje.ports[ubication[1]];
-
-          // No existe la ubicacion en month y day
-          let dailyReport = port.dailyReports[ubication[2]];
 
           // dos veces estamos aplicando el formato.
-          result = TextMonthDayYearFormatYYYYMMDD(dailyReport.date);
+          result = TextMonthDayYearFormatYYYYMMDD(chartPoint.x);
 
 
           return result;
@@ -1407,101 +1396,109 @@ export class DialogExportPdfComponent implements OnInit {
         if (report.status === true) {
           // Solo sumamos el tiempo y la distancia.
           if (report.activityPerformed === activityPerformed) {
+           
             distancia += report.distance;
             time += report.steamingTime;
             ifoConsumption += this.SumaIfo(report);
             //lo agregamos al reporte.
             reports.push(report);
 
-                    // obtenemos la fecha del reporte.
-                    let day = report.date;
+            // obtenemos la fecha del reporte.
+            let day = report.date;
+            // Buscamos si el dia ya se encuantra registrado.
+            let resultSearch = this.xLabelReport.find(
+              (xDay, iL) => {
+
+                // Verificamos el dia ya se encuentra registrado.
+                if (FormatDate(day) === FormatDate(xDay)) {
+
+                  // Obtenemos la data extra actual.
+                  let dataExtra = this.dataSpeed[iL].dataExtra;
+                  // le hacemos push a la data extra.
+                  dataExtra.push(report);
+                  // Agregamos la data extra a la data del chart.
+                  this.dataSpeed[iL].dataExtra = dataExtra;
+
+                  // Obtenemos los datos de velocidad.
+                  let speedI: Speed = this.dataSpeed[iL].speed;
+                  // Agregamos la distancia y velocidad.
+                  speedI.add(report.distance, report.steamingTime);
+                  // calculamos la velocidad.
+                  let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
+                  // Actualizamos el calculo de la velocidad.
+                  this.dataSpeed[iL].y = ySpeed;
+
+                  // ACTUALIZMAOS EL VALOR POR POSICION.
+                  // Actualizamos los datos de la velocidad
+                  this.dataSpeed[iL].speed = speedI;
 
 
-                      // Buscamos si el mes ya se encuantra registrado.
-                      let resultSearch = this.xLabelReport.find(
-                        (xDay, iL) => {
-
-                          // Verificamos el mes ya se encuentra registrado.
-                          if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
-
-                            // Obtenemos los datos de velocidad.
-                            let speedI: Speed = this.dataSpeed[iL].speed;
-
-                            // Agregamos la distancia y velocidad.
-                            speedI.add(report.distance, report.steamingTime);
-                            // calculamos la velocidad.
-                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
-                            // Actualizamos el calculo de la velocidad.
-                            this.dataSpeed[iL].y = ySpeed;
-
-                            // ACTUALIZMAOS EL VALOR POR POSICION.
-                            // Actualizamos los datos de la velocidad
-                            this.dataSpeed[iL].speed = speedI;
-                            
-
-                            // IFO
-                            let totalConsumptionIFO = this.dataSpeed[iL].totalConsumptionIFO + this.SumaIfo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
-                            this.dataSpeed[iL].y = dayliConsumptionIFO;
+                  // IFO
+                  let totalConsumptionIFO = this.dataSpeed[iL].totalConsumptionIFO + this.SumaIfo(report);
+                  // Formula DayliConsumption
+                  let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
+                  this.dataSpeed[iL].y = dayliConsumptionIFO;
 
 
-                            // Actualizamos los datos al dataIfo Chart.
-                            this.dataSpeed[iL].totalConsumptionIFO = totalConsumptionIFO;
-                            this.dataSpeed[iL].totalBunkeringIFO += report.bunkeringIfo;
-                            this.dataSpeed[iL].totalBunkeringMGO += report.bunkeringMgo;
+                  // Actualizamos los datos al dataIfo Chart.
+                  this.dataSpeed[iL].totalConsumptionIFO = totalConsumptionIFO;
+                  this.dataSpeed[iL].totalBunkeringIFO += report.bunkeringIfo;
+                  this.dataSpeed[iL].totalBunkeringMGO += report.bunkeringMgo;
 
-                            // Verificamos que la linea maxima sea mayor al valor del chart-
-/*                             if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                              this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                            } */
+                  // Verificamos que la linea maxima sea mayor al valor del chart-
+              
+                  // Verificamos que la linea maxima sea mayor al valor del chart-
+                  if (ySpeed > this.configLineaSpeed.lineaMax) {
+                    this.configLineaSpeed.lineaMax = ySpeed;
+                  }
+                  // retornamos tru para agregarlo al filtro
+                  return true;
+                }
+                // Caso contrario retornamos false, para que no lo agrege al filtro.
+                return false;
+              }
 
-                            // Verificamos que la linea maxima sea mayor al valor del chart-
-                            if (ySpeed > this.configLineaSpeed.lineaMax) {
-                              this.configLineaSpeed.lineaMax = ySpeed;
-                            }
-                            // retornamos tru para agregarlo al filtro
-                            return true;
-                          }
-                          // Caso contrario retornamos false, para que no lo agrege al filtro.
-                          return false;
-                        }
+            );
 
-                      );
+            // Verificamos si se encontro un resultado del dia.
+            if (!resultSearch) {
 
-                      // Verificamos si se encontro un resultado ese mes.
-                      if (!resultSearch) {
+              // agregamos la fecha a nuestro arreglo.
+              this.xLabelReport.push(day);
 
-                        // agregamos la fecha a nuestro arreglo.
-                        this.xLabelReport.push(day);
-
-                        // Le agregamos los datos de velocidad.
-                        let newSpeed = new Speed(report.distance, report.steamingTime);
-                        // Agregamos los datos de velocidad.
-                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+              // Le agregamos los datos de velocidad.
+              let newSpeed = new Speed(report.distance, report.steamingTime);
+              // Agregamos los datos de velocidad.
+              let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
 
 
-                        // DATOS IFO
-                        // Calculamos el total de consumo ifo
-                        let totalConsumptionIFO = this.SumaIfo(report);
-                        // Formula DayliConsumption
-                
-
-                        // ROB total.
-                        let totalBunkeringIFO = report.bunkeringIfo;
-                        let totalBunkeringMGO = report.bunkeringMgo;
-                        // Agregamos los datos SPEED
-                        this.dataSpeed.push(
-                          { x: day, y: ySpeed, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed}
-                        );
+              // DATOS IFO
+              // Calculamos el total de consumo ifo
+              let totalConsumptionIFO = this.SumaIfo(report);
+              // Formula DayliConsumption
 
 
-                        // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
-                        if (ySpeed > this.configLineaSpeed.lineaMax) {
-                          this.configLineaSpeed.lineaMax = ySpeed;
-                        }
+              // ROB total.
+              let totalBunkeringIFO = report.bunkeringIfo;
+              let totalBunkeringMGO = report.bunkeringMgo;
 
-                      }
+              let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
+              // y los ocmentarios registrados.
+              dataExtra.push(report)
+
+
+              // Agregamos los datos SPEED
+              this.dataSpeed.push(
+                { x: day, y: ySpeed, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra }
+              );
+
+
+              // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+              if (ySpeed > this.configLineaSpeed.lineaMax) {
+                this.configLineaSpeed.lineaMax = ySpeed;
+              }
+
+            }
           }
         }
       }
