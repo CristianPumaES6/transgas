@@ -72,24 +72,56 @@ export class DialogExportPdfComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // seleccionar usuario.
-    this.selectUser = this.data.selectUser;
 
-    // Viajes
-    this.voyages = this.data.voyages;
-    this.selectVoyageId = this.data.selectVoyageId;
+    Promise.resolve(true).then(
+      result => {
 
-    // SI existe un viaje seleccioando lo buscamos.
-    if (this.selectVoyageId) {
-      // Buscamos el viaje.
-      let voyageSelect = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
-      // agregamos los puertos del viaje.
-      this.ports = voyageSelect.ports;
-    }
+        // seleccionar usuario.
+        this.selectUser = this.data.selectUser;
+        // Viajes
+        this.voyages = this.data.voyages;
+        this.selectVoyageId = this.data.selectVoyageId;
 
-    // Seleccionamos el tipo de exportacion.
-    this.selectTypeExport = 'VESSEL_PERFORMANCE';
-    this.GenetareLineSpeed();
+        // SI existe un viaje seleccioando lo buscamos.
+        if (this.selectVoyageId) {
+          // Buscamos el viaje.
+          let voyageSelect = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
+          // agregamos los puertos del viaje.
+          this.ports = voyageSelect.ports;
+        }
+
+        // Seleccionamos el tipo de exportacion.
+        this.selectTypeExport = 'VESSEL_PERFORMANCE';
+
+        return true;
+      }
+    ).then(
+      result => {
+
+        // generamos la linea
+        return this.GenetareLineSpeed();
+      }
+    ).then(
+      result => {
+        if(!result) throw 'ERROR_GENERATE_LINE_SPEED';
+
+        return true;
+      }  
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string =  this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD');
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+        return true;
+      }
+    );
+
   }
 
   // Se ejecuta cada vez que se cambia de viaje.
@@ -125,7 +157,7 @@ export class DialogExportPdfComponent implements OnInit {
     ).catch(
       err => {
         // Manejo el error
-        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+        let msg: string = this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD');
 
         console.error(msg);
         console.dir(err);
@@ -1056,9 +1088,9 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
-  // GenetareLineIFO(): Generar linea en los canvas.
+  // GenetareLineSpeed(): Generar linea en los canvas.
   private GenetareLineSpeed(): boolean {
-    console.log('GenetareLineIFO()');
+    console.log('GenetareLineSpeed()');
 
     // Agregamos la configuracion del chartIFO.
     this.configLineaSpeed = {
@@ -1114,7 +1146,7 @@ export class DialogExportPdfComponent implements OnInit {
     // 
     this.chartLineSpeed = new Chart(ctxLineSpeed, this.configLineaSpeed);
 
-    return false;
+    return true;
   }
 
 
@@ -1396,7 +1428,7 @@ export class DialogExportPdfComponent implements OnInit {
         if (report.status === true) {
           // Solo sumamos el tiempo y la distancia.
           if (report.activityPerformed === activityPerformed) {
-           
+
             distancia += report.distance;
             time += report.steamingTime;
             ifoConsumption += this.SumaIfo(report);
@@ -1446,7 +1478,7 @@ export class DialogExportPdfComponent implements OnInit {
                   this.dataSpeed[iL].totalBunkeringMGO += report.bunkeringMgo;
 
                   // Verificamos que la linea maxima sea mayor al valor del chart-
-              
+
                   // Verificamos que la linea maxima sea mayor al valor del chart-
                   if (ySpeed > this.configLineaSpeed.lineaMax) {
                     this.configLineaSpeed.lineaMax = ySpeed;
