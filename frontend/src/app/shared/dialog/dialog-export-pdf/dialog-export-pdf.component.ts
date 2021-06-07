@@ -93,6 +93,8 @@ export class DialogExportPdfComponent implements OnInit {
         // Seleccionamos el tipo de exportacion.
         this.selectTypeExport = 'VESSEL_PERFORMANCE';
 
+        this.PluginChartDataLabels();
+        
         return true;
       }
     ).then(
@@ -103,14 +105,15 @@ export class DialogExportPdfComponent implements OnInit {
       }
     ).then(
       result => {
-        if(!result) throw 'ERROR_GENERATE_LINE_SPEED';
-
+        // Verificamos que la linea speed se halla generado correctamente.
+        if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
+        
         return true;
-      }  
+      }
     ).catch(
       err => {
         // Manejo el error
-        let msg: string =  this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD');
+        let msg: string = this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD');
 
         console.error(msg);
         console.dir(err);
@@ -1105,7 +1108,10 @@ export class DialogExportPdfComponent implements OnInit {
           fill: false,
         }]
       },
-      options: { // Otras opciones dentro del Chart
+      options: {
+        // Habilitamos todos los tooltip esten abiertos.
+        showAllTooltips: true,
+        // Otras opciones dentro del Chart
         legend: { // La leyenda es el texto que esta arriva del cuadro.
           display: true,
           onClick: (event, legendItem) => {
@@ -1469,7 +1475,7 @@ export class DialogExportPdfComponent implements OnInit {
                   let totalConsumptionIFO = this.dataSpeed[iL].totalConsumptionIFO + this.SumaIfo(report);
                   // Formula DayliConsumption
                   let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
-                  this.dataSpeed[iL].y = dayliConsumptionIFO;
+                  this.dataSpeed[iL].y = ySpeed;
 
 
                   // Actualizamos los datos al dataIfo Chart.
@@ -1481,8 +1487,10 @@ export class DialogExportPdfComponent implements OnInit {
 
                   // Verificamos que la linea maxima sea mayor al valor del chart-
                   if (ySpeed > this.configLineaSpeed.lineaMax) {
+
                     this.configLineaSpeed.lineaMax = ySpeed;
                   }
+
                   // retornamos tru para agregarlo al filtro
                   return true;
                 }
@@ -1582,5 +1590,49 @@ export class DialogExportPdfComponent implements OnInit {
     return result;
   }
 
+
+  private PluginChartDataLabels() {
+
+    Chart.pluginService.register({
+      beforeRender: function (chart: any) {
+        if (chart.config.options.showAllTooltips) {
+          // create an array of tooltips, 
+          // we can't use the chart tooltip because there is only one tooltip per chart
+          chart.pluginTooltips = [];
+          chart.config.data.datasets.forEach(function (dataset, i) {
+            chart.getDatasetMeta(i).data.forEach(function (sector, j) {
+              chart.pluginTooltips.push(new Chart.Tooltip({
+                _chart: chart.chart,
+                _chartInstance: chart,
+                _data: chart.data,
+                _options: chart.options.tooltips,
+                _active: [sector]
+              }, chart));
+            });
+          });
+          chart.options.tooltips.enabled = false; // turn off normal tooltips
+        }
+      },
+      afterDraw: function (chart: any, easing) {
+        if (chart.config.options.showAllTooltips) {
+          if (!chart.allTooltipsOnce) {
+            if (Number(easing) !== 1) {
+              return;
+            }
+            chart.allTooltipsOnce = true;
+          }
+          chart.options.tooltips.enabled = true;
+          Chart.helpers.each(chart.pluginTooltips, function (tooltip) {
+            tooltip.initialize();
+            tooltip.update();
+            tooltip.pivot();
+            tooltip.transition(easing).draw();
+          });
+          chart.options.tooltips.enabled = false;
+        }
+      }
+    });
+
+  }
 }
 
