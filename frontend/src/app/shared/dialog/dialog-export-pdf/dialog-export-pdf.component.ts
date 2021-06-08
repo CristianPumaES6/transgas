@@ -774,7 +774,7 @@ export class DialogExportPdfComponent implements OnInit {
           positionHeight += 7;
           doc.setFontSize(15);
           doc.setFont('Helvetica', 'bold');
-          if (getInfoByActivity.ifoConsumption > getInfoByActivity.ifoDailyConsumptionByCharter) {
+          if (getInfoByActivity.ifoConsumption < getInfoByActivity.ifoDailyConsumptionByCharter) {
             doc.setTextColor(255, 0, 0);
             doc.text('Overall Fuel Oil Consumption Out Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
           } else {
