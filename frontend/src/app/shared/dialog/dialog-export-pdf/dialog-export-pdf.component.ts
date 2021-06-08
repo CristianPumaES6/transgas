@@ -66,10 +66,16 @@ export class DialogExportPdfComponent implements OnInit {
   /////////////////////////////////////
   // Texto del reporte, punto por punto.
   public xLabelReport: any[] = [];
-  // Configuracion del chartIFO
+  // Configuracion del chartSpeed
   public configLineaSpeed: Chart.ChartConfiguration; // Configuracion del elemento
   public chartLineSpeed: Chart; // LINEA
   public dataSpeed: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
+
+
+
+  public configLineaIFO: Chart.ChartConfiguration; // Configuracion del elemento
+  public chartLineIFO: Chart; // LINEA
+  public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
 
   ngOnInit(): void {
@@ -106,6 +112,12 @@ export class DialogExportPdfComponent implements OnInit {
       }
     ).then(
       result => {
+
+        // generamos la linea
+        return this.GenetareLineIFO();
+      }
+    ).then(
+      result => {
         // Verificamos que la linea speed se halla generado correctamente.
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
 
@@ -123,6 +135,8 @@ export class DialogExportPdfComponent implements OnInit {
     ).then(
       result => {
         this.UpdateLineSpeed()
+        this.UpdateLineIfo()
+
         setTimeout(() => {
           this.ExportPDFVesselPerformance();
         }, 2000)
@@ -176,8 +190,9 @@ export class DialogExportPdfComponent implements OnInit {
 
     this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
 
+    this.UpdateLineIfo();
+    this.UpdateLineSpeed();
 
-    return this.UpdateLineSpeed();
 
   }
 
@@ -258,8 +273,7 @@ export class DialogExportPdfComponent implements OnInit {
           getInfoByActivity = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
           typeConsumptionSelectBuque = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
-
-          return this.UpdateLineSpeed();
+          return true;
         }
       )
       // Aqui agregamos la primera pagina.
@@ -1838,6 +1852,71 @@ export class DialogExportPdfComponent implements OnInit {
     return true;
   }
 
+  // GenetareLineIFO(): Generar linea en los canvas.
+  private GenetareLineIFO(): boolean {
+    console.log('GenetareLineIFO()');
+
+    // Agregamos la configuracion del chartIFO.
+    this.configLineaIFO = {
+      type: 'line',
+      data: {
+        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
+        datasets: [{
+          label: 'VLSFO DAILY CONSUMPTION', // Lo pongo vacio por que en el update se colocara el valor.
+          backgroundColor: 'rgb(255,205,6)',
+          borderColor: 'rgb(255,205,6)',
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
+          fill: false,
+        }]
+      },
+      options: {
+        // Habilitamos todos los tooltip esten abiertos.
+        showAllTooltips: true,
+        // Otras opciones dentro del Chart
+        legend: { // La leyenda es el texto que esta arriva del cuadro.
+          display: true,
+          onClick: (event, legendItem) => {
+            console.log('onClick:' + legendItem.text);
+          },
+          labels: {
+            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
+            fontStyle: 'bold', // Tipo de texto de la leyenda.
+          }
+        },
+        // Habilitamos la opcion para que sea responsive
+        maintainAspectRatio: false,
+        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
+        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
+        hover: {
+          onHover: function (e: MouseEvent) {
+            // puntos GetElementAtaEvent
+            var point = this.getElementAtEvent(e);
+
+            // event targer.
+            let eventTarget = e.target as HTMLCanvasElement;
+            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
+            if (point.length) {
+              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+            } else {
+              eventTarget.style.cursor = 'default';
+            }
+          }
+        }
+      },
+      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
+    };
+
+    // Encapculamos el elemento del dom.
+    let canvaLineIfo: any = document.getElementById('lineaIfo');
+    // Convertimos el canvaLineIfo en 2d
+    let ctxLineIfo = canvaLineIfo.getContext('2d');
+    // 
+    this.chartLineIFO = new Chart(ctxLineIfo, this.configLineaIFO);
+
+    return true;
+  }
+
+
 
   private UpdateLineSpeed(): any {
     console.log('UpdateLineSPEED()');
@@ -1888,6 +1967,55 @@ export class DialogExportPdfComponent implements OnInit {
     return true;
   }
 
+  private UpdateLineIfo(): any {
+    console.log('UpdateLineIfo()');
+
+    // Actualizamos los labels
+    this.configLineaIFO.data.labels = this.xLabelReport;
+
+    // Actualizamos la dataIfo
+    this.configLineaIFO.data.datasets[0].data = this.dataIFO;
+
+    // Vaciamos la configuracion de las lines IFO
+    // La linea es el campo que agregamos en el plugin.
+    this.configLineaIFO.options.lines = [];
+
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+    if (this.selectUser.maxIFOConsumption > 0) {
+      this.configLineaIFO.options.lines.push({
+        type: 'horizontal',
+        y: this.selectUser.maxIFOConsumption,
+        color: 'red',
+        label: 'Max'
+      });
+    };
+
+    if (this.selectUser.minIFOConsumption > 0) {
+      this.configLineaIFO.options.lines.push({
+        type: 'horizontal',
+        y: this.selectUser.minIFOConsumption,
+        color: '#39FF14',
+        label: 'Min'
+      });
+    }
+
+
+    // Configuracion Tooltips
+    this.configLineaIFO.options.tooltips = this.GetToolTipConfig('IFO');
+
+    if (this.configLineaIFO.lineaMax < this.selectUser.maxIFOConsumption) {
+      this.configLineaIFO.lineaMax = this.selectUser.maxIFOConsumption;
+    }
+
+    // Agregamos la configuracion de las escalas.
+    this.configLineaIFO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaIFO.lineaMax, 0) + 2);
+
+
+    this.chartLineIFO.update();
+
+    return true;
+  }
+
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
 
     // resultado de tooltip
@@ -1928,7 +2056,7 @@ export class DialogExportPdfComponent implements OnInit {
           let result = '';
           if (configIFOorMGOorSPEED === 'IFO') {
             result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            result = result + ' Dayli consumption : ';
+            result = 'Dayli consumption : ';
           } else if (configIFOorMGOorSPEED === 'MGO') {
             result = 'MGO Dayli consumption : ';
           } else if (configIFOorMGOorSPEED === 'SPEED') {
@@ -1980,6 +2108,13 @@ export class DialogExportPdfComponent implements OnInit {
             result.push('T. Distance : ' + mathRound(chartPoint.speed.distance, 2));
           }
 
+          if (configIFOorMGOorSPEED == 'IFO') {
+
+            if (chartPoint.totalConsumptionIFO > 0) {
+              result.push('T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2));
+            }
+
+          }
 
           return result;
 
@@ -2065,6 +2200,7 @@ export class DialogExportPdfComponent implements OnInit {
   private GetInfoByActivity(port: Port, activityPerformed: string, selectUser: User): any {
     // Reset valos deñ data SPEER.
     this.dataSpeed = [];
+    this.dataIFO = [];
     this.xLabelReport = [];
 
     // Consumo total del puerto.
@@ -2127,20 +2263,21 @@ export class DialogExportPdfComponent implements OnInit {
                   let speedI: Speed = this.dataSpeed[iL].speed;
                   // Agregamos la distance y velocidad.
                   speedI.add(report.distance, report.steamingTime);
-                  // calculamos la velocidad.
-                  let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
-                  // Actualizamos el calculo de la velocidad.
-                  this.dataSpeed[iL].y = ySpeed;
-
-                  // ACTUALIZMAOS EL VALOR POR POSICION.
-                  // Actualizamos los datos de la velocidad
-                  this.dataSpeed[iL].speed = speedI;
-
-
                   // IFO
                   let totalConsumptionIFO = this.dataSpeed[iL].totalConsumptionIFO + this.SumaIfo(report);
                   // Formula DayliConsumption
                   let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
+
+
+                  // calculamos la velocidad.
+                  let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
+                  // Actualizamos el calculo de la velocidad.
+
+
+                  // ACTUALIZMAOS EL VALOR POR POSICION.
+                  // Actualizamos los datos de la velocidad
+                  this.dataSpeed[iL].speed = speedI;
+                  this.dataIFO[iL].speed = speedI;
                   this.dataSpeed[iL].y = ySpeed;
 
 
@@ -2149,6 +2286,12 @@ export class DialogExportPdfComponent implements OnInit {
                   this.dataSpeed[iL].totalBunkeringIFO += report.bunkeringIfo;
                   this.dataSpeed[iL].totalBunkeringMGO += report.bunkeringMgo;
 
+                  this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
+                  this.dataIFO[iL].totalBunkeringIFO += report.bunkeringIfo;
+                  this.dataIFO[iL].totalBunkeringMGO += report.bunkeringMgo;
+                  // Actualizamos los datos al dataIfo Chart.
+                  this.dataIFO[iL].y = dayliConsumptionIFO;
+
                   // Verificamos que la linea maxima sea mayor al valor del chart-
 
                   // Verificamos que la linea maxima sea mayor al valor del chart-
@@ -2156,7 +2299,9 @@ export class DialogExportPdfComponent implements OnInit {
 
                     this.configLineaSpeed.lineaMax = ySpeed;
                   }
-
+                  if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                    this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                  }
                   // retornamos tru para agregarlo al filtro
                   return true;
                 }
@@ -2182,6 +2327,10 @@ export class DialogExportPdfComponent implements OnInit {
               // Calculamos el total de consumo ifo
               let totalConsumptionIFO = this.SumaIfo(report);
               // Formula DayliConsumption
+              let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptionIFO * 24) / newSpeed.steamingTime : 0;
+
+
+              // Formula DayliConsumption
 
 
               // ROB total.
@@ -2199,9 +2348,19 @@ export class DialogExportPdfComponent implements OnInit {
               );
 
 
+              this.dataIFO.push(
+                { x: day, y: dayliConsumptionIFO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra }
+              );
+
+
               // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
               if (ySpeed > this.configLineaSpeed.lineaMax) {
                 this.configLineaSpeed.lineaMax = ySpeed;
+              }
+
+              // Verificamos que la configuracion de la linea maxima se  mayor al valor del chart.
+              if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                this.configLineaIFO.lineaMax = dayliConsumptionIFO;
               }
 
             }
