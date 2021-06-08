@@ -2,15 +2,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
 import { Chart } from 'chart.js';
-import { GetMonthYearFromDate } from 'dist/frontend/assets/moment/moment.assets';
 import jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
 import autoTable, { Cell, CellHookData, RowInput, UserOptions } from 'jspdf-autotable'
 
-import { DailyReport, Speed } from 'src/app/models/daily-report';
-import { LoadingService } from 'src/app/services/loading.service';
-import { mathRound } from 'src/assets/math/math.assets';
-import { FormatDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from 'src/assets/moment/moment.assets';
+import { DailyReport, Speed } from '../../../../app/models/daily-report';
+import { LoadingService } from '../../../../app/services/loading.service';
+import { mathRound } from './../../../../assets/math/math.assets';
+import { FormatDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
 import { Port } from '../../../models/port';
 import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
