@@ -451,4 +451,5 @@ export const dialog: any = {
     SPEED: 'Speed',
     DEPARTURE: 'Departure :',
     ARRIVAL: 'Arrival :',
+    BUQUE: 'Buque'
 }
