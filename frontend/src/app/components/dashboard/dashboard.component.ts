@@ -292,6 +292,7 @@ export class DashboardComponent implements OnInit {
 
         if (!result) throw 'ERROR_SELECT_USER';
 
+
         // Activamos el loading.
         this.loadingService.Close();
       }
@@ -3482,8 +3483,32 @@ export class DashboardComponent implements OnInit {
     // La linea es el campo que agregamos en el plugin.
     this.configLineaSPEED.options.lines = [];
 
-    // Configuracion Tooltips
-    this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
+    
+      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+      if (this.selectUser.maxSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.maxSpeed,
+          color: 'red',
+          label: ''
+        });
+      };
+
+      if (this.selectUser.minSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.minSpeed,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+
+      // Configuracion Tooltips
+      this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
+  
+    
+
+    
 
     if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
       this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
