@@ -109,9 +109,13 @@ export class DialogExportPdfComponent implements OnInit {
         // Verificamos que la linea speed se halla generado correctamente.
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
 
+
+        // Esto se debe eliminar.
         let voyage = this.data.voyages[3];
         let port = voyage.ports[2];
         let selectUser = this.data.selectUser;
+        this.selectVoyageId = voyage.id;
+        this.selectPortId = port.id
 
         return this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', selectUser)
 
@@ -119,6 +123,9 @@ export class DialogExportPdfComponent implements OnInit {
     ).then(
       result => {
         this.UpdateLineSpeed()
+        setTimeout(() => {
+          this.ExportPDFVesselPerformance();
+        }, 2000)
         return true;
       }
     ).catch(
@@ -408,8 +415,10 @@ export class DialogExportPdfComponent implements OnInit {
 
           return true;
         }
-      ).then(
-        // SEGUNDA PAGINA
+      )
+
+      // SEGUNDA PAGINA
+      .then(
         result => {
 
           // Agregamos una pagina
@@ -789,6 +798,7 @@ export class DialogExportPdfComponent implements OnInit {
           return true;
         }
       ).then(
+        //// TERCERA PAGINA
         result => {
           // TERCERA PAGINA
           doc.addPage();
@@ -1159,6 +1169,384 @@ export class DialogExportPdfComponent implements OnInit {
 
         }
       )
+      // AQUI GENERAMOS LOS CUADROS DE CONSUMO.
+      .then(
+        result => {
+          // TERCERA PAGINA
+          doc.addPage();
+
+          //////////////////////////////////
+          //////// INICIAMOS LA CABECERA////
+          //////////////////////////////////
+          positionHeight = 10;
+          let positionWidth = 10;
+
+          // ubicamos la imagen con un tamaño de 50 x 50
+          doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+          positionHeight += 5;
+          positionWidth = 60;
+
+          // Texto
+          doc.setFontSize(18);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bolditalic');
+          doc.text("Vessel Performance Report", positionWidth, positionHeight, { align: 'left' })
+
+          // Rectangular
+          positionHeight += 2;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(positionWidth, positionHeight, widthPDF - positionWidth - 10, 0.5, "FD");
+
+          // Numeros de telefono y correo.
+          positionHeight += 10;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Lima Phone: +51-1-716-7600       Miami Phone: +1 954-575-1414       Email: transgas@transgas.com.pe", widthPDF - 10, positionHeight, { align: 'right' })
+
+
+          // Raya debajo de los numeros de telefono.
+          positionHeight += 2;
+          positionWidth = 10;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(10, positionHeight, widthPDF - 20, 0.5, "FD");
+
+          //////////////////////////////////
+          ////////// FIN CABECERA //////////
+          //////////////////////////////////
+
+
+          // AGREGAMOS EL FOTER DEUNA VE>
+          let pageFooter = heightPDF - 10;
+
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
+          pageFooter += 4;
+
+          doc.setFontSize(8);
+          doc.setFont('Helvetica', 'normal');
+          doc.setTextColor(22, 33, 77);
+
+          doc.text('Page 4', 10, pageFooter, { align: 'left' });
+          doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
+
+
+
+          // Titulo del pdf.
+          positionHeight += 6;
+          doc.setFontSize(15);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text('Voyage Summary', widthPDF / 2, positionHeight, { align: 'center' })
+
+
+          ///////////////////////////////////////
+          ///////// Inicio del 1° Cuadro ////////
+          ///////////////////////////////////////
+          // BUQUE
+          positionHeight += 20;
+          doc.setFontSize(13);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("M/V", 10, positionHeight, { align: 'left' })
+          doc.setFontSize(17);
+          doc.text('Buque ' + this.selectUser.name, 20, positionHeight, { align: 'left' })
+
+
+          // Preparado por
+          positionHeight += 8;
+          doc.setFontSize(8);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'italic');
+          doc.text("Prepared for", 10, positionHeight, { align: 'left' })
+
+          // Transgas Shipping
+          positionHeight += 4.5;
+          doc.setFontSize(13);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
+
+          // Colocamos el rectangulo
+          positionHeight -= 20;
+          positionWidth = 10;
+          let ancho = 120;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(219, 229, 245);
+          doc.rect(widthPDF - 10 - ancho, positionHeight, ancho, 25, "FD");
+
+          // Colocamos los destinos de partida y llegada.
+          positionHeight += 8.5;
+          doc.setFontSize(10);
+          doc.setTextColor(0, 0, 0);
+          doc.setFont('Helvetica', 'normal');
+          doc.text("Departure Port   :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text("Destination Port :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+
+          // Regresamos a la posicion anteriror
+          positionHeight -= 10;
+          doc.text("ATD :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text("ATA :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+
+          // SETEAMOS VALORES
+          positionHeight -= 10;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text(port.departurePort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(port.arrivalPort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+          // Regresamos a la posicion anteriror y colocamos la fecha de inicio y fin
+          positionHeight -= 10;
+          doc.text(FormatDate(getstartEndReport.startReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(FormatDate(getstartEndReport.endReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+          // Regresamos a la posicion anterior y colocamos la fecha de inicio y fin.
+          positionHeight -= 10;
+          doc.text(getstartEndReport.startReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(getstartEndReport.endReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+
+          positionHeight -= 10;
+          doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+          positionHeight += 20;
+
+
+          let head = [['Posn Type', 'Date / Time', 'Load / Speed Conditions', 'Time ( hrs )', 'Dist ( nm )', 'Avg', 'Charter', 'Beaufort']]
+          let data = [];
+
+          // Reportes.
+          let reports: DailyReport[] = getInfoByActivity.reports;
+          reports.forEach(
+            report => {
+
+              data.push([
+                'A',
+                FormatYYYYMMDD(report.date) + ' ' + report.hour,
+                this.languageService.GetMessage(this.translateCategory, report.activityPerformed),
+                String(report.steamingTime),
+                String(report.distance),
+                this.MathRoundOneDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
+                String(this.selectUser.contractSpeedSailingLadenIFO),
+                report.beaufour
+
+              ])
+            }
+          );
+
+          let userOptions: UserOptions = {};
+          userOptions.startY = positionHeight;
+          userOptions.head = head;
+          userOptions.body = data;
+          userOptions.margin = [0, 0, 0, 10, 0, 0]
+
+          userOptions.didParseCell = (data: CellHookData) => {
+
+            let section = data.section;
+            let cell: Cell = data.cell;
+            if (cell == undefined) { return; }
+
+            if (section == 'body') {
+              let rowIndex = data.row.index;
+              let columIndex = data.column.index;
+              let raw = data.row.raw;
+
+              if (columIndex == 5) {
+
+                if (Number(cell.text) >= Number(raw[6])) {
+                  cell.styles.fillColor = [133, 252, 97];
+                } else {
+                  cell.styles.fillColor = [255, 123, 123];
+                }
+              }
+            }
+
+
+          };
+
+          /*     doc.setDrawColor(22, 33, 77);
+              doc.setFillColor(219, 229, 245);
+             */
+
+          userOptions.columnStyles = {
+            0: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 14,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            1: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 38,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            2: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 36,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            3: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 25,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            4: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 24,
+              lineWidth: 0.2,
+              lineColor: [22, 33, 77]
+            },
+            5: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 17,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            6: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 17,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            7: {
+              halign: 'center',
+              fontStyle: 'bold',
+              cellWidth: 19,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+          };
+          userOptions.headStyles = {
+            halign: 'center',
+            valign: 'middle',
+            lineWidth: 0.15,
+            lineColor: [22, 33, 77]
+          };
+
+
+          autoTable(doc, userOptions);
+
+          // Tamaño de la cabecera.
+          positionHeight += 11.4;
+          // Tamaño de la tabla
+          positionHeight += (getInfoByActivity.reports.length * 7.6);
+
+          // Le sumamos la separacion entre la tabla y el siguiente texto
+          positionHeight += 6;
+          doc.setFontSize(8);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'italic');
+          // Agregamos una tamaño ṕara el width
+          positionWidth = 10;
+          let widthForTree = (widthPDF - 20) / 3;
+          positionWidth += (widthForTree / 2);
+          doc.text('"A" = Actual Reported Ship Position', positionWidth, positionHeight, { align: 'center' })
+          positionWidth += widthForTree;
+          doc.text('"ATD" = Actual Time of Departure', positionWidth, positionHeight, { align: 'center' })
+          positionWidth += widthForTree;
+          doc.text('"ATA" = Actual Time of Arrival', positionWidth, positionHeight, { align: 'center' })
+
+          // Agregamos una tamaño ṕara el width
+          positionHeight += 2;
+          positionWidth = 10;
+          ancho = widthForTree - 20;
+          positionWidth += 10;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(214, 214, 214);
+          doc.setFillColor(133, 252, 97);
+          doc.rect(positionWidth, positionHeight, ancho, 7, "FD");
+
+          positionWidth += widthForTree;
+          doc.setFillColor(208, 227, 255);
+          doc.rect(positionWidth, positionHeight, ancho, 7, "FD");
+
+          positionWidth += widthForTree;
+          doc.setFillColor(255, 123, 123);
+          doc.rect(positionWidth, positionHeight, ancho, 7, "FD");
+
+          positionHeight += 4.5;
+          positionWidth = 10;
+          widthForTree = (widthPDF - 20) / 3;
+
+          positionWidth += (widthForTree / 2);
+          doc.text('Defined Good Weather Period', positionWidth, positionHeight, { align: 'center' })
+          positionWidth += widthForTree;
+          doc.text('Vessel within ECA Limits', positionWidth, positionHeight, { align: 'center' })
+          positionWidth += widthForTree;
+          doc.text('Stoppage Period', positionWidth, positionHeight, { align: 'center' })
+
+          positionHeight += 15;
+          // Si  pasamos de los 170, agregamos una pagina. REVISAR
+          if (positionHeight >= 190) {
+
+            return true;
+          } else {
+            return false;
+          }
+
+        }
+      ).then(
+        (result: boolean) => {
+          // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+          const options = {
+            background: 'black',
+            scale: 1
+          };
+
+          let elementlineaSpeed: HTMLElement = document.getElementById('dash-linea-speed');
+
+          return html2canvas(elementlineaSpeed, options);
+
+        }
+      ).then(
+        (canvas: any) => {
+
+
+          //let positionHeight = 170;
+
+          // Si el elemento canvas existe.de
+          if (canvas) {
+            // Obtenemos la imagen
+            let img = canvas.toDataURL('image/PNG');
+
+            let mgProps = (doc as any).getImageProperties(img);
+
+            // ubicamos la imagen con un tamaño de 50 x 50
+            // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+            // Calculamos un tamaño para el pdf.
+            let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
+            // Agregamos la imagen al pdf.
+            doc.addImage(img, 'PNG', 10, positionHeight, widthDash, 95, undefined, 'FAST');
+
+          }
+
+          return true;
+
+        }
+      )
+
+
+
+
+
+
       // Aqui descargamos el documento de pdf.
       .then(
         result => {
@@ -1172,9 +1560,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
-  private GenerateChartSpeed(): any {
 
-  }
 
   // GenetareLineSpeed(): Generar linea en los canvas.
   private GenetareLineSpeed(): boolean {
