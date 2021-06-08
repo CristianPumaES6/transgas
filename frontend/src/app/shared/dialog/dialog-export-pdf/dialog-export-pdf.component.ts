@@ -1172,7 +1172,6 @@ export class DialogExportPdfComponent implements OnInit {
       // AQUI GENERAMOS LOS CUADROS DE CONSUMO.
       .then(
         result => {
-          // TERCERA PAGINA
           doc.addPage();
 
           //////////////////////////////////
@@ -1319,7 +1318,7 @@ export class DialogExportPdfComponent implements OnInit {
           positionHeight += 20;
 
 
-          let head = [['Posn Type', 'Date / Time', 'Load / Speed Conditions', 'Time ( hrs )', 'Dist ( nm )', 'Avg', 'Charter', 'Beaufort']]
+          let head = [['Posn Type', 'Date / Time', 'Load / Speed Conditions', 'Time\n( hrs )', 'Dist\n( nm )', 'Avg', 'Charter', 'M.E', 'A.E', 'Boiler', 'Total', 'Beaufort']]
           let data = [];
 
           // Reportes.
@@ -1335,6 +1334,11 @@ export class DialogExportPdfComponent implements OnInit {
                 String(report.distance),
                 this.MathRoundOneDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
                 String(this.selectUser.contractSpeedSailingLadenIFO),
+                this.MathRoundOneDecimal(report.mplaIfo, 2),
+                this.MathRoundOneDecimal(report.auxIfo, 2),
+                this.MathRoundOneDecimal(report.boilerIfo, 2),
+                this.MathRoundOneDecimal(report.mplaIfo + report.auxIfo + report.boilerIfo, 2),
+
                 report.beaufour
 
               ])
@@ -1379,65 +1383,106 @@ export class DialogExportPdfComponent implements OnInit {
             0: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 14,
+              fontSize: 8,
+              cellWidth: 13,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             1: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 38,
+              fontSize: 8,
+              cellWidth: 32,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             2: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 36,
+              fontSize: 8,
+              cellWidth: 33,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             3: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 25,
+              fontSize: 8,
+              cellWidth: 12,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             4: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 24,
+              fontSize: 8,
+              cellWidth: 12,
               lineWidth: 0.2,
               lineColor: [22, 33, 77]
             },
             5: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 17,
+              fontSize: 8,
+              cellWidth: 12,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             6: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 17,
+              fontSize: 8,
+              cellWidth: 14,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
             7: {
               halign: 'center',
               fontStyle: 'bold',
-              cellWidth: 19,
+              fontSize: 8,
+              cellWidth: 12,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
+            8: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 12,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            9: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 12,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            10: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 12,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            11: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 15,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            }
           };
           userOptions.headStyles = {
             halign: 'center',
             valign: 'middle',
             lineWidth: 0.15,
-            lineColor: [22, 33, 77]
+            lineColor: [22, 33, 77],
+            fontSize: 8
           };
 
 
@@ -1813,7 +1858,7 @@ export class DialogExportPdfComponent implements OnInit {
     config.xAxes[0].time = {
 
       displayFormats: {
-        day: 'MM/DD'
+        day: 'MM/DD/YYYY'
       },
       tooltipFormat: 'MM/DD/YY',
       unit: 'day',
