@@ -92,8 +92,8 @@ export class DialogExportPdfComponent implements OnInit {
         if (this.selectVoyageId) {
           // Buscamos el viaje.
           let voyageSelect = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
-          // agregamos los puertos del viaje.
-          this.ports = voyageSelect.ports;
+
+          this.ports = voyageSelect.ports.filter(port => port.status === true);
         }
 
         // Seleccionamos el tipo de exportacion.
@@ -145,7 +145,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Verificamos si se selecciono un viaje.
     if (this.selectVoyageId) {
       let voyage = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
-      this.ports = voyage.ports;
+      this.ports = voyage.ports.filter(port => port.status === true);
 
     }
   }
@@ -2399,13 +2399,13 @@ export class DialogExportPdfComponent implements OnInit {
     let startReport: DailyReport;
     let endReport: DailyReport;
 
-    if (port.dailyReports.length > 0) {
+    if (port && port.dailyReports && port.dailyReports.length > 0) {
 
       startReport = port.dailyReports[0];
       endReport = port.dailyReports[port.dailyReports.length - 1];
 
     } else {
-      throw 'ERROR_GetStartrReportAndEndReportThePort()'
+      throw 'There are no reports registered in this port.'
     }
 
 
