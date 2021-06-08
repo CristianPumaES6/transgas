@@ -4,6 +4,7 @@ import { NotificationsService } from 'angular2-notifications';
 import { Chart } from 'chart.js';
 import { GetMonthYearFromDate } from 'dist/frontend/assets/moment/moment.assets';
 import jsPDF from 'jspdf';
+import * as html2canvas from 'html2canvas';
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 
 import { DailyReport, Speed } from 'src/app/models/daily-report';
@@ -94,7 +95,7 @@ export class DialogExportPdfComponent implements OnInit {
         this.selectTypeExport = 'VESSEL_PERFORMANCE';
 
         this.PluginChartDataLabels();
-        
+
         return true;
       }
     ).then(
@@ -107,7 +108,17 @@ export class DialogExportPdfComponent implements OnInit {
       result => {
         // Verificamos que la linea speed se halla generado correctamente.
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
-        
+
+        let voyage = this.data.voyages[3];
+        let port = voyage.ports[2];
+        let selectUser = this.data.selectUser;
+
+        return this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', selectUser)
+
+      }
+    ).then(
+      result => {
+        this.UpdateLineSpeed()
         return true;
       }
     ).catch(
@@ -139,6 +150,28 @@ export class DialogExportPdfComponent implements OnInit {
 
   public ClickSelectPort() {
     console.log('UpdateLineSpeed');
+
+    // REVISAR ESTO SE DEBE MEJORAR SU ESTRUCTURA.
+    let voyage;
+    let port;
+    if (!this.selectVoyageId) {
+      throw 'Select a voyage';
+    }
+    else if (this.selectPortId) {
+      // Buscamos los viajes.
+      voyage = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
+      port = voyage.ports.find(port => port.id === this.selectPortId);
+      // Obtenemos el primer reporte y ultimo.
+      this.GetStartReportAndEndReportThePort(port);
+
+    } else {
+    }
+
+    this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
+
+
+    return this.UpdateLineSpeed();
+
   }
 
   // Cuando le das click al boton exportar pdf
@@ -214,13 +247,17 @@ export class DialogExportPdfComponent implements OnInit {
             throw 'Select a voyage and a port.'
           }
 
-          return true;
+          // Calcularemos la hora tarde o antes
+          getInfoByActivity = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
+
+
+          return this.UpdateLineSpeed();
         }
       )
       // Aqui agregamos la primera pagina.
       .then(
         result => {
-
+          debugger // REVISAR QUE DEVUELVE
           // Nos ubicamos a una altura.
           positionHeight += 38;
           // ubicamos la imagen con un tamaño de 50 x 50
@@ -322,9 +359,6 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-          // Calcularemos la hora tarde o antes
-          getInfoByActivity = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
-
           // Si el tiempo es mayor que la del contrato lo pintamos de rojo.
           if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
 
@@ -385,7 +419,7 @@ export class DialogExportPdfComponent implements OnInit {
           //////////////////////////////////
           //////// INICIAMOS LA CABECERA////
           //////////////////////////////////
-          let positionHeight = 10;
+          positionHeight = 10;
           let positionWidth = 10;
 
           // ubicamos la imagen con un tamaño de 50 x 50
@@ -758,7 +792,8 @@ export class DialogExportPdfComponent implements OnInit {
 
           doc.text('Page 2', 10, pageFooter, { align: 'left' });
           doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
-
+         
+          return true;
         }
       ).then(
         result => {
@@ -768,7 +803,7 @@ export class DialogExportPdfComponent implements OnInit {
           //////////////////////////////////
           //////// INICIAMOS LA CABECERA////
           //////////////////////////////////
-          let positionHeight = 10;
+          positionHeight = 10;
           let positionWidth = 10;
 
           // ubicamos la imagen con un tamaño de 50 x 50
@@ -806,6 +841,23 @@ export class DialogExportPdfComponent implements OnInit {
           //////////////////////////////////
           ////////// FIN CABECERA //////////
           //////////////////////////////////
+
+
+          // AGREGAMOS EL FOTER DEUNA VE>
+          let pageFooter = heightPDF - 10;
+
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
+          pageFooter += 4;
+
+          doc.setFontSize(8);
+          doc.setFont('Helvetica', 'normal');
+          doc.setTextColor(22, 33, 77);
+
+          doc.text('Page 3', 10, pageFooter, { align: 'left' });
+          doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
+         
 
 
           // Titulo del pdf.
@@ -914,13 +966,13 @@ export class DialogExportPdfComponent implements OnInit {
             }
           );
 
-          let options: UserOptions = {};
-          options.startY = positionHeight;
-          options.head = head;
-          options.body = data;
-          options.margin = [0, 0, 0, 10, 0, 0]
+          let userOptions: UserOptions = {};
+          userOptions.startY = positionHeight;
+          userOptions.head = head;
+          userOptions.body = data;
+          userOptions.margin = [0, 0, 0, 10, 0, 0]
 
-          options.didParseCell = (data: CellHookData) => {
+          userOptions.didParseCell = (data: CellHookData) => {
 
             let section = data.section;
             let cell: Cell = data.cell;
@@ -948,7 +1000,7 @@ export class DialogExportPdfComponent implements OnInit {
               doc.setFillColor(219, 229, 245);
              */
 
-          options.columnStyles = {
+          userOptions.columnStyles = {
             0: {
               halign: 'center',
               fontStyle: 'bold',
@@ -1006,7 +1058,7 @@ export class DialogExportPdfComponent implements OnInit {
               lineColor: [22, 33, 77]
             },
           };
-          options.headStyles = {
+          userOptions.headStyles = {
             halign: 'center',
             valign: 'middle',
             lineWidth: 0.15,
@@ -1014,7 +1066,7 @@ export class DialogExportPdfComponent implements OnInit {
           };
 
 
-          autoTable(doc, options);
+          autoTable(doc, userOptions);
 
           // Tamaño de la cabecera.
           positionHeight += 11.4;
@@ -1065,13 +1117,53 @@ export class DialogExportPdfComponent implements OnInit {
           positionWidth += widthForTree;
           doc.text('Stoppage Period', positionWidth, positionHeight, { align: 'center' })
 
+          positionHeight += 15;
+          // Si  pasamos de los 170, agregamos una pagina. REVISAR
+          if (positionHeight >= 190) {
+
+            return true;
+          } else {
+            return false;
+          }
 
         }
       ).then(
-        result => {
+        (result: boolean) => {
+          // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+          const options = {
+            background: 'black',
+            scale: 1
+          };
+
+          let elementlineaSpeed: HTMLElement = document.getElementById('dash-linea-speed');
+
+          return html2canvas(elementlineaSpeed, options);
+
+        }
+      ).then(
+        (canvas: any) => {
 
 
-          return this.UpdateLineSpeed();
+          //let positionHeight = 170;
+
+          // Si el elemento canvas existe.de
+          if (canvas) {
+            // Obtenemos la imagen
+            let img = canvas.toDataURL('image/PNG');
+
+            let mgProps = (doc as any).getImageProperties(img);
+
+            // ubicamos la imagen con un tamaño de 50 x 50
+            // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+            // Calculamos un tamaño para el pdf.
+            let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
+            // Agregamos la imagen al pdf.
+            doc.addImage(img, 'PNG', 10, positionHeight, widthDash, 95, undefined, 'FAST');
+
+          }
+
+          return true;
+
         }
       )
       // Aqui descargamos el documento de pdf.
@@ -1101,7 +1193,7 @@ export class DialogExportPdfComponent implements OnInit {
       data: {
         labels: [], // Lo pongo vacio por que en el update se colocara el valor.
         datasets: [{
-          label: '', // Lo pongo vacio por que en el update se colocara el valor.
+          label: 'Vessel Speed Summary', // Lo pongo vacio por que en el update se colocara el valor.
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
           data: [], // Lo pongo vacio por que en el update se colocara el valor.
@@ -1156,7 +1248,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private UpdateLineSpeed(): boolean {
+  private UpdateLineSpeed(): any {
     console.log('UpdateLineSPEED()');
 
     // Actualizamos los labels
@@ -1169,6 +1261,26 @@ export class DialogExportPdfComponent implements OnInit {
     // La linea es el campo que agregamos en el plugin.
     this.configLineaSpeed.options.lines = [];
 
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+    if (this.selectUser.maxSpeed > 0) {
+      this.configLineaSpeed.options.lines.push({
+        type: 'horizontal',
+        y: this.selectUser.maxSpeed,
+        color: 'red',
+        label: 'Max Speed'
+      });
+    };
+
+    if (this.selectUser.minSpeed > 0) {
+      this.configLineaSpeed.options.lines.push({
+        type: 'horizontal',
+        y: this.selectUser.minSpeed,
+        color: '#39FF14',
+        label: 'Min Speed'
+      });
+    }
+
+
     // Configuracion Tooltips
     this.configLineaSpeed.options.tooltips = this.GetToolTipConfig('SPEED');
 
@@ -1179,9 +1291,8 @@ export class DialogExportPdfComponent implements OnInit {
     // Agregamos la configuracion de las escalas.
     this.configLineaSpeed.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSpeed.lineaMax, 0) + 2);
 
-    this.chartLineSpeed.update();
 
-    return true;
+    return this.chartLineSpeed.update()
   }
 
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
@@ -1228,7 +1339,7 @@ export class DialogExportPdfComponent implements OnInit {
           } else if (configIFOorMGOorSPEED === 'MGO') {
             result = 'MGO Dayli consumption : ';
           } else if (configIFOorMGOorSPEED === 'SPEED') {
-            result = 'Average Speed : ';
+            result = 'Avg Speed : ';
           }
           // Le agrgamos el vlaor.
           result = result + mathRound(Number(tooltipItem.value), 2)
@@ -1269,50 +1380,6 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-          // para mostrar los datos deben de ser mayor a 1,
-          // recordemos que todos los reportes estan en un puerto y un viaje.
-          if (chartPoint.totalPort > 1) {
-            result.push('T. Ports : ' + chartPoint.totalPort);
-          }
-          if (chartPoint.totalReport > 1) {
-            result.push('T. Reports : ' + chartPoint.totalReport);
-          }
-
-
-          // TOTAL BUNKERING
-          if (
-            (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-            && chartPoint.totalBunkeringIFO > 0) {
-            let textIFOorVLSFOorLSFO = 'T. Bunkering ';
-            textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            textIFOorVLSFOorLSFO += ' : ' + + mathRound(chartPoint.totalBunkeringIFO, 2);
-            result.push(textIFOorVLSFOorLSFO);
-          }
-          if (this.selectUser.isConsumptionMGO
-            && chartPoint.totalBunkeringMGO > 0
-          ) {
-            result.push('T. Bunkering MGO : ' + mathRound(chartPoint.totalBunkeringMGO, 2));
-          }
-
-          // Mostraremos los 2 tipos de combustible.
-          if (
-            (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-            && chartPoint.totalConsumptionIFO > 0) {
-
-            let textIFOorVLSFOorLSFO = 'T. Consumption ';
-            textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            textIFOorVLSFOorLSFO += ' : ' + mathRound(chartPoint.totalConsumptionIFO, 2);
-            result.push(textIFOorVLSFOorLSFO);
-
-          }
-          if (this.selectUser.isConsumptionMGO
-            && chartPoint.totalConsumptionMGO > 0
-          ) {
-
-            result.push('T. Consumption MGO: ' + mathRound(chartPoint.totalConsumptionMGO, 2));
-
-          }
-
           if (chartPoint.speed.steamingTime > 0) {
             result.push('T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2));
           }
@@ -1320,19 +1387,6 @@ export class DialogExportPdfComponent implements OnInit {
             result.push('T. Distance : ' + mathRound(chartPoint.speed.distance, 2));
           }
 
-
-          let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
-          if (calSpeed && calSpeed > 0) {
-            result.push('Speed : ' + calSpeed);
-          }
-
-          if (activities.length > 4) {
-            result.push('Activities : ' + activities);
-          }
-
-          if (observations.length > 4) {
-            result.push('Observations : ' + observations);
-          }
 
           return result;
 
@@ -1416,6 +1470,9 @@ export class DialogExportPdfComponent implements OnInit {
   // 
   // SAILING_WITH_LADEN
   private GetInfoByActivity(port: Port, activityPerformed: string, selectUser: User): any {
+    // Reset valos deñ data SPEER.
+    this.dataSpeed = [];
+    this.xLabelReport = [];
 
     // Consumo total del puerto.
     let distancia = 0;
