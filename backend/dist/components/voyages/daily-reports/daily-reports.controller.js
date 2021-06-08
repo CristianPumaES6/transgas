@@ -93,7 +93,7 @@ let DailyReportsController = class DailyReportsController {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
-            else if (userId !== headerToken.id)
+            else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
         }).then((resultValidate) => {
             return this._dailyReportsService.GetROBByUser(userId);
@@ -128,7 +128,7 @@ let DailyReportsController = class DailyReportsController {
             else if (userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
         }).then((resultValidate) => {
-            return this._dailyReportsService.GetBunkeringByUser(userId);
+            return this._dailyReportsService.GetBunkeringByUserIFO(userId);
         }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,

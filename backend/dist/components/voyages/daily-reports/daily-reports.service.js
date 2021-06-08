@@ -79,7 +79,7 @@ let DailyReportsService = class DailyReportsService {
             return getROBByUser;
         });
     }
-    async GetBunkeringByUser(userId) {
+    async GetBunkeringByUserIFO(userId) {
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
             .select('daily_report.date', 'date')
             .addSelect('daily_report.hour', 'hour')
@@ -91,6 +91,29 @@ let DailyReportsService = class DailyReportsService {
             .andWhere('port.status = :status', { status: 1 })
             .andWhere('voyage.status = :status', { status: 1 })
             .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('daily_report.bunkeringIfo > 0', {})
+            .orderBy('daily_report.date', 'DESC')
+            .limit(5)
+            .getRawMany()
+            .then((result) => {
+            return result;
+        });
+    }
+    async GetBunkeringByUserMGO(userId) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select('daily_report.date', 'date')
+            .addSelect('daily_report.hour', 'hour')
+            .addSelect('daily_report.activityPerformed', 'activityPerformed')
+            .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('daily_report.bunkeringMgo > 0', {})
+            .orderBy('daily_report.date', 'DESC')
+            .limit(5)
             .getRawMany()
             .then((result) => {
             return result;

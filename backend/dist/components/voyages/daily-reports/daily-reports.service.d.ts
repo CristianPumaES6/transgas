@@ -7,7 +7,8 @@ export declare class DailyReportsService {
     Get(id: Number): Promise<DailyReport>;
     Gets(dailyReport: DailyReport): Promise<DailyReport[]>;
     GetROBByUser(userId: number): Promise<GetROBByUser>;
-    GetBunkeringByUser(userId: number): Promise<GetROBByUser>;
+    GetBunkeringByUserIFO(userId: number): Promise<GetROBByUser>;
+    GetBunkeringByUserMGO(userId: number): Promise<GetROBByUser>;
     Update(dailyReport: DailyReport): Promise<DailyReport>;
     Delete(dailyReport: DailyReport): Promise<DailyReport>;
 }
