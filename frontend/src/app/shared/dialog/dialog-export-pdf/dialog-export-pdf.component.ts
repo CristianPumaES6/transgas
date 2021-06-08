@@ -122,24 +122,6 @@ export class DialogExportPdfComponent implements OnInit {
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
 
 
-        // Esto se debe eliminar.
-        let voyage = this.data.voyages[3];
-        let port = voyage.ports[2];
-        let selectUser = this.data.selectUser;
-        this.selectVoyageId = voyage.id;
-        this.selectPortId = port.id
-
-        return this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', selectUser)
-
-      }
-    ).then(
-      result => {
-        this.UpdateLineSpeed()
-        this.UpdateLineIfo()
-
-        setTimeout(() => {
-          this.ExportPDFVesselPerformance();
-        }, 2000)
         return true;
       }
     ).catch(
@@ -252,6 +234,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Obtener informacion por actividad
     let getInfoByActivity: any;
     let typeConsumptionSelectBuque: string = '';
+    this.loadingService.Open();
     // Promise
     return Promise.resolve(true)
       .then(
@@ -2018,6 +2001,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
 
+          this.loadingService.Close();
           return true;
 
         }
