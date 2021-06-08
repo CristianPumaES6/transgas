@@ -257,7 +257,6 @@ export class DialogExportPdfComponent implements OnInit {
       // Aqui agregamos la primera pagina.
       .then(
         result => {
-          debugger // REVISAR QUE DEVUELVE
           // Nos ubicamos a una altura.
           positionHeight += 38;
           // ubicamos la imagen con un tamaño de 50 x 50
@@ -765,18 +764,12 @@ export class DialogExportPdfComponent implements OnInit {
           positionHeight += 7;
           doc.setFontSize(15);
           doc.setFont('Helvetica', 'bold');
-          if (getInfoByActivity.time > getInfoByActivity.timeByCharter) {
-
-            let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
+          if (getInfoByActivity.ifoConsumption > getInfoByActivity.ifoDailyConsumptionByCharter) {
             doc.setTextColor(255, 0, 0);
             doc.text('Overall Fuel Oil Consumption Out Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
-
           } else {
-
-            let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
             doc.text('Overall Fuel Oil Consumption WITHIN Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
-
           }
 
           let pageFooter = heightPDF - 10;
@@ -792,7 +785,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           doc.text('Page 2', 10, pageFooter, { align: 'left' });
           doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
-         
+
           return true;
         }
       ).then(
@@ -857,7 +850,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           doc.text('Page 3', 10, pageFooter, { align: 'left' });
           doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
-         
+
 
 
           // Titulo del pdf.
@@ -1292,7 +1285,9 @@ export class DialogExportPdfComponent implements OnInit {
     this.configLineaSpeed.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSpeed.lineaMax, 0) + 2);
 
 
-    return this.chartLineSpeed.update()
+    this.chartLineSpeed.update();
+
+    return true;
   }
 
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
