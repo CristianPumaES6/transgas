@@ -236,7 +236,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Obtener informacion por actividad
     let getInfoByActivity: any;
-
+    let typeConsumptionSelectBuque: string = '';
     // Promise
     return Promise.resolve(true)
       .then(
@@ -256,6 +256,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Calcularemos la hora tarde o antes
           getInfoByActivity = this.GetInfoByActivity(port, 'SAILING_WITH_LADEN', this.selectUser);
+          typeConsumptionSelectBuque = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
 
           return this.UpdateLineSpeed();
@@ -591,7 +592,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Transit Distance :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distancia, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distance, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('NM', 135, positionHeight, { align: 'left' });
 
 
@@ -607,7 +608,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Average Speed :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
-          let averageSpeedPerformed = getInfoByActivity.distancia / (getInfoByActivity.time || 1);
+          let averageSpeedPerformed = getInfoByActivity.distance / (getInfoByActivity.time || 1);
           doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Knots', 135, positionHeight, { align: 'left' });
 
@@ -654,7 +655,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(0, 0, 0);
           doc.text("Allowable Charter Time :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distancia / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distance / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Hours', 135, positionHeight, { align: 'left' });
 
           // Segundo cuadro
@@ -1064,6 +1065,7 @@ export class DialogExportPdfComponent implements OnInit {
           userOptions.headStyles = {
             halign: 'center',
             valign: 'middle',
+            fillColor: '#375f9a',
             lineWidth: 0.15,
             lineColor: [22, 33, 77]
           };
@@ -1318,7 +1320,7 @@ export class DialogExportPdfComponent implements OnInit {
           positionHeight += 20;
 
 
-          let head = [['Posn Type', 'Date / Time', 'Load / Speed Conditions', 'Time\n( hrs )', 'Dist\n( nm )', 'Avg', 'Charter', 'M.E', 'A.E', 'Boiler', 'Total', 'Beaufort']]
+          let head = [['Posn Type', 'Date / Time', 'Load / Speed Conditions', 'Time\n( hrs )', 'Dist\n( nm )', 'Avg', 'Charter', 'M.E', 'A.E', 'Boiler', 'Total\n' + typeConsumptionSelectBuque, 'Beaufort']]
           let data = [];
 
           // Reportes.
@@ -1392,7 +1394,7 @@ export class DialogExportPdfComponent implements OnInit {
               halign: 'center',
               fontStyle: 'bold',
               fontSize: 8,
-              cellWidth: 31,
+              cellWidth: 30,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
@@ -1400,7 +1402,7 @@ export class DialogExportPdfComponent implements OnInit {
               halign: 'center',
               fontStyle: 'bold',
               fontSize: 8,
-              cellWidth: 33,
+              cellWidth: 32,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
@@ -1464,7 +1466,7 @@ export class DialogExportPdfComponent implements OnInit {
               halign: 'center',
               fontStyle: 'bold',
               fontSize: 8,
-              cellWidth: 12,
+              cellWidth: 14,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
@@ -1482,6 +1484,7 @@ export class DialogExportPdfComponent implements OnInit {
             valign: 'middle',
             lineWidth: 0.15,
             lineColor: [22, 33, 77],
+            fillColor: '#375f9a',
             fontSize: 8
           };
 
@@ -1550,22 +1553,22 @@ export class DialogExportPdfComponent implements OnInit {
       ).then(
         // Creamos la tabla de resumen de viaje.
         (result: boolean) => {
-          
-          var data:RowInput[] = [
-            
-              
-            [{"content":"Calculated Total Consumption (MT)","colSpan":8}],
-            [{"content":"Engine Consumption Summary","colSpan":2,"rowSpan":2},{"content":"Main Engine","colSpan":2},{"content":"Aux Engine","colSpan":2},{"content":"Boiler","colSpan":2}],
-            [{"content":"IFO","colSpan":1},{"content":"MGO","colSpan":1},{"content":"IFO","colSpan":1},{"content":"MGO","colSpan":1},{"content":"IFO","colSpan":1},{"content":"MGO","colSpan":1}],
+
+          var data: RowInput[] = [
+
+
+            [{ "content": "Calculated Total Consumption (MT)", "colSpan": 8 }],
+            [{ "content": "Engine Consumption Summary", "colSpan": 2, "rowSpan": 2 }, { "content": "Main Engine", "colSpan": 2 }, { "content": "Aux Engine", "colSpan": 2 }, { "content": "Boiler", "colSpan": 2 }],
+            [{ "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }],
             // Aqui van los valores
-            [{"content":"TEST to Test2","colSpan":2},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1}],
-            [{"content":"","colSpan":8}],
-            [{"content":"Voyage(s) Total","colSpan":1, "rowSpan":2},{"content":"Time","colSpan":1},{"content":"Distance","colSpan":1},{"content":"AVG\nSpeed","colSpan":1},{"content":"Charter\nSpeed","colSpan":1},{"content":"IFO","colSpan":1},{"content":"Charter\nDayli IFO","colSpan":1},{"content":"Charter\nDayli IFO","colSpan":1}],
+            [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
+            [{ "content": "", "colSpan": 8 }],
+            [{ "content": "Voyage(s) Total", "colSpan": 1, "rowSpan": 2 }, { "content": "Time", "colSpan": 1 }, { "content": "Distance", "colSpan": 1 }, { "content": "AVG\nSpeed", "colSpan": 1 }, { "content": "Speed\nCharter", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "Daily\n" + typeConsumptionSelectBuque + "\n", "colSpan": 1 }, { "content": "Daily\nCharter", "colSpan": 1 }],
             // Aqui van valores.
-            [{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1}],
-            [{"content":"Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received","colSpan":8}],
-     
-            
+            [{ "content": this.MathRoundOneDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
+            [{ "content": "Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received", "colSpan": 8 }],
+
+
           ];
 
 
@@ -1581,18 +1584,54 @@ export class DialogExportPdfComponent implements OnInit {
             let cell: Cell = data.cell;
             if (cell == undefined) { return; }
 
+
             if (section == 'body') {
               let rowIndex = data.row.index;
               let columIndex = data.column.index;
               let raw = data.row.raw;
+              if (rowIndex == 0) {
 
-              if (columIndex == 5) {
+                if (columIndex == 0) {
 
-                if (Number(cell.text) >= Number(raw[6])) {
-                  cell.styles.fillColor = [133, 252, 97];
-                } else {
-                  cell.styles.fillColor = [255, 123, 123];
+                  cell.styles.fillColor = '#375f9a'
+                  cell.styles.textColor = '#ffffff';
+                  cell.styles.fontSize = 10;
                 }
+              }
+
+              if (rowIndex == 1) {
+
+                if (columIndex == 0) {
+                  cell.styles.valign = 'middle';
+                }
+              }
+              if (rowIndex == 5) {
+
+                if (columIndex == 0) {
+                  cell.styles.valign = 'middle';
+                }
+              }
+              // En la fila 7
+              if (rowIndex == 6) {
+
+
+                if (columIndex == 3) {
+
+                  if (Number(cell.text) >= Number(raw[3].content)) {
+                    cell.styles.fillColor = [133, 252, 97];
+                  } else {
+                    cell.styles.fillColor = [255, 123, 123];
+                  }
+
+                }
+                if (columIndex == 6) {
+                  if (Number(cell.text) <= Number(raw[6].content)) {
+                    cell.styles.fillColor = [133, 252, 97];
+                  } else {
+                    cell.styles.fillColor = [255, 123, 123];
+                  }
+                }
+
               }
             }
 
@@ -1670,12 +1709,13 @@ export class DialogExportPdfComponent implements OnInit {
             valign: 'middle',
             lineWidth: 0.15,
             lineColor: [22, 33, 77],
+            fillColor: '#375f9a',
             fontSize: 8
           };
 
 
-          autoTable(doc,userOptions);
-          
+          autoTable(doc, userOptions);
+
 
           return true;
         }
@@ -1719,12 +1759,6 @@ export class DialogExportPdfComponent implements OnInit {
 
         }
       )
-
-
-
-
-
-
       // Aqui descargamos el documento de pdf.
       .then(
         result => {
@@ -2034,7 +2068,7 @@ export class DialogExportPdfComponent implements OnInit {
     this.xLabelReport = [];
 
     // Consumo total del puerto.
-    let distancia = 0;
+    let distance = 0;
     let time = 0;
     let timeByCharter = 0;
     let ifoConsumption = 0;
@@ -2043,17 +2077,33 @@ export class DialogExportPdfComponent implements OnInit {
     let totalConsumptionByCharter = 0;
     let reports: DailyReport[] = [];
 
-    // Recorremos los reportes para obtener el tiempo y la distancia.
+    let totalIFOME = 0;
+    let totalMGOME = 0;
+    let totalIFOAE = 0;
+    let totalMGOAE = 0;
+    let totalIFOBoiler = 0;
+    let totalMGOBoiler = 0;
+
+    // Recorremos los reportes para obtener el tiempo y la distance.
     port.dailyReports.forEach(
       (report: DailyReport) => {
         // verificamos que este activo
         if (report.status === true) {
-          // Solo sumamos el tiempo y la distancia.
+          // Solo sumamos el tiempo y la distance.
           if (report.activityPerformed === activityPerformed) {
 
-            distancia += report.distance;
+            distance += report.distance;
             time += report.steamingTime;
             ifoConsumption += this.SumaIfo(report);
+
+
+            totalIFOME += report.mplaIfo;
+            totalMGOME += report.mplaMgo;
+            totalIFOAE += report.auxIfo;
+            totalMGOAE += report.auxMgo;
+            totalIFOBoiler += report.boilerIfo;
+            totalMGOBoiler += report.boilerMgo;
+
             //lo agregamos al reporte.
             reports.push(report);
 
@@ -2075,7 +2125,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                   // Obtenemos los datos de velocidad.
                   let speedI: Speed = this.dataSpeed[iL].speed;
-                  // Agregamos la distancia y velocidad.
+                  // Agregamos la distance y velocidad.
                   speedI.add(report.distance, report.steamingTime);
                   // calculamos la velocidad.
                   let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
@@ -2171,19 +2221,28 @@ export class DialogExportPdfComponent implements OnInit {
     }
 
 
-    timeByCharter = distancia / speedByCharter;
+    timeByCharter = distance / speedByCharter;
 
     totalConsumptionByCharter = ifoDailyConsumptionByCharter * timeByCharter / 24;
     // 
     return {
-      distancia: distancia, // Distancia total recorrida en el puerto en esa actividad.
+      distance: distance, // distance total recorrida en el puerto en esa actividad.
       time: time, // Tiempo total recorrida en el puerto en esa actividad.
       timeByCharter: timeByCharter, // Tiempo calculado por contrato.
       ifoConsumption: ifoConsumption, // Consumo total del combustible IFO
       ifoDailyConsumption: ifoDailyConsumption, // consumo diario real
       ifoDailyConsumptionByCharter: ifoDailyConsumptionByCharter,// consumo diario por contrato
       totalConsumptionByCharter: totalConsumptionByCharter,
-      reports: reports
+      reports: reports,
+
+
+      totalIFOME: totalIFOME,
+      totalMGOME: totalMGOME,
+      totalIFOAE: totalIFOAE,
+      totalMGOAE: totalMGOAE,
+      totalIFOBoiler: totalIFOBoiler,
+      totalMGOBoiler: totalMGOBoiler,
+
     }
   }
 
