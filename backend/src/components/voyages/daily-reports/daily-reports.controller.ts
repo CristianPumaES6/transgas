@@ -137,7 +137,7 @@ export class DailyReportsController {
                 // Validamos que el userId sea el mismo que el del sailingAnality
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                     return true;
-                } else if (userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                } else if (Number(userId) !== Number(headerToken.id)) throw new Error('ERROR_USERID_FAIL');
 
             }
         ).then(

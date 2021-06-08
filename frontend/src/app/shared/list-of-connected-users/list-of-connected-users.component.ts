@@ -3,10 +3,10 @@ import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@an
 import { NotificationsService } from 'angular2-notifications';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LoggedUser } from 'src/app/models/loggedUser';
-import { AuthService } from 'src/app/services/auth.service';
-import { LanguageService } from 'src/app/services/language.service';
-import { LoadingService } from 'src/app/services/loading.service';
+import { LoggedUser } from '../../../app/models/loggedUser';
+import { AuthService } from '../../../app/services/auth.service';
+import { LanguageService } from '../../../app/services/language.service';
+import { LoadingService } from '../../../app/services/loading.service';
 
 @Component({
   selector: 'app-list-of-connected-users',

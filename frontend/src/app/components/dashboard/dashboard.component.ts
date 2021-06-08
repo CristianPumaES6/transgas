@@ -37,17 +37,23 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
 import { IDialogListReport, DialogListReportComponent } from '../../shared/dialog/dialog-list-report/dialog-list-report.component';
 
+// Componentes
+import { IDialogExportPdf, DialogExportPdfComponent } from '../../shared/dialog/dialog-export-pdf/dialog-export-pdf.component';
 
+// 
 import * as Chart from 'chart.js';
 import PerfectScrollbar from 'perfect-scrollbar';
-import { jsPDF } from 'jspdf'
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import * as Html2canvas from 'html2canvas';
+
+import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 
 @Component({
   selector: 'app-dashboard',
@@ -285,6 +291,7 @@ export class DashboardComponent implements OnInit {
       result => {
 
         if (!result) throw 'ERROR_SELECT_USER';
+
 
         // Activamos el loading.
         this.loadingService.Close();
@@ -685,7 +692,7 @@ export class DashboardComponent implements OnInit {
 
               // Si selecciono un viaje.
               // El resumen se vera por dia.||
-              this.selectSummaryBy = 'DAYS';
+              this.selectSummaryBy = 'PORTS';
               // solo agregamos el viaje que se selecciono.
               newVoyages.push(selectVoyage);
             }
@@ -1077,13 +1084,13 @@ export class DashboardComponent implements OnInit {
 
 
         // Generatamos el report daily.
-        return this.ExportPDF();
-
+        // return this.ExportPDF();
+        return this.OpenDialogExportPDF(this.getVoyages, this.selectUser);
       }
     ).then(
       resultGenerateDashboard => {
         // Verificamos que se halla exportado correctamente.
-        if (!resultGenerateDashboard) throw 'ERROR_EXPORT_REPORT_DAILY';
+        //if (!resultGenerateDashboard) throw 'ERROR_EXPORT_REPORT_DAILY';
 
         // Loading cerrar.
         this.loadingService.Close();
@@ -1109,140 +1116,29 @@ export class DashboardComponent implements OnInit {
   // ExportPDF() : Esta opcion exporta el pdf.
   // AQUI UNA MEJORA.
   // HAY MEJORA esto toma por defecto el generateVOyages, hay que revisar que deberia tomar.
-  private async ExportPDF(): Promise<boolean> {
-
-    // El tamaño de un documento es 210 y 297
-    // width 210
-    // Heigth 297
-
-    // recorremos los viajes 
-    for await (const voyage of this.generateVoyages) {
-
-      // Recorremos los puertos.
-      for await (const port of voyage.ports) {
-        // Armamos el objeto de JSPDF
-        const doc = new jsPDF();
-        // tamaño de pdf.
-        var widthPDF = doc.internal.pageSize.getWidth();
 
 
-        // Nos ubicamos a una altura.
-        let height = 38;
-        // ubicamos la imagen con un tamaño de 50 x 50
-        doc.addImage("./assets/icons/logotransgas.png", "JPEG", (widthPDF - 50) / 2, height, 50, 50)
-        // le sumamos la altura.
-        height += 55;
+  private GetStartrReportAndEndReportThePort(port: Port): any {
 
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(35);
-        doc.setTextColor(22, 33, 77);
-        doc.setFont('Helvetica', 'bold');
-        doc.text('Vessel Performance Report', widthPDF / 2, height, { align: 'center' })
+    let startReport;
+    let endReport;
 
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(18);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text('Prepared For:', widthPDF / 2, height, { align: 'center' })
+    if (port.dailyReports.length > 0) {
 
-        // le sumamos la altura.
-        height += 12;
-        doc.setFontSize(30);
-        doc.setTextColor(22, 33, 77);
-        doc.setFont('Helvetica', 'bold');
-        doc.text(this.selectUser.name, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 20;
-        doc.setFontSize(18);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text('N° Port: ' + port.portNumber, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 12;
-        doc.setFontSize(30);
-        doc.setTextColor(22, 33, 77);
-        doc.setFont('Helvetica', 'bold');
-        doc.text(port.departurePort + " to " + port.arrivalPort, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(18);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text("ATD: " + FormatDate(port.dailyReports[0].date) + " " + port.dailyReports[0].hour, widthPDF / 2, height, { align: 'center' })
-
-        // le sumamos la altura.
-        height += 10;
-        doc.setFontSize(10);
-        doc.setTextColor(40);
-        doc.setFont('Helvetica', 'bold');
-        doc.text("Date: " + TextMonthDayYearFormatYYYYMMDD(FormatDate(GetDate())), widthPDF / 2, height, { align: 'center' }) // REVISAR ESTO. el formato de la fecha no es correcto.
-
-        // Le sumamos la altura.
-        // Dibujaremos los cuadrados.
-        height += 20;
-        // Filled red square with black borders
-        doc.setDrawColor(0);
-        doc.setFillColor(255, 255, 255);
-        doc.rect(10, height, 210 - (10 * 2), 50, "FD");
-
-        // Cuadro chiquito donde esta el titulo.
-        height -= 5;
-        doc.setDrawColor(0);
-        doc.setFillColor(22, 33, 77);
-        doc.rect(30, height, 210 - (56 * 2), 8, "FD");
-        // Texto
-        doc.setFontSize(10);
-        doc.setTextColor("ffffff");
-        doc.setFont('Helvetica', 'bold');
-        doc.text("Report Summary - Normal Speed Conditions (Laden)", 35, height + 5, { align: 'left' })
-
-        // Posicion normal dentro del cuadro.
-        height += 5;
-        height += 10;
-
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.setFont('Helvetica', 'bold');
-        doc.text("Original Warranted Values ", 75, height, { align: 'left' })
-        doc.text("Calculation Results", 140, height, { align: 'left' })
-
-        height += 10;
-        doc.setTextColor(0, 0, 0);
-        doc.text("Speed", 15, height, { align: 'left' })
-        doc.setTextColor(22, 33, 77);
-        doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " Knots", 75, height, { align: 'left' })
-        doc.setTextColor("960e0e");
-        doc.text("---- Hours Lost", 140, height, { align: 'left' })
-
-        height += 10;
-        doc.setTextColor(0, 0, 0);
-        doc.text("Fuel Consumption", 15, height, { align: 'left' })
-        doc.setTextColor(22, 33, 77);
-        doc.text("about " + this.selectUser.contractSpeedSailingLadenIFO + " MT/Day", 75, height, { align: 'left' })
-        doc.setTextColor(0, 0, 0);
-        doc.text("Within Guaranteed Limits", 140, height, { align: 'left' })
-
-        height += 10;
-        doc.setTextColor(0, 0, 0);
-        doc.text("Diesel Consumption", 15, height, { align: 'left' })
-        doc.setTextColor(22, 33, 77);
-        doc.text("about " + this.selectUser.contractSpeedSailingLadenMGO + " MT/Day", 75, height, { align: 'left' })
-        doc.setTextColor("960e0e");
-        doc.text("---- MT - OverConsumed", 140, height, { align: 'left' })
-
-
-
-        doc.save(this.selectUser.name + "_V" + voyage.voyageNumber + "_P" + port.portNumber + "-" + port.departurePort + "-" + port.arrivalPort + ".pdf")
-      }
+      startReport = port.dailyReports[0];
+      endReport = port.dailyReports[port.dailyReports.length - 1];
 
     }
-    return true;
+
+
+
+    return {
+      startReport: startReport,
+      endReport: endReport,
+    }
+
   }
+
 
   // Genera la data del viaje con filtro y resumen.
   // Ademas lo volvimos sincrono.
@@ -3202,9 +3098,9 @@ export class DashboardComponent implements OnInit {
           let result = '';
           if (configIFOorMGOorSPEED === 'IFO') {
             result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            result = result + ' Dayli consumption : ';
+            result = result + ' Daily consumption : ';
           } else if (configIFOorMGOorSPEED === 'MGO') {
-            result = 'MGO Dayli consumption : ';
+            result = 'MGO Daily consumption : ';
           } else if (configIFOorMGOorSPEED === 'SPEED') {
             result = 'Average Speed : ';
           }
@@ -3530,8 +3426,32 @@ export class DashboardComponent implements OnInit {
     // La linea es el campo que agregamos en el plugin.
     this.configLineaSPEED.options.lines = [];
 
-    // Configuracion Tooltips
-    this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
+    
+      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+      if (this.selectUser.maxSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.maxSpeed,
+          color: 'red',
+          label: ''
+        });
+      };
+
+      if (this.selectUser.minSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.minSpeed,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+
+      // Configuracion Tooltips
+      this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
+  
+    
+
+    
 
     if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
       this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
@@ -3561,14 +3481,15 @@ export class DashboardComponent implements OnInit {
   }
 
   public MathRoundOneDecimal(valor, cantDecimales: number) {
+
     if (!valor) { return 0; }
 
     let result = mathRound(valor, 2)
+
     return result;
   }
 
   public Testt() {
-    alert("DI O CLICK");
   }
 
   private PluginChartLine() {
@@ -3641,5 +3562,33 @@ export class DashboardComponent implements OnInit {
 
 
   }
+
+
+  private OpenDialogExportPDF(voyages: Voyage[], selectUser: User) {
+
+    let dialogListReport: IDialogExportPdf = {
+      voyages: voyages,
+      selectUser: selectUser,
+      selectVoyageId: this.selectVoyageId,
+    };
+
+
+    const dialogRef = this.dialog.open(DialogExportPdfComponent, {
+      data: dialogListReport
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+
+         // alert('OKK');
+        }
+      });
+
+
+  }
+
 
 }
