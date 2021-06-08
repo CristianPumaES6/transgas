@@ -1773,6 +1773,245 @@ export class DialogExportPdfComponent implements OnInit {
 
         }
       )
+
+
+
+
+
+
+      // AQUI GENERAMOS LOS CUADROS DE CONSUMO.
+      .then(
+        result => {
+          doc.addPage();
+
+          //////////////////////////////////
+          //////// INICIAMOS LA CABECERA////
+          //////////////////////////////////
+          positionHeight = 10;
+          let positionWidth = 10;
+
+          // ubicamos la imagen con un tamaño de 50 x 50
+          doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+          positionHeight += 5;
+          positionWidth = 60;
+
+          // Texto
+          doc.setFontSize(18);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bolditalic');
+          doc.text("Vessel Performance Report", positionWidth, positionHeight, { align: 'left' })
+
+          // Rectangular
+          positionHeight += 2;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(positionWidth, positionHeight, widthPDF - positionWidth - 10, 0.5, "FD");
+
+          // Numeros de telefono y correo.
+          positionHeight += 10;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Lima Phone: +51-1-716-7600       Miami Phone: +1 954-575-1414       Email: transgas@transgas.com.pe", widthPDF - 10, positionHeight, { align: 'right' })
+
+
+          // Raya debajo de los numeros de telefono.
+          positionHeight += 2;
+          positionWidth = 10;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(10, positionHeight, widthPDF - 20, 0.5, "FD");
+
+          //////////////////////////////////
+          ////////// FIN CABECERA //////////
+          //////////////////////////////////
+
+
+          // AGREGAMOS EL FOTER DEUNA VE>
+          let pageFooter = heightPDF - 10;
+
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(22, 33, 77);
+          doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
+          pageFooter += 4;
+
+          doc.setFontSize(8);
+          doc.setFont('Helvetica', 'normal');
+          doc.setTextColor(22, 33, 77);
+
+          doc.text('Page 5', 10, pageFooter, { align: 'left' });
+          doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
+
+
+
+          // Titulo del pdf.
+          positionHeight += 6;
+          doc.setFontSize(15);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text('Voyage Summary', widthPDF / 2, positionHeight, { align: 'center' })
+
+
+          ///////////////////////////////////////
+          ///////// Inicio del 1° Cuadro ////////
+          ///////////////////////////////////////
+          // BUQUE
+          positionHeight += 20;
+          doc.setFontSize(13);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("M/V", 10, positionHeight, { align: 'left' })
+          doc.setFontSize(17);
+          doc.text('Buque ' + this.selectUser.name, 20, positionHeight, { align: 'left' })
+
+
+          // Preparado por
+          positionHeight += 8;
+          doc.setFontSize(8);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'italic');
+          doc.text("Prepared for", 10, positionHeight, { align: 'left' })
+
+          // Transgas Shipping
+          positionHeight += 4.5;
+          doc.setFontSize(13);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
+
+          // Colocamos el rectangulo
+          positionHeight -= 20;
+          positionWidth = 10;
+          let ancho = 120;
+          doc.setDrawColor(22, 33, 77);
+          doc.setFillColor(219, 229, 245);
+          doc.rect(widthPDF - 10 - ancho, positionHeight, ancho, 25, "FD");
+
+          // Colocamos los destinos de partida y llegada.
+          positionHeight += 8.5;
+          doc.setFontSize(10);
+          doc.setTextColor(0, 0, 0);
+          doc.setFont('Helvetica', 'normal');
+          doc.text("Departure Port   :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text("Destination Port :", widthPDF - 10 - ancho + 3, positionHeight, { align: 'left' });
+
+          // Regresamos a la posicion anteriror
+          positionHeight -= 10;
+          doc.text("ATD :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text("ATA :", widthPDF - 10 - ancho + 3 + 65, positionHeight, { align: 'left' });
+
+          // SETEAMOS VALORES
+          positionHeight -= 10;
+          doc.setFontSize(10);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text(port.departurePort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(port.arrivalPort, widthPDF - 10 - ancho + 3 + 28, positionHeight, { align: 'left' });
+          // Regresamos a la posicion anteriror y colocamos la fecha de inicio y fin
+          positionHeight -= 10;
+          doc.text(FormatDate(getstartEndReport.startReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(FormatDate(getstartEndReport.endReport.date), widthPDF - 10 - ancho + 3 + 65 + 10, positionHeight, { align: 'left' });
+          // Regresamos a la posicion anterior y colocamos la fecha de inicio y fin.
+          positionHeight -= 10;
+          doc.text(getstartEndReport.startReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text(getstartEndReport.endReport.hour, widthPDF - 10 - ancho + 3 + 65 + 30, positionHeight, { align: 'left' });
+
+          positionHeight -= 10;
+          doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+          positionHeight += 10;
+          doc.text('GMT', widthPDF - 10 - ancho + 3 + 65 + 30 + 10, positionHeight, { align: 'left' });
+          positionHeight += 15;
+
+          return true;
+
+        }
+      ).then(
+        (result: boolean) => {
+
+          // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+          const options = {
+            background: 'black',
+            scale: 1
+          };
+
+          let elementlineaSpeed: HTMLElement = document.getElementById('dash-linea-speed');
+
+          return html2canvas(elementlineaSpeed, options);
+
+        }
+      ).then(
+        (canvas: any) => {
+
+
+          //let positionHeight = 170;
+
+          // Si el elemento canvas existe.de
+          if (canvas) {
+            // Obtenemos la imagen
+            let img = canvas.toDataURL('image/PNG');
+
+            let mgProps = (doc as any).getImageProperties(img);
+
+            // ubicamos la imagen con un tamaño de 50 x 50
+            // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+            // Calculamos un tamaño para el pdf.
+            let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
+            // Agregamos la imagen al pdf.
+            doc.addImage(img, 'PNG', 10, positionHeight, widthDash, 95, undefined, 'FAST');
+
+          }
+
+          return true;
+
+        }
+      )
+      // AGREGAMOS LA SEGUNDA IMAGEN AL LA PAGINA 5
+      .then(
+        (result: boolean) => {
+          positionHeight += 100;
+
+          // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+          const options = {
+            background: 'black',
+            scale: 1
+          };
+
+          let elementlineaSpeed: HTMLElement = document.getElementById('dash-linea-ifo');
+
+          return html2canvas(elementlineaSpeed, options);
+
+        }
+      ).then(
+        (canvas: any) => {
+
+
+          //let positionHeight = 170;
+
+          // Si el elemento canvas existe.de
+          if (canvas) {
+            // Obtenemos la imagen
+            let img = canvas.toDataURL('image/PNG');
+
+            let mgProps = (doc as any).getImageProperties(img);
+
+            // ubicamos la imagen con un tamaño de 50 x 50
+            // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+            // Calculamos un tamaño para el pdf.
+            let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
+            // Agregamos la imagen al pdf.
+            doc.addImage(img, 'PNG', 10, positionHeight, widthDash, 95, undefined, 'FAST');
+
+          }
+
+          return true;
+
+        }
+      )
       // Aqui descargamos el documento de pdf.
       .then(
         result => {
@@ -1798,7 +2037,7 @@ export class DialogExportPdfComponent implements OnInit {
       data: {
         labels: [], // Lo pongo vacio por que en el update se colocara el valor.
         datasets: [{
-          label: 'Vessel Speed Summary', // Lo pongo vacio por que en el update se colocara el valor.
+          label: 'VESSEL SPEED SUMMARY', // Lo pongo vacio por que en el update se colocara el valor.
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
           data: [], // Lo pongo vacio por que en el update se colocara el valor.
@@ -2056,9 +2295,9 @@ export class DialogExportPdfComponent implements OnInit {
           let result = '';
           if (configIFOorMGOorSPEED === 'IFO') {
             result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            result = 'Dayli consumption : ';
+            result = 'Daily consumption : ';
           } else if (configIFOorMGOorSPEED === 'MGO') {
-            result = 'MGO Dayli consumption : ';
+            result = 'MGO Daily consumption : ';
           } else if (configIFOorMGOorSPEED === 'SPEED') {
             result = 'Avg Speed : ';
           }
