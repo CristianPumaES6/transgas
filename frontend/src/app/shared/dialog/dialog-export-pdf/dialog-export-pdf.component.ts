@@ -5,7 +5,7 @@ import { Chart } from 'chart.js';
 import { GetMonthYearFromDate } from 'dist/frontend/assets/moment/moment.assets';
 import jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
-import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
+import autoTable, { Cell, CellHookData, RowInput, UserOptions } from 'jspdf-autotable'
 
 import { DailyReport, Speed } from 'src/app/models/daily-report';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -973,7 +973,7 @@ export class DialogExportPdfComponent implements OnInit {
           userOptions.startY = positionHeight;
           userOptions.head = head;
           userOptions.body = data;
-          userOptions.margin = [0, 0, 0, 10, 0, 0]
+          userOptions.margin = [0, 10, 0, 10, 0, 0]
 
           userOptions.didParseCell = (data: CellHookData) => {
 
@@ -1341,7 +1341,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 report.beaufour
 
-              ])
+              ]);
             }
           );
 
@@ -1349,7 +1349,7 @@ export class DialogExportPdfComponent implements OnInit {
           userOptions.startY = positionHeight;
           userOptions.head = head;
           userOptions.body = data;
-          userOptions.margin = [0, 0, 0, 10, 0, 0]
+          userOptions.margin = [0, 10, 0, 10, 0, 0]
 
           userOptions.didParseCell = (data: CellHookData) => {
 
@@ -1392,7 +1392,7 @@ export class DialogExportPdfComponent implements OnInit {
               halign: 'center',
               fontStyle: 'bold',
               fontSize: 8,
-              cellWidth: 32,
+              cellWidth: 31,
               lineWidth: 0.15,
               lineColor: [22, 33, 77]
             },
@@ -1548,7 +1548,140 @@ export class DialogExportPdfComponent implements OnInit {
 
         }
       ).then(
+        // Creamos la tabla de resumen de viaje.
         (result: boolean) => {
+          
+          var data:RowInput[] = [
+            
+              
+            [{"content":"Calculated Total Consumption (MT)","colSpan":8}],
+            [{"content":"Engine Consumption Summary","colSpan":2,"rowSpan":2},{"content":"Main Engine","colSpan":2},{"content":"Aux Engine","colSpan":2},{"content":"Boiler","colSpan":2}],
+            [{"content":"IFO","colSpan":1},{"content":"MGO","colSpan":1},{"content":"IFO","colSpan":1},{"content":"MGO","colSpan":1},{"content":"IFO","colSpan":1},{"content":"MGO","colSpan":1}],
+            // Aqui van los valores
+            [{"content":"TEST to Test2","colSpan":2},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1}],
+            [{"content":"","colSpan":8}],
+            [{"content":"Voyage(s) Total","colSpan":1, "rowSpan":2},{"content":"Time","colSpan":1},{"content":"Distance","colSpan":1},{"content":"AVG\nSpeed","colSpan":1},{"content":"Charter\nSpeed","colSpan":1},{"content":"IFO","colSpan":1},{"content":"Charter\nDayli IFO","colSpan":1},{"content":"Charter\nDayli IFO","colSpan":1}],
+            // Aqui van valores.
+            [{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1},{"content":"","colSpan":1}],
+            [{"content":"Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received","colSpan":8}],
+     
+            
+          ];
+
+
+          let userOptions: UserOptions = {};
+          userOptions.startY = positionHeight;
+          //userOptions.head = head;
+          userOptions.body = data;
+          userOptions.margin = [0, 10, 0, 10, 0, 0]
+
+          userOptions.didParseCell = (data: CellHookData) => {
+
+            let section = data.section;
+            let cell: Cell = data.cell;
+            if (cell == undefined) { return; }
+
+            if (section == 'body') {
+              let rowIndex = data.row.index;
+              let columIndex = data.column.index;
+              let raw = data.row.raw;
+
+              if (columIndex == 5) {
+
+                if (Number(cell.text) >= Number(raw[6])) {
+                  cell.styles.fillColor = [133, 252, 97];
+                } else {
+                  cell.styles.fillColor = [255, 123, 123];
+                }
+              }
+            }
+
+
+          };
+
+          userOptions.columnStyles = {
+            0: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 57,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            1: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 19,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            2: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 19,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            3: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 19,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            4: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 19,
+              lineWidth: 0.2,
+              lineColor: [22, 33, 77]
+            },
+            5: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 19,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            6: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 19,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            },
+            7: {
+              halign: 'center',
+              fontStyle: 'bold',
+              fontSize: 8,
+              cellWidth: 19,
+              lineWidth: 0.15,
+              lineColor: [22, 33, 77]
+            }
+          };
+          userOptions.headStyles = {
+            halign: 'center',
+            valign: 'middle',
+            lineWidth: 0.15,
+            lineColor: [22, 33, 77],
+            fontSize: 8
+          };
+
+
+          autoTable(doc,userOptions);
+          
+
+          return true;
+        }
+      ).then(
+        (result: boolean) => {
+
           // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
           const options = {
             background: 'black',
@@ -1578,7 +1711,7 @@ export class DialogExportPdfComponent implements OnInit {
             // Calculamos un tamaño para el pdf.
             let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
             // Agregamos la imagen al pdf.
-            doc.addImage(img, 'PNG', 10, positionHeight, widthDash, 95, undefined, 'FAST');
+            //  doc.addImage(img, 'PNG', 10, positionHeight, widthDash, 95, undefined, 'FAST');
 
           }
 
