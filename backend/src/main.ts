@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 
 // Express
 import * as express from 'express';
-import { FOLDER_UPLOADS } from './config/path.config';
+import { FOLDER_UPLOADS,FOLDER_STATIC } from './config/path.config';
 import { join } from 'path';
 
 async function bootstrap() {
@@ -22,6 +22,8 @@ async function bootstrap() {
   app.enableCors(options);
 
   app.use(express.static(join(FOLDER_UPLOADS)));
+
+  app.use(express.static(join(FOLDER_STATIC)));
 
   await app.listen(3000);
 }
