@@ -10,6 +10,7 @@ import { UserComponent } from '../components/users/user/user.component';
 import { LoginGuard } from '../guard/login.guard';
 import { IsBuqueGuard } from '../guard/is-buque.guard';
 import { ListOfConnectedUsersComponent } from '../shared/list-of-connected-users/list-of-connected-users.component';
+import { HelpsComponent } from '../components/helps/helps.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'voyages', component: VoyageComponent },
       { path: 'users', component: UserComponent },
-      { path: 'helps', component: DashboardComponent },
+      { path: 'helps', component: HelpsComponent },
     ]
   }
 ];
