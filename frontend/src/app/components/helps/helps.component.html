@@ -7,22 +7,16 @@
             <div id="flotChart" class="flot-chart"></div>
         </div><!-- chart-wrapper -->
         <div class="card-columns">
-            <div class="card"><img src="http://themepixels.me/azia/img/one.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/seven.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/ten.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/eight.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/five.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/six.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/four.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/two.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/three.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/one.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/five.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/three.png" class="img-fluid" alt=""></div>
-            <div class="card"><img src="http://themepixels.me/azia/img/seven.png" class="img-fluid" alt=""></div>
+            <ng-template ngFor let-iImg [ngForOf]="arrImgHome" let-i="index">
+
+
+                <div class="card">
+                    <img src="{{iImg}}" class="img-fluid" alt="">
+                </div>
+            </ng-template>
         </div><!-- card-columns -->
         <div class="az-home-content">
-            <div class="az-logo">azia</div>
+            <div class="az-logo">Transgas</div>
             <h5>Responsive Bootstrap 4 Dashboard Template</h5>
 
             <div class="logo-group">
