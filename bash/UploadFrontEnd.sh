@@ -14,6 +14,11 @@ cd config
 # Lo editamos.
 sed -i "s%http://localhost:3000%https://transgas.codev.site%g" "env.config.ts"
 
+# generamos el build
+ng build --prod
+
+# Hacemos el deploy
+firebase deploy
 
 sed -i "s%https://transgas.codev.site%http://localhost:3000%g" "env.config.ts"
 
