@@ -4,49 +4,92 @@
 
     <div class="az-home-slider">
         <div class="chart-wrapper">
-            <div id="flotChart" class="flot-chart"></div>
+            <div class="flot-chart">
+                <img src="https://rsanchezs.gitbooks.io/rgraphic/content/section1/slides-figure/graph.png" alt="">
+            </div>
         </div><!-- chart-wrapper -->
         <div class="card-columns">
             <ng-template ngFor let-iImg [ngForOf]="arrImgHome" let-i="index">
 
 
                 <div class="card">
-                    <img src="{{iImg}}" class="img-fluid" alt="">
+                    <img src="{{iImg}}" class="img-fluid img-opacity" alt="">
                 </div>
+
+
             </ng-template>
         </div><!-- card-columns -->
-        <div class="az-home-content">
-            <div class="az-logo">Transgas</div>
-            <h5>Responsive Bootstrap 4 Dashboard Template</h5>
+
+        <div class="az-home-content mg-t-10">
+
+
+            <div class="az-logo">{{title_home}}</div>
+            <h5>{{sub_title_home}}</h5>
 
             <div class="logo-group">
-                <i class="fab fa-html5"></i>
-                <i class="fab fa-css3-alt"></i>
-                <i class="fab fa-sass"></i>
-                <i class="fab fa-npm"></i>
+                <i class="icon-archivo-pdf"></i>
+                <i class="icon-ship1"></i>
+                <i class="icon-archivo-excel"></i>
                 <i class="fab fa-gulp"></i>
             </div>
 
-            <h1>Get Better Dashboard Design Right Now!</h1>
-            <p class="mg-b-25">When your dashboard or app is attractive to use, your users will not simply be using it,
-                they’ll look forward to using it. This means that you should fashion the look and feel of your interface
-                for
-                your users.</p>
-            <p>
-                <a id="azDemoBtn" href="#azDemo" class="btn btn-light flex-1 mg-r-10">View Demo</a>
-                <a href="https://themeforest.net/item/azia-responsive-bootstrap-4-dashboard-template/22983790"
-                    class="btn btn-primary flex-1">Buy Template - $25</a>
-            </p>
+            <h1>{{description_home}}</h1>
+            <div class="mg-b-50">{{description_home_ext}}</div>
+            <div>
+                <a class="btn btn-light flex-1 mg-r-10" (click)="CLICK(azDemo)">View Demo</a>
+                <a lass="btn btn-primary flex-1">Buy Template - $25</a>
+            </div>
 
-            <nav>
-                <a href="http://twitter.com/themepixels" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="http://dribbble.com/themepixels" target="_blank"><i class="fab fa-dribbble"></i></a>
-                <a href="http://behance.net/themepixels" target="_blank"><i class="fab fa-behance"></i></a>
-            </nav>
         </div><!-- az-home-content -->
+
+        <div class="container-user-manual">
+
+            <div class="container-fluid">
+                <div class="w-100 row no-gutters">
+
+                    <div class="col-12 mb-2">
+                        <h2>Modules</h2>
+                    </div>
+                    <div class="col-12 row no-gutters">
+                        <ng-template ngFor let-iArrModules [ngForOf]="arrModules" let-i="index">
+
+
+                            <div class="col-sm-6 col-lg-4">
+
+                                <div class="container-modules">
+
+                                    <a href="http://twitter.com/themepixels" target="_blank">
+                                        <i class="{{iArrModules.icono}}"></i>
+                                        <h4>
+                                            {{iArrModules.title_icono}}
+                                        </h4>
+                                        <span>
+                                            {{iArrModules.text}}
+                                        </span>
+                                        <ul>
+                                            <ng-template ngFor let-iList_option [ngForOf]="iArrModules.list_option" let-i="index">
+                                                <li>{{iList_option}}</li>
+                                            </ng-template>
+                                        </ul>
+                                        <span href="{{iArrModules.href}}" class="text_href">{{iArrModules.text_ref}}</span>
+                                    </a>
+
+                                </div>
+                            </div>
+                            
+                        </ng-template>
+                       
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Container Manual  -->
+
     </div><!-- az-home-slider -->
 
-    <div id="azDemo" class="az-content az-content-choose-demo">
+    <div #azDemo class="az-content az-content-choose-demo">
         <div class="container">
             <label class="title-label">Layout Variants</label>
             <h1 class="title">Choose Dashboard Layout</h1>
