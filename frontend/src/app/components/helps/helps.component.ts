@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import PerfectScrollbar from 'perfect-scrollbar';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from '../../../app/services/user.service';
 
 @Component({
   selector: 'app-helps',

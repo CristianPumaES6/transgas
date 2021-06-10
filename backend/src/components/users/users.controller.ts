@@ -14,8 +14,8 @@ import { GetDate } from '../../assets/moment.assets';
 // Entity
 import { UserEntity } from '../../models/user.entity';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { EditFileName, ImageFileFilter } from 'src/middleware/image.middleware';
-import { FOLDER_UPLOADS } from 'src/config/path.config';
+import { EditFileName, ImageFileFilter } from '../../middleware/image.middleware';
+import { FOLDER_UPLOADS } from '../../config/path.config';
 
 @Controller('users')
 export class UsersController {
