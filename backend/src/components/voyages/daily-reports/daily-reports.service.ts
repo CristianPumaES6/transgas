@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DailyReport, GetROBByUser } from 'src/models/daily-report.entity';
+import { DailyReport, GetROBByUser } from '../../../models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()

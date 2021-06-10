@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { JwtDecode } from 'src/assets/jwtDecode.assets';
-import { GetDate } from 'src/assets/moment.assets';
-import { DummyPromise } from 'src/assets/promises.assets';
-import { Port } from 'src/models/port.entity';
-import { UserEntity } from 'src/models/user.entity';
+import { JwtDecode } from '../../../assets/jwtDecode.assets';
+import { GetDate } from '../../../assets/moment.assets';
+import { DummyPromise } from '../../../assets/promises.assets';
+import { Port } from '../../../models/port.entity';
+import { UserEntity } from '../../../models/user.entity';
 import { PortsService } from './ports.service';
 
 @Controller('ports')

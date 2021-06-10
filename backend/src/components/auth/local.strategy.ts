@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 
 
 import { DummyPromise } from '../../assets/promises.assets';
-import { UserEntity } from 'src/models/user.entity';
+import { UserEntity } from '../../models/user.entity';
 
 
 @Injectable()

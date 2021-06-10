@@ -23,6 +23,7 @@ import { DialogListReportComponent } from '../shared/dialog/dialog-list-report/d
 import { ListOfConnectedUsersComponent } from '../shared/list-of-connected-users/list-of-connected-users.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { DialogExportPdfComponent } from '../shared/dialog/dialog-export-pdf/dialog-export-pdf.component';
+import { HelpsComponent } from '../components/helps/helps.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { DialogExportPdfComponent } from '../shared/dialog/dialog-export-pdf/dia
     DialogListReportComponent,
     ListOfConnectedUsersComponent,
     DialogExportPdfComponent,
+    HelpsComponent,
   ],
   imports: [
     GlobalModule,
