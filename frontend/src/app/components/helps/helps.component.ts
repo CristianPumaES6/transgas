@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import PerfectScrollbar from 'perfect-scrollbar';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-helps',
@@ -8,6 +9,8 @@ import PerfectScrollbar from 'perfect-scrollbar';
   styleUrls: ['./helps.component.scss']
 })
 export class HelpsComponent implements OnInit {
+
+public roleUser: string= '';
 
   // Variable que contiene todas las url de imagenes.
   public arrImgHome: string[] = [
@@ -57,18 +60,6 @@ export class HelpsComponent implements OnInit {
       href: ''
     },
 
-    {
-      icono: 'icon-menu-user',
-      title_icono: 'User',
-      text: 'Module in charge of registering vessel, owner and admin.',
-      list_option: [
-        'Vessel registration',
-        'Owner registration',
-        'Administrators Registration'
-      ],
-      text_ref: 'Read more',
-      href: ''
-    },
 
   ];
 
@@ -87,14 +78,13 @@ export class HelpsComponent implements OnInit {
       iframe_video :'Voyage',
       title:'Voyage Module',
       description:'Module in charge of storing voyage information.'
-    },{
-      iframe_video :'User',
-      title:'User Module',
-      description:'Module in charge of registering vessel, owner and admin.'
-    },
+    }
   ]
 
-  constructor() { }
+  
+  constructor(
+    private userService: UserService
+    ) { }
 
   ngOnInit(): void {
 
@@ -102,6 +92,36 @@ export class HelpsComponent implements OnInit {
     new PerfectScrollbar('.body-full-container', {
       suppressScrollX: true
     });
+
+            // Rol del usurio logeado.
+            this.roleUser = this.userService.GetIdentity().role;
+
+            if(this.roleUser === 'ADMIN' || this.roleUser === 'SUPPORT'){
+             
+              this.list_video.push(
+                {
+                  iframe_video :'User',
+                  title:'User Module',
+                  description:'Module in charge of registering vessel, owner and admin.'
+                }
+              );
+              this.arrModules.push(
+
+    {
+      icono: 'icon-menu-user',
+      title_icono: 'User',
+      text: 'Module in charge of registering vessel, owner and admin.',
+      list_option: [
+        'Vessel registration',
+        'Owner registration',
+        'Administrators Registration'
+      ],
+      text_ref: 'Read more',
+      href: ''
+    }
+              )
+            }
+
   }
 
   CLICK(el: HTMLElement) {
