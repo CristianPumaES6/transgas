@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import PerfectScrollbar from 'perfect-scrollbar';
-import { UserService } from '../../../app/services/user.service';
+import { EnvConfig } from 'src/app/config/env.config';
+import { UserService } from '../../services/user.service';
+
 
 @Component({
   selector: 'app-helps',
@@ -10,19 +12,20 @@ import { UserService } from '../../../app/services/user.service';
 })
 export class HelpsComponent implements OnInit {
 
+  public url: string = EnvConfig.API;
 public roleUser: string= '';
 
   // Variable que contiene todas las url de imagenes.
   public arrImgHome: string[] = [
-    "http://localhost:3000/img/1Home.png",
-    "http://localhost:3000/img/2Voyage.png",
-    "http://localhost:3000/img/4Report.png",
-    "http://localhost:3000/img/5Dashboard.png",
-    "http://localhost:3000/img/6Dashboard2.png",
-    "http://localhost:3000/img/7Dashboard3.png",
-    "http://localhost:3000/img/8Users.png",
-    "http://localhost:3000/img/9Users2.png",
-    "http://localhost:3000/img/1Home.png"
+    this.url+"/img/1Home.png",
+    this.url+"//img/2Voyage.png",
+    this.url+"//img/4Report.png",
+    this.url+"//img/5Dashboard.png",
+    this.url+"//img/6Dashboard2.png",
+    this.url+"//img/7Dashboard3.png",
+    this.url+"//img/8Users.png",
+    this.url+"//img/9Users2.png",
+    this.url+"//img/1Home.png"
   ];
 
   public title_home = "Transgas"
