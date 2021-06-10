@@ -70,7 +70,30 @@ export class HelpsComponent implements OnInit {
       href: ''
     },
 
+  ];
+
+  
+  // Titulo de la lista de videos
+  public title_list_videos: string ='Demo videos';
+  public h1_title_videos: string = 'Choose a module';
+  public description_title_videos:string = 'The following videos explain the application modules.';
+
+  public list_video:any[] = [
+    {
+      iframe_video :'Dashboard',
+      title:'Dashboard Module',
+      description:'Module in charge of monitor the main indicators of the vessel.'
+    },{
+      iframe_video :'Voyage',
+      title:'Voyage Module',
+      description:'Module in charge of storing voyage information.'
+    },{
+      iframe_video :'User',
+      title:'User Module',
+      description:'Module in charge of registering vessel, owner and admin.'
+    },
   ]
+
   constructor() { }
 
   ngOnInit(): void {
@@ -83,5 +106,11 @@ export class HelpsComponent implements OnInit {
 
   CLICK(el: HTMLElement) {
     el.scrollIntoView();
+  }
+
+  ClickSelectModule(el): boolean {
+    //alert(module)
+    el.scrollIntoView();
+    return false;
   }
 }
