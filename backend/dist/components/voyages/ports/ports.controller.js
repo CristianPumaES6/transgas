@@ -18,7 +18,6 @@ const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
 const moment_assets_1 = require("../../../assets/moment.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const port_entity_1 = require("../../../models/port.entity");
-const user_entity_1 = require("../../../models/user.entity");
 const ports_service_1 = require("./ports.service");
 let PortsController = class PortsController {
     constructor(_portsService) {

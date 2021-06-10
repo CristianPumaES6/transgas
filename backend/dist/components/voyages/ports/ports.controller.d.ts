@@ -1,4 +1,4 @@
-import { Port } from 'src/models/port.entity';
+import { Port } from '../../../models/port.entity';
 import { PortsService } from './ports.service';
 export declare class PortsController {
     private readonly _portsService;

@@ -18,7 +18,6 @@ const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
 const moment_assets_1 = require("../../../assets/moment.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const daily_report_entity_1 = require("../../../models/daily-report.entity");
-const user_entity_1 = require("../../../models/user.entity");
 const daily_reports_service_1 = require("./daily-reports.service");
 let DailyReportsController = class DailyReportsController {
     constructor(_dailyReportsService) {

@@ -1,4 +1,4 @@
-import { Port } from 'src/models/port.entity';
+import { Port } from '../../../models/port.entity';
 import { Repository } from 'typeorm';
 export declare class PortsService {
     private portRepository;

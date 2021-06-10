@@ -3017,7 +3017,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "0278c78c4f67ffb5e9146ba76285e0d184dd96f7fd91a61e93d2e52d6067d2b1",
+        "version": "8dff68fd20e0b0c15f0a6295f3179461bcf8592a9a0c4ee10a8c43a8509241a2",
         "signature": "e8c33c1d0e14b393932b6c450871f2b3ba9edd5bfae68116695c422816c83de7",
         "affectsGlobalScope": false
       },
@@ -3077,8 +3077,8 @@
         "affectsGlobalScope": false
       },
       "../src/config/path.config.ts": {
-        "version": "ff4dd27a2a1e5980411ba603240ce35ebbc16a7f610cd1e2e2b36b9183a28e83",
-        "signature": "63ea82af5dac3a55edcc0ac27d5286e912a4d146b46965e0a8452f9bf8b027a6",
+        "version": "9a31de07c10b41886e049139aa4c65e0eb8783ba822d0aa255d14c4d31c15d86",
+        "signature": "30a72b6a07409e3748e780fe666d2dcdfa17216c3012d19d5f2c08efbd5cc91e",
         "affectsGlobalScope": false
       },
       "../node_modules/jwt-decode/index.d.ts": {
@@ -3187,7 +3187,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/users/users.controller.ts": {
-        "version": "c095b2989ca03ae489d8ec3c97c0ce9f0a3961fadfb3a5833a9fa6c0868590dd",
+        "version": "24fbed3d87eb380bbf7f49730436c0491acdb49e17e92eac4fd3a2971488d40e",
         "signature": "001962a4401bb1420f500f94d3c05c8088bdc1bcee8b63a6ddf0bbbc123eaf9c",
         "affectsGlobalScope": false
       },
@@ -3212,7 +3212,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/auth/local.strategy.ts": {
-        "version": "7bcf0d01fddbd1de62516aff76893e036cf646cf34dfedd5c3b7689727fb8652",
+        "version": "6cdab9ad68cf42e2d796a387b48203257165cd3824f207ca0611c3bdd4629818",
         "signature": "5a838e5f933fc4a4711194878e036b8f86a190dae1f7fdb00fb471d24e591f58",
         "affectsGlobalScope": false
       },
@@ -3252,13 +3252,13 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.service.ts": {
-        "version": "5b96f9130139e4fb6e69f8edf975fcb35fbd1ffed748e3278c4a2c2d15371d58",
-        "signature": "871f40f1e7f27d70127ddb67b9dc1d9b58ab0881a1826850a3c26bbb6805b878",
+        "version": "9fd21e14a67f88ab141e01ec6ed8bbed3e91b68a5f71d0620f93f51d7b0f7b3e",
+        "signature": "a89a4e6383bcd59933fa861400f9a8a2321bc3fd619e2b52290271ae635b478e",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "46cf6308c649aa71534ac491843747d7bd29455681e80df54a487aa01aaf13ce",
-        "signature": "e3218089b32f0e4ce0fbf8d88a1db4cb7074a4a44a6d97a0b2bb418d03e2fbba",
+        "version": "513a44571e6613473bdf64d2710910dbae6d050455e2fa7cafe178623de0a7b6",
+        "signature": "c3fcac30157fca21362732a48127e6929a6b0963d009851ca2541c00ff5c05c3",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
@@ -3267,18 +3267,18 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.controller.ts": {
-        "version": "1ff821c919304adc94230f7bc3ba40b81c2e6d5797891b59e7975ef2dcf4b6a5",
-        "signature": "4fde3fb7c3acdf05b85046ae26f2a685a2b614d98c34b9a2b2972988676b42f8",
+        "version": "54ab0e42b4934f27b080725e4cc48adc8e556dc7851c5acc2fe400e4aacb22d5",
+        "signature": "5fdcff246dd05d5e87c9b8918517e6a6c0cfa38dfaffe098a29e3a1bcb649260",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.module.ts": {
-        "version": "c9082e9d2e10b21808f589f43acca978c6fd5e66150ad4f7b348c91ba1808d27",
+        "version": "89e9383856e349e1e70edc755c1137a664ad06e8438926552ed75c91514aaec5",
         "signature": "9728d76e2896e28ff60f307ff762f62cee6256846c0ac50b0de1e552f1e03610",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.controller.ts": {
-        "version": "44b6ed33f7637813126d416e113237e616185d1ae179371fa112d318e955fd91",
-        "signature": "b44c6a2920ed5f17cec6bb57b74eac5d1c753c6053c6eaae59c8af8df44be24c",
+        "version": "83a85bc6abbfba99ab1ff7db445cf28f88879b03d557208c81749ca44a944188",
+        "signature": "87011c324b4efd3e683e729d6543b1614ab299e660b08f75995416fe4442c1f7",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.module.ts": {
@@ -3467,7 +3467,7 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "18038bd6ae02394d010bb256e46ec3909e590b12956bc263f72b0a823f480ce2",
+        "version": "07de81aefbfb9f3f4c2006aa2860bdabdaeed4d1e7c3cdaecc00049f08a2498a",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },

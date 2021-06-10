@@ -15,7 +15,6 @@ const passport_1 = require("@nestjs/passport");
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const promises_assets_1 = require("../../assets/promises.assets");
-const user_entity_1 = require("../../models/user.entity");
 let LocalStrategy = class LocalStrategy extends passport_1.PassportStrategy(passport_local_1.Strategy) {
     constructor(authService) {
         super();

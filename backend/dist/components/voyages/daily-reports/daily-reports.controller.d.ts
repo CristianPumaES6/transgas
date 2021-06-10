@@ -1,4 +1,4 @@
-import { DailyReport } from 'src/models/daily-report.entity';
+import { DailyReport } from '../../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports.service';
 export declare class DailyReportsController {
     private readonly _dailyReportsService;

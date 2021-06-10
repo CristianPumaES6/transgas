@@ -1,4 +1,4 @@
-import { DailyReport, GetROBByUser } from 'src/models/daily-report.entity';
+import { DailyReport, GetROBByUser } from '../../../models/daily-report.entity';
 import { Repository } from 'typeorm';
 export declare class DailyReportsService {
     private _dailyReportRepository;
