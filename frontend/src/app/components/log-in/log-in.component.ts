@@ -20,6 +20,7 @@ import { Login } from '../../models/user'
 
 //Service
 import { AuthService } from '../../services/auth.service';
+import { EnvConfig } from 'src/app/config/env.config';
 
 
 @Component({
@@ -37,6 +38,7 @@ export class LogInComponent implements OnInit {
   // Armo modelo Login
   public login: Login = new Login();
 
+  public version: string = '';
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -47,10 +49,14 @@ export class LogInComponent implements OnInit {
   ) {
     console.log("constructor()");
 
+    // Mostramos la version del app
+    this.version = EnvConfig.VERSION;
   }
 
   ngOnInit(): void {
     console.log('ngOnInit()');
+
+
 
   }
 
