@@ -171,17 +171,17 @@
                                 T.
                                 {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
                                 'VLSFO' :
-                                'LSFO') }}
+                                'LSFO') }} (MT)
                             </th>
                         </ng-template>
                         <ng-template [ngIf]="isViewMGO">
                             <th class="border pt-2">
-                                T. MGO
+                                T. MGO  (MT)
                             </th>
                         </ng-template>
                         <ng-template [ngIf]="isViewSPEED">
                             <th class="border pt-2">
-                                {{'SPEED' | translateMessage:translateCategory}}
+                                {{'TITLE_TABLE_SPEED' | translateMessage:translateCategory}}
                             </th>
                         </ng-template>
                     </tr>

@@ -444,12 +444,13 @@ export const dialog: any = {
     MANEUVER: 'Maneuver',
     OTHER_ACT: 'Other act.',
     OBSERVATION: 'Observation',
-    DURATION: 'Duration',
+    DURATION: 'Duration (hrs)',
     ACTIVITY: 'Activity',
     HOUR: 'Hour',
     DATE: 'Date',
     SPEED: 'Speed',
     DEPARTURE: 'Departure :',
     ARRIVAL: 'Arrival :',
-    BUQUE: 'Buque'
+    BUQUE: 'Buque',
+    TITLE_TABLE_SPEED:'Speed (MI)',
 }
