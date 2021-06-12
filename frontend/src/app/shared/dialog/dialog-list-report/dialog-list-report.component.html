@@ -221,7 +221,7 @@
                             <ng-template [ngIf]="isViewSPEED">
                                 <td class="p-1 font-small-1 border"
                                     matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}">
-                                    {{TwoDecimal(dailyReport.distance / (steamingTime||1),2) }}
+                                    {{TwoDecimal(dailyReport.distance / (dailyReport.steamingTime||1),2) }}
                                 </td>
                             </ng-template>
                         </tr>
