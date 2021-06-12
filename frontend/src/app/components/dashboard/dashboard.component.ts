@@ -1553,10 +1553,10 @@ export class DashboardComponent implements OnInit {
           this.consumptionDaysByContractIFO.boiler = this.selectUser.consumptionEquipmentBOILER_IFO;
           this.consumptionDaysByContractIFO.other = this.selectUser.consumptionEquipmentOther_IFO;
           // hacemos un balance.
-          this.consumptionDailyBalanceIFO.mpal = this.consumptionDaysByContractIFO.mpal ? this.consumptionDaysRealIFO.mpal - this.consumptionDaysByContractIFO.mpal : 0;
-          this.consumptionDailyBalanceIFO.aux = this.consumptionDaysByContractIFO.aux ? this.consumptionDaysRealIFO.aux - this.consumptionDaysByContractIFO.aux : 0;
-          this.consumptionDailyBalanceIFO.boiler = this.consumptionDaysByContractIFO.boiler ? this.consumptionDaysRealIFO.boiler - this.consumptionDaysByContractIFO.boiler : 0;
-          this.consumptionDailyBalanceIFO.other = this.consumptionDaysByContractIFO.other ? this.consumptionDaysRealIFO.other - this.consumptionDaysByContractIFO.other : 0;
+          this.consumptionDailyBalanceIFO.mpal = this.consumptionDaysRealIFO.mpal ? this.consumptionDaysRealIFO.mpal - this.consumptionDaysByContractIFO.mpal : 0;
+          this.consumptionDailyBalanceIFO.aux = this.consumptionDaysRealIFO.aux ? this.consumptionDaysRealIFO.aux - this.consumptionDaysByContractIFO.aux : 0;
+          this.consumptionDailyBalanceIFO.boiler = this.consumptionDaysRealIFO.boiler ? this.consumptionDaysRealIFO.boiler - this.consumptionDaysByContractIFO.boiler : 0;
+          this.consumptionDailyBalanceIFO.other = this.consumptionDaysRealIFO.other ? this.consumptionDaysRealIFO.other - this.consumptionDaysByContractIFO.other : 0;
 
           // FORMULA CONSUMO POR EQUIPO MGO
           // Consumo Diario por  maquina.
@@ -1574,12 +1574,12 @@ export class DashboardComponent implements OnInit {
           this.consumptionDaysByContractMGO.gi = this.selectUser.consumptionEquipmentIG_MGO;
           this.consumptionDaysByContractMGO.other = this.selectUser.consumptionEquipmentOther_MGO;
           // hacemos un balance.
-          this.consumptionDailyBalanceMGO.mpal = this.consumptionDaysByContractMGO.mpal ? this.consumptionDaysRealMGO.mpal - this.consumptionDaysByContractMGO.mpal : 0;
-          this.consumptionDailyBalanceMGO.aux = this.consumptionDaysByContractMGO.aux ? this.consumptionDaysRealMGO.aux - this.consumptionDaysByContractMGO.aux : 0;
-          this.consumptionDailyBalanceMGO.boiler = this.consumptionDaysByContractMGO.boiler ? this.consumptionDaysRealMGO.boiler - this.consumptionDaysByContractMGO.boiler : 0;
-          this.consumptionDailyBalanceMGO.pp = this.consumptionDaysByContractMGO.pp ? this.consumptionDaysRealMGO.pp - this.consumptionDaysByContractMGO.pp : 0;
-          this.consumptionDailyBalanceMGO.gi = this.consumptionDaysByContractMGO.gi ? this.consumptionDaysRealMGO.gi - this.consumptionDaysByContractMGO.gi : 0;
-          this.consumptionDailyBalanceMGO.other = this.consumptionDaysByContractMGO.other ? this.consumptionDaysRealMGO.other - this.consumptionDaysByContractMGO.other : 0;
+          this.consumptionDailyBalanceMGO.mpal = this.consumptionDaysRealMGO.mpal ? this.consumptionDaysRealMGO.mpal - this.consumptionDaysByContractMGO.mpal : 0;
+          this.consumptionDailyBalanceMGO.aux = this.consumptionDaysRealMGO.aux ? this.consumptionDaysRealMGO.aux - this.consumptionDaysByContractMGO.aux : 0;
+          this.consumptionDailyBalanceMGO.boiler = this.consumptionDaysRealMGO.boiler ? this.consumptionDaysRealMGO.boiler - this.consumptionDaysByContractMGO.boiler : 0;
+          this.consumptionDailyBalanceMGO.pp = this.consumptionDaysRealMGO.pp ? this.consumptionDaysRealMGO.pp - this.consumptionDaysByContractMGO.pp : 0;
+          this.consumptionDailyBalanceMGO.gi = this.consumptionDaysRealMGO.gi ? this.consumptionDaysRealMGO.gi - this.consumptionDaysByContractMGO.gi : 0;
+          this.consumptionDailyBalanceMGO.other = this.consumptionDaysRealMGO.other ? this.consumptionDaysRealMGO.other - this.consumptionDaysByContractMGO.other : 0;
 
 
           // FORMULA CONSUMO POR ACTIVIDAD IFO
