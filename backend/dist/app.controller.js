@@ -19,6 +19,7 @@ const app_service_1 = require("./app.service");
 const auth_service_1 = require("./components/auth/auth.service");
 const promises_assets_1 = require("./assets/promises.assets");
 const loggedUser_1 = require("./models/loggedUser");
+const server_config_1 = require("./config/server.config");
 let AppController = class AppController {
     constructor(appService, authService) {
         this.appService = appService;
@@ -37,8 +38,19 @@ let AppController = class AppController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    GetVersionPlataform() {
+        let version = server_config_1.URL_Server.version;
+        return {
+            status: common_1.HttpStatus.OK,
+            data: version
+        };
+    }
     getHello() {
-        return this.appService.getHello();
+        let version = server_config_1.URL_Server.version;
+        return {
+            status: common_1.HttpStatus.OK,
+            data: version
+        };
     }
     async login(req) {
         const user = req.user;
@@ -134,11 +146,17 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "Pruebas", null);
 __decorate([
+    common_1.Get('platform-version'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Object)
+], AppController.prototype, "GetVersionPlataform", null);
+__decorate([
     common_1.UseGuards(passport_1.AuthGuard('jwt')),
     common_1.Get(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Object)
 ], AppController.prototype, "getHello", null);
 __decorate([
     common_1.UseGuards(passport_1.AuthGuard('local')),

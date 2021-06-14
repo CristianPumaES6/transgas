@@ -3017,8 +3017,8 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "8dff68fd20e0b0c15f0a6295f3179461bcf8592a9a0c4ee10a8c43a8509241a2",
-        "signature": "e8c33c1d0e14b393932b6c450871f2b3ba9edd5bfae68116695c422816c83de7",
+        "version": "cfd4daeb2fb1705200aeaab5c96e9b31ac805d81e6ae6f624388ff9dec121590",
+        "signature": "7db70e1112d44cda30f91612b7f1e300c713092e8d30771c2b5c4c9c1e59ed88",
         "affectsGlobalScope": false
       },
       "../src/assets/promises.assets.ts": {
@@ -3072,8 +3072,8 @@
         "affectsGlobalScope": false
       },
       "../src/app.controller.ts": {
-        "version": "3a9314b97a07a063da51196f2925ae1ffada7fefa7f573e2c9c0ecdc86613a21",
-        "signature": "552b388479561b36c10cd2799ee8da2b575a4a435b7c5cbbba4f2724eafb6680",
+        "version": "c92a2a75bbe43a4d73687275a7230cc904dc4ec3f87056d8aa47ef2e18bf3dfe",
+        "signature": "f922d77bfa8f174c1c63f27ce3dc7865d16188c38035ec78ece42e024d544820",
         "affectsGlobalScope": false
       },
       "../src/config/path.config.ts": {
@@ -6414,6 +6414,7 @@
         "../src/assets/promises.assets.ts",
         "../src/components/auth/auth.service.ts",
         "../src/components/users/users.service.ts",
+        "../src/config/server.config.ts",
         "../src/models/loggedUser.ts",
         "../src/models/user.entity.ts"
       ],

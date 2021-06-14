@@ -8,7 +8,8 @@ export declare class AppController {
     private readonly authService;
     constructor(appService: AppService, authService: AuthService);
     Pruebas(body: any): Promise<any>;
-    getHello(): string;
+    GetVersionPlataform(): any;
+    getHello(): any;
     login(req: any): Promise<{
         status: HttpStatus;
         message: string;
