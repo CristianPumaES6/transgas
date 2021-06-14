@@ -23,7 +23,7 @@
             ],
             "outputPath": "dist/frontend",
             "index": "src/index.html",
-            "main": "src/transgas3000.ts",
+            "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
