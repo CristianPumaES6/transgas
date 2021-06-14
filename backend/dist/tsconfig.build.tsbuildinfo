@@ -3017,7 +3017,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "991df94bd04bad3aae1cba75e53463cabbd60e5e99756a698c75aa38fe5bf06d",
+        "version": "1295e3170357cad982fe9452cddafbc2a8d12a91501d79f6d0a356452cf881b3",
         "signature": "7db70e1112d44cda30f91612b7f1e300c713092e8d30771c2b5c4c9c1e59ed88",
         "affectsGlobalScope": false
       },
@@ -3464,6 +3464,11 @@
       "../node_modules/@nestjs/core/index.d.ts": {
         "version": "7b5ed961a0e03965299591d73de8b8c41e8a68105ff4fc07a240b0dfb94a5a3d",
         "signature": "7b5ed961a0e03965299591d73de8b8c41e8a68105ff4fc07a240b0dfb94a5a3d",
+        "affectsGlobalScope": false
+      },
+      "../src/main.ts": {
+        "version": "07de81aefbfb9f3f4c2006aa2860bdabdaeed4d1e7c3cdaecc00049f08a2498a",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
       "../src/transgas3000.ts": {
@@ -6593,6 +6598,13 @@
       ],
       "../src/config/path.config.ts": [
         "../node_modules/@types/node/path.d.ts"
+      ],
+      "../src/main.ts": [
+        "../node_modules/@nestjs/core/index.d.ts",
+        "../node_modules/@types/express/index.d.ts",
+        "../node_modules/@types/node/path.d.ts",
+        "../src/app.module.ts",
+        "../src/config/path.config.ts"
       ],
       "../src/middleware/image.middleware.ts": [
         "../node_modules/@types/node/path.d.ts"
