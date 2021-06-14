@@ -454,3 +454,7 @@ export const dialog: any = {
     BUQUE: 'Buque',
     TITLE_TABLE_SPEED:'Speed (KN)',
 }
+
+export const guards:any = {
+    
+}
