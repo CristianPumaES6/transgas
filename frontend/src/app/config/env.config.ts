@@ -4,6 +4,7 @@
 export interface EnvConfig {
     API?: string;
     ENV?: string;
+    VERSION?:string;
 }
 
 /* export const EnvConfig: EnvConfig = {
@@ -14,11 +15,13 @@ export interface EnvConfig {
 /* 
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
-    ENV: ''
+    ENV: '',
+    VERSION: 'v1.9a'
 };  */
 
 
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
-    ENV: ''
+    ENV: '',
+    VERSION: 'v1.9a'
 };

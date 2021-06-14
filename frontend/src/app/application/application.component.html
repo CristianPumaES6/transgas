@@ -44,7 +44,7 @@
               <span>{{loggedUser.role | translateMessage:translateCategory}}</span>
             </div>
 
-<!-- 
+            <!-- 
             <a routerLink="/application/perfil/{{loggedUser.id}}" class="dropdown-item">
               <i class="icon-edit-1"></i>
               {{'EDIT_PERFIL' | translateMessage:translateCategory}}
@@ -71,11 +71,11 @@
 
   <div class="az-footer">
     <div class="container-fluid">
-      <span>&copy; 2021 Transgas v1.97 - Sailing Anality</span>
+      <span>&copy; 2021 Transgas <span>{{version}}</span> - Sailing Anality</span>
       <!-- <span>Designed by: ThemePixels</span> -->
       <span class="float-righ"> {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
-        <span
-          [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline | translateMessage:translateCategory}}
+        <span [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline |
+          translateMessage:translateCategory}}
           <span class="icon-punto-circulo"></span> </span>
       </span>
 
