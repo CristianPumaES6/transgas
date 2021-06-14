@@ -11,10 +11,11 @@ import { LoginGuard } from '../guard/login.guard';
 import { IsBuqueGuard } from '../guard/is-buque.guard';
 import { ListOfConnectedUsersComponent } from '../shared/list-of-connected-users/list-of-connected-users.component';
 import { HelpsComponent } from '../components/helps/helps.component';
+import { IsUpdateServerGuard } from '../guard/is-update-server.guard';
 
 const routes: Routes = [
   {
-    path: 'application', component: ApplicationComponent, canActivate: [LoginGuard],
+    path: 'application', component: ApplicationComponent, canActivate: [IsUpdateServerGuard,LoginGuard],
     children: [
       // se esta agregando el canActive para saber si es un buque y redireccione a voyages.
       { path: '', component: DashboardComponent, canActivate: [IsBuqueGuard] },
