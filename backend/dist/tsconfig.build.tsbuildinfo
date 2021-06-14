@@ -3017,7 +3017,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "cfd4daeb2fb1705200aeaab5c96e9b31ac805d81e6ae6f624388ff9dec121590",
+        "version": "991df94bd04bad3aae1cba75e53463cabbd60e5e99756a698c75aa38fe5bf06d",
         "signature": "7db70e1112d44cda30f91612b7f1e300c713092e8d30771c2b5c4c9c1e59ed88",
         "affectsGlobalScope": false
       },
@@ -3466,7 +3466,7 @@
         "signature": "7b5ed961a0e03965299591d73de8b8c41e8a68105ff4fc07a240b0dfb94a5a3d",
         "affectsGlobalScope": false
       },
-      "../src/main.ts": {
+      "../src/transgas3000.ts": {
         "version": "07de81aefbfb9f3f4c2006aa2860bdabdaeed4d1e7c3cdaecc00049f08a2498a",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
@@ -6594,13 +6594,6 @@
       "../src/config/path.config.ts": [
         "../node_modules/@types/node/path.d.ts"
       ],
-      "../src/main.ts": [
-        "../node_modules/@nestjs/core/index.d.ts",
-        "../node_modules/@types/express/index.d.ts",
-        "../node_modules/@types/node/path.d.ts",
-        "../src/app.module.ts",
-        "../src/config/path.config.ts"
-      ],
       "../src/middleware/image.middleware.ts": [
         "../node_modules/@types/node/path.d.ts"
       ],
@@ -6619,6 +6612,13 @@
       "../src/models/voyage.entity.ts": [
         "../node_modules/typeorm/index.d.ts",
         "../src/models/port.entity.ts"
+      ],
+      "../src/transgas3000.ts": [
+        "../node_modules/@nestjs/core/index.d.ts",
+        "../node_modules/@types/express/index.d.ts",
+        "../node_modules/@types/node/path.d.ts",
+        "../src/app.module.ts",
+        "../src/config/path.config.ts"
       ]
     },
     "exportedModulesMap": {
