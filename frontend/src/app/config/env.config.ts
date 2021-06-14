@@ -24,5 +24,5 @@ export const EnvConfig: EnvConfig = {
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
-    VERSION: 'v1.9b'
+    VERSION: 'v1.9c'
 };
