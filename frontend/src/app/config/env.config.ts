@@ -14,7 +14,7 @@ export interface EnvConfig {
 
 /* 
 export const EnvConfig: EnvConfig = {
-    API: 'https://transgas.codev.site',
+    API: 'http://localhost:3000',
     ENV: '',
     VERSION: 'v1.9a'
 };  */

@@ -8,7 +8,7 @@
     ]
   },
   "files": [
-    "src/main.ts",
+    "src/transgas3000.ts",
     "src/polyfills.ts"
   ],
   "include": [
