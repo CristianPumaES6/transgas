@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/backend/src/main.ts",
+            "program": "${workspaceFolder}/backend/src/transgas3000.ts",
             "outFiles": [
                 "${workspaceFolder}/backend/dist/**/*.js"
             ],
