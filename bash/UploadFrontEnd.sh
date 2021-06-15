@@ -29,7 +29,7 @@ ng build --prod
 
 echo "Firebase deploy"
 # Hacemos el deploy
-firebase deploy
+firebase deploy --only hosting:transgas-dev 
 
 
 sed -i "s%https://transgas.codev.site%http://localhost:3000%g" "env.config.ts"
