@@ -55,6 +55,8 @@ cd ..
 nest build
 
 
+cd src
+cd config
 sed -i "s%https://transgas.codev.site%http://localhost:3000%g" "server.config.ts"
 sed -i "s%https://transgas.web.app%http://localhost:3001%g" "server.config.ts"
 
