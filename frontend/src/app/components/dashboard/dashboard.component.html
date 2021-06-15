@@ -235,15 +235,15 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.mpal,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                    'color-max': (consumptionDaysRealMGO.mpal != 0 && consumptionDaysByContractMGO.mpal < consumptionDaysRealMGO.mpal),
-                    'color-min': (consumptionDaysRealMGO.mpal != 0 && consumptionDaysByContractMGO.mpal > consumptionDaysRealMGO.mpal)}">
+                    'color-max': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && consumptionDaysByContractMGO.mpal < consumptionDaysRealMGO.mpal),
+                    'color-min': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && consumptionDaysByContractMGO.mpal > consumptionDaysRealMGO.mpal)}">
                       {{MathRoundOneDecimal(consumptionDaysRealMGO.mpal,2)}}
                     </td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.mpal,2)}}</td>
                     <td class="p-1 border" [ngClass]="
                     {
-                    'color-max': (MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) > 0),
-                    'color-min': (MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) < 0 )}">
+                    'color-max': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) > 0),
+                    'color-min': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) < 0 )}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2)}}</td>
                   </tr>
                 </ng-template>
@@ -255,14 +255,14 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.aux,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                      'color-max': (consumptionDaysRealMGO.aux != 0 && consumptionDaysByContractMGO.aux < consumptionDaysRealMGO.aux),
-                      'color-min': (consumptionDaysRealMGO.aux != 0 && consumptionDaysByContractMGO.aux > consumptionDaysRealMGO.aux)}">
+                      'color-max': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && consumptionDaysByContractMGO.aux < consumptionDaysRealMGO.aux),
+                      'color-min': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && consumptionDaysByContractMGO.aux > consumptionDaysRealMGO.aux)}">
                       {{MathRoundOneDecimal(consumptionDaysRealMGO.aux,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.aux,2)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
-                      'color-max': (MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) < 0)}">
+                      'color-max': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) > 0),
+                      'color-min': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2)}}</td>
                   </tr>
                 </ng-template>
@@ -274,14 +274,14 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.boiler,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                      'color-max': (consumptionDaysRealMGO.boiler != 0 && consumptionDaysByContractMGO.boiler < consumptionDaysRealMGO.boiler),
-                      'color-min': (consumptionDaysRealMGO.boiler != 0 && consumptionDaysByContractMGO.boiler > consumptionDaysRealMGO.boiler)}">
+                      'color-max': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && consumptionDaysByContractMGO.boiler < consumptionDaysRealMGO.boiler),
+                      'color-min': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && consumptionDaysByContractMGO.boiler > consumptionDaysRealMGO.boiler)}">
                       {{MathRoundOneDecimal(consumptionDaysRealMGO.boiler,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.boiler,2)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
-                        'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) > 0),
-                        'color-min': (MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) < 0)}">
+                        'color-max': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) > 0),
+                        'color-min': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2)}}</td>
                   </tr>
                 </ng-template>
@@ -293,14 +293,14 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.gi,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                      'color-max': (consumptionDaysRealMGO.gi != 0 && consumptionDaysByContractMGO.gi < consumptionDaysRealMGO.gi),
-                      'color-min': (consumptionDaysRealMGO.gi != 0 && consumptionDaysByContractMGO.gi > consumptionDaysRealMGO.gi)}">
+                      'color-max': (consumptionDaysRealMGO.gi !==0 && consumptionDaysByContractMGO.gi !== 0 && consumptionDaysByContractMGO.gi < consumptionDaysRealMGO.gi),
+                      'color-min': (consumptionDaysRealMGO.gi !==0 && consumptionDaysByContractMGO.gi !== 0 && consumptionDaysByContractMGO.gi > consumptionDaysRealMGO.gi)}">
                       {{MathRoundOneDecimal(consumptionDaysRealMGO.gi,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.gi,2)}}</td>
                     <td class="p-1 border" [ngClass]="
                     {
-                    'color-max': (MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) > 0),
-                    'color-min': (MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) < 0)}">
+                    'color-max': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) > 0),
+                    'color-min': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2)}}</td>
                   </tr>
                 </ng-template>
@@ -312,14 +312,14 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.pp,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                      'color-max': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp < consumptionDaysRealMGO.pp),
-                      'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp > consumptionDaysRealMGO.pp)}">
+                      'color-max': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !== 0 && consumptionDaysByContractMGO.pp < consumptionDaysRealMGO.pp),
+                      'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !== 0 && consumptionDaysByContractMGO.pp > consumptionDaysRealMGO.pp)}">
                       {{MathRoundOneDecimal(consumptionDaysRealMGO.pp,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.pp,2)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
-                        'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) > 0),
-                        'color-min': (MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) < 0)}">
+                        'color-max': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) > 0),
+                        'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2)}}
                     </td>
                   </tr>
@@ -332,14 +332,14 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.other,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                      'color-max': (consumptionDaysByContractMGO.other != 0 && consumptionDaysByContractMGO.other < consumptionDaysRealMGO.other),
-                      'color-min': (consumptionDaysByContractMGO.other != 0 && consumptionDaysByContractMGO.other > consumptionDaysRealMGO.other)}">
+                      'color-max': (consumptionDaysByContractMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && consumptionDaysByContractMGO.other < consumptionDaysRealMGO.other),
+                      'color-min': (consumptionDaysByContractMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && consumptionDaysByContractMGO.other > consumptionDaysRealMGO.other)}">
                       {{MathRoundOneDecimal(consumptionDaysRealMGO.other,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.other,2)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
-                        'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) > 0),
-                        'color-min': (MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) < 0)}">
+                        'color-max': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) > 0),
+                        'color-min': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2)}}</td>
                   </tr>
                 </ng-template>
@@ -433,13 +433,13 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.mpal,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                      'color-max': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal < consumptionDaysRealIFO.mpal),
-                      'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal > consumptionDaysRealIFO.mpal)}">
+                      'color-max': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0  && consumptionDaysByContractIFO.mpal < consumptionDaysRealIFO.mpal),
+                      'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && consumptionDaysByContractIFO.mpal > consumptionDaysRealIFO.mpal)}">
                       {{MathRoundOneDecimal(consumptionDaysRealIFO.mpal,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.mpal,2)}}</td>
                     <td class="p-1 border" [ngClass]="{
-                      'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) < 0)}">
+                      'color-max': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) > 0),
+                      'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2)}}</td>
                   </tr>
                 </ng-template>
@@ -452,13 +452,13 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.aux,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                    'color-max': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux < consumptionDaysRealIFO.aux),
-                    'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux > consumptionDaysRealIFO.aux)}">
+                    'color-max': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && consumptionDaysByContractIFO.aux < consumptionDaysRealIFO.aux),
+                    'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && consumptionDaysByContractIFO.aux > consumptionDaysRealIFO.aux)}">
                       {{MathRoundOneDecimal(consumptionDaysRealIFO.aux,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.aux,2)}}</td>
                     <td class="p-1 border" [ngClass]="{
-                      'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) < 0)}">
+                      'color-max': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) > 0),
+                      'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2)}}</td>
                   </tr>
                 </ng-template>
@@ -470,13 +470,13 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.boiler,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                    'color-max': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler < consumptionDaysRealIFO.boiler),
-                    'color-min': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler > consumptionDaysRealIFO.boiler)}">
+                    'color-max': (consumptionDaysRealIFO.boiler != 0  && consumptionDaysByContractIFO.boiler !== 0 && consumptionDaysByContractIFO.boiler < consumptionDaysRealIFO.boiler),
+                    'color-min': (consumptionDaysRealIFO.boiler != 0  && consumptionDaysByContractIFO.boiler !== 0 && consumptionDaysByContractIFO.boiler > consumptionDaysRealIFO.boiler)}">
                       {{MathRoundOneDecimal(consumptionDaysRealIFO.boiler,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.boiler,2)}}</td>
                     <td class="p-1 border" [ngClass]="{
-                      'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) < 0)}">
+                      'color-max': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) > 0),
+                      'color-min': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2)}}</td>
                   </tr>
                 </ng-template>
@@ -488,13 +488,13 @@
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.other,2)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
-                    'color-max': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other < consumptionDaysRealIFO.other),
-                    'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other > consumptionDaysRealIFO.other)}">
+                    'color-max': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && consumptionDaysByContractIFO.other < consumptionDaysRealIFO.other),
+                    'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && consumptionDaysByContractIFO.other > consumptionDaysRealIFO.other)}">
                       {{MathRoundOneDecimal(consumptionDaysRealIFO.other,2)}}</td>
                     <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.other,2)}}</td>
                     <td class="p-1 border" [ngClass]="{
-                      'color-max':  (MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) > 0),
-                      'color-min': (MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) < 0)}">
+                      'color-max': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) > 0),
+                      'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) < 0)}">
                       {{MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2)}}</td>
                   </tr>
                 </ng-template>
