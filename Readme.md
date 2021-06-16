@@ -23,3 +23,9 @@ sh UploadFrontEnd.sh
 ng build --prod
 firebase deploy
 ```
+
+
+## PARA DEV
+
+extensiones:
+GitLens — Git supercharged eamodio.gitlens

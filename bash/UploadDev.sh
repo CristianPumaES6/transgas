@@ -8,7 +8,7 @@ echo "Nos ubicamos en la carpeta frontend.."
 
 
 echo "Eliminamos el directorio dist.."
-# REmovemos el directorio.
+# REmovemos el directorio frontend.
 rm -rf dist
 
 
@@ -25,18 +25,19 @@ nano env.config.ts
 echo "ng build"
 # generamos el build
 ng build --prod
-
-
-echo "Firebase deploy"
-# Hacemos el deploy
-firebase deploy
-
-
 sed -i "s%https://transgas.codev.site%http://localhost:3000%g" "env.config.ts"
+echo "Firebase deploy"
+
 
 cd ..
 cd ..
 cd ..
+sed -i 's%"transgas"%"transgas-dev"%g' "firebase.json"
+
+# Hacemos el deploy
+firebase deploy --only hosting:transgas-dev
+
+
 cd ..
 cd backend
 
@@ -55,6 +56,8 @@ cd ..
 nest build
 
 
+cd src
+cd config
 sed -i "s%https://transgas.codev.site%http://localhost:3000%g" "server.config.ts"
 sed -i "s%https://transgas.web.app%http://localhost:3001%g" "server.config.ts"
 

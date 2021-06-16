@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "transgas-dev",
     "public": "dist/frontend",
     "ignore": [
       "firebase.json",

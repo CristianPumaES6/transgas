@@ -1,22 +1,22 @@
 /* export const URL_Server = {
-    front: 'https://transgas.web.app',
+    front: 'https://transgas-test.web.app',
     back: 'https://transgas.labcode.site',
-    version: 'v1.9b'
+    version: 'v1.9e'
 }; */
 
 
 
 /* export const URL_Server = {
-    front: 'https://transgas.web.app',
-    back: 'https://transgas.codev.site',
-    version: 'v1.9b'
+    front: 'https://transgas-prod.web.app',
+    back: 'https://transgas-prod.codev.site',
+    version: 'v1.9e'
 };
- */
+*/
 
 
 
 export const URL_Server = {
     front: 'http://localhost:3001',
     back: 'http://localhost:3000',
-    version: 'v1.9b'
+    version: 'v1.9e'
 };

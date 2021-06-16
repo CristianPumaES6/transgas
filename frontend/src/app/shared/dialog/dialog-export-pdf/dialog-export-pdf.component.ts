@@ -2657,13 +2657,13 @@ export class DialogExportPdfComponent implements OnInit {
           chart.pluginTooltips = [];
           chart.config.data.datasets.forEach(function (dataset, i) {
             chart.getDatasetMeta(i).data.forEach(function (sector, j) {
-              chart.pluginTooltips.push(new Chart.Tooltip({
+              chart.pluginTooltips.push({
                 _chart: chart.chart,
                 _chartInstance: chart,
                 _data: chart.data,
                 _options: chart.options.tooltips,
                 _active: [sector]
-              }, chart));
+              }, chart);
             });
           });
           chart.options.tooltips.enabled = false; // turn off normal tooltips

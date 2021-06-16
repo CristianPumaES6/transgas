@@ -678,6 +678,7 @@ export class VoyageComponent implements OnInit {
 
     if (this.List_Voyages_Ports_DailyReports === 'Ports') {
 
+
       if (!this.selectPort.id) {
         let newPort = new Port();
 
@@ -699,6 +700,13 @@ export class VoyageComponent implements OnInit {
       }
 
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
+
+
+      // Verificamos que la fehca este bien       
+      if(this.selectDailyReport.hour.length>0 && validateDate(this.selectDailyReport.date)){
+        this.GenerateTimeOperation();
+      }
+
 
       if (!this.selectDailyReport.id) {
 
@@ -1868,6 +1876,7 @@ export class VoyageComponent implements OnInit {
       error = true;
     }
 
+
     if (error) throw 'OK';
 
     // Verificamos si estamos en linea
@@ -2393,9 +2402,6 @@ export class VoyageComponent implements OnInit {
             let now = new Date();
             let hours = ("0" + now.getHours()).slice(-2);
             let minutes = ("0" + now.getMinutes()).slice(-2);
-    
-            this.selectDailyReport.date = GetDate();
-            this.selectDailyReport.hour = hours + ':' + minutes;
     
             this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
     
