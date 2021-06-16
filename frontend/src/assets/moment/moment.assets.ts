@@ -180,7 +180,6 @@ export function FormatYYYYMMDD(date: any): string {
     return result;
 }
 
-
 export function FormatYYYYMMDDToSTRING(date: any): string {
 
     
