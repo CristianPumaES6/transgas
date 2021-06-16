@@ -552,7 +552,9 @@
                   <ul class="list-unstyled mt-3 mb-4">
                     <li class="color-blue-3 font-weight-bold">By Filter:</li>
 
-
+                    <li class="color-blue-3">
+                      {{MathRoundOneDecimal(startROBIFO, 1)}} rob {{startDate}}
+                    </li>
                     <ng-template [ngIf]="consumptionAndBunkering.ifoConsumption > 0">
                       <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.ifoConsumption, 1)}}
                         consumption</li>
@@ -561,6 +563,10 @@
                       <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.ifoBunkering, 1)}}
                         bunkering</li>
                     </ng-template>
+
+                    <li class="color-blue-3">
+                      {{MathRoundOneDecimal(endROBIFO, 1)}} rob {{endDate}}
+                    </li>
                   </ul>
                 </ng-template>
 
@@ -585,6 +591,9 @@
 
                   <ul class="list-unstyled mt-3 mb-4">
                     <li class="color-blue-3 font-weight-bold">By Filter:</li>
+                    <li class="color-blue-3">
+                      {{MathRoundOneDecimal(startROBMGO, 1)}} rob {{startDate}}
+                    </li>
                     <ng-template [ngIf]="consumptionAndBunkering.mgoConsumption > 0">
                       <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.mgoConsumption, 1)}}
                         consumption</li>
@@ -593,7 +602,10 @@
                       <li class="color-blue-3">{{MathRoundOneDecimal(consumptionAndBunkering.mgoBunkering, 1)}}
                         bunkering</li>
                     </ng-template>
-
+                    <li class="color-blue-3">
+                      {{MathRoundOneDecimal(endROBMGO, 1)}} rob {{endDate}}
+                      
+                    </li>
                   </ul>
                 </ng-template>
 

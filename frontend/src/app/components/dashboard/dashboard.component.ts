@@ -189,7 +189,10 @@ export class DashboardComponent implements OnInit {
 
   // Cuadro Consumption and bunkering
   public consumptionAndBunkering: ConsumptionAndBunkering = new ConsumptionAndBunkering();
-
+  public startROBIFO: number = 0;
+  public endROBIFO: number = 0;  
+  public startROBMGO: number = 0;
+  public endROBMGO: number = 0;
   // Constructor
   constructor(
     private router: Router,
@@ -411,6 +414,41 @@ export class DashboardComponent implements OnInit {
     ));
 
   }
+
+    // GetUsers: Cargo todos los Users para el listado de Users.
+    private GetStartEndROByFilterDate(userId: number, startDate: Date, endDate: Date): Observable<boolean> {
+      // Test
+      console.log('GetStartEndROByFilterDate(userId: number, startDate: Date, endDate: Date)');
+      console.log(userId);
+      console.log(startDate);
+      console.log(endDate);
+      
+
+  
+      // Obtenemos todos los usuarios
+      return this.dailyReportService.GetStartEndROByFilterDate(userId,startDate,endDate).pipe(map(
+        (resultUser: GetROBByUser[]) => {
+  
+          if (!resultUser && resultUser.length > 0) throw 'ERROR_GetROBByUser';
+  
+          let startGetROB = resultUser[0];
+          let consumptionByFilterROB = resultUser[1];
+
+          
+          
+          this.startROBIFO = startGetROB.total_ifo - startGetROB.total_bunkering_ifo
+          this.endROBIFO = this.startROBIFO + (consumptionByFilterROB.total_ifo - consumptionByFilterROB.total_bunkering_ifo)
+  
+          
+          this.startROBMGO = startGetROB.total_mgo - startGetROB.total_bunkering_mgo
+          this.endROBMGO = this.startROBMGO + (consumptionByFilterROB.total_mgo - consumptionByFilterROB.total_bunkering_mgo)
+  
+          // Segun el resultado retornamos la respuesta.
+          return true;
+        }
+      ));
+  
+    }
 
 
   // SelectComboYear: Invoca una busqueda al servidor.
@@ -758,6 +796,12 @@ export class DashboardComponent implements OnInit {
 
         // Invocamos la funcion para generar reporte por fecha.
         this.GenerateReporteByDate();
+      }
+    ).then(
+      result => {
+
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId,this.startDate,this.endDate).pipe().toPromise();
       }
     ).catch(
       err => {
