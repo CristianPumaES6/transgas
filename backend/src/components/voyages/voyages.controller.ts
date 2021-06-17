@@ -448,14 +448,14 @@ export class VoyagesController {
 
         for await (const importVoyage of ImportVoyages) {
 
-            let existeViaje = searchKey(MappingVoyage, importVoyage.NV);
+            let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
 
             // Consultamos si el numero de viaje ya lo tenemos mapeado.
             // Si no lo tuvieramos lo registrariamos.
             if (!existeViaje) {
 
                 // Hacemos una consulta si tenemos el numero de viaje en tal año.
-                let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.NV, importVoyage.year);
+                let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year);
 
                 // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
                 if (!voyageExistente) {
@@ -463,7 +463,7 @@ export class VoyagesController {
                     // ARMAMOS AL NUEVO VIAJE
                     let newVoyage = new Voyage();
                     delete newVoyage.id;
-                    newVoyage.userId = importVoyage.USERID;
+                    newVoyage.userId = importVoyage.userId;
                     newVoyage.year = importVoyage.year;
                     // Auditoria.
                     newVoyage.userIdCreated = headerToken.id;
@@ -476,34 +476,34 @@ export class VoyagesController {
                     let voyageRegister = await this._voyagesService.Create(newVoyage);
 
                     // Lo agregamos al mapping
-                    MappingVoyage.push(new Mapping(importVoyage.NV, voyageRegister.id))
+                    MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
                     // Reset mapping Port
                     MappingPort = [];
                 } else {
                     // Agregamos al mapping el id buscado por numero de viaje.
-                    MappingVoyage.push(new Mapping(importVoyage.NV, voyageExistente.id))
+                    MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
                 }
             }
             // Actualizmos el viaje
-            existeViaje = searchKey(MappingVoyage, importVoyage.NV);
+            existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
 
             // Consultamos si tenemos mapeado el puerto.
             // Si no lo tuvieramos lo registrariamos.
-            let existePort = searchKey(MappingPort, importVoyage.NP);
+            let existePort = searchKey(MappingPort, importVoyage.portNumber);
             if (!existePort) {
 
                 // Consultamos si existe el numero de puerto en el viaje.
-                let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.NP, existeViaje.value)
+                let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value)
 
 
                 // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
                 if (!portExiste) {
                     let newPort = new Port();
                     delete newPort.id;
-                    newPort.userId = importVoyage.USERID;
+                    newPort.userId = importVoyage.userId;
                     newPort.voyageId = existeViaje.value;
-                    newPort.departurePort = importVoyage.Departure;
-                    newPort.arrivalPort = importVoyage.Arrival;
+                    newPort.departurePort = importVoyage.departurePort;
+                    newPort.arrivalPort = importVoyage.arrivalPort;
                     // Auditoria.
                     newPort.userIdCreated = headerToken.id;
                     newPort.dateCreated = GetDate();
@@ -513,67 +513,67 @@ export class VoyagesController {
 
                     // Lo registramos
                     let portRegister = await this._portsService.Create(newPort);
-                    MappingPort.push(new Mapping(importVoyage.NP, portRegister.id))
+                    MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
 
                 } else {
 
                     // Agregamos al mapping el id buscado por numero de viaje.
-                    MappingPort.push(new Mapping(importVoyage.NP, portExiste.id))
+                    MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id))
 
                 }
 
             }
             // Actualizamos el puerto
-            existePort = searchKey(MappingPort, importVoyage.NP);
+            existePort = searchKey(MappingPort, importVoyage.portNumber);
 
             // Armamos el obj de reporte.
             let newReport = new DailyReport();
             delete newReport.id;
-            newReport.userId = importVoyage.USERID;
+            newReport.userId = importVoyage.userId;
             newReport.portId = existePort.value;
 
-            newReport.date = ConvertDDMMYYYToYYYYMMDD(importVoyage.FECHA)
-            newReport.hour = importVoyage.HORA;
+            newReport.date = ConvertDDMMYYYToYYYYMMDD(importVoyage.date)
+            newReport.hour = importVoyage.hour;
 
             newReport.bunkeringIfo = 0
             newReport.bunkeringMgo = 0;
-            newReport.mplaIfo = importVoyage.MPAL_IFO || 0;
-            newReport.auxIfo = importVoyage.AUX_IFO || 0;
-            newReport.boilerIfo = importVoyage.CALDERA_IFO || 0;
+            newReport.mplaIfo = importVoyage.mplaIfo || 0;
+            newReport.auxIfo = importVoyage.auxIfo || 0;
+            newReport.boilerIfo = importVoyage.boilerIfo || 0;
             newReport.otherIfo = 0;
-            newReport.mplaMgo = importVoyage.MPAL2_MGO || 0;
-            newReport.auxMgo = importVoyage.AUX_MGO || 0;
-            newReport.boilerMgo = importVoyage.CALDERA_MGO || 0;
-            newReport.ppMgo = importVoyage.PP_MGO || 0;
-            newReport.giMgo = importVoyage.GI_MGO || 0;
+            newReport.mplaMgo = importVoyage.mplaMgo || 0;
+            newReport.auxMgo = importVoyage.auxMgo || 0;
+            newReport.boilerMgo = importVoyage.boilerMgo || 0;
+            newReport.ppMgo = importVoyage.ppMgo || 0;
+            newReport.giMgo = importVoyage.giMgo || 0;
             newReport.otherMgo = 0;
-            newReport.steamingTime = importVoyage.TIEMPO || 0;
-            newReport.distance = importVoyage.DISTANCIA_POR_CARTA || 0;
+            newReport.steamingTime = importVoyage.steamingTime || 0;
+            newReport.distance = importVoyage.distance || 0;
 
-            if (!importVoyage.BEAUFORT) {
+            if (!importVoyage.beaufour) {
                 newReport.beaufour = '';
-            } else if (importVoyage.BEAUFORT === 's1' || importVoyage.BEAUFORT === 'S1' || importVoyage.BEAUFORT === 's 1' || importVoyage.BEAUFORT == 'S 1' || importVoyage.BEAUFORT === '1s' || importVoyage.BEAUFORT === '1S' || importVoyage.BEAUFORT === '1 s' || importVoyage.BEAUFORT == '1 S' || importVoyage.BEAUFORT == '1.00' || importVoyage.BEAUFORT == '1') {
+            } else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
                 newReport.beaufour = 'S1';
-            } else if (importVoyage.BEAUFORT === 's2' || importVoyage.BEAUFORT === 'S2' || importVoyage.BEAUFORT === 's 2' || importVoyage.BEAUFORT == 'S 2' || importVoyage.BEAUFORT === '2s' || importVoyage.BEAUFORT === '2S' || importVoyage.BEAUFORT === '2 s' || importVoyage.BEAUFORT == '2 S' || importVoyage.BEAUFORT == '2.00' || importVoyage.BEAUFORT == '2') {
+            } else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
                 newReport.beaufour = 'S2';
-            } else if (importVoyage.BEAUFORT === 's3' || importVoyage.BEAUFORT === 'S3' || importVoyage.BEAUFORT === 's 3' || importVoyage.BEAUFORT == 'S 3' || importVoyage.BEAUFORT === '3s' || importVoyage.BEAUFORT === '3S' || importVoyage.BEAUFORT === '3 s' || importVoyage.BEAUFORT == '3 S' || importVoyage.BEAUFORT == '3.00' || importVoyage.BEAUFORT == '3') {
+            } else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
                 newReport.beaufour = 'S3';
-            } else if (importVoyage.BEAUFORT === 's4' || importVoyage.BEAUFORT === 'S4' || importVoyage.BEAUFORT === 's 4' || importVoyage.BEAUFORT == 'S 4' || importVoyage.BEAUFORT === '4s' || importVoyage.BEAUFORT === '4S' || importVoyage.BEAUFORT === '4 s' || importVoyage.BEAUFORT == '4 S' || importVoyage.BEAUFORT == '4.00' || importVoyage.BEAUFORT == '4') {
+            } else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
                 newReport.beaufour = 'S4';
-            } else if (importVoyage.BEAUFORT === 's5' || importVoyage.BEAUFORT === 'S5' || importVoyage.BEAUFORT === 's 5' || importVoyage.BEAUFORT == 'S 5' || importVoyage.BEAUFORT === '5s' || importVoyage.BEAUFORT === '5S' || importVoyage.BEAUFORT === '5 s' || importVoyage.BEAUFORT == '5 S' || importVoyage.BEAUFORT == '5.00' || importVoyage.BEAUFORT == '5') {
+            } else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
                 newReport.beaufour = 'S5';
-            } else if (importVoyage.BEAUFORT === 's6' || importVoyage.BEAUFORT === 'S6' || importVoyage.BEAUFORT === 's 6' || importVoyage.BEAUFORT == 'S 6' || importVoyage.BEAUFORT === '6s' || importVoyage.BEAUFORT === '6S' || importVoyage.BEAUFORT === '6 s' || importVoyage.BEAUFORT == '6 S' || importVoyage.BEAUFORT == '6.00' || importVoyage.BEAUFORT == '6') {
+            } else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
                 newReport.beaufour = 'S6';
             } else {
                 newReport.beaufour = '';
             }
 
-            newReport.bunkeringIfo = importVoyage.FAENA_IFO || 0;
-            newReport.bunkeringMgo = importVoyage.FAENA_MGO || 0;
+            newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
+            newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
 
-            newReport.observation = importVoyage.REFERENCIA;
+            newReport.observation = importVoyage.observation;
 
-            newReport.activityPerformed = importVoyage.ACTIVIDAD_REALIZADA;
+            newReport.activityPerformed = importVoyage.activityPerformed;
             if (newReport.activityPerformed == 'CARGANDO') {
                 newReport.activityPerformed = 'LOADING';
 
