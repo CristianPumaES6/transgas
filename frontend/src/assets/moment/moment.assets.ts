@@ -189,6 +189,17 @@ export function FormatYYYYMMDDToSTRING(date: any): string {
     
     return result;
 }
+export function AddOneDayAndConvertYYYYMMDDToSTRING(date: any): string {
+
+    
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
+    momentDate.add(1, 'd');
+
+    let result = momentDate.format('YYYY-MM-DD')
+    
+    return result;
+}
 
 // ESTA FUNCION junta una fehca y le setea una ora.
 export function ConvertirDateHourToMoment(date: any, hour: any): moment.Moment {

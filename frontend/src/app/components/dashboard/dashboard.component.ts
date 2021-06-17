@@ -37,7 +37,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -296,6 +296,16 @@ export class DashboardComponent implements OnInit {
         if (!result) throw 'ERROR_SELECT_USER';
 
 
+        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        
+        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
         // Activamos el loading.
         this.loadingService.Close();
       }
@@ -417,6 +427,7 @@ export class DashboardComponent implements OnInit {
 
   // GetUsers: Cargo todos los Users para el listado de Users.
   private GetStartEndROByFilterDate(userId: number, startDate: string, endDate: string): Observable<boolean> {
+    this.listInfoFuel = [];
 
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
@@ -424,7 +435,7 @@ export class DashboardComponent implements OnInit {
       (resultGetROBByUser: GetROBByUser[]) => {
 
         if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
-
+        
         // Trabajaremos con las siguientes variables.
         let startDataROB = resultGetROBByUser[0];
         let consumptionDataROB = resultGetROBByUser[1];
@@ -769,8 +780,20 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+
+            let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+            let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+            // Buscamos la info
+            return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+          }
+        ).then(
+          result => {
+            
+            if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+    
             // Loading cerrar.
             this.loadingService.Close();
+    
           }
         ).catch(
           err => {
@@ -819,9 +842,17 @@ export class DashboardComponent implements OnInit {
       result => {
 
         let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-        let endDate = FormatYYYYMMDDToSTRING(this.endDate);
+        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        
+        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+        return true;
+
       }
     ).catch(
       err => {
@@ -999,9 +1030,20 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+          let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+          let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+          // Buscamos la info
+          return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        }
+      ).then(
+        result => {
+          
+          if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+  
             // Loading cerrar.
             this.loadingService.Close();
           }
+          
         ).catch(
           err => {
 
@@ -1070,9 +1112,22 @@ export class DashboardComponent implements OnInit {
         // Validamos el resultado del generate Dashboard.
         if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        // Loading cerrar.
-        this.loadingService.Close();
-      }).catch(
+        
+        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        
+        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+          // Loading cerrar.
+          this.loadingService.Close();
+        }
+        
+      ).catch(
         err => {
 
           // Manejo el error
@@ -2556,6 +2611,12 @@ export class DashboardComponent implements OnInit {
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
 
+              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2580,6 +2641,13 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
+
+
+              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
@@ -2598,10 +2666,17 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+
+              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
-              let identified = this.dataMGO[index].identified;
+              let identified = this.dataIFO[index].identified;
 
               // Buscamos el viaje id
               let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
@@ -2715,6 +2790,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
+
+
+              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2736,6 +2819,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+
+
+              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
@@ -2752,6 +2843,13 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+
+              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
@@ -2868,10 +2966,18 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+              
+
+              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
-              let ubication = this.dataMGO[index].ubication;
+              let ubication = this.dataSPEED[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
               let port = this.generateVoyages[ubication[0]].ports[ubication[1]]
 
@@ -2891,6 +2997,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+
+
+              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'MONTHS') {
 
 
@@ -2909,10 +3023,18 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+
+              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
+
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
-              let identified = this.dataMGO[index].identified;
+              let identified = this.dataSPEED[index].identified;
 
               // Buscamos el viaje id
               let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);

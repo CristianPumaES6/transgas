@@ -113,82 +113,81 @@ export class DailyReportsService {
 
         // Este arreglo contendra la info del rob del inicio del viaje y cuanto consumio en el rango de fecha.
         let StartEndROB: any[] = [];
-
+        
         // Hacemos where por todos los campos de la entidad
         // Buscamos la info del rob asta antes del inicio de fecha
-        return await
-            this._dailyReportRepository.createQueryBuilder('daily_report')
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
 
-                .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
-                .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
-                .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
-                .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+                        .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+                        .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+                        .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+                        .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
 
-                .innerJoinAndSelect('daily_report.port', 'port')
-                .innerJoinAndSelect('port.voyage', 'voyage')
+                        .innerJoinAndSelect('daily_report.port', 'port')
+                        .innerJoinAndSelect('port.voyage', 'voyage')
 
-                .where('daily_report.status = :status', { status: 1 })
-                .andWhere('port.status = :status', { status: 1 })
-                .andWhere('voyage.status = :status', { status: 1 })
+                        .where('daily_report.status = :status', { status: 1 })
+                        .andWhere('port.status = :status', { status: 1 })
+                        .andWhere('voyage.status = :status', { status: 1 })
 
-                .andWhere('daily_report.userId = :userId', { userId: userId })
+                        .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                .andWhere('daily_report.date < :startDate', { startDate: startDate })
+                        .andWhere('daily_report.date < :startDate', { startDate: startDate })
 
-                .getRawOne()
-                .then(
-                    (result: GetROBByUser) => {
-                        // Verificamos que el resultado no este vacio.
-                        if (!result) throw 'ERROR GetROBByUser';
+                        .getRawOne()
+                        .then(
+                (result: GetROBByUser) => {
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetROBByUser';
 
-                        let getStartROB = <GetROBByUser>{};
+                    let getStartROB = <GetROBByUser>{};
 
-                        // Si no existen valores le doy cero por defecto. 
-                        getStartROB.total_ifo = result.total_ifo || 0;
-                        getStartROB.total_mgo = result.total_mgo || 0;
-                        getStartROB.total_bunkering_ifo = result.total_bunkering_ifo || 0;
-                        getStartROB.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+                    // Si no existen valores le doy cero por defecto. 
+                    getStartROB.total_ifo = result.total_ifo || 0;
+                    getStartROB.total_mgo = result.total_mgo || 0;
+                    getStartROB.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+                    getStartROB.total_bunkering_mgo = result.total_bunkering_mgo || 0;
 
-                        StartEndROB.push(getStartROB);
+                    StartEndROB.push(getStartROB);
 
-                        // Buscamos la info del rob consumido dentro del rango de fecha.
-                        return this._dailyReportRepository.createQueryBuilder('daily_report')
-                            .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
-                            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
-                            .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
-                            .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+                    // Buscamos la info del rob consumido dentro del rango de fecha.
+                    return this._dailyReportRepository.createQueryBuilder('daily_report')
+                        .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+                        .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+                        .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+                        .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
 
-                            .innerJoinAndSelect('daily_report.port', 'port')
-                            .innerJoinAndSelect('port.voyage', 'voyage')
+                        .innerJoinAndSelect('daily_report.port', 'port')
+                        .innerJoinAndSelect('port.voyage', 'voyage')
 
-                            .where('daily_report.status = :status', { status: 1 })
-                            .andWhere('port.status = :status', { status: 1 })
-                            .andWhere('voyage.status = :status', { status: 1 })
+                        .where('daily_report.status = :status', { status: 1 })
+                        .andWhere('port.status = :status', { status: 1 })
+                        .andWhere('voyage.status = :status', { status: 1 })
 
-                            .andWhere('daily_report.userId = :userId', { userId: userId })
+                        .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                            .andWhere('daily_report.date >= :startDate', { startDate: startDate })
-                            .andWhere('daily_report.date <= :endDate', { endDate: endDate })
-                            .getRawOne();
-                    }
-                ).then(
-                    (result: GetROBByUser) => {
+                        .andWhere('daily_report.date >= :startDate', { startDate: startDate })
+                        .andWhere('daily_report.date < :endDate', { endDate: endDate })
+                        .getRawOne();
+                }
+            ).then(
+                (result: GetROBByUser) => {
 
-                        if (!result) throw 'ERROR GetEndROBByUser';
+                    if (!result) throw 'ERROR GetEndROBByUser';
 
-                        let getEndROBByUser = <GetROBByUser>{};
+                    let getEndROBByUser = <GetROBByUser>{};
 
-                        // Si no existen valores le doy cero por defecto. 
-                        getEndROBByUser.total_ifo = result.total_ifo || 0;
-                        getEndROBByUser.total_mgo = result.total_mgo || 0;
-                        getEndROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
-                        getEndROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+                    // Si no existen valores le doy cero por defecto. 
+                    getEndROBByUser.total_ifo = result.total_ifo || 0;
+                    getEndROBByUser.total_mgo = result.total_mgo || 0;
+                    getEndROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+                    getEndROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
 
-                        StartEndROB.push(getEndROBByUser);
+                    StartEndROB.push(getEndROBByUser);
 
-                        return StartEndROB;
-                    }
-                );
+                    return StartEndROB;
+                }
+            );
     }
 
 
