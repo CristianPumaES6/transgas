@@ -112,7 +112,7 @@ export const user: any = {
     ROLE: 'Role',
     ADMIN: 'Admin',
     SUPPORT: 'Support',
-    BUQUE: 'Buque',
+    BUQUE: 'Vessel',
     OWNER: 'Owner',
     // Mensaje personalizados.
     SUCCESS_USER_SAVE: 'User saved successfully.',
@@ -208,7 +208,7 @@ export const voyage: any = {
     VOYAGE_REGISTER: 'Travel Record',
     VOYAGES_LIST: 'Voyages List',
     NEW_VOYAGE: 'New voyage',
-    SELECT_BUQUE: 'Select Buque',
+    SELECT_BUQUE: 'Select Vessel',
     // Errores personalizados
     ERROR_GET_USERS: 'Could not get user data.',
     ERROR_GET_VOYAGES: 'Cound not get voyage data.',
@@ -251,7 +251,7 @@ export const voyage: any = {
     TOOLTIP_DELETE_PORT: 'Delete Port',
     COMFIMR_DISCARD_CHANGES: 'There are unsaved changes, do you want to discard the changes?',
     COMFIRM_DISCARD_DESCRIPTION: 'The changes are irreversible.',
-    NO_BUQUE_REGISTER: 'There is no registered ship.',
+    NO_BUQUE_REGISTER: 'There is no registered vessel.',
     SUCCESS_PORT_SAVE: 'Port saved successfully.',
     SUCCESS_PORT_SAVE_LOCAL: 'Port successfully saved local.',
     ERROR_PORT_UPDATE: 'Could not update port.',
@@ -367,7 +367,7 @@ export const dashboard: any = {
     VOYAGE: 'Voyage',
     END_DATE: 'End date',
     START_DATE: 'Start date',
-    BUQUE: 'Buque',
+    BUQUE: 'Vessel',
     CLEAR: 'Clear',
     TOTAL_TIME_PER_ACTIVITY: 'TOTAL TIME PER ACTIVITY (HRS)',
     TOTAL_MILES_NAVIGATED: 'TOTAL DISTANCE (MILES)',
@@ -381,7 +381,7 @@ export const dashboard: any = {
     FUEL_BALANCE: 'BALANCE CONSUMPTION (MT)',
     BALANCE_HOURS_SAILED: 'BALANCE TIME (HRS)',
     DISPLAY_DASHBOARD: 'Display Dashboard',
-    NO_BUQUE_REGISTER: 'There is no registered ship.',
+    NO_BUQUE_REGISTER: 'There is no registered vessel.',
     TOOLTIP_ACTIVITY_PERFORMED: 'Activities performed.',
     TOOLTIP_TOTAL_TIME_PER_ACTIVITY: 'Duration time per activity.',
     TOOLTIP_TOTAL_MILES_NAVIGATED: 'Total navigated distance recorded by activity.',
@@ -451,7 +451,7 @@ export const dialog: any = {
     SPEED: 'Speed',
     DEPARTURE: 'Departure :',
     ARRIVAL: 'Arrival :',
-    BUQUE: 'Buque',
+    BUQUE: 'Vessel',
     TITLE_TABLE_SPEED:'Speed (KN)',
 }
 
