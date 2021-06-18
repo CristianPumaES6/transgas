@@ -269,7 +269,9 @@ export class UserComponent implements OnInit {
     // Armo un obj azList.
     users.forEach((user: User) => {
       this.azLists.push(
-        new AzList(user.id, user.name, user.role, user.filename)
+        new AzList(user.id, user.name,
+          this.languageService.GetMessage(this.translateCategory, user.role) ,
+           user.filename)
       );
     });
 
@@ -646,7 +648,9 @@ export class UserComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === result.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(result.id, result.name, result.role, result.filename)
+                azList = new AzList(result.id, result.name,
+                  this.languageService.GetMessage(this.translateCategory, result.role),
+                   result.filename)
               }
 
               return azList;
@@ -713,7 +717,9 @@ export class UserComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, resultUpdate.filename)
+                azList = new AzList(resultUpdate.id, resultUpdate.name, 
+                  this.languageService.GetMessage(this.translateCategory,resultUpdate.role),
+                  resultUpdate.filename)
               }
               return azList;
 
@@ -760,7 +766,9 @@ export class UserComponent implements OnInit {
           // Lo agrego al arreglo.
           this.getUsers.unshift(result);
 
-          this.azLists.unshift(new AzList(result.id, result.name, result.role, result.filename));
+          this.azLists.unshift(new AzList(result.id, result.name,
+            this.languageService.GetMessage(this.translateCategory,result.role),
+            result.filename));
 
           this.databaseService.addUserIndexedDB(result);
 
@@ -798,7 +806,9 @@ export class UserComponent implements OnInit {
           // Lo agrego al arreglo.
           this.getUsers.unshift(resultUserIndexedDB);
 
-          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, resultUserIndexedDB.filename));
+          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, 
+            this.languageService.GetMessage(this.translateCategory,resultUserIndexedDB.role),
+            resultUserIndexedDB.filename));
 
           // vuelvo a cargar los datos de incio del token.
           this.InitializeUser();
@@ -977,7 +987,9 @@ export class UserComponent implements OnInit {
             // Buscamos el id para cambiar el valor de result.
             if (azList.id === resultUpdate.id) {
               // Actualizamos el valor con el resultado
-              azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, resultUpdate.filename)
+              azList = new AzList(resultUpdate.id, resultUpdate.name, 
+                this.languageService.GetMessage(this.translateCategory,resultUpdate.role),
+                resultUpdate.filename)
             }
             return azList;
 
