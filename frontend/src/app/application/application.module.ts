@@ -24,6 +24,7 @@ import { ListOfConnectedUsersComponent } from '../shared/list-of-connected-users
 import { GoogleMapsModule } from '@angular/google-maps';
 import { DialogExportPdfComponent } from '../shared/dialog/dialog-export-pdf/dialog-export-pdf.component';
 import { HelpsComponent } from '../components/helps/helps.component';
+import { DashboardBunkeringComponent } from '../components/dashboard/dashboard-bunkering/dashboard-bunkering.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { HelpsComponent } from '../components/helps/helps.component';
     ListOfConnectedUsersComponent,
     DialogExportPdfComponent,
     HelpsComponent,
+    DashboardBunkeringComponent,
   ],
   imports: [
     GlobalModule,

@@ -1,0 +1,40 @@
+<div class="card card-body background-cuadro p-2">
+
+    <div class="container mt-2">
+
+        <ng-template ngFor let-iListInfoFuel [ngForOf]="listInfoFuel" let-i="index">
+
+            <div class="col-6 text-center">
+                <div class="card-title tx-14 mb-1 color-blue-3">ROB</div>
+
+                <h1 class="card-title pricing-card-title color-blue-3">
+                    {{iListInfoFuel.rob}}<span style="font-size: 8pt;">mt</span>
+                    <small class="text-muted"> / {{iListInfoFuel.typeFuel}}</small>
+                </h1>
+
+                <ng-template
+                    [ngIf]="iListInfoFuel.startRob || iListInfoFuel.comsumption || iListInfoFuel.bunkering || iListInfoFuel.endRob">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li class="color-blue-3 font-weight-bold">By Filter:</li>
+                        <li class="color-blue-3">
+                            {{iListInfoFuel.startRob}}mt {{iListInfoFuel.startDate}}
+                        </li>
+                        <li class="color-blue-3">
+                            {{iListInfoFuel.comsumption}}mt consumption
+                        </li>
+                        <li class="color-blue-3">
+                            {{iListInfoFuel.bunkering}}mt bunkering
+                        </li>
+                        <li class="color-blue-3">
+                            {{iListInfoFuel.endRob}}mt {{iListInfoFuel.endDate}}
+                        </li>
+                    </ul>
+                </ng-template>
+
+            </div>
+
+        </ng-template>
+
+    </div>
+
+</div><!-- card-header -->

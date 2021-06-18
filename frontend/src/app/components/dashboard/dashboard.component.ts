@@ -37,7 +37,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -54,6 +54,7 @@ import 'jspdf-autotable';
 import * as Html2canvas from 'html2canvas';
 
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
+import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -190,6 +191,8 @@ export class DashboardComponent implements OnInit {
   // Cuadro Consumption and bunkering
   public consumptionAndBunkering: ConsumptionAndBunkering = new ConsumptionAndBunkering();
 
+  public listInfoFuel: DashboardBunkering[] = [];
+
   // Constructor
   constructor(
     private router: Router,
@@ -293,6 +296,16 @@ export class DashboardComponent implements OnInit {
         if (!result) throw 'ERROR_SELECT_USER';
 
 
+        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        
+        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
         // Activamos el loading.
         this.loadingService.Close();
       }
@@ -392,7 +405,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  // GetUsers: Cargo todos los Users para el listado de Users.
+  // GetROBByUser: Obtine el rob del usurio.
   private GetROBByUser(userId: number): Observable<boolean> {
     // Test
     console.log('GetROB(userId: number)');
@@ -407,6 +420,60 @@ export class DashboardComponent implements OnInit {
 
         // Segun el resultado retornamos la respuesta.
         return (resultUser !== null);
+      }
+    ));
+
+  }
+
+  // GetUsers: Cargo todos los Users para el listado de Users.
+  private GetStartEndROByFilterDate(userId: number, startDate: string, endDate: string): Observable<boolean> {
+    this.listInfoFuel = [];
+
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetStartEndROByFilterDate(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetROBByUser[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+        
+        // Trabajaremos con las siguientes variables.
+        let startDataROB = resultGetROBByUser[0];
+        let consumptionDataROB = resultGetROBByUser[1];
+
+        // IFO
+        let fuelIfo: DashboardBunkering = new DashboardBunkering();
+        fuelIfo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_ifo - this.getROBByUser.total_ifo, 2);
+        fuelIfo.typeFuel = this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'VLSFO';
+        fuelIfo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_ifo - startDataROB.total_ifo, 2);
+        fuelIfo.startDate = FormatYYYYMMDD(this.startDate)
+        fuelIfo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoConsumption, 2);
+        fuelIfo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoBunkering, 2);
+        fuelIfo.endRob = this.MathRoundOneDecimal(fuelIfo.startRob + (consumptionDataROB.total_bunkering_ifo - consumptionDataROB.total_ifo), 2);
+        fuelIfo.endDate = FormatYYYYMMDD(this.endDate);
+
+        // MGO
+        let fuelMgo: DashboardBunkering = new DashboardBunkering();
+        fuelMgo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_mgo - this.getROBByUser.total_mgo, 2);
+        fuelMgo.typeFuel = 'MGO';
+        fuelMgo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_mgo - startDataROB.total_mgo, 2);
+        fuelMgo.startDate = FormatYYYYMMDD(this.startDate);
+        fuelMgo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoConsumption, 2);
+        fuelMgo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoBunkering, 2);
+        fuelMgo.endRob = this.MathRoundOneDecimal(fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo), 2);
+        fuelMgo.endDate = FormatYYYYMMDD(this.endDate);
+
+        if (this.selectUser.isConsumptionVLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO) {
+
+          this.listInfoFuel.push(fuelIfo)
+        }
+        if (this.selectUser.isConsumptionMGO) {
+
+          this.listInfoFuel.push(fuelMgo)
+        }
+
+
+        // Segun el resultado retornamos la respuesta.
+        return true;
       }
     ));
 
@@ -713,8 +780,20 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+
+            let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+            let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+            // Buscamos la info
+            return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+          }
+        ).then(
+          result => {
+            
+            if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+    
             // Loading cerrar.
             this.loadingService.Close();
+    
           }
         ).catch(
           err => {
@@ -758,6 +837,22 @@ export class DashboardComponent implements OnInit {
 
         // Invocamos la funcion para generar reporte por fecha.
         this.GenerateReporteByDate();
+      }
+    ).then(
+      result => {
+
+        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        
+        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+        return true;
+
       }
     ).catch(
       err => {
@@ -935,9 +1030,20 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+          let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+          let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+          // Buscamos la info
+          return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        }
+      ).then(
+        result => {
+          
+          if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+  
             // Loading cerrar.
             this.loadingService.Close();
           }
+          
         ).catch(
           err => {
 
@@ -1006,9 +1112,22 @@ export class DashboardComponent implements OnInit {
         // Validamos el resultado del generate Dashboard.
         if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        // Loading cerrar.
-        this.loadingService.Close();
-      }).catch(
+        
+        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        
+        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+          // Loading cerrar.
+          this.loadingService.Close();
+        }
+        
+      ).catch(
         err => {
 
           // Manejo el error
@@ -2492,6 +2611,12 @@ export class DashboardComponent implements OnInit {
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
 
+              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2516,6 +2641,13 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
+
+
+              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
@@ -2534,10 +2666,17 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+
+              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
-              let identified = this.dataMGO[index].identified;
+              let identified = this.dataIFO[index].identified;
 
               // Buscamos el viaje id
               let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
@@ -2651,6 +2790,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
+
+
+              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2672,6 +2819,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+
+
+              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
@@ -2688,6 +2843,13 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+
+              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
@@ -2804,10 +2966,18 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+              
+
+              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
-              let ubication = this.dataMGO[index].ubication;
+              let ubication = this.dataSPEED[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
               let port = this.generateVoyages[ubication[0]].ports[ubication[1]]
 
@@ -2827,6 +2997,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+
+
+              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
             } else if (this.selectSummaryBy === 'MONTHS') {
 
 
@@ -2845,10 +3023,18 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+
+              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        
+              
+
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
-              let identified = this.dataMGO[index].identified;
+              let identified = this.dataSPEED[index].identified;
 
               // Buscamos el viaje id
               let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
@@ -3149,7 +3335,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(voyage.totalBunkeringIFO, 2)+' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(voyage.totalBunkeringIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3157,7 +3343,7 @@ export class DashboardComponent implements OnInit {
               && voyage.totalBunkeringMGO > 0
             ) {
 
-              result.push('T. Bunkering MGO :    ' + mathRound(voyage.totalBunkeringMGO, 2)+' mt');
+              result.push('T. Bunkering MGO :    ' + mathRound(voyage.totalBunkeringMGO, 2) + ' mt');
 
             }
 
@@ -3168,7 +3354,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(voyage.totalIFO, 2)+' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + mathRound(voyage.totalIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3176,20 +3362,20 @@ export class DashboardComponent implements OnInit {
               && voyage.totalMGO > 0
             ) {
 
-              result.push('T. Consumption MGO :    ' + mathRound(voyage.totalMGO, 2)+' mt');
+              result.push('T. Consumption MGO :    ' + mathRound(voyage.totalMGO, 2) + ' mt');
 
             }
 
             if (voyage.totalSpeed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(voyage.totalSpeed.steamingTime, 2)+' hrs');
+              result.push('T. Time :    ' + mathRound(voyage.totalSpeed.steamingTime, 2) + ' hrs');
             }
             if (voyage.totalSpeed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distance, 2)+' mi');
+              result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distance, 2) + ' mi');
             }
 
             let calSpeed = mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2);
             if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed +' kn');
+              result.push('Speed :    ' + calSpeed + ' kn');
             }
 
           } else if (this.selectSummaryBy === 'PORTS') {
@@ -3215,13 +3401,13 @@ export class DashboardComponent implements OnInit {
               && port.totalBunkeringIFO > 0) {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(port.totalBunkeringIFO, 2)+' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(port.totalBunkeringIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
               && port.totalBunkeringMGO > 0
             ) {
-              result.push('T. Bunkering MGO :    ' + mathRound(port.totalBunkeringMGO, 2)+' mt');
+              result.push('T. Bunkering MGO :    ' + mathRound(port.totalBunkeringMGO, 2) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
@@ -3232,7 +3418,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(port.robIfo, 2)+' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + mathRound(port.robIfo, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
 
@@ -3242,19 +3428,19 @@ export class DashboardComponent implements OnInit {
               && port.robMgo > 0
             ) {
 
-              result.push('T. Consumption MGO:    ' + mathRound(port.robMgo, 2)+' mt');
+              result.push('T. Consumption MGO:    ' + mathRound(port.robMgo, 2) + ' mt');
 
             }
 
             if (port.speed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(port.speed.steamingTime, 2)+' hrs');
+              result.push('T. Time :    ' + mathRound(port.speed.steamingTime, 2) + ' hrs');
             }
             if (port.speed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(port.speed.distance, 2)+' mi');
+              result.push('T. Distance :    ' + mathRound(port.speed.distance, 2) + ' mi');
             }
             let calSpeed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
             if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed+' kn');
+              result.push('Speed :    ' + calSpeed + ' kn');
             }
 
           } else if (this.selectSummaryBy === 'MONTHS') {
@@ -3275,13 +3461,13 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalBunkeringIFO > 0) {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2)+' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
               && chartPoint.totalBunkeringMGO > 0
             ) {
-              result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2)+' mt');
+              result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
@@ -3291,7 +3477,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(chartPoint.totalConsumptionIFO, 2)+' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + mathRound(chartPoint.totalConsumptionIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3299,7 +3485,7 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalConsumptionMGO > 0
             ) {
 
-              result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2)+' mt');
+              result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2) + ' mt');
 
             }
 
@@ -3308,16 +3494,16 @@ export class DashboardComponent implements OnInit {
 
 
             if (chartPoint.speed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2)+' hrs');
+              result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
             }
             if (chartPoint.speed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2)+' mi');
+              result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
             }
 
 
             let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
             if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed+' kn');
+              result.push('Speed :    ' + calSpeed + ' kn');
             }
 
           } else if (this.selectSummaryBy === 'DAYS') {
@@ -3358,13 +3544,13 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalBunkeringIFO > 0) {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2) +' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
               && chartPoint.totalBunkeringMGO > 0
             ) {
-              result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2)+' mt');
+              result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
@@ -3374,7 +3560,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(chartPoint.totalConsumptionIFO, 2)+' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + mathRound(chartPoint.totalConsumptionIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3382,21 +3568,21 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalConsumptionMGO > 0
             ) {
 
-              result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2)+' mt');
+              result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2) + ' mt');
 
             }
 
             if (chartPoint.speed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2)+' hrs');
+              result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
             }
             if (chartPoint.speed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2)+' mi');
+              result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
             }
 
 
             let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
             if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed+' kn');
+              result.push('Speed :    ' + calSpeed + ' kn');
             }
 
             if (activities.length > 4) {
@@ -3431,32 +3617,32 @@ export class DashboardComponent implements OnInit {
     // La linea es el campo que agregamos en el plugin.
     this.configLineaSPEED.options.lines = [];
 
-    
-      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-      if (this.selectUser.maxSpeed > 0) {
-        this.configLineaSPEED.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxSpeed,
-          color: 'red',
-          label: ''
-        });
-      };
 
-      if (this.selectUser.minSpeed > 0) {
-        this.configLineaSPEED.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.minSpeed,
-          color: '#39FF14',
-          label: ''
-        });
-      }
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+    if (this.selectUser.maxSpeed > 0) {
+      this.configLineaSPEED.options.lines.push({
+        type: 'horizontal',
+        y: this.selectUser.maxSpeed,
+        color: 'red',
+        label: ''
+      });
+    };
 
-      // Configuracion Tooltips
-      this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
-  
-    
+    if (this.selectUser.minSpeed > 0) {
+      this.configLineaSPEED.options.lines.push({
+        type: 'horizontal',
+        y: this.selectUser.minSpeed,
+        color: '#39FF14',
+        label: ''
+      });
+    }
 
-    
+    // Configuracion Tooltips
+    this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
+
+
+
+
 
     if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
       this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
@@ -3588,7 +3774,7 @@ export class DashboardComponent implements OnInit {
 
         if (result) {
 
-         // alert('OKK');
+          // alert('OKK');
         }
       });
 
