@@ -79,6 +79,56 @@ let DailyReportsService = class DailyReportsService {
             return getROBByUser;
         });
     }
+    async GetStartEndROByFilterDate(startDate, endDate, userId) {
+        let StartEndROB = [];
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+            .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+            .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('daily_report.date < :startDate', { startDate: startDate })
+            .getRawOne()
+            .then((result) => {
+            if (!result)
+                throw 'ERROR GetROBByUser';
+            let getStartROB = {};
+            getStartROB.total_ifo = result.total_ifo || 0;
+            getStartROB.total_mgo = result.total_mgo || 0;
+            getStartROB.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+            getStartROB.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+            StartEndROB.push(getStartROB);
+            return this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+                .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+                .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+                .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+                .andWhere('daily_report.date >= :startDate', { startDate: startDate })
+                .andWhere('daily_report.date < :endDate', { endDate: endDate })
+                .getRawOne();
+        }).then((result) => {
+            if (!result)
+                throw 'ERROR GetEndROBByUser';
+            let getEndROBByUser = {};
+            getEndROBByUser.total_ifo = result.total_ifo || 0;
+            getEndROBByUser.total_mgo = result.total_mgo || 0;
+            getEndROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+            getEndROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+            StartEndROB.push(getEndROBByUser);
+            return StartEndROB;
+        });
+    }
     async GetBunkeringByUserIFO(userId) {
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
             .select('daily_report.date', 'date')

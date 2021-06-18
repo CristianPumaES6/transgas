@@ -3017,7 +3017,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "5f00bddfb1a98cb129fcf1608df31006104729c2c10f69ac7c2cdafec2a301db",
+        "version": "43d0402067f6a2a21433b364bc921dddd122e269e3835a451c2020947e6cd526",
         "signature": "7db70e1112d44cda30f91612b7f1e300c713092e8d30771c2b5c4c9c1e59ed88",
         "affectsGlobalScope": false
       },
@@ -3242,8 +3242,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "30b5a39f6dadfc2e83a903d47ea5a7ddef252cfd0a9df5ddaeb0d84498e7d4ab",
-        "signature": "efb274f01831e551a080000d2d6c905b0088295d337087fa24e2a7e6f23b3f7f",
+        "version": "41bf4d2605aae0d359fb61262ef9bae03675601e87d169e6af807243d28bd3c8",
+        "signature": "6f39349b29b91f05b39ef719cabcd6c87cc3470e510e433ff9158d8646e7895d",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
@@ -3257,12 +3257,12 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "513a44571e6613473bdf64d2710910dbae6d050455e2fa7cafe178623de0a7b6",
-        "signature": "c3fcac30157fca21362732a48127e6929a6b0963d009851ca2541c00ff5c05c3",
+        "version": "3ec12391771f025e9d11aad0e936eb912ed02e3e522a11be515c1951653d4142",
+        "signature": "e56174a1f8cdc4e93d155650c2db76ed981a3e62021027c4b9ecb0e09f004727",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "46e75f80bd875910aca316ec526b227fa15cebaecfa3c6ea512ac052c258d0fd",
+        "version": "295d9bc3a08efde1848db44ef05513f5e4177d792b87dcb5423ab7e25aca7612",
         "signature": "6c5810541a19128444460b725cfcabe885e017b7b95e4fe056d0afe1017cd794",
         "affectsGlobalScope": false
       },
@@ -3277,8 +3277,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.controller.ts": {
-        "version": "83a85bc6abbfba99ab1ff7db445cf28f88879b03d557208c81749ca44a944188",
-        "signature": "87011c324b4efd3e683e729d6543b1614ab299e660b08f75995416fe4442c1f7",
+        "version": "447a21a3453949b327c5a7106dc1a742fd72aca56bb270ad882729dd19e86328",
+        "signature": "5f566a0cc299f2badb7beab6c51def23d4a356582e67ee27a836d586f9d02b55",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.module.ts": {
