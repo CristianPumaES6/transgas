@@ -79,11 +79,12 @@ export class UserComponent implements OnInit {
     public dialog: MatDialog,
   ) {
     console.log('User Constructor()');
+
     // subscribe receives the value. sirve para recibir algun emit
     this.onlineOfflineService.emitterReloadData.subscribe(
       (isOnline: boolean) => {
+
         this.loadDataIndexedDB();
-        console.log('Hacer reloadd______________');
       }
     );
   }
@@ -270,8 +271,8 @@ export class UserComponent implements OnInit {
     users.forEach((user: User) => {
       this.azLists.push(
         new AzList(user.id, user.name,
-          this.languageService.GetMessage(this.translateCategory, user.role) ,
-           user.filename)
+          this.languageService.GetMessage(this.translateCategory, user.role),
+          user.filename)
       );
     });
 
@@ -650,7 +651,7 @@ export class UserComponent implements OnInit {
                 // Actualizamos el valor con el resultado
                 azList = new AzList(result.id, result.name,
                   this.languageService.GetMessage(this.translateCategory, result.role),
-                   result.filename)
+                  result.filename)
               }
 
               return azList;
@@ -717,8 +718,8 @@ export class UserComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, resultUpdate.name, 
-                  this.languageService.GetMessage(this.translateCategory,resultUpdate.role),
+                azList = new AzList(resultUpdate.id, resultUpdate.name,
+                  this.languageService.GetMessage(this.translateCategory, resultUpdate.role),
                   resultUpdate.filename)
               }
               return azList;
@@ -767,7 +768,7 @@ export class UserComponent implements OnInit {
           this.getUsers.unshift(result);
 
           this.azLists.unshift(new AzList(result.id, result.name,
-            this.languageService.GetMessage(this.translateCategory,result.role),
+            this.languageService.GetMessage(this.translateCategory, result.role),
             result.filename));
 
           this.databaseService.addUserIndexedDB(result);
@@ -806,8 +807,8 @@ export class UserComponent implements OnInit {
           // Lo agrego al arreglo.
           this.getUsers.unshift(resultUserIndexedDB);
 
-          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, 
-            this.languageService.GetMessage(this.translateCategory,resultUserIndexedDB.role),
+          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name,
+            this.languageService.GetMessage(this.translateCategory, resultUserIndexedDB.role),
             resultUserIndexedDB.filename));
 
           // vuelvo a cargar los datos de incio del token.
@@ -987,8 +988,8 @@ export class UserComponent implements OnInit {
             // Buscamos el id para cambiar el valor de result.
             if (azList.id === resultUpdate.id) {
               // Actualizamos el valor con el resultado
-              azList = new AzList(resultUpdate.id, resultUpdate.name, 
-                this.languageService.GetMessage(this.translateCategory,resultUpdate.role),
+              azList = new AzList(resultUpdate.id, resultUpdate.name,
+                this.languageService.GetMessage(this.translateCategory, resultUpdate.role),
                 resultUpdate.filename)
             }
             return azList;
@@ -1023,7 +1024,7 @@ export class UserComponent implements OnInit {
 
     years.forEach(
       year => {
-        
+
         if (!result) { result = result + year; }
         else { result = result + ', ' + year; }
       }
@@ -1034,7 +1035,7 @@ export class UserComponent implements OnInit {
   // Agrega el año actual al user.
   public ClickAddYear(): boolean {
     console.log('ClickAddYear()');
-    
+
     this.user.years.push(parseInt(getYear()));
 
     return true;
