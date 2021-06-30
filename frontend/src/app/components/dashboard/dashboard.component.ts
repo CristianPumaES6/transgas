@@ -65,7 +65,7 @@ import { OnlineOfflineService } from '../../services/online-offline.service';
 export class DashboardComponent implements OnInit {
 
   // Esta variable nos ayudara a saber si nos encontramos con conexion al servidor.
-  public isOnline:boolean = true;
+  public isOnline: boolean = true;
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
@@ -211,7 +211,7 @@ export class DashboardComponent implements OnInit {
     public dialog: MatDialog,
     private excelService: ExcelService,
     private onlineOfflineService: OnlineOfflineService,
-  ) { 
+  ) {
 
     // Si se recibe algun cambio de conexion, se resetea el formulario.
     this.onlineOfflineService.emitterIsOnline.subscribe(
@@ -265,78 +265,79 @@ export class DashboardComponent implements OnInit {
 
     // Inicializamos la promesa.
     // El modulo de dashboard funciona solo con internet.
-   
-      // Activamos el loading.
-      this.loadingService.Open();
-      
-      // Si tenemos internet se ejecuta lo siguiente.
-      Promise.resolve(true).then(
-        result => {
-          // Agregamos el plugin de la linea del Chart.
-          this.PluginChartLine();
 
-          // Generamos las lineas en el canvas, luego las actualizaremos con data real.
-          this.GenetareLineIFO();
-          this.GenetareLineMGO();
-          this.GenetareLineSPEED();
+    // Activamos el loading.
+    this.loadingService.Open();
 
-          // Instanciamos el obj que usaremos en la consulta de registro de viajes
-          let user: User = new User();
+    // Si tenemos internet se ejecuta lo siguiente.
+    Promise.resolve(true).then(
+      result => {
+        // Agregamos el plugin de la linea del Chart.
+        this.PluginChartLine();
 
-          // Rol del usurio logeado.
-          this.roleUser = this.userService.GetIdentity().role;
+        // Generamos las lineas en el canvas, luego las actualizaremos con data real.
+        this.GenetareLineIFO();
+        this.GenetareLineMGO();
+        this.GenetareLineSPEED();
 
-          // Si no eres un admin solo puedes registrar viajes con el userId logeado.
-          if (this.roleUser === 'BUQUE') {
-            user.id = this.userService.GetIdentity().id;
-            user.name = this.userService.GetIdentity().name;
-            user.nick = this.userService.GetIdentity().nick;
-          }
-          // Traigo a todos los User y lo instancio en el obj.
-          return this.GetUsers(user).pipe().toPromise();
+        // Instanciamos el obj que usaremos en la consulta de registro de viajes
+        let user: User = new User();
+
+        // Rol del usurio logeado.
+        this.roleUser = this.userService.GetIdentity().role;
+
+        // Si no eres un admin solo puedes registrar viajes con el userId logeado.
+        if (this.roleUser === 'BUQUE') {
+          user.id = this.userService.GetIdentity().id;
+          user.name = this.userService.GetIdentity().name;
+          user.nick = this.userService.GetIdentity().nick;
         }
-      ).then(
-        (result) => {
-          if (!result) throw 'ERROR_GET_USERS';
+        // Traigo a todos los User y lo instancio en el obj.
+        return this.GetUsers(user).pipe().toPromise();
+      }
+    ).then(
+      (result) => {
+        if (!result) throw 'ERROR_GET_USERS';
 
-          // Seleccionaremos el primer buque del arreglo.
-          let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
+        // Seleccionaremos el primer buque del arreglo.
+        let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
 
-          return this.SelectUser(firstUser.id);
-        }
-      ).then(
-        result => {
+        return this.SelectUser(firstUser.id);
+      }
+    ).then(
+      result => {
 
-          if (!result) throw 'ERROR_SELECT_USER';
+        if (!result) throw 'ERROR_SELECT_USER';
 
 
-          let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-          let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
-          // Buscamos la info
-          return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        }
-      ).then(
-        result => {
+        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
 
-          if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
 
-          // Activamos el loading.
-          this.loadingService.Close();
-        }
-      ).catch(
-        err => {
+        // Activamos el loading.
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
 
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-          console.error(msg);
-          console.dir(err);
+        console.error(msg);
+        console.dir(err);
 
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
       });
 
+    this.isOnline = this.onlineOfflineService.GetStatusOnline();
   }
 
   // GetUsers: Cargo todos los Users para el listado de Users.
