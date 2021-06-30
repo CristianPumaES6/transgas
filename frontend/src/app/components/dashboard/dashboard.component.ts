@@ -55,6 +55,7 @@ import * as Html2canvas from 'html2canvas';
 
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
+import { OnlineOfflineService } from '../../services/online-offline.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -63,6 +64,7 @@ import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.co
 })
 export class DashboardComponent implements OnInit {
 
+  public isOnline:boolean = false;
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dashboard';
@@ -205,16 +207,14 @@ export class DashboardComponent implements OnInit {
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
     public dialog: MatDialog,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    private onlineOfflineService: OnlineOfflineService,
   ) { }
 
   // Esta funcion se inicializa primero, es parte de angular.
   ngOnInit(): void {
     // ngOnInit()
     console.log('ngOnInit()');
-
-    // Activamos el loading.
-    this.loadingService.Open();
 
     // Revisar <= esto cada cuadro se deberia de agregar el Scrool solo si ese user permite visualizar
     // hacer pruebas que pasa si no tiene el componente display.
@@ -254,74 +254,78 @@ export class DashboardComponent implements OnInit {
 
     // Inicializamos la promesa.
     // El modulo de dashboard funciona solo con internet.
+   
+      // Activamos el loading.
+      this.loadingService.Open();
 
-    // Si tenemos internet se ejecuta lo siguiente.
-    Promise.resolve(true).then(
-      result => {
-        // Agregamos el plugin de la linea del Chart.
-        this.PluginChartLine();
 
-        // Generamos las lineas en el canvas, luego las actualizaremos con data real.
-        this.GenetareLineIFO();
-        this.GenetareLineMGO();
-        this.GenetareLineSPEED();
+      // Si tenemos internet se ejecuta lo siguiente.
+      Promise.resolve(true).then(
+        result => {
+          // Agregamos el plugin de la linea del Chart.
+          this.PluginChartLine();
 
-        // Instanciamos el obj que usaremos en la consulta de registro de viajes
-        let user: User = new User();
+          // Generamos las lineas en el canvas, luego las actualizaremos con data real.
+          this.GenetareLineIFO();
+          this.GenetareLineMGO();
+          this.GenetareLineSPEED();
 
-        // Rol del usurio logeado.
-        this.roleUser = this.userService.GetIdentity().role;
+          // Instanciamos el obj que usaremos en la consulta de registro de viajes
+          let user: User = new User();
 
-        // Si no eres un admin solo puedes registrar viajes con el userId logeado.
-        if (this.roleUser === 'BUQUE') {
-          user.id = this.userService.GetIdentity().id;
-          user.name = this.userService.GetIdentity().name;
-          user.nick = this.userService.GetIdentity().nick;
+          // Rol del usurio logeado.
+          this.roleUser = this.userService.GetIdentity().role;
+
+          // Si no eres un admin solo puedes registrar viajes con el userId logeado.
+          if (this.roleUser === 'BUQUE') {
+            user.id = this.userService.GetIdentity().id;
+            user.name = this.userService.GetIdentity().name;
+            user.nick = this.userService.GetIdentity().nick;
+          }
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.GetUsers(user).pipe().toPromise();
         }
-        // Traigo a todos los User y lo instancio en el obj.
-        return this.GetUsers(user).pipe().toPromise();
-      }
-    ).then(
-      (result) => {
-        if (!result) throw 'ERROR_GET_USERS';
+      ).then(
+        (result) => {
+          if (!result) throw 'ERROR_GET_USERS';
 
-        // Seleccionaremos el primer buque del arreglo.
-        let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
+          // Seleccionaremos el primer buque del arreglo.
+          let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
 
-        return this.SelectUser(firstUser.id);
-      }
-    ).then(
-      result => {
+          return this.SelectUser(firstUser.id);
+        }
+      ).then(
+        result => {
 
-        if (!result) throw 'ERROR_SELECT_USER';
+          if (!result) throw 'ERROR_SELECT_USER';
 
 
-        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
-        // Buscamos la info
-        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-      }
-    ).then(
-      result => {
-        
-        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+          let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+          let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+          // Buscamos la info
+          return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        }
+      ).then(
+        result => {
 
-        // Activamos el loading.
-        this.loadingService.Close();
-      }
-    ).catch(
-      err => {
+          if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
 
-        // Manejo el error
-        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+          // Activamos el loading.
+          this.loadingService.Close();
+        }
+      ).catch(
+        err => {
 
-        console.error(msg);
-        console.dir(err);
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-        // Deshabilito el spinner de loading
-        this.loadingService.Close();
-      });
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
 
 
   }
@@ -435,7 +439,7 @@ export class DashboardComponent implements OnInit {
       (resultGetROBByUser: GetROBByUser[]) => {
 
         if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
-        
+
         // Trabajaremos con las siguientes variables.
         let startDataROB = resultGetROBByUser[0];
         let consumptionDataROB = resultGetROBByUser[1];
@@ -788,12 +792,12 @@ export class DashboardComponent implements OnInit {
           }
         ).then(
           result => {
-            
-            if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
-    
+
+            if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
             // Loading cerrar.
             this.loadingService.Close();
-    
+
           }
         ).catch(
           err => {
@@ -848,8 +852,8 @@ export class DashboardComponent implements OnInit {
       }
     ).then(
       result => {
-        
-        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
 
         return true;
 
@@ -1030,20 +1034,20 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-          let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-          let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
-          // Buscamos la info
-          return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        }
-      ).then(
-        result => {
-          
-          if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
-  
+            let startDate = FormatYYYYMMDDToSTRING(this.startDate);
+            let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+            // Buscamos la info
+            return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+          }
+        ).then(
+          result => {
+
+            if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
             // Loading cerrar.
             this.loadingService.Close();
           }
-          
+
         ).catch(
           err => {
 
@@ -1112,7 +1116,7 @@ export class DashboardComponent implements OnInit {
         // Validamos el resultado del generate Dashboard.
         if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-        
+
         let startDate = FormatYYYYMMDDToSTRING(this.startDate);
         let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
         // Buscamos la info
@@ -1120,27 +1124,27 @@ export class DashboardComponent implements OnInit {
       }
     ).then(
       result => {
-        
-        if(!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
 
-          // Loading cerrar.
-          this.loadingService.Close();
-        }
-        
-      ).catch(
-        err => {
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
 
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+        // Loading cerrar.
+        this.loadingService.Close();
+      }
 
-          console.error(msg);
-          console.dir(err);
+    ).catch(
+      err => {
 
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
 
   }
 
@@ -2615,8 +2619,8 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
-              
+
+
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2647,7 +2651,7 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
+
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
@@ -2671,7 +2675,7 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
+
 
             } else if (this.selectSummaryBy === 'DAYS') {
 
@@ -2796,8 +2800,8 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
-              
+
+
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2825,8 +2829,8 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
-              
+
+
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
@@ -2848,8 +2852,8 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
-              
+
+
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
@@ -2966,14 +2970,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
-              
+
 
               let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
-              
+
+
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -3003,8 +3007,8 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
-              
+
+
             } else if (this.selectSummaryBy === 'MONTHS') {
 
 
@@ -3028,8 +3032,8 @@ export class DashboardComponent implements OnInit {
               let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-        
-              
+
+
 
             } else if (this.selectSummaryBy === 'DAYS') {
 
