@@ -33,7 +33,7 @@ import { PortService } from '../../../services/port.service';
 import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
-import { ConvertirDateHourToMoment,DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
+import { ConvertirDateHourToMoment, DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
 import * as moment from 'moment';
 
 
@@ -704,7 +704,7 @@ export class VoyageComponent implements OnInit {
 
 
       // Verificamos que la fehca este bien       
-      if(this.selectDailyReport.hour.length>0 && validateDate(this.selectDailyReport.date)){
+      if (this.selectDailyReport.hour.length > 0 && validateDate(this.selectDailyReport.date)) {
         this.GenerateTimeOperation();
       }
 
@@ -853,6 +853,13 @@ export class VoyageComponent implements OnInit {
           if (!result) throw new Error('ERROR SELECT VOYAGE');
 
           this.selectPort = this.getPorts[0];
+
+          return this.databaseService.getReportDailysByPortIdIndexDB(this.selectPort.id);
+        }
+      ).then(
+        dailyReports => {
+          this.getDailyReports = dailyReports;
+
           this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
 
           this.List_Voyages_Ports_DailyReports = 'DailyReports';
@@ -866,8 +873,10 @@ export class VoyageComponent implements OnInit {
 
           this.disableEdit = false;
           this.isBunkering = false;
+
           return true;
         }
+
       );
 
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
@@ -2395,7 +2404,7 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
 
-      if( !this.selectDailyReport.id ) {
+      if (!this.selectDailyReport.id) {
 
         this.databaseService.GetLastReportDailys().then(
           result => {
@@ -2403,14 +2412,14 @@ export class VoyageComponent implements OnInit {
             let now = new Date();
             let hours = ("0" + now.getHours()).slice(-2);
             let minutes = ("0" + now.getMinutes()).slice(-2);
-    
+
             this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
-    
-            
+
+
             this.GenerateTimeOperation();
           }
         )
-          }
+      }
 
       // actualizo el valor del InitializeSailingAnality.
       this.initialDailyReport = this.Collect();
@@ -2418,26 +2427,26 @@ export class VoyageComponent implements OnInit {
 
   }
 
-  public onKeyUpEvent(event?:any): void {
-    
-    if(this.selectDailyReport.hour.length>0 && validateDate(this.selectDailyReport.date)){
+  public onKeyUpEvent(event?: any): void {
+
+    if (this.selectDailyReport.hour.length > 0 && validateDate(this.selectDailyReport.date)) {
       this.GenerateTimeOperation();
     }
 
   }
 
-  private GenerateTimeOperation(): void{
+  private GenerateTimeOperation(): void {
 
     let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
     let momendate = moment(this.lastRecordedHour);
-    
-    
+
+
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
 
 
     // El tiempo de operacion se genera por la diferencia de fecha
     this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(diferentHour, 2);
-    
+
   }
 
   private Collect(): any {
