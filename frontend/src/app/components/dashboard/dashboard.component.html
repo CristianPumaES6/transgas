@@ -118,9 +118,9 @@
 
 
 
-          <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
-            <span class="icon-archivo-pdf"></span>
-          </a>
+        <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
+          <span class="icon-archivo-pdf"></span>
+        </a>
       </div>
 
 
@@ -143,9 +143,7 @@
 <!-- Contenedor de toda la vista del dashboard. -->
 <div class="body-full-container">
 
-  <div
-  [className]="!isOnline ? 'd-none' : ''"
-  >
+  <div [className]="!isOnline ? 'd-none' : ''">
 
     <div
       class="row no-gutters pt-2 pt-ms-3 pt-md-3 pt-lg-3  pr-2 pr-ms-3 pr-md-3 pr-lg-3 pb-0 pb-ms-0 pb-md-0 pb-lg-0  pl-2 pl-ms-3 pl-md-3 pl-lg-3">
@@ -244,7 +242,8 @@
                         {{MathRoundOneDecimal(consumptionDaysRealMGO.mpal,2)}}
                       </td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.mpal,2)}}</td>
-                      <td class="p-1 border" [ngClass]="
+                      <td class="p-1 border"
+                        [ngClass]="
                       {
                       'color-max': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) > 0),
                       'color-min': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) < 0 )}">
@@ -263,7 +262,8 @@
                         'color-min': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && consumptionDaysByContractMGO.aux > consumptionDaysRealMGO.aux)}">
                         {{MathRoundOneDecimal(consumptionDaysRealMGO.aux,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.aux,2)}}</td>
-                      <td class="p-1 border" [ngClass]="
+                      <td class="p-1 border"
+                        [ngClass]="
                         {
                         'color-max': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) > 0),
                         'color-min': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) < 0)}">
@@ -282,7 +282,8 @@
                         'color-min': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && consumptionDaysByContractMGO.boiler > consumptionDaysRealMGO.boiler)}">
                         {{MathRoundOneDecimal(consumptionDaysRealMGO.boiler,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.boiler,2)}}</td>
-                      <td class="p-1 border" [ngClass]="
+                      <td class="p-1 border"
+                        [ngClass]="
                         {
                           'color-max': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) > 0),
                           'color-min': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) < 0)}">
@@ -301,7 +302,8 @@
                         'color-min': (consumptionDaysRealMGO.gi !==0 && consumptionDaysByContractMGO.gi !== 0 && consumptionDaysByContractMGO.gi > consumptionDaysRealMGO.gi)}">
                         {{MathRoundOneDecimal(consumptionDaysRealMGO.gi,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.gi,2)}}</td>
-                      <td class="p-1 border" [ngClass]="
+                      <td class="p-1 border"
+                        [ngClass]="
                       {
                       'color-max': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) > 0),
                       'color-min': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) < 0)}">
@@ -320,7 +322,8 @@
                         'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !== 0 && consumptionDaysByContractMGO.pp > consumptionDaysRealMGO.pp)}">
                         {{MathRoundOneDecimal(consumptionDaysRealMGO.pp,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.pp,2)}}</td>
-                      <td class="p-1 border" [ngClass]="
+                      <td class="p-1 border"
+                        [ngClass]="
                         {
                           'color-max': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) > 0),
                           'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) < 0)}">
@@ -340,7 +343,8 @@
                         'color-min': (consumptionDaysByContractMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && consumptionDaysByContractMGO.other > consumptionDaysRealMGO.other)}">
                         {{MathRoundOneDecimal(consumptionDaysRealMGO.other,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.other,2)}}</td>
-                      <td class="p-1 border" [ngClass]="
+                      <td class="p-1 border"
+                        [ngClass]="
                         {
                           'color-max': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) > 0),
                           'color-min': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) < 0)}">
@@ -441,7 +445,8 @@
                         'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && consumptionDaysByContractIFO.mpal > consumptionDaysRealIFO.mpal)}">
                         {{MathRoundOneDecimal(consumptionDaysRealIFO.mpal,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.mpal,2)}}</td>
-                      <td class="p-1 border" [ngClass]="{
+                      <td class="p-1 border"
+                        [ngClass]="{
                         'color-max': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) > 0),
                         'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) < 0)}">
                         {{MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2)}}</td>
@@ -460,7 +465,8 @@
                       'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && consumptionDaysByContractIFO.aux > consumptionDaysRealIFO.aux)}">
                         {{MathRoundOneDecimal(consumptionDaysRealIFO.aux,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.aux,2)}}</td>
-                      <td class="p-1 border" [ngClass]="{
+                      <td class="p-1 border"
+                        [ngClass]="{
                         'color-max': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) > 0),
                         'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) < 0)}">
                         {{MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2)}}</td>
@@ -478,7 +484,8 @@
                       'color-min': (consumptionDaysRealIFO.boiler != 0  && consumptionDaysByContractIFO.boiler !== 0 && consumptionDaysByContractIFO.boiler > consumptionDaysRealIFO.boiler)}">
                         {{MathRoundOneDecimal(consumptionDaysRealIFO.boiler,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.boiler,2)}}</td>
-                      <td class="p-1 border" [ngClass]="{
+                      <td class="p-1 border"
+                        [ngClass]="{
                         'color-max': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) > 0),
                         'color-min': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) < 0)}">
                         {{MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2)}}</td>
@@ -496,7 +503,8 @@
                       'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && consumptionDaysByContractIFO.other > consumptionDaysRealIFO.other)}">
                         {{MathRoundOneDecimal(consumptionDaysRealIFO.other,2)}}</td>
                       <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.other,2)}}</td>
-                      <td class="p-1 border" [ngClass]="{
+                      <td class="p-1 border"
+                        [ngClass]="{
                         'color-max': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) > 0),
                         'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) < 0)}">
                         {{MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2)}}</td>
@@ -663,9 +671,9 @@
                 </a>
 
 
-                  <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
-                    <span class="icon-archivo-pdf"></span>
-                  </a>
+                <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
+                  <span class="icon-archivo-pdf"></span>
+                </a>
 
               </div>
             </div>
@@ -768,7 +776,8 @@
                     <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
                       {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}
 
-                      <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
+                      <span
+                        matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
                         matTooltipClass="multiline">
                         <i class="icon-menu-help"></i>
                       </span>
@@ -1133,8 +1142,10 @@
                     <th class="p-1 color-title-table border">{{'TOTAL' | translateMessage:translateCategory}}</th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
-                      totalTimePerActivityIFO.loading +totalTimePerActivityIFO.discharge+ totalTimePerActivityIFO.ballast+
-                      totalTimePerActivityIFO.laden + totalTimePerActivityIFO.economical + totalTimePerActivityIFO.anchor
+                      totalTimePerActivityIFO.loading +totalTimePerActivityIFO.discharge+
+                      totalTimePerActivityIFO.ballast+
+                      totalTimePerActivityIFO.laden + totalTimePerActivityIFO.economical +
+                      totalTimePerActivityIFO.anchor
                       + totalTimePerActivityIFO.maneuver + totalTimePerActivityIFO.otherActivity
                       ,2)}}
                     </th>
@@ -1144,7 +1155,8 @@
                       +totalDistanceMilesByActivityPerformedIFO.discharge+
                       totalDistanceMilesByActivityPerformedIFO.ballast+ totalDistanceMilesByActivityPerformedIFO.laden +
                       totalDistanceMilesByActivityPerformedIFO.economical +
-                      totalDistanceMilesByActivityPerformedIFO.anchor + totalDistanceMilesByActivityPerformedIFO.maneuver
+                      totalDistanceMilesByActivityPerformedIFO.anchor +
+                      totalDistanceMilesByActivityPerformedIFO.maneuver
                       + totalDistanceMilesByActivityPerformedIFO.otherActivity
                       ,2)}}
                     </th>
@@ -1152,9 +1164,11 @@
                     <th class="p-1"></th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
-                      voyageConsumptionByActivityPerformedIFO.loading +voyageConsumptionByActivityPerformedIFO.discharge+
+                      voyageConsumptionByActivityPerformedIFO.loading
+                      +voyageConsumptionByActivityPerformedIFO.discharge+
                       voyageConsumptionByActivityPerformedIFO.ballast + voyageConsumptionByActivityPerformedIFO.laden +
-                      voyageConsumptionByActivityPerformedIFO.economical + voyageConsumptionByActivityPerformedIFO.anchor
+                      voyageConsumptionByActivityPerformedIFO.economical +
+                      voyageConsumptionByActivityPerformedIFO.anchor
                       + voyageConsumptionByActivityPerformedIFO.maneuver +
                       voyageConsumptionByActivityPerformedIFO.otherActivity
                       ,2)}}
@@ -1178,9 +1192,11 @@
                       {{MathRoundOneDecimal(
                       balanceConsumptionByActivityPerformedIFO.loading
                       +balanceConsumptionByActivityPerformedIFO.discharge+
-                      balanceConsumptionByActivityPerformedIFO.ballast + balanceConsumptionByActivityPerformedIFO.laden +
+                      balanceConsumptionByActivityPerformedIFO.ballast + balanceConsumptionByActivityPerformedIFO.laden
+                      +
                       balanceConsumptionByActivityPerformedIFO.economical +
-                      balanceConsumptionByActivityPerformedIFO.anchor + balanceConsumptionByActivityPerformedIFO.maneuver
+                      balanceConsumptionByActivityPerformedIFO.anchor +
+                      balanceConsumptionByActivityPerformedIFO.maneuver
                       + balanceConsumptionByActivityPerformedIFO.otherActivity
                       ,2)}}
                     </th>
@@ -1278,7 +1294,8 @@
                     </th>
                     <th class="color-title-table blue-3 border font-small-2 align-top pt-1">
                       {{'TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}
-                      <span matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
+                      <span
+                        matTooltip="{{'TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT' | translateMessage:translateCategory}}"
                         matTooltipClass="multiline">
                         <i class="icon-menu-help"></i>
                       </span>
@@ -1530,7 +1547,8 @@
                   <tr>
                     <th class="p-1 color-title-table border">{{'ANCHORED' | translateMessage:translateCategory}}</th>
                     <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.anchor,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,2)}}
+                    </td>
                     <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.anchor,2)}}</td>
                     <td class="p-1 border">
                       {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.anchor,2)}}
@@ -1640,8 +1658,10 @@
                     <th class="p-1 color-title-table border">{{'TOTAL' | translateMessage:translateCategory}}</th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
-                      totalTimePerActivityMGO.loading +totalTimePerActivityMGO.discharge+ totalTimePerActivityMGO.ballast+
-                      totalTimePerActivityMGO.laden + totalTimePerActivityMGO.economical + totalTimePerActivityMGO.anchor
+                      totalTimePerActivityMGO.loading +totalTimePerActivityMGO.discharge+
+                      totalTimePerActivityMGO.ballast+
+                      totalTimePerActivityMGO.laden + totalTimePerActivityMGO.economical +
+                      totalTimePerActivityMGO.anchor
                       + totalTimePerActivityMGO.maneuver + totalTimePerActivityMGO.otherActivity
                       ,2)}}
                     </th>
@@ -1651,7 +1671,8 @@
                       +totalDistanceMilesByActivityPerformedMGO.discharge+
                       totalDistanceMilesByActivityPerformedMGO.ballast+ totalDistanceMilesByActivityPerformedMGO.laden +
                       totalDistanceMilesByActivityPerformedMGO.economical +
-                      totalDistanceMilesByActivityPerformedMGO.anchor + totalDistanceMilesByActivityPerformedMGO.maneuver
+                      totalDistanceMilesByActivityPerformedMGO.anchor +
+                      totalDistanceMilesByActivityPerformedMGO.maneuver
                       + totalDistanceMilesByActivityPerformedMGO.otherActivity
                       ,2)}}
                     </th>
@@ -1659,9 +1680,11 @@
                     <th class="p-1"></th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
-                      voyageConsumptionByActivityPerformedMGO.loading +voyageConsumptionByActivityPerformedMGO.discharge+
+                      voyageConsumptionByActivityPerformedMGO.loading
+                      +voyageConsumptionByActivityPerformedMGO.discharge+
                       voyageConsumptionByActivityPerformedMGO.ballast + voyageConsumptionByActivityPerformedMGO.laden +
-                      voyageConsumptionByActivityPerformedMGO.economical + voyageConsumptionByActivityPerformedMGO.anchor
+                      voyageConsumptionByActivityPerformedMGO.economical +
+                      voyageConsumptionByActivityPerformedMGO.anchor
                       + voyageConsumptionByActivityPerformedMGO.maneuver +
                       voyageConsumptionByActivityPerformedMGO.otherActivity
                       ,2)}}
@@ -1685,9 +1708,11 @@
                       {{MathRoundOneDecimal(
                       balanceConsumptionByActivityPerformedMGO.loading
                       +balanceConsumptionByActivityPerformedMGO.discharge+
-                      balanceConsumptionByActivityPerformedMGO.ballast + balanceConsumptionByActivityPerformedMGO.laden +
+                      balanceConsumptionByActivityPerformedMGO.ballast + balanceConsumptionByActivityPerformedMGO.laden
+                      +
                       balanceConsumptionByActivityPerformedMGO.economical +
-                      balanceConsumptionByActivityPerformedMGO.anchor + balanceConsumptionByActivityPerformedMGO.maneuver
+                      balanceConsumptionByActivityPerformedMGO.anchor +
+                      balanceConsumptionByActivityPerformedMGO.maneuver
                       + balanceConsumptionByActivityPerformedMGO.otherActivity
                       ,2)}}
                     </th>
