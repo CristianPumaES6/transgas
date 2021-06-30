@@ -64,7 +64,9 @@ import { OnlineOfflineService } from '../../services/online-offline.service';
 })
 export class DashboardComponent implements OnInit {
 
-  public isOnline:boolean = false;
+  // Esta variable nos ayudara a saber si nos encontramos con conexion al servidor.
+  public isOnline:boolean = true;
+
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dashboard';
@@ -209,7 +211,16 @@ export class DashboardComponent implements OnInit {
     public dialog: MatDialog,
     private excelService: ExcelService,
     private onlineOfflineService: OnlineOfflineService,
-  ) { }
+  ) { 
+
+    // Si se recibe algun cambio de conexion, se resetea el formulario.
+    this.onlineOfflineService.emitterIsOnline.subscribe(
+      (isOnline: boolean) => {
+        this.isOnline = isOnline;
+      }
+    );
+
+  }
 
   // Esta funcion se inicializa primero, es parte de angular.
   ngOnInit(): void {
@@ -257,8 +268,7 @@ export class DashboardComponent implements OnInit {
    
       // Activamos el loading.
       this.loadingService.Open();
-
-
+      
       // Si tenemos internet se ejecuta lo siguiente.
       Promise.resolve(true).then(
         result => {
@@ -325,8 +335,7 @@ export class DashboardComponent implements OnInit {
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
           // Deshabilito el spinner de loading
           this.loadingService.Close();
-        });
-
+      });
 
   }
 
