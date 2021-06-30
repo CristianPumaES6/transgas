@@ -54,8 +54,8 @@ export class UserComponent implements OnInit {
 
   //======== Datos para el componente azList ===========
   public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false,
-    this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
-    this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
+  this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
+  this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
   public azLists: AzList[] = [];
 
   // ===================================================
@@ -83,14 +83,14 @@ export class UserComponent implements OnInit {
     // subscribe receives the value. sirve para recibir algun emit
     this.onlineOfflineService.emitterReloadData.subscribe(
       (isOnline: boolean) => {
-
+        
         this.loadDataIndexedDB();
       }
     );
   }
 
   ngOnInit(): void {
-    console.log('ngOnInit()');
+    console.log('user ngOnInit()');
 
     // Activamos el loading.
     this.loadingService.Open();
@@ -105,7 +105,7 @@ export class UserComponent implements OnInit {
     this.ReactiveForm(true, false, true);
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
-    if (!!window.navigator.onLine) {
+    if (this.onlineOfflineService.GetStatusOnline()) {
 
       // Instanciamos el obj que usaremos.
       let user: User = new User();
@@ -157,11 +157,7 @@ export class UserComponent implements OnInit {
           // Revisamos si el result es el esperado.
           if (!result) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
 
-
-          new PerfectScrollbar('.az-contact-info-body', {
-            suppressScrollX: true
-          })
-
+          // Cargamos la data desde IndexedDB
           this.loadDataIndexedDB();
 
         },
@@ -179,16 +175,20 @@ export class UserComponent implements OnInit {
         });
 
     } else {
+
+      // Cargamos la data desde IndexedDB
       this.loadDataIndexedDB();
 
-      setTimeout(() => {
-
-        new PerfectScrollbar('.az-contact-info-body', {
-          suppressScrollX: true
-        })
-
-      }, 500);
     }
+
+    // PerfectScrool
+    setTimeout(() => {
+
+      new PerfectScrollbar('.az-contact-info-body', {
+        suppressScrollX: true
+      })
+
+    }, 500);
 
   }
 
@@ -197,7 +197,6 @@ export class UserComponent implements OnInit {
 
     Promise.resolve(true).then(
       () => {
-
         // Obtenemos los datos del usuario.
         return this.databaseService.getUsersIndexDB();
       }
