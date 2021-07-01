@@ -1729,4 +1729,16 @@
     </div>
   </div>
 
+
+  <div [className]="!isOnline ? '' : 'd-none'">
+    <div style="color: #feb600;" class="mt-5">
+      <p class="text-center">
+        <span class="icon-warning display-2"></span>
+      </p>
+      <p class="text-center">
+        <span class="display-2">This module requires connection to the server.</span>
+      </p>
+    </div>
+  </div>
+
 </div>
