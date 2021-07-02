@@ -322,5 +322,113 @@ export class DialogListReportComponent implements OnInit {
     return result;
   }
 
+  // Esta funcion calcula el valor que se desea retornar sea del charter o del value.
+  public GenerateDailyConsumption(isVALUEorCHARTER: string, isIFOorMGOorSPEEDIFOorSPEEDMGO: string, dailyReport: DailyReport): number {
+
+    // Resultados
+    let result: number = 0;
+    let activityPerformed: string = dailyReport.activityPerformed;
+    // Si solo queremos el valor por charter
+    if (isVALUEorCHARTER === 'CHARTER') {
+
+
+      if (isIFOorMGOorSPEEDIFOorSPEEDMGO === 'IFO') {
+        if (activityPerformed === 'LOADING') {
+          result = this.selectUser.loadingConsumptionIFO;
+        } else if (activityPerformed === 'DOWNLOADING') {
+          result = this.selectUser.dischargeConsumptionIFO;
+        } else if (activityPerformed === 'SAILING_IN_BALLAST') {
+          result = this.selectUser.sailingBallastConsumptionIFO;
+        } else if (activityPerformed === 'SAILING_WITH_LADEN') {
+          result = this.selectUser.sailingLoadConsumptionIFO;
+        } else if (activityPerformed === 'ECONOMICAL_NAVIGATION') {
+          result = this.selectUser.sailingEconomicConsumptionIFO;
+        } else if (activityPerformed === 'ANCHORED') {
+          result = this.selectUser.anchoredConsumptionIFO;
+        } else if (activityPerformed === 'MANEUVER') {
+          result = this.selectUser.maneuverConsumptionIFO;
+        } else if (activityPerformed === 'OTHER_ACT') {
+          result = this.selectUser.otherConsumptionIFO;
+        }
+      } else if (isIFOorMGOorSPEEDIFOorSPEEDMGO === 'MGO') {
+
+
+        /* if (activityPerformed === 'LOADING') {
+          result = this.selectUser.loadingConsumptionMGO;
+        } else if (activityPerformed === 'DOWNLOADING') {
+          result = this.selectUser.dischargeConsumptionMGO;
+        } else if (activityPerformed === 'SAILING_IN_BALLAST') {
+          result = this.selectUser.sailingBallastConsumptionMGO;
+        } else if (activityPerformed === 'SAILING_WITH_LADEN') {
+          result = this.selectUser.sailingLoadConsumptionMGO;
+        } else if (activityPerformed === 'ECONOMICAL_NAVIGATION') {
+          result = this.selectUser.sailingEconomicConsumptionMGO;
+        } else if (activityPerformed === 'ANCHORED') {
+          result = this.selectUser.anchoredConsumptionMGO;
+        } else if (activityPerformed === 'MANEUVER') {
+          result = this.selectUser.maneuverConsumptionMGO;
+        } else if (activityPerformed === 'OTHER_ACT') {
+          result = this.selectUser.otherConsumptionMGO;
+        } */
+
+
+        // Esto lo pongo por que en mgo, no hay una configuracion.
+        result = this.selectUser.maxMGOConsumption;
+
+      } else if (isIFOorMGOorSPEEDIFOorSPEEDMGO === 'SPEEDIFO') {
+
+        if (activityPerformed === 'SAILING_IN_BALLAST') {
+          result = this.selectUser.contractSpeedSailingBallastIFO;
+        } else if (activityPerformed === 'SAILING_WITH_LADEN') {
+          result = this.selectUser.contractSpeedSailingLadenIFO;
+        } else if (activityPerformed === 'ECONOMICAL_NAVIGATION') {
+          result = this.selectUser.contractSpeedSailingEconomicalIFO;
+        }
+
+      } else if (isIFOorMGOorSPEEDIFOorSPEEDMGO === 'SPEEDMGO') {
+
+        if (activityPerformed === 'SAILING_IN_BALLAST') {
+          result = this.selectUser.contractSpeedSailingBallastMGO;
+        } else if (activityPerformed === 'SAILING_WITH_LADEN') {
+          result = this.selectUser.contractSpeedSailingLadenMGO;
+        } else if (activityPerformed === 'ECONOMICAL_NAVIGATION') {
+          result = this.selectUser.contractSpeedSailingEconomicalMGO;
+        }
+
+      }
+
+    } else if (isVALUEorCHARTER === 'VALUE') {
+
+      // El valor se obtendra segun lo que se desea sea MGO IFO o SPEED
+      if (isIFOorMGOorSPEEDIFOorSPEEDMGO === 'IFO') {
+        result = (dailyReport.steamingTime && this.TotalIFO(dailyReport)) ? (this.TotalIFO(dailyReport) * 24) / dailyReport.steamingTime : 0;
+      } else if (isIFOorMGOorSPEEDIFOorSPEEDMGO === 'MGO') {
+        result = (dailyReport.steamingTime && this.TotalMGO(dailyReport)) ? (this.TotalMGO(dailyReport) * 24) / dailyReport.steamingTime : 0;
+      } else if (isIFOorMGOorSPEEDIFOorSPEEDMGO === 'SPEEDIFO' || isIFOorMGOorSPEEDIFOorSPEEDMGO === 'SPEEDMGO') {
+        result = (dailyReport.steamingTime && dailyReport.distance) ? (dailyReport.distance / dailyReport.steamingTime) : 0;
+      }
+
+    }
+
+    return this.TwoDecimal(result);
+
+  }
+
+  public GenerateColor(value?: number, charter?: number): string {
+    let generateClass = '';
+
+    value = Number(value);
+    charter = Number(charter);
+
+    if (!value && !charter || (value == 0 || charter == 0)) {
+      generateClass = '';
+    } else if (value > charter) {
+      generateClass = 'color-max';
+    } else if (value <= charter) {
+      generateClass = 'color-min';
+    }
+
+    return generateClass;
+  }
 
 }

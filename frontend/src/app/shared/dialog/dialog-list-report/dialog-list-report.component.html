@@ -149,39 +149,78 @@
 
                 <thead>
                     <tr>
-                        <th class="border pt-2">
-                            {{'DATE' | translateMessage:translateCategory}}
-
+                        <th class="color-none">
                         </th>
-                        <th class="border pt-2">
-                            {{'HOUR' | translateMessage:translateCategory}}
-
+                        <th class="color-none">
                         </th>
-                        <th class="border pt-2">
-                            {{'ACTIVITY' | translateMessage:translateCategory}}
+                        <th class="color-none">
                         </th>
-                        <th class="border pt-2">
-                            {{'OBSERVATION' | translateMessage:translateCategory}}
+                        <th class="color-none">
                         </th>
-                        <th class="border pt-2">
-                            {{'DURATION' | translateMessage:translateCategory}}
+                        <th class="color-none">
                         </th>
                         <ng-template [ngIf]="isViewIFO">
-                            <th class="border pt-2">
-                                T.
+                            <th class="border pt-2" colspan="3">
                                 {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
                                 'VLSFO' :
                                 'LSFO') }} (MT)
                             </th>
                         </ng-template>
                         <ng-template [ngIf]="isViewMGO">
-                            <th class="border pt-2">
-                                T. MGO  (MT)
+                            <th class="border pt-2" colspan="3">
+                               MGO (MT)
                             </th>
                         </ng-template>
                         <ng-template [ngIf]="isViewSPEED">
-                            <th class="border pt-2">
+                            <th class="border pt-2" colspan="2">
                                 {{'TITLE_TABLE_SPEED' | translateMessage:translateCategory}}
+                            </th>
+                        </ng-template>
+                    </tr>
+                    <tr>
+                        <th class="blue-1 border pt-2">
+                            {{'DATE' | translateMessage:translateCategory}}
+                        </th>
+                        <th class="blue-1 border pt-2">
+                            {{'HOUR' | translateMessage:translateCategory}}
+                        </th>
+                        <th class="blue-1 border pt-2">
+                            {{'ACTIVITY' | translateMessage:translateCategory}}
+                        </th>
+                        <th class="blue-1 border pt-2">
+                            {{'OBSERVATION' | translateMessage:translateCategory}}
+                        </th>
+                        <th class="blue-1 border pt-2">
+                            {{'DURATION' | translateMessage:translateCategory}}
+                        </th>
+                        <ng-template [ngIf]="isViewIFO">
+                            <th class="blue-1 border pt-2">
+                                {{'TOTAL' | translateMessage:translateCategory}}
+                            </th> 
+                            <th class="blue-2 border pt-2">
+                                {{'DAILY_CONSUMPTION' | translateMessage:translateCategory}}
+                            </th>
+                             <th class="blue-3 border pt-2">
+                                {{'CHARTER' | translateMessage:translateCategory}}
+                            </th>
+                        </ng-template>
+                        <ng-template [ngIf]="isViewMGO">
+                            <th class="blue-1 border pt-2">
+                                {{'TOTAL' | translateMessage:translateCategory}}
+                            </th> 
+                            <th class="blue-2 border pt-2">
+                                {{'DAILY_CONSUMPTION' | translateMessage:translateCategory}}
+                            </th>
+                             <th class="blue-3 border pt-2">
+                                {{'CHARTER' | translateMessage:translateCategory}}
+                            </th>
+                        </ng-template>
+                        <ng-template [ngIf]="isViewSPEED">
+                            <th class="blue-2 border pt-2">
+                                {{'SPEED' | translateMessage:translateCategory}}
+                            </th>
+                            <th class="blue-3 border pt-2">
+                                {{'CHARTER' | translateMessage:translateCategory}}
                             </th>
                         </ng-template>
                     </tr>
@@ -211,17 +250,32 @@
                                     matTooltip="{{ToolTipMoreInformation('IFO',dailyReport)}}">
                                     {{TotalIFO(dailyReport)}}
                                 </td>
+                                <td class="p-1 font-small-1 border"  [ngClass]="GenerateColor(GenerateDailyConsumption('VALUE','IFO',dailyReport),GenerateDailyConsumption('CHARTER','IFO',dailyReport))">
+                                    {{GenerateDailyConsumption('VALUE','IFO',dailyReport)}}
+                                </td>
+                                <td class="p-1 font-small-1 border">
+                                    {{GenerateDailyConsumption('CHARTER','IFO',dailyReport)}}
+                                </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewMGO">
                                 <td class="p-1 font-small-1 border"
                                     matTooltip="{{ToolTipMoreInformation('MGO',dailyReport)}}">
                                     {{TotalMGO(dailyReport)}}
                                 </td>
+                                <td class="p-1 font-small-1 border" [ngClass]="GenerateColor(GenerateDailyConsumption('VALUE','MGO',dailyReport),GenerateDailyConsumption('CHARTER','MGO',dailyReport))">
+                                    {{GenerateDailyConsumption('VALUE','MGO',dailyReport)}}
+                                </td>
+                                <td class="p-1 font-small-1 border">
+                                    {{GenerateDailyConsumption('CHARTER','MGO',dailyReport)}}
+                                </td>
                             </ng-template>
                             <ng-template [ngIf]="isViewSPEED">
                                 <td class="p-1 font-small-1 border"
-                                    matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}">
-                                    {{TwoDecimal(dailyReport.distance / (dailyReport.steamingTime||1),2) }}
+                                    matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}" [ngClass]="GenerateColor(GenerateDailyConsumption('CHARTER','SPEEDIFO',dailyReport),GenerateDailyConsumption('VALUE','SPEEDIFO',dailyReport))">
+                                    {{GenerateDailyConsumption('VALUE','SPEEDIFO',dailyReport)}}
+                                </td>
+                                <td class="p-1 font-small-1 border">
+                                    {{GenerateDailyConsumption('CHARTER','SPEEDIFO',dailyReport)}}
                                 </td>
                             </ng-template>
                         </tr>

@@ -49,6 +49,22 @@
         background: #002171;
         color: #ffffff;
         text-align: center;
+        font-size: 6.5pt;
+        &.color-none{
+          background: none;
+          border-bottom-width: 1px;
+        }
+        &.blue-1 {
+          background: #375f9a;
+        }
+
+        &.blue-2 {
+          background: #0040d8;
+        }
+
+        &.blue-3 {
+          background: #001556;
+        }
       }
     }
   }
@@ -60,6 +76,8 @@
         cursor: pointer;
         animation: all 0.5s;
         transition: all 0.5s;
+        font-size: 8pt !important;
+
       }
 
       &:hover {
@@ -70,6 +88,12 @@
             // color: red !important;
             background: rgb(253, 103, 103);
           }
+          &.color-max {
+            background: rgb(253, 103, 103);
+          }
+          &.color-min {
+            background-color: rgb(42, 235, 67);
+          }
         }
       }
     }
@@ -78,4 +102,12 @@
   .border {
     border-color: #155af5 !important;
   }
+
+.color-max {
+  background: rgb(255, 123, 123);
+}
+.color-min {
+  background-color: rgb(133, 252, 97);
+}
+
 }
