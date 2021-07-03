@@ -29,6 +29,7 @@ import * as TimeZone from 'moment-timezone';
 import { AuthGuardService } from './auth-guard.service';
 import { LoggedUser } from '../models/loggedUser';
 import { UserService } from './user.service';
+import { DatabaseService } from './database.service';
 
 
 @Injectable({
@@ -47,6 +48,7 @@ export class AuthService {
     private languageService: LanguageService,
     private authGuardService: AuthGuardService,
     private userService: UserService,
+    private _databaseService: DatabaseService,
   ) {
     console.log('Constructor');
 
@@ -128,12 +130,22 @@ export class AuthService {
     return this.loggedUser;
   }
 
+  // Al deslogearnos tenemos que borrar los datos.
   Logout(): boolean {
 
-    localStorage.clear();
     this.session = null;
     this.loggedUser = null;
 
+    localStorage.clear();
+    
+    this._databaseService.DeleteDataBase();
+
+    // REVISAR=> Esta es una solucion rapida.
+    // No me gusta que se tenga que recargar el sitio luego de cerar session.
+    // Tampoco se si es sincrono, si se hace el reload luego eliminar la bd.
+    // esto podria generar un error.
+    // Revisar vien alfondo si el DeleteDataBase(); esta esperando caso contrario colocar then que es lo mas seguro para saber que es sincrono.
+    location.reload();
     return false;
 
   }
