@@ -172,14 +172,14 @@ export const user: any = {
     NEW_USER: 'New User',
     COMFIMR_DISCARD_CHANGES: 'There are unsaved changes, do you want to discard the changes?',
     COMFIRM_DISCARD_DESCRIPTION: 'The changes are irreversible.',
-    MIN_CONSUMPTION_MGO: 'Minimum daily consumption MGO',
-    MAX_CONSUMPTION_MGO: 'Maximum daily consumption MGO',
-    MIN_CONSUMPTION_IFO: 'Minimum daily consumption IFO',
-    MIN_CONSUMPTION_VLSFO: 'Minimum daily consumption VLSFO',
-    MIN_CONSUMPTION_LSFO: 'Minimum daily consumption LSFO',
-    MAX_CONSUMPTION_IFO: 'Maximum daily consumption IFO',
-    MAX_CONSUMPTION_VLSFO: 'Maximum daily consumption VLSFO',
-    MAX_CONSUMPTION_LSFO: 'Maximum daily consumption LSFO',
+    MIN_CONSUMPTION_MGO: 'Min daily consumption MGO',
+    MAX_CONSUMPTION_MGO: 'Max daily consumption MGO',
+    MIN_CONSUMPTION_IFO: 'Min daily consumption IFO',
+    MIN_CONSUMPTION_VLSFO: 'Min daily consumption VLSFO',
+    MIN_CONSUMPTION_LSFO: 'Min daily consumption LSFO',
+    MAX_CONSUMPTION_IFO: 'Max daily consumption IFO',
+    MAX_CONSUMPTION_VLSFO: 'Max daily consumption VLSFO',
+    MAX_CONSUMPTION_LSFO: 'Max daily consumption LSFO',
     CONSUMPTION_TABLE_CONFIGURATION: 'Consumption Table Configuration',
     CONSUMPTIONEQUIPMENTME_MGO: 'C. M.E.',
     CONSUMPTIONEQUIPMENTAE_MGO: 'C. A.E.',
@@ -192,7 +192,7 @@ export const user: any = {
     CONSUMPTIONEQUIPMENTBOILER_IFO: 'C. Boiler',
     CONSUMPTIONEQUIPMENTOTHER_IFO: 'C. Other',
     NEW_YEAR: 'New year',
-
+    VESSEL_CONFIGURATION:'Vessel Configuration'
 };
 
 export const fileUpload: any = {
