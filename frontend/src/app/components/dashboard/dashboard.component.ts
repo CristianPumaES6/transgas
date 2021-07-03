@@ -302,6 +302,8 @@ export class DashboardComponent implements OnInit {
         // Seleccionaremos el primer buque del arreglo.
         let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
 
+        if (!firstUser) throw 'NO_BUQUE_REGISTER';
+
         return this.SelectUser(firstUser.id);
       }
     ).then(
