@@ -80,6 +80,8 @@ export class ApplicationComponent implements OnInit {
     this.version = EnvConfig.VERSION;
     // Obtenemos los datos de la session.
     this.loggedUser = this.authService.GetLoggedUser();
+    // Obtenemos el estado en linea
+    this.isOnline = this.onlineOfflineService.GetStatusOnline();
 
     // Configuracion de stylos por jqery
     this.ConfigStyleFromJquery();
