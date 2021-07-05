@@ -1544,7 +1544,7 @@ export class DashboardComponent implements OnInit {
                             totalConsumptionByPortIFO += + totalConsumptionByReportIFO;
                             totalConsumptionByPortMGO += totalConsumptionByReportMGO;
                             // Agregamos los datos de distancia y tiempo 
-                            totalSpeedByPort.add(report.distance, report.steamingTime);
+                     
 
                             // Sumamos el consumo MGO
                             this.consumptionTotalMGO.mpal += report.mplaMgo;
@@ -1565,6 +1565,20 @@ export class DashboardComponent implements OnInit {
                             let sumIFO = this.SumaIfo(report);
                             let sumMGO = this.SumaMgo(report);
 
+                            // Solo si hay distancia agregaremos la info de la velocidad.
+                            if(report.distance > 0){
+                              totalSpeedByPort.add(report.distance, report.steamingTime);
+                            }
+                            // Solo si hay consumo de IFO agregaremos la informacion
+                            if(sumIFO > 0) {
+                              // Agregamos los datos de distancia y tiempo 
+                              totalSpeedByPort.addInfoIFO(report.distance, report.steamingTime);
+                            }
+                            // Solo si hay consumo de MGO agregaremos la informacion
+                            if(sumMGO > 0) {
+                              // Agregamos los datos de distancia y tiempo 
+                              totalSpeedByPort.addInfoMGO(report.distance, report.steamingTime);
+                            }
                             // Agregamos el consumo total y bunkering.
                             this.consumptionAndBunkering.ifoConsumption += sumIFO;
                             this.consumptionAndBunkering.mgoConsumption += sumMGO;
@@ -1628,6 +1642,11 @@ export class DashboardComponent implements OnInit {
                     totalConsumptionByVoyageIFO = totalConsumptionByVoyageIFO + totalConsumptionByPortIFO;
                     totalConsumptionByVoyageMGO = totalConsumptionByVoyageMGO + totalConsumptionByPortMGO;
                     totalSpeedByVoyage.add(totalSpeedByPort.distance, totalSpeedByPort.steamingTime);
+                    // Agregamos la informacion IFO Y MGO
+                    totalSpeedByVoyage.addInfoIFO(totalSpeedByPort.distanceIFO, totalSpeedByPort.timeOperationIFO);
+                    totalSpeedByVoyage.addInfoMGO(totalSpeedByPort.distanceMGO, totalSpeedByPort.timeOperationMGO);
+
+                    
 
                     // Total bunkering IFO
                     totalBunkeringIFOByVoyage += totalBunkeringIFOByPort;
@@ -1977,7 +1996,7 @@ export class DashboardComponent implements OnInit {
           if (voyage.totalIFO > 0) {
 
             // Formular para el consumo diario.
-            let consumptionDailyIFO = voyage.totalSpeed.steamingTime ? (voyage.totalIFO * 24) / voyage.totalSpeed.steamingTime : 0;
+            let consumptionDailyIFO = voyage.totalSpeed.timeOperationIFO ? (voyage.totalIFO * 24) / voyage.totalSpeed.timeOperationIFO : 0;
 
             // Se lo agregaoms a la data IFO
             this.dataIFO.push(
@@ -1995,7 +2014,7 @@ export class DashboardComponent implements OnInit {
           if (voyage.totalMGO > 0) {
 
             // Formular para el consumo diario.
-            let consumptionDailyMGO = voyage.totalSpeed.steamingTime ? (voyage.totalMGO * 24) / voyage.totalSpeed.steamingTime : 0;
+            let consumptionDailyMGO = voyage.totalSpeed.timeOperationMGO ? (voyage.totalMGO * 24) / voyage.totalSpeed.timeOperationMGO : 0;
 
             // Se lo agregaoms a la data MGO
             this.dataMGO.push(
@@ -2054,7 +2073,7 @@ export class DashboardComponent implements OnInit {
                 if (port.robIfo > 0) {
 
                   // Formular para el consumo diario.
-                  let consumptionDailyIFO = port.speed.steamingTime ? (port.robIfo * 24) / port.speed.steamingTime : 0;
+                  let consumptionDailyIFO = port.speed.timeOperationIFO ? (port.robIfo * 24) / port.speed.timeOperationIFO : 0;
 
                   // Informacion para la dataIFO
                   this.dataIFO.push(
@@ -2071,7 +2090,7 @@ export class DashboardComponent implements OnInit {
                 if (port.robMgo > 0) {
 
                   // Formular para el consumo diario.
-                  let consumptionDailyMGO = port.speed.steamingTime ? (port.robMgo * 24) / port.speed.steamingTime : 0;
+                  let consumptionDailyMGO = port.speed.timeOperationMGO ? (port.robMgo * 24) / port.speed.timeOperationMGO : 0;
 
                   // Informacion para la dataIFO
                   this.dataMGO.push(
@@ -2134,16 +2153,58 @@ export class DashboardComponent implements OnInit {
                             // Obtenemos los datos de velocidad.
                             let speedI: Speed = this.dataSPEED[iL].speed;
 
-                            // Agregamos la distancia y velocidad.
-                            speedI.add(report.distance, report.steamingTime);
-                            // calculamos la velocidad.
-                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
-                            // Actualizamos el calculo de la velocidad.
-                            this.dataSPEED[iL].y = ySpeed;
+                            // Si la distancia es mayor a 0
+                            if(report.distance > 0) {
+                              // Agregamos la distancia y velocidad.
+                              speedI.add(report.distance, report.steamingTime);
+                              // calculamos la velocidad.
+                              let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
+                              // Actualizamos el calculo de la velocidad.
+                              this.dataSPEED[iL].y = ySpeed;
+                              // Linea maxima SPEED
+                              if (ySpeed > this.configLineaSPEED.lineaMax) {
+                                this.configLineaSPEED.lineaMax = ySpeed;
+                              }
+                            }
 
+                            // IFO
+                            let totalIFO = this.SumaIfo(report);
+                            // Sumamos el consumo
+                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + totalIFO;
+                            if( totalIFO > 0 ) {
+                              // Agregamos la distancia y velocidad como info IFO
+                              speedI.addInfoIFO(report.distance, report.steamingTime); 
+                              // Formula DayliConsumption
+                              let dayliConsumptionIFO = speedI.timeOperationIFO ? (totalConsumptionIFO * 24) / speedI.timeOperationIFO : 0;
+                              this.dataIFO[iL].y = dayliConsumptionIFO;  
+                              // Linea maxima IFO
+                              if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                                this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                              }
+                            }
+
+
+                            // MGO
+                            let totalMGO = this.SumaMgo(report);
+                            // Sumamos el consumo
+                            let totalConsumptionMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
+                            if( totalMGO > 0 ) {
+                              // Agregamos la distancia y velocidad como info MGO
+                              speedI.addInfoMGO(report.distance, report.steamingTime);
+                              // Formula DayliConsumption
+                              let dayliConsumptionMGO = speedI.timeOperationMGO ? (totalConsumptionMGO * 24) / speedI.timeOperationMGO : 0;
+                              // Daily consumptionMGO
+                              this.dataMGO[iL].y = dayliConsumptionMGO;
+                              // Linea maxima MGO
+                              if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                                this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                              }
+                            }
+
+
+                            this.dataSPEED[iL].speed = speedI;
                             // ACTUALIZMAOS EL VALOR POR POSICION.
                             // Actualizamos los datos de la velocidad
-                            this.dataSPEED[iL].speed = speedI;
                             this.dataIFO[iL].speed = speedI;
                             this.dataMGO[iL].speed = speedI;
 
@@ -2170,20 +2231,6 @@ export class DashboardComponent implements OnInit {
                             this.dataSPEED[iL].totalReport = this.dataSPEED[iL].totalReport + 1;
 
 
-                            // IFO
-                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + this.SumaIfo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
-                            this.dataIFO[iL].y = dayliConsumptionIFO;
-
-                            // MGO
-                            let totalConsumptionMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
-
-                            // Formula DayliConsumption
-                            let dayliConsumptionMGO = speedI.steamingTime ? (totalConsumptionMGO * 24) / speedI.steamingTime : 0;
-                            // Daily consumptionMGO
-                            this.dataMGO[iL].y = dayliConsumptionMGO;
-
 
 
                             // Actualizamos los datos al dataIfo Chart.
@@ -2202,18 +2249,6 @@ export class DashboardComponent implements OnInit {
                             this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
                             this.dataSPEED[iL].totalBunkeringIFO += report.bunkeringIfo;
                             this.dataSPEED[iL].totalBunkeringMGO += report.bunkeringMgo;
-
-
-                            // Verificamos que la linea maxima sea mayor al valor del chart-
-                            if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                              this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                            }
-                            if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                              this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                            }
-                            if (ySpeed > this.configLineaSPEED.lineaMax) {
-                              this.configLineaSPEED.lineaMax = ySpeed;
-                            }
 
                             // retornamos tru para agregarlo al filtro
                             return true;
@@ -2236,24 +2271,48 @@ export class DashboardComponent implements OnInit {
                         this.xLabelReport.push(day);
 
                         // Le agregamos los datos de velocidad.
-                        let newSpeed = new Speed(report.distance, report.steamingTime);
-                        // Agregamos los datos de velocidad.
-                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
-
+                        let newSpeed = new Speed();
+                        let ySpeed = 0;
+                        if(report.distance > 0){
+                          newSpeed.add(newSpeed.distance, newSpeed.steamingTime);
+                          // Agregamos los datos de velocidad.
+                          ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+                          if (ySpeed > this.configLineaSPEED.lineaMax) {
+                            this.configLineaSPEED.lineaMax = ySpeed;
+                          }
+                        }
 
                         // DATOS IFO
                         // Calculamos el total de consumo ifo
                         let totalConsumptionIFO = this.SumaIfo(report);
-                        // Formula DayliConsumption
-                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptionIFO * 24) / newSpeed.steamingTime : 0;
-
+                        let dayliConsumptionIFO =0;
+                        if(totalConsumptionIFO > 0){
+                          newSpeed.addInfoIFO(report.distance,report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionIFO = newSpeed.timeOperationIFO ? (totalConsumptionIFO * 24) / newSpeed.timeOperationIFO : 0;
+                          // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+                          if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                            this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                          }
+                        }
 
 
                         // DATOS MGO
                         // Calculamos el total de consumo ifo
                         let totalConsumptionMGO = this.SumaMgo(report);
                         // Formula DayliConsumption
-                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
+                        let dayliConsumptionMGO = 0;
+                        if(totalConsumptionMGO > 0){
+                          // AGregamos la informacion mgo
+                          newSpeed.addInfoMGO(report.distance,report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionMGO = newSpeed.timeOperationMGO ? (totalConsumptionMGO * 24) / newSpeed.timeOperationMGO : 0;
+                          // Verificamos que el consumo sea mayor a la linea maxima
+                          if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                            this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                          }
+                        }
+
 
                         // ROB total.
                         let totalBunkeringIFO = report.bunkeringIfo;
@@ -2269,18 +2328,6 @@ export class DashboardComponent implements OnInit {
                         this.dataSPEED.push(
                           { x: day, y: ySpeed, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
                         );
-
-
-                        // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
-                        if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                          this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                        }
-                        if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                          this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                        }
-                        if (ySpeed > this.configLineaSPEED.lineaMax) {
-                          this.configLineaSPEED.lineaMax = ySpeed;
-                        }
 
                       }
                     }
@@ -2305,12 +2352,53 @@ export class DashboardComponent implements OnInit {
                             // Obtenemos los datos de velocidad.
                             let speedI: Speed = this.dataSPEED[iL].speed;
 
-                            // Agregamos la distancia y velocidad.
-                            speedI.add(report.distance, report.steamingTime);
+                            // Si la distancia es mayor a 0
+                            if(report.distance > 0) {
+                              // Agregamos la distancia y velocidad.
+                              speedI.add(report.distance, report.steamingTime);
+                              // Actualizamos el vlaor por la posicion.
+                              let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
+                              this.dataSPEED[iL].y = ySpeed;
+                              // Linea maxima SPEED
+                              if (ySpeed > this.configLineaSPEED.lineaMax) {
+                                this.configLineaSPEED.lineaMax = ySpeed;
+                              }
+                            }
 
-                            // Actualizamos el vlaor por la posicion.
-                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
-                            this.dataSPEED[iL].y = ySpeed;
+
+                            // IFO
+                            let totalIFO = this.SumaIfo(report);
+                            // Sumamos el consumo
+                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + totalIFO;
+                            if( totalIFO > 0 ) {
+                              // Agregamos la distancia y velocidad como info IFO
+                              speedI.addInfoIFO(report.distance, report.steamingTime); 
+                              // Formula DayliConsumption
+                              let dayliConsumptionIFO = speedI.timeOperationIFO ? (totalConsumptionIFO * 24) / speedI.timeOperationIFO : 0;
+                              // Actualizamos los datos al dataIfo Chart.
+                              this.dataIFO[iL].y = dayliConsumptionIFO;
+                              // Verificamos que la linea maxima sea mayor al valor del chart-
+                              if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                                this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                              }
+                            }
+
+                            // MGO
+                            let totalMGO = this.SumaMgo(report);
+                            let totalConsumptionMGO = this.dataMGO[iL].totalConsumptionMGO + totalMGO;
+                            if( totalMGO > 0 ) {
+                              // Agregamos la distancia y velocidad como info MGO
+                              speedI.addInfoMGO(report.distance, report.steamingTime);
+                              // Formula DayliConsumption
+                              let dayliConsumptionMGO = speedI.timeOperationMGO ? (totalConsumptionMGO * 24) / speedI.timeOperationMGO : 0;
+                              // Actualizamos los datos al dataMGO Chart.
+                              this.dataMGO[iL].y = dayliConsumptionMGO;
+                              // Linea maxima MGO
+                              if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                                this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                              }
+                            }
+                          
 
                             // ACTUALIZMAOS EL VALOR POR POSICION
                             // Actualizamos los datos de la velocidad
@@ -2343,25 +2431,11 @@ export class DashboardComponent implements OnInit {
                             this.dataSPEED[iL].totalReport = this.dataSPEED[iL].totalReport + 1;
 
 
-                            // IFO
-                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + this.SumaIfo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
-
                             // Sumamos el Bunkering
                             let totalBunkeringIFO = this.dataIFO[iL].totalBunkeringIFO + report.bunkeringIfo;
                             let totalBunkeringMGO = this.dataIFO[iL].totalBunkeringMGO + report.bunkeringMgo;
 
-                            // Actualizamos los datos al dataIfo Chart.
-                            this.dataIFO[iL].y = dayliConsumptionIFO;
-
-                            // MGO
-                            let totalConsumptionMGO = this.dataMGO[iL].totalConsumptionMGO + this.SumaMgo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionMGO = speedI.steamingTime ? (totalConsumptionMGO * 24) / speedI.steamingTime : 0;
-                            // Actualizamos los datos al dataMGO Chart.
-                            this.dataMGO[iL].y = dayliConsumptionMGO;
-
+                           
                             // Actualizamos el total de consumo.
                             this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
@@ -2394,16 +2468,6 @@ export class DashboardComponent implements OnInit {
                             this.dataSPEED[iL].dataExtra = dataExtra;
 
 
-                            // Verificamos que la linea maxima sea mayor al valor del chart-
-                            if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                              this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                            }
-                            if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                              this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                            }
-                            if (ySpeed > this.configLineaSPEED.lineaMax) {
-                              this.configLineaSPEED.lineaMax = ySpeed;
-                            }
 
 
                             // retornamos tru para agregarlo al filtro
@@ -2430,17 +2494,31 @@ export class DashboardComponent implements OnInit {
                         dataExtra.push(report)
 
                         // Le agregamos los datos de velocidad.
-                        let newSpeed = new Speed(report.distance, report.steamingTime);
-                        // Agregamos los datos de velocidad.
-                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
-
+                        let newSpeed = new Speed();
+                        let ySpeed = 0;
+                        if(report.distance > 0){
+                          newSpeed.add(newSpeed.distance, newSpeed.steamingTime);
+                          // Agregamos los datos de velocidad.
+                          ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+                          if (ySpeed > this.configLineaSPEED.lineaMax) {
+                            this.configLineaSPEED.lineaMax = ySpeed;
+                          }
+                        }
 
                         // DATOS IFO
                         // Calculamos el total de consumo ifo
                         let totalConsumptionIFO = this.SumaIfo(report);
                         // Formula DayliConsumption
-                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptionIFO * 24) / newSpeed.steamingTime : 0;
-
+                        let dayliConsumptionIFO = 0;
+                        if(totalConsumptionIFO > 0){
+                          newSpeed.addInfoIFO(report.distance,report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionIFO = newSpeed.timeOperationIFO ? (totalConsumptionIFO * 24) / newSpeed.timeOperationIFO : 0;
+                          // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+                          if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                            this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                          }
+                        }
 
 
                         // DATOS MGO
@@ -2448,7 +2526,16 @@ export class DashboardComponent implements OnInit {
                         let totalConsumptionMGO = this.SumaMgo(report);
                         // Formula DayliConsumption
                         let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
-
+                        if(totalConsumptionMGO > 0){
+                          // AGregamos la informacion mgo
+                          newSpeed.addInfoMGO(report.distance,report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionMGO = newSpeed.timeOperationMGO ? (totalConsumptionMGO * 24) / newSpeed.timeOperationMGO : 0;
+                          // Verificamos que el consumo sea mayor a la linea maxima
+                          if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                            this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                          } 
+                        }
                         let totalBunkeringIFO = report.bunkeringIfo;
                         let totalBunkeringMGO = report.bunkeringMgo;
 
@@ -2464,18 +2551,6 @@ export class DashboardComponent implements OnInit {
                         this.dataMGO.push(
                           { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
                         );
-
-
-                        // Verificamos que la configuracion de la linea maxima se  mayor al valor del chart.
-                        if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                          this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                        }
-                        if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                          this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                        }
-                        if (ySpeed > this.configLineaSPEED.lineaMax) {
-                          this.configLineaSPEED.lineaMax = ySpeed;
-                        }
 
                       }
 
@@ -3220,6 +3295,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  // GetToolTipConfig() Genera toolTipo p
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
 
     // resultado de tooltip
@@ -3346,7 +3422,7 @@ export class DashboardComponent implements OnInit {
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && voyage.totalBunkeringIFO > 0) {
+              && voyage.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
@@ -3355,7 +3431,7 @@ export class DashboardComponent implements OnInit {
 
             }
             if (this.selectUser.isConsumptionMGO
-              && voyage.totalBunkeringMGO > 0
+              && voyage.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
               result.push('T. Bunkering MGO :    ' + mathRound(voyage.totalBunkeringMGO, 2) + ' mt');
@@ -3365,7 +3441,7 @@ export class DashboardComponent implements OnInit {
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && voyage.totalIFO > 0) {
+              && voyage.totalIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
@@ -3373,25 +3449,48 @@ export class DashboardComponent implements OnInit {
               result.push(textIFOorVLSFOorLSFO);
 
             }
+
             if (this.selectUser.isConsumptionMGO
-              && voyage.totalMGO > 0
+              && voyage.totalMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-
               result.push('T. Consumption MGO :    ' + mathRound(voyage.totalMGO, 2) + ' mt');
-
             }
 
-            if (voyage.totalSpeed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(voyage.totalSpeed.steamingTime, 2) + ' hrs');
-            }
-            if (voyage.totalSpeed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distance, 2) + ' mi');
+
+            
+
+            if (configIFOorMGOorSPEED === 'IFO') {
+              
+              if (voyage.totalSpeed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + mathRound(voyage.totalSpeed.timeOperationIFO, 2) + ' hrs');
+              }
+              if (voyage.totalSpeed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distanceIFO, 2) + ' mi');
+              }
+
+            } else if(configIFOorMGOorSPEED === 'MGO') {
+
+              if (voyage.totalSpeed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + mathRound(voyage.totalSpeed.timeOperationMGO, 2) + ' hrs');
+              }
+              if (voyage.totalSpeed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distanceMGO, 2) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+
+              if (voyage.totalSpeed.steamingTime > 0) {
+                result.push('T. Time :    ' + mathRound(voyage.totalSpeed.steamingTime, 2) + ' hrs');
+              }
+              if (voyage.totalSpeed.distance > 0) {
+                result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distance, 2) + ' mi');
+              }
+              let calSpeed = mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
 
-            let calSpeed = mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed + ' kn');
-            }
 
           } else if (this.selectSummaryBy === 'PORTS') {
 
@@ -3413,14 +3512,14 @@ export class DashboardComponent implements OnInit {
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && port.totalBunkeringIFO > 0) {
+              && port.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
               textIFOorVLSFOorLSFO += ' :    ' + + mathRound(port.totalBunkeringIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
-              && port.totalBunkeringMGO > 0
+              && port.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
               result.push('T. Bunkering MGO :    ' + mathRound(port.totalBunkeringMGO, 2) + ' mt');
             }
@@ -3428,7 +3527,7 @@ export class DashboardComponent implements OnInit {
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && port.robIfo > 0) {
+              && port.robIfo > 0 && configIFOorMGOorSPEED === 'IFO') {
 
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
@@ -3440,23 +3539,46 @@ export class DashboardComponent implements OnInit {
 
             }
             if (this.selectUser.isConsumptionMGO
-              && port.robMgo > 0
+              && port.robMgo > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
               result.push('T. Consumption MGO:    ' + mathRound(port.robMgo, 2) + ' mt');
 
             }
 
-            if (port.speed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(port.speed.steamingTime, 2) + ' hrs');
+
+            if (configIFOorMGOorSPEED === 'IFO') {
+              
+              if (port.speed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + mathRound(port.speed.timeOperationIFO, 2) + ' hrs');
+              }
+              if (port.speed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + mathRound(port.speed.distanceIFO, 2) + ' mi');
+              }
+
+            } else if(configIFOorMGOorSPEED === 'MGO') {
+
+              if (port.speed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + mathRound(port.speed.timeOperationMGO, 2) + ' hrs');
+              }
+              if (port.speed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + mathRound(port.speed.distanceMGO, 2) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+
+              if (port.speed.steamingTime > 0) {
+                result.push('T. Time :    ' + mathRound(port.speed.steamingTime, 2) + ' hrs');
+              }
+              if (port.speed.distance > 0) {
+                result.push('T. Distance :    ' + mathRound(port.speed.distance, 2) + ' mi');
+              }
+              let calSpeed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
-            if (port.speed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(port.speed.distance, 2) + ' mi');
-            }
-            let calSpeed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed + ' kn');
-            }
+
 
           } else if (this.selectSummaryBy === 'MONTHS') {
 
@@ -3473,14 +3595,14 @@ export class DashboardComponent implements OnInit {
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalBunkeringIFO > 0) {
+              && chartPoint.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
               textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalBunkeringMGO > 0
+              && chartPoint.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
               result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2) + ' mt');
             }
@@ -3488,7 +3610,7 @@ export class DashboardComponent implements OnInit {
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalConsumptionIFO > 0) {
+              && chartPoint.totalConsumptionIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
@@ -3497,7 +3619,7 @@ export class DashboardComponent implements OnInit {
 
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalConsumptionMGO > 0
+              && chartPoint.totalConsumptionMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
               result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2) + ' mt');
@@ -3508,17 +3630,36 @@ export class DashboardComponent implements OnInit {
 
 
 
-            if (chartPoint.speed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
-            }
-            if (chartPoint.speed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
-            }
+            if (configIFOorMGOorSPEED === 'IFO') {
+              
+              if (chartPoint.speed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationIFO, 2) + ' hrs');
+              }
+              if (chartPoint.speed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceIFO, 2) + ' mi');
+              }
 
+            } else if(configIFOorMGOorSPEED === 'MGO') {
 
-            let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed + ' kn');
+              if (chartPoint.speed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationMGO, 2) + ' hrs');
+              }
+              if (chartPoint.speed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceMGO, 2) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+
+              if (chartPoint.speed.steamingTime > 0) {
+                result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
+              }
+              if (chartPoint.speed.distance > 0) {
+                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
+              }
+              let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
 
           } else if (this.selectSummaryBy === 'DAYS') {
@@ -3556,14 +3697,14 @@ export class DashboardComponent implements OnInit {
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalBunkeringIFO > 0) {
+              && chartPoint.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
               textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalBunkeringMGO > 0
+              && chartPoint.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
               result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2) + ' mt');
             }
@@ -3571,7 +3712,7 @@ export class DashboardComponent implements OnInit {
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalConsumptionIFO > 0) {
+              && chartPoint.totalConsumptionIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
@@ -3580,24 +3721,43 @@ export class DashboardComponent implements OnInit {
 
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalConsumptionMGO > 0
+              && chartPoint.totalConsumptionMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
               result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2) + ' mt');
 
             }
 
-            if (chartPoint.speed.steamingTime > 0) {
-              result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
-            }
-            if (chartPoint.speed.distance > 0) {
-              result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
-            }
+            if (configIFOorMGOorSPEED === 'IFO') {
+              
+              if (chartPoint.speed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationIFO, 2) + ' hrs');
+              }
+              if (chartPoint.speed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceIFO, 2) + ' mi');
+              }
 
+            } else if(configIFOorMGOorSPEED === 'MGO') {
 
-            let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed :    ' + calSpeed + ' kn');
+              if (chartPoint.speed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationMGO, 2) + ' hrs');
+              }
+              if (chartPoint.speed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceMGO, 2) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+
+              if (chartPoint.speed.steamingTime > 0) {
+                result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
+              }
+              if (chartPoint.speed.distance > 0) {
+                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
+              }
+              let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
 
             if (activities.length > 4) {
