@@ -1897,73 +1897,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  // Configuracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
-  // esta configuracion depente del selectSummary
-  private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
-
-    // Variable que retornara la configuracion
-    let config: any = {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          fontColor: '#b8d1ff',
-          max: lineaMax,
-        },
-        gridLines: {
-          display: true,
-          color: '#b8d1ff'
-        },
-      }],
-      xAxes: [{
-        type: '',// ES SE MODIFICA ABAJO // 'category' or 'time'
-        //  time: {} // Se modificara abajo.
-        ticks: {
-          beginAtZero: true,
-          fontColor: '#b8d1ff',
-        },
-        position: 'bottom', // NO QUE HACE ESTO
-        gridLines: {
-          display: true,
-          color: '#b8d1ff'
-        },
-      }]
-    };
-
-    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
-
-      config.xAxes[0].type = 'category';
-
-    } else if (this.selectSummaryBy === 'MONTHS') {
-
-      config.xAxes[0].type = 'time';
-      config.xAxes[0].time = {
-
-        displayFormats: {
-          day: 'MM/YY'
-        },
-        tooltipFormat: 'MM/DD/YY',
-        unit: 'month',
-
-      }
-
-    } else if (this.selectSummaryBy === 'DAYS') {
-
-      config.xAxes[0].type = 'time';
-      config.xAxes[0].time = {
-
-        displayFormats: {
-          day: 'MM/DD'
-        },
-        tooltipFormat: 'MM/DD/YY',
-        unit: 'day',
-
-      }
-
-    }
-
-    return config;
-  }
-
   // Genera los datos del Dashboard por Summary
   private async GenerateDashboardBySumary(setDate: boolean): Promise<boolean> {
     console.log('GenerateDashboardBySumary()');
@@ -2021,7 +1954,7 @@ export class DashboardComponent implements OnInit {
 
 
     // Creamos esta variable para que nos avise cuando hay un nuevo registro
-    // esta variable solo se usa en los filtro Sumary por mes y dia.
+    // Esta variable solo se usa en los filtro Sumary por mes y dia
     let isAddNewVoyage: boolean = false;
 
     // Generar Viajes.
@@ -2031,7 +1964,7 @@ export class DashboardComponent implements OnInit {
         // Generamos el texto para los labels del Chart
         let txtLabelChart: string = '';
 
-        // Verificamos si el sumary es por años
+        // Verificamos si el resumen que deseamos es por Viaje
         if (this.selectSummaryBy === 'VOYAGES') {
 
           // Armamos el texto de label para viajes.
@@ -2570,6 +2503,72 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  // Configuracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
+  // esta configuracion depente del selectSummary
+  private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
+
+    // Variable que retornara la configuracion
+    let config: any = {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+          max: lineaMax,
+        },
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }],
+      xAxes: [{
+        type: '',// ES SE MODIFICA ABAJO // 'category' or 'time'
+        //  time: {} // Se modificara abajo.
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+        },
+        position: 'bottom', // NO QUE HACE ESTO
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }]
+    };
+
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
+
+      config.xAxes[0].type = 'category';
+
+    } else if (this.selectSummaryBy === 'MONTHS') {
+
+      config.xAxes[0].type = 'time';
+      config.xAxes[0].time = {
+
+        displayFormats: {
+          day: 'MM/YY'
+        },
+        tooltipFormat: 'MM/DD/YY',
+        unit: 'month',
+
+      }
+
+    } else if (this.selectSummaryBy === 'DAYS') {
+
+      config.xAxes[0].type = 'time';
+      config.xAxes[0].time = {
+
+        displayFormats: {
+          day: 'MM/DD'
+        },
+        tooltipFormat: 'MM/DD/YY',
+        unit: 'day',
+
+      }
+
+    }
+
+    return config;
+  }
 
   // GenetareLineIFO(): Generar linea en los canvas.
   private GenetareLineIFO(): boolean {
