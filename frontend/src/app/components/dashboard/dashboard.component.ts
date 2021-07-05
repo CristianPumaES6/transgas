@@ -1544,7 +1544,7 @@ export class DashboardComponent implements OnInit {
                             totalConsumptionByPortIFO += + totalConsumptionByReportIFO;
                             totalConsumptionByPortMGO += totalConsumptionByReportMGO;
                             // Agregamos los datos de distancia y tiempo 
-                     
+
 
                             // Sumamos el consumo MGO
                             this.consumptionTotalMGO.mpal += report.mplaMgo;
@@ -1566,16 +1566,16 @@ export class DashboardComponent implements OnInit {
                             let sumMGO = this.SumaMgo(report);
 
                             // Solo si hay distancia agregaremos la info de la velocidad.
-                            if(report.distance > 0){
+                            if (report.distance > 0) {
                               totalSpeedByPort.add(report.distance, report.steamingTime);
                             }
                             // Solo si hay consumo de IFO agregaremos la informacion
-                            if(sumIFO > 0) {
+                            if (sumIFO > 0) {
                               // Agregamos los datos de distancia y tiempo 
                               totalSpeedByPort.addInfoIFO(report.distance, report.steamingTime);
                             }
                             // Solo si hay consumo de MGO agregaremos la informacion
-                            if(sumMGO > 0) {
+                            if (sumMGO > 0) {
                               // Agregamos los datos de distancia y tiempo 
                               totalSpeedByPort.addInfoMGO(report.distance, report.steamingTime);
                             }
@@ -1646,7 +1646,7 @@ export class DashboardComponent implements OnInit {
                     totalSpeedByVoyage.addInfoIFO(totalSpeedByPort.distanceIFO, totalSpeedByPort.timeOperationIFO);
                     totalSpeedByVoyage.addInfoMGO(totalSpeedByPort.distanceMGO, totalSpeedByPort.timeOperationMGO);
 
-                    
+
 
                     // Total bunkering IFO
                     totalBunkeringIFOByVoyage += totalBunkeringIFOByPort;
@@ -2154,7 +2154,7 @@ export class DashboardComponent implements OnInit {
                             let speedI: Speed = this.dataSPEED[iL].speed;
 
                             // Si la distancia es mayor a 0
-                            if(report.distance > 0) {
+                            if (report.distance > 0) {
                               // Agregamos la distancia y velocidad.
                               speedI.add(report.distance, report.steamingTime);
                               // calculamos la velocidad.
@@ -2171,12 +2171,12 @@ export class DashboardComponent implements OnInit {
                             let totalIFO = this.SumaIfo(report);
                             // Sumamos el consumo
                             let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + totalIFO;
-                            if( totalIFO > 0 ) {
+                            if (totalIFO > 0) {
                               // Agregamos la distancia y velocidad como info IFO
-                              speedI.addInfoIFO(report.distance, report.steamingTime); 
+                              speedI.addInfoIFO(report.distance, report.steamingTime);
                               // Formula DayliConsumption
                               let dayliConsumptionIFO = speedI.timeOperationIFO ? (totalConsumptionIFO * 24) / speedI.timeOperationIFO : 0;
-                              this.dataIFO[iL].y = dayliConsumptionIFO;  
+                              this.dataIFO[iL].y = dayliConsumptionIFO;
                               // Linea maxima IFO
                               if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
                                 this.configLineaIFO.lineaMax = dayliConsumptionIFO;
@@ -2188,7 +2188,7 @@ export class DashboardComponent implements OnInit {
                             let totalMGO = this.SumaMgo(report);
                             // Sumamos el consumo
                             let totalConsumptionMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
-                            if( totalMGO > 0 ) {
+                            if (totalMGO > 0) {
                               // Agregamos la distancia y velocidad como info MGO
                               speedI.addInfoMGO(report.distance, report.steamingTime);
                               // Formula DayliConsumption
@@ -2273,7 +2273,7 @@ export class DashboardComponent implements OnInit {
                         // Le agregamos los datos de velocidad.
                         let newSpeed = new Speed();
                         let ySpeed = 0;
-                        if(report.distance > 0){
+                        if (report.distance > 0) {
                           newSpeed.add(newSpeed.distance, newSpeed.steamingTime);
                           // Agregamos los datos de velocidad.
                           ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
@@ -2285,9 +2285,9 @@ export class DashboardComponent implements OnInit {
                         // DATOS IFO
                         // Calculamos el total de consumo ifo
                         let totalConsumptionIFO = this.SumaIfo(report);
-                        let dayliConsumptionIFO =0;
-                        if(totalConsumptionIFO > 0){
-                          newSpeed.addInfoIFO(report.distance,report.steamingTime);
+                        let dayliConsumptionIFO = 0;
+                        if (totalConsumptionIFO > 0) {
+                          newSpeed.addInfoIFO(report.distance, report.steamingTime);
                           // Formula DayliConsumption
                           dayliConsumptionIFO = newSpeed.timeOperationIFO ? (totalConsumptionIFO * 24) / newSpeed.timeOperationIFO : 0;
                           // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
@@ -2302,9 +2302,9 @@ export class DashboardComponent implements OnInit {
                         let totalConsumptionMGO = this.SumaMgo(report);
                         // Formula DayliConsumption
                         let dayliConsumptionMGO = 0;
-                        if(totalConsumptionMGO > 0){
+                        if (totalConsumptionMGO > 0) {
                           // AGregamos la informacion mgo
-                          newSpeed.addInfoMGO(report.distance,report.steamingTime);
+                          newSpeed.addInfoMGO(report.distance, report.steamingTime);
                           // Formula DayliConsumption
                           dayliConsumptionMGO = newSpeed.timeOperationMGO ? (totalConsumptionMGO * 24) / newSpeed.timeOperationMGO : 0;
                           // Verificamos que el consumo sea mayor a la linea maxima
@@ -2353,7 +2353,7 @@ export class DashboardComponent implements OnInit {
                             let speedI: Speed = this.dataSPEED[iL].speed;
 
                             // Si la distancia es mayor a 0
-                            if(report.distance > 0) {
+                            if (report.distance > 0) {
                               // Agregamos la distancia y velocidad.
                               speedI.add(report.distance, report.steamingTime);
                               // Actualizamos el vlaor por la posicion.
@@ -2370,9 +2370,9 @@ export class DashboardComponent implements OnInit {
                             let totalIFO = this.SumaIfo(report);
                             // Sumamos el consumo
                             let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + totalIFO;
-                            if( totalIFO > 0 ) {
+                            if (totalIFO > 0) {
                               // Agregamos la distancia y velocidad como info IFO
-                              speedI.addInfoIFO(report.distance, report.steamingTime); 
+                              speedI.addInfoIFO(report.distance, report.steamingTime);
                               // Formula DayliConsumption
                               let dayliConsumptionIFO = speedI.timeOperationIFO ? (totalConsumptionIFO * 24) / speedI.timeOperationIFO : 0;
                               // Actualizamos los datos al dataIfo Chart.
@@ -2386,7 +2386,7 @@ export class DashboardComponent implements OnInit {
                             // MGO
                             let totalMGO = this.SumaMgo(report);
                             let totalConsumptionMGO = this.dataMGO[iL].totalConsumptionMGO + totalMGO;
-                            if( totalMGO > 0 ) {
+                            if (totalMGO > 0) {
                               // Agregamos la distancia y velocidad como info MGO
                               speedI.addInfoMGO(report.distance, report.steamingTime);
                               // Formula DayliConsumption
@@ -2398,7 +2398,7 @@ export class DashboardComponent implements OnInit {
                                 this.configLineaMGO.lineaMax = dayliConsumptionMGO;
                               }
                             }
-                          
+
 
                             // ACTUALIZMAOS EL VALOR POR POSICION
                             // Actualizamos los datos de la velocidad
@@ -2435,7 +2435,7 @@ export class DashboardComponent implements OnInit {
                             let totalBunkeringIFO = this.dataIFO[iL].totalBunkeringIFO + report.bunkeringIfo;
                             let totalBunkeringMGO = this.dataIFO[iL].totalBunkeringMGO + report.bunkeringMgo;
 
-                           
+
                             // Actualizamos el total de consumo.
                             this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
                             this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
@@ -2496,7 +2496,7 @@ export class DashboardComponent implements OnInit {
                         // Le agregamos los datos de velocidad.
                         let newSpeed = new Speed();
                         let ySpeed = 0;
-                        if(report.distance > 0){
+                        if (report.distance > 0) {
                           newSpeed.add(newSpeed.distance, newSpeed.steamingTime);
                           // Agregamos los datos de velocidad.
                           ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
@@ -2510,8 +2510,8 @@ export class DashboardComponent implements OnInit {
                         let totalConsumptionIFO = this.SumaIfo(report);
                         // Formula DayliConsumption
                         let dayliConsumptionIFO = 0;
-                        if(totalConsumptionIFO > 0){
-                          newSpeed.addInfoIFO(report.distance,report.steamingTime);
+                        if (totalConsumptionIFO > 0) {
+                          newSpeed.addInfoIFO(report.distance, report.steamingTime);
                           // Formula DayliConsumption
                           dayliConsumptionIFO = newSpeed.timeOperationIFO ? (totalConsumptionIFO * 24) / newSpeed.timeOperationIFO : 0;
                           // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
@@ -2526,15 +2526,15 @@ export class DashboardComponent implements OnInit {
                         let totalConsumptionMGO = this.SumaMgo(report);
                         // Formula DayliConsumption
                         let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
-                        if(totalConsumptionMGO > 0){
+                        if (totalConsumptionMGO > 0) {
                           // AGregamos la informacion mgo
-                          newSpeed.addInfoMGO(report.distance,report.steamingTime);
+                          newSpeed.addInfoMGO(report.distance, report.steamingTime);
                           // Formula DayliConsumption
                           dayliConsumptionMGO = newSpeed.timeOperationMGO ? (totalConsumptionMGO * 24) / newSpeed.timeOperationMGO : 0;
                           // Verificamos que el consumo sea mayor a la linea maxima
                           if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
                             this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                          } 
+                          }
                         }
                         let totalBunkeringIFO = report.bunkeringIfo;
                         let totalBunkeringMGO = report.bunkeringMgo;
@@ -3202,23 +3202,74 @@ export class DashboardComponent implements OnInit {
     // Verificamos que exista una confifuracion para LSFO
     if (this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionVLSFO) {
 
-      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-      if (this.selectUser.maxIFOConsumption > 0) {
-        this.configLineaIFO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxIFOConsumption,
-          color: 'red',
-          label: ''
-        });
-      };
 
-      if (this.selectUser.minIFOConsumption > 0) {
-        this.configLineaIFO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.minIFOConsumption,
-          color: '#39FF14',
-          label: ''
+      // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
+      if (
+        (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
+
+        // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+        if (this.selectUser.maxIFOConsumption > 0) {
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxIFOConsumption,
+            color: 'red',
+            label: ''
+          });
+        };
+
+        if (this.selectUser.minIFOConsumption > 0) {
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minIFOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaIFO.lineaMax < this.selectUser.maxIFOConsumption) {
+          this.configLineaIFO.lineaMax = this.selectUser.maxIFOConsumption;
+        }
+
+      } else {
+        // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE ENCONSTRAR LA MAYOR LINEA MAXIMA.
+
+        let lineaMaxByActivity = 0;
+        this.frmCActivityPerformed.value.forEach(activity => {
+
+          let lineMax = 0;
+          if (activity === 'LOADING') { lineMax = this.selectUser.loadingConsumptionIFO; }
+          else if (activity === 'DOWNLOADING') { lineMax = this.selectUser.dischargeConsumptionIFO; }
+          else if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.sailingBallastConsumptionIFO; }
+          else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.sailingLoadConsumptionIFO; }
+          else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.sailingEconomicConsumptionIFO; }
+          else if (activity === 'ANCHORED') { lineMax = this.selectUser.anchoredConsumptionIFO; }
+          else if (activity === 'MANEUVER') { lineMax = this.selectUser.maneuverConsumptionIFO; }
+          else if (activity === 'OTHER_ACT') { lineMax = this.selectUser.otherConsumptionIFO; }
+
+          if (lineMax > lineaMaxByActivity) {
+            lineaMaxByActivity = lineMax;
+          }
+
         });
+
+        // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+        if (lineaMaxByActivity > 0) {
+
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: lineaMaxByActivity,
+            color: 'red',
+            label: ''
+          });
+        }
+
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaIFO.lineaMax < lineaMaxByActivity) {
+          this.configLineaIFO.lineaMax = lineaMaxByActivity;
+        }
+
       }
 
       // Configuracion Tooltips
@@ -3226,9 +3277,6 @@ export class DashboardComponent implements OnInit {
 
     }
 
-    if (this.configLineaIFO.lineaMax < this.selectUser.maxIFOConsumption) {
-      this.configLineaIFO.lineaMax = this.selectUser.maxIFOConsumption;
-    }
 
     // Agregamos la configuracion de las escalas.
     this.configLineaIFO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaIFO.lineaMax, 0) + 2);
@@ -3258,24 +3306,77 @@ export class DashboardComponent implements OnInit {
     // Verificamos que exista una confifuracion para LSFO
     if (this.selectUser.isConsumptionMGO) {
 
-      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-      if (this.selectUser.maxMGOConsumption > 0) {
-        this.configLineaMGO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxMGOConsumption,
-          color: 'red',
-          label: ''
-        });
-      };
 
-      if (this.selectUser.minMGOConsumption > 0) {
-        this.configLineaMGO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.minMGOConsumption,
-          color: '#39FF14',
-          label: ''
+
+      // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
+      if (
+        (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
+
+        // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+        if (this.selectUser.maxMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxMGOConsumption,
+            color: 'red',
+            label: ''
+          });
+        };
+
+        if (this.selectUser.minMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minMGOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaMGO.lineaMax < this.selectUser.maxMGOConsumption) {
+          this.configLineaMGO.lineaMax = this.selectUser.maxMGOConsumption;
+        }
+
+      } else {
+        // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
+
+        let lineaMaxByActivity = 0;
+        this.frmCActivityPerformed.value.forEach(activity => {
+
+          let lineMax = 0;
+          if (activity === 'LOADING') { lineMax = this.selectUser.loadingConsumptionMGO; }
+          else if (activity === 'DOWNLOADING') { lineMax = this.selectUser.dischargeConsumptionMGO; }
+          else if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.sailingBallastConsumptionMGO; }
+          else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.sailingLoadConsumptionMGO; }
+          else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.sailingEconomicConsumptionMGO; }
+          else if (activity === 'ANCHORED') { lineMax = this.selectUser.anchoredConsumptionMGO; }
+          else if (activity === 'MANEUVER') { lineMax = this.selectUser.maneuverConsumptionMGO; }
+          else if (activity === 'OTHER_ACT') { lineMax = this.selectUser.otherConsumptionMGO; }
+
+          if (lineMax > lineaMaxByActivity) {
+            lineaMaxByActivity = lineMax;
+          }
+
         });
+
+        // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+        if (lineaMaxByActivity > 0) {
+
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: lineaMaxByActivity,
+            color: 'red',
+            label: ''
+          });
+        }
+
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaMGO.lineaMax < lineaMaxByActivity) {
+          this.configLineaMGO.lineaMax = lineaMaxByActivity;
+        }
+
       }
+
 
       // Configuracion Tooltips
       this.configLineaMGO.options.tooltips = this.GetToolTipConfig('MGO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
@@ -3457,10 +3558,10 @@ export class DashboardComponent implements OnInit {
             }
 
 
-            
+
 
             if (configIFOorMGOorSPEED === 'IFO') {
-              
+
               if (voyage.totalSpeed.timeOperationIFO > 0) {
                 result.push('T. Time :    ' + mathRound(voyage.totalSpeed.timeOperationIFO, 2) + ' hrs');
               }
@@ -3468,7 +3569,7 @@ export class DashboardComponent implements OnInit {
                 result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distanceIFO, 2) + ' mi');
               }
 
-            } else if(configIFOorMGOorSPEED === 'MGO') {
+            } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (voyage.totalSpeed.timeOperationMGO > 0) {
                 result.push('T. Time :    ' + mathRound(voyage.totalSpeed.timeOperationMGO, 2) + ' hrs');
@@ -3548,7 +3649,7 @@ export class DashboardComponent implements OnInit {
 
 
             if (configIFOorMGOorSPEED === 'IFO') {
-              
+
               if (port.speed.timeOperationIFO > 0) {
                 result.push('T. Time :    ' + mathRound(port.speed.timeOperationIFO, 2) + ' hrs');
               }
@@ -3556,7 +3657,7 @@ export class DashboardComponent implements OnInit {
                 result.push('T. Distance :    ' + mathRound(port.speed.distanceIFO, 2) + ' mi');
               }
 
-            } else if(configIFOorMGOorSPEED === 'MGO') {
+            } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (port.speed.timeOperationMGO > 0) {
                 result.push('T. Time :    ' + mathRound(port.speed.timeOperationMGO, 2) + ' hrs');
@@ -3631,7 +3732,7 @@ export class DashboardComponent implements OnInit {
 
 
             if (configIFOorMGOorSPEED === 'IFO') {
-              
+
               if (chartPoint.speed.timeOperationIFO > 0) {
                 result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationIFO, 2) + ' hrs');
               }
@@ -3639,7 +3740,7 @@ export class DashboardComponent implements OnInit {
                 result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceIFO, 2) + ' mi');
               }
 
-            } else if(configIFOorMGOorSPEED === 'MGO') {
+            } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (chartPoint.speed.timeOperationMGO > 0) {
                 result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationMGO, 2) + ' hrs');
@@ -3729,7 +3830,7 @@ export class DashboardComponent implements OnInit {
             }
 
             if (configIFOorMGOorSPEED === 'IFO') {
-              
+
               if (chartPoint.speed.timeOperationIFO > 0) {
                 result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationIFO, 2) + ' hrs');
               }
@@ -3737,7 +3838,7 @@ export class DashboardComponent implements OnInit {
                 result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceIFO, 2) + ' mi');
               }
 
-            } else if(configIFOorMGOorSPEED === 'MGO') {
+            } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (chartPoint.speed.timeOperationMGO > 0) {
                 result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationMGO, 2) + ' hrs');
@@ -3793,24 +3894,79 @@ export class DashboardComponent implements OnInit {
     this.configLineaSPEED.options.lines = [];
 
 
-    // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-    if (this.selectUser.maxSpeed > 0) {
-      this.configLineaSPEED.options.lines.push({
-        type: 'horizontal',
-        y: this.selectUser.maxSpeed,
-        color: 'red',
-        label: ''
-      });
-    };
 
-    if (this.selectUser.minSpeed > 0) {
-      this.configLineaSPEED.options.lines.push({
-        type: 'horizontal',
-        y: this.selectUser.minSpeed,
-        color: '#39FF14',
-        label: ''
+
+
+    // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
+    if (
+      (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
+
+
+
+
+      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+      if (this.selectUser.maxSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.maxSpeed,
+          color: 'red',
+          label: ''
+        });
+      };
+
+      if (this.selectUser.minSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.minSpeed,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+
+
+      // Esta linea maxima es para la scala del cuadro.
+      if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
+        this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
+      }
+
+    } else {
+      // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
+
+      let lineaMaxByActivity = 0;
+      this.frmCActivityPerformed.value.forEach(activity => {
+
+        let lineMax = 0;
+
+        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.sailingBallastConsumptionIFO; }
+        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.sailingLoadConsumptionIFO; }
+        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.sailingEconomicConsumptionIFO; }
+
+        if (lineMax > lineaMaxByActivity) {
+          lineaMaxByActivity = lineMax;
+        }
+
       });
+
+      // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+      if (lineaMaxByActivity > 0) {
+
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: lineaMaxByActivity,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+
+
+      // Esta linea maxima es para la scala del cuadro.
+      if (this.configLineaSPEED.lineaMax < lineaMaxByActivity) {
+        this.configLineaSPEED.lineaMax = lineaMaxByActivity;
+      }
+
     }
+
+
 
     // Configuracion Tooltips
     this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
