@@ -1446,12 +1446,12 @@ export class DashboardComponent implements OnInit {
                           // DAILY CONSUMPTION - this.voyageConsumptionByActivityPerformedIFO
                           if (report.activityPerformed === 'LOADING') {
 
-                            if( totalConsumptionByReportIFO > 0 ) {
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.loading += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedIFO.loading += report.distance;
                               this.voyageConsumptionByActivityPerformedIFO.loading += totalConsumptionByReportIFO;
                             }
-                            if(totalConsumptionByReportMGO > 0){
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.loading += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedMGO.loading += report.distance;
                               this.voyageConsumptionByActivityPerformedMGO.loading += totalConsumptionByReportMGO;
@@ -1459,51 +1459,51 @@ export class DashboardComponent implements OnInit {
 
                           } else if (report.activityPerformed === 'DOWNLOADING') {
 
-                            if( totalConsumptionByReportIFO > 0 ) {
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.discharge += report.steamingTime;
                               this.totalDistanceMilesByActivityPerformedIFO.discharge += report.distance;
                               this.voyageConsumptionByActivityPerformedIFO.discharge += totalConsumptionByReportIFO;
                             }
-                            if(totalConsumptionByReportMGO > 0){
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.discharge += report.steamingTime;
                               this.totalDistanceMilesByActivityPerformedMGO.discharge += report.distance;
                               this.voyageConsumptionByActivityPerformedMGO.discharge += totalConsumptionByReportMGO;
                             }
 
                           } else if (report.activityPerformed === 'SAILING_IN_BALLAST') {
-                            
-                            if( totalConsumptionByReportIFO > 0 ) {
+
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.ballast += report.steamingTime;
                               this.totalDistanceMilesByActivityPerformedIFO.ballast += report.distance;
-                              this.voyageConsumptionByActivityPerformedIFO.ballast += totalConsumptionByReportIFO;  
+                              this.voyageConsumptionByActivityPerformedIFO.ballast += totalConsumptionByReportIFO;
                             }
-                            if( totalConsumptionByReportMGO > 0 ) {
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.ballast += report.steamingTime;
                               this.totalDistanceMilesByActivityPerformedMGO.ballast += report.distance;
-                              this.voyageConsumptionByActivityPerformedMGO.ballast += totalConsumptionByReportMGO;  
+                              this.voyageConsumptionByActivityPerformedMGO.ballast += totalConsumptionByReportMGO;
                             }
 
                           } else if (report.activityPerformed === 'SAILING_WITH_LADEN') {
 
-                            if( totalConsumptionByReportIFO > 0 ) {
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.laden += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedIFO.laden += report.distance;
                               this.voyageConsumptionByActivityPerformedIFO.laden += totalConsumptionByReportIFO;
                             }
 
-                            if( totalConsumptionByReportMGO > 0 ) {
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.laden += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedMGO.laden += report.distance;
                               this.voyageConsumptionByActivityPerformedMGO.laden += totalConsumptionByReportMGO;
                             }
                           } else if (report.activityPerformed === 'ECONOMICAL_NAVIGATION') {
 
-                            if( totalConsumptionByReportIFO > 0 ) {
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.economical += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedIFO.economical += report.distance;
                               this.voyageConsumptionByActivityPerformedIFO.economical += totalConsumptionByReportIFO;
                             }
-                            if( totalConsumptionByReportMGO > 0 ) {
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.economical += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedMGO.economical += report.distance;
                               this.voyageConsumptionByActivityPerformedMGO.economical += totalConsumptionByReportMGO;
@@ -1512,25 +1512,25 @@ export class DashboardComponent implements OnInit {
                           } else if (report.activityPerformed === 'ANCHORED') {
 
 
-                            if( totalConsumptionByReportIFO > 0 ) {
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.anchor += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedIFO.anchor += report.distance;
                               this.voyageConsumptionByActivityPerformedIFO.anchor += totalConsumptionByReportIFO;
                             }
-                            if( totalConsumptionByReportMGO > 0 ) {
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.anchor += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedMGO.anchor += report.distance;
-                              this.voyageConsumptionByActivityPerformedMGO.anchor += totalConsumptionByReportMGO;  
+                              this.voyageConsumptionByActivityPerformedMGO.anchor += totalConsumptionByReportMGO;
                             }
 
                           } else if (report.activityPerformed === 'MANEUVER') {
 
-                            if( totalConsumptionByReportIFO >0 ) {
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.maneuver += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedIFO.maneuver += report.distance;
                               this.voyageConsumptionByActivityPerformedIFO.maneuver += totalConsumptionByReportIFO;
                             }
-                            if( totalConsumptionByReportMGO >0 ) {
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.maneuver += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedMGO.maneuver += report.distance;
                               this.voyageConsumptionByActivityPerformedMGO.maneuver += totalConsumptionByReportMGO;
@@ -1538,17 +1538,17 @@ export class DashboardComponent implements OnInit {
 
                           } else if (report.activityPerformed === 'OTHER_ACT') {
 
-                            if( totalConsumptionByReportIFO >0 ) {
+                            if (totalConsumptionByReportIFO > 0) {
                               this.totalTimePerActivityIFO.otherActivity += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedIFO.otherActivity += report.distance;
                               this.voyageConsumptionByActivityPerformedIFO.otherActivity += totalConsumptionByReportIFO;
                             }
-                            if( totalConsumptionByReportMGO >0 ) {
+                            if (totalConsumptionByReportMGO > 0) {
                               this.totalTimePerActivityMGO.otherActivity += report.steamingTime; // revisar
                               this.totalDistanceMilesByActivityPerformedMGO.otherActivity += report.distance;
                               this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalConsumptionByReportMGO;
                             }
-                            
+
                           }
 
 
@@ -1580,22 +1580,22 @@ export class DashboardComponent implements OnInit {
 
 
                             // Verificamos que exista un consumo para agregar el tiempo de consumo.
-                            if(report.mplaMgo>0){
+                            if (report.mplaMgo > 0) {
                               this.totalTimePerMachineMGO.mpal += report.steamingTime;
                             }
-                            if(report.auxMgo >0){
+                            if (report.auxMgo > 0) {
                               this.totalTimePerMachineMGO.aux += report.steamingTime;
                             }
-                            if(report.boilerMgo >0){
+                            if (report.boilerMgo > 0) {
                               this.totalTimePerMachineMGO.boiler += report.steamingTime;
                             }
-                            if(report.ppMgo>0){
+                            if (report.ppMgo > 0) {
                               this.totalTimePerMachineMGO.pp += report.steamingTime;
                             }
-                            if(report.giMgo>0){
+                            if (report.giMgo > 0) {
                               this.totalTimePerMachineMGO.gi += report.steamingTime;
                             }
-                            if(report.otherMgo>0){
+                            if (report.otherMgo > 0) {
                               this.totalTimePerMachineMGO.other += report.steamingTime;
                             }
 
@@ -1609,16 +1609,16 @@ export class DashboardComponent implements OnInit {
 
 
                             // Verificamos que exista un consumo para agregar el tiempo de consumo.
-                            if(report.mplaIfo>0){
+                            if (report.mplaIfo > 0) {
                               this.totalTimePerMachineIFO.mpal += report.steamingTime;
                             }
-                            if(report.auxIfo >0){
+                            if (report.auxIfo > 0) {
                               this.totalTimePerMachineIFO.aux += report.steamingTime;
                             }
-                            if(report.boilerIfo >0){
+                            if (report.boilerIfo > 0) {
                               this.totalTimePerMachineIFO.boiler += report.steamingTime;
                             }
-                            if(report.otherIfo>0){
+                            if (report.otherIfo > 0) {
                               this.totalTimePerMachineIFO.other += report.steamingTime;
                             }
 
@@ -1758,10 +1758,10 @@ export class DashboardComponent implements OnInit {
 
           // FORMULA CONSUMO POR EQUIPO IFO
           // Consumo Diario por  maquina.
-          this.consumptionDaysRealIFO.mpal = this.totalTimePerMachineIFO.mpal ? (this.consumptionTotalIFO.mpal * 24 / this.totalTimePerMachineIFO.mpal):0;
-          this.consumptionDaysRealIFO.aux = this.totalTimePerMachineIFO.aux ? (this.consumptionTotalIFO.aux * 24 / this.totalTimePerMachineIFO.aux):0;
-          this.consumptionDaysRealIFO.boiler = this.totalTimePerMachineIFO.boiler ? (this.consumptionTotalIFO.boiler * 24 / this.totalTimePerMachineIFO.boiler):0;
-          this.consumptionDaysRealIFO.other = this.totalTimePerMachineIFO.other ? (this.consumptionTotalIFO.other * 24 / this.totalTimePerMachineIFO.other):0;
+          this.consumptionDaysRealIFO.mpal = this.totalTimePerMachineIFO.mpal ? (this.consumptionTotalIFO.mpal * 24 / this.totalTimePerMachineIFO.mpal) : 0;
+          this.consumptionDaysRealIFO.aux = this.totalTimePerMachineIFO.aux ? (this.consumptionTotalIFO.aux * 24 / this.totalTimePerMachineIFO.aux) : 0;
+          this.consumptionDaysRealIFO.boiler = this.totalTimePerMachineIFO.boiler ? (this.consumptionTotalIFO.boiler * 24 / this.totalTimePerMachineIFO.boiler) : 0;
+          this.consumptionDaysRealIFO.other = this.totalTimePerMachineIFO.other ? (this.consumptionTotalIFO.other * 24 / this.totalTimePerMachineIFO.other) : 0;
           // Asignamos el contrato.
           this.consumptionDaysByContractIFO.mpal = this.selectUser.consumptionEquipmentME_IFO;
           this.consumptionDaysByContractIFO.aux = this.selectUser.consumptionEquipmentAE_IFO;
@@ -1776,10 +1776,10 @@ export class DashboardComponent implements OnInit {
           // FORMULA CONSUMO POR EQUIPO MGO
           // Consumo Diario por  maquina.
           this.consumptionDaysRealMGO.mpal = this.totalTimePerMachineMGO.mpal ? (this.consumptionTotalMGO.mpal * 24 / this.totalTimePerMachineMGO.mpal) : 0;
-          this.consumptionDaysRealMGO.aux = this.totalTimePerMachineMGO.aux ? (this.consumptionTotalMGO.aux * 24 /  this.totalTimePerMachineMGO.aux) : 0;
-          this.consumptionDaysRealMGO.boiler = this.totalTimePerMachineMGO.boiler ? (this.consumptionTotalMGO.boiler * 24 /  this.totalTimePerMachineMGO.boiler) : 0;
-          this.consumptionDaysRealMGO.pp = this.totalTimePerMachineMGO.pp ? (this.consumptionTotalMGO.pp * 24 /  this.totalTimePerMachineMGO.pp) : 0;
-          this.consumptionDaysRealMGO.gi = this.totalTimePerMachineMGO.gi ? (this.consumptionTotalMGO.gi * 24 /  this.totalTimePerMachineMGO.gi) : 0;
+          this.consumptionDaysRealMGO.aux = this.totalTimePerMachineMGO.aux ? (this.consumptionTotalMGO.aux * 24 / this.totalTimePerMachineMGO.aux) : 0;
+          this.consumptionDaysRealMGO.boiler = this.totalTimePerMachineMGO.boiler ? (this.consumptionTotalMGO.boiler * 24 / this.totalTimePerMachineMGO.boiler) : 0;
+          this.consumptionDaysRealMGO.pp = this.totalTimePerMachineMGO.pp ? (this.consumptionTotalMGO.pp * 24 / this.totalTimePerMachineMGO.pp) : 0;
+          this.consumptionDaysRealMGO.gi = this.totalTimePerMachineMGO.gi ? (this.consumptionTotalMGO.gi * 24 / this.totalTimePerMachineMGO.gi) : 0;
           this.consumptionDaysRealMGO.other = this.totalTimePerMachineMGO.other ? (this.consumptionTotalMGO.other * 24 / this.totalTimePerMachineMGO.other) : 0;
           // Asignamos el contrato.
           this.consumptionDaysByContractMGO.mpal = this.selectUser.consumptionEquipmentME_MGO;
