@@ -182,12 +182,14 @@ export class DashboardComponent implements OnInit {
 
   // CONSUMER MGO POR MAQUINA
   public consumptionTotalMGO = new ConsumptionMachineMGO();
+  public totalTimePerMachineMGO: ConsumptionMachineMGO = new ConsumptionMachineMGO();
   public consumptionDaysRealMGO = new ConsumptionMachineMGO();
   public consumptionDaysByContractMGO = new ConsumptionMachineMGO();
   public consumptionDailyBalanceMGO = new ConsumptionMachineMGO();
 
   // CONSUMER MGO POR MAQUINA
   public consumptionTotalIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
+  public totalTimePerMachineIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDaysRealIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
@@ -1335,12 +1337,14 @@ export class DashboardComponent implements OnInit {
 
           // CONSUMER MGO POR MAUQINA
           this.consumptionTotalMGO = new ConsumptionMachineMGO();
+          this.totalTimePerMachineMGO = new ConsumptionMachineMGO();
           this.consumptionDaysRealMGO = new ConsumptionMachineMGO();
           this.consumptionDaysByContractMGO = new ConsumptionMachineMGO();
           this.consumptionDailyBalanceMGO = new ConsumptionMachineMGO();
 
           // CONSUMER MGO POR MAQUINA
           this.consumptionTotalIFO = new ConsumptionMachineIFO();
+          this.totalTimePerMachineIFO = new ConsumptionMachineIFO();
           this.consumptionDaysRealIFO = new ConsumptionMachineIFO();
           this.consumptionDaysByContractIFO = new ConsumptionMachineIFO(0, 0, 0, 0, 0);
           this.consumptionDailyBalanceIFO = new ConsumptionMachineIFO();
@@ -1442,90 +1446,109 @@ export class DashboardComponent implements OnInit {
                           // DAILY CONSUMPTION - this.voyageConsumptionByActivityPerformedIFO
                           if (report.activityPerformed === 'LOADING') {
 
-                            this.totalTimePerActivityIFO.loading += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.loading += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.loading += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.loading += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.loading += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.loading += totalConsumptionByReportMGO;
+                            if( totalConsumptionByReportIFO > 0 ) {
+                              this.totalTimePerActivityIFO.loading += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.loading += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.loading += totalConsumptionByReportIFO;
+                            }
+                            if(totalConsumptionByReportMGO > 0){
+                              this.totalTimePerActivityMGO.loading += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.loading += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.loading += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'DOWNLOADING') {
 
-                            this.totalTimePerActivityIFO.discharge += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.discharge += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.discharge += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.discharge += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.discharge += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.discharge += totalConsumptionByReportMGO;
+                            if( totalConsumptionByReportIFO > 0 ) {
+                              this.totalTimePerActivityIFO.discharge += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedIFO.discharge += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.discharge += totalConsumptionByReportIFO;
+                            }
+                            if(totalConsumptionByReportMGO > 0){
+                              this.totalTimePerActivityMGO.discharge += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedMGO.discharge += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.discharge += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'SAILING_IN_BALLAST') {
-
-                            this.totalTimePerActivityIFO.ballast += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.ballast += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.ballast += totalConsumptionByReportIFO;
-
-                            this.totalTimePerActivityMGO.ballast += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.ballast += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.ballast += totalConsumptionByReportMGO;
+                            
+                            if( totalConsumptionByReportIFO > 0 ) {
+                              this.totalTimePerActivityIFO.ballast += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedIFO.ballast += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.ballast += totalConsumptionByReportIFO;  
+                            }
+                            if( totalConsumptionByReportMGO > 0 ) {
+                              this.totalTimePerActivityMGO.ballast += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedMGO.ballast += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.ballast += totalConsumptionByReportMGO;  
+                            }
 
                           } else if (report.activityPerformed === 'SAILING_WITH_LADEN') {
 
-                            this.totalTimePerActivityIFO.laden += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.laden += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.laden += totalConsumptionByReportIFO;
+                            if( totalConsumptionByReportIFO > 0 ) {
+                              this.totalTimePerActivityIFO.laden += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.laden += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.laden += totalConsumptionByReportIFO;
+                            }
 
-
-                            this.totalTimePerActivityMGO.laden += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.laden += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.laden += totalConsumptionByReportMGO;
-
+                            if( totalConsumptionByReportMGO > 0 ) {
+                              this.totalTimePerActivityMGO.laden += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.laden += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.laden += totalConsumptionByReportMGO;
+                            }
                           } else if (report.activityPerformed === 'ECONOMICAL_NAVIGATION') {
 
-                            this.totalTimePerActivityIFO.economical += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.economical += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.economical += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.economical += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.economical += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.economical += totalConsumptionByReportMGO;
+                            if( totalConsumptionByReportIFO > 0 ) {
+                              this.totalTimePerActivityIFO.economical += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.economical += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.economical += totalConsumptionByReportIFO;
+                            }
+                            if( totalConsumptionByReportMGO > 0 ) {
+                              this.totalTimePerActivityMGO.economical += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.economical += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.economical += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'ANCHORED') {
 
-                            this.totalTimePerActivityIFO.anchor += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.anchor += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.anchor += totalConsumptionByReportIFO;
 
-
-                            this.totalTimePerActivityMGO.anchor += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.anchor += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.anchor += totalConsumptionByReportMGO;
+                            if( totalConsumptionByReportIFO > 0 ) {
+                              this.totalTimePerActivityIFO.anchor += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.anchor += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.anchor += totalConsumptionByReportIFO;
+                            }
+                            if( totalConsumptionByReportMGO > 0 ) {
+                              this.totalTimePerActivityMGO.anchor += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.anchor += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.anchor += totalConsumptionByReportMGO;  
+                            }
 
                           } else if (report.activityPerformed === 'MANEUVER') {
 
-                            this.totalTimePerActivityIFO.maneuver += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.maneuver += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.maneuver += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.maneuver += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.maneuver += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.maneuver += totalConsumptionByReportMGO;
+                            if( totalConsumptionByReportIFO >0 ) {
+                              this.totalTimePerActivityIFO.maneuver += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.maneuver += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.maneuver += totalConsumptionByReportIFO;
+                            }
+                            if( totalConsumptionByReportMGO >0 ) {
+                              this.totalTimePerActivityMGO.maneuver += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.maneuver += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.maneuver += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'OTHER_ACT') {
 
-                            this.totalTimePerActivityIFO.otherActivity += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.otherActivity += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.otherActivity += totalConsumptionByReportIFO;
-
-                            this.totalTimePerActivityMGO.otherActivity += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.otherActivity += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalConsumptionByReportMGO;
-
+                            if( totalConsumptionByReportIFO >0 ) {
+                              this.totalTimePerActivityIFO.otherActivity += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.otherActivity += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.otherActivity += totalConsumptionByReportIFO;
+                            }
+                            if( totalConsumptionByReportMGO >0 ) {
+                              this.totalTimePerActivityMGO.otherActivity += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.otherActivity += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalConsumptionByReportMGO;
+                            }
+                            
                           }
 
 
@@ -1555,12 +1578,50 @@ export class DashboardComponent implements OnInit {
                             this.consumptionTotalMGO.other += report.otherMgo;
                             // FIN Consumo MGO
 
+
+                            // Verificamos que exista un consumo para agregar el tiempo de consumo.
+                            if(report.mplaMgo>0){
+                              this.totalTimePerMachineMGO.mpal += report.steamingTime;
+                            }
+                            if(report.auxMgo >0){
+                              this.totalTimePerMachineMGO.aux += report.steamingTime;
+                            }
+                            if(report.boilerMgo >0){
+                              this.totalTimePerMachineMGO.boiler += report.steamingTime;
+                            }
+                            if(report.ppMgo>0){
+                              this.totalTimePerMachineMGO.pp += report.steamingTime;
+                            }
+                            if(report.giMgo>0){
+                              this.totalTimePerMachineMGO.gi += report.steamingTime;
+                            }
+                            if(report.otherMgo>0){
+                              this.totalTimePerMachineMGO.other += report.steamingTime;
+                            }
+
+
                             // Sumamos el consumo IFO
                             this.consumptionTotalIFO.mpal += report.mplaIfo;
                             this.consumptionTotalIFO.aux += report.auxIfo;
                             this.consumptionTotalIFO.boiler += report.boilerIfo;
                             this.consumptionTotalIFO.other += report.otherIfo;
                             // FIN Consumo IFO
+
+
+                            // Verificamos que exista un consumo para agregar el tiempo de consumo.
+                            if(report.mplaIfo>0){
+                              this.totalTimePerMachineIFO.mpal += report.steamingTime;
+                            }
+                            if(report.auxIfo >0){
+                              this.totalTimePerMachineIFO.aux += report.steamingTime;
+                            }
+                            if(report.boilerIfo >0){
+                              this.totalTimePerMachineIFO.boiler += report.steamingTime;
+                            }
+                            if(report.otherIfo>0){
+                              this.totalTimePerMachineIFO.other += report.steamingTime;
+                            }
+
 
                             let sumIFO = this.SumaIfo(report);
                             let sumMGO = this.SumaMgo(report);
@@ -1697,10 +1758,10 @@ export class DashboardComponent implements OnInit {
 
           // FORMULA CONSUMO POR EQUIPO IFO
           // Consumo Diario por  maquina.
-          this.consumptionDaysRealIFO.mpal = this.consumptionTotalIFO.mpal * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
-          this.consumptionDaysRealIFO.aux = this.consumptionTotalIFO.aux * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
-          this.consumptionDaysRealIFO.boiler = this.consumptionTotalIFO.boiler * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
-          this.consumptionDaysRealIFO.other = this.consumptionTotalIFO.other * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
+          this.consumptionDaysRealIFO.mpal = this.totalTimePerMachineIFO.mpal ? (this.consumptionTotalIFO.mpal * 24 / this.totalTimePerMachineIFO.mpal):0;
+          this.consumptionDaysRealIFO.aux = this.totalTimePerMachineIFO.aux ? (this.consumptionTotalIFO.aux * 24 / this.totalTimePerMachineIFO.aux):0;
+          this.consumptionDaysRealIFO.boiler = this.totalTimePerMachineIFO.boiler ? (this.consumptionTotalIFO.boiler * 24 / this.totalTimePerMachineIFO.boiler):0;
+          this.consumptionDaysRealIFO.other = this.totalTimePerMachineIFO.other ? (this.consumptionTotalIFO.other * 24 / this.totalTimePerMachineIFO.other):0;
           // Asignamos el contrato.
           this.consumptionDaysByContractIFO.mpal = this.selectUser.consumptionEquipmentME_IFO;
           this.consumptionDaysByContractIFO.aux = this.selectUser.consumptionEquipmentAE_IFO;
@@ -1714,12 +1775,12 @@ export class DashboardComponent implements OnInit {
 
           // FORMULA CONSUMO POR EQUIPO MGO
           // Consumo Diario por  maquina.
-          this.consumptionDaysRealMGO.mpal = this.consumptionTotalMGO.mpal * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.aux = this.consumptionTotalMGO.aux * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.boiler = this.consumptionTotalMGO.boiler * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.pp = this.consumptionTotalMGO.pp * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.gi = this.consumptionTotalMGO.gi * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.other = this.consumptionTotalMGO.other * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
+          this.consumptionDaysRealMGO.mpal = this.totalTimePerMachineMGO.mpal ? (this.consumptionTotalMGO.mpal * 24 / this.totalTimePerMachineMGO.mpal) : 0;
+          this.consumptionDaysRealMGO.aux = this.totalTimePerMachineMGO.aux ? (this.consumptionTotalMGO.aux * 24 /  this.totalTimePerMachineMGO.aux) : 0;
+          this.consumptionDaysRealMGO.boiler = this.totalTimePerMachineMGO.boiler ? (this.consumptionTotalMGO.boiler * 24 /  this.totalTimePerMachineMGO.boiler) : 0;
+          this.consumptionDaysRealMGO.pp = this.totalTimePerMachineMGO.pp ? (this.consumptionTotalMGO.pp * 24 /  this.totalTimePerMachineMGO.pp) : 0;
+          this.consumptionDaysRealMGO.gi = this.totalTimePerMachineMGO.gi ? (this.consumptionTotalMGO.gi * 24 /  this.totalTimePerMachineMGO.gi) : 0;
+          this.consumptionDaysRealMGO.other = this.totalTimePerMachineMGO.other ? (this.consumptionTotalMGO.other * 24 / this.totalTimePerMachineMGO.other) : 0;
           // Asignamos el contrato.
           this.consumptionDaysByContractMGO.mpal = this.selectUser.consumptionEquipmentME_MGO;
           this.consumptionDaysByContractMGO.aux = this.selectUser.consumptionEquipmentAE_MGO;

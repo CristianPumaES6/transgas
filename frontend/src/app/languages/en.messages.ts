@@ -352,7 +352,7 @@ export const dashboard: any = {
     TOTAL_CONSUMPTION_BY_FILTER: 'TOTAL CONSUMPTION (MT)',
     REAL_DAILY_CONSUMPTION: 'DAILY CONSUMPTION (MT)',
     DAILY_CONSUMPTION_BY_CONTRACT: 'DAILY CONSUMPTION (MT) (CHARTER)',
-    DAILY_BALANCE: 'BALANCE CONSUMPTION (MT)',
+    DAILY_BALANCE: 'BALANCE DAILY CONSUMPTION (MT)',
     // Opciones de Actividades realizadas / Activity performend
     LOADING: 'Loading',
     DOWNLOADING: 'Discharge',
@@ -396,7 +396,7 @@ export const dashboard: any = {
     TOOLTIP_BALANCE_HOURS_SAILED: 'Navigation time balance.\n( TOTAL TIME PER ACTIVITY (HRS) - TIME PER NAVIGATION (HRS) (CHARTER) )',
     TOOLTIP_EQUIPMENT: 'Equipment.',
     TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER: 'Total equipment consumption.',
-    TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
+    TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / EQUIPMENT USE TIME',
     TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT: 'Daily consumption of equipment per contract.',
     TOOLTIP_DAILY_BALANCE_EQUIPMENT: 'Consumption balance.\n( DAILY CONSUMPTION (MT) - DAILY CONSUMPTION (MT) (CHARTER) )',
     TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
