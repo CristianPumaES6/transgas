@@ -57,6 +57,7 @@ export class DialogListReportComponent implements OnInit {
   public isViewMGO: boolean = false;
   public isViewIFO: boolean = false;
   public isViewSPEED: boolean = false;
+  public isViewBunkering: boolean = false;
   public isViewAllVoyage: boolean = false;
 
   public activityPerformed = new FormControl();
@@ -315,8 +316,8 @@ export class DialogListReportComponent implements OnInit {
       }
 
     } else if (isIFO_MGO_SPEED === 'SPEED') {
-      result += '    Distance: ' + this.TwoDecimal(report.distance)
-
+      result += 'Distance: ' + this.TwoDecimal(report.distance)
+      result += '\n Befourt: ' + report.beaufour;
     }
 
     return result;

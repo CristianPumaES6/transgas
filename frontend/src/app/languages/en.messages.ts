@@ -455,7 +455,8 @@ export const dialog: any = {
     TITLE_TABLE_SPEED:'Speed (KN)',
     TOTAL:'Total',
     DAILY_CONSUMPTION: 'Daily Consp.',
-    CHARTER: 'Charter'
+    CHARTER: 'Charter',
+    BUNKERING: 'Bunkering',
 }
 
 export const guards:any = {

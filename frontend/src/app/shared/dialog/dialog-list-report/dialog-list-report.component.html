@@ -101,6 +101,11 @@
                         {{'SPEED' | translateMessage:translateCategory}}
                     </mat-checkbox>
                 </div>
+                <div class="col">
+                    <mat-checkbox [(ngModel)]="isViewBunkering" class="pl-2">
+                        {{'BUNKERING' | translateMessage:translateCategory}}
+                    </mat-checkbox>
+                </div>
             </div>
 
         </div>
@@ -176,6 +181,12 @@
                                 {{'TITLE_TABLE_SPEED' | translateMessage:translateCategory}}
                             </th>
                         </ng-template>
+
+                        <ng-template [ngIf]="isViewBunkering">
+                            <th class="border pt-2" colspan="2">
+                                {{'BUNKERING' | translateMessage:translateCategory}}
+                            </th>
+                        </ng-template>
                     </tr>
                     <tr>
                         <th class="blue-1 border pt-2">
@@ -221,6 +232,16 @@
                             </th>
                             <th class="blue-3 border pt-2">
                                 {{'CHARTER' | translateMessage:translateCategory}}
+                            </th>
+                        </ng-template>
+                        <ng-template [ngIf]="isViewBunkering">
+                            <th class="blue-1 border pt-2">
+                                {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+                                'VLSFO' :
+                                'LSFO') }} (MT)
+                            </th>
+                            <th class="blue-1 border pt-2">
+                                MGO (MT)
                             </th>
                         </ng-template>
                     </tr>
@@ -271,11 +292,21 @@
                             </ng-template>
                             <ng-template [ngIf]="isViewSPEED">
                                 <td class="p-1 font-small-1 border"
-                                    matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}" [ngClass]="GenerateColor(GenerateDailyConsumption('CHARTER','SPEEDIFO',dailyReport),GenerateDailyConsumption('VALUE','SPEEDIFO',dailyReport))">
+                                    matTooltip="{{ToolTipMoreInformation('SPEED',dailyReport)}}" [ngClass]="GenerateColor(GenerateDailyConsumption('CHARTER','SPEEDIFO',dailyReport),GenerateDailyConsumption('VALUE','SPEEDIFO',dailyReport))"
+                                    matTooltipClass="multiline">
                                     {{GenerateDailyConsumption('VALUE','SPEEDIFO',dailyReport)}}
                                 </td>
                                 <td class="p-1 font-small-1 border">
                                     {{GenerateDailyConsumption('CHARTER','SPEEDIFO',dailyReport)}}
+                                </td>
+                            </ng-template>
+
+                            <ng-template [ngIf]="isViewBunkering">
+                                <td class="p-1 font-small-1 border" [ngClass]="dailyReport.bunkeringIfo > 0 ? 'color-min' : ''">
+                                    {{dailyReport.bunkeringIfo}}
+                                </td>
+                                <td class="p-1 font-small-1 border" [ngClass]="dailyReport.bunkeringMgo > 0 ? 'color-min' : ''">
+                                    {{dailyReport.bunkeringMgo}}
                                 </td>
                             </ng-template>
                         </tr>

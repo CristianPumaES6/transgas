@@ -3834,13 +3834,16 @@ export class DashboardComponent implements OnInit {
             let activities = '';
             let observations = '';
             let totalReport = 0;
-
+            let beaufour = '';
 
             dataExtra.forEach((report: DailyReport) => {
               activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
               observations = observations + ', ' + report.observation;
               speed.add(report.distance, report.steamingTime);
               totalReport = totalReport + 1;
+              if(report.beaufour){
+                beaufour = report.beaufour;
+              }
             });
 
 
@@ -3909,6 +3912,7 @@ export class DashboardComponent implements OnInit {
               }
 
             } else if (configIFOorMGOorSPEED === 'SPEED') {
+              result.push('Befourt :    ' + beaufour);
 
               if (chartPoint.speed.steamingTime > 0) {
                 result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
