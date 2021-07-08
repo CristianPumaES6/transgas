@@ -192,7 +192,7 @@ export const user: any = {
     CONSUMPTIONEQUIPMENTBOILER_IFO: 'C. Boiler',
     CONSUMPTIONEQUIPMENTOTHER_IFO: 'C. Other',
     NEW_YEAR: 'New year',
-    VESSEL_CONFIGURATION:'Vessel Configuration'
+    VESSEL_CONFIGURATION: 'Vessel Configuration'
 };
 
 export const fileUpload: any = {
@@ -452,13 +452,36 @@ export const dialog: any = {
     DEPARTURE: 'Departure :',
     ARRIVAL: 'Arrival :',
     BUQUE: 'Vessel',
-    TITLE_TABLE_SPEED:'Speed (KN)',
-    TOTAL:'Total',
+    TITLE_TABLE_SPEED: 'Speed (KN)',
+    TOTAL: 'Total',
     DAILY_CONSUMPTION: 'Daily Consp.',
     CHARTER: 'Charter',
     BUNKERING: 'Bunkering',
+    REPORT_INFORMATION: 'This report has the following information.',
+    ADD_SAILING_NAVIGATION: 'What navigation information do you want to add?',
+    IN_BALLAST: 'In Ballast',
+    WITH_LADEN: 'With Laden',
+    ECONOMICAL: 'Economical',
+    ADD_MACHINE_INFORMATION: 'Do you want to add the machine information?',
+    ADD_INFORMATION: 'What information do you want to add?',
+    ADD_INFORMATION_FUEL: 'What information do you want to add?',
+    MGO: 'MGO',
+    IFO: 'IFO',
+    VLSFO: 'VLSFO',
+    LSFO: 'LSFO',
+    MPLA: 'M.E',
+    AUX: 'A.E',
+    BOILER: 'Boiler',
+    GI: 'G.I',
+    PP: 'P.P',
+    OTHER: 'Other',
+    OVERALL_PERFORMANCE: 'Overall Performance Analysis',
+    VOYAGE_SUMMARY_SPEED: 'Voyage Summary (Speed)',
+    VOYAGE_SUMMARY_CONSUMPTION: 'Voyage Summary (Consumption)',
+    CHART_VOYAGE_SUMMARY: 'Chart Voyage Summary',
+    FUEL_REGISTER_CHART: 'Bunkering Information'
 }
 
-export const guards:any = {
-    
+export const guards: any = {
+
 }

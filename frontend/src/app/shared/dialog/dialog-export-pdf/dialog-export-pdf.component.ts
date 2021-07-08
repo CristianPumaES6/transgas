@@ -44,6 +44,7 @@ export class DialogExportPdfComponent implements OnInit {
     private loadingService: LoadingService,
   ) { }
 
+
   // Traducciones
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dialog';
@@ -55,6 +56,14 @@ export class DialogExportPdfComponent implements OnInit {
   public selectVoyageId: number = 0;
   public selectPortId: number = 0;
   public selectTypeExport: string = '';
+
+  public activitySailingList: string[] = ['SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION'];
+
+  // si deseamos agregar algun dato de sailing.
+  public addSailingInBallast: boolean = false;
+  public addSailingWithLaden: boolean = false;
+  public addSailingEconomical: boolean = false;
+
 
   // Viajes y puertos.
   public voyages: Voyage[] = [];
