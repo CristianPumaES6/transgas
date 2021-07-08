@@ -64,14 +64,15 @@
 
   <div class="row lh-1 mg-b-4 pl-0">
 
-    <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+    <div class="col-6 col-sm-6 col-md-6 col-lg-6"
+      *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO">
       <mat-checkbox [(ngModel)]="addInformationIFO" class="pl-2">
         {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
         'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+    <div class="col-6 col-sm-6 col-md-6 col-lg-6" *ngIf="selectUser.isConsumptionMGO">
       <mat-checkbox [(ngModel)]="addInformationMGO" class="pl-2">
         {{'MGO' | translateMessage:translateCategory}}
       </mat-checkbox>
@@ -109,29 +110,32 @@
     {{'ADD_MACHINE_INFORMATION' | translateMessage:translateCategory}}
   </h5>
 
-  <span> {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
-    'VLSFO' : 'LSFO') | translateMessage:translateCategory}}</span>
-  <div class="row lh-1 mg-b-2 pl-0">
+  <span *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO"> {{
+    (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+    'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
+  </span>
+  <div class="row lh-1 mg-b-2 pl-0"
+    *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO">
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isMEIFO">
       <mat-checkbox [(ngModel)]="addMEIFO" class="pl-2">
         {{'MPLA' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isAEIFO">
       <mat-checkbox [(ngModel)]="addAXIFO" class="pl-2">
         {{'AUX' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isBoilerIFO">
       <mat-checkbox [(ngModel)]="addBoilerIFO" class="pl-2">
         {{'BOILER' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isOtherIFO">
       <mat-checkbox [(ngModel)]="addOtherIFO" class="pl-2">
         {{'OTHER' | translateMessage:translateCategory}}
       </mat-checkbox>
@@ -139,40 +143,40 @@
 
   </div>
 
-  <span>MGO</span>
-  <div class="row lh-1 mg-b-2 pl-0">
+  <span *ngIf="selectUser.isMEMGO">MGO</span>
+  <div class="row lh-1 mg-b-2 pl-0" *ngIf="selectUser.isMEMGO">
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addMEMGO" class="pl-2">
+      <mat-checkbox [(ngModel)]="addMEMGO" class="pl-2" *ngIf="selectUser.isMEMGO">
         {{'MPLA' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addAXMGO" class="pl-2">
+      <mat-checkbox [(ngModel)]="addAXMGO" class="pl-2" *ngIf="selectUser.isAEMGO">
         {{'AUX' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isBoilerMGO">
       <mat-checkbox [(ngModel)]="addBoilerMGO" class="pl-2">
         {{'BOILER' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isIGMGO">
       <mat-checkbox [(ngModel)]="addGIMGO" class="pl-2">
         {{'GI' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isPowerPMGO">
       <mat-checkbox [(ngModel)]="addPPMGO" class="pl-2">
         {{'PP' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
+    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isOtherIFO">
       <mat-checkbox [(ngModel)]="addOtherMGO" class="pl-2">
         {{'OTHER' | translateMessage:translateCategory}}
       </mat-checkbox>
