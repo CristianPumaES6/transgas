@@ -479,7 +479,7 @@ export const dialog: any = {
     VOYAGE_SUMMARY_SPEED: 'Voyage Summary (Speed)',
     VOYAGE_SUMMARY_CONSUMPTION: 'Voyage Summary (Consumption)',
     CHART_VOYAGE_SUMMARY: 'Chart Voyage Summary',
-    FUEL_REGISTER_CHART: 'Bunkering Information'
+    BUNKERING_INFORMATION: 'Bunkering Information'
 }
 
 export const guards: any = {

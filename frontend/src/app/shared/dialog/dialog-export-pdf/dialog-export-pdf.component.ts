@@ -57,7 +57,30 @@ export class DialogExportPdfComponent implements OnInit {
   public selectPortId: number = 0;
   public selectTypeExport: string = '';
 
-  public activitySailingList: string[] = ['SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION'];
+  // Que informacion deseas agregar al reporte.
+  public addOverallPerformance: boolean = false;
+  public addVoyageSummarySpeed: boolean = false;
+  public addVoyageSummaryConsumption: boolean = false;
+  public addBunkeringInformation: boolean = false;
+  public addChartVoyageSummary: boolean = false;
+
+  // Que informacion deseamos agregar
+  public addInformationIFO: boolean = false;
+  public addInformationMGO: boolean = false;
+
+  // Por maquina
+  public addMEIFO: boolean = false;
+  public addAXIFO: boolean = false;
+  public addBoilerIFO: boolean = false;
+  public addOtherIFO: boolean = false;
+
+  public addMEMGO: boolean = false;
+  public addAXMGO: boolean = false;
+  public addBoilerMGO: boolean = false;
+  public addGIMGO: boolean = false;
+  public addPPMGO: boolean = false;
+  public addOtherMGO: boolean = false;
+
 
   // si deseamos agregar algun dato de sailing.
   public addSailingInBallast: boolean = false;

@@ -28,27 +28,27 @@
   <div class="row lh-1 mg-b-4 pl-0">
 
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+      <mat-checkbox [(ngModel)]="addOverallPerformance" class="pl-2">
         {{ 'OVERALL_PERFORMANCE' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+      <mat-checkbox [(ngModel)]="addVoyageSummarySpeed" class="pl-2">
         {{ 'VOYAGE_SUMMARY_SPEED' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+      <mat-checkbox [(ngModel)]="addVoyageSummaryConsumption" class="pl-2">
         {{ 'VOYAGE_SUMMARY_CONSUMPTION' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
-        {{ 'FUEL_REGISTER_CHART' | translateMessage:translateCategory}}
+      <mat-checkbox [(ngModel)]="addBunkeringInformation" class="pl-2">
+        {{ 'BUNKERING_INFORMATION' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+      <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2">
         {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
@@ -65,14 +65,14 @@
   <div class="row lh-1 mg-b-4 pl-0">
 
     <div class="col-6 col-sm-6 col-md-6 col-lg-6">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+      <mat-checkbox [(ngModel)]="addInformationIFO" class="pl-2">
         {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
         'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-6 col-sm-6 col-md-6 col-lg-6">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addInformationMGO" class="pl-2">
         {{'MGO' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
@@ -114,37 +114,25 @@
   <div class="row lh-1 mg-b-2 pl-0">
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+      <mat-checkbox [(ngModel)]="addMEIFO" class="pl-2">
         {{'MPLA' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addAXIFO" class="pl-2">
         {{'AUX' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addBoilerIFO" class="pl-2">
         {{'BOILER' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
-        {{'GI' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
-        {{'PP' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addOtherIFO" class="pl-2">
         {{'OTHER' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
@@ -152,40 +140,40 @@
   </div>
 
   <span>MGO</span>
-  <div class="row lh-1 pl-0">
+  <div class="row lh-1 mg-b-2 pl-0">
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+      <mat-checkbox [(ngModel)]="addMEMGO" class="pl-2">
         {{'MPLA' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addAXMGO" class="pl-2">
         {{'AUX' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addBoilerMGO" class="pl-2">
         {{'BOILER' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addGIMGO" class="pl-2">
         {{'GI' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addPPMGO" class="pl-2">
         {{'PP' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+      <mat-checkbox [(ngModel)]="addOtherMGO" class="pl-2">
         {{'OTHER' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
