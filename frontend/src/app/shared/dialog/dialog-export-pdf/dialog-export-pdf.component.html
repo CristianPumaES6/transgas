@@ -106,16 +106,16 @@
   </div>
 
 
-  <h5>
+  <h5 *ngIf="addVoyageSummaryConsumption">
     {{'ADD_MACHINE_INFORMATION' | translateMessage:translateCategory}}
   </h5>
 
-  <span *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO"> {{
+  <span *ngIf="addVoyageSummaryConsumption && (selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO)"> {{
     (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
     'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
   </span>
   <div class="row lh-1 mg-b-2 pl-0"
-    *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO">
+    *ngIf="addVoyageSummaryConsumption && (selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO)">
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isMEIFO">
       <mat-checkbox [(ngModel)]="addMEIFO" class="pl-2">
@@ -143,8 +143,8 @@
 
   </div>
 
-  <span *ngIf="selectUser.isMEMGO">MGO</span>
-  <div class="row lh-1 mg-b-2 pl-0" *ngIf="selectUser.isMEMGO">
+  <span *ngIf="addVoyageSummaryConsumption && selectUser.isMEMGO">MGO</span>
+  <div class="row lh-1 mg-b-2 pl-0" *ngIf="selectUser.isMEMGO && addVoyageSummaryConsumption">
 
     <div class="col-2 col-sm-12 col-md-6 col-lg-2">
       <mat-checkbox [(ngModel)]="addMEMGO" class="pl-2" *ngIf="selectUser.isMEMGO">
