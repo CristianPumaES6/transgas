@@ -90,7 +90,6 @@ export class DailyReport {
         this.distance = distance || 0;
         this.beaufour = beaufour || '';
         this.observation = observation || '';
-        this.status = status || true;
 
         // Audiotoria
         this.userIdCreated = userIdCreated || 0;
