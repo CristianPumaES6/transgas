@@ -2933,10 +2933,11 @@ export class DialogExportPdfComponent implements OnInit {
     var data: RowInput[] = [
 
       // Primera Fila titulo
-      [{ "content": titleTable, "colSpan": 8 }],
+      [{ "content": titleTable, "colSpan": 9 }],
       // Segunda Fila
       [
         { "content": "Arrival To Departure", "colSpan": 2, "rowSpan": 2 },
+        { "content": "Condition", "colSpan": 1 , "rowSpan": 2},
         { "content": "Distance\n(MI)", "colSpan": 2 },
         { "content": "Time\n(HRS)", "colSpan": 2 },
         { "content": "Speed\n(AVG)", "colSpan": 2 }
@@ -2982,6 +2983,7 @@ export class DialogExportPdfComponent implements OnInit {
         let rowIndex = data.row.index;
         let columIndex = data.column.index;
         let raw = data.row.raw;
+        // Primera cabecera de la tabla Titulo
         if (rowIndex == 0) {
 
           if (columIndex == 0) {
@@ -2992,14 +2994,21 @@ export class DialogExportPdfComponent implements OnInit {
           }
         }
 
+        // SEgunda linea
         if (rowIndex == 1) {
-
+          // la primera columna Departure To Arrival, estara alineada en el medio 
           if (columIndex == 0) {
             cell.styles.valign = 'middle';
           }
+          // La tercera columna Condition(Laden Blalast) alineada en el medio
+          if (columIndex == 2) {
+            cell.styles.valign = 'middle';
+          }
         }
-        if (rowIndex == 5) {
 
+
+        // REvisar esto parece que ya no iria.
+        if (rowIndex == 5) {
           if (columIndex == 0) {
             cell.styles.valign = 'middle';
           }
@@ -3026,6 +3035,9 @@ export class DialogExportPdfComponent implements OnInit {
           }
 
         }
+        // Fin de la revision
+
+
       }
 
 
@@ -3036,7 +3048,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 57,
+        cellWidth: 55,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -3044,7 +3056,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 19,
+        cellWidth: 9,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -3052,7 +3064,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 19,
+        cellWidth: 18,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -3060,7 +3072,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 19,
+        cellWidth: 18,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -3068,23 +3080,23 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 19,
-        lineWidth: 0.2,
+        cellWidth: 18,
+        lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
       5: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 19,
-        lineWidth: 0.15,
+        cellWidth: 18,
+        lineWidth: 0.2,
         lineColor: [22, 33, 77]
       },
       6: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 19,
+        cellWidth: 18,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -3092,7 +3104,15 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 19,
+        cellWidth: 18,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       }
