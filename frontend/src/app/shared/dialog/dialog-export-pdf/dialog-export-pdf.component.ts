@@ -3257,7 +3257,9 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Generamos la tabla resumen del viaje.
     // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
-    
+   
+    // Generamos todo el resumen por viajes.
+    //this.GenerateTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null);
 
     positionWidth = 10;
     this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
@@ -4192,73 +4194,72 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": "Ballast", "colSpan": 2 },
       ],
       [  
-         { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
         { "content": "MGO", "colSpan": 1 }, 
         { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
         { "content": "MGO", "colSpan": 1 },
       ],
       [
-        { "content": "Transit Distance :", "colSpan": 4 },
+        { "content": "Transit Distance", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Transit Time :", "colSpan": 4 },
+        { "content": "Transit Time", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Allowable Charter Time :", "colSpan": 4 },
+        { "content": "Allowable Charter Time", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Average Speed :", "colSpan": 4 },
+        { "content": "Average Speed", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Allowable Charter Speed :", "colSpan": 4 },
+        { "content": "Allowable Charter Speed", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Actual Total Consumption :", "colSpan": 4 },
+        { "content": "Actual Total Consumption", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Warranted Total Consumption :", "colSpan": 4 },
+        { "content": "Warranted Total Consumption", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Actual Daily Consumption :", "colSpan": 4 },
+        { "content": "Actual Daily Consumption", "colSpan": 4 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
       [
-        { "content": "Warranted Daily Consumption :", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
+        { "content": "", "colSpan": 8 },
+      ],
+      [
+        { "content": "", "colSpan": 8 },
       ],
 
 
@@ -4282,7 +4283,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 10,
+        cellWidth: 14,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -4290,7 +4291,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 10,
+        cellWidth: 14,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -4298,7 +4299,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 27,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -4306,7 +4307,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 27,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -4314,7 +4315,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 27,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -4322,7 +4323,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 27,
         lineWidth: 0.2,
         lineColor: [22, 33, 77]
       },
@@ -4330,7 +4331,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 27,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
@@ -4338,7 +4339,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 27,
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       },
