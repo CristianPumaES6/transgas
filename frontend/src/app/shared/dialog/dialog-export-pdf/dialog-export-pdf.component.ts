@@ -2927,11 +2927,11 @@ export class DialogExportPdfComponent implements OnInit {
       doc.setTextColor(40);
       doc.setFont('Helvetica', 'bold');
       doc.text(
-        sVPR.atdAndAta, centerPDF, positionHeight, 
+        sVPR.atdAndAta, centerPDF, positionHeight,
         { align: 'center' }
       );
 
- 
+
       positionHeight += 10;
 
       this.GenerateSummaryTableByVoyage(doc, positionHeight, sVPR.listSummarySpeedCondition);
