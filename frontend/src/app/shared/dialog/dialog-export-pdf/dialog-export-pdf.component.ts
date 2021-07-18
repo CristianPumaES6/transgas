@@ -2819,8 +2819,43 @@ export class DialogExportPdfComponent implements OnInit {
     const widthPDF = doc.internal.pageSize.getWidth();
     const heightPDF = doc.internal.pageSize.getHeight();
 
-    // Nos ubicamos a una altura.
-    positionHeight += 38;
+    // Calculamos todo el alto que se pintara para poder centrarlo.
+    let contentOnePage: number = 0;
+    // Tamaño del logo
+    contentOnePage += 65;
+    contentOnePage += 10; // titulo
+    contentOnePage += 12; // Nombre del buque
+    // Verificamos al cantidad de viajes navegados y el total de puertos navegados
+    if (
+      sVPR.totalVoyageSailing > 1 && sVPR.totalPortSailing > 12
+    ){
+    contentOnePage += 20;
+    contentOnePage += 10;
+    contentOnePage += 10;
+    contentOnePage += 10;
+    contentOnePage += 18;
+    } else {
+      contentOnePage += 20;
+      contentOnePage += 10;
+      contentOnePage += 10;
+      contentOnePage += 10;
+
+      // Aqui empieza la tabla
+      // Cabecera de la tabla
+      contentOnePage += 24.3;
+
+      // row por cada puerto
+      contentOnePage += (sVPR.listSummarySpeedCondition.length * 6.8); 
+    }
+    // calculamos el tamaño del Contenido de la pagina
+    // con el tamaño del pdf y o dividimos para que
+    // tenga el mismo margen en la altura y bottom
+    positionHeight+= (heightPDF-contentOnePage)/2;
+    // Eliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
+          
     // ubicamos la imagen con un tamaño de 50 x 50
     let widthImage = 50;
     let heightImage = 50;
