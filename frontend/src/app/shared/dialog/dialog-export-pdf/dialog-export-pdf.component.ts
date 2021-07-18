@@ -15,7 +15,7 @@ import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
 import { LanguageService } from '../../../services/language.service';
 import { DialogListReportComponent } from '../dialog-list-report/dialog-list-report.component';
-import { SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
+import { GenerateSummaryTableOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
@@ -2807,8 +2807,12 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Inicializamos el height en 0,
           let positionHeight = 0;
+
+          // REVISAR
+          // Esto lo deberiamos de obtener por todo el recorrido
+          let gSTOPA: GenerateSummaryTableOverallPerformanceAnalisis = new GenerateSummaryTableOverallPerformanceAnalisis();
           // Agregamos el OverallPerformanceAnalisis
-          this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight)
+          this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, gSTOPA)
 
           return true;
         }).then(
@@ -2994,7 +2998,7 @@ export class DialogExportPdfComponent implements OnInit {
   private GenerateSummaryTableByVoyage(doc: jsPDF, startY: number, listSummarySpeedCondition: SummarySpeedCondition[]) {
     let titleTable = 'Report Summary - Speed Conditions (Laden, Ballast)';
     // Agregar la formula para saber si es IFO VLSFO LSFO
-    let typeConsumptionSelectBuqueIFO = 'VLSFO';
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
     var data: RowInput[] = [
 
       // Primera Fila titulo
@@ -3015,18 +3019,6 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
         { "content": "MGO", "colSpan": 1 }
       ],
-
-
-      // Aqui empezaremos arecorrer los puertos.
-      /* 
-      // Aqui van los valores
-      [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
-      [{ "content": "", "colSpan": 8 }],
-      [{ "content": "Voyage(s) Total", "colSpan": 1, "rowSpan": 2 }, { "content": "Time", "colSpan": 1 }, { "content": "Distance", "colSpan": 1 }, { "content": "AVG\nSpeed", "colSpan": 1 }, { "content": "Speed\nCharter", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "Daily\n" + typeConsumptionSelectBuque + "\n", "colSpan": 1 }, { "content": "Daily\nCharter", "colSpan": 1 }],
-      // Aqui van valores.
-      [{ "content": this.MathRoundOneDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
-      [{ "content": "Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received", "colSpan": 8 }],
- */
 
     ];
 
@@ -3061,7 +3053,7 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.startY = startY;
     //userOptions.head = head;
     userOptions.body = data;
-    userOptions.margin = [0, 10, 0, 10, 0, 0]
+    userOptions.margin = { left: 10 }
 
     userOptions.didParseCell = (data: CellHookData) => {
 
@@ -3224,12 +3216,47 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number) {
+  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, gSTOPA: GenerateSummaryTableOverallPerformanceAnalisis) {
     positionHeight += 10;
     let positionWidth = 10;
 
+    // Agregamos la cabecera a la pagina.
+    positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, 'Overall Performance Analysis');
 
-    this.AddHeaderPage(doc, widthPDF, positionHeight, 'Overall Performance Analysis');
+    ///////////////////////////////////////
+    ///////// Inicio del 1° Cuadro ////////
+    ///////////////////////////////////////
+
+    // BUQUE
+    positionHeight += 20;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("M/V", 10, positionHeight, { align: 'left' })
+    doc.setFontSize(17);
+    doc.text(this.selectUser.name, 20, positionHeight, { align: 'left' })
+
+    // Prepared for
+    positionHeight += 8;
+    doc.setFontSize(8);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'italic');
+    doc.text("Prepared for", 10, positionHeight, { align: 'left' })
+
+    // Transgas Shipping
+    positionHeight += 4.5;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
+
+    // Colocamos el rectangulo
+    positionHeight -= 27;
+    positionWidth = 63;
+
+
+    // Generamos la tabla resumen del viaje.
+    this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
   }
 
   // esta funcion agrega la cabecera al documento.
@@ -3285,5 +3312,274 @@ export class DialogExportPdfComponent implements OnInit {
 
 
     return positionHeight;
+  }
+
+  private GenerateSummaryTableOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gSTOPA: GenerateSummaryTableOverallPerformanceAnalisis) {
+    // title
+    let titleTable = gSTOPA.title;
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+    var data: RowInput[] = [
+
+      // Segunda Fila
+      [
+        { "content": "Voyage N°" + gSTOPA.numberVoyage +'\n' +"Total Ports " + gSTOPA.totalPort, "colSpan": 2, "rowSpan": 2 },
+        { "content": "Laden", "colSpan": 2 },
+        { "content": "Charter", "colSpan": 2 },
+        { "content": "Ballast", "colSpan": 2 },
+        { "content": "Charter", "colSpan": 2 }
+      ],
+      [
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 }
+      ],
+
+
+
+      [
+        { "content": "Distance", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Time", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Consumption", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Daily Consumption", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Speed", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      // Aqui empezaremos arecorrer los puertos.
+      /* 
+      // Aqui van los valores
+      [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
+      [{ "content": "", "colSpan": 8 }],
+      [{ "content": "Voyage(s) Total", "colSpan": 1, "rowSpan": 2 }, { "content": "Time", "colSpan": 1 }, { "content": "Distance", "colSpan": 1 }, { "content": "AVG\nSpeed", "colSpan": 1 }, { "content": "Speed\nCharter", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "Daily\n" + typeConsumptionSelectBuque + "\n", "colSpan": 1 }, { "content": "Daily\nCharter", "colSpan": 1 }],
+      // Aqui van valores.
+      [{ "content": this.MathRoundOneDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
+      [{ "content": "Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received", "colSpan": 8 }],
+ */
+    ];
+
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 136;
+
+    // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      let section = data.section;
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+
+      if (section == 'body') {
+        let rowIndex = data.row.index;
+        let columIndex = data.column.index;
+        let raw = data.row.raw;
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+
+          if (columIndex == 0) {
+
+            cell.styles.fillColor = '#375f9a'
+            cell.styles.textColor = '#ffffff';
+            cell.styles.fontSize = 10;
+          }
+        }
+
+        // SEgunda linea
+        if (rowIndex == 1) {
+          // la primera columna Departure To Arrival, estara alineada en el medio 
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+          // La tercera columna Condition(Laden Blalast) alineada en el medio
+          if (columIndex == 2) {
+            cell.styles.valign = 'middle';
+          }
+        }
+
+
+        // REvisar esto parece que ya no iria.
+        if (rowIndex == 5) {
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+        }
+        // En la fila 7
+        if (rowIndex == 6) {
+
+
+          if (columIndex == 3) {
+
+            if (Number(cell.text) >= Number(raw[3].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+
+          }
+          if (columIndex == 6) {
+            if (Number(cell.text) <= Number(raw[6].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+          }
+
+        }
+        // Fin de la revision
+
+
+      }
+
+
+    };
+
+    // Total suma 136, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 15,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 15,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77]
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      9: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      }
+    };
+
+
+    // Agregamos la tabla.
+    autoTable(doc, userOptions);
+
   }
 }
