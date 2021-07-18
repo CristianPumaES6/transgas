@@ -2726,6 +2726,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
+
   // ExportPDFVesselPerformance2() esta funcion genera el pdf.
   private ExportPDFVesselPerformance2(voyages: Voyage[]): Promise<boolean> {
 
@@ -2791,9 +2792,12 @@ export class DialogExportPdfComponent implements OnInit {
 
         // Luego deberiamos enviar esa informacion a los siguientes documentos.
 
-        // Agregamos la primera pagina
+        // Agregamos la primera pagina,
+        // El cual tiene resumido todo el reporte.
         this.AddOnePage(doc, sVPR);
 
+        // Agregamos una nueva pagina
+        doc.addPage();
 
         return true;
       }
@@ -2801,15 +2805,25 @@ export class DialogExportPdfComponent implements OnInit {
       .then(
         result => {
 
-          doc.save("test.pdf")
+          // Inicializamos el height en 0,
+          let positionHeight = 0;
+          // Agregamos el OverallPerformanceAnalisis
+          this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight)
 
-          this.loadingService.Close();
           return true;
+        }).then(
+          result => {
 
-        }
-      );
+            doc.save("test.pdf")
+
+            this.loadingService.Close();
+            return true;
+
+          }
+        );
 
   }
+
 
   private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport): jsPDF {
 
@@ -2828,12 +2842,12 @@ export class DialogExportPdfComponent implements OnInit {
     // Verificamos al cantidad de viajes navegados y el total de puertos navegados
     if (
       sVPR.totalVoyageSailing > 1 && sVPR.totalPortSailing > 12
-    ){
-    contentOnePage += 20;
-    contentOnePage += 10;
-    contentOnePage += 10;
-    contentOnePage += 10;
-    contentOnePage += 18;
+    ) {
+      contentOnePage += 20;
+      contentOnePage += 10;
+      contentOnePage += 10;
+      contentOnePage += 10;
+      contentOnePage += 18;
     } else {
       contentOnePage += 20;
       contentOnePage += 10;
@@ -2845,17 +2859,17 @@ export class DialogExportPdfComponent implements OnInit {
       contentOnePage += 24.3;
 
       // row por cada puerto
-      contentOnePage += (sVPR.listSummarySpeedCondition.length * 6.8); 
+      contentOnePage += (sVPR.listSummarySpeedCondition.length * 6.8);
     }
     // calculamos el tamaño del Contenido de la pagina
     // con el tamaño del pdf y o dividimos para que
     // tenga el mismo margen en la altura y bottom
-    positionHeight+= (heightPDF-contentOnePage)/2;
+    positionHeight += (heightPDF - contentOnePage) / 2;
     // Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
     doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
-          
+
     // ubicamos la imagen con un tamaño de 50 x 50
     let widthImage = 50;
     let heightImage = 50;
@@ -2974,6 +2988,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     return doc;
   }
+
 
   // Esta funcion agrega el cudro de resumen por viaje.
   private GenerateSummaryTableByVoyage(doc: jsPDF, startY: number, listSummarySpeedCondition: SummarySpeedCondition[]) {
@@ -3206,5 +3221,69 @@ export class DialogExportPdfComponent implements OnInit {
 
     autoTable(doc, userOptions);
 
+  }
+
+
+  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number) {
+    positionHeight += 10;
+    let positionWidth = 10;
+
+
+    this.AddHeaderPage(doc, widthPDF, positionHeight, 'Overall Performance Analysis');
+  }
+
+  // esta funcion agrega la cabecera al documento.
+  private AddHeaderPage(doc: jsPDF, widthPDF: number, positionHeight: number, HeaderTitle: string): number {
+
+    // Posicion del widht de los elementos,
+    // Nos ayuda a ubicar en el ancho del documento.
+    let positionWidthDragPage = 10;
+
+    //Agregamos el logo.
+    // tamaño de la imagen
+    let widthImage = 17;
+    let heightImage = 17;
+    doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidthDragPage, positionHeight, widthImage, heightImage);
+
+    // Bajamos un poco para agregar el titulo.
+    positionHeight += 5;
+    positionWidthDragPage = 60;
+    // Texto
+    doc.setFontSize(18);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bolditalic');
+    doc.text("Vessel Performance Report", positionWidthDragPage, positionHeight, { align: 'left' })
+
+    // Debajo del titulo agregamos una linea.
+    positionHeight += 2;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(positionWidthDragPage, positionHeight, widthPDF - positionWidthDragPage - 10, 0.5, "FD");
+
+    // Numeros de telefono y correo.
+    positionHeight += 10;
+    doc.setFontSize(10);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Lima Phone: +51-1-716-7600       Miami Phone: +1 954-575-1414       Email: transgas@transgas.com.pe", widthPDF - 10, positionHeight, { align: 'right' })
+
+    // Raya debajo de los numeros de telefono.
+    positionHeight += 2;
+    positionWidthDragPage = 10;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(10, positionHeight, widthPDF - 20, 0.5, "FD");
+
+
+
+    // Titulo del pdf.
+    positionHeight += 6;
+    doc.setFontSize(15);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(HeaderTitle, widthPDF / 2, positionHeight, { align: 'center' })
+
+
+    return positionHeight;
   }
 }
