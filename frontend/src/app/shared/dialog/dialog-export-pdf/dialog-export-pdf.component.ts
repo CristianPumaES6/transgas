@@ -15,7 +15,7 @@ import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
 import { LanguageService } from '../../../services/language.service';
 import { DialogListReportComponent } from '../dialog-list-report/dialog-list-report.component';
-import { SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
+import { SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
@@ -2758,7 +2758,6 @@ export class DialogExportPdfComponent implements OnInit {
         sVPR.dateStart = ''
         sVPR.dateStart = ''
         // Aqui deberiamos recorrer los viajes y obtener los datos del resumen de viaje.
-
         // Recorremos todos los viajes.
         voyages.forEach(
           voyage => {
@@ -2772,6 +2771,23 @@ export class DialogExportPdfComponent implements OnInit {
 
           }
         )
+        // Esto es de prueba tenemos que eliminarlo.
+        // Al recorrer tendriamos algo asi.
+        sVPR.listSummarySpeedCondition =
+          [
+            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+          ];
 
         // Luego deberiamos enviar esa informacion a los siguientes documentos.
 
@@ -2840,7 +2856,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Si el total de puertos es mayoir que 5 mostraremos resumido en totales.
     // Y si an puesto para sacar el resumen de ballas and laden. Revisar
     if (
-      sVPR.totalVoyageSailing > 1 && sVPR.totalPortSailing > 5 
+      sVPR.totalVoyageSailing > 1 && sVPR.totalPortSailing > 12
     ) {
 
       // Total de viajes
@@ -2911,22 +2927,21 @@ export class DialogExportPdfComponent implements OnInit {
       doc.setTextColor(40);
       doc.setFont('Helvetica', 'bold');
       doc.text(
-        sVPR.atdAndAta,
-        //"ATD: " + FormatDate(getstartEndReport.startReport.date) + " " + getstartEndReport.startReport.hour, 
-        //"ATA: " + FormatDate(getstartEndReport.endReport.date) + " " + getstartEndReport.endReport.hour      
-        centerPDF, positionHeight, { align: 'center' });
+        sVPR.atdAndAta, centerPDF, positionHeight, 
+        { align: 'center' }
+      );
 
-        
+ 
       positionHeight += 10;
 
-      this.GenerateSummaryTableByVoyage(doc, positionHeight);
+      this.GenerateSummaryTableByVoyage(doc, positionHeight, sVPR.listSummarySpeedCondition);
     }
 
     return doc;
   }
 
   // Esta funcion agrega el cudro de resumen por viaje.
-  private GenerateSummaryTableByVoyage(doc: jsPDF, startY: number) {
+  private GenerateSummaryTableByVoyage(doc: jsPDF, startY: number, listSummarySpeedCondition: SummarySpeedCondition[]) {
     let titleTable = 'Report Summary - Speed Conditions (Laden, Ballast)';
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = 'VLSFO';
@@ -2936,8 +2951,8 @@ export class DialogExportPdfComponent implements OnInit {
       [{ "content": titleTable, "colSpan": 9 }],
       // Segunda Fila
       [
-        { "content": "Arrival To Departure", "colSpan": 2, "rowSpan": 2 },
-        { "content": "Condition", "colSpan": 1 , "rowSpan": 2},
+        { "content": "Departure to Arrival", "colSpan": 2, "rowSpan": 2 },
+        { "content": "Condition", "colSpan": 1, "rowSpan": 2 },
         { "content": "Distance\n(MI)", "colSpan": 2 },
         { "content": "Time\n(HRS)", "colSpan": 2 },
         { "content": "Speed\n(AVG)", "colSpan": 2 }
@@ -2951,6 +2966,7 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": "MGO", "colSpan": 1 }
       ],
 
+
       // Aqui empezaremos arecorrer los puertos.
       /* 
       // Aqui van los valores
@@ -2963,6 +2979,31 @@ export class DialogExportPdfComponent implements OnInit {
  */
 
     ];
+
+    listSummarySpeedCondition.forEach(summarySpeedCondition => {
+      data.push(
+        [
+
+          // departure to arrival
+          { "content": summarySpeedCondition.departureToArrival, "colSpan": 2, "rowSpan": 1 },
+          // Condicion de navegacion
+          { "content": summarySpeedCondition.condition + '/eco', "colSpan": 1, "rowSpan": 1 },
+
+          // Distancia
+          { "content": summarySpeedCondition.distanceIFO, "colSpan": 1 },
+          { "content": summarySpeedCondition.distanceMGO, "colSpan": 1 },
+
+          // Time
+          { "content": summarySpeedCondition.timeIFO, "colSpan": 1 },
+          { "content": summarySpeedCondition.timeMGO, "colSpan": 1 },
+
+          //Speed
+          { "content": summarySpeedCondition.speedIFO, "colSpan": 1 },
+          { "content": summarySpeedCondition.speedMGO, "colSpan": 1 }
+
+        ]
+      )
+    });
 
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};
@@ -3117,6 +3158,7 @@ export class DialogExportPdfComponent implements OnInit {
         lineColor: [22, 33, 77]
       }
     };
+
     userOptions.headStyles = {
       halign: 'center',
       valign: 'middle',
