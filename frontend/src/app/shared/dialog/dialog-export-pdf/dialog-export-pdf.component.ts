@@ -15,7 +15,7 @@ import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
 import { LanguageService } from '../../../services/language.service';
 import { DialogListReportComponent } from '../dialog-list-report/dialog-list-report.component';
-import { GenerateSummaryTableOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
+import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOverallPerformanceAnalisis, GenerateTableTotalSummaryOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
@@ -3252,11 +3252,15 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Colocamos el rectangulo
     positionHeight -= 27;
-    positionWidth = 63;
-
+    //positionWidth = 63;
+    positionWidth = 7.5;
 
     // Generamos la tabla resumen del viaje.
-    this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
+    // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
+    
+
+    positionWidth = 10;
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
   }
 
   // esta funcion agrega la cabecera al documento.
@@ -3314,6 +3318,7 @@ export class DialogExportPdfComponent implements OnInit {
     return positionHeight;
   }
 
+  // Genera la tabla performanve.
   private GenerateSummaryTableOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gSTOPA: GenerateSummaryTableOverallPerformanceAnalisis) {
     // title
     let titleTable = gSTOPA.title;
@@ -3323,7 +3328,7 @@ export class DialogExportPdfComponent implements OnInit {
 
       // Segunda Fila
       [
-        { "content": "Voyage N°" + gSTOPA.numberVoyage +'\n' +"Total Ports " + gSTOPA.totalPort, "colSpan": 2, "rowSpan": 2 },
+        { "content": "Voyage N°" + gSTOPA.numberVoyage + '\n' + "Total Ports " + gSTOPA.totalPort, "colSpan": 2, "rowSpan": 2 },
         { "content": "Laden", "colSpan": 2 },
         { "content": "Charter", "colSpan": 2 },
         { "content": "Ballast", "colSpan": 2 },
@@ -3397,16 +3402,6 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": 0, "colSpan": 1 },
         { "content": 0, "colSpan": 1 },
       ],
-      // Aqui empezaremos arecorrer los puertos.
-      /* 
-      // Aqui van los valores
-      [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
-      [{ "content": "", "colSpan": 8 }],
-      [{ "content": "Voyage(s) Total", "colSpan": 1, "rowSpan": 2 }, { "content": "Time", "colSpan": 1 }, { "content": "Distance", "colSpan": 1 }, { "content": "AVG\nSpeed", "colSpan": 1 }, { "content": "Speed\nCharter", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "Daily\n" + typeConsumptionSelectBuque + "\n", "colSpan": 1 }, { "content": "Daily\nCharter", "colSpan": 1 }],
-      // Aqui van valores.
-      [{ "content": this.MathRoundOneDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
-      [{ "content": "Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received", "colSpan": 8 }],
- */
     ];
 
 
@@ -3575,6 +3570,778 @@ export class DialogExportPdfComponent implements OnInit {
         lineWidth: 0.15,
         lineColor: [22, 33, 77]
       }
+    };
+
+
+    // Agregamos la tabla.
+    autoTable(doc, userOptions);
+
+  }
+
+  private GenerateTableOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[]) {
+    // title
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+
+
+    var data: RowInput[] = [
+
+      // Segunda Fila
+      [
+        { "content": "Summary by Voyage", "colSpan": 2, "rowSpan": 2 },
+        { "content": "Distance", "colSpan": 2 },
+        { "content": "Consumption", "colSpan": 2 },
+        { "content": "Charter", "colSpan": 2 },
+        { "content": "Time", "colSpan": 2 },
+        { "content": "Charter", "colSpan": 2 },
+        { "content": "Speed", "colSpan": 2 },
+        { "content": "Charter", "colSpan": 2 }
+      ],
+      [
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 }
+      ],
+
+
+      // esto se deberia agregar recorriendo
+      [
+        { "content": "Voyage 99", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 99", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 99", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 99", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 99", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 99", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ], [
+        { "content": "Voyage 1", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+
+    ];
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 190;
+
+    // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      let section = data.section;
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+
+      if (section == 'body') {
+        let rowIndex = data.row.index;
+        let columIndex = data.column.index;
+        let raw = data.row.raw;
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+
+          if (columIndex == 0) {
+
+            cell.styles.fillColor = '#375f9a'
+            cell.styles.textColor = '#ffffff';
+            cell.styles.fontSize = 8;
+          }
+        }
+
+        // SEgunda linea
+        if (rowIndex == 1) {
+          // la primera columna Departure To Arrival, estara alineada en el medio 
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+          // La tercera columna Condition(Laden Blalast) alineada en el medio
+          if (columIndex == 2) {
+            cell.styles.valign = 'middle';
+          }
+        }
+
+
+        // REvisar esto parece que ya no iria.
+        if (rowIndex == 5) {
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+        }
+        // En la fila 7
+        if (rowIndex == 6) {
+
+
+          if (columIndex == 3) {
+
+            if (Number(cell.text) >= Number(raw[3].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+
+          }
+          if (columIndex == 6) {
+            if (Number(cell.text) <= Number(raw[6].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+          }
+
+        }
+        // Fin de la revision
+
+
+      }
+
+
+    };
+
+    // Total suma 136, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77]
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      9: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      10: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      11: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      12: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      13: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      14: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      15: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      }
+    };
+
+
+    // Agregamos la tabla.
+    autoTable(doc, userOptions);
+
+  }
+
+  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis[]) {
+    // title
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+
+
+    var data: RowInput[] = [
+
+      // Segunda Fila
+      [
+        { "content": "", "colSpan": 4, "rowSpan": 2 },
+        { "content": "Laden", "colSpan": 2 },
+        { "content": "Ballast", "colSpan": 2 },
+      ],
+      [  
+         { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 }, 
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+      ],
+      [
+        { "content": "Transit Distance :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Transit Time :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Allowable Charter Time :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Average Speed :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Allowable Charter Speed :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Actual Total Consumption :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Warranted Total Consumption :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Actual Daily Consumption :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Warranted Daily Consumption :", "colSpan": 4 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+
+
+    ];
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 190;
+
+
+    // Total suma 136, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77]
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 13,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
     };
 
 

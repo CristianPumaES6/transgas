@@ -189,3 +189,11 @@ export class GenerateSummaryTableOverallPerformanceAnalisis {
 
     }
 }
+
+export class GenerateTableSummaryOverallPerformanceAnalisis{
+
+}
+
+export class GenerateTableTotalSummaryOverallPerformanceAnalisis{
+    
+}
