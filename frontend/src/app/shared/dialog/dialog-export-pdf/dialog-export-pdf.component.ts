@@ -2981,6 +2981,7 @@ export class DialogExportPdfComponent implements OnInit {
     contentOnePage += 10; // Total Port
 
     contentOnePage += 18; // ATD
+    contentOnePage += 81.5; //  Table sresumen overall
 
 
     // calculamos el tamaño del Contenido de la pagina
@@ -3044,9 +3045,7 @@ export class DialogExportPdfComponent implements OnInit {
     doc.text('Total Ports Sailed: ' + sVPR.totalPortSailing, centerPDF, positionHeight, { align: 'center' })
 
 
-    // Agregamos la fecha donde inicio el analisis
-
-    //  Agregamos el tiempo de departure y llegada.
+    // Fecha del analisi startdate y endDate
     positionHeight += 18;
     doc.setFontSize(16);
     doc.setTextColor(40);
@@ -3057,6 +3056,9 @@ export class DialogExportPdfComponent implements OnInit {
       { align: 'center' }
     );
 
+    positionHeight += 3;
+    let positionWidth = 10;
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
 
     return doc;
   }
@@ -3943,7 +3945,22 @@ export class DialogExportPdfComponent implements OnInit {
     return contentHeightTable;
   }
 
-  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis[]) {
+  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis[]): number {
+   
+
+    let contentHeightTable = 0;
+    // Le sumamos el espacio de la cabecera de la tabla.
+    contentHeightTable += 13.5;
+
+    contentHeightTable += (6.8 * 10)
+
+
+    // Eliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+
+
     // title
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
@@ -4113,6 +4130,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Agregamos la tabla.
     autoTable(doc, userOptions);
 
+    return contentHeightTable;
   }
 
   // Mejorar deberia retornar el tamaño donde se esta quedando.
