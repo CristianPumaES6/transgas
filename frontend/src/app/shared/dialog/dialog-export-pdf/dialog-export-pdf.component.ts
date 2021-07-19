@@ -3374,31 +3374,8 @@ export class DialogExportPdfComponent implements OnInit {
     ///////// Inicio del 1° Cuadro ////////
     ///////////////////////////////////////
 
-    // BUQUE
-    positionHeight += 20;
-    doc.setFontSize(13);
-    doc.setTextColor(22, 33, 77);
-    doc.setFont('Helvetica', 'bold');
-    doc.text("M/V", 10, positionHeight, { align: 'left' })
-    doc.setFontSize(17);
-    doc.text(this.selectUser.name, 20, positionHeight, { align: 'left' })
-
-    // Prepared for
-    positionHeight += 8;
-    doc.setFontSize(8);
-    doc.setTextColor(22, 33, 77);
-    doc.setFont('Helvetica', 'italic');
-    doc.text("Prepared for", 10, positionHeight, { align: 'left' })
-
-    // Transgas Shipping
-    positionHeight += 4.5;
-    doc.setFontSize(13);
-    doc.setTextColor(22, 33, 77);
-    doc.setFont('Helvetica', 'bold');
-    doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
-
     // Colocamos el rectangulo
-    positionHeight -= 27;
+    positionHeight += 5.5;
     //positionWidth = 63;
     positionWidth = 7.5;
 
@@ -3406,9 +3383,16 @@ export class DialogExportPdfComponent implements OnInit {
     // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
 
     // Generamos todo el resumen por viajes.
-    this.GenerateTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA_Ballast);
+    positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA_Ballast);
 
+    // Le damos un espacio para el siguiente cuadro.
+    positionHeight += 6;
     positionWidth = 10;
+
+    // Generamos la tabla ocn el total de resumen
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
+
+
     //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
   }
 
@@ -3727,7 +3711,25 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
-  private GenerateTableOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[]) {
+
+  // Genera el cuadro de 
+  // Overall Performance Analysis
+  // retorna el tamaño de la tabla
+  private GenerateTableOverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[]): number {
+
+
+    let contentHeightTable = 0;
+    // Le sumamos el espacio de la cabecera de la tabla.
+    contentHeightTable += 16.7;
+    // Cada fila o;cupa lo siguiente.
+    contentHeightTable += (6.8 * listGTSOPA.length);
+
+    // Eliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+
+
     // title
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
@@ -3738,12 +3740,12 @@ export class DialogExportPdfComponent implements OnInit {
       // Segunda Fila
       [
         { "content": "Summary by Voyage", "colSpan": 2, "rowSpan": 2 },
-        { "content": "Distance", "colSpan": 2 },
-        { "content": "Consumption", "colSpan": 2 },
+        { "content": "Distance\n(MI)", "colSpan": 2 },
+        { "content": "Consumption\n(MT)", "colSpan": 2 },
         { "content": "Charter", "colSpan": 2 },
-        { "content": "Time", "colSpan": 2 },
+        { "content": "Time\n(HRS)", "colSpan": 2 },
         { "content": "Charter", "colSpan": 2 },
-        { "content": "Speed", "colSpan": 2 },
+        { "content": "Speed\n(KN)", "colSpan": 2 },
         { "content": "Charter", "colSpan": 2 }
       ],
       [
@@ -4016,6 +4018,8 @@ export class DialogExportPdfComponent implements OnInit {
     // Agregamos la tabla.
     autoTable(doc, userOptions);
 
+
+    return contentHeightTable;
   }
 
   private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis[]) {
@@ -4188,6 +4192,35 @@ export class DialogExportPdfComponent implements OnInit {
     // Agregamos la tabla.
     autoTable(doc, userOptions);
 
+  }
+
+  // Mejorar deberia retornar el tamaño donde se esta quedando.
+  private AddPreparedVessel(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number) {
+
+    // BUQUE
+    positionHeight += 20;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("M/V", 10, positionHeight, { align: 'left' })
+    doc.setFontSize(17);
+    doc.text(this.selectUser.name, 20, positionHeight, { align: 'left' })
+
+    // Prepared for
+    positionHeight += 8;
+    doc.setFontSize(8);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'italic');
+    doc.text("Prepared for", 10, positionHeight, { align: 'left' })
+
+    // Transgas Shipping
+    positionHeight += 4.5;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
+
+    // 27
   }
 
 
