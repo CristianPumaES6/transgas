@@ -2763,11 +2763,26 @@ export class DialogExportPdfComponent implements OnInit {
         // Recorremos todos los viajes.
         parseVoyages.forEach(
           voyage => {
+            // Resumen de viaje, lo lo agregaremos al arreglo
+            let gTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+            let gTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+
+
+            // Esta variable nos ayudara para saber si ya contamos el viaje, una vez que lo sumamos lo ponemos false;
+            let isNewVoyage: boolean = true;
             if (voyage.status) {
+
+              // Agregamos el id y el numero del viaje.
+              gTSOPA_Ballast.voyageId = voyage.id;
+              gTSOPA_Ballast.voyageNumber = voyage.voyageNumber;
+
 
               // Recorremos todos los puertos
               voyage.ports.forEach(
                 port => {
+
+                  // Esta variable nos ayudara para saber si ya contamos el puerto, una vez que lo sumamos lo ponemos false;
+                  let isNewPort: boolean = true;
                   if (port.status) {
 
                     // recorremos todos los reportes
@@ -2775,18 +2790,80 @@ export class DialogExportPdfComponent implements OnInit {
                       dailyReport => {
                         if (dailyReport.status) {
 
-                          // Si esta condiccion es verdadera significa que no esta en el rango.
-                          // Verificamos que las condiciones se cumplan.
-                          if (generalStartDate && generalEndDate
-                            && (!IsAfter1Date(dailyReport.date, generalStartDate) || !IsPrevious1Date(dailyReport.date, generalEndDate))
-                            && ((this.addSailingInBallast && dailyReport.activityPerformed !== 'SAILING_IN_BALLAST') || (this.addSailingWithLaden && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN'))
+
+                          if (
+                            // Verificamos si se desea agregar la informacion de navegando en ballast o Laden
+                            (
+                              (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST')
+                              || (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN')
+                              || (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                            )
+                            // Verificamos que las dos condiciones sean falsas para decir si el reporte esta dentro del rango de fecha.
+                            && !(!IsAfter1Date(dailyReport.date, this.data.dateStart) || !IsPrevious1Date(dailyReport.date, this.data.dateEnd))
                           ) {
 
+                            // Verificamos si tenemos que sumar el viaje.
+                            if (isNewVoyage) {
+                              isNewVoyage = false;
+                              sVPR.totalVoyageSailing += 1;
+                            }
+                            // Verificamos si tenemos que sumar el puerto.
+                            if (isNewPort) {
+                              isNewPort = false;
+                              sVPR.totalPortSailing += 1;
+                            }
 
-                            console.log(false)
-                          } else {
+                            // Esta variable tienen el total de ocnsumo
+                            let totalIFO = this.SumaIfo(dailyReport);
+                            let totalMGO = this.SumaMgo(dailyReport);
+
+                            // Verificamos si es navegando con carga
+                            if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+
+                              // Si existe la actividad in ballast agrego la distancia
+                              sVPR.totalDistanceBallast += dailyReport.distance;
+
+                              // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                              if (totalIFO) {
+                                gTSOPA_Ballast.distanceIFO += dailyReport.distance;
+                                gTSOPA_Ballast.consumptionIFO += totalIFO;
+                                gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
+                              }
+                              if (totalMGO) {
+                                gTSOPA_Ballast.distanceMGO += dailyReport.distance;
+                                gTSOPA_Ballast.consumptionMGO += totalMGO;
+                                gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
+                              }
+
+
+                              // Verificamos si es la actividad navegando sin carga
+                            } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+
+                              // Si existe la actividad laden agrego la distancia.
+                              sVPR.totalDistanceLaden += dailyReport.distance;
+
+                              // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                              if (totalIFO) {
+                                gTSOPA_Laden.distanceIFO += dailyReport.distance;
+                                gTSOPA_Laden.consumptionIFO += totalIFO;
+                                gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
+                              }
+                              if (totalMGO) {
+                                gTSOPA_Laden.distanceMGO += dailyReport.distance;
+                                gTSOPA_Laden.consumptionMGO += totalMGO;
+                                gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
+                              }
+
+                            } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+
+                            }
+
+
 
                           }
+
+
+
 
 
                         }
@@ -2797,110 +2874,7 @@ export class DialogExportPdfComponent implements OnInit {
                 }
               )
 
-            }
-          }
-        );
 
-
-        parseVoyages = parseVoyages.filter(
-          (voyage: Voyage, indexV: number, voyages: any[]) => {
-
-            // Existiran dos resumen por ballast y Laden
-            let gTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
-            let gTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
-
-            // Verificamos que el estado sea true
-            if (voyage.status) {
-              // Agregamos el id y el numero del viaje.
-              gTSOPA_Ballast.voyageId = voyage.id;
-              gTSOPA_Ballast.voyageNumber = voyage.voyageNumber;
-
-
-              // Recorremos y hacemos un filtro a todos los puertos
-              voyage.ports = voyage.ports.filter(
-                (port: Port, index, ports) => {
-
-                  // Verificamos que el puerto este activo.
-                  if (port.status) {
-
-
-                    // Recorremos y filtramos los reportes.
-                    port.dailyReports = port.dailyReports.filter(
-                      (dailyReport, index, reports) => {
-
-
-                        // Verificamos que el reporte este activo.
-                        if (dailyReport.status) {
-
-
-
-                          // Empezamos con el filtro por dia.
-                          // Verificamos que la fecha de inicio y fin sean los correctos.
-                          // Ademas de ver si la fecha de inicio esta antes de la fecha fin.
-                          if (generalStartDate && generalEndDate && (!IsAfter1Date(dailyReport.date, generalStartDate) || !IsPrevious1Date(dailyReport.date, generalEndDate))) {
-                            console.log(false)
-                            return false;
-                          }
-
-
-                          if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
-                            let totalIFO = this.SumaIfo(dailyReport);
-                            let totalMGO = this.SumaMgo(dailyReport);
-                            // Si existe la actividad in ballast agrego la distancia
-                            sVPR.totalDistanceBallast += dailyReport.distance;
-
-                            if (totalIFO) {
-                              gTSOPA_Ballast.distanceIFO += dailyReport.distance;
-                              gTSOPA_Ballast.consumptionIFO += totalIFO;
-                              gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
-                            }
-                            if (totalMGO) {
-                              gTSOPA_Ballast.distanceMGO += dailyReport.distance;
-                              gTSOPA_Ballast.consumptionMGO += totalMGO;
-                              gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
-                            }
-
-
-                            return true;
-                          } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
-
-                            let totalIFO = this.SumaIfo(dailyReport);
-                            let totalMGO = this.SumaMgo(dailyReport);
-                            // Si existe la actividad laden agrego la distancia.
-                            sVPR.totalDistanceLaden += dailyReport.distance;
-
-                            if (totalIFO) {
-                              gTSOPA_Laden.distanceIFO += dailyReport.distance;
-                              gTSOPA_Laden.consumptionIFO += totalIFO;
-                              gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
-                            }
-                            if (totalMGO) {
-                              gTSOPA_Laden.distanceMGO += dailyReport.distance;
-                              gTSOPA_Laden.consumptionMGO += totalMGO;
-                              gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
-                            }
-
-                            return true
-                          } else if (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
-                            console.log(dailyReport)
-                          }
-
-                        } else { return false; }
-                      });
-
-                    // halla reportes o no sumo el puerto.
-                    sVPR.totalPortSailing += 1;
-                    // Si no hay registro de reporte,
-                    //  que no se agrege el puerto
-                    // retornamos false al filtro.
-                    if (!port.dailyReports.length) return false;
-
-                    return true;
-                  } else { return false; }
-                });
-
-              // Agregamos un un viaje a nuestra suma
-              sVPR.totalVoyageSailing += 1;
 
               // Solo si existen tiempo IFO o MGO
               // Agregamos a la lista
@@ -2912,13 +2886,10 @@ export class DialogExportPdfComponent implements OnInit {
               }
 
 
-
-              return true;
-            } else { return false; }
-
-
+            }
           }
-        )
+        );
+
 
         // Agregamos la fecha de inicio y la fecha fin.
         sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
@@ -3413,7 +3384,7 @@ export class DialogExportPdfComponent implements OnInit {
     positionHeight += 6;
     positionWidth = 10;
 
-    // Generamos la tabla ocn el total de resumen
+    // Generamos la tabla con el total de resumen
     this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
 
 
