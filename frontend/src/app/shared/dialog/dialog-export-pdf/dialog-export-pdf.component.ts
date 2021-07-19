@@ -2760,6 +2760,9 @@ export class DialogExportPdfComponent implements OnInit {
     return Promise.resolve(true).then(
       result => {
 
+        // Abrimos el componente Loading.
+        this.loadingService.Open();
+
         // Recorremos todos los viajes.
         parseVoyages.forEach(
           voyage => {
@@ -2806,11 +2809,15 @@ export class DialogExportPdfComponent implements OnInit {
                             if (isNewVoyage) {
                               isNewVoyage = false;
                               sVPR.totalVoyageSailing += 1;
+                              console.log('Voyage'+voyage.voyageNumber +' ' +dailyReport.activityPerformed)
+                              // Agregamos el numero de viaje.
+                              sVPR.lastVoyageSailing = voyage.voyageNumber;
                             }
                             // Verificamos si tenemos que sumar el puerto.
                             if (isNewPort) {
                               isNewPort = false;
                               sVPR.totalPortSailing += 1;
+                              console.log('Voyage'+voyage.voyageNumber+'  Numero de puerto:'+ port.portNumber +' ' +dailyReport.activityPerformed);
                             }
 
                             // Esta variable tienen el total de ocnsumo
@@ -2899,23 +2906,7 @@ export class DialogExportPdfComponent implements OnInit {
       }
     ).then(
       result => {
-        // Abrimos el componente Loading.
-        this.loadingService.Open();
 
-        // Aqui deberiamos recorrer los viajes y obtener los datos del resumen de viaje.
-        // Recorremos todos los viajes.
-        voyages.forEach(
-          voyage => {
-
-            // Recorremos todos los puertos.
-            voyage.ports.forEach(
-              port => {
-
-              }
-            )
-
-          }
-        )
         // Esto es de prueba tenemos que eliminarlo.
         // Al recorrer tendriamos algo asi.
         sVPR.listSummarySpeedCondition =
@@ -2985,28 +2976,13 @@ export class DialogExportPdfComponent implements OnInit {
     contentOnePage += 65;
     contentOnePage += 10; // titulo
     contentOnePage += 12; // Nombre del buque
-    // Verificamos al cantidad de viajes navegados y el total de puertos navegados
-    if (
-      sVPR.totalVoyageSailing > 1 && sVPR.totalPortSailing > 12
-    ) {
-      contentOnePage += 20;
-      contentOnePage += 10;
-      contentOnePage += 10;
-      contentOnePage += 10;
-      contentOnePage += 18;
-    } else {
-      contentOnePage += 20;
-      contentOnePage += 10;
-      contentOnePage += 10;
-      contentOnePage += 10;
+    
+    contentOnePage += 20; // Total Voyage o Numero Voyage
+    contentOnePage += 10; // Total Port
 
-      // Aqui empieza la tabla
-      // Cabecera de la tabla
-      contentOnePage += 24.3;
+    contentOnePage += 18; // ATD
 
-      // row por cada puerto
-      contentOnePage += (sVPR.listSummarySpeedCondition.length * 6.8);
-    }
+
     // calculamos el tamaño del Contenido de la pagina
     // con el tamaño del pdf y o dividimos para que
     // tenga el mismo margen en la altura y bottom
@@ -3047,90 +3023,40 @@ export class DialogExportPdfComponent implements OnInit {
     doc.setFont('Helvetica', 'bold');
     doc.text(sVPR.preparedFor, centerPDF, positionHeight, { align: 'center' })
 
-    // Si solo es un viaje
-    // Si el total de puertos es mayoir que 5 mostraremos resumido en totales.
-    // Y si an puesto para sacar el resumen de ballas and laden. Revisar
-    if (
-      sVPR.totalVoyageSailing > 1 && sVPR.totalPortSailing > 12
-    ) {
 
-      // Total de viajes
-      positionHeight += 20;
-      doc.setFontSize(18);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text('Total Voyages Sailing: ' + sVPR.totalVoyageSailing, centerPDF, positionHeight, { align: 'center' })
-
-      // Total de puertos
-      positionHeight += 10;
-      doc.setFontSize(18);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text('Total Ports Sailing: ' + sVPR.totalPortSailing, centerPDF, positionHeight, { align: 'center' })
-
-      // Total de puertos
-      positionHeight += 10;
-      doc.setFontSize(18);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text('Total distance sailed in ballast: ' + sVPR.totalDistanceBallast + ' mi', centerPDF, positionHeight, { align: 'center' })
-
-      // Total de puertos
-      positionHeight += 10;
-      doc.setFontSize(18);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text('Total distance sailed with laden: ' + sVPR.totalDistanceLaden + ' mi', centerPDF, positionHeight, { align: 'center' })
-
-
-      //  Agregamos el tiempo de departure y llegada.
-      positionHeight += 18;
-      doc.setFontSize(16);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text(
-        sVPR.atdAndAta,
-        centerPDF, positionHeight,
-        { align: 'center' }
-      );
-
-
-      // REVISAR 
-      // FalTA AGREGAR LA LISTA DE
+    // Agregamos la cantidad o el numero de viaje.
+    positionHeight += 20;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    if (sVPR.totalVoyageSailing > 1) {
+      doc.text('Total Voyages Sailed: ' + sVPR.totalVoyageSailing, centerPDF, positionHeight, { align: 'center' })
     } else {
-      // Si no pasamos de los sico mostraremos los datos resumido ppor puertos segregadamente.
-
-      // Agregamos que numero de viaje es el que resumiremos
-      positionHeight += 20;
-      doc.setFontSize(18);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text('N° Voyage: ' + sVPR.totalVoyageSailing, centerPDF, positionHeight, { align: 'center' })
-
-
-      // Agregamos el total de puertos que hay en ese viaje.
-      positionHeight += 10;
-      doc.setFontSize(18);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text('Total Ports: ' + sVPR.totalPortSailing, centerPDF, positionHeight, { align: 'center' })
-
-
-      // Agregamos la fecha donde inicio el analisis
-      positionHeight += 10;
-      doc.setFontSize(18);
-      doc.setTextColor(40);
-      doc.setFont('Helvetica', 'bold');
-      doc.text(
-        sVPR.atdAndAta, centerPDF, positionHeight,
-        { align: 'center' }
-      );
-
-
-      positionHeight += 10;
-
-      this.GenerateSummaryTableByVoyage(doc, positionHeight, sVPR.listSummarySpeedCondition);
+      doc.text('N° Voyage: ' + sVPR.lastVoyageSailing, centerPDF, positionHeight, { align: 'center' })
     }
+
+
+    // Agregamos el total de puertos que hay en ese viaje.
+    positionHeight += 10;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('Total Ports Sailed: ' + sVPR.totalPortSailing, centerPDF, positionHeight, { align: 'center' })
+
+
+    // Agregamos la fecha donde inicio el analisis
+
+    //  Agregamos el tiempo de departure y llegada.
+    positionHeight += 18;
+    doc.setFontSize(16);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(
+      sVPR.atdAndAta,
+      centerPDF, positionHeight,
+      { align: 'center' }
+    );
+
 
     return doc;
   }
