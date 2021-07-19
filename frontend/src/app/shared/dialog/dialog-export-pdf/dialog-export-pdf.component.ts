@@ -2740,12 +2740,18 @@ export class DialogExportPdfComponent implements OnInit {
     const widthPDF = doc.internal.pageSize.getWidth();
     const heightPDF = doc.internal.pageSize.getHeight();
 
-    const sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
+    let rolTraslate = this.languageService.GetMessage(this.translateCategory, this.selectUser.role);
 
     // Rango de fecha de inicio y fin
     // Esta variable nos ayudara saber cuando si nicio el reporte y cuando termino.
     let generalStartDate: String;
     let generalEndDate: String;
+
+    // Resumen de todo el viaje.
+    const sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
+    sVPR.logoTransgas = './assets/icons/logotransgas.png';
+    sVPR.titleDocument = 'Vessel Performance Report';
+    sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
 
     // Lista del resumen de viaje.
     let listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
@@ -2753,32 +2759,49 @@ export class DialogExportPdfComponent implements OnInit {
     // Inicializamos sincrono.
     return Promise.resolve(true).then(
       result => {
-        /* 
-                parseVoyages.forEach(
-                  voyage => {
-                    if (voyage.status) {
-        
-                      let gTSOPA: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
-        
-                      voyage.ports.forEach(
-                        port => {
-                          if (port.status) {
-        
-                            port.dailyReports.forEach(
-                              dailyReport => {
-                                if (dailyReport.status) {
-        
-                                }
-                              }
-                            )
-        
+
+        // Recorremos todos los viajes.
+        parseVoyages.forEach(
+          voyage => {
+            if (voyage.status) {
+
+              // Recorremos todos los puertos
+              voyage.ports.forEach(
+                port => {
+                  if (port.status) {
+
+                    // recorremos todos los reportes
+                    port.dailyReports.forEach(
+                      dailyReport => {
+                        if (dailyReport.status) {
+
+                          // Si esta condiccion es verdadera significa que no esta en el rango.
+                          // Verificamos que las condiciones se cumplan.
+                          if (generalStartDate && generalEndDate
+                            && (!IsAfter1Date(dailyReport.date, generalStartDate) || !IsPrevious1Date(dailyReport.date, generalEndDate))
+                            && ((this.addSailingInBallast && dailyReport.activityPerformed !== 'SAILING_IN_BALLAST') || (this.addSailingWithLaden && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN'))
+                          ) {
+
+
+                            console.log(false)
+                          } else {
+
                           }
+
+
                         }
-                      )
-        
-                    }
+                      }
+                    )
+
                   }
-                ) */
+                }
+              )
+
+            }
+          }
+        );
+
+
         parseVoyages = parseVoyages.filter(
           (voyage: Voyage, indexV: number, voyages: any[]) => {
 
@@ -2823,6 +2846,8 @@ export class DialogExportPdfComponent implements OnInit {
                           if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
                             let totalIFO = this.SumaIfo(dailyReport);
                             let totalMGO = this.SumaMgo(dailyReport);
+                            // Si existe la actividad in ballast agrego la distancia
+                            sVPR.totalDistanceBallast += dailyReport.distance;
 
                             if (totalIFO) {
                               gTSOPA_Ballast.distanceIFO += dailyReport.distance;
@@ -2835,11 +2860,14 @@ export class DialogExportPdfComponent implements OnInit {
                               gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
                             }
 
+
                             return true;
                           } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
 
                             let totalIFO = this.SumaIfo(dailyReport);
                             let totalMGO = this.SumaMgo(dailyReport);
+                            // Si existe la actividad laden agrego la distancia.
+                            sVPR.totalDistanceLaden += dailyReport.distance;
 
                             if (totalIFO) {
                               gTSOPA_Laden.distanceIFO += dailyReport.distance;
@@ -2860,24 +2888,30 @@ export class DialogExportPdfComponent implements OnInit {
                         } else { return false; }
                       });
 
-
+                    // halla reportes o no sumo el puerto.
+                    sVPR.totalPortSailing += 1;
                     // Si no hay registro de reporte,
                     //  que no se agrege el puerto
                     // retornamos false al filtro.
                     if (!port.dailyReports.length) return false;
 
-
                     return true;
                   } else { return false; }
                 });
+              
+              // Agregamos un un viaje a nuestra suma
+              sVPR.totalVoyageSailing += 1;
 
+              // Solo si existen tiempo IFO o MGO
+              // Agregamos a la lista
               if (gTSOPA_Ballast.timeIFO || gTSOPA_Ballast.timeMGO) {
                 listGTSOPA_Ballast.push(gTSOPA_Ballast)
               }
-
               if (gTSOPA_Laden.timeIFO || gTSOPA_Laden.timeMGO) {
                 listGTSOPA_Laden.push(gTSOPA_Laden)
               }
+
+
 
               return true;
             } else { return false; }
@@ -2886,6 +2920,10 @@ export class DialogExportPdfComponent implements OnInit {
           }
         )
 
+        // Agregamos la fecha de inicio y la fecha fin.
+        sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
+        sVPR.dateStart = ''
+        sVPR.dateStart = ''
 
       }
     ).then(
@@ -2893,20 +2931,6 @@ export class DialogExportPdfComponent implements OnInit {
         // Abrimos el componente Loading.
         this.loadingService.Open();
 
-        let rolTraslate = this.languageService.GetMessage(this.translateCategory, this.selectUser.role);
-
-        sVPR.logoTransgas = './assets/icons/logotransgas.png';
-        sVPR.titleDocument = 'Vessel Performance Report';
-        sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
-
-        // Informacion que ira desde el for
-        sVPR.totalVoyageSailing = 1;
-        sVPR.totalPortSailing = 3;
-        sVPR.totalDistanceBallast = 200;
-        sVPR.totalDistanceLaden = 300;
-        sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
-        sVPR.dateStart = ''
-        sVPR.dateStart = ''
         // Aqui deberiamos recorrer los viajes y obtener los datos del resumen de viaje.
         // Recorremos todos los viajes.
         voyages.forEach(
@@ -3110,7 +3134,7 @@ export class DialogExportPdfComponent implements OnInit {
       doc.setFontSize(18);
       doc.setTextColor(40);
       doc.setFont('Helvetica', 'bold');
-      doc.text('N° Voyage: ' + '2 Revisar', centerPDF, positionHeight, { align: 'center' })
+      doc.text('N° Voyage: ' + sVPR.totalVoyageSailing, centerPDF, positionHeight, { align: 'center' })
 
 
       // Agregamos el total de puertos que hay en ese viaje.
