@@ -2898,7 +2898,7 @@ export class DialogExportPdfComponent implements OnInit {
                     return true;
                   } else { return false; }
                 });
-              
+
               // Agregamos un un viaje a nuestra suma
               sVPR.totalVoyageSailing += 1;
 
