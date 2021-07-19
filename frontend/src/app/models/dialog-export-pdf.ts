@@ -63,9 +63,9 @@ export class GenerateSummaryTableOverallPerformanceAnalisis {
         public puertos?: string,
         public dateStart?: string,
         public dateEnd?: string,
-        
+
         public numberVoyage?: number,
-        public totalPort?:number,
+        public totalPort?: number,
 
         // Distance Laden
         public distanceLadenIFO?: number,
@@ -128,8 +128,8 @@ export class GenerateSummaryTableOverallPerformanceAnalisis {
         this.dateStart = dateStart || '';
         this.dateEnd = dateEnd || '';
 
-        this.numberVoyage = numberVoyage ||0;
-        this.totalPort = totalPort ||0;
+        this.numberVoyage = numberVoyage || 0;
+        this.totalPort = totalPort || 0;
 
         // Distance Laden
         this.distanceLadenIFO = distanceLadenIFO || 0;
@@ -190,10 +190,56 @@ export class GenerateSummaryTableOverallPerformanceAnalisis {
     }
 }
 
-export class GenerateTableSummaryOverallPerformanceAnalisis{
+export class GenerateTableSummaryOverallPerformanceAnalisis {
+    constructor(
+        public voyageId?: number,
+        public voyageNumber?: number,
+        public distanceIFO?: number,
+        public distanceMGO?: number,
+        // Consumo
+        public consumptionIFO?: number,
+        public consumptionMGO?: number,
+        public consumptionIFOCharter?: number,
+        public consumptionMGOCharter?: number,
+        // time
+        public timeIFO?: number,
+        public timeMGO?: number,
+        public timeIFOCharter?: number,
+        public timeMGOCharter?: number,
+
+        // speed
+        public speedIFO?: number,
+        public speedMGO?: number,
+        public speedIFOCharter?: number,
+        public speedMGOCharter?: number,
+
+    ) {
+
+        this.voyageId = voyageId || 0;
+        this.voyageNumber = voyageNumber || 0;
+        this.distanceIFO = distanceIFO || 0;
+        this.distanceMGO = distanceMGO || 0;
+        // Consumo
+        this.consumptionIFO = consumptionIFO || 0;
+        this.consumptionMGO = consumptionMGO || 0;
+        this.consumptionIFOCharter = consumptionIFOCharter || 0;
+        this.consumptionMGOCharter = consumptionMGOCharter || 0;
+        // time
+        this.timeIFO = timeIFO || 0;
+        this.timeMGO = timeMGO || 0;
+        this.timeIFOCharter = timeIFOCharter || 0;
+        this.timeMGOCharter = timeMGOCharter || 0;
+
+        // speed
+        this.speedIFO = speedIFO || 0;
+        this.speedMGO = speedMGO || 0;
+        this.speedIFOCharter = speedIFOCharter || 0;
+        this.speedMGOCharter = speedMGOCharter || 0;
+
+    }
 
 }
 
-export class GenerateTableTotalSummaryOverallPerformanceAnalisis{
-    
+export class GenerateTableTotalSummaryOverallPerformanceAnalisis {
+
 }

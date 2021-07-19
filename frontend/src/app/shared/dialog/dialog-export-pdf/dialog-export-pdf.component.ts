@@ -9,7 +9,7 @@ import autoTable, { Cell, CellHookData, RowInput, UserOptions } from 'jspdf-auto
 import { DailyReport, Speed } from '../../../../app/models/daily-report';
 import { LoadingService } from '../../../../app/services/loading.service';
 import { mathRound } from './../../../../assets/math/math.assets';
-import { FormatDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
+import { FormatDate, FormatYYYYMMDD, IsAfter1Date, IsPrevious1Date, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
 import { Port } from '../../../models/port';
 import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
@@ -402,13 +402,13 @@ export class DialogExportPdfComponent implements OnInit {
 
             let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
             doc.setTextColor(255, 0, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + " Hours Lost", 140, positionHeight, { align: 'left' })
+            doc.text(this.MathRoundDecimal(diffHour, 2) + " Hours Lost", 140, positionHeight, { align: 'left' })
 
           } else {
             // Caso contrario verde
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + ' Hours before', 140, positionHeight, { align: 'left' })
+            doc.text(this.MathRoundDecimal(diffHour, 2) + ' Hours before', 140, positionHeight, { align: 'left' })
 
           }
 
@@ -623,7 +623,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Transit Distance :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distance, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.distance, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('NM', 135, positionHeight, { align: 'left' });
 
 
@@ -631,7 +631,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Transit Time :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Hours', 135, positionHeight, { align: 'left' });
 
 
@@ -640,7 +640,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.text("Average Speed :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
           let averageSpeedPerformed = getInfoByActivity.distance / (getInfoByActivity.time || 1);
-          doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Knots', 135, positionHeight, { align: 'left' });
 
 
@@ -656,7 +656,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Performance Speed :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Knots', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
@@ -679,14 +679,14 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(0, 0, 0);
           doc.text("Performance Time :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Hours', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
           doc.setTextColor(0, 0, 0);
           doc.text("Allowable Charter Time :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distance / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.distance / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Hours', 135, positionHeight, { align: 'left' });
 
           // Segundo cuadro
@@ -705,12 +705,12 @@ export class DialogExportPdfComponent implements OnInit {
             let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
             doc.setTextColor("960e0e");
             doc.setTextColor(255, 0, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
+            doc.text(this.MathRoundDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
             doc.text('Hours Lost', 135, positionHeight, { align: 'left' });
           } else {
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
+            doc.text(this.MathRoundDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
             doc.text('Hours before', 135, positionHeight, { align: 'left' });
           }
 
@@ -762,14 +762,14 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(0, 0, 0);
           doc.text("Warranted Daily Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.ifoDailyConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
           doc.setTextColor(0, 0, 0);
           doc.text("Actual Daily Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.ifoDailyConsumption, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
 
@@ -784,14 +784,14 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(0, 0, 0);
           doc.text("Warranted Total Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.totalConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.totalConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
           doc.setTextColor(0, 0, 0);
           doc.text("Actual Total Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoConsumption, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.ifoConsumption, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
           // Segundo cuadro
@@ -993,7 +993,7 @@ export class DialogExportPdfComponent implements OnInit {
                 this.languageService.GetMessage(this.translateCategory, report.activityPerformed),
                 String(report.steamingTime),
                 String(report.distance),
-                this.MathRoundOneDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
+                this.MathRoundDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
                 String(this.selectUser.contractSpeedSailingLadenIFO),
                 report.beaufour
 
@@ -1365,12 +1365,12 @@ export class DialogExportPdfComponent implements OnInit {
                 this.languageService.GetMessage(this.translateCategory, report.activityPerformed),
                 String(report.steamingTime),
                 String(report.distance),
-                this.MathRoundOneDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
+                this.MathRoundDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
                 String(this.selectUser.contractSpeedSailingLadenIFO),
-                this.MathRoundOneDecimal(report.mplaIfo, 2),
-                this.MathRoundOneDecimal(report.auxIfo, 2),
-                this.MathRoundOneDecimal(report.boilerIfo, 2),
-                this.MathRoundOneDecimal(report.mplaIfo + report.auxIfo + report.boilerIfo, 2),
+                this.MathRoundDecimal(report.mplaIfo, 2),
+                this.MathRoundDecimal(report.auxIfo, 2),
+                this.MathRoundDecimal(report.boilerIfo, 2),
+                this.MathRoundDecimal(report.mplaIfo + report.auxIfo + report.boilerIfo, 2),
 
                 report.beaufour
 
@@ -1592,11 +1592,11 @@ export class DialogExportPdfComponent implements OnInit {
             [{ "content": "Engine Consumption Summary", "colSpan": 2, "rowSpan": 2 }, { "content": "Main Engine", "colSpan": 2 }, { "content": "Aux Engine", "colSpan": 2 }, { "content": "Boiler", "colSpan": 2 }],
             [{ "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }],
             // Aqui van los valores
-            [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
+            [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
             [{ "content": "", "colSpan": 8 }],
             [{ "content": "Voyage(s) Total", "colSpan": 1, "rowSpan": 2 }, { "content": "Time", "colSpan": 1 }, { "content": "Distance", "colSpan": 1 }, { "content": "AVG\nSpeed", "colSpan": 1 }, { "content": "Speed\nCharter", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "Daily\n" + typeConsumptionSelectBuque + "\n", "colSpan": 1 }, { "content": "Daily\nCharter", "colSpan": 1 }],
             // Aqui van valores.
-            [{ "content": this.MathRoundOneDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
+            [{ "content": this.MathRoundDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
             [{ "content": "Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received", "colSpan": 8 }],
 
 
@@ -2672,7 +2672,7 @@ export class DialogExportPdfComponent implements OnInit {
     return mgo;
   }
 
-  public MathRoundOneDecimal(valor, cantDecimales: number) {
+  public MathRoundDecimal(valor, cantDecimales: number) {
 
     if (!valor) { return 0; }
 
@@ -2730,6 +2730,9 @@ export class DialogExportPdfComponent implements OnInit {
   // ExportPDFVesselPerformance2() esta funcion genera el pdf.
   private ExportPDFVesselPerformance2(voyages: Voyage[]): Promise<boolean> {
 
+    // Parseamos los viajes para que no se modifique.
+    let parseVoyages: Voyage[] = JSON.parse(JSON.stringify(voyages));
+
     // Armamos el objeto de JSPDF
     const doc = new jsPDF();
 
@@ -2738,8 +2741,154 @@ export class DialogExportPdfComponent implements OnInit {
     const heightPDF = doc.internal.pageSize.getHeight();
 
     const sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
+
+    // Rango de fecha de inicio y fin
+    // Esta variable nos ayudara saber cuando si nicio el reporte y cuando termino.
+    let generalStartDate: String;
+    let generalEndDate: String;
+
+    // Lista del resumen de viaje.
+    let listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
+    let listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
     // Inicializamos sincrono.
     return Promise.resolve(true).then(
+      result => {
+        /* 
+                parseVoyages.forEach(
+                  voyage => {
+                    if (voyage.status) {
+        
+                      let gTSOPA: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+        
+                      voyage.ports.forEach(
+                        port => {
+                          if (port.status) {
+        
+                            port.dailyReports.forEach(
+                              dailyReport => {
+                                if (dailyReport.status) {
+        
+                                }
+                              }
+                            )
+        
+                          }
+                        }
+                      )
+        
+                    }
+                  }
+                ) */
+        parseVoyages = parseVoyages.filter(
+          (voyage: Voyage, indexV: number, voyages: any[]) => {
+
+            // Existiran dos resumen por ballast y Laden
+            let gTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+            let gTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+
+            // Verificamos que el estado sea true
+            if (voyage.status) {
+              // Agregamos el id y el numero del viaje.
+              gTSOPA_Ballast.voyageId = voyage.id;
+              gTSOPA_Ballast.voyageNumber = voyage.voyageNumber;
+
+
+              // Recorremos y hacemos un filtro a todos los puertos
+              voyage.ports = voyage.ports.filter(
+                (port: Port, index, ports) => {
+
+                  // Verificamos que el puerto este activo.
+                  if (port.status) {
+
+
+                    // Recorremos y filtramos los reportes.
+                    port.dailyReports = port.dailyReports.filter(
+                      (dailyReport, index, reports) => {
+
+
+                        // Verificamos que el reporte este activo.
+                        if (dailyReport.status) {
+
+
+
+                          // Empezamos con el filtro por dia.
+                          // Verificamos que la fecha de inicio y fin sean los correctos.
+                          // Ademas de ver si la fecha de inicio esta antes de la fecha fin.
+                          if (generalStartDate && generalEndDate && (!IsAfter1Date(dailyReport.date, generalStartDate) || !IsPrevious1Date(dailyReport.date, generalEndDate))) {
+                            console.log(false)
+                            return false;
+                          }
+
+
+                          if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+                            let totalIFO = this.SumaIfo(dailyReport);
+                            let totalMGO = this.SumaMgo(dailyReport);
+
+                            if (totalIFO) {
+                              gTSOPA_Ballast.distanceIFO += dailyReport.distance;
+                              gTSOPA_Ballast.consumptionIFO += totalIFO;
+                              gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
+                            }
+                            if (totalMGO) {
+                              gTSOPA_Ballast.distanceMGO += dailyReport.distance;
+                              gTSOPA_Ballast.consumptionMGO += totalMGO;
+                              gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
+                            }
+
+                            return true;
+                          } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+
+                            let totalIFO = this.SumaIfo(dailyReport);
+                            let totalMGO = this.SumaMgo(dailyReport);
+
+                            if (totalIFO) {
+                              gTSOPA_Laden.distanceIFO += dailyReport.distance;
+                              gTSOPA_Laden.consumptionIFO += totalIFO;
+                              gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
+                            }
+                            if (totalMGO) {
+                              gTSOPA_Laden.distanceMGO += dailyReport.distance;
+                              gTSOPA_Laden.consumptionMGO += totalMGO;
+                              gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
+                            }
+
+                            return true
+                          } else if (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+                            console.log(dailyReport)
+                          }
+
+                        } else { return false; }
+                      });
+
+
+                    // Si no hay registro de reporte,
+                    //  que no se agrege el puerto
+                    // retornamos false al filtro.
+                    if (!port.dailyReports.length) return false;
+
+
+                    return true;
+                  } else { return false; }
+                });
+
+              if (gTSOPA_Ballast.timeIFO || gTSOPA_Ballast.timeMGO) {
+                listGTSOPA_Ballast.push(gTSOPA_Ballast)
+              }
+
+              if (gTSOPA_Laden.timeIFO || gTSOPA_Laden.timeMGO) {
+                listGTSOPA_Laden.push(gTSOPA_Laden)
+              }
+
+              return true;
+            } else { return false; }
+
+
+          }
+        )
+
+
+      }
+    ).then(
       result => {
         // Abrimos el componente Loading.
         this.loadingService.Open();
@@ -2808,23 +2957,21 @@ export class DialogExportPdfComponent implements OnInit {
           // Inicializamos el height en 0,
           let positionHeight = 0;
 
-          // REVISAR
-          // Esto lo deberiamos de obtener por todo el recorrido
-          let gSTOPA: GenerateSummaryTableOverallPerformanceAnalisis = new GenerateSummaryTableOverallPerformanceAnalisis();
           // Agregamos el OverallPerformanceAnalisis
-          this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, gSTOPA)
+          this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden)
 
           return true;
-        }).then(
-          result => {
+        }
+      ).then(
+        result => {
 
-            doc.save("test.pdf")
+          doc.save("test.pdf")
 
-            this.loadingService.Close();
-            return true;
+          this.loadingService.Close();
+          return true;
 
-          }
-        );
+        }
+      );
 
   }
 
@@ -3216,7 +3363,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, gSTOPA: GenerateSummaryTableOverallPerformanceAnalisis) {
+  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[], listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[]) {
     positionHeight += 10;
     let positionWidth = 10;
 
@@ -3257,12 +3404,12 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Generamos la tabla resumen del viaje.
     // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
-   
+
     // Generamos todo el resumen por viajes.
-    //this.GenerateTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null);
+    this.GenerateTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA_Ballast);
 
     positionWidth = 10;
-    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
+    //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
   }
 
   // esta funcion agrega la cabecera al documento.
@@ -3580,7 +3727,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
-  private GenerateTableOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[]) {
+  private GenerateTableOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[]) {
     // title
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
@@ -3615,349 +3762,41 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
         { "content": "MGO", "colSpan": 1 }
       ],
-
-
-      // esto se deberia agregar recorriendo
-      [
-        { "content": "Voyage 99", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 99", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 99", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 99", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 99", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 99", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ], [
-        { "content": "Voyage 1", "colSpan": 2 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-
     ];
 
+
+    listGTSOPA.forEach(
+      gTSOPA => {
+        data.push(
+          [
+
+            { "content": 'Voyage ' + gTSOPA.voyageNumber, "colSpan": 2 },
+            // Distance
+            { "content": this.MathRoundDecimal(gTSOPA.distanceIFO, 1), "colSpan": 1 },
+            { "content": this.MathRoundDecimal(gTSOPA.distanceMGO, 1), "colSpan": 1 },
+            // Consumption
+            { "content": this.MathRoundDecimal(gTSOPA.consumptionIFO, 1), "colSpan": 1 },
+            { "content": this.MathRoundDecimal(gTSOPA.consumptionMGO, 1), "colSpan": 1 },
+            // Consumption Charter
+            { "content": this.MathRoundDecimal(gTSOPA.consumptionIFOCharter, 1), "colSpan": 1 },
+            { "content": this.MathRoundDecimal(gTSOPA.consumptionMGOCharter, 1), "colSpan": 1 },
+            // Time
+            { "content": this.MathRoundDecimal(gTSOPA.timeIFO, 1), "colSpan": 1 },
+            { "content": this.MathRoundDecimal(gTSOPA.timeMGO, 1), "colSpan": 1 },
+            // Time Charter
+            { "content": this.MathRoundDecimal(gTSOPA.timeIFOCharter, 1), "colSpan": 1 },
+            { "content": this.MathRoundDecimal(gTSOPA.timeMGOCharter, 1), "colSpan": 1 },
+            // Speed
+            { "content": this.MathRoundDecimal(gTSOPA.speedIFO, 1), "colSpan": 1 },
+            { "content": this.MathRoundDecimal(gTSOPA.speedIFO, 1), "colSpan": 1 },
+            // Speed Charter
+            { "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": 1 },
+            { "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": 1 }
+
+          ]
+        )
+      }
+    )
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};
     // Agregamos en que altura del documento podnra la tabla
@@ -4193,9 +4032,9 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": "Laden", "colSpan": 2 },
         { "content": "Ballast", "colSpan": 2 },
       ],
-      [  
+      [
         { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 }, 
+        { "content": "MGO", "colSpan": 1 },
         { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
         { "content": "MGO", "colSpan": 1 },
       ],
@@ -4350,4 +4189,6 @@ export class DialogExportPdfComponent implements OnInit {
     autoTable(doc, userOptions);
 
   }
+
+
 }
