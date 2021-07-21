@@ -2838,11 +2838,20 @@ export class DialogExportPdfComponent implements OnInit {
                                 gTSOPA_Ballast.distanceIFO += dailyReport.distance;
                                 gTSOPA_Ballast.consumptionIFO += totalIFO;
                                 gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
+
+                                gTTSOPA.distanceIFOBallast+= dailyReport.distance;
+                                gTTSOPA.timeIFOBallast+= dailyReport.steamingTime;
+                                gTTSOPA.consumptionIFOBallast+= totalIFO;
                               }
                               if (totalMGO) {
                                 gTSOPA_Ballast.distanceMGO += dailyReport.distance;
                                 gTSOPA_Ballast.consumptionMGO += totalMGO;
                                 gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
+
+
+                                gTTSOPA.distanceMGOBallast+= dailyReport.distance;
+                                gTTSOPA.timeMGOBallast+= dailyReport.steamingTime;
+                                gTTSOPA.consumptionMGOBallast+= totalMGO;
                               }
 
 
@@ -2857,11 +2866,19 @@ export class DialogExportPdfComponent implements OnInit {
                                 gTSOPA_Laden.distanceIFO += dailyReport.distance;
                                 gTSOPA_Laden.consumptionIFO += totalIFO;
                                 gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
+
+                                gTTSOPA.distanceIFOLaden+= dailyReport.distance;
+                                gTTSOPA.timeIFOLaden+= dailyReport.steamingTime;
+                                gTTSOPA.consumptionIFOLaden+= totalIFO;
                               }
                               if (totalMGO) {
                                 gTSOPA_Laden.distanceMGO += dailyReport.distance;
                                 gTSOPA_Laden.consumptionMGO += totalMGO;
                                 gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
+
+                                gTTSOPA.distanceMGOLaden+= dailyReport.distance;
+                                gTTSOPA.timeMGOLaden+= dailyReport.steamingTime;
+                                gTTSOPA.consumptionMGOLaden+= totalMGO;
                               }
 
                             } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
