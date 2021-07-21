@@ -4445,52 +4445,7 @@ export class DialogExportPdfComponent implements OnInit {
     data.push(header2Table);
 
 
-    let rowDistance = [];
-    rowDistance.push(
-      { "content": "Transit Distance", "colSpan": 4 }
-    );
-    // Ballast
-    if (isViewBallast) {
-      if (this.addInformationIFO) {
-        rowDistance.push(
-          {
-            "content": gTTSOPA.distanceIFOBallast, "colSpan":
-              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-      if (this.addInformationMGO) {
-        rowDistance.push(
-          {
-            "content": gTTSOPA.distanceMGOBallast, "colSpan":
-              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-    }
-    if (isViewLaden) {
-      if (this.addInformationIFO) {
-        rowDistance.push(
-          {
-            "content": gTTSOPA.distanceIFOLaden, "colSpan":
-              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-      if (this.addInformationMGO) {
-        rowDistance.push(
-          {
-            "content": gTTSOPA.distanceMGOLaden, "colSpan":
-              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-    }
-    data.push(rowDistance);
-
-
-
-
+    // Time
     let rowTransitTime = [];
     rowTransitTime.push(
       { "content": "Transit Time", "colSpan": 4 }
@@ -4535,26 +4490,25 @@ export class DialogExportPdfComponent implements OnInit {
     data.push(rowTransitTime);
 
 
-
-
-    let rowCharterTime = [];
-    rowCharterTime.push(
-      { "content": "Allowable Charter Time", "colSpan": 4 }
+    // Distance
+    let rowDistance = [];
+    rowDistance.push(
+      { "content": "Transit Distance", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
       if (this.addInformationIFO) {
-        rowCharterTime.push(
+        rowDistance.push(
           {
-            "content": gTTSOPA.timeCharterIFOBallast, "colSpan":
+            "content": gTTSOPA.distanceIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
       }
       if (this.addInformationMGO) {
-        rowCharterTime.push(
+        rowDistance.push(
           {
-            "content": gTTSOPA.timeCharterMGOBallast, "colSpan":
+            "content": gTTSOPA.distanceMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4562,30 +4516,26 @@ export class DialogExportPdfComponent implements OnInit {
     }
     if (isViewLaden) {
       if (this.addInformationIFO) {
-        rowCharterTime.push(
+        rowDistance.push(
           {
-            "content": gTTSOPA.timeCharterIFOLaden, "colSpan":
+            "content": gTTSOPA.distanceIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
       }
       if (this.addInformationMGO) {
-        rowCharterTime.push(
+        rowDistance.push(
           {
-            "content": gTTSOPA.timeCharterMGOLaden, "colSpan":
+            "content": gTTSOPA.distanceMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
       }
     }
-    data.push(rowCharterTime);
+    data.push(rowDistance);
 
 
-
-
-
-
-
+    // Average Speed
     let rowAverageSpeed = [];
     rowAverageSpeed.push(
       { "content": "Average Speed", "colSpan": 4 }
@@ -4634,7 +4584,6 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-
     let rowCharterSpeed = [];
     rowCharterSpeed.push(
       { "content": "Allowable Charter Speed", "colSpan": 4 }
@@ -4677,6 +4626,7 @@ export class DialogExportPdfComponent implements OnInit {
       }
     }
     data.push(rowCharterSpeed);
+
 
 
 
@@ -4776,6 +4726,111 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
+    let rowActualCharterDailyConsumption = [];
+    rowActualCharterDailyConsumption.push(
+      { "content": "Allowable Charter Daily Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": gTTSOPA.dailyConsumptionCharterIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": gTTSOPA.dailyConsumptionCharterMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": gTTSOPA.dailyConsumptionCharterIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": gTTSOPA.dailyConsumptionCharterMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowActualCharterDailyConsumption);
+
+
+
+
+
+
+    let rowCharterTime = [];
+    rowCharterTime.push(
+      { "content": "Allowable Charter Time", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowCharterTime.push(
+          {
+            "content": gTTSOPA.timeCharterIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterTime.push(
+          {
+            "content": gTTSOPA.timeCharterMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowCharterTime.push(
+          {
+            "content": gTTSOPA.timeCharterIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterTime.push(
+          {
+            "content": gTTSOPA.timeCharterMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowCharterTime);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     let rowWarrantedConsumption = [];
     rowWarrantedConsumption.push(
@@ -4821,52 +4876,6 @@ export class DialogExportPdfComponent implements OnInit {
     data.push(rowWarrantedConsumption);
 
 
-
-
-
-
-    let rowActualDailyConsumption = [];
-    rowActualDailyConsumption.push(
-      { "content": "Actual Daily Consumption", "colSpan": 4 }
-    );
-    // Ballast
-    if (isViewBallast) {
-      if (this.addInformationIFO) {
-        rowActualDailyConsumption.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterIFOBallast, "colSpan":
-              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-      if (this.addInformationMGO) {
-        rowActualDailyConsumption.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterMGOBallast, "colSpan":
-              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-    }
-    if (isViewLaden) {
-      if (this.addInformationIFO) {
-        rowActualDailyConsumption.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterIFOLaden, "colSpan":
-              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-      if (this.addInformationMGO) {
-        rowActualDailyConsumption.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterMGOLaden, "colSpan":
-              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-    }
-    data.push(rowActualDailyConsumption);
 
 
 
@@ -4998,14 +5007,6 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-
-          // 4 6
-          // 4
-          // 4
-
-          // 4 5 6 7
-          // 4 6
-          // 4 6
         }
 
         /* 
