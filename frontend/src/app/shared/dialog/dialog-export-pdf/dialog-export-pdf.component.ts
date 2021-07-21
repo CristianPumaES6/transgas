@@ -2754,7 +2754,7 @@ export class DialogExportPdfComponent implements OnInit {
     sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
 
     // Objeto del cuadro de resument
-    let gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
+    let gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
 
     // Lista del resumen de viaje.
     let listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
@@ -2832,7 +2832,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                               // Si existe la actividad in ballast agrego la distancia
                               sVPR.totalDistanceBallast += dailyReport.distance;
-
+                             
                               // Solo si hay consumo sumamos el tiempo, distancia y consumo
                               if (totalIFO) {
                                 gTSOPA_Ballast.distanceIFO += dailyReport.distance;
@@ -2910,6 +2910,8 @@ export class DialogExportPdfComponent implements OnInit {
     ).then(
       result => {
 
+        // Revisar los demas daptos podrian estar asi como listSummary
+        // lo mejor de todo searia si se arma en un objeto.
         // Esto es de prueba tenemos que eliminarlo.
         // Al recorrer tendriamos algo asi.
         sVPR.listSummarySpeedCondition =
@@ -2932,7 +2934,7 @@ export class DialogExportPdfComponent implements OnInit {
 
         // Agregamos la primera pagina,
         // El cual tiene resumido todo el reporte.
-        this.AddOnePage(doc, sVPR, gTSOPA);
+        this.AddOnePage(doc, sVPR, gTTSOPA);
 
 
 
@@ -2951,7 +2953,7 @@ export class DialogExportPdfComponent implements OnInit {
             let isViewBallast = true;
             let isViewLaden = false;
             // Agregamos el OverallPerformanceAnalisis
-            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTSOPA, isViewBallast, isViewLaden)
+            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
 
           }
           if (this.addSailingWithLaden) {
@@ -2960,7 +2962,7 @@ export class DialogExportPdfComponent implements OnInit {
             let isViewBallast = false;
             let isViewLaden = true;
             // Agregamos el OverallPerformanceAnalisis
-            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTSOPA, isViewBallast, isViewLaden)
+            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
 
           }
 
@@ -3308,7 +3310,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[], listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[], gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean) {
+  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[], listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[], gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean) {
     positionHeight += 10;
     let positionWidth = 10;
 
@@ -3341,7 +3343,7 @@ export class DialogExportPdfComponent implements OnInit {
     positionHeight += 6;
     positionWidth = 10;
 
-    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTSOPA, isViewBallast, isViewLaden)
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden)
 
 
     //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
@@ -3973,7 +3975,8 @@ export class DialogExportPdfComponent implements OnInit {
     return contentHeightTable;
   }
 
-  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean): number {
+  // Resumen total.
+  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean): number {
 
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
@@ -4062,7 +4065,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowDistance.push(
           {
-            "content": gTSOPA.distanceIFOBallast, "colSpan":
+            "content": gTTSOPA.distanceIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4070,7 +4073,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowDistance.push(
           {
-            "content": gTSOPA.distanceMGOBallast, "colSpan":
+            "content": gTTSOPA.distanceMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4080,7 +4083,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowDistance.push(
           {
-            "content": gTSOPA.distanceIFOLaden, "colSpan":
+            "content": gTTSOPA.distanceIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4088,7 +4091,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowDistance.push(
           {
-            "content": gTSOPA.distanceMGOLaden, "colSpan":
+            "content": gTTSOPA.distanceMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4108,7 +4111,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowTransitTime.push(
           {
-            "content": gTSOPA.timeIFOBallast, "colSpan":
+            "content": gTTSOPA.timeIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4116,7 +4119,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowTransitTime.push(
           {
-            "content": gTSOPA.timeMGOBallast, "colSpan":
+            "content": gTTSOPA.timeMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4126,7 +4129,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowTransitTime.push(
           {
-            "content": gTSOPA.timeIFOLaden, "colSpan":
+            "content": gTTSOPA.timeIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4134,7 +4137,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowTransitTime.push(
           {
-            "content": gTSOPA.timeMGOLaden, "colSpan":
+            "content": gTTSOPA.timeMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4154,7 +4157,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowCharterTime.push(
           {
-            "content": gTSOPA.timeCharterIFOBallast, "colSpan":
+            "content": gTTSOPA.timeCharterIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4162,7 +4165,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowCharterTime.push(
           {
-            "content": gTSOPA.timeCharterMGOBallast, "colSpan":
+            "content": gTTSOPA.timeCharterMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4172,7 +4175,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowCharterTime.push(
           {
-            "content": gTSOPA.timeCharterIFOLaden, "colSpan":
+            "content": gTTSOPA.timeCharterIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4180,7 +4183,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowCharterTime.push(
           {
-            "content": gTSOPA.timeCharterMGOLaden, "colSpan":
+            "content": gTTSOPA.timeCharterMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4203,7 +4206,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowAverageSpeed.push(
           {
-            "content": gTSOPA.speedIFOBallast, "colSpan":
+            "content": gTTSOPA.speedIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4211,7 +4214,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowAverageSpeed.push(
           {
-            "content": gTSOPA.speedMGOBallast, "colSpan":
+            "content": gTTSOPA.speedMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4221,7 +4224,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowAverageSpeed.push(
           {
-            "content": gTSOPA.speedIFOLaden, "colSpan":
+            "content": gTTSOPA.speedIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4229,7 +4232,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowAverageSpeed.push(
           {
-            "content": gTSOPA.speedMGOLaden, "colSpan":
+            "content": gTTSOPA.speedMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4252,7 +4255,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowCharterSpeed.push(
           {
-            "content": gTSOPA.speedCharterIFOBallast, "colSpan":
+            "content": gTTSOPA.speedCharterIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4260,7 +4263,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowCharterSpeed.push(
           {
-            "content": gTSOPA.speedCharterMGOBallast, "colSpan":
+            "content": gTTSOPA.speedCharterMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4270,7 +4273,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowCharterSpeed.push(
           {
-            "content": gTSOPA.speedCharterIFOLaden, "colSpan":
+            "content": gTTSOPA.speedCharterIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4278,7 +4281,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowCharterSpeed.push(
           {
-            "content": gTSOPA.speedCharterMGOLaden, "colSpan":
+            "content": gTTSOPA.speedCharterMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4298,7 +4301,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowTotalConsumption.push(
           {
-            "content": gTSOPA.consumptionIFOBallast, "colSpan":
+            "content": gTTSOPA.consumptionIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4306,7 +4309,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowTotalConsumption.push(
           {
-            "content": gTSOPA.consumptionMGOBallast, "colSpan":
+            "content": gTTSOPA.consumptionMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4316,7 +4319,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowTotalConsumption.push(
           {
-            "content": gTSOPA.consumptionIFOLaden, "colSpan":
+            "content": gTTSOPA.consumptionIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4324,7 +4327,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowTotalConsumption.push(
           {
-            "content": gTSOPA.consumptionMGOLaden, "colSpan":
+            "content": gTTSOPA.consumptionMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4345,7 +4348,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowDailyConsumption.push(
           {
-            "content": gTSOPA.dailyConsumptionIFOBallast, "colSpan":
+            "content": gTTSOPA.dailyConsumptionIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4353,7 +4356,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowDailyConsumption.push(
           {
-            "content": gTSOPA.dailyConsumptionMGOBallast, "colSpan":
+            "content": gTTSOPA.dailyConsumptionMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4363,7 +4366,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowDailyConsumption.push(
           {
-            "content": gTSOPA.dailyConsumptionIFOLaden, "colSpan":
+            "content": gTTSOPA.dailyConsumptionIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4371,7 +4374,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowDailyConsumption.push(
           {
-            "content": gTSOPA.dailyConsumptionMGOLaden, "colSpan":
+            "content": gTTSOPA.dailyConsumptionMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4394,7 +4397,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowWarrantedConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterIFOBallast, "colSpan":
+            "content": gTTSOPA.consumptionCharterIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4402,7 +4405,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowWarrantedConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterMGOBallast, "colSpan":
+            "content": gTTSOPA.consumptionCharterMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4412,7 +4415,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowWarrantedConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterIFOLaden, "colSpan":
+            "content": gTTSOPA.consumptionCharterIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4420,7 +4423,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowWarrantedConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterMGOLaden, "colSpan":
+            "content": gTTSOPA.consumptionCharterMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4442,7 +4445,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterIFOBallast, "colSpan":
+            "content": gTTSOPA.consumptionCharterIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4450,7 +4453,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterMGOBallast, "colSpan":
+            "content": gTTSOPA.consumptionCharterMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4460,7 +4463,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterIFOLaden, "colSpan":
+            "content": gTTSOPA.consumptionCharterIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4468,7 +4471,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTSOPA.consumptionCharterMGOLaden, "colSpan":
+            "content": gTTSOPA.consumptionCharterMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4489,7 +4492,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowDailyConsumptionCharter.push(
           {
-            "content": gTSOPA.dailyConsumptionCharterIFOBallast, "colSpan":
+            "content": gTTSOPA.dailyConsumptionCharterIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4497,7 +4500,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowDailyConsumptionCharter.push(
           {
-            "content": gTSOPA.dailyConsumptionCharterMGOBallast, "colSpan":
+            "content": gTTSOPA.dailyConsumptionCharterMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4507,7 +4510,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowDailyConsumptionCharter.push(
           {
-            "content": gTSOPA.dailyConsumptionCharterIFOLaden, "colSpan":
+            "content": gTTSOPA.dailyConsumptionCharterIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4515,7 +4518,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowDailyConsumptionCharter.push(
           {
-            "content": gTSOPA.dailyConsumptionCharterMGOLaden, "colSpan":
+            "content": gTTSOPA.dailyConsumptionCharterMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4528,13 +4531,13 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowAnotateTime = [];
     rowAnotateTime.push(
-      { "content": gTSOPA.anotateTime, "colSpan": 8 }
+      { "content": gTTSOPA.anotateTime, "colSpan": 8 }
     );
     data.push(rowAnotateTime);
 
     let rowAnotateConsumption = [];
     rowAnotateConsumption.push(
-      { "content": gTSOPA.anotateConsumption, "colSpan": 8 }
+      { "content": gTTSOPA.anotateConsumption, "colSpan": 8 }
     );
     data.push(rowAnotateConsumption);
 
