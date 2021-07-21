@@ -2969,7 +2969,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
                     // Consumo por charter
-                    gTSOPA_Ballast.consumptionMGOCharter = (gTSOPA_Ballast.dailyConsumptionCharterMGO *  gTSOPA_Ballast.timeMGOCharter) / 24;
+                    gTSOPA_Ballast.consumptionMGOCharter = (gTSOPA_Ballast.dailyConsumptionCharterMGO * gTSOPA_Ballast.timeMGOCharter) / 24;
 
                   }
 
@@ -4343,6 +4343,25 @@ export class DialogExportPdfComponent implements OnInit {
   // Resumen total.
   private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean): number {
 
+    let contTextTitle = '';
+
+    if (isViewBallast) {
+      contTextTitle += '( Ballast';
+      if (!isViewLaden) {
+        contTextTitle += ' )';
+      }
+    }
+
+    if (isViewLaden) {
+      if (!isViewBallast) {
+        contTextTitle += '( Laden )';
+      } else {
+
+        contTextTitle += ' / Laden )';
+      }
+    }
+    let title = 'Overall Performance Analysis\n' + contTextTitle;
+
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
     contentHeightTable += 13.5;
@@ -4364,7 +4383,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     let headerTable = [];
     headerTable.push(
-      { "content": "", "colSpan": 4, "rowSpan": 2 }
+      { "content": title, "colSpan": 4, "rowSpan": 2 }
     );
     if (isViewBallast) {
       headerTable.push(
@@ -4873,6 +4892,8 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 190;
+
+
 
 
     // Total suma 136, pero el widt es 136 hay que revisar.
