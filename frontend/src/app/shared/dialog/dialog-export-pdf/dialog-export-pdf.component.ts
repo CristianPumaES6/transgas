@@ -4892,8 +4892,84 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 190;
-
-
+    /* 
+     // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
+     userOptions.didParseCell = (data: CellHookData) => {
+    
+      // Secction : head, body, footer
+      let section = data.section;
+      // guardamos la celda y verificamos que no sea underfiend
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+    
+      // trabajaremos con el body.
+      if (section == 'body') {
+        // ubicacion del la fila
+        let rowIndex = data.row.index;
+        // ubicacion de la columna.
+        let columIndex = data.column.index;
+        // Raw ?????? <= agregar descripcion no lo se?
+        let raw = data.row.raw;
+    
+    
+    
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+    
+          if (columIndex == 0) {
+            cell.styles.fillColor = '#375f9a'
+            cell.styles.textColor = '#ffffff';
+            cell.styles.fontSize = 8;
+            cell.styles.valign = 'middle';
+          }
+        }
+    
+        // SEgunda linea
+        if (rowIndex == 1) {
+          // la primera columna Departure To Arrival, estara alineada en el medio 
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+          // La tercera columna Condition(Laden Blalast) alineada en el medio
+          if (columIndex == 2) {
+            cell.styles.valign = 'middle';
+          }
+        }
+    
+    
+        // REvisar esto parece que ya no iria.
+        if (rowIndex == 5) {
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+        }
+        // En la fila 7
+        if (rowIndex == 6) {
+    
+    
+          if (columIndex == 3) {
+    
+            if (Number(cell.text) >= Number(raw[3].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+    
+          }
+          if (columIndex == 6) {
+            if (Number(cell.text) <= Number(raw[6].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+          }
+    
+        }
+        // Fin de la revision
+    
+    
+      }
+    }; */
 
 
     // Total suma 136, pero el widt es 136 hay que revisar.
@@ -4904,7 +4980,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 14,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       1: {
         halign: 'center',
@@ -4912,7 +4989,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 14,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       2: {
         halign: 'center',
@@ -4920,7 +4998,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 27,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       3: {
         halign: 'center',
@@ -4928,7 +5007,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 27,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       4: {
         halign: 'center',
@@ -4936,7 +5016,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 27,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       5: {
         halign: 'center',
@@ -4944,7 +5025,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 27,
         lineWidth: 0.2,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       6: {
         halign: 'center',
@@ -4952,7 +5034,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 27,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       7: {
         halign: 'center',
@@ -4960,7 +5043,8 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 27,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
     };
 
