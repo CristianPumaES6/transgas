@@ -3624,7 +3624,7 @@ export class DialogExportPdfComponent implements OnInit {
     // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
 
     // Generamos todo el resumen por viajes.
-    positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA, isViewBallast, isViewLaden);
+    //positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA, isViewBallast, isViewLaden);
 
     // Le damos un espacio para el siguiente cuadro.
     positionHeight += 6;
@@ -4134,77 +4134,77 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.tableWidth = 190;
 
     // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
-    userOptions.didParseCell = (data: CellHookData) => {
-
-      let section = data.section;
-      let cell: Cell = data.cell;
-      if (cell == undefined) { return; }
-
-
-      if (section == 'body') {
-        let rowIndex = data.row.index;
-        let columIndex = data.column.index;
-        let raw = data.row.raw;
-        // Primera cabecera de la tabla Titulo
-        if (rowIndex == 0) {
-
-          if (columIndex == 0) {
-
-            cell.styles.fillColor = '#375f9a'
-            cell.styles.textColor = '#ffffff';
-            cell.styles.fontSize = 8;
-          }
-        }
-
-        // SEgunda linea
-        if (rowIndex == 1) {
-          // la primera columna Departure To Arrival, estara alineada en el medio 
-          if (columIndex == 0) {
-            cell.styles.valign = 'middle';
-          }
-          // La tercera columna Condition(Laden Blalast) alineada en el medio
-          if (columIndex == 2) {
-            cell.styles.valign = 'middle';
-          }
-        }
-
-
-        // REvisar esto parece que ya no iria.
-        if (rowIndex == 5) {
-          if (columIndex == 0) {
-            cell.styles.valign = 'middle';
-          }
-        }
-        // En la fila 7
-        if (rowIndex == 6) {
-
-
-          if (columIndex == 3) {
-
-            if (Number(cell.text) >= Number(raw[3].content)) {
-              cell.styles.fillColor = [133, 252, 97];
-            } else {
-              cell.styles.fillColor = [255, 123, 123];
-            }
-
-          }
-          if (columIndex == 6) {
-            if (Number(cell.text) <= Number(raw[6].content)) {
-              cell.styles.fillColor = [133, 252, 97];
-            } else {
-              cell.styles.fillColor = [255, 123, 123];
+    /*   userOptions.didParseCell = (data: CellHookData) => {
+  
+        let section = data.section;
+        let cell: Cell = data.cell;
+        if (cell == undefined) { return; }
+  
+  
+        if (section == 'body') {
+          let rowIndex = data.row.index;
+          let columIndex = data.column.index;
+          let raw = data.row.raw;
+          // Primera cabecera de la tabla Titulo
+          if (rowIndex == 0) {
+  
+            if (columIndex == 0) {
+  
+              cell.styles.fillColor = '#375f9a'
+              cell.styles.textColor = '#ffffff';
+              cell.styles.fontSize = 8;
             }
           }
-
+  
+          // SEgunda linea
+          if (rowIndex == 1) {
+            // la primera columna Departure To Arrival, estara alineada en el medio 
+            if (columIndex == 0) {
+              cell.styles.valign = 'middle';
+            }
+            // La tercera columna Condition(Laden Blalast) alineada en el medio
+            if (columIndex == 2) {
+              cell.styles.valign = 'middle';
+            }
+          }
+  
+  
+          // REvisar esto parece que ya no iria.
+          if (rowIndex == 5) {
+            if (columIndex == 0) {
+              cell.styles.valign = 'middle';
+            }
+          }
+          // En la fila 7
+          if (rowIndex == 6) {
+  
+  
+            if (columIndex == 3) {
+  
+              if (Number(cell.text) >= Number(raw[3].content)) {
+                cell.styles.fillColor = [133, 252, 97];
+              } else {
+                cell.styles.fillColor = [255, 123, 123];
+              }
+  
+            }
+            if (columIndex == 6) {
+              if (Number(cell.text) <= Number(raw[6].content)) {
+                cell.styles.fillColor = [133, 252, 97];
+              } else {
+                cell.styles.fillColor = [255, 123, 123];
+              }
+            }
+  
+          }
+          // Fin de la revision
+  
+  
         }
-        // Fin de la revision
-
-
-      }
-
-
-    };
-
+  
+  
+      };
+   */
     // Total suma 136, pero el widt es 136 hay que revisar.
     userOptions.columnStyles = {
       0: {
@@ -4921,34 +4921,82 @@ export class DialogExportPdfComponent implements OnInit {
 
         // Primera cabecera de la tabla Titulo
         if (rowIndex == 0) {
-
+          // le damos un color y le aumentamos de tamaño a la primera columna.
           if (columIndex == 0) {
             cell.styles.fillColor = this.colorWhite;
             cell.styles.textColor = this.colorBlue1;
             cell.styles.fontSize = 10;
-            cell.styles.valign = 'middle';
           }
+          // caso sea Ballas o Laden
+          // siempre la columna tendra la posicion 4
           if (isViewBallast || isViewLaden) {
             if (columIndex == 4) {
               cell.styles.fillColor = this.colorBlue1;
               cell.styles.textColor = this.colorYellowTransgas;
               cell.styles.fontSize = 10;
-              cell.styles.valign = 'middle';
             }
           }
+          // Solo si las dos opciones estan activadas,  la segunda opcion tendra la posicion 6
           if (isViewBallast && isViewLaden) {
             if (columIndex == 6) {
               cell.styles.fillColor = this.colorBlue1;
               cell.styles.textColor = this.colorYellowTransgas;
               cell.styles.fontSize = 10;
-              cell.styles.valign = 'middle';
             }
           }
 
         }
-        // SEgunda linea
+
+
+        // Segunda linea cabecera 2
         if (rowIndex == 1) {
-          console.log('columna'+columIndex);
+          console.log('columna' + columIndex);
+
+          // Comentario SPAN analisar el codigo
+          // caso sea Ballas o Laden
+          // Si es solo ballast
+          // el ifo seria 4 y Mgo 6
+          // si es ballast y laden
+          // el ifo seria 4 y 6
+          // Laden MGO seria 5 y 7
+          if (isViewBallast || isViewLaden) {
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fontSize = 8;
+              }
+            }
+            if (this.addInformationMGO && this.addInformationIFO) {
+
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fontSize = 8;
+              }
+            }
+          }
+          if (isViewBallast && isViewLaden) {
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 5) {
+                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fontSize = 8;
+              }
+            }
+            if (this.addInformationMGO && this.addInformationIFO) {
+
+              if (columIndex == 7) {
+                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fontSize = 8;
+              }
+            }
+          }
+
+
 
 
           // 4 6
