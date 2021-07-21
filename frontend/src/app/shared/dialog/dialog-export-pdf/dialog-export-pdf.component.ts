@@ -2760,204 +2760,211 @@ export class DialogExportPdfComponent implements OnInit {
     let listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
     let listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
     // Inicializamos sincrono.
-    return Promise.resolve(true).then(
-      result => {
+    return Promise.resolve(true)
+      .then(
+        result => {
 
-        // Abrimos el componente Loading.
-        this.loadingService.Open();
+          // Abrimos el componente Loading.
+          this.loadingService.Open();
 
-        // Recorremos todos los viajes.
-        parseVoyages.forEach(
-          voyage => {
-            // Resumen de viaje, lo lo agregaremos al arreglo
-            let gTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
-            let gTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
-
-
-            // Esta variable nos ayudara para saber si ya contamos el viaje, una vez que lo sumamos lo ponemos false;
-            let isNewVoyage: boolean = true;
-            if (voyage.status) {
-
-              // Agregamos el id y el numero del viaje.
-              gTSOPA_Ballast.voyageId = voyage.id;
-              gTSOPA_Ballast.voyageNumber = voyage.voyageNumber;
+          // Recorremos todos los viajes.
+          parseVoyages.forEach(
+            voyage => {
+              // Resumen de viaje, lo lo agregaremos al arreglo
+              let gTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+              let gTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
 
 
-              // Recorremos todos los puertos
-              voyage.ports.forEach(
-                port => {
+              // Esta variable nos ayudara para saber si ya contamos el viaje, una vez que lo sumamos lo ponemos false;
+              let isNewVoyage: boolean = true;
+              if (voyage.status) {
 
-                  // Esta variable nos ayudara para saber si ya contamos el puerto, una vez que lo sumamos lo ponemos false;
-                  let isNewPort: boolean = true;
-                  if (port.status) {
+                // Agregamos el id y el numero del viaje.
+                // BALLAST
+                gTSOPA_Ballast.voyageId = voyage.id;
+                gTSOPA_Ballast.voyageNumber = voyage.voyageNumber;
+                // LADEN
+                gTSOPA_Laden.voyageId = voyage.id;
+                gTSOPA_Laden.voyageNumber = voyage.voyageNumber;
 
-                    // recorremos todos los reportes
-                    port.dailyReports.forEach(
-                      dailyReport => {
-                        if (dailyReport.status) {
+
+                // Recorremos todos los puertos
+                voyage.ports.forEach(
+                  port => {
+
+                    // Esta variable nos ayudara para saber si ya contamos el puerto, una vez que lo sumamos lo ponemos false;
+                    let isNewPort: boolean = true;
+                    if (port.status) {
+
+                      // recorremos todos los reportes
+                      port.dailyReports.forEach(
+                        dailyReport => {
+                          if (dailyReport.status) {
 
 
-                          if (
-                            // Verificamos si se desea agregar la informacion de navegando en ballast o Laden
-                            (
-                              (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST')
-                              || (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN')
-                              || (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
-                            )
-                            // Verificamos que las dos condiciones sean falsas para decir si el reporte esta dentro del rango de fecha.
-                            && !(!IsAfter1Date(dailyReport.date, this.data.dateStart) || !IsPrevious1Date(dailyReport.date, this.data.dateEnd))
-                          ) {
+                            if (
+                              // Verificamos si se desea agregar la informacion de navegando en ballast o Laden
+                              (
+                                (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST')
+                                || (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN')
+                                || (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                              )
+                              // Verificamos que las dos condiciones sean falsas para decir si el reporte esta dentro del rango de fecha.
+                              && !(!IsAfter1Date(dailyReport.date, this.data.dateStart) || !IsPrevious1Date(dailyReport.date, this.data.dateEnd))
+                            ) {
 
-                            // Verificamos si tenemos que sumar el viaje.
-                            if (isNewVoyage) {
-                              isNewVoyage = false;
-                              sVPR.totalVoyageSailing += 1;
-                              console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
-                              // Agregamos el numero de viaje.
-                              sVPR.lastVoyageSailing = voyage.voyageNumber;
+                              // Verificamos si tenemos que sumar el viaje.
+                              if (isNewVoyage) {
+                                isNewVoyage = false;
+                                sVPR.totalVoyageSailing += 1;
+                                console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
+                                // Agregamos el numero de viaje.
+                                sVPR.lastVoyageSailing = voyage.voyageNumber;
+                              }
+                              // Verificamos si tenemos que sumar el puerto.
+                              if (isNewPort) {
+                                isNewPort = false;
+                                sVPR.totalPortSailing += 1;
+                                console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
+                              }
+
+                              // Esta variable tienen el total de ocnsumo
+                              let totalIFO = this.SumaIfo(dailyReport);
+                              let totalMGO = this.SumaMgo(dailyReport);
+
+                              // Verificamos si es navegando con carga
+                              if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+
+                                // Si existe la actividad in ballast agrego la distancia
+                                sVPR.totalDistanceBallast += dailyReport.distance;
+
+                                // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                                if (this.addInformationIFO && totalIFO) {
+                                  gTSOPA_Ballast.distanceIFO += dailyReport.distance;
+                                  gTSOPA_Ballast.consumptionIFO += totalIFO;
+                                  gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
+
+                                  gTTSOPA.distanceIFOBallast += dailyReport.distance;
+                                  gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
+                                  gTTSOPA.consumptionIFOBallast += totalIFO;
+                                }
+                                if (this.addInformationMGO && totalMGO) {
+                                  gTSOPA_Ballast.distanceMGO += dailyReport.distance;
+                                  gTSOPA_Ballast.consumptionMGO += totalMGO;
+                                  gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
+
+
+                                  gTTSOPA.distanceMGOBallast += dailyReport.distance;
+                                  gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
+                                  gTTSOPA.consumptionMGOBallast += totalMGO;
+                                }
+
+
+
+
+                                // Verificamos si es la actividad navegando sin carga
+                              } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+
+                                // Si existe la actividad laden agrego la distancia.
+                                sVPR.totalDistanceLaden += dailyReport.distance;
+
+                                // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                                if (this.addInformationIFO && totalIFO) {
+                                  gTSOPA_Laden.distanceIFO += dailyReport.distance;
+                                  gTSOPA_Laden.consumptionIFO += totalIFO;
+                                  gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
+
+                                  gTTSOPA.distanceIFOLaden += dailyReport.distance;
+                                  gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
+                                  gTTSOPA.consumptionIFOLaden += totalIFO;
+                                }
+                                if (this.addInformationMGO && totalMGO) {
+                                  gTSOPA_Laden.distanceMGO += dailyReport.distance;
+                                  gTSOPA_Laden.consumptionMGO += totalMGO;
+                                  gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
+
+                                  gTTSOPA.distanceMGOLaden += dailyReport.distance;
+                                  gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
+                                  gTTSOPA.consumptionMGOLaden += totalMGO;
+                                }
+
+                              } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+
+                              }
+
+
+
                             }
-                            // Verificamos si tenemos que sumar el puerto.
-                            if (isNewPort) {
-                              isNewPort = false;
-                              sVPR.totalPortSailing += 1;
-                              console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
-                            }
-
-                            // Esta variable tienen el total de ocnsumo
-                            let totalIFO = this.SumaIfo(dailyReport);
-                            let totalMGO = this.SumaMgo(dailyReport);
-
-                            // Verificamos si es navegando con carga
-                            if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
-
-                              // Si existe la actividad in ballast agrego la distancia
-                              sVPR.totalDistanceBallast += dailyReport.distance;
-
-                              // Solo si hay consumo sumamos el tiempo, distancia y consumo
-                              if (totalIFO) {
-                                gTSOPA_Ballast.distanceIFO += dailyReport.distance;
-                                gTSOPA_Ballast.consumptionIFO += totalIFO;
-                                gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
-
-                                gTTSOPA.distanceIFOBallast += dailyReport.distance;
-                                gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
-                                gTTSOPA.consumptionIFOBallast += totalIFO;
-                              }
-                              if (totalMGO) {
-                                gTSOPA_Ballast.distanceMGO += dailyReport.distance;
-                                gTSOPA_Ballast.consumptionMGO += totalMGO;
-                                gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
 
 
-                                gTTSOPA.distanceMGOBallast += dailyReport.distance;
-                                gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
-                                gTTSOPA.consumptionMGOBallast += totalMGO;
-                              }
-
-
-                              // Verificamos si es la actividad navegando sin carga
-                            } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
-
-                              // Si existe la actividad laden agrego la distancia.
-                              sVPR.totalDistanceLaden += dailyReport.distance;
-
-                              // Solo si hay consumo sumamos el tiempo, distancia y consumo
-                              if (totalIFO) {
-                                gTSOPA_Laden.distanceIFO += dailyReport.distance;
-                                gTSOPA_Laden.consumptionIFO += totalIFO;
-                                gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
-
-                                gTTSOPA.distanceIFOLaden += dailyReport.distance;
-                                gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
-                                gTTSOPA.consumptionIFOLaden += totalIFO;
-                              }
-                              if (totalMGO) {
-                                gTSOPA_Laden.distanceMGO += dailyReport.distance;
-                                gTSOPA_Laden.consumptionMGO += totalMGO;
-                                gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
-
-                                gTTSOPA.distanceMGOLaden += dailyReport.distance;
-                                gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
-                                gTTSOPA.consumptionMGOLaden += totalMGO;
-                              }
-
-                            } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
-
-                            }
 
 
 
                           }
-
-
-
-
-
                         }
-                      }
-                    )
+                      )
 
+                    }
                   }
+                )
+
+
+
+                // Solo si existen tiempo IFO o MGO
+                // Agregamos a la lista
+                if (gTSOPA_Ballast.timeIFO || gTSOPA_Ballast.timeMGO) {
+                  listGTSOPA_Ballast.push(gTSOPA_Ballast)
                 }
-              )
+                if (gTSOPA_Laden.timeIFO || gTSOPA_Laden.timeMGO) {
+                  listGTSOPA_Laden.push(gTSOPA_Laden)
+                }
 
 
-
-              // Solo si existen tiempo IFO o MGO
-              // Agregamos a la lista
-              if (gTSOPA_Ballast.timeIFO || gTSOPA_Ballast.timeMGO) {
-                listGTSOPA_Ballast.push(gTSOPA_Ballast)
               }
-              if (gTSOPA_Laden.timeIFO || gTSOPA_Laden.timeMGO) {
-                listGTSOPA_Laden.push(gTSOPA_Laden)
-              }
-
-
             }
-          }
-        );
+          );
 
 
-        // Agregamos la fecha de inicio y la fecha fin.
-        sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
-        sVPR.dateStart = ''
-        sVPR.dateStart = ''
+          // Agregamos la fecha de inicio y la fecha fin.
+          sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
+          sVPR.dateStart = ''
+          sVPR.dateStart = ''
 
-      }
-    ).then(
-      result => {
+        }
+      ).then(
+        result => {
 
-        // Revisar los demas daptos podrian estar asi como listSummary
-        // lo mejor de todo searia si se arma en un objeto.
-        // Esto es de prueba tenemos que eliminarlo.
-        // Al recorrer tendriamos algo asi.
-        sVPR.listSummarySpeedCondition =
-          [
-            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
-            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
-            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
-            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
-            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
-            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
-            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
-            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
-            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
-            new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
-            new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
-            new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
-          ];
+          // Revisar los demas daptos podrian estar asi como listSummary
+          // lo mejor de todo searia si se arma en un objeto.
+          // Esto es de prueba tenemos que eliminarlo.
+          // Al recorrer tendriamos algo asi.
+          sVPR.listSummarySpeedCondition =
+            [
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+            ];
 
-        // Luego deberiamos enviar esa informacion a los siguientes documentos.
+          // Luego deberiamos enviar esa informacion a los siguientes documentos.
 
-        // Agregamos la primera pagina,
-        // El cual tiene resumido todo el reporte.
-        this.AddOnePage(doc, sVPR, gTTSOPA);
+          // Agregamos la primera pagina,
+          // El cual tiene resumido todo el reporte.
+          this.AddOnePage(doc, sVPR, gTTSOPA);
 
 
 
-        return true;
-      }
-    ) // Aqui descargamos el documento de pdf.
+          return true;
+        }
+      ) // Aqui descargamos el documento de pdf.
       .then(
         result => {
 
@@ -2970,7 +2977,7 @@ export class DialogExportPdfComponent implements OnInit {
             let isViewBallast = true;
             let isViewLaden = false;
             // Agregamos el OverallPerformanceAnalisis
-            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
+            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, gTTSOPA, isViewBallast, isViewLaden)
 
           }
           if (this.addSailingWithLaden) {
@@ -2979,7 +2986,7 @@ export class DialogExportPdfComponent implements OnInit {
             let isViewBallast = false;
             let isViewLaden = true;
             // Agregamos el OverallPerformanceAnalisis
-            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
+            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
 
           }
 
@@ -3327,7 +3334,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[], listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[], gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean) {
+  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[], gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean) {
     positionHeight += 10;
     let positionWidth = 10;
 
@@ -3354,7 +3361,7 @@ export class DialogExportPdfComponent implements OnInit {
     // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
 
     // Generamos todo el resumen por viajes.
-    positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA_Ballast);
+    positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA, isViewBallast, isViewLaden);
 
     // Le damos un espacio para el siguiente cuadro.
     positionHeight += 6;
@@ -3685,8 +3692,15 @@ export class DialogExportPdfComponent implements OnInit {
   // Genera el cuadro de 
   // Overall Performance Analysis
   // retorna el tamaño de la tabla
-  private GenerateTableOverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[]): number {
+  private GenerateTableOverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[], isViewBallast: boolean, isViewLaden: boolean): number {
 
+    let titleTable: string = 'Summary by Voyage';
+    if (isViewBallast) {
+      titleTable += '\n(Ballast)'
+    }
+    if (isViewLaden) {
+      titleTable += '\n(Laden)'
+    }
 
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
@@ -3709,7 +3723,7 @@ export class DialogExportPdfComponent implements OnInit {
 
       // Segunda Fila
       [
-        { "content": "Summary by Voyage", "colSpan": 2, "rowSpan": 2 },
+        { "content": titleTable, "colSpan": 2, "rowSpan": 2 },
         { "content": "Distance\n(MI)", "colSpan": 2 },
         { "content": "Consumption\n(MT)", "colSpan": 2 },
         { "content": "Charter", "colSpan": 2 },
@@ -3717,58 +3731,134 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": "Charter", "colSpan": 2 },
         { "content": "Speed\n(KN)", "colSpan": 2 },
         { "content": "Charter", "colSpan": 2 }
-      ],
-      [
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 }
-      ],
+      ]
     ];
+
+    let rowHeader2 = [];
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    data.push(rowHeader2);
 
 
     listGTSOPA.forEach(
       gTSOPA => {
-        data.push(
-          [
 
-            { "content": 'Voyage ' + gTSOPA.voyageNumber, "colSpan": 2 },
-            // Distance
-            { "content": this.MathRoundDecimal(gTSOPA.distanceIFO, 1), "colSpan": 1 },
-            { "content": this.MathRoundDecimal(gTSOPA.distanceMGO, 1), "colSpan": 1 },
-            // Consumption
-            { "content": this.MathRoundDecimal(gTSOPA.consumptionIFO, 1), "colSpan": 1 },
-            { "content": this.MathRoundDecimal(gTSOPA.consumptionMGO, 1), "colSpan": 1 },
-            // Consumption Charter
-            { "content": this.MathRoundDecimal(gTSOPA.consumptionIFOCharter, 1), "colSpan": 1 },
-            { "content": this.MathRoundDecimal(gTSOPA.consumptionMGOCharter, 1), "colSpan": 1 },
-            // Time
-            { "content": this.MathRoundDecimal(gTSOPA.timeIFO, 1), "colSpan": 1 },
-            { "content": this.MathRoundDecimal(gTSOPA.timeMGO, 1), "colSpan": 1 },
-            // Time Charter
-            { "content": this.MathRoundDecimal(gTSOPA.timeIFOCharter, 1), "colSpan": 1 },
-            { "content": this.MathRoundDecimal(gTSOPA.timeMGOCharter, 1), "colSpan": 1 },
-            // Speed
-            { "content": this.MathRoundDecimal(gTSOPA.speedIFO, 1), "colSpan": 1 },
-            { "content": this.MathRoundDecimal(gTSOPA.speedIFO, 1), "colSpan": 1 },
-            // Speed Charter
-            { "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": 1 },
-            { "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": 1 }
+        let rowGenerit = [];
+        rowGenerit.push({ "content": 'Voyage ' + gTSOPA.voyageNumber, "colSpan": 2 });
 
-          ]
-        )
+        // Distance
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+        // Consumption
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+        // Consumption Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Time
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Time Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Speed
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Speed Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+        data.push(rowGenerit);
+
       }
-    )
+    );
+
+
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};
     // Agregamos en que altura del documento podnra la tabla
