@@ -208,13 +208,17 @@ export class GenerateTableSummaryOverallPerformanceAnalisis {
         public timeMGO?: number,
         public timeIFOCharter?: number,
         public timeMGOCharter?: number,
-
         // speed
         public speedIFO?: number,
         public speedMGO?: number,
         public speedIFOCharter?: number,
         public speedMGOCharter?: number,
-
+        // Daily Consumption
+        public dailyConsumptionIFO?: number,
+        public dailyConsumptionMGO?: number,
+        // Daily Consumption Charter
+        public dailyConsumptionCharterIFO?: number,
+        public dailyConsumptionCharterMGO?: number,
     ) {
 
         this.voyageId = voyageId || 0;
@@ -238,6 +242,14 @@ export class GenerateTableSummaryOverallPerformanceAnalisis {
         this.speedIFOCharter = speedIFOCharter || 0;
         this.speedMGOCharter = speedMGOCharter || 0;
 
+
+        // Daily Consumption
+        this.dailyConsumptionIFO = dailyConsumptionIFO || 0;
+        this.dailyConsumptionMGO = dailyConsumptionMGO || 0;
+
+        // Daily Consumption Charter
+        this.dailyConsumptionCharterIFO = dailyConsumptionCharterIFO || 0;
+        this.dailyConsumptionCharterMGO = dailyConsumptionCharterMGO || 0;
     }
 
 }

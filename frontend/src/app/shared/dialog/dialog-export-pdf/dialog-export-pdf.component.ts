@@ -2913,9 +2913,143 @@ export class DialogExportPdfComponent implements OnInit {
                 // Solo si existen tiempo IFO o MGO
                 // Agregamos a la lista
                 if (gTSOPA_Ballast.timeIFO || gTSOPA_Ballast.timeMGO) {
+
+
+                  // AQUI APLICAMOS LAS FORMULAS.
+
+                  if (this.addInformationIFO) {
+
+                    // Time
+                    gTSOPA_Ballast.timeIFOCharter = this.selectUser.contractSpeedSailingBallastIFO ?
+                      gTSOPA_Ballast.distanceIFO / this.selectUser.contractSpeedSailingBallastIFO : 0;
+
+                    // Velocidad
+                    gTSOPA_Ballast.speedIFO = gTSOPA_Ballast.timeIFO ?
+                      gTSOPA_Ballast.distanceIFO / gTSOPA_Ballast.timeIFO : 0;
+
+                    // Velocidad Charter
+                    gTSOPA_Ballast.speedIFOCharter = this.selectUser.contractSpeedSailingBallastIFO;
+
+                    // DailyConsumption IFO
+                    gTSOPA_Ballast.dailyConsumptionIFO = gTSOPA_Ballast.timeIFO ?
+                      (gTSOPA_Ballast.consumptionIFO * 24) / gTSOPA_Ballast.timeIFO : 0;
+
+                    // DailyConsumption IFO Charter
+                    gTSOPA_Ballast.dailyConsumptionCharterIFO = this.selectUser.sailingBallastConsumptionIFO;
+
+                    // Consumo por charter
+                    gTSOPA_Ballast.consumptionIFOCharter = (gTSOPA_Ballast.dailyConsumptionCharterIFO * gTSOPA_Ballast.timeIFOCharter) / 24;
+
+                    // Consumo 
+                  }
+
+                  if (this.addInformationMGO) {
+
+
+                    // Time
+                    gTSOPA_Ballast.timeMGOCharter = this.selectUser.contractSpeedSailingBallastMGO ?
+                      gTSOPA_Ballast.distanceMGO / this.selectUser.contractSpeedSailingBallastMGO : 0;
+
+
+                    // Velocidad
+                    gTSOPA_Ballast.speedMGO = gTSOPA_Ballast.timeMGO ?
+                      gTSOPA_Ballast.distanceMGO / gTSOPA_Ballast.timeMGO : 0;
+
+
+                    // Velocidad Charter
+                    gTSOPA_Ballast.speedMGOCharter = this.selectUser.contractSpeedSailingBallastMGO;
+
+
+                    // DailyConsumption MGO
+                    gTSOPA_Ballast.dailyConsumptionMGO = gTSOPA_Ballast.timeMGO ?
+                      (gTSOPA_Ballast.consumptionMGO * 24) / gTSOPA_Ballast.timeMGO : 0;
+
+                    // DailyConsumption MGO Charter
+                    gTSOPA_Ballast.dailyConsumptionCharterMGO = this.selectUser.sailingBallastConsumptionMGO;
+
+
+                    // Consumo por charter
+                    gTSOPA_Ballast.consumptionMGOCharter = (gTSOPA_Ballast.dailyConsumptionCharterMGO *  gTSOPA_Ballast.timeMGOCharter) / 24;
+
+                  }
+
+
+
+
                   listGTSOPA_Ballast.push(gTSOPA_Ballast)
                 }
+
+
+
+
                 if (gTSOPA_Laden.timeIFO || gTSOPA_Laden.timeMGO) {
+
+
+
+                  // AQUI APLICAMOS LAS FORMULAS.
+
+                  if (this.addInformationIFO) {
+
+                    // Time
+                    gTSOPA_Laden.timeIFOCharter = this.selectUser.contractSpeedSailingLadenIFO ?
+                      gTSOPA_Laden.distanceIFO / this.selectUser.contractSpeedSailingLadenIFO : 0;
+
+
+                    // Velocidad
+                    gTSOPA_Laden.speedIFO = gTSOPA_Laden.timeIFO ?
+                      gTSOPA_Laden.distanceIFO / gTSOPA_Laden.timeIFO : 0;
+
+
+                    // Velocidad Charter
+                    gTSOPA_Laden.speedIFOCharter = this.selectUser.contractSpeedSailingLadenIFO;
+
+
+                    // DailyConsumption IFO
+                    gTSOPA_Laden.dailyConsumptionIFO = gTSOPA_Laden.timeIFO ?
+                      (gTSOPA_Laden.consumptionIFO * 24) / gTSOPA_Laden.timeIFO : 0;
+
+                    // DailyConsumption IFO Charter
+                    gTSOPA_Laden.dailyConsumptionCharterIFO = this.selectUser.sailingLoadConsumptionIFO;
+
+
+                    // Consumo por charter
+                    gTSOPA_Laden.consumptionIFOCharter = (gTSOPA_Laden.dailyConsumptionCharterIFO * gTSOPA_Laden.timeIFOCharter) / 24;
+
+
+                  }
+
+                  if (this.addInformationMGO) {
+
+
+                    // Time
+                    gTSOPA_Laden.timeMGOCharter = this.selectUser.contractSpeedSailingLadenMGO ?
+                      gTSOPA_Laden.distanceMGO / this.selectUser.contractSpeedSailingLadenMGO : 0;
+
+
+                    // Velocidad
+                    gTSOPA_Laden.speedMGO = gTSOPA_Laden.timeMGO ?
+                      gTSOPA_Laden.distanceMGO / gTSOPA_Laden.timeMGO : 0;
+
+
+                    // Velocidad Charter
+                    gTSOPA_Laden.speedMGOCharter = this.selectUser.contractSpeedSailingLadenMGO;
+
+
+                    // DailyConsumption MGO
+                    gTSOPA_Laden.dailyConsumptionMGO = gTSOPA_Laden.timeMGO ?
+                      (gTSOPA_Laden.consumptionMGO * 24) / gTSOPA_Laden.timeMGO : 0;
+
+                    // DailyConsumption MGO Charter
+                    gTSOPA_Laden.dailyConsumptionCharterMGO = this.selectUser.sailingLoadConsumptionMGO;
+
+
+                    // Consumo por charter
+                    gTSOPA_Laden.consumptionMGOCharter = (gTSOPA_Laden.dailyConsumptionCharterMGO * gTSOPA_Laden.timeMGOCharter) / 24;
+
+                  }
+
+
+
                   listGTSOPA_Laden.push(gTSOPA_Laden)
                 }
 
