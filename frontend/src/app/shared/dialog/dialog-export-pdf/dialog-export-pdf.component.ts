@@ -2925,6 +2925,130 @@ export class DialogExportPdfComponent implements OnInit {
           );
 
 
+          // AQUI APLICAMOS LAS FORMULAS.
+          // Ballast
+          if (this.addSailingInBallast) {
+
+            if (this.addInformationIFO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO ?
+                gTTSOPA.distanceIFOBallast / this.selectUser.contractSpeedSailingBallastIFO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedIFOBallast = gTTSOPA.timeIFOBallast ?
+                gTTSOPA.distanceIFOBallast / gTTSOPA.timeIFOBallast : 0;
+
+
+                // Velocidad Charter
+                gTTSOPA.speedCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO;
+
+
+                // Daily Consumption IFO
+                gTTSOPA.dailyConsumptionIFOBallast = gTTSOPA.timeIFOBallast ? 
+                (gTTSOPA.consumptionIFOBallast * 24 ) / gTTSOPA.timeIFOBallast : 0;
+
+                
+                // DailyConsumption IFO Charter
+                gTTSOPA.dailyConsumptionCharterIFOBallast = this.selectUser.sailingBallastConsumptionIFO;
+
+
+                // Consumo por charter
+                gTTSOPA.consumptionCharterIFOBallast = (gTTSOPA.dailyConsumptionCharterIFOBallast * gTTSOPA.timeCharterIFOBallast)/24;
+            }
+            if (this.addInformationMGO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO ?
+                gTTSOPA.distanceMGOBallast / this.selectUser.contractSpeedSailingBallastMGO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedMGOBallast = gTTSOPA.timeMGOBallast ?
+                gTTSOPA.distanceMGOBallast / gTTSOPA.timeMGOBallast : 0;
+
+
+                // Velocidad Charter
+                gTTSOPA.speedCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO;
+
+
+                // Daily Consumption MGO
+                gTTSOPA.dailyConsumptionMGOBallast = gTTSOPA.timeMGOBallast ? 
+                (gTTSOPA.consumptionMGOBallast * 24 ) / gTTSOPA.timeMGOBallast : 0;
+
+
+                // DailyConsumption MGO Charter
+                gTTSOPA.dailyConsumptionCharterMGOBallast = this.selectUser.sailingBallastConsumptionMGO;
+
+                // Consumo por charter
+                gTTSOPA.consumptionCharterMGOBallast = (gTTSOPA.dailyConsumptionCharterMGOBallast * gTTSOPA.timeCharterMGOBallast)/24;
+
+            }
+          }
+          // Laden
+          if (this.addSailingWithLaden) {
+
+            if (this.addInformationIFO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO ?
+                gTTSOPA.distanceIFOLaden / this.selectUser.contractSpeedSailingLadenIFO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedIFOLaden = gTTSOPA.timeIFOLaden ?
+                gTTSOPA.distanceIFOLaden / gTTSOPA.timeIFOLaden : 0;
+
+
+                // Velocidad Charter
+                gTTSOPA.speedCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO;
+
+
+
+                // Daily Consumption MGO
+                gTTSOPA.dailyConsumptionIFOLaden = gTTSOPA.timeIFOLaden ? 
+                (gTTSOPA.consumptionIFOLaden * 24 ) / gTTSOPA.timeIFOLaden : 0;
+
+
+
+
+                // DailyConsumption IFO Charter
+                gTTSOPA.dailyConsumptionCharterIFOLaden = this.selectUser.sailingLoadConsumptionIFO;
+
+
+                // Conusmo diario calculado segun el charter.
+                gTTSOPA.consumptionCharterIFOLaden  =    (gTTSOPA.dailyConsumptionCharterIFOLaden * gTTSOPA.timeCharterIFOLaden)/24;
+            }
+            if (this.addInformationMGO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO ?
+                gTTSOPA.distanceMGOLaden / this.selectUser.contractSpeedSailingLadenMGO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedMGOLaden = gTTSOPA.timeMGOLaden ?
+                gTTSOPA.distanceMGOLaden / gTTSOPA.timeMGOLaden : 0;
+
+
+                // Velocidad Charter
+                gTTSOPA.speedCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO;
+
+
+
+                // Daily Consumption MGO
+                gTTSOPA.dailyConsumptionMGOLaden = gTTSOPA.timeMGOLaden ? 
+                (gTTSOPA.consumptionMGOLaden * 24 ) / gTTSOPA.timeMGOLaden : 0;
+
+
+
+                // DailyConsumption MGO Charter
+                gTTSOPA.dailyConsumptionCharterMGOLaden = this.selectUser.sailingLoadConsumptionMGO;
+
+                
+
+                // Consumo IFO Charter
+                gTTSOPA.consumptionCharterMGOLaden  =  (gTTSOPA.dailyConsumptionCharterMGOLaden * gTTSOPA.timeCharterMGOLaden) / 24;
+            }
+          }
+
           // Agregamos la fecha de inicio y la fecha fin.
           sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
           sVPR.dateStart = ''
@@ -4552,7 +4676,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTTSOPA.consumptionCharterIFOBallast, "colSpan":
+            "content": gTTSOPA.dailyConsumptionCharterIFOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4560,7 +4684,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTTSOPA.consumptionCharterMGOBallast, "colSpan":
+            "content":  gTTSOPA.dailyConsumptionCharterMGOBallast, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4570,7 +4694,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTTSOPA.consumptionCharterIFOLaden, "colSpan":
+            "content":  gTTSOPA.dailyConsumptionCharterIFOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4578,7 +4702,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationMGO) {
         rowActualDailyConsumption.push(
           {
-            "content": gTTSOPA.consumptionCharterMGOLaden, "colSpan":
+            "content":  gTTSOPA.dailyConsumptionCharterMGOLaden, "colSpan":
               isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
@@ -4586,52 +4710,6 @@ export class DialogExportPdfComponent implements OnInit {
     }
     data.push(rowActualDailyConsumption);
 
-
-
-
-
-    let rowDailyConsumptionCharter = [];
-    rowDailyConsumptionCharter.push(
-      { "content": "Daily Consumption Charter", "colSpan": 4 }
-    );
-    // Ballast
-    if (isViewBallast) {
-      if (this.addInformationIFO) {
-        rowDailyConsumptionCharter.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterIFOBallast, "colSpan":
-              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-      if (this.addInformationMGO) {
-        rowDailyConsumptionCharter.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterMGOBallast, "colSpan":
-              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-    }
-    if (isViewLaden) {
-      if (this.addInformationIFO) {
-        rowDailyConsumptionCharter.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterIFOLaden, "colSpan":
-              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-      if (this.addInformationMGO) {
-        rowDailyConsumptionCharter.push(
-          {
-            "content": gTTSOPA.dailyConsumptionCharterMGOLaden, "colSpan":
-              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
-          }
-        );
-      }
-    }
-    data.push(rowDailyConsumptionCharter);
 
 
 
