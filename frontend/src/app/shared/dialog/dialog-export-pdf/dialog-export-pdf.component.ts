@@ -112,6 +112,11 @@ export class DialogExportPdfComponent implements OnInit {
   public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
 
+  // Colores
+  public colorWhite = '#FFFFFF';
+  public colorBlue1 = '#16214D';
+  public colorYellowTransgas = '#FFCD06';
+
   ngOnInit(): void {
 
     Promise.resolve(true).then(
@@ -4892,16 +4897,17 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 190;
-    /* 
-     // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
-     userOptions.didParseCell = (data: CellHookData) => {
-    
+
+
+    // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
+    userOptions.didParseCell = (data: CellHookData) => {
+
       // Secction : head, body, footer
       let section = data.section;
       // guardamos la celda y verificamos que no sea underfiend
       let cell: Cell = data.cell;
       if (cell == undefined) { return; }
-    
+
       // trabajaremos con el body.
       if (section == 'body') {
         // ubicacion del la fila
@@ -4910,66 +4916,86 @@ export class DialogExportPdfComponent implements OnInit {
         let columIndex = data.column.index;
         // Raw ?????? <= agregar descripcion no lo se?
         let raw = data.row.raw;
-    
-    
-    
+
+
+
         // Primera cabecera de la tabla Titulo
         if (rowIndex == 0) {
-    
+
           if (columIndex == 0) {
-            cell.styles.fillColor = '#375f9a'
-            cell.styles.textColor = '#ffffff';
-            cell.styles.fontSize = 8;
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorBlue1;
+            cell.styles.fontSize = 10;
             cell.styles.valign = 'middle';
           }
+          if (isViewBallast || isViewLaden) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorBlue1;
+              cell.styles.textColor = this.colorYellowTransgas;
+              cell.styles.fontSize = 10;
+              cell.styles.valign = 'middle';
+            }
+          }
+          if (isViewBallast && isViewLaden) {
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorBlue1;
+              cell.styles.textColor = this.colorYellowTransgas;
+              cell.styles.fontSize = 10;
+              cell.styles.valign = 'middle';
+            }
+          }
+
         }
-    
         // SEgunda linea
         if (rowIndex == 1) {
-          // la primera columna Departure To Arrival, estara alineada en el medio 
-          if (columIndex == 0) {
-            cell.styles.valign = 'middle';
-          }
-          // La tercera columna Condition(Laden Blalast) alineada en el medio
-          if (columIndex == 2) {
-            cell.styles.valign = 'middle';
-          }
+          console.log('columna'+columIndex);
+
+
+          // 4 6
+          // 4
+          // 4
+
+          // 4 5 6 7
+          // 4 6
+          // 4 6
         }
-    
-    
-        // REvisar esto parece que ya no iria.
-        if (rowIndex == 5) {
-          if (columIndex == 0) {
-            cell.styles.valign = 'middle';
-          }
-        }
-        // En la fila 7
-        if (rowIndex == 6) {
-    
-    
-          if (columIndex == 3) {
-    
-            if (Number(cell.text) >= Number(raw[3].content)) {
-              cell.styles.fillColor = [133, 252, 97];
-            } else {
-              cell.styles.fillColor = [255, 123, 123];
-            }
-    
-          }
-          if (columIndex == 6) {
-            if (Number(cell.text) <= Number(raw[6].content)) {
-              cell.styles.fillColor = [133, 252, 97];
-            } else {
-              cell.styles.fillColor = [255, 123, 123];
-            }
-          }
-    
-        }
-        // Fin de la revision
-    
-    
+
+        /* 
+        
+                // REvisar esto parece que ya no iria.
+                if (rowIndex == 5) {
+                  if (columIndex == 0) {
+                    cell.styles.valign = 'middle';
+                  }
+                }
+                // En la fila 7
+                if (rowIndex == 6) {
+        
+        
+                  if (columIndex == 3) {
+        
+                    if (Number(cell.text) >= Number(raw[3].content)) {
+                      cell.styles.fillColor = [133, 252, 97];
+                    } else {
+                      cell.styles.fillColor = [255, 123, 123];
+                    }
+        
+                  }
+                  if (columIndex == 6) {
+                    if (Number(cell.text) <= Number(raw[6].content)) {
+                      cell.styles.fillColor = [133, 252, 97];
+                    } else {
+                      cell.styles.fillColor = [255, 123, 123];
+                    }
+                  }
+        
+                }
+                // Fin de la revision 
+                */
+
+
       }
-    }; */
+    };
 
 
     // Total suma 136, pero el widt es 136 hay que revisar.
