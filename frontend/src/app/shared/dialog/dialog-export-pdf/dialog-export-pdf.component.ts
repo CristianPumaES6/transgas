@@ -2753,6 +2753,9 @@ export class DialogExportPdfComponent implements OnInit {
     sVPR.titleDocument = 'Vessel Performance Report';
     sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
 
+    // Objeto del cuadro de resument
+    let gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
+
     // Lista del resumen de viaje.
     let listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
     let listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
@@ -2809,7 +2812,7 @@ export class DialogExportPdfComponent implements OnInit {
                             if (isNewVoyage) {
                               isNewVoyage = false;
                               sVPR.totalVoyageSailing += 1;
-                              console.log('Voyage'+voyage.voyageNumber +' ' +dailyReport.activityPerformed)
+                              console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
                               // Agregamos el numero de viaje.
                               sVPR.lastVoyageSailing = voyage.voyageNumber;
                             }
@@ -2817,7 +2820,7 @@ export class DialogExportPdfComponent implements OnInit {
                             if (isNewPort) {
                               isNewPort = false;
                               sVPR.totalPortSailing += 1;
-                              console.log('Voyage'+voyage.voyageNumber+'  Numero de puerto:'+ port.portNumber +' ' +dailyReport.activityPerformed);
+                              console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
                             }
 
                             // Esta variable tienen el total de ocnsumo
@@ -2929,10 +2932,9 @@ export class DialogExportPdfComponent implements OnInit {
 
         // Agregamos la primera pagina,
         // El cual tiene resumido todo el reporte.
-        this.AddOnePage(doc, sVPR);
+        this.AddOnePage(doc, sVPR, gTSOPA);
 
-        // Agregamos una nueva pagina
-        doc.addPage();
+
 
         return true;
       }
@@ -2943,8 +2945,24 @@ export class DialogExportPdfComponent implements OnInit {
           // Inicializamos el height en 0,
           let positionHeight = 0;
 
-          // Agregamos el OverallPerformanceAnalisis
-          this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden)
+          if (this.addSailingInBallast) {
+            // Agregamos una nueva pagina
+            doc.addPage();
+            let isViewBallast = true;
+            let isViewLaden = false;
+            // Agregamos el OverallPerformanceAnalisis
+            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTSOPA, isViewBallast, isViewLaden)
+
+          }
+          if (this.addSailingWithLaden) {
+            // Agregamos una nueva pagina
+            doc.addPage();
+            let isViewBallast = false;
+            let isViewLaden = true;
+            // Agregamos el OverallPerformanceAnalisis
+            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, listGTSOPA_Laden, gTSOPA, isViewBallast, isViewLaden)
+
+          }
 
           return true;
         }
@@ -2962,7 +2980,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport): jsPDF {
+  private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis): jsPDF {
 
     // Posicion de altura del height.
     let positionHeight: number = 0;
@@ -2976,7 +2994,7 @@ export class DialogExportPdfComponent implements OnInit {
     contentOnePage += 65;
     contentOnePage += 10; // titulo
     contentOnePage += 12; // Nombre del buque
-    
+
     contentOnePage += 20; // Total Voyage o Numero Voyage
     contentOnePage += 10; // Total Port
 
@@ -3058,7 +3076,11 @@ export class DialogExportPdfComponent implements OnInit {
 
     positionHeight += 3;
     let positionWidth = 10;
-    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
+
+    // Como es el resumen, verificamos que se a
+    let isViewBallast = this.addSailingInBallast;
+    let isViewLaden = this.addSailingWithLaden;
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTSOPA, isViewBallast, isViewLaden)
 
     return doc;
   }
@@ -3286,12 +3308,19 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[], listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[]) {
+  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[], listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[], gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean) {
     positionHeight += 10;
     let positionWidth = 10;
 
+    let title: string = 'Overall Performance Analysis';
+    if (isViewBallast) {
+      title += ' (Ballast)'
+    }
+    if (isViewLaden) {
+      title += ' (Laden)'
+    }
     // Agregamos la cabecera a la pagina.
-    positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, 'Overall Performance Analysis');
+    positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
 
     ///////////////////////////////////////
     ///////// Inicio del 1° Cuadro ////////
@@ -3312,8 +3341,7 @@ export class DialogExportPdfComponent implements OnInit {
     positionHeight += 6;
     positionWidth = 10;
 
-    // Generamos la tabla con el total de resumen
-    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTSOPA, isViewBallast, isViewLaden)
 
 
     //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
@@ -3945,8 +3973,7 @@ export class DialogExportPdfComponent implements OnInit {
     return contentHeightTable;
   }
 
-  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis[]): number {
-   
+  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean): number {
 
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
@@ -3965,86 +3992,554 @@ export class DialogExportPdfComponent implements OnInit {
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
+    var data: RowInput[] = [];
 
-    var data: RowInput[] = [
-
-      // Segunda Fila
-      [
-        { "content": "", "colSpan": 4, "rowSpan": 2 },
-        { "content": "Laden", "colSpan": 2 },
-        { "content": "Ballast", "colSpan": 2 },
-      ],
-      [
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
-        { "content": "MGO", "colSpan": 1 },
-      ],
-      [
-        { "content": "Transit Distance", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "Transit Time", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "Allowable Charter Time", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "Average Speed", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "Allowable Charter Speed", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "Actual Total Consumption", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "Warranted Total Consumption", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "Actual Daily Consumption", "colSpan": 4 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-        { "content": 0, "colSpan": 1 },
-      ],
-      [
-        { "content": "", "colSpan": 8 },
-      ],
-      [
-        { "content": "", "colSpan": 8 },
-      ],
+    let headerTable = [];
+    headerTable.push(
+      { "content": "", "colSpan": 4, "rowSpan": 2 }
+    );
+    if (isViewBallast) {
+      headerTable.push(
+        { "content": "Ballast", "colSpan": isViewBallast && isViewLaden ? 2 : 4 }
+      );
+    }
+    if (isViewLaden) {
+      headerTable.push(
+        { "content": "Laden", "colSpan": isViewLaden && isViewBallast ? 2 : 4 }
+      );
+    }
+    // Agregamos la cabecera
+    data.push(headerTable);
 
 
-    ];
+    let header2Table = [];
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        header2Table.push(
+          {
+            "content": typeConsumptionSelectBuqueIFO, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        header2Table.push(
+          {
+            "content": 'MGO', "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        header2Table.push(
+          {
+            "content": typeConsumptionSelectBuqueIFO, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        header2Table.push(
+          {
+            "content": 'MGO', "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(header2Table);
+
+
+    let rowDistance = [];
+    rowDistance.push(
+      { "content": "Transit Distance", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowDistance.push(
+          {
+            "content": gTSOPA.distanceIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDistance.push(
+          {
+            "content": gTSOPA.distanceMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowDistance.push(
+          {
+            "content": gTSOPA.distanceIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDistance.push(
+          {
+            "content": gTSOPA.distanceMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowDistance);
+
+
+
+
+    let rowTransitTime = [];
+    rowTransitTime.push(
+      { "content": "Transit Time", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowTransitTime.push(
+          {
+            "content": gTSOPA.timeIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTransitTime.push(
+          {
+            "content": gTSOPA.timeMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowTransitTime.push(
+          {
+            "content": gTSOPA.timeIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTransitTime.push(
+          {
+            "content": gTSOPA.timeMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowTransitTime);
+
+
+
+
+    let rowCharterTime = [];
+    rowCharterTime.push(
+      { "content": "Allowable Charter Time", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowCharterTime.push(
+          {
+            "content": gTSOPA.timeCharterIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterTime.push(
+          {
+            "content": gTSOPA.timeCharterMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowCharterTime.push(
+          {
+            "content": gTSOPA.timeCharterIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterTime.push(
+          {
+            "content": gTSOPA.timeCharterMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowCharterTime);
+
+
+
+
+
+
+
+    let rowAverageSpeed = [];
+    rowAverageSpeed.push(
+      { "content": "Average Speed", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowAverageSpeed.push(
+          {
+            "content": gTSOPA.speedIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowAverageSpeed.push(
+          {
+            "content": gTSOPA.speedMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowAverageSpeed.push(
+          {
+            "content": gTSOPA.speedIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowAverageSpeed.push(
+          {
+            "content": gTSOPA.speedMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowAverageSpeed);
+
+
+
+
+
+
+
+    let rowCharterSpeed = [];
+    rowCharterSpeed.push(
+      { "content": "Allowable Charter Speed", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowCharterSpeed.push(
+          {
+            "content": gTSOPA.speedCharterIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterSpeed.push(
+          {
+            "content": gTSOPA.speedCharterMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowCharterSpeed.push(
+          {
+            "content": gTSOPA.speedCharterIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterSpeed.push(
+          {
+            "content": gTSOPA.speedCharterMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowCharterSpeed);
+
+
+
+
+    let rowTotalConsumption = [];
+    rowTotalConsumption.push(
+      { "content": "Actual Total Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowTotalConsumption.push(
+          {
+            "content": gTSOPA.consumptionIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTotalConsumption.push(
+          {
+            "content": gTSOPA.consumptionMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowTotalConsumption.push(
+          {
+            "content": gTSOPA.consumptionIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTotalConsumption.push(
+          {
+            "content": gTSOPA.consumptionMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowTotalConsumption);
+
+
+
+
+
+    let rowDailyConsumption = [];
+    rowDailyConsumption.push(
+      { "content": "Daily Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowDailyConsumption.push(
+          {
+            "content": gTSOPA.dailyConsumptionIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDailyConsumption.push(
+          {
+            "content": gTSOPA.dailyConsumptionMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowDailyConsumption.push(
+          {
+            "content": gTSOPA.dailyConsumptionIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDailyConsumption.push(
+          {
+            "content": gTSOPA.dailyConsumptionMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowDailyConsumption);
+
+
+
+
+
+
+
+    let rowWarrantedConsumption = [];
+    rowWarrantedConsumption.push(
+      { "content": "Warranted Total Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowWarrantedConsumption);
+
+
+
+
+
+
+    let rowActualDailyConsumption = [];
+    rowActualDailyConsumption.push(
+      { "content": "Actual Daily Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowActualDailyConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowActualDailyConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowActualDailyConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowActualDailyConsumption.push(
+          {
+            "content": gTSOPA.consumptionCharterMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowActualDailyConsumption);
+
+
+
+
+
+    let rowDailyConsumptionCharter = [];
+    rowDailyConsumptionCharter.push(
+      { "content": "Daily Consumption Charter", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowDailyConsumptionCharter.push(
+          {
+            "content": gTSOPA.dailyConsumptionCharterIFOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDailyConsumptionCharter.push(
+          {
+            "content": gTSOPA.dailyConsumptionCharterMGOBallast, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowDailyConsumptionCharter.push(
+          {
+            "content": gTSOPA.dailyConsumptionCharterIFOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDailyConsumptionCharter.push(
+          {
+            "content": gTSOPA.dailyConsumptionCharterMGOLaden, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowDailyConsumptionCharter);
+
+
+
+
+    let rowAnotateTime = [];
+    rowAnotateTime.push(
+      { "content": gTSOPA.anotateTime, "colSpan": 8 }
+    );
+    data.push(rowAnotateTime);
+
+    let rowAnotateConsumption = [];
+    rowAnotateConsumption.push(
+      { "content": gTSOPA.anotateConsumption, "colSpan": 8 }
+    );
+    data.push(rowAnotateConsumption);
+
+
+
 
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};

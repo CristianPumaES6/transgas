@@ -8,7 +8,7 @@ export class SummaryVesselPerformanceReport {
         public titleDocument?: string,
         public preparedFor?: string,
         public totalVoyageSailing?: number,
-        public lastVoyageSailing?:number,
+        public lastVoyageSailing?: number,
         public totalPortSailing?: number,
         public totalDistanceBallast?: number,
         public totalDistanceLaden?: number,
@@ -244,4 +244,106 @@ export class GenerateTableSummaryOverallPerformanceAnalisis {
 
 export class GenerateTableTotalSummaryOverallPerformanceAnalisis {
 
+    constructor(
+        //Distance
+        public distanceIFOLaden?: number,
+        public distanceMGOLaden?: number,
+        public distanceIFOBallast?: number,
+        public distanceMGOBallast?: number,
+        // Time
+        public timeIFOLaden?: number,
+        public timeMGOLaden?: number,
+        public timeIFOBallast?: number,
+        public timeMGOBallast?: number,
+        // Time Charter
+        public timeCharterIFOLaden?: number,
+        public timeCharterMGOLaden?: number,
+        public timeCharterIFOBallast?: number,
+        public timeCharterMGOBallast?: number,
+        // Speed
+        public speedIFOLaden?: number,
+        public speedMGOLaden?: number,
+        public speedIFOBallast?: number,
+        public speedMGOBallast?: number,
+        // Speed Charter
+        public speedCharterIFOLaden?: number,
+        public speedCharterMGOLaden?: number,
+        public speedCharterIFOBallast?: number,
+        public speedCharterMGOBallast?: number,
+
+        // Consumo
+        public consumptionIFOLaden?: number,
+        public consumptionMGOLaden?: number,
+        public consumptionIFOBallast?: number,
+        public consumptionMGOBallast?: number,
+        // Consumo Charter
+        public consumptionCharterIFOLaden?: number,
+        public consumptionCharterMGOLaden?: number,
+        public consumptionCharterIFOBallast?: number,
+        public consumptionCharterMGOBallast?: number,
+        // Daily Consumo
+        public dailyConsumptionIFOLaden?: number,
+        public dailyConsumptionMGOLaden?: number,
+        public dailyConsumptionIFOBallast?: number,
+        public dailyConsumptionMGOBallast?: number,
+        // Consumo Charter
+        public dailyConsumptionCharterIFOLaden?: number,
+        public dailyConsumptionCharterMGOLaden?: number,
+        public dailyConsumptionCharterIFOBallast?: number,
+        public dailyConsumptionCharterMGOBallast?: number,
+        // Anotate
+        public anotateTime?: string,
+        public anotateConsumption?: string,
+    ) {
+
+        //Distance
+        this.distanceIFOLaden = distanceIFOLaden || 0;
+        this.distanceMGOLaden = distanceMGOLaden || 0;
+        this.distanceIFOBallast = distanceIFOBallast || 0;
+        this.distanceMGOBallast = distanceMGOBallast || 0;
+        // Time
+        this.timeIFOLaden = timeIFOLaden || 0;
+        this.timeMGOLaden = timeMGOLaden || 0;
+        this.timeIFOBallast = timeIFOBallast || 0;
+        this.timeMGOBallast = timeMGOBallast || 0;
+        // Time Charter
+        this.timeCharterIFOLaden = timeCharterIFOLaden || 0;
+        this.timeCharterMGOLaden = timeCharterMGOLaden || 0;
+        this.timeCharterIFOBallast = timeCharterIFOBallast || 0;
+        this.timeCharterMGOBallast = timeCharterMGOBallast || 0;
+        // Speed
+        this.speedIFOLaden = speedIFOLaden || 0;
+        this.speedMGOLaden = speedMGOLaden || 0;
+        this.speedIFOBallast = speedIFOBallast || 0;
+        this.speedMGOBallast = speedMGOBallast || 0;
+        // Speed Charter
+        this.speedCharterIFOLaden = speedCharterIFOLaden || 0;
+        this.speedCharterMGOLaden = speedCharterMGOLaden || 0;
+        this.speedCharterIFOBallast = speedCharterIFOBallast || 0;
+        this.speedCharterMGOBallast = speedCharterMGOBallast || 0;
+
+        // Consumo
+        this.consumptionIFOLaden = consumptionIFOLaden || 0;
+        this.consumptionMGOLaden = consumptionMGOLaden || 0;
+        this.consumptionIFOBallast = consumptionIFOBallast || 0;
+        this.consumptionMGOBallast = consumptionMGOBallast || 0;
+        // Consumo Charter
+        this.consumptionCharterIFOLaden = consumptionCharterIFOLaden || 0;
+        this.consumptionCharterMGOLaden = consumptionCharterMGOLaden || 0;
+        this.consumptionCharterIFOBallast = consumptionCharterIFOBallast || 0;
+        this.consumptionCharterMGOBallast = consumptionCharterMGOBallast || 0;
+        // Daily Consumo
+        this.dailyConsumptionIFOLaden = dailyConsumptionIFOLaden || 0;
+        this.dailyConsumptionMGOLaden = dailyConsumptionMGOLaden || 0;
+        this.dailyConsumptionIFOBallast = dailyConsumptionIFOBallast || 0;
+        this.dailyConsumptionMGOBallast = dailyConsumptionMGOBallast || 0;
+        // Consumo Charter
+        this.dailyConsumptionCharterIFOLaden = dailyConsumptionCharterIFOLaden || 0;
+        this.dailyConsumptionCharterMGOLaden = dailyConsumptionCharterMGOLaden || 0;
+        this.dailyConsumptionCharterIFOBallast = dailyConsumptionCharterIFOBallast || 0;
+        this.dailyConsumptionCharterMGOBallast = dailyConsumptionCharterMGOBallast || 0;
+        // Anotate
+        this.anotateTime = anotateTime || '';
+        this.anotateConsumption = anotateConsumption || '';
+    }
 }
