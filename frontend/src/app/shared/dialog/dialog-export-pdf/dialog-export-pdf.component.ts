@@ -2832,16 +2832,16 @@ export class DialogExportPdfComponent implements OnInit {
 
                               // Si existe la actividad in ballast agrego la distancia
                               sVPR.totalDistanceBallast += dailyReport.distance;
-                             
+
                               // Solo si hay consumo sumamos el tiempo, distancia y consumo
                               if (totalIFO) {
                                 gTSOPA_Ballast.distanceIFO += dailyReport.distance;
                                 gTSOPA_Ballast.consumptionIFO += totalIFO;
                                 gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
 
-                                gTTSOPA.distanceIFOBallast+= dailyReport.distance;
-                                gTTSOPA.timeIFOBallast+= dailyReport.steamingTime;
-                                gTTSOPA.consumptionIFOBallast+= totalIFO;
+                                gTTSOPA.distanceIFOBallast += dailyReport.distance;
+                                gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
+                                gTTSOPA.consumptionIFOBallast += totalIFO;
                               }
                               if (totalMGO) {
                                 gTSOPA_Ballast.distanceMGO += dailyReport.distance;
@@ -2849,9 +2849,9 @@ export class DialogExportPdfComponent implements OnInit {
                                 gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
 
 
-                                gTTSOPA.distanceMGOBallast+= dailyReport.distance;
-                                gTTSOPA.timeMGOBallast+= dailyReport.steamingTime;
-                                gTTSOPA.consumptionMGOBallast+= totalMGO;
+                                gTTSOPA.distanceMGOBallast += dailyReport.distance;
+                                gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
+                                gTTSOPA.consumptionMGOBallast += totalMGO;
                               }
 
 
@@ -2867,18 +2867,18 @@ export class DialogExportPdfComponent implements OnInit {
                                 gTSOPA_Laden.consumptionIFO += totalIFO;
                                 gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
 
-                                gTTSOPA.distanceIFOLaden+= dailyReport.distance;
-                                gTTSOPA.timeIFOLaden+= dailyReport.steamingTime;
-                                gTTSOPA.consumptionIFOLaden+= totalIFO;
+                                gTTSOPA.distanceIFOLaden += dailyReport.distance;
+                                gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
+                                gTTSOPA.consumptionIFOLaden += totalIFO;
                               }
                               if (totalMGO) {
                                 gTSOPA_Laden.distanceMGO += dailyReport.distance;
                                 gTSOPA_Laden.consumptionMGO += totalMGO;
                                 gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
 
-                                gTTSOPA.distanceMGOLaden+= dailyReport.distance;
-                                gTTSOPA.timeMGOLaden+= dailyReport.steamingTime;
-                                gTTSOPA.consumptionMGOLaden+= totalMGO;
+                                gTTSOPA.distanceMGOLaden += dailyReport.distance;
+                                gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
+                                gTTSOPA.consumptionMGOLaden += totalMGO;
                               }
 
                             } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
