@@ -5358,6 +5358,21 @@ export class DialogExportPdfComponent implements OnInit {
 
 
         }
+
+
+
+
+        
+        // 5 Allowable Charter Speed
+        if (rowIndex == 5) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+        }
         /* 
         
                 // REvisar esto parece que ya no iria.
