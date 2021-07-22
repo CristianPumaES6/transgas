@@ -4033,9 +4033,9 @@ export class DialogExportPdfComponent implements OnInit {
         { "content": "Average Speed\n(KN)\n(Charter)", "colSpan": 2 },
         { "content": "Total Consumption\n(MT)", "colSpan": 2 },
         { "content": "Daily Consumption\n(MT)", "colSpan": 2 },
-        { "content": "Daily Consumption\n(Charter)\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)\n(Charter)", "colSpan": 2 },
         { "content": "Time Per Navigation\n(HRS)\n(Charter)", "colSpan": 2 },
-        { "content": "Total Consumption\n(Charter)\n(MT)", "colSpan": 2 }
+        { "content": "Total Consumption\n(MT)\n(Charter)", "colSpan": 2 }
       ]
     ];
 
@@ -4212,6 +4212,8 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 200;
+
+
     userOptions.didParseCell = (data: CellHookData) => {
 
       // Secction : head, body, footer
@@ -4284,11 +4286,106 @@ export class DialogExportPdfComponent implements OnInit {
           }
         }
 
+        // de qui para adelante son los viajes.
+        if (rowIndex > 1) {
+
+          // nombre del viaje y numero.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            // cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
+          if (
+            (this.addInformationIFO && !this.addInformationMGO)
+            || (this.addInformationMGO && !this.addInformationIFO)
+          ) {
+            // Desde la columna 2 para adelante lo pintamos de gris.
+            if (columIndex >= 2) {
+              cell.styles.fillColor = this.colorGris;
+            }
+
+            // Time
+            if (columIndex == 2) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[8].content);
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+            // Speed
+            if (columIndex == 6) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[4].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+            // total consumo
+            if (columIndex == 10) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[9].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // daily consumo
+            if (columIndex == 12) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[7].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+          }
+
+        }
+
 
       }
 
 
     }
+
+
     // Total suma 136, pero el widt es 136 hay que revisar.
     userOptions.columnStyles = {
       0: {
