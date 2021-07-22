@@ -3658,7 +3658,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Colocamos el rectangulo
     positionHeight += 5.5;
     //positionWidth = 63;
-    positionWidth = 7.5;
+    positionWidth = 5;
 
     // Generamos la tabla resumen del viaje.
     // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
