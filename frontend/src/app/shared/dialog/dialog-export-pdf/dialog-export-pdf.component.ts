@@ -4450,7 +4450,7 @@ export class DialogExportPdfComponent implements OnInit {
       if (this.addInformationIFO) {
         header2Table.push(
           {
-            "content": this.MathRoundDecimal(typeConsumptionSelectBuqueIFO, 1), "colSpan":
+            "content": typeConsumptionSelectBuqueIFO, "colSpan":
               isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
           }
         );
