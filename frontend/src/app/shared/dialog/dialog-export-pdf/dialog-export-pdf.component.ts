@@ -4311,7 +4311,7 @@ export class DialogExportPdfComponent implements OnInit {
               // Time charter
               let valorCharter = Number(raw[8].content);
               // Verificamos si existe un valor en el charter.
-              if (valorCharter) {
+              if (valorCharter && valorCell) {
                 if (valorCell < valorCharter) {
                   cell.styles.textColor = this.colorTextSuccess;
                 }
@@ -4328,7 +4328,7 @@ export class DialogExportPdfComponent implements OnInit {
               let valorCharter = Number(raw[4].content);
 
               // Verificamos si existe un valor en el charter.
-              if (valorCharter) {
+              if (valorCharter && valorCell) {
                 if (valorCell > valorCharter) {
                   cell.styles.textColor = this.colorTextSuccess;
                 }
@@ -4346,7 +4346,7 @@ export class DialogExportPdfComponent implements OnInit {
               let valorCharter = Number(raw[9].content);
 
               // Verificamos si existe un valor en el charter.
-              if (valorCharter) {
+              if (valorCharter && valorCell) {
                 if (valorCell < valorCharter) {
                   cell.styles.textColor = this.colorTextSuccess;
                 }
@@ -4365,7 +4365,7 @@ export class DialogExportPdfComponent implements OnInit {
               let valorCharter = Number(raw[7].content);
 
               // Verificamos si existe un valor en el charter.
-              if (valorCharter) {
+              if (valorCharter && valorCell) {
                 if (valorCell < valorCharter) {
                   cell.styles.textColor = this.colorTextSuccess;
                 }
@@ -4376,6 +4376,148 @@ export class DialogExportPdfComponent implements OnInit {
             }
 
           }
+
+          // Si se selecciona los dos tipos de combustible.
+          if (this.addInformationIFO && this.addInformationMGO) {
+            // Desde la columna 2 para adelante lo pintamos de gris.
+            if (columIndex >= 2) {
+              cell.styles.fillColor = this.colorGris;
+            }
+
+            // Time
+            if (columIndex == 2) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[15].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 3) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[16].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+            // Speed
+            if (columIndex == 6) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[7].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 7) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[8].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // total consumo
+            if (columIndex == 10) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[17].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 11) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[18].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // Daily Consumo
+            if (columIndex == 12) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[13].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 13) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[14].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+          }
+
 
         }
 
