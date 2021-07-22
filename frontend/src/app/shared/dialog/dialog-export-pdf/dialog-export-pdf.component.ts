@@ -4046,48 +4046,56 @@ export class DialogExportPdfComponent implements OnInit {
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
       rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
     }
+
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
@@ -4096,7 +4104,6 @@ export class DialogExportPdfComponent implements OnInit {
     }
 
     data.push(rowHeader2);
-
 
     listGTSOPA.forEach(
       gTSOPA => {
@@ -4195,7 +4202,6 @@ export class DialogExportPdfComponent implements OnInit {
       }
     );
 
-
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};
     // Agregamos en que altura del documento podnra la tabla
@@ -4205,7 +4211,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Margen que tendra nuestra tabla.
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
-    userOptions.tableWidth = 190;
+    userOptions.tableWidth = 200;
     userOptions.didParseCell = (data: CellHookData) => {
 
       // Secction : head, body, footer
@@ -4233,7 +4239,8 @@ export class DialogExportPdfComponent implements OnInit {
           if (columIndex == 0) {
             cell.styles.fillColor = this.colorWhite;
             cell.styles.textColor = this.colorTextHedear;
-            cell.styles.fontSize = 10;
+            cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
           }
           if (
             columIndex == 2
@@ -4263,90 +4270,32 @@ export class DialogExportPdfComponent implements OnInit {
             cell.styles.fillColor = this.colorBlueTable3;
           }
         }
+        // Segunda cabecera 
+        if (rowIndex == 1) {
+
+          if (
+            columIndex > 1) {
+
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = { top: 1, right: 1, bottom: 1, left: 1 };
+            cell.styles.minCellHeight = 6;
+          }
+        }
+
 
       }
 
 
     }
-    // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
-    /*   userOptions.didParseCell = (data: CellHookData) => {
-  
-        let section = data.section;
-        let cell: Cell = data.cell;
-        if (cell == undefined) { return; }
-  
-  
-        if (section == 'body') {
-          let rowIndex = data.row.index;
-          let columIndex = data.column.index;
-          let raw = data.row.raw;
-          // Primera cabecera de la tabla Titulo
-          if (rowIndex == 0) {
-  
-            if (columIndex == 0) {
-  
-              cell.styles.fillColor = '#375f9a'
-              cell.styles.textColor = '#ffffff';
-              cell.styles.fontSize = 8;
-            }
-          }
-  
-          // SEgunda linea
-          if (rowIndex == 1) {
-            // la primera columna Departure To Arrival, estara alineada en el medio 
-            if (columIndex == 0) {
-              cell.styles.valign = 'middle';
-            }
-            // La tercera columna Condition(Laden Blalast) alineada en el medio
-            if (columIndex == 2) {
-              cell.styles.valign = 'middle';
-            }
-          }
-  
-  
-          // REvisar esto parece que ya no iria.
-          if (rowIndex == 5) {
-            if (columIndex == 0) {
-              cell.styles.valign = 'middle';
-            }
-          }
-          // En la fila 7
-          if (rowIndex == 6) {
-  
-  
-            if (columIndex == 3) {
-  
-              if (Number(cell.text) >= Number(raw[3].content)) {
-                cell.styles.fillColor = [133, 252, 97];
-              } else {
-                cell.styles.fillColor = [255, 123, 123];
-              }
-  
-            }
-            if (columIndex == 6) {
-              if (Number(cell.text) <= Number(raw[6].content)) {
-                cell.styles.fillColor = [133, 252, 97];
-              } else {
-                cell.styles.fillColor = [255, 123, 123];
-              }
-            }
-  
-          }
-          // Fin de la revision
-  
-  
-        }
-  
-  
-      };
-   */
     // Total suma 136, pero el widt es 136 hay que revisar.
     userOptions.columnStyles = {
       0: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4355,7 +4304,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4364,7 +4313,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4373,7 +4322,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4382,7 +4331,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4391,7 +4340,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.2,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4400,7 +4349,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4409,7 +4358,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4418,7 +4367,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4427,7 +4376,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4436,7 +4385,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4445,7 +4394,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4454,7 +4403,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4463,7 +4412,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4472,7 +4421,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4481,7 +4430,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4490,7 +4439,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4499,7 +4448,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4508,7 +4457,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -4517,7 +4466,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 9,
+        cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
