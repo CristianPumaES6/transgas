@@ -304,10 +304,18 @@ export class GenerateTableTotalSummaryOverallPerformanceAnalisis {
         public dailyConsumptionCharterIFOBallast?: number,
         public dailyConsumptionCharterMGOBallast?: number,
         // Anotate
-        public anotateTimeBallast?: string,
-        public anotateTimeLaden?: string,
-        public anotateConsumptionBallast?: string,
-        public anotateConsumptionLaden?: string,
+        public anotateTimeBallast?: number,
+        public anotateTimeBallastIFO?: number,
+        public anotateTimeBallastMGO?: number,
+        public anotateTimeLaden?: number,
+        public anotateTimeLadenIFO?: number,
+        public anotateTimeLadenMGO?: number,
+        public anotateConsumptionBallast?: number,
+        public anotateConsumptionBallastIFO?: number,
+        public anotateConsumptionBallastMGO?: number,
+        public anotateConsumptionLaden?: number,
+        public anotateConsumptionLadenIFO?: number,
+        public anotateConsumptionLadenMGO?: number,
     ) {
 
         //Distance
@@ -357,9 +365,17 @@ export class GenerateTableTotalSummaryOverallPerformanceAnalisis {
         this.dailyConsumptionCharterIFOBallast = dailyConsumptionCharterIFOBallast || 0;
         this.dailyConsumptionCharterMGOBallast = dailyConsumptionCharterMGOBallast || 0;
         // Anotate
-        this.anotateTimeBallast = anotateTimeBallast || '';
-        this.anotateTimeLaden = anotateTimeLaden || '';
-        this.anotateConsumptionBallast = anotateConsumptionBallast || '';
-        this.anotateConsumptionLaden = anotateConsumptionLaden || '';
+        this.anotateTimeBallast = anotateTimeBallast || 0;
+        this.anotateTimeBallastIFO = anotateTimeBallastIFO || 0;
+        this.anotateTimeBallastMGO = anotateTimeBallastMGO || 0;
+        this.anotateTimeLaden = anotateTimeLaden || 0;
+        this.anotateTimeLadenIFO = anotateTimeLadenIFO || 0;
+        this.anotateTimeLadenMGO = anotateTimeLadenMGO || 0;
+        this.anotateConsumptionBallast = anotateConsumptionBallast || 0;
+        this.anotateConsumptionBallastIFO = anotateConsumptionBallastIFO || 0;
+        this.anotateConsumptionBallastMGO = anotateConsumptionBallastMGO || 0;
+        this.anotateConsumptionLaden = anotateConsumptionLaden || 0;
+        this.anotateConsumptionLadenIFO = anotateConsumptionLadenIFO || 0;
+        this.anotateConsumptionLadenMGO = anotateConsumptionLadenMGO || 0;
     }
 }
