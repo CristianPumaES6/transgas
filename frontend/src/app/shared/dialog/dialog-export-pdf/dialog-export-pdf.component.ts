@@ -4206,7 +4206,68 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 190;
+    userOptions.didParseCell = (data: CellHookData) => {
 
+      // Secction : head, body, footer
+      let section = data.section;
+      // guardamos la celda y verificamos que no sea underfiend
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+      // trabajaremos con el body.
+      if (section == 'body') {
+
+        // ubicacion del la fila
+        let rowIndex = data.row.index;
+        // ubicacion de la columna.
+        let columIndex = data.column.index;
+        // Raw ?????? <= agregar descripcion no lo se?
+        let raw = data.row.raw;
+
+
+
+
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+          if (
+            columIndex == 2
+            || columIndex == 4
+            || columIndex == 6
+            || columIndex == 8
+            || columIndex == 10
+            || columIndex == 12
+            || columIndex == 14
+            || columIndex == 16
+            || columIndex == 18
+          ) {
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = 1
+          }
+          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
+          if (columIndex == 2 || columIndex == 4 || columIndex == 10) {
+            cell.styles.fillColor = this.colorBlueTable1;
+          }
+          // Solo las celdas que tienen formulas se pintan de blue2
+          if (columIndex == 6 || columIndex == 12) {
+            cell.styles.fillColor = this.colorBlueTable2;
+          }
+          // Solo las celdas que tienen datos del charter son de locor blue3
+          if (columIndex == 8 || columIndex == 14 || columIndex == 14 || columIndex == 16 || columIndex == 18) {
+            cell.styles.fillColor = this.colorBlueTable3;
+          }
+        }
+
+      }
+
+
+    }
     // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
     /*   userOptions.didParseCell = (data: CellHookData) => {
   
@@ -5162,7 +5223,7 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 190;
-    userOptions.bodyStyles= {lineColor: [0, 0, 0]}
+    userOptions.bodyStyles = { lineColor: [0, 0, 0] }
 
 
     // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
