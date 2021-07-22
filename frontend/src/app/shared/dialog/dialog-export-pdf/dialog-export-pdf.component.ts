@@ -5409,7 +5409,7 @@ export class DialogExportPdfComponent implements OnInit {
                 cell.styles.fillColor = this.colorWhite;
 
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
 
                 cell.styles.fontSize = 8;
@@ -5427,7 +5427,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 cell.styles.fillColor = this.colorWhite;
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
                 cell.styles.fontSize = 8;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
@@ -5453,7 +5453,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 cell.styles.fillColor = this.colorWhite;
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
                 cell.styles.fontSize = 8;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
@@ -5466,7 +5466,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 cell.styles.fillColor = this.colorWhite;
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime  < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
                 cell.styles.fontSize = 8;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
@@ -5485,7 +5485,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 cell.styles.fillColor = this.colorWhite;
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
                 cell.styles.fontSize = 8;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
@@ -5499,7 +5499,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 cell.styles.fillColor = this.colorWhite;
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
                 cell.styles.fontSize = 8;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
@@ -5512,7 +5512,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 cell.styles.fillColor = this.colorWhite;
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
                 cell.styles.fontSize = 8;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
@@ -5524,7 +5524,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let transitTime = Number(cell.text);
                 cell.styles.fillColor = this.colorWhite;
                 if (transitTime && allowableCharterTime) {
-                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
                 cell.styles.fontSize = 8;
 
