@@ -121,6 +121,7 @@ export class DialogExportPdfComponent implements OnInit {
   public colorYellowTransgas = '#FFCD06';
   public colorTextSuccess = '#85fc61';
   public colorTextWarning = '#fd6767';
+  public colorGris='#ebecec';
 
 
   ngOnInit(): void {
@@ -4886,20 +4887,46 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
+    let rowEmpty = [];
+    rowEmpty.push(
+      { "content": "", "colSpan": 8}
+    );
+    data.push(rowEmpty);
 
 
 
 
+    
     let rowAnotateTime = [];
     rowAnotateTime.push(
-      { "content": gTTSOPA.anotateTime, "colSpan": 8 }
-    );
+      { "content": "Calculation Results", "colSpan": 4, "rowSpan": 2  }
+   );
+    if (isViewBallast) {
+      rowAnotateTime.push(
+        { "content":  gTTSOPA.anotateTimeBallast, "colSpan": isViewBallast && isViewLaden ? 2 : 4 }
+      );
+    }
+    if (isViewLaden) {
+      rowAnotateTime.push(
+        { "content": gTTSOPA.anotateTimeLaden, "colSpan": isViewLaden && isViewBallast ? 2 : 4 }
+      );
+    }
     data.push(rowAnotateTime);
 
+
+    
     let rowAnotateConsumption = [];
-    rowAnotateConsumption.push(
-      { "content": gTTSOPA.anotateConsumption, "colSpan": 8 }
-    );
+
+    if (isViewBallast) {
+      rowAnotateConsumption.push(
+        { "content": gTTSOPA.anotateTimeBallast, "colSpan": isViewBallast && isViewLaden ? 2 : 4 }
+      );
+    }
+    if (isViewLaden) {
+      rowAnotateConsumption.push(
+        { "content": gTTSOPA.anotateTimeLaden, "colSpan": isViewLaden && isViewBallast ? 2 : 4 }
+      );
+    }
     data.push(rowAnotateConsumption);
 
 
@@ -5059,7 +5086,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5076,7 +5103,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5102,7 +5129,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5115,7 +5142,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5134,7 +5161,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5148,7 +5175,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5161,7 +5188,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5173,7 +5200,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let allowableCharterTime = Number(data.table.body[9].raw[4].content);
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5227,7 +5254,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
 
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
@@ -5246,7 +5273,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5272,7 +5299,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5285,7 +5312,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5304,7 +5331,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5318,7 +5345,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5331,7 +5358,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5343,7 +5370,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let allowableCharterTime = Number(data.table.body[5].raw[4].content);
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5405,7 +5432,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
 
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
@@ -5424,7 +5451,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5450,7 +5477,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5463,7 +5490,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5482,7 +5509,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5496,7 +5523,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5509,7 +5536,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5521,7 +5548,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let allowableCharterTime = Number(data.table.body[10].raw[4].content);
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5565,8 +5592,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
-
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5584,7 +5610,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5610,7 +5636,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5623,7 +5649,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5642,7 +5668,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5656,7 +5682,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5669,7 +5695,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor =  this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5681,7 +5707,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let allowableCharterTime = Number(data.table.body[8].raw[4].content);
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
-                cell.styles.fillColor = this.colorWhite;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5730,6 +5756,15 @@ export class DialogExportPdfComponent implements OnInit {
             cell.styles.fillColor = this.colorBlueTable3;
             cell.styles.textColor = this.colorWhite;
             cell.styles.fontSize = 8;
+          }
+        }
+
+        // 11 Linea bacia
+        if (rowIndex == 11) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorGris;
+            cell.styles.minCellHeight=4;
           }
         }
 

@@ -304,8 +304,10 @@ export class GenerateTableTotalSummaryOverallPerformanceAnalisis {
         public dailyConsumptionCharterIFOBallast?: number,
         public dailyConsumptionCharterMGOBallast?: number,
         // Anotate
-        public anotateTime?: string,
-        public anotateConsumption?: string,
+        public anotateTimeBallast?: string,
+        public anotateTimeLaden?: string,
+        public anotateConsumptionBallast?: string,
+        public anotateConsumptionLaden?: string,
     ) {
 
         //Distance
@@ -355,7 +357,9 @@ export class GenerateTableTotalSummaryOverallPerformanceAnalisis {
         this.dailyConsumptionCharterIFOBallast = dailyConsumptionCharterIFOBallast || 0;
         this.dailyConsumptionCharterMGOBallast = dailyConsumptionCharterMGOBallast || 0;
         // Anotate
-        this.anotateTime = anotateTime || '';
-        this.anotateConsumption = anotateConsumption || '';
+        this.anotateTimeBallast = anotateTimeBallast || '';
+        this.anotateTimeLaden = anotateTimeLaden || '';
+        this.anotateConsumptionBallast = anotateConsumptionBallast || '';
+        this.anotateConsumptionLaden = anotateConsumptionLaden || '';
     }
 }
