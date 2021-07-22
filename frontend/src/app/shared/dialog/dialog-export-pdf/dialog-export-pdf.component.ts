@@ -5772,13 +5772,13 @@ export class DialogExportPdfComponent implements OnInit {
     };
 
 
-    // Total suma 136, pero el widt es 136 hay que revisar.
+    // Total suma 190, pero el widt es 136 hay que revisar.
     userOptions.columnStyles = {
       0: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 14,
+        cellWidth: 8,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -5787,7 +5787,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 14,
+        cellWidth: 8,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -5796,7 +5796,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 27,
+        cellWidth: 29,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -5805,7 +5805,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 27,
+        cellWidth: 29,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -5814,7 +5814,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 27,
+        cellWidth: 29,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -5823,7 +5823,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 27,
+        cellWidth: 29,
         lineWidth: 0.2,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -5832,7 +5832,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 27,
+        cellWidth: 29,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -5841,7 +5841,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 27,
+        cellWidth: 29,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
