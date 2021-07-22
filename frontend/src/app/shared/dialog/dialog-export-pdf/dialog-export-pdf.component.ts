@@ -5698,6 +5698,43 @@ export class DialogExportPdfComponent implements OnInit {
         }
 
 
+
+        // 8 Allowable Charter Daily Consumption
+        if (rowIndex == 8) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+        }
+
+
+
+
+        // 9 Allowable Charter Time 
+        if (rowIndex == 9) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+        }
+
+
+
+        // 10 Warranted Total Consumption 
+        if (rowIndex == 10) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+        }
+
+
         /* 
         
                 // REvisar esto parece que ya no iria.
