@@ -114,8 +114,12 @@ export class DialogExportPdfComponent implements OnInit {
 
   // Colores
   public colorWhite = '#FFFFFF';
-  public colorBlue1 = '#16214D';
+  public colorTextHedear = '#16214D';
+  public colorBlueTable1 = '#375f9a';
   public colorYellowTransgas = '#FFCD06';
+  public colorTextSuccess = '#85fc61';
+  public colorTextWarning = '#fd6767';
+
 
   ngOnInit(): void {
 
@@ -4933,14 +4937,14 @@ export class DialogExportPdfComponent implements OnInit {
           // le damos un color y le aumentamos de tamaño a la primera columna.
           if (columIndex == 0) {
             cell.styles.fillColor = this.colorWhite;
-            cell.styles.textColor = this.colorBlue1;
+            cell.styles.textColor = this.colorTextHedear;
             cell.styles.fontSize = 10;
           }
           // caso sea Ballas o Laden
           // siempre la columna tendra la posicion 4
           if (isViewBallast || isViewLaden) {
             if (columIndex == 4) {
-              cell.styles.fillColor = this.colorBlue1;
+              cell.styles.fillColor = this.colorTextHedear;
               cell.styles.textColor = this.colorYellowTransgas;
               cell.styles.fontSize = 10;
             }
@@ -4948,7 +4952,7 @@ export class DialogExportPdfComponent implements OnInit {
           // Solo si las dos opciones estan activadas,  la segunda opcion tendra la posicion 6
           if (isViewBallast && isViewLaden) {
             if (columIndex == 6) {
-              cell.styles.fillColor = this.colorBlue1;
+              cell.styles.fillColor = this.colorTextHedear;
               cell.styles.textColor = this.colorYellowTransgas;
               cell.styles.fontSize = 10;
             }
@@ -4959,7 +4963,6 @@ export class DialogExportPdfComponent implements OnInit {
 
         // Segunda linea cabecera 2
         if (rowIndex == 1) {
-          console.log('columna' + columIndex);
 
           // solo si se mostrara un tipo de navegacion 
           // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
@@ -4971,16 +4974,15 @@ export class DialogExportPdfComponent implements OnInit {
 
 
             if (this.addInformationIFO || this.addInformationMGO) {
-
               if (columIndex == 4) {
-                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.fillColor = this.colorTextHedear;
                 cell.styles.textColor = this.colorYellowTransgas;
                 cell.styles.fontSize = 8;
               }
             }
             if (this.addInformationMGO && this.addInformationMGO) {
               if (columIndex == 6) {
-                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.fillColor = this.colorTextHedear;
                 cell.styles.textColor = this.colorYellowTransgas;
                 cell.styles.fontSize = 8;
               }
@@ -4995,12 +4997,12 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addInformationIFO || this.addInformationMGO) {
 
               if (columIndex == 4) {
-                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.fillColor = this.colorTextHedear;
                 cell.styles.textColor = this.colorYellowTransgas;
                 cell.styles.fontSize = 8;
               }
               if (columIndex == 6) {
-                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.fillColor = this.colorTextHedear;
                 cell.styles.textColor = this.colorYellowTransgas;
                 cell.styles.fontSize = 8;
               }
@@ -5010,14 +5012,173 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addInformationIFO && this.addInformationMGO) {
 
               if (columIndex == 5) {
-                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.fillColor = this.colorTextHedear;
                 cell.styles.textColor = this.colorYellowTransgas;
                 cell.styles.fontSize = 8;
               }
               if (columIndex == 7) {
-                cell.styles.fillColor = this.colorBlue1;
+                cell.styles.fillColor = this.colorTextHedear;
                 cell.styles.textColor = this.colorYellowTransgas;
                 cell.styles.fontSize = 8;
+              }
+            }
+          }
+
+
+
+        }
+
+
+
+
+        // 3 linea
+        if (rowIndex == 2) {
+          console.log('columna' + columIndex);
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[3].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[4].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+                cell.styles.fillColor = this.colorWhite;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
               }
             }
           }
