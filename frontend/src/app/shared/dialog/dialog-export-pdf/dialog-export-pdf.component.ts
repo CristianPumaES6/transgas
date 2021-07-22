@@ -3102,7 +3102,7 @@ export class DialogExportPdfComponent implements OnInit {
 
               // Calculamos el time annotate
               gTTSOPA.anotateTimeBallastIFO = gTTSOPA.timeCharterIFOBallast ? gTTSOPA.timeCharterIFOBallast - gTTSOPA.timeIFOBallast : 0;
-              gTTSOPA.anotateConsumptionBallastIFO = gTTSOPA.consumptionCharterIFOBallast ? gTTSOPA.consumptionCharterIFOBallast - gTTSOPA.consumptionIFOBallast : 0;
+              gTTSOPA.anotateConsumptionBallastIFO = gTTSOPA.dailyConsumptionCharterIFOBallast ? gTTSOPA.dailyConsumptionCharterIFOBallast - gTTSOPA.dailyConsumptionIFOBallast : 0;
 
             }
             if (this.addInformationMGO) {
@@ -3135,8 +3135,7 @@ export class DialogExportPdfComponent implements OnInit {
 
               // Calculamos el time annotate
               gTTSOPA.anotateTimeBallastMGO = gTTSOPA.timeCharterMGOBallast ? gTTSOPA.timeCharterMGOBallast - gTTSOPA.timeMGOBallast : 0;
-              gTTSOPA.anotateConsumptionBallastMGO = gTTSOPA.consumptionCharterMGOBallast ? gTTSOPA.consumptionCharterMGOBallast - gTTSOPA.consumptionMGOBallast : 0;
-
+              gTTSOPA.anotateConsumptionBallastMGO = gTTSOPA.dailyConsumptionCharterMGOBallast ? gTTSOPA.dailyConsumptionCharterMGOBallast - gTTSOPA.dailyConsumptionMGOBallast : 0;
             }
           }
           // Laden
@@ -3176,7 +3175,9 @@ export class DialogExportPdfComponent implements OnInit {
 
               // Anotate TIME
               gTTSOPA.anotateTimeLadenIFO = gTTSOPA.timeCharterIFOLaden ? gTTSOPA.timeCharterIFOLaden - gTTSOPA.timeIFOLaden : 0;
-              gTTSOPA.anotateConsumptionLadenIFO = gTTSOPA.consumptionCharterIFOLaden ? gTTSOPA.consumptionCharterIFOLaden - gTTSOPA.consumptionIFOLaden : 0;
+
+              // Anotate Laden
+              gTTSOPA.anotateConsumptionLadenIFO = gTTSOPA.dailyConsumptionCharterIFOLaden ? gTTSOPA.dailyConsumptionCharterIFOLaden - gTTSOPA.dailyConsumptionIFOLaden : 0;
 
             }
             if (this.addInformationMGO) {
@@ -3212,15 +3213,20 @@ export class DialogExportPdfComponent implements OnInit {
               // Anotate TIME
               gTTSOPA.anotateTimeLadenMGO = gTTSOPA.timeCharterMGOLaden ? gTTSOPA.timeCharterMGOLaden - gTTSOPA.timeMGOLaden : 0;
 
+              // Anotate Laden
+              gTTSOPA.anotateConsumptionLadenMGO = gTTSOPA.dailyConsumptionCharterMGOLaden ? gTTSOPA.dailyConsumptionCharterMGOLaden - gTTSOPA.dailyConsumptionMGOLaden : 0;
+
             }
 
-            gTTSOPA.anotateTimeBallast = gTTSOPA.anotateTimeBallastIFO + gTTSOPA.anotateTimeBallastMGO;
-            gTTSOPA.anotateTimeLaden = gTTSOPA.anotateTimeLadenIFO + gTTSOPA.anotateTimeLadenMGO;
-
-            gTTSOPA.anotateConsumptionBallast = gTTSOPA.anotateConsumptionBallastIFO + gTTSOPA.anotateConsumptionBallastMGO;
-            gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
-
           }
+
+          gTTSOPA.anotateTimeBallast = gTTSOPA.anotateTimeBallastIFO + gTTSOPA.anotateTimeBallastMGO;
+          gTTSOPA.anotateTimeLaden = gTTSOPA.anotateTimeLadenIFO + gTTSOPA.anotateTimeLadenMGO;
+
+
+          gTTSOPA.anotateConsumptionBallast = gTTSOPA.anotateConsumptionBallastIFO + gTTSOPA.anotateConsumptionBallastMGO;
+          gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
+
 
           // Agregamos la fecha de inicio y la fecha fin.
           sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
@@ -6253,7 +6259,7 @@ export class DialogExportPdfComponent implements OnInit {
 
         }
 
-        // 11 Linea bacia
+        // 11 Linea vacia
         if (rowIndex == 11) {
           // Le damos un color y le aumentamos de tamaño a la primera columna.
           if (columIndex == 0) {
@@ -6264,6 +6270,193 @@ export class DialogExportPdfComponent implements OnInit {
 
 
         }
+
+        // 12 Time calcu
+        if (rowIndex == 12) {
+
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+
+
+          if (this.addInformationIFO || this.addInformationMGO) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+          if (this.addInformationMGO && this.addInformationMGO) {
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+          // Solo si las dos opciones estan activadas,  la segunda opcion tendra la posicion 6
+          if (isViewBallast && isViewLaden) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+        }
+
+
+
+        // 12 cONSUMPTION calcu
+        if (rowIndex == 13) {
+
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+
+
+          if (this.addInformationIFO || this.addInformationMGO) {
+
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Outside the guaranteed limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Within Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+          if (this.addInformationMGO && this.addInformationMGO) {
+
+
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Outside the guaranteed limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Within Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+
+
+          }
+          // Solo si las dos opciones estan activadas,  la segunda opcion tendra la posicion 6
+          if (isViewBallast && isViewLaden) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Outside the guaranteed limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Within Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 8;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Outside the guaranteed limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Within Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+
+
+
+        }
+
 
 
         /* 
