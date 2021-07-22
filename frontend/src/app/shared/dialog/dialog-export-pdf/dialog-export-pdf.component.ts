@@ -3274,23 +3274,27 @@ export class DialogExportPdfComponent implements OnInit {
           // Inicializamos el height en 0,
           let positionHeight = 0;
 
-          if (this.addSailingInBallast) {
-            // Agregamos una nueva pagina
-            doc.addPage();
-            let isViewBallast = true;
-            let isViewLaden = false;
-            // Agregamos el OverallPerformanceAnalisis
-            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, gTTSOPA, isViewBallast, isViewLaden)
+          // Se desea agregar el overall performance?
+          if (this.addOverallPerformance) {
 
-          }
-          if (this.addSailingWithLaden) {
-            // Agregamos una nueva pagina
-            doc.addPage();
-            let isViewBallast = false;
-            let isViewLaden = true;
-            // Agregamos el OverallPerformanceAnalisis
-            this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
+            if (this.addSailingInBallast) {
+              // Agregamos una nueva pagina
+              doc.addPage();
+              let isViewBallast = true;
+              let isViewLaden = false;
+              // Agregamos el OverallPerformanceAnalisis
+              this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, gTTSOPA, isViewBallast, isViewLaden)
 
+            }
+            if (this.addSailingWithLaden) {
+              // Agregamos una nueva pagina
+              doc.addPage();
+              let isViewBallast = false;
+              let isViewLaden = true;
+              // Agregamos el OverallPerformanceAnalisis
+              this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
+
+            }
           }
 
           return true;
