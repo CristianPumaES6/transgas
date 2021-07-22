@@ -4980,18 +4980,19 @@ export class DialogExportPdfComponent implements OnInit {
 
             if (this.addInformationIFO || this.addInformationMGO) {
               if (columIndex == 4) {
-                cell.styles.fillColor = this.colorTextHedear;
-                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
                 cell.styles.fontSize = 8;
               }
             }
             if (this.addInformationMGO && this.addInformationMGO) {
               if (columIndex == 6) {
-                cell.styles.fillColor = this.colorTextHedear;
-                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
                 cell.styles.fontSize = 8;
               }
             }
+
           }
 
           // Si se desea mostrar las 2 informaciones
@@ -5000,30 +5001,28 @@ export class DialogExportPdfComponent implements OnInit {
 
 
             if (this.addInformationIFO || this.addInformationMGO) {
-
               if (columIndex == 4) {
-                cell.styles.fillColor = this.colorTextHedear;
-                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
                 cell.styles.fontSize = 8;
               }
               if (columIndex == 6) {
-                cell.styles.fillColor = this.colorTextHedear;
-                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
                 cell.styles.fontSize = 8;
               }
             }
 
 
             if (this.addInformationIFO && this.addInformationMGO) {
-
               if (columIndex == 5) {
-                cell.styles.fillColor = this.colorTextHedear;
-                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
                 cell.styles.fontSize = 8;
               }
               if (columIndex == 7) {
-                cell.styles.fillColor = this.colorTextHedear;
-                cell.styles.textColor = this.colorYellowTransgas;
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
                 cell.styles.fontSize = 8;
               }
             }
