@@ -420,7 +420,7 @@ export class DialogExportPdfComponent implements OnInit {
             // Caso contrario verde
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
-            doc.text(this.MathRoundDecimal(diffHour, 2) + ' Hours before', 140, positionHeight, { align: 'left' })
+            doc.text(this.MathRoundDecimal(diffHour, 2) + ' Hours Saved', 140, positionHeight, { align: 'left' })
           }
 
 
@@ -439,7 +439,7 @@ export class DialogExportPdfComponent implements OnInit {
           } else {
 
             doc.setTextColor(0, 128, 0);
-            doc.text("Within Guaranteed Limits", 140, positionHeight, { align: 'left' })
+            doc.text("Consumption Within The Guaranteed Limits", 140, positionHeight, { align: 'left' })
 
           }
 
@@ -722,7 +722,7 @@ export class DialogExportPdfComponent implements OnInit {
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
             doc.text(this.MathRoundDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
-            doc.text('Hours before', 135, positionHeight, { align: 'left' });
+            doc.text('Hours Saved', 135, positionHeight, { align: 'left' });
           }
 
 
@@ -818,10 +818,10 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           if (getInfoByActivity.ifoConsumption < getInfoByActivity.ifoDailyConsumptionByCharter) {
             doc.setTextColor(255, 0, 0);
-            doc.text('Overall Fuel Oil Consumption Out Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+            doc.text('Out Guaranteed Limits', widthPDF / 2, positionHeight, { align: 'center' });
           } else {
             doc.setTextColor(0, 128, 0);
-            doc.text('Overall Fuel Oil Consumption WITHIN Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+            doc.text('WITHIN Guaranteed Limits', widthPDF / 2, positionHeight, { align: 'center' });
           }
 
           let pageFooter = heightPDF - 10;
@@ -6293,7 +6293,7 @@ export class DialogExportPdfComponent implements OnInit {
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
               }
               if (valorCell == 0) {
                 cell.text = ["-----"];
@@ -6311,7 +6311,7 @@ export class DialogExportPdfComponent implements OnInit {
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
               }
               if (valorCell == 0) {
                 cell.text = ["-----"];
@@ -6330,7 +6330,7 @@ export class DialogExportPdfComponent implements OnInit {
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
               }
               if (valorCell == 0) {
                 cell.text = ["-----"];
@@ -6346,7 +6346,7 @@ export class DialogExportPdfComponent implements OnInit {
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours before"];
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
               }
               if (valorCell == 0) {
                 cell.text = ["-----"];
@@ -6376,11 +6376,11 @@ export class DialogExportPdfComponent implements OnInit {
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
-                cell.text = ["Outside the guaranteed limits"];
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = ["Within Guaranteed Limits"];
+                cell.text = ["Consumption Within The Guaranteed Limits"];
 
               }
 
@@ -6398,11 +6398,11 @@ export class DialogExportPdfComponent implements OnInit {
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
-                cell.text = ["Outside the guaranteed limits"];
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = ["Within Guaranteed Limits"];
+                cell.text = ["Consumption Within The Guaranteed Limits"];
 
               }
 
@@ -6421,11 +6421,11 @@ export class DialogExportPdfComponent implements OnInit {
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
-                cell.text = ["Outside the guaranteed limits"];
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = ["Within Guaranteed Limits"];
+                cell.text = ["Consumption Within The Guaranteed Limits"];
 
               }
 
@@ -6439,11 +6439,11 @@ export class DialogExportPdfComponent implements OnInit {
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
-                cell.text = ["Outside the guaranteed limits"];
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
               }
               if (valorCell > 0) {
                 cell.styles.textColor = this.colorTextSuccess;
-                cell.text = ["Within Guaranteed Limits"];
+                cell.text = ["Consumption Within The Guaranteed Limits"];
 
               }
 
