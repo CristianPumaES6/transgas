@@ -3664,7 +3664,7 @@ export class DialogExportPdfComponent implements OnInit {
     // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
 
     // Generamos todo el resumen por viajes.
-    //positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA, isViewBallast, isViewLaden);
+    positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA, isViewBallast, isViewLaden);
 
     // Le damos un espacio para el siguiente cuadro.
     positionHeight += 6;
@@ -3997,6 +3997,7 @@ export class DialogExportPdfComponent implements OnInit {
   // retorna el tamaño de la tabla
   private GenerateTableOverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[], isViewBallast: boolean, isViewLaden: boolean): number {
 
+    // El generarl solo es por una actividad.
     let titleTable: string = 'Summary by Voyage';
     if (isViewBallast) {
       titleTable += '\n(Ballast)'
@@ -4008,16 +4009,15 @@ export class DialogExportPdfComponent implements OnInit {
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
     contentHeightTable += 16.7;
-    // Cada fila o;cupa lo siguiente.
+    // Cada fila ocupa lo siguiente.
     contentHeightTable += (6.8 * listGTSOPA.length);
 
-    // Eliminar esto, es solo com referencia.
+    // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
     doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
 
 
-    // title
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
@@ -4027,17 +4027,25 @@ export class DialogExportPdfComponent implements OnInit {
       // Segunda Fila
       [
         { "content": titleTable, "colSpan": 2, "rowSpan": 2 },
-        { "content": "Distance\n(MI)", "colSpan": 2 },
-        { "content": "Consumption\n(MT)", "colSpan": 2 },
-        { "content": "Charter", "colSpan": 2 },
-        { "content": "Time\n(HRS)", "colSpan": 2 },
-        { "content": "Charter", "colSpan": 2 },
-        { "content": "Speed\n(KN)", "colSpan": 2 },
-        { "content": "Charter", "colSpan": 2 }
+        { "content": "Total Time\n(HRS)", "colSpan": 2 },
+        { "content": "Total Distance\n(MI)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(Charter)\n(MT)", "colSpan": 2 },
+        { "content": "Time Per Navigation\n(HRS)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(Charter)\n(MT)", "colSpan": 2 }
       ]
     ];
 
     let rowHeader2 = [];
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
     }
@@ -4096,31 +4104,6 @@ export class DialogExportPdfComponent implements OnInit {
         let rowGenerit = [];
         rowGenerit.push({ "content": 'Voyage ' + gTSOPA.voyageNumber, "colSpan": 2 });
 
-        // Distance
-        if (this.addInformationIFO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-        }
-        if (this.addInformationMGO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-        }
-
-        // Consumption
-        if (this.addInformationIFO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-        }
-        if (this.addInformationMGO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-        }
-
-        // Consumption Charter
-        if (this.addInformationIFO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-        }
-        if (this.addInformationMGO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-        }
-
-
         // Time
         if (this.addInformationIFO) {
           rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
@@ -4130,12 +4113,12 @@ export class DialogExportPdfComponent implements OnInit {
         }
 
 
-        // Time Charter
+        // Distance
         if (this.addInformationIFO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
         }
         if (this.addInformationMGO) {
-          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
         }
 
 
@@ -4155,6 +4138,57 @@ export class DialogExportPdfComponent implements OnInit {
         if (this.addInformationMGO) {
           rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
         }
+
+
+        // Consumption
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // daily Consumption
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+        // daily Consumption Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionCharterIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionCharterMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Time Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+
+        // Consumption Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+
+
+
+
 
         data.push(rowGenerit);
 
@@ -4251,129 +4285,181 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 10,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       1: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 10,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       2: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       3: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       4: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       5: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 9,
         lineWidth: 0.2,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       6: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       7: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       8: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       9: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       10: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       11: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       12: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       13: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       14: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 13,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       },
       15: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 8,
-        cellWidth: 12,
+        cellWidth: 9,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77]
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      16: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 9,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      17: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 9,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      18: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 9,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      19: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 9,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
       }
     };
 
@@ -5076,6 +5162,7 @@ export class DialogExportPdfComponent implements OnInit {
     userOptions.margin = { left: positionWidth }
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 190;
+    userOptions.bodyStyles= {lineColor: [0, 0, 0]}
 
 
     // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
@@ -6480,7 +6567,6 @@ export class DialogExportPdfComponent implements OnInit {
       }
     };
 
-
     // Total suma 190, pero el widt es 136 hay que revisar.
     userOptions.columnStyles = {
       0: {
@@ -6489,7 +6575,6 @@ export class DialogExportPdfComponent implements OnInit {
         fontSize: 8,
         cellWidth: 8,
         lineWidth: 0.15,
-        lineColor: [22, 33, 77],
         valign: 'middle',
       },
       1: {
