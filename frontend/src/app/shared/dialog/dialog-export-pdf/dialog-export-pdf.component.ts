@@ -3328,7 +3328,7 @@ export class DialogExportPdfComponent implements OnInit {
     contentOnePage += 10; // Total Port
 
     contentOnePage += 18; // ATD
-    contentOnePage += 81.5; //  Table sresumen overall
+    contentOnePage += 98.5; //  Table sresumen overall
 
 
     // calculamos el tamaño del Contenido de la pagina
@@ -4409,9 +4409,14 @@ export class DialogExportPdfComponent implements OnInit {
 
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
-    contentHeightTable += 13.5;
+    contentHeightTable += 14.3;
 
-    contentHeightTable += (6.8 * 10)
+    contentHeightTable += (6.8 * 9)
+
+    // Linea vacia
+    contentHeightTable += 4;
+    // Linea Calcul result
+    contentHeightTable += 19;
 
 
     // Eliminar esto, es solo com referencia.
@@ -6243,8 +6248,9 @@ export class DialogExportPdfComponent implements OnInit {
         if (rowIndex == 11) {
           // Le damos un color y le aumentamos de tamaño a la primera columna.
           if (columIndex == 0) {
-            cell.styles.fillColor = this.colorGris;
-            cell.styles.minCellHeight = 4;
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.minCellHeight = 2;
+            cell.styles.fontSize = 1;
           }
 
 
@@ -6265,7 +6271,7 @@ export class DialogExportPdfComponent implements OnInit {
           if (this.addInformationIFO || this.addInformationMGO) {
             if (columIndex == 4) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
@@ -6283,7 +6289,7 @@ export class DialogExportPdfComponent implements OnInit {
           if (this.addInformationMGO && this.addInformationMGO) {
             if (columIndex == 6) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
@@ -6302,7 +6308,7 @@ export class DialogExportPdfComponent implements OnInit {
           if (isViewBallast && isViewLaden) {
             if (columIndex == 4) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
@@ -6318,7 +6324,7 @@ export class DialogExportPdfComponent implements OnInit {
             }
             if (columIndex == 6) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
@@ -6350,7 +6356,7 @@ export class DialogExportPdfComponent implements OnInit {
 
             if (columIndex == 4) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
@@ -6372,7 +6378,7 @@ export class DialogExportPdfComponent implements OnInit {
 
             if (columIndex == 6) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
@@ -6395,7 +6401,7 @@ export class DialogExportPdfComponent implements OnInit {
           if (isViewBallast && isViewLaden) {
             if (columIndex == 4) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
@@ -6413,7 +6419,7 @@ export class DialogExportPdfComponent implements OnInit {
             }
             if (columIndex == 6) {
               cell.styles.fillColor = this.colorGris;
-              cell.styles.fontSize = 8;
+              cell.styles.fontSize = 10;
               let valorCell = Number(cell.text);
               if (valorCell < 0) {
                 cell.styles.textColor = this.colorTextWarning;
