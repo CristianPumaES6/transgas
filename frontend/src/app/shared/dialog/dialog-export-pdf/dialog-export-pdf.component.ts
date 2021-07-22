@@ -121,7 +121,7 @@ export class DialogExportPdfComponent implements OnInit {
   public colorYellowTransgas = '#FFCD06';
   public colorTextSuccess = '#85fc61';
   public colorTextWarning = '#fd6767';
-  public colorGris='#ebecec';
+  public colorGris = '#ebecec';
 
 
   ngOnInit(): void {
@@ -421,7 +421,6 @@ export class DialogExportPdfComponent implements OnInit {
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
             doc.text(this.MathRoundDecimal(diffHour, 2) + ' Hours before', 140, positionHeight, { align: 'left' })
-
           }
 
 
@@ -2985,9 +2984,6 @@ export class DialogExportPdfComponent implements OnInit {
 
                   }
 
-
-
-
                   listGTSOPA_Ballast.push(gTSOPA_Ballast)
                 }
 
@@ -3101,6 +3097,13 @@ export class DialogExportPdfComponent implements OnInit {
 
               // Consumo por charter
               gTTSOPA.consumptionCharterIFOBallast = (gTTSOPA.dailyConsumptionCharterIFOBallast * gTTSOPA.timeCharterIFOBallast) / 24;
+
+
+
+              // Calculamos el time annotate
+              gTTSOPA.anotateTimeBallastIFO = gTTSOPA.timeCharterIFOBallast ? gTTSOPA.timeCharterIFOBallast - gTTSOPA.timeIFOBallast : 0;
+              gTTSOPA.anotateConsumptionBallastIFO = gTTSOPA.consumptionCharterIFOBallast ? gTTSOPA.consumptionCharterIFOBallast - gTTSOPA.consumptionIFOBallast : 0;
+
             }
             if (this.addInformationMGO) {
               // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
@@ -3127,6 +3130,12 @@ export class DialogExportPdfComponent implements OnInit {
 
               // Consumo por charter
               gTTSOPA.consumptionCharterMGOBallast = (gTTSOPA.dailyConsumptionCharterMGOBallast * gTTSOPA.timeCharterMGOBallast) / 24;
+
+
+
+              // Calculamos el time annotate
+              gTTSOPA.anotateTimeBallastMGO = gTTSOPA.timeCharterMGOBallast ? gTTSOPA.timeCharterMGOBallast - gTTSOPA.timeMGOBallast : 0;
+              gTTSOPA.anotateConsumptionBallastMGO = gTTSOPA.consumptionCharterMGOBallast ? gTTSOPA.consumptionCharterMGOBallast - gTTSOPA.consumptionMGOBallast : 0;
 
             }
           }
@@ -3162,6 +3171,13 @@ export class DialogExportPdfComponent implements OnInit {
 
               // Conusmo diario calculado segun el charter.
               gTTSOPA.consumptionCharterIFOLaden = (gTTSOPA.dailyConsumptionCharterIFOLaden * gTTSOPA.timeCharterIFOLaden) / 24;
+
+
+
+              // Anotate TIME
+              gTTSOPA.anotateTimeLadenIFO = gTTSOPA.timeCharterIFOLaden ? gTTSOPA.timeCharterIFOLaden - gTTSOPA.timeIFOLaden : 0;
+              gTTSOPA.anotateConsumptionLadenIFO = gTTSOPA.consumptionCharterIFOLaden ? gTTSOPA.consumptionCharterIFOLaden - gTTSOPA.consumptionIFOLaden : 0;
+
             }
             if (this.addInformationMGO) {
               // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
@@ -3190,9 +3206,20 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-              // Consumo IFO Charter
+              // Consumo MGO Charter
               gTTSOPA.consumptionCharterMGOLaden = (gTTSOPA.dailyConsumptionCharterMGOLaden * gTTSOPA.timeCharterMGOLaden) / 24;
+
+              // Anotate TIME
+              gTTSOPA.anotateTimeLadenMGO = gTTSOPA.timeCharterMGOLaden ? gTTSOPA.timeCharterMGOLaden - gTTSOPA.timeMGOLaden : 0;
+
             }
+
+            gTTSOPA.anotateTimeBallast = gTTSOPA.anotateTimeBallastIFO + gTTSOPA.anotateTimeBallastMGO;
+            gTTSOPA.anotateTimeLaden = gTTSOPA.anotateTimeLadenIFO + gTTSOPA.anotateTimeLadenMGO;
+
+            gTTSOPA.anotateConsumptionBallast = gTTSOPA.anotateConsumptionBallastIFO + gTTSOPA.anotateConsumptionBallastMGO;
+            gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
+
           }
 
           // Agregamos la fecha de inicio y la fecha fin.
@@ -4889,43 +4916,139 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowEmpty = [];
     rowEmpty.push(
-      { "content": "", "colSpan": 8}
+      { "content": "", "colSpan": 8 }
     );
     data.push(rowEmpty);
 
 
 
 
-    
+
     let rowAnotateTime = [];
     rowAnotateTime.push(
-      { "content": "Calculation Results", "colSpan": 4, "rowSpan": 2  }
-   );
-    if (isViewBallast) {
+      { "content": "Calculation Results", "colSpan": 4, "rowSpan": 2 }
+    );
+
+    if (isViewBallast && isViewLaden) {
       rowAnotateTime.push(
-        { "content":  gTTSOPA.anotateTimeBallast, "colSpan": isViewBallast && isViewLaden ? 2 : 4 }
+        { "content": gTTSOPA.anotateTimeBallast, "colSpan": 2 }
+      );
+      rowAnotateTime.push(
+        { "content": gTTSOPA.anotateTimeLaden, "colSpan": 2 }
       );
     }
-    if (isViewLaden) {
-      rowAnotateTime.push(
-        { "content": gTTSOPA.anotateTimeLaden, "colSpan": isViewLaden && isViewBallast ? 2 : 4 }
-      );
+
+    if (isViewBallast && !isViewLaden) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeBallastIFO, "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeBallastMGO, "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeBallastIFO, "colSpan": 2 }
+        );
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeBallastMGO, "colSpan": 2 }
+        );
+      }
+
+    }
+
+
+    if (isViewLaden && !isViewBallast) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeLadenIFO, "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeLadenMGO, "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeLadenIFO, "colSpan": 2 }
+        );
+        rowAnotateTime.push(
+          { "content": gTTSOPA.anotateTimeLadenMGO, "colSpan": 2 }
+        );
+      }
+
     }
     data.push(rowAnotateTime);
 
 
-    
+
     let rowAnotateConsumption = [];
 
-    if (isViewBallast) {
+
+    if (isViewBallast && isViewLaden) {
       rowAnotateConsumption.push(
-        { "content": gTTSOPA.anotateTimeBallast, "colSpan": isViewBallast && isViewLaden ? 2 : 4 }
+        { "content": gTTSOPA.anotateConsumptionBallast, "colSpan": 2 }
+      );
+      rowAnotateConsumption.push(
+        { "content": gTTSOPA.anotateConsumptionLaden, "colSpan": 2 }
       );
     }
-    if (isViewLaden) {
-      rowAnotateConsumption.push(
-        { "content": gTTSOPA.anotateTimeLaden, "colSpan": isViewLaden && isViewBallast ? 2 : 4 }
-      );
+
+    if (isViewBallast && !isViewLaden) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionBallastIFO, "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionBallastMGO, "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionBallastIFO, "colSpan": 2 }
+        );
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionBallastMGO, "colSpan": 2 }
+        );
+      }
+
+    }
+
+
+    if (isViewLaden && !isViewBallast) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionLadenIFO, "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionLadenMGO, "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionLadenIFO, "colSpan": 2 }
+        );
+        rowAnotateConsumption.push(
+          { "content": gTTSOPA.anotateConsumptionLadenMGO, "colSpan": 2 }
+        );
+      }
+
     }
     data.push(rowAnotateConsumption);
 
@@ -5086,7 +5209,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5103,7 +5226,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5129,7 +5252,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5142,7 +5265,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5161,7 +5284,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5175,7 +5298,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5188,7 +5311,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5200,7 +5323,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let allowableCharterTime = Number(data.table.body[9].raw[4].content);
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5239,16 +5362,16 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addInformationIFO || this.addInformationMGO) {
 
               if (columIndex == 4) {
-                
-                cell.styles.fillColor =  this.colorGris;
-               //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
             }
             if (this.addInformationMGO && this.addInformationMGO) {
 
 
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -5265,11 +5388,11 @@ export class DialogExportPdfComponent implements OnInit {
             ) {
 
               if (columIndex == 4) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 cell.styles.fontSize = 8;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
@@ -5280,20 +5403,20 @@ export class DialogExportPdfComponent implements OnInit {
 
               if (columIndex == 4) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 5) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
               }
               if (columIndex == 7) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
               }
             }
@@ -5330,7 +5453,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
 
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
@@ -5349,7 +5472,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5375,7 +5498,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5388,7 +5511,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5407,7 +5530,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5421,7 +5544,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5434,7 +5557,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5446,7 +5569,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let allowableCharterTime = Number(data.table.body[5].raw[4].content);
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5488,16 +5611,16 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addInformationIFO || this.addInformationMGO) {
 
               if (columIndex == 4) {
-                
-                cell.styles.fillColor =  this.colorGris;
-               //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
             }
             if (this.addInformationMGO && this.addInformationMGO) {
 
 
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -5514,11 +5637,11 @@ export class DialogExportPdfComponent implements OnInit {
             ) {
 
               if (columIndex == 4) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -5528,20 +5651,20 @@ export class DialogExportPdfComponent implements OnInit {
 
               if (columIndex == 4) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 5) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
               }
               if (columIndex == 7) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
               }
             }
@@ -5581,7 +5704,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
 
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
@@ -5600,7 +5723,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5626,7 +5749,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5639,7 +5762,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5658,7 +5781,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5672,7 +5795,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5685,7 +5808,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5697,7 +5820,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let allowableCharterTime = Number(data.table.body[10].raw[4].content);
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5741,7 +5864,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5785,7 +5908,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5798,7 +5921,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5817,7 +5940,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5831,7 +5954,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5844,7 +5967,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Guardamos los datos actuales de la celda
                 let transitTime = Number(cell.text);
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 if (transitTime && allowableCharterTime) {
                   cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
                 }
@@ -5896,16 +6019,16 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addInformationIFO || this.addInformationMGO) {
 
               if (columIndex == 4) {
-                
-                cell.styles.fillColor =  this.colorGris;
-               //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
             }
             if (this.addInformationMGO && this.addInformationMGO) {
 
 
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -5922,11 +6045,11 @@ export class DialogExportPdfComponent implements OnInit {
             ) {
 
               if (columIndex == 4) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -5936,20 +6059,20 @@ export class DialogExportPdfComponent implements OnInit {
 
               if (columIndex == 4) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 5) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
               }
               if (columIndex == 7) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
               }
             }
@@ -5983,16 +6106,16 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addInformationIFO || this.addInformationMGO) {
 
               if (columIndex == 4) {
-                
-                cell.styles.fillColor =  this.colorGris;
-               //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
             }
             if (this.addInformationMGO && this.addInformationMGO) {
 
 
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -6009,11 +6132,11 @@ export class DialogExportPdfComponent implements OnInit {
             ) {
 
               if (columIndex == 4) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -6023,20 +6146,20 @@ export class DialogExportPdfComponent implements OnInit {
 
               if (columIndex == 4) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 5) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
               }
               if (columIndex == 7) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
               }
             }
@@ -6069,16 +6192,16 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addInformationIFO || this.addInformationMGO) {
 
               if (columIndex == 4) {
-                
-                cell.styles.fillColor =  this.colorGris;
-               //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
             }
             if (this.addInformationMGO && this.addInformationMGO) {
 
 
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -6095,11 +6218,11 @@ export class DialogExportPdfComponent implements OnInit {
             ) {
 
               if (columIndex == 4) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
             }
@@ -6109,20 +6232,20 @@ export class DialogExportPdfComponent implements OnInit {
 
               if (columIndex == 4) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
               }
               if (columIndex == 5) {
 
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
               }
               if (columIndex == 6) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
               }
               if (columIndex == 7) {
-                cell.styles.fillColor =  this.colorGris;
+                cell.styles.fillColor = this.colorGris;
                 // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
               }
             }
@@ -6135,11 +6258,11 @@ export class DialogExportPdfComponent implements OnInit {
           // Le damos un color y le aumentamos de tamaño a la primera columna.
           if (columIndex == 0) {
             cell.styles.fillColor = this.colorGris;
-            cell.styles.minCellHeight=4;
+            cell.styles.minCellHeight = 4;
           }
 
 
-          
+
         }
 
 
