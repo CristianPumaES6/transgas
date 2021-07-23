@@ -476,7 +476,7 @@ export const dialog: any = {
     PP: 'P.P',
     OTHER: 'Other',
     OVERALL_PERFORMANCE: 'Overall Performance Analysis',
-    VOYAGE_SUMMARY_SPEED: 'Voyage Summary (Speed)',
+    VOYAGE_SUMMARY: 'Voyage Summary (Speed, Consumption)',
     VOYAGE_SUMMARY_CONSUMPTION: 'Voyage Summary (Consumption)',
     CHART_VOYAGE_SUMMARY: 'Chart Voyage Summary',
     BUNKERING_INFORMATION: 'Bunkering Information'
