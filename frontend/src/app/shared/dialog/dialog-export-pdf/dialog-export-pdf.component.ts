@@ -7041,7 +7041,28 @@ export class DialogExportPdfComponent implements OnInit {
 
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
-    contentHeightTable += 16.7;
+    contentHeightTable += 21;
+
+    // Si solo hay un reporte en el puerto se suma 10.6
+    //contentHeightTable += 10.6;
+    // SI hay mas reporter lo multiplicamos
+    //contentHeightTable += 6.4*2;
+
+    // recorreoms los viajes para saber el tamaño que tendra la tabla.
+    voyage.ports.forEach(
+      iPort => {
+
+
+        // Calculamos la altura de la tabla
+        if (iPort.dailyReports.length == 1) {
+          // Si solo hay un reporte la fila tendra un tamañp de departure arriva y ballas
+          // 10.6
+          contentHeightTable += 10.6;
+        } else {
+          contentHeightTable += 6.4 * iPort.dailyReports.length;
+        }
+
+      });
 
     // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
@@ -7367,7 +7388,6 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-
     userOptions.didParseCell = (data: CellHookData) => {
 
       // Secction : head, body, footer
@@ -7375,6 +7395,7 @@ export class DialogExportPdfComponent implements OnInit {
       // guardamos la celda y verificamos que no sea underfiend
       let cell: Cell = data.cell;
       if (cell == undefined) { return; }
+
 
       // trabajaremos con el body.
       if (section == 'body') {
