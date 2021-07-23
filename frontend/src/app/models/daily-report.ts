@@ -90,7 +90,6 @@ export class DailyReport {
         this.distance = distance || 0;
         this.beaufour = beaufour || '';
         this.observation = observation || '';
-        this.status = status || true;
 
         // Audiotoria
         this.userIdCreated = userIdCreated || 0;
@@ -118,9 +117,27 @@ export class Speed {
         public distance?: number,
         // Lugar de partida,
         public steamingTime?: number,
+        // Lugar de partida,
+
+        // MEJORA
+        // Solo se agregara la distancia y tiempo si hay consumo IFO
+        public distanceIFO?: number,
+        public timeOperationIFO?: number,
+
+        // Solo se agregara la distancia y tiempo si hay consumo MGO
+        public distanceMGO?: number,
+        public timeOperationMGO?: number,
     ) {
         this.distance = distance || 0;
         this.steamingTime = steamingTime || 0;
+
+
+        this.distanceIFO = distanceIFO || 0;
+        this.timeOperationIFO = timeOperationIFO || 0;
+
+
+        this.distanceMGO = distanceMGO || 0;
+        this.timeOperationMGO = timeOperationMGO || 0;
     }
 
     // funcion para agregar mas distancia y tiempo a la variable.
@@ -129,6 +146,19 @@ export class Speed {
         this.steamingTime = this.steamingTime + addSteamingTime;
     }
 
+
+    // funcion para agregar mas distancia y tiempo a la variable solo si hay consumo IFO
+    public addInfoIFO(addDistanceIFO, addTimeOperationIFO) {
+        this.distanceIFO = this.distanceIFO + addDistanceIFO;
+        this.timeOperationIFO = this.timeOperationIFO + addTimeOperationIFO;
+    }
+
+
+    // funcion para agregar mas distancia y tiempo a la variable solo si hay consumo MGO
+    public addInfoMGO(addDistanceMGO, addTimeOperationMGO) {
+        this.distanceMGO = this.distanceMGO + addDistanceMGO;
+        this.timeOperationMGO = this.timeOperationMGO + addTimeOperationMGO;
+    }
 }
 
 // Estructura del servicio.

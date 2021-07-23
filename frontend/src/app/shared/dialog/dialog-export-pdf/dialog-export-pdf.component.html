@@ -1,8 +1,9 @@
 <div class="az-content-breadcrumb lh-1 mg-b-2 pl-0">
   <span>dashboard</span>
   <span>export Pdf</span>
-
 </div>
+
+
 <h2 class="az-content-title tx-24 mg-b-0 pl-0">
 
   <mat-form-field class="w-100">
@@ -17,50 +18,96 @@
   </mat-form-field>
 
 </h2>
-<div class="row">
-  <div class="col-6 col-sm-12 col-md-6 col-lg-6">
 
-    <mat-form-field class="w-100">
-      <mat-label>Voyage</mat-label>
-      <mat-select [(ngModel)]="selectVoyageId">
+<div class="az-content p-0">
 
-        <ng-template ngFor let-iVoyage [ngForOf]="voyages" let-i="index">
-          <mat-option [value]="iVoyage.id" (click)="ClickSelectVoyage()">
-            Voyage {{ iVoyage.voyageNumber}}
-          </mat-option>
-        </ng-template>
+  <h5>
+    {{'REPORT_INFORMATION' | translateMessage:translateCategory}}
+  </h5>
 
-      </mat-select>
-    </mat-form-field>
+  <div class="row lh-1 mg-b-4 pl-0">
+
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+      <mat-checkbox [(ngModel)]="addOverallPerformance" class="pl-2">
+        {{ 'OVERALL_PERFORMANCE' | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+      <mat-checkbox [(ngModel)]="addVoyageSummary" class="pl-2">
+        {{ 'VOYAGE_SUMMARY' | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+      <mat-checkbox [(ngModel)]="addBunkeringInformation" class="pl-2" [disabled]="true">
+        {{ 'BUNKERING_INFORMATION' | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+      <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2" [disabled]="true">
+        {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+
+
 
   </div>
-  <div class="col-6 col-sm-12 col-md-6 col-lg-6">
 
-    <mat-form-field class="w-100">
-      <mat-label>Port</mat-label>
-      <mat-select [(ngModel)]="selectPortId">
 
-        <ng-template ngFor let-iPort [ngForOf]="ports" let-i="index">
-          <mat-option [value]="iPort.id" (click)="ClickSelectPort()">
-            Port N° {{ iPort.portNumber}} ( {{ iPort.departurePort }} - {{ iPort.arrivalPort }} )
-          </mat-option>
-        </ng-template>
+  <h5>
+    {{'ADD_INFORMATION_FUEL' | translateMessage:translateCategory}}
+  </h5>
 
-      </mat-select>
-    </mat-form-field>
+  <div class="row lh-1 mg-b-4 pl-0">
 
+    <div class="col-6 col-sm-6 col-md-6 col-lg-6"
+      *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO">
+      <mat-checkbox [(ngModel)]="addInformationIFO" class="pl-2">
+        {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+        'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+
+    <div class="col-6 col-sm-6 col-md-6 col-lg-6" *ngIf="selectUser.isConsumptionMGO">
+      <mat-checkbox [(ngModel)]="addInformationMGO" class="pl-2">
+        {{'MGO' | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+
+  </div>
+
+
+  <h5>
+    {{'ADD_SAILING_NAVIGATION' | translateMessage:translateCategory}}
+  </h5>
+
+  <div class="row lh-1 mg-b-4 pl-0">
+
+    <div class="col-4 col-sm-12 col-md-6 col-lg-4">
+      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+        {{'IN_BALLAST' | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+
+    <div class="col-4 col-sm-12 col-md-6 col-lg-4">
+      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+        {{'WITH_LADEN' | translateMessage:translateCategory}}
+      </mat-checkbox>
+    </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col-6 ">
+
+      <button mat-raised-button color="primary" (click)="ClickExportPDF()"  [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
+        <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
+      </button>
+
+    </div>
   </div>
 </div>
 
-<div class="row">
-  <div class="col-6 ">
-
-    <button mat-raised-button color="primary" (click)="ClickExportPDF()">Descargar
-      <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
-    </button>
-
-  </div>
-</div>
 
 <div style="opacity: 0; height: 0px; width: 0px; overflow: hidden;">
 

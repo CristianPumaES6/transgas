@@ -52,8 +52,12 @@ export class DatabaseService {
 
     }
 
+    public DeleteDataBase(){ 
+        this.db.delete();
+    }
+
     // Obtener DataBase
-    public getDatabase() {
+    public getDatabase():Dexie {
         console.log('getDatabase()');
 
         return this.db;
@@ -97,6 +101,7 @@ export class DatabaseService {
 
         // FIltramos los datos que faltan aggregar y actualizar.
         const addUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'added');
+        
         const updateUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'updated');
         const deleteUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'deleted');
 

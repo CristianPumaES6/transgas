@@ -60,6 +60,7 @@ export class FileUploadComponent implements OnInit {
 
 
     // subscribe receives the value. sirve para recibir algun emit
+    // Actualizamos el estado de la conexion.
     this.onlineOfflineService.emitterIsOnline.subscribe(
       (isOnline: boolean) => {
         this.isOnline = isOnline;
@@ -70,8 +71,8 @@ export class FileUploadComponent implements OnInit {
 
   ngOnInit() {
     
-    // Verificamos si esta online.
-    this.isOnline = !!window.navigator.onLine;
+    // Obtenemos el estado de la conexion.
+    this.isOnline = this.onlineOfflineService.GetStatusOnline();
 
     this.fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
 

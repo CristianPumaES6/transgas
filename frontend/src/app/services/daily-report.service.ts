@@ -32,7 +32,7 @@ export class DailyReportService {
     // Obtine solo un objeto desde el ID.
     Get(dailyReportId: Number): Observable<DailyReport> {
         // Armo el request
-        let url: string = this.url + '/daily-repots/' + dailyReportId;
+        let url: string = this.url + '/daily-report/' + dailyReportId;
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
@@ -206,5 +206,32 @@ export class DailyReportService {
         );
     }
 
+    // Obtenemos el consumo actual
+    GetStartEndROByFilterDate(userId: number, startDate: string, endDate: string): Observable<GetROBByUser[]> {
+        // Armo el request
+        let url: string = this.url + '/daily-reports/get-start-end-rob/' + userId+'/'+startDate+'/'+endDate;
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    // Verifico si la respuesta fue correcta.
+                    if (response.status && response.status === 200) {
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
+                return this.authGuardService.HandleError(err);
+            })
+        );
+    }
 
 }

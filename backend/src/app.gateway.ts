@@ -5,8 +5,10 @@ import {
 } from '@nestjs/websockets';
 
 
+import { URL_Server } from './config/server.config';
+
 // Agregamos una decorator a la class para saber que sera una clase de WebSocket.
-@WebSocketGateway(4000, { transport: ['websocket'] })
+@WebSocketGateway(URL_Server.puertoSocket, { transport: ['websocket'] })
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
