@@ -3464,7 +3464,9 @@ export class DialogExportPdfComponent implements OnInit {
     // Como es el resumen, verificamos que se a
     let isViewBallast = this.addSailingInBallast;
     let isViewLaden = this.addSailingWithLaden;
-    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTSOPA, isViewBallast, isViewLaden)
+
+    let titleTable = 'Overall Performance Analysis';
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTSOPA, isViewBallast, isViewLaden, titleTable)
 
     return doc;
   }
@@ -3725,7 +3727,8 @@ export class DialogExportPdfComponent implements OnInit {
     positionHeight += 6;
     positionWidth = 10;
 
-    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden)
+    let titleTable = 'Overall Performance Analysis';
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
 
 
     //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
@@ -4776,7 +4779,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
   // Resumen total.
-  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean): number {
+  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean, titleTable: string): number {
 
     let contTextTitle = '';
 
@@ -4795,7 +4798,7 @@ export class DialogExportPdfComponent implements OnInit {
         contTextTitle += ' / Laden )';
       }
     }
-    let title = 'Overall Performance Analysis\n' + contTextTitle;
+    let title = titleTable + '\n' + contTextTitle;
 
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
@@ -7229,8 +7232,8 @@ export class DialogExportPdfComponent implements OnInit {
         gTTSOPA.anotateConsumptionBallast = gTTSOPA.anotateConsumptionBallastIFO + gTTSOPA.anotateConsumptionBallastMGO;
         gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
 
-
-        this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden)
+        let titleTable = 'Voyage ' + iVoyage.voyageNumber + ' Summary';
+        this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
       }
     )
   }
