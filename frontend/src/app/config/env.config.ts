@@ -20,9 +20,9 @@ export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
     VERSION: 'v1.9e',
-    SOCKET: 'ws://socket-transgas.codev.site'
-}; */
-
+    SOCKET: 'https://socket-transgas.codev.site'
+};
+ */
 
 
 export const EnvConfig: EnvConfig = {
