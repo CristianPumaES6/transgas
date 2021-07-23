@@ -4157,6 +4157,8 @@ export class DashboardComponent implements OnInit {
       voyages: voyages,
       selectUser: selectUser,
       selectVoyageId: this.selectVoyageId,
+      dateStart:this.startDate,
+      dateEnd:this.endDate,
     };
 
 
