@@ -2770,6 +2770,9 @@ export class DialogExportPdfComponent implements OnInit {
     // Lista del resumen de viaje.
     let listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
     let listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
+
+    // Esta variable contendra todos los viajes.
+    let SummaryByVoyage: Voyage[] = [];
     // Inicializamos sincrono.
     return Promise.resolve(true)
       .then(
@@ -2788,6 +2791,9 @@ export class DialogExportPdfComponent implements OnInit {
 
               // Esta variable nos ayudara para saber si ya contamos el viaje, una vez que lo sumamos lo ponemos false;
               let isNewVoyage: boolean = true;
+
+              // esta variable obtendra los nuevos viajes.
+              let newVoyage: Voyage = new Voyage();
               if (voyage.status) {
 
                 // Agregamos el id y el numero del viaje.
@@ -2824,88 +2830,117 @@ export class DialogExportPdfComponent implements OnInit {
                               && !(!IsAfter1Date(dailyReport.date, this.data.dateStart) || !IsPrevious1Date(dailyReport.date, this.data.dateEnd))
                             ) {
 
-                              // Verificamos si tenemos que sumar el viaje.
-                              if (isNewVoyage) {
-                                isNewVoyage = false;
-                                sVPR.totalVoyageSailing += 1;
-                                console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
-                                // Agregamos el numero de viaje.
-                                sVPR.lastVoyageSailing = voyage.voyageNumber;
-                              }
-                              // Verificamos si tenemos que sumar el puerto.
-                              if (isNewPort) {
-                                isNewPort = false;
-                                sVPR.totalPortSailing += 1;
-                                console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
-                              }
-
-                              // Esta variable tienen el total de ocnsumo
+                              // Esta variable tienen el total de consumo
                               let totalIFO = this.SumaIfo(dailyReport);
                               let totalMGO = this.SumaMgo(dailyReport);
 
-                              // Verificamos si es navegando con carga
-                              if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+                              // verificamos que exista un consumo registrado 
+                              // ademas que si se desea esa informacion
+                              if (
+                                (totalIFO && this.addInformationIFO)
+                                || (totalMGO && this.addInformationMGO)) {
 
-                                // Si existe la actividad in ballast agrego la distancia
-                                sVPR.totalDistanceBallast += dailyReport.distance;
 
-                                // Solo si hay consumo sumamos el tiempo, distancia y consumo
-                                if (this.addInformationIFO && totalIFO) {
-                                  gTSOPA_Ballast.distanceIFO += dailyReport.distance;
-                                  gTSOPA_Ballast.consumptionIFO += totalIFO;
-                                  gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
 
-                                  gTTSOPA.distanceIFOBallast += dailyReport.distance;
-                                  gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
-                                  gTTSOPA.consumptionIFOBallast += totalIFO;
+                                // Verifcamos si tenemos que sumar eli viaje.
+                                if (isNewVoyage) {
+                                  isNewVoyage = false;
+                                  sVPR.totalVoyageSailing += 1;
+                                  console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
+                                  // Agregamos el numero de viaje.
+                                  sVPR.lastVoyageSailing = voyage.voyageNumber;
+
+
+                                  // Agregamos los datos del viaje.
+                                  newVoyage.id = voyage.id
+                                  newVoyage.voyageNumber = voyage.voyageNumber;
+                                  newVoyage.status = voyage.status;
                                 }
-                                if (this.addInformationMGO && totalMGO) {
-                                  gTSOPA_Ballast.distanceMGO += dailyReport.distance;
-                                  gTSOPA_Ballast.consumptionMGO += totalMGO;
-                                  gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
+                                // Verificamos si tenemos que sumar el puerto.
+                                if (isNewPort) {
+                                  isNewPort = false;
+                                  sVPR.totalPortSailing += 1;
+                                  console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
 
-
-                                  gTTSOPA.distanceMGOBallast += dailyReport.distance;
-                                  gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
-                                  gTTSOPA.consumptionMGOBallast += totalMGO;
-                                }
-
-
-
-
-                                // Verificamos si es la actividad navegando sin carga
-                              } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
-
-                                // Si existe la actividad laden agrego la distancia.
-                                sVPR.totalDistanceLaden += dailyReport.distance;
-
-                                // Solo si hay consumo sumamos el tiempo, distancia y consumo
-                                if (this.addInformationIFO && totalIFO) {
-                                  gTSOPA_Laden.distanceIFO += dailyReport.distance;
-                                  gTSOPA_Laden.consumptionIFO += totalIFO;
-                                  gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
-
-                                  gTTSOPA.distanceIFOLaden += dailyReport.distance;
-                                  gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
-                                  gTTSOPA.consumptionIFOLaden += totalIFO;
-                                }
-                                if (this.addInformationMGO && totalMGO) {
-                                  gTSOPA_Laden.distanceMGO += dailyReport.distance;
-                                  gTSOPA_Laden.consumptionMGO += totalMGO;
-                                  gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
-
-                                  gTTSOPA.distanceMGOLaden += dailyReport.distance;
-                                  gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
-                                  gTTSOPA.consumptionMGOLaden += totalMGO;
+                                  // Armamos el nuevo puerto.
+                                  let portSummary = new Port(port.id, port.userId, port.voyageId, port.portNumber, port.departurePort, port.arrivalPort, port.userIdCreated, port.dateCreated, port.userIdUpdated, port.dateUpdated, port.status);
+                                  portSummary.dailyReports = [];
+                                  // Agregamos el puerto al viaje.
+                                  newVoyage.ports.push(portSummary);
                                 }
 
-                              } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+
+
+                                // Nos ubicamos en el ultimo puerto
+                                let lengthPort = newVoyage.ports.length;
+                                let indexPort = lengthPort - 1;
+                                newVoyage.ports[indexPort].dailyReports.push(dailyReport);
+
+                                // Verificamos si es navegando con carga
+                                if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+
+                                  // Si existe la actividad in ballast agrego la distancia
+                                  sVPR.totalDistanceBallast += dailyReport.distance;
+
+                                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                                  if (this.addInformationIFO && totalIFO) {
+                                    gTSOPA_Ballast.distanceIFO += dailyReport.distance;
+                                    gTSOPA_Ballast.consumptionIFO += totalIFO;
+                                    gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
+
+                                    gTTSOPA.distanceIFOBallast += dailyReport.distance;
+                                    gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionIFOBallast += totalIFO;
+                                  }
+                                  if (this.addInformationMGO && totalMGO) {
+                                    gTSOPA_Ballast.distanceMGO += dailyReport.distance;
+                                    gTSOPA_Ballast.consumptionMGO += totalMGO;
+                                    gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
+
+
+                                    gTTSOPA.distanceMGOBallast += dailyReport.distance;
+                                    gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionMGOBallast += totalMGO;
+                                  }
+
+
+
+
+                                  // Verificamos si es la actividad navegando sin carga
+                                } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+
+                                  // Si existe la actividad laden agrego la distancia.
+                                  sVPR.totalDistanceLaden += dailyReport.distance;
+
+                                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                                  if (this.addInformationIFO && totalIFO) {
+                                    gTSOPA_Laden.distanceIFO += dailyReport.distance;
+                                    gTSOPA_Laden.consumptionIFO += totalIFO;
+                                    gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
+
+                                    gTTSOPA.distanceIFOLaden += dailyReport.distance;
+                                    gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionIFOLaden += totalIFO;
+                                  }
+                                  if (this.addInformationMGO && totalMGO) {
+                                    gTSOPA_Laden.distanceMGO += dailyReport.distance;
+                                    gTSOPA_Laden.consumptionMGO += totalMGO;
+                                    gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
+
+                                    gTTSOPA.distanceMGOLaden += dailyReport.distance;
+                                    gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionMGOLaden += totalMGO;
+                                  }
+
+                                } else if (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+
+                                }
+
+
 
                               }
-
-
-
                             }
+
 
 
 
@@ -2918,8 +2953,11 @@ export class DialogExportPdfComponent implements OnInit {
                     }
                   }
                 )
-
-
+                // Verificamos que exista algun puerto para agregalo.
+                console.log(newVoyage.ports.length)
+                if (newVoyage.ports.length) {
+                  SummaryByVoyage.push(newVoyage);
+                }
 
                 // Solo si existen tiempo IFO o MGO
                 // Agregamos a la lista
@@ -3304,12 +3342,11 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Inicializamos el height en 0,
           let positionHeight = 0;
-          let voyages = [];
 
           let isViewBallast: boolean = this.addSailingInBallast;
           let isViewLaden: boolean = this.addSailingWithLaden;
 
-          this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, voyages, isViewBallast, isViewLaden)
+          this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, SummaryByVoyage, isViewBallast, isViewLaden)
 
           return true;
         }
@@ -6947,35 +6984,45 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-  private GenerateVoyageSumary(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, voyages: any[], isViewBallast: boolean, isViewLaden: boolean) {
+  private GenerateVoyageSumary(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, summaryVoyages: Voyage[], isViewBallast: boolean, isViewLaden: boolean) {
 
-    // Agregamos una nueva pagina
-    doc.addPage();
 
-    positionHeight += 10;
-    let positionWidth = 10;
 
-    let title: string = 'Voyage Summary';
-    if (isViewBallast && isViewLaden) {
-      title += ' (Ballast/Laden)'
-    } else if (isViewBallast) {
-      title += ' (Ballast)'
-    } else if (isViewLaden) {
-      title += ' (Laden)'
-    }
-    // Agregamos la cabecera a la pagina.
-    positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+    summaryVoyages.forEach(
+      iVoyage => {
+        // revisar si deberia ir
+        positionHeight = 0;
 
-    ///////////////////////////////////////
-    ///////// Inicio del 1° Cuadro ////////
-    ///////////////////////////////////////
+        // Agregamos una nueva pagina
+        doc.addPage();
 
-    // Colocamos el rectangulo
-    positionHeight += 5.5;
-    //positionWidth = 63;
-    positionWidth = 5;
-    let iVoyage: Voyage = new Voyage();
-    this.GenerateTableSumaryVoyage(doc, widthPDF, heightPDF, positionWidth, positionHeight, iVoyage, isViewBallast, isViewLaden);
+        positionHeight += 10;
+        let positionWidth = 10;
+
+        let title: string = 'Voyage Summary';
+        if (isViewBallast && isViewLaden) {
+          title += ' (Ballast/Laden)'
+        } else if (isViewBallast) {
+          title += ' (Ballast)'
+        } else if (isViewLaden) {
+          title += ' (Laden)'
+        }
+        // Agregamos la cabecera a la pagina.
+        positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+
+        ///////////////////////////////////////
+        ///////// Inicio del 1° Cuadro ////////
+        ///////////////////////////////////////
+
+        // Colocamos el rectangulo
+        positionHeight += 5.5;
+        //positionWidth = 63;
+        positionWidth = 5;
+
+        this.GenerateTableSumaryVoyage(doc, widthPDF, heightPDF, positionWidth, positionHeight, iVoyage, isViewBallast, isViewLaden);
+
+      }
+    )
   }
 
 
@@ -7095,6 +7142,212 @@ export class DialogExportPdfComponent implements OnInit {
     data.push(rowHeader2);
 
 
+    voyage.ports.forEach(
+      iPort => {
+
+        iPort.dailyReports.forEach(
+          (iDailyReport, index, array) => {
+
+            // Tipo de navegacion
+            let typeNavigation = '';
+            if (iDailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+              typeNavigation = '(Ballast)';
+            } else if (iDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+              typeNavigation = '(Laden)';
+            }
+            let rowGenerit = [];
+
+            // Guardamos el todal de consumo.
+            let totalIFO = this.SumaIfo(iDailyReport);
+            let totalMGO = this.SumaMgo(iDailyReport);
+
+            // Obtenemos la velocidad real.
+            let sṕeedReal = iDailyReport.steamingTime ? iDailyReport.distance / iDailyReport.steamingTime : 0;
+
+            // Obtenemos la velocidad por charter IFO y MGO
+            let speedCharterIFO: number = 0;
+            let speedCharterMGO: number = 0;
+            if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
+              if (totalIFO) {
+                speedCharterIFO = this.selectUser.contractSpeedSailingBallastIFO;
+              }
+              if (totalMGO) {
+                speedCharterMGO = this.selectUser.contractSpeedSailingBallastMGO;
+              }
+            } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
+              if (totalIFO) {
+                speedCharterIFO = this.selectUser.contractSpeedSailingLadenIFO;
+              }
+              if (totalMGO) {
+                speedCharterMGO = this.selectUser.contractSpeedSailingLadenMGO;
+              }
+            }
+
+
+            // Daily Consumption
+            let dailyConsumptionIFO = 0;
+            let dailyConsumptionMGO = 0;
+            if (totalIFO) {
+              dailyConsumptionIFO = iDailyReport.steamingTime ?
+                (totalIFO * 24) / iDailyReport.steamingTime : 0;
+            }
+            if (totalMGO) {
+              dailyConsumptionMGO = iDailyReport.steamingTime ?
+                (totalMGO * 24) / iDailyReport.steamingTime : 0;
+            }
+
+
+
+
+            // Daily Consumption Charter
+            let dailyConsumptionCharterIFO = 0;
+            let dailyConsumptionCharterMGO = 0;
+            if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
+              if (totalIFO) {
+                dailyConsumptionCharterIFO = this.selectUser.sailingBallastConsumptionIFO;
+              }
+              if (totalMGO) {
+                dailyConsumptionCharterMGO = this.selectUser.sailingBallastConsumptionMGO;
+              }
+            } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
+              if (totalIFO) {
+                dailyConsumptionCharterIFO = this.selectUser.sailingLoadConsumptionIFO;
+              }
+              if (totalMGO) {
+                dailyConsumptionCharterMGO = this.selectUser.sailingLoadConsumptionMGO;
+              }
+            }
+
+            // Time Charter
+            let timeCharterIFO = 0;
+            let timeCharterMGO = 0;
+            if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
+              if (totalIFO) {
+                timeCharterIFO = this.selectUser.contractSpeedSailingBallastIFO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingBallastIFO : 0;
+              }
+              if (totalMGO) {
+                timeCharterMGO = this.selectUser.contractSpeedSailingBallastMGO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingBallastMGO : 0;
+              }
+            } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
+              if (totalIFO) {
+                timeCharterIFO = this.selectUser.contractSpeedSailingLadenIFO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingLadenIFO : 0;
+              }
+              if (totalMGO) {
+                timeCharterMGO = this.selectUser.contractSpeedSailingLadenMGO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingLadenMGO : 0;
+              }
+            }
+
+
+            // Consumption Charter
+            let consumptionCharterIFO = 0;
+            let consumptionCharterMGO = 0;
+            if (totalIFO) {
+              consumptionCharterIFO = (dailyConsumptionCharterIFO * timeCharterIFO) / 24;
+            }
+            if (totalMGO) {
+              consumptionCharterMGO = (dailyConsumptionCharterMGO * timeCharterMGO) / 24;
+            }
+
+// INICAMOS AGREGANDO EL ROW GENERIC
+
+// departure to arribal
+            if (index == 0) {
+              rowGenerit.push({ "content": iPort.departurePort + '\n' + iPort.arrivalPort + '\n' + typeNavigation, "colSpan": 2, "rowSpan": array.length });
+            }
+
+            // Time
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(iDailyReport.steamingTime, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(iDailyReport.steamingTime, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Distance
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(iDailyReport.distance, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(iDailyReport.distance, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Speed
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(sṕeedReal, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(sṕeedReal, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Speed Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(speedCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(speedCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Consumption
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(totalIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(totalMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // daily Consumption
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(dailyConsumptionIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(dailyConsumptionMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+            // daily Consumption Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(dailyConsumptionCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(dailyConsumptionCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Time Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(timeCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(timeCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+
+            // Consumption Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(consumptionCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(consumptionCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+            data.push(rowGenerit);
+          }
+        );
+
+
+
+
+      }
+    );
 
 
     // Opciones como usuario al generar un table.
@@ -7182,237 +7435,475 @@ export class DialogExportPdfComponent implements OnInit {
             cell.styles.minCellHeight = 6;
           }
         }
+        console.log();
 
         // de qui para adelante son los viajes.
         if (rowIndex > 1) {
 
-          // nombre del viaje y numero.
-          if (columIndex == 0) {
-            cell.styles.fillColor = this.colorBlueTable1;
-            cell.styles.textColor = this.colorWhite;
-            // cell.styles.fontSize = 9;
-            cell.styles.cellPadding = 1;
-          }
-          if (
-            (this.addInformationIFO && !this.addInformationMGO)
-            || (this.addInformationMGO && !this.addInformationIFO)
-          ) {
-            // Desde la columna 2 para adelante lo pintamos de gris.
-            if (columIndex >= 2) {
-              cell.styles.fillColor = this.colorGris;
-            }
+          let rawLength = Object.keys(raw).length;
+          
+          if (rawLength == 19 || rawLength == 10) {
 
-            // Time
-            if (columIndex == 2) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[8].content);
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+            // nombre del viaje y numero.
+            if (columIndex == 0) {
+              cell.styles.fillColor = this.colorBlueTable1;
+              cell.styles.textColor = this.colorWhite;
+              cell.styles.fontSize = 7;
+              cell.styles.cellPadding = 1;
+            }
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[8].content);
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
-            }
 
-            // Speed
-            if (columIndex == 6) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[4].content);
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[4].content);
 
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-            // total consumo
-            if (columIndex == 10) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[9].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
-            }
 
 
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[9].content);
 
-            // daily consumo
-            if (columIndex == 12) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[7].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-          }
-
-          // Si se selecciona los dos tipos de combustible.
-          if (this.addInformationIFO && this.addInformationMGO) {
-            // Desde la columna 2 para adelante lo pintamos de gris.
-            if (columIndex >= 2) {
-              cell.styles.fillColor = this.colorGris;
-            }
-
-            // Time
-            if (columIndex == 2) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[15].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
-            }
-            if (columIndex == 3) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[16].content);
 
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
 
-            // Speed
-            if (columIndex == 6) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[7].content);
 
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+              // daily consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[7].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
-            }
-            if (columIndex == 7) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[8].content);
 
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+            }
+
+            // Si se selecciona los dos tipos de combustible.
+            if (this.addInformationIFO && this.addInformationMGO) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[15].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
-            }
+              if (columIndex == 3) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[16].content);
 
-
-
-            // total consumo
-            if (columIndex == 10) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[17].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
-            }
-            if (columIndex == 11) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[18].content);
 
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[7].content);
 
-
-
-            // Daily Consumo
-            if (columIndex == 12) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[13].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
-            }
-            if (columIndex == 13) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[14].content);
+              if (columIndex == 7) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[8].content);
 
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
                 }
               }
+
+
+
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[17].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 11) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[18].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // Daily Consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[13].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 13) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[14].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
             }
 
+
+          } else if (rawLength == 18 || rawLength == 9) {
+
+            // nombre del viaje y numero.
+            if (columIndex == 0) {
+              cell.styles.fillColor = this.colorBlueTable1;
+              cell.styles.textColor = this.colorWhite;
+              cell.styles.fontSize = 7;
+              cell.styles.cellPadding = 1;
+            }
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[7].content);
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[3].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[8].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // daily consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[6].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+            }
+
+            // Si se selecciona los dos tipos de combustible.
+            if (this.addInformationIFO && this.addInformationMGO) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[14].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 3) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[15].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[6].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 7) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[7].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[16].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 11) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[17].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // Daily Consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[12].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 13) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[13].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+            }
           }
 
 
@@ -7432,7 +7923,7 @@ export class DialogExportPdfComponent implements OnInit {
       0: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7441,7 +7932,7 @@ export class DialogExportPdfComponent implements OnInit {
       1: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7450,7 +7941,7 @@ export class DialogExportPdfComponent implements OnInit {
       2: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7459,7 +7950,7 @@ export class DialogExportPdfComponent implements OnInit {
       3: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7468,7 +7959,7 @@ export class DialogExportPdfComponent implements OnInit {
       4: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7477,7 +7968,7 @@ export class DialogExportPdfComponent implements OnInit {
       5: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.2,
         lineColor: [22, 33, 77],
@@ -7486,7 +7977,7 @@ export class DialogExportPdfComponent implements OnInit {
       6: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7495,7 +7986,7 @@ export class DialogExportPdfComponent implements OnInit {
       7: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7504,7 +7995,7 @@ export class DialogExportPdfComponent implements OnInit {
       8: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7513,7 +8004,7 @@ export class DialogExportPdfComponent implements OnInit {
       9: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7522,7 +8013,7 @@ export class DialogExportPdfComponent implements OnInit {
       10: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7531,7 +8022,7 @@ export class DialogExportPdfComponent implements OnInit {
       11: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7540,7 +8031,7 @@ export class DialogExportPdfComponent implements OnInit {
       12: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7549,7 +8040,7 @@ export class DialogExportPdfComponent implements OnInit {
       13: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7558,7 +8049,7 @@ export class DialogExportPdfComponent implements OnInit {
       14: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7567,7 +8058,7 @@ export class DialogExportPdfComponent implements OnInit {
       15: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7576,7 +8067,7 @@ export class DialogExportPdfComponent implements OnInit {
       16: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7585,7 +8076,7 @@ export class DialogExportPdfComponent implements OnInit {
       17: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7594,7 +8085,7 @@ export class DialogExportPdfComponent implements OnInit {
       18: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -7603,7 +8094,7 @@ export class DialogExportPdfComponent implements OnInit {
       19: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
