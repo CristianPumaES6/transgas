@@ -33,22 +33,17 @@
       </mat-checkbox>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addVoyageSummarySpeed" class="pl-2">
-        {{ 'VOYAGE_SUMMARY_SPEED' | translateMessage:translateCategory}}
+      <mat-checkbox [(ngModel)]="addVoyageSummary" class="pl-2">
+        {{ 'VOYAGE_SUMMARY' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addVoyageSummaryConsumption" class="pl-2">
-        {{ 'VOYAGE_SUMMARY_CONSUMPTION' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addBunkeringInformation" class="pl-2">
+      <mat-checkbox [(ngModel)]="addBunkeringInformation" class="pl-2" [disabled]="true">
         {{ 'BUNKERING_INFORMATION' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2">
+      <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2" [disabled]="true">
         {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
@@ -98,133 +93,14 @@
         {{'WITH_LADEN' | translateMessage:translateCategory}}
       </mat-checkbox>
     </div>
-    <div class="col-4 col-sm-12 col-md-6 col-lg-4">
-      <mat-checkbox [(ngModel)]="addSailingEconomical" class="pl-2">
-        {{'ECONOMICAL' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
   </div>
 
 
-  <h5 *ngIf="addVoyageSummaryConsumption">
-    {{'ADD_MACHINE_INFORMATION' | translateMessage:translateCategory}}
-  </h5>
-
-  <span *ngIf="addVoyageSummaryConsumption && (selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO)"> {{
-    (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
-    'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
-  </span>
-  <div class="row lh-1 mg-b-2 pl-0"
-    *ngIf="addVoyageSummaryConsumption && (selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO)">
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isMEIFO">
-      <mat-checkbox [(ngModel)]="addMEIFO" class="pl-2">
-        {{'MPLA' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isAEIFO">
-      <mat-checkbox [(ngModel)]="addAXIFO" class="pl-2">
-        {{'AUX' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isBoilerIFO">
-      <mat-checkbox [(ngModel)]="addBoilerIFO" class="pl-2">
-        {{'BOILER' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isOtherIFO">
-      <mat-checkbox [(ngModel)]="addOtherIFO" class="pl-2">
-        {{'OTHER' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-  </div>
-
-  <span *ngIf="addVoyageSummaryConsumption && selectUser.isMEMGO">MGO</span>
-  <div class="row lh-1 mg-b-2 pl-0" *ngIf="selectUser.isMEMGO && addVoyageSummaryConsumption">
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addMEMGO" class="pl-2" *ngIf="selectUser.isMEMGO">
-        {{'MPLA' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2">
-      <mat-checkbox [(ngModel)]="addAXMGO" class="pl-2" *ngIf="selectUser.isAEMGO">
-        {{'AUX' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isBoilerMGO">
-      <mat-checkbox [(ngModel)]="addBoilerMGO" class="pl-2">
-        {{'BOILER' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isIGMGO">
-      <mat-checkbox [(ngModel)]="addGIMGO" class="pl-2">
-        {{'GI' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isPowerPMGO">
-      <mat-checkbox [(ngModel)]="addPPMGO" class="pl-2">
-        {{'PP' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-2 col-sm-12 col-md-6 col-lg-2" *ngIf="selectUser.isOtherIFO">
-      <mat-checkbox [(ngModel)]="addOtherMGO" class="pl-2">
-        {{'OTHER' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-  </div>
-
-
-  <div class="row">
-    <div class="col-6 col-sm-12 col-md-6 col-lg-6">
-
-      <mat-form-field class="w-100">
-        <mat-label>Voyage</mat-label>
-        <mat-select [(ngModel)]="selectVoyageId">
-
-          <ng-template ngFor let-iVoyage [ngForOf]="voyages" let-i="index">
-            <mat-option [value]="iVoyage.id" (click)="ClickSelectVoyage()">
-              Voyage {{ iVoyage.voyageNumber}}
-            </mat-option>
-          </ng-template>
-
-        </mat-select>
-      </mat-form-field>
-
-    </div>
-
-    <div class="col-6 col-sm-12 col-md-6 col-lg-6">
-
-      <mat-form-field class="w-100">
-        <mat-label>Port</mat-label>
-        <mat-select [(ngModel)]="selectPortId">
-
-          <ng-template ngFor let-iPort [ngForOf]="ports" let-i="index">
-            <mat-option [value]="iPort.id" (click)="ClickSelectPort()">
-              Port N° {{ iPort.portNumber}} ( {{ iPort.departurePort }} - {{ iPort.arrivalPort }} )
-            </mat-option>
-          </ng-template>
-
-        </mat-select>
-      </mat-form-field>
-
-    </div>
-  </div>
 
   <div class="row">
     <div class="col-6 ">
 
-      <button mat-raised-button color="primary" (click)="ClickExportPDF()">Descargar
+      <button mat-raised-button color="primary" (click)="ClickExportPDF()"  [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
         <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
       </button>
 

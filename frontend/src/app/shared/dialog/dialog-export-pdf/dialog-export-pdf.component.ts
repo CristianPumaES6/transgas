@@ -62,8 +62,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   // Que informacion deseas agregar al reporte.
   public addOverallPerformance: boolean = false;
-  public addVoyageSummarySpeed: boolean = false;
-  public addVoyageSummaryConsumption: boolean = false;
+  public addVoyageSummary: boolean = false;
   public addBunkeringInformation: boolean = false;
   public addChartVoyageSummary: boolean = false;
 
@@ -119,8 +118,8 @@ export class DialogExportPdfComponent implements OnInit {
   public colorBlueTable2 = '#0040d8';
   public colorBlueTable3 = '#001556';
   public colorYellowTransgas = '#FFCD06';
-  public colorTextSuccess = '#85fc61';
-  public colorTextWarning = '#fd6767';
+  public colorTextSuccess = '#008000';
+  public colorTextWarning = '#ff0000';
   public colorGris = '#ebecec';
 
 
@@ -3267,7 +3266,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           // Agregamos la fecha de inicio y la fecha fin.
-          sVPR.atdAndAta = FormatDate(this.data.dateStart)+' To '+FormatDate(this.data.dateEnd)
+          sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
           sVPR.dateStart = '----'
           sVPR.dateStart = '----'
 
@@ -3345,9 +3344,9 @@ export class DialogExportPdfComponent implements OnInit {
 
           let isViewBallast: boolean = this.addSailingInBallast;
           let isViewLaden: boolean = this.addSailingWithLaden;
-
-          this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, SummaryByVoyage, isViewBallast, isViewLaden)
-
+          if (this.addVoyageSummary) {
+            this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, SummaryByVoyage, isViewBallast, isViewLaden)
+          }
           return true;
         }
       ).then(
