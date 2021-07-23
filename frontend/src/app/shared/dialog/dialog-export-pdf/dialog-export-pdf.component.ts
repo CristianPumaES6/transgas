@@ -7252,9 +7252,9 @@ export class DialogExportPdfComponent implements OnInit {
               consumptionCharterMGO = (dailyConsumptionCharterMGO * timeCharterMGO) / 24;
             }
 
-// INICAMOS AGREGANDO EL ROW GENERIC
+            // INICAMOS AGREGANDO EL ROW GENERIC
 
-// departure to arribal
+            // departure to arribal
             if (index == 0) {
               rowGenerit.push({ "content": iPort.departurePort + '\n' + iPort.arrivalPort + '\n' + typeNavigation, "colSpan": 2, "rowSpan": array.length });
             }
@@ -7441,7 +7441,7 @@ export class DialogExportPdfComponent implements OnInit {
         if (rowIndex > 1) {
 
           let rawLength = Object.keys(raw).length;
-          
+
           if (rawLength == 19 || rawLength == 10) {
 
             // nombre del viaje y numero.
