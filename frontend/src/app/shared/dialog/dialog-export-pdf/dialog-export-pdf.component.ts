@@ -3302,6 +3302,20 @@ export class DialogExportPdfComponent implements OnInit {
       ).then(
         result => {
 
+          // Inicializamos el height en 0,
+          let positionHeight = 0;
+          let voyages = [];
+
+          let isViewBallast: boolean = this.addSailingInBallast;
+          let isViewLaden: boolean = this.addSailingWithLaden;
+
+          this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, voyages, isViewBallast, isViewLaden)
+
+          return true;
+        }
+      ).then(
+        result => {
+
           doc.save("test.pdf")
 
           this.loadingService.Close();
@@ -4028,7 +4042,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     var data: RowInput[] = [
 
-      // Segunda Fila
+      // PRimera Fila
       [
         { "content": titleTable, "colSpan": 2, "rowSpan": 2 },
         { "content": "Total Time\n(HRS)", "colSpan": 2 },
@@ -6929,6 +6943,680 @@ export class DialogExportPdfComponent implements OnInit {
     doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
 
     // 27
+  }
+
+
+
+  private GenerateVoyageSumary(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, voyages: any[], isViewBallast: boolean, isViewLaden: boolean) {
+
+    // Agregamos una nueva pagina
+    doc.addPage();
+
+    positionHeight += 10;
+    let positionWidth = 10;
+
+    let title: string = 'Voyage Summary';
+    if (isViewBallast && isViewLaden) {
+      title += ' (Ballast/Laden)'
+    } else if (isViewBallast) {
+      title += ' (Ballast)'
+    } else if (isViewLaden) {
+      title += ' (Laden)'
+    }
+    // Agregamos la cabecera a la pagina.
+    positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+
+    ///////////////////////////////////////
+    ///////// Inicio del 1° Cuadro ////////
+    ///////////////////////////////////////
+
+    // Colocamos el rectangulo
+    positionHeight += 5.5;
+    //positionWidth = 63;
+    positionWidth = 5;
+    let iVoyage: Voyage = new Voyage();
+    this.GenerateTableSumaryVoyage(doc, widthPDF, heightPDF, positionWidth, positionHeight, iVoyage, isViewBallast, isViewLaden);
+  }
+
+
+  private GenerateTableSumaryVoyage(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, voyage: Voyage, isViewBallast: boolean, isViewLaden: boolean): number {
+    let heigthContentTable: number = 0;
+
+    let title: string = 'Voyage ' + voyage.voyageNumber + ' Summary\n';
+    if (isViewBallast && isViewLaden) {
+      title += ' (Ballast/Laden)'
+    } else if (isViewBallast) {
+      title += ' (Ballast)'
+    } else if (isViewLaden) {
+      title += ' (Laden)'
+    }
+
+
+    let contentHeightTable = 0;
+    // Le sumamos el espacio de la cabecera de la tabla.
+    contentHeightTable += 16.7;
+
+    // Revisar Eliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
+
+
+
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+
+
+
+
+
+    var data: RowInput[] = [
+
+      // Segunda Fila
+      [
+        { "content": "Departure to Arrival", "colSpan": 2, "rowSpan": 2 },
+        { "content": "Total Time\n(HRS)", "colSpan": 2 },
+        { "content": "Total Distance\n(MI)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)\n(Charter)", "colSpan": 2 },
+        { "content": "Time Per Navigation\n(HRS)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(MT)\n(Charter)", "colSpan": 2 }
+      ]
+    ];
+
+
+    let rowHeader2 = [];
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    data.push(rowHeader2);
+
+
+
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 200;
+
+
+
+
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      // Secction : head, body, footer
+      let section = data.section;
+      // guardamos la celda y verificamos que no sea underfiend
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+      // trabajaremos con el body.
+      if (section == 'body') {
+
+        // ubicacion del la fila
+        let rowIndex = data.row.index;
+        // ubicacion de la columna.
+        let columIndex = data.column.index;
+        // Raw ?????? <= agregar descripcion no lo se?
+        let raw = data.row.raw;
+
+
+
+
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
+          if (
+            columIndex == 2
+            || columIndex == 4
+            || columIndex == 6
+            || columIndex == 8
+            || columIndex == 10
+            || columIndex == 12
+            || columIndex == 14
+            || columIndex == 16
+            || columIndex == 18
+          ) {
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = 1
+          }
+          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
+          if (columIndex == 2 || columIndex == 4 || columIndex == 10) {
+            cell.styles.fillColor = this.colorBlueTable1;
+          }
+          // Solo las celdas que tienen formulas se pintan de blue2
+          if (columIndex == 6 || columIndex == 12) {
+            cell.styles.fillColor = this.colorBlueTable2;
+          }
+          // Solo las celdas que tienen datos del charter son de locor blue3
+          if (columIndex == 8 || columIndex == 14 || columIndex == 14 || columIndex == 16 || columIndex == 18) {
+            cell.styles.fillColor = this.colorBlueTable3;
+          }
+        }
+        // Segunda cabecera 
+        if (rowIndex == 1) {
+
+          if (
+            columIndex > 1) {
+
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = { top: 1, right: 1, bottom: 1, left: 1 };
+            cell.styles.minCellHeight = 6;
+          }
+        }
+
+        // de qui para adelante son los viajes.
+        if (rowIndex > 1) {
+
+          // nombre del viaje y numero.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            // cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
+          if (
+            (this.addInformationIFO && !this.addInformationMGO)
+            || (this.addInformationMGO && !this.addInformationIFO)
+          ) {
+            // Desde la columna 2 para adelante lo pintamos de gris.
+            if (columIndex >= 2) {
+              cell.styles.fillColor = this.colorGris;
+            }
+
+            // Time
+            if (columIndex == 2) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[8].content);
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+            // Speed
+            if (columIndex == 6) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[4].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+            // total consumo
+            if (columIndex == 10) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[9].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // daily consumo
+            if (columIndex == 12) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[7].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+          }
+
+          // Si se selecciona los dos tipos de combustible.
+          if (this.addInformationIFO && this.addInformationMGO) {
+            // Desde la columna 2 para adelante lo pintamos de gris.
+            if (columIndex >= 2) {
+              cell.styles.fillColor = this.colorGris;
+            }
+
+            // Time
+            if (columIndex == 2) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[15].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 3) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[16].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+            // Speed
+            if (columIndex == 6) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[7].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 7) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[8].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // total consumo
+            if (columIndex == 10) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[17].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 11) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[18].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // Daily Consumo
+            if (columIndex == 12) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[13].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 13) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[14].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+          }
+
+
+        }
+
+
+      }
+
+
+    }
+
+
+
+
+    // Total suma 136, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      9: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      10: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      11: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      12: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      13: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      14: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      15: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      16: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      17: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      18: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      19: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      }
+    };
+
+
+
+    autoTable(doc, userOptions);
+
+
+    return heigthContentTable;
   }
 
 
