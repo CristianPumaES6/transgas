@@ -104,14 +104,17 @@
                       {{'DATE' | translateMessage:translateCategory}}</th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'HOUR' | translateMessage:translateCategory}}</th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)</th>
                     <th *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
                       {{(selectUser.isConsumptionIFO?'TOTAL_IFO':selectUser.isConsumptionVLSFO ? 'TOTAL_VLSFO' :
-                      'TOTAL_LSFO') | translateMessage:translateCategory}}
+                      'TOTAL_LSFO') | translateMessage:translateCategory}} (MT)
                     </th>
                     <th *ngIf="selectUser.isConsumptionMGO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                      {{'TOTAL_MGO' | translateMessage:translateCategory}}</th>
+                      {{'TOTAL_MGO' | translateMessage:translateCategory}} (MT)
+                    </th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'OBSERVATIONS' | translateMessage:translateCategory}}</th>
                     <th class="color-title-table blue-1 border align-top pt-1"></th>
@@ -128,6 +131,7 @@
                       </td>
                       <td class="p-1 color-title-table border">{{ FormatDate(dailyReport.date) }}</td>
                       <td class="p-1 color-title-table border">{{ dailyReport.hour }}</td>
+                      <td class="p-1 color-title-table border">{{ dailyReport.steamingTime }}</td>
                       <td
                         *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                         class="p-1 color-title-table border">{{ TotalIFO(dailyReport) }}</td>
@@ -217,7 +221,7 @@
                 [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
                 <div class="col row no-gutters">
                   <mat-form-field>
-                    <input matInput type="number" placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}}"
+                    <input matInput type="number" placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}} (MT)"
                       [(ngModel)]="selectDailyReport.bunkeringIfo">
                   </mat-form-field>
                 </div>
@@ -228,7 +232,7 @@
                   <div class="col-11">
                     <mat-form-field>
                       <input matInput type="number"
-                        placeholder="{{'BUNKERING_MGO' | translateMessage:translateCategory}}"
+                        placeholder="{{'BUNKERING_MGO' | translateMessage:translateCategory}} (MT)"
                         [(ngModel)]="selectDailyReport.bunkeringMgo">
                     </mat-form-field>
                   </div>
@@ -254,7 +258,7 @@
 
                 <p class="m-0 grp-title">
                   {{(selectUser.isConsumptionIFO?'CONSUMPTION_IFO': selectUser.isConsumptionVLSFO ? 'CONSUMPTION_VLSFO'
-                  : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}}
+                  : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}} (MT)
                 </p>
 
                 <div class="col-12 row no-gutters personalizate">
@@ -297,7 +301,7 @@
 
             <ng-template [ngIf]="selectUser.isConsumptionMGO">
               <div class="col row no-gutters">
-                <p class="m-0 grp-title">{{'CONSUMPTION_MGO' | translateMessage:translateCategory}}</p>
+                <p class="m-0 grp-title">{{'CONSUMPTION_MGO' | translateMessage:translateCategory}} (MT)</p>
 
                 <div class="col-12 row no-gutters personalizate">
                   <ng-template [ngIf]="selectUser.isMEMGO">
@@ -365,13 +369,13 @@
 
             <div class="col">
               <mat-form-field>
-                <input matInput type="number" placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}}"
+                <input matInput type="number" placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
                   [(ngModel)]="selectDailyReport.steamingTime" [disabled]='true'>
               </mat-form-field>
             </div>
             <div class="col">
               <mat-form-field>
-                <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}}"
+                <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}} (MI)"
                   [(ngModel)]="selectDailyReport.distance">
               </mat-form-field>
             </div>

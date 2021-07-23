@@ -29,11 +29,11 @@ import { AppGateway } from './app.gateway';
     UsersModule,
     AuthModule,
     VoyagesModule,
-    // AppGateway,// por mientras queeste desactivado
+    AppGateway,// por mientras queeste desactivado
   ],
   controllers: [AppController],
   providers: [AppService, 
-    // AppGateway // por mientras queeste desactivado
+    AppGateway // por mientras queeste desactivado
   ],
 })
 export class AppModule { }

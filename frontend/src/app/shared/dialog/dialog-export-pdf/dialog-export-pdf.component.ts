@@ -9,18 +9,21 @@ import autoTable, { Cell, CellHookData, RowInput, UserOptions } from 'jspdf-auto
 import { DailyReport, Speed } from '../../../../app/models/daily-report';
 import { LoadingService } from '../../../../app/services/loading.service';
 import { mathRound } from './../../../../assets/math/math.assets';
-import { FormatDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
+import { FormatDate, FormatYYYYMMDD, IsAfter1Date, IsPrevious1Date, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
 import { Port } from '../../../models/port';
 import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
 import { LanguageService } from '../../../services/language.service';
 import { DialogListReportComponent } from '../dialog-list-report/dialog-list-report.component';
+import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOverallPerformanceAnalisis, GenerateTableTotalSummaryOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
   voyages: Voyage[],
   selectUser: User,
   selectVoyageId: number,
+  dateStart: Date,
+  dateEnd: Date
 }
 
 @Component({
@@ -44,6 +47,7 @@ export class DialogExportPdfComponent implements OnInit {
     private loadingService: LoadingService,
   ) { }
 
+
   // Traducciones
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dialog';
@@ -55,6 +59,36 @@ export class DialogExportPdfComponent implements OnInit {
   public selectVoyageId: number = 0;
   public selectPortId: number = 0;
   public selectTypeExport: string = '';
+
+  // Que informacion deseas agregar al reporte.
+  public addOverallPerformance: boolean = false;
+  public addVoyageSummary: boolean = false;
+  public addBunkeringInformation: boolean = false;
+  public addChartVoyageSummary: boolean = false;
+
+  // Que informacion deseamos agregar
+  public addInformationIFO: boolean = false;
+  public addInformationMGO: boolean = false;
+
+  // Por maquina
+  public addMEIFO: boolean = false;
+  public addAXIFO: boolean = false;
+  public addBoilerIFO: boolean = false;
+  public addOtherIFO: boolean = false;
+
+  public addMEMGO: boolean = false;
+  public addAXMGO: boolean = false;
+  public addBoilerMGO: boolean = false;
+  public addGIMGO: boolean = false;
+  public addPPMGO: boolean = false;
+  public addOtherMGO: boolean = false;
+
+
+  // si deseamos agregar algun dato de sailing.
+  public addSailingInBallast: boolean = false;
+  public addSailingWithLaden: boolean = false;
+  public addSailingEconomical: boolean = false;
+
 
   // Viajes y puertos.
   public voyages: Voyage[] = [];
@@ -76,6 +110,20 @@ export class DialogExportPdfComponent implements OnInit {
   public chartLineIFO: Chart; // LINEA
   public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
+  // Variable para el pagina 
+  public numberPage = 1;
+
+  // Colores
+  public colorWhite = '#FFFFFF';
+  public colorTextHedear = '#16214D';
+  public colorBlueTable1 = '#375f9a';
+  public colorBlueTable2 = '#0040d8';
+  public colorBlueTable3 = '#001556';
+  public colorYellowTransgas = '#FFCD06';
+  public colorTextSuccess = '#008000';
+  public colorTextWarning = '#ff0000';
+  public colorGris = '#ebecec';
+
 
   ngOnInit(): void {
 
@@ -88,7 +136,7 @@ export class DialogExportPdfComponent implements OnInit {
         this.voyages = this.data.voyages;
         this.selectVoyageId = this.data.selectVoyageId;
 
-        // SI existe un viaje seleccioando lo buscamos.
+        // Si existe un viaje seleccioando lo buscamos.
         if (this.selectVoyageId) {
           // Buscamos el viaje.
           let voyageSelect = this.voyages.find(voyage => voyage.id === this.selectVoyageId);
@@ -185,7 +233,7 @@ export class DialogExportPdfComponent implements OnInit {
       result => {
 
         // Exportar pdf
-        return this.ExportPDFVesselPerformance();
+        return this.ExportPDFVesselPerformance2(this.data.voyages);
       }
     ).then(
       result => {
@@ -367,14 +415,13 @@ export class DialogExportPdfComponent implements OnInit {
 
             let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
             doc.setTextColor(255, 0, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + " Hours Lost", 140, positionHeight, { align: 'left' })
+            doc.text(this.MathRoundDecimal(diffHour, 2) + " Hours Lost", 140, positionHeight, { align: 'left' })
 
           } else {
             // Caso contrario verde
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + ' Hours before', 140, positionHeight, { align: 'left' })
-
+            doc.text(this.MathRoundDecimal(diffHour, 2) + ' Hours Saved', 140, positionHeight, { align: 'left' })
           }
 
 
@@ -393,7 +440,7 @@ export class DialogExportPdfComponent implements OnInit {
           } else {
 
             doc.setTextColor(0, 128, 0);
-            doc.text("Within Guaranteed Limits", 140, positionHeight, { align: 'left' })
+            doc.text("Consumption Within The Guaranteed Limits", 140, positionHeight, { align: 'left' })
 
           }
 
@@ -588,7 +635,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Transit Distance :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distance, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.distance, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('NM', 135, positionHeight, { align: 'left' });
 
 
@@ -596,7 +643,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Transit Time :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Hours', 135, positionHeight, { align: 'left' });
 
 
@@ -605,7 +652,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.text("Average Speed :", 80, positionHeight, { align: 'right' });
           doc.setFont('Helvetica', 'normal');
           let averageSpeedPerformed = getInfoByActivity.distance / (getInfoByActivity.time || 1);
-          doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Knots', 135, positionHeight, { align: 'left' });
 
 
@@ -621,7 +668,7 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text("Performance Speed :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(averageSpeedPerformed, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Knots', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
@@ -644,14 +691,14 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(0, 0, 0);
           doc.text("Performance Time :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.time, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Hours', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
           doc.setTextColor(0, 0, 0);
           doc.text("Allowable Charter Time :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.distance / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.distance / this.selectUser.contractSpeedSailingLadenIFO, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('Hours', 135, positionHeight, { align: 'left' });
 
           // Segundo cuadro
@@ -670,13 +717,13 @@ export class DialogExportPdfComponent implements OnInit {
             let diffHour = getInfoByActivity.time - getInfoByActivity.timeByCharter;
             doc.setTextColor("960e0e");
             doc.setTextColor(255, 0, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
+            doc.text(this.MathRoundDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
             doc.text('Hours Lost', 135, positionHeight, { align: 'left' });
           } else {
             let diffHour = getInfoByActivity.timeByCharter - getInfoByActivity.time;
             doc.setTextColor(0, 128, 0);
-            doc.text(this.MathRoundOneDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
-            doc.text('Hours before', 135, positionHeight, { align: 'left' });
+            doc.text(this.MathRoundDecimal(diffHour, 2) + '', 130, positionHeight, { align: 'right' });
+            doc.text('Hours Saved', 135, positionHeight, { align: 'left' });
           }
 
 
@@ -727,14 +774,14 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(0, 0, 0);
           doc.text("Warranted Daily Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.ifoDailyConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
           doc.setTextColor(0, 0, 0);
           doc.text("Actual Daily Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.ifoDailyConsumption, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
 
@@ -749,14 +796,14 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setTextColor(0, 0, 0);
           doc.text("Warranted Total Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.totalConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.totalConsumptionByCharter, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
           positionHeight += 6;
           doc.setTextColor(0, 0, 0);
           doc.text("Actual Total Consumption :", 80, positionHeight, { align: 'right' });
           doc.setTextColor(22, 33, 77);
-          doc.text(this.MathRoundOneDecimal(getInfoByActivity.ifoConsumption, 2) + '', 130, positionHeight, { align: 'right' });
+          doc.text(this.MathRoundDecimal(getInfoByActivity.ifoConsumption, 2) + '', 130, positionHeight, { align: 'right' });
           doc.text('MT', 135, positionHeight, { align: 'left' });
 
           // Segundo cuadro
@@ -772,10 +819,10 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           if (getInfoByActivity.ifoConsumption < getInfoByActivity.ifoDailyConsumptionByCharter) {
             doc.setTextColor(255, 0, 0);
-            doc.text('Overall Fuel Oil Consumption Out Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+            doc.text('Out Guaranteed Limits', widthPDF / 2, positionHeight, { align: 'center' });
           } else {
             doc.setTextColor(0, 128, 0);
-            doc.text('Overall Fuel Oil Consumption WITHIN Guaranteed Limitsy', widthPDF / 2, positionHeight, { align: 'center' });
+            doc.text('WITHIN Guaranteed Limits', widthPDF / 2, positionHeight, { align: 'center' });
           }
 
           let pageFooter = heightPDF - 10;
@@ -958,7 +1005,7 @@ export class DialogExportPdfComponent implements OnInit {
                 this.languageService.GetMessage(this.translateCategory, report.activityPerformed),
                 String(report.steamingTime),
                 String(report.distance),
-                this.MathRoundOneDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
+                this.MathRoundDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
                 String(this.selectUser.contractSpeedSailingLadenIFO),
                 report.beaufour
 
@@ -1330,12 +1377,12 @@ export class DialogExportPdfComponent implements OnInit {
                 this.languageService.GetMessage(this.translateCategory, report.activityPerformed),
                 String(report.steamingTime),
                 String(report.distance),
-                this.MathRoundOneDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
+                this.MathRoundDecimal(report.steamingTime ? report.distance / report.steamingTime : report.distance, 2),
                 String(this.selectUser.contractSpeedSailingLadenIFO),
-                this.MathRoundOneDecimal(report.mplaIfo, 2),
-                this.MathRoundOneDecimal(report.auxIfo, 2),
-                this.MathRoundOneDecimal(report.boilerIfo, 2),
-                this.MathRoundOneDecimal(report.mplaIfo + report.auxIfo + report.boilerIfo, 2),
+                this.MathRoundDecimal(report.mplaIfo, 2),
+                this.MathRoundDecimal(report.auxIfo, 2),
+                this.MathRoundDecimal(report.boilerIfo, 2),
+                this.MathRoundDecimal(report.mplaIfo + report.auxIfo + report.boilerIfo, 2),
 
                 report.beaufour
 
@@ -1557,11 +1604,11 @@ export class DialogExportPdfComponent implements OnInit {
             [{ "content": "Engine Consumption Summary", "colSpan": 2, "rowSpan": 2 }, { "content": "Main Engine", "colSpan": 2 }, { "content": "Aux Engine", "colSpan": 2 }, { "content": "Boiler", "colSpan": 2 }],
             [{ "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "MGO", "colSpan": 1 }],
             // Aqui van los valores
-            [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
+            [{ "content": port.departurePort + " to " + port.arrivalPort, "colSpan": 2 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalIFOME, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalMGOME, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalIFOAE, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalMGOAE, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalIFOBoiler, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.totalMGOBoiler, 2), "colSpan": 1 }],
             [{ "content": "", "colSpan": 8 }],
             [{ "content": "Voyage(s) Total", "colSpan": 1, "rowSpan": 2 }, { "content": "Time", "colSpan": 1 }, { "content": "Distance", "colSpan": 1 }, { "content": "AVG\nSpeed", "colSpan": 1 }, { "content": "Speed\nCharter", "colSpan": 1 }, { "content": typeConsumptionSelectBuque, "colSpan": 1 }, { "content": "Daily\n" + typeConsumptionSelectBuque + "\n", "colSpan": 1 }, { "content": "Daily\nCharter", "colSpan": 1 }],
             // Aqui van valores.
-            [{ "content": this.MathRoundOneDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundOneDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundOneDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
+            [{ "content": this.MathRoundDecimal(getInfoByActivity.time, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.distance, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal((getInfoByActivity.distance / getInfoByActivity.time) || 0, 2), "colSpan": 1 }, { "content": this.selectUser.contractSpeedSailingLadenIFO, "colSpan": 1 }, { "content": getInfoByActivity.ifoConsumption, "colSpan": 1 }, { "content": this.MathRoundDecimal(getInfoByActivity.ifoDailyConsumption, 2), "colSpan": 1 }, { "content": this.MathRoundDecimal(this.selectUser.sailingLoadConsumptionIFO, 2), "colSpan": 1 }],
             [{ "content": "Consumption rates in table are provided directly by the vessel, and are not adjusted for exclusions. Missing values indicate that complete data was not received", "colSpan": 8 }],
 
 
@@ -2637,7 +2684,7 @@ export class DialogExportPdfComponent implements OnInit {
     return mgo;
   }
 
-  public MathRoundOneDecimal(valor, cantDecimales: number) {
+  public MathRoundDecimal(valor, cantDecimales: number) {
 
     if (!valor) { return 0; }
 
@@ -2690,5 +2737,5682 @@ export class DialogExportPdfComponent implements OnInit {
     });
 
   }
-}
 
+
+  // ExportPDFVesselPerformance2() esta funcion genera el pdf.
+  private ExportPDFVesselPerformance2(voyages: Voyage[]): Promise<boolean> {
+
+    // Parseamos los viajes para que no se modifique.
+    let parseVoyages: Voyage[] = JSON.parse(JSON.stringify(voyages));
+
+    // Armamos el objeto de JSPDF
+    const doc = new jsPDF();
+
+    // tamaño de pdf.
+    const widthPDF = doc.internal.pageSize.getWidth();
+    const heightPDF = doc.internal.pageSize.getHeight();
+
+    let rolTraslate = this.languageService.GetMessage(this.translateCategory, this.selectUser.role);
+
+    // Rango de fecha de inicio y fin
+    // Esta variable nos ayudara saber cuando si nicio el reporte y cuando termino.
+    let generalStartDate: String;
+    let generalEndDate: String;
+
+    // Resumen de todo el viaje.
+    const sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
+    sVPR.logoTransgas = './assets/icons/logotransgas.png';
+    sVPR.titleDocument = 'Vessel Performance Report';
+    sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
+
+    // Objeto del cuadro de resument
+    let gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
+
+    // Lista del resumen de viaje.
+    let listGTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
+    let listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
+
+    // Esta variable contendra todos los viajes.
+    let SummaryByVoyage: Voyage[] = [];
+    // Inicializamos sincrono.
+    return Promise.resolve(true)
+      .then(
+        result => {
+
+          // Abrimos el componente Loading.
+          this.loadingService.Open();
+
+          // Recorremos todos los viajes.
+          parseVoyages.forEach(
+            voyage => {
+              // Resumen de viaje, lo lo agregaremos al arreglo
+              let gTSOPA_Ballast: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+              let gTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis = new GenerateTableSummaryOverallPerformanceAnalisis();
+
+
+              // Esta variable nos ayudara para saber si ya contamos el viaje, una vez que lo sumamos lo ponemos false;
+              let isNewVoyage: boolean = true;
+
+              // esta variable obtendra los nuevos viajes.
+              let newVoyage: Voyage = new Voyage();
+              if (voyage.status) {
+
+                // Agregamos el id y el numero del viaje.
+                // BALLAST
+                gTSOPA_Ballast.voyageId = voyage.id;
+                gTSOPA_Ballast.voyageNumber = voyage.voyageNumber;
+                // LADEN
+                gTSOPA_Laden.voyageId = voyage.id;
+                gTSOPA_Laden.voyageNumber = voyage.voyageNumber;
+
+
+                // Recorremos todos los puertos
+                voyage.ports.forEach(
+                  port => {
+
+                    // Esta variable nos ayudara para saber si ya contamos el puerto, una vez que lo sumamos lo ponemos false;
+                    let isNewPort: boolean = true;
+                    if (port.status) {
+
+                      // recorremos todos los reportes
+                      port.dailyReports.forEach(
+                        dailyReport => {
+                          if (dailyReport.status) {
+
+
+                            if (
+                              // Verificamos si se desea agregar la informacion de navegando en ballast o Laden
+                              (
+                                (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST')
+                                || (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN')
+                                || (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                              )
+                              // Verificamos que las dos condiciones sean falsas para decir si el reporte esta dentro del rango de fecha.
+                              && !(!IsAfter1Date(dailyReport.date, this.data.dateStart) || !IsPrevious1Date(dailyReport.date, this.data.dateEnd))
+                            ) {
+
+                              // Esta variable tienen el total de consumo
+                              let totalIFO = this.SumaIfo(dailyReport);
+                              let totalMGO = this.SumaMgo(dailyReport);
+
+                              // verificamos que exista un consumo registrado 
+                              // ademas que si se desea esa informacion
+                              if (
+                                (totalIFO && this.addInformationIFO)
+                                || (totalMGO && this.addInformationMGO)) {
+
+
+
+                                // Verifcamos si tenemos que sumar eli viaje.
+                                if (isNewVoyage) {
+                                  isNewVoyage = false;
+                                  sVPR.totalVoyageSailing += 1;
+                                  console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
+                                  // Agregamos el numero de viaje.
+                                  sVPR.lastVoyageSailing = voyage.voyageNumber;
+
+
+                                  // Agregamos los datos del viaje.
+                                  newVoyage.id = voyage.id
+                                  newVoyage.voyageNumber = voyage.voyageNumber;
+                                  newVoyage.status = voyage.status;
+                                }
+                                // Verificamos si tenemos que sumar el puerto.
+                                if (isNewPort) {
+                                  isNewPort = false;
+                                  sVPR.totalPortSailing += 1;
+                                  console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
+
+                                  // Armamos el nuevo puerto.
+                                  let portSummary = new Port(port.id, port.userId, port.voyageId, port.portNumber, port.departurePort, port.arrivalPort, port.userIdCreated, port.dateCreated, port.userIdUpdated, port.dateUpdated, port.status);
+                                  portSummary.dailyReports = [];
+                                  // Agregamos el puerto al viaje.
+                                  newVoyage.ports.push(portSummary);
+                                }
+
+
+
+                                // Nos ubicamos en el ultimo puerto
+                                let lengthPort = newVoyage.ports.length;
+                                let indexPort = lengthPort - 1;
+                                newVoyage.ports[indexPort].dailyReports.push(dailyReport);
+
+                                // Verificamos si es navegando con carga
+                                if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+
+                                  // Si existe la actividad in ballast agrego la distancia
+                                  sVPR.totalDistanceBallast += dailyReport.distance;
+
+                                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                                  if (this.addInformationIFO && totalIFO) {
+                                    gTSOPA_Ballast.distanceIFO += dailyReport.distance;
+                                    gTSOPA_Ballast.consumptionIFO += totalIFO;
+                                    gTSOPA_Ballast.timeIFO += dailyReport.steamingTime;
+
+                                    gTTSOPA.distanceIFOBallast += dailyReport.distance;
+                                    gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionIFOBallast += totalIFO;
+                                  }
+                                  if (this.addInformationMGO && totalMGO) {
+                                    gTSOPA_Ballast.distanceMGO += dailyReport.distance;
+                                    gTSOPA_Ballast.consumptionMGO += totalMGO;
+                                    gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
+
+
+                                    gTTSOPA.distanceMGOBallast += dailyReport.distance;
+                                    gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionMGOBallast += totalMGO;
+                                  }
+
+
+
+
+                                  // Verificamos si es la actividad navegando sin carga
+                                } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+
+                                  // Si existe la actividad laden agrego la distancia.
+                                  sVPR.totalDistanceLaden += dailyReport.distance;
+
+                                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                                  if (this.addInformationIFO && totalIFO) {
+                                    gTSOPA_Laden.distanceIFO += dailyReport.distance;
+                                    gTSOPA_Laden.consumptionIFO += totalIFO;
+                                    gTSOPA_Laden.timeIFO += dailyReport.steamingTime;
+
+                                    gTTSOPA.distanceIFOLaden += dailyReport.distance;
+                                    gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionIFOLaden += totalIFO;
+                                  }
+                                  if (this.addInformationMGO && totalMGO) {
+                                    gTSOPA_Laden.distanceMGO += dailyReport.distance;
+                                    gTSOPA_Laden.consumptionMGO += totalMGO;
+                                    gTSOPA_Laden.timeMGO += dailyReport.steamingTime;
+
+                                    gTTSOPA.distanceMGOLaden += dailyReport.distance;
+                                    gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
+                                    gTTSOPA.consumptionMGOLaden += totalMGO;
+                                  }
+
+                                } else if (this.addSailingEconomical && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+
+                                }
+
+
+
+                              }
+                            }
+
+
+
+
+
+
+                          }
+                        }
+                      )
+
+                    }
+                  }
+                )
+                // Verificamos que exista algun puerto para agregalo.
+                console.log(newVoyage.ports.length)
+                if (newVoyage.ports.length) {
+                  SummaryByVoyage.push(newVoyage);
+                }
+
+                // Solo si existen tiempo IFO o MGO
+                // Agregamos a la lista
+                if (gTSOPA_Ballast.timeIFO || gTSOPA_Ballast.timeMGO) {
+
+
+                  // AQUI APLICAMOS LAS FORMULAS.
+
+                  if (this.addInformationIFO) {
+
+                    // Time
+                    gTSOPA_Ballast.timeIFOCharter = this.selectUser.contractSpeedSailingBallastIFO ?
+                      gTSOPA_Ballast.distanceIFO / this.selectUser.contractSpeedSailingBallastIFO : 0;
+
+                    // Velocidad
+                    gTSOPA_Ballast.speedIFO = gTSOPA_Ballast.timeIFO ?
+                      gTSOPA_Ballast.distanceIFO / gTSOPA_Ballast.timeIFO : 0;
+
+                    // Velocidad Charter
+                    gTSOPA_Ballast.speedIFOCharter = this.selectUser.contractSpeedSailingBallastIFO;
+
+                    // DailyConsumption IFO
+                    gTSOPA_Ballast.dailyConsumptionIFO = gTSOPA_Ballast.timeIFO ?
+                      (gTSOPA_Ballast.consumptionIFO * 24) / gTSOPA_Ballast.timeIFO : 0;
+
+                    // DailyConsumption IFO Charter
+                    gTSOPA_Ballast.dailyConsumptionCharterIFO = this.selectUser.sailingBallastConsumptionIFO;
+
+                    // Consumo por charter
+                    gTSOPA_Ballast.consumptionIFOCharter = (gTSOPA_Ballast.dailyConsumptionCharterIFO * gTSOPA_Ballast.timeIFOCharter) / 24;
+
+                    // Consumo 
+                  }
+
+                  if (this.addInformationMGO) {
+
+
+                    // Time
+                    gTSOPA_Ballast.timeMGOCharter = this.selectUser.contractSpeedSailingBallastMGO ?
+                      gTSOPA_Ballast.distanceMGO / this.selectUser.contractSpeedSailingBallastMGO : 0;
+
+
+                    // Velocidad
+                    gTSOPA_Ballast.speedMGO = gTSOPA_Ballast.timeMGO ?
+                      gTSOPA_Ballast.distanceMGO / gTSOPA_Ballast.timeMGO : 0;
+
+
+                    // Velocidad Charter
+                    gTSOPA_Ballast.speedMGOCharter = this.selectUser.contractSpeedSailingBallastMGO;
+
+
+                    // DailyConsumption MGO
+                    gTSOPA_Ballast.dailyConsumptionMGO = gTSOPA_Ballast.timeMGO ?
+                      (gTSOPA_Ballast.consumptionMGO * 24) / gTSOPA_Ballast.timeMGO : 0;
+
+                    // DailyConsumption MGO Charter
+                    gTSOPA_Ballast.dailyConsumptionCharterMGO = this.selectUser.sailingBallastConsumptionMGO;
+
+
+                    // Consumo por charter
+                    gTSOPA_Ballast.consumptionMGOCharter = (gTSOPA_Ballast.dailyConsumptionCharterMGO * gTSOPA_Ballast.timeMGOCharter) / 24;
+
+                  }
+
+                  listGTSOPA_Ballast.push(gTSOPA_Ballast)
+                }
+
+
+
+
+                if (gTSOPA_Laden.timeIFO || gTSOPA_Laden.timeMGO) {
+
+
+
+                  // AQUI APLICAMOS LAS FORMULAS.
+
+                  if (this.addInformationIFO) {
+
+                    // Time
+                    gTSOPA_Laden.timeIFOCharter = this.selectUser.contractSpeedSailingLadenIFO ?
+                      gTSOPA_Laden.distanceIFO / this.selectUser.contractSpeedSailingLadenIFO : 0;
+
+
+                    // Velocidad
+                    gTSOPA_Laden.speedIFO = gTSOPA_Laden.timeIFO ?
+                      gTSOPA_Laden.distanceIFO / gTSOPA_Laden.timeIFO : 0;
+
+
+                    // Velocidad Charter
+                    gTSOPA_Laden.speedIFOCharter = this.selectUser.contractSpeedSailingLadenIFO;
+
+
+                    // DailyConsumption IFO
+                    gTSOPA_Laden.dailyConsumptionIFO = gTSOPA_Laden.timeIFO ?
+                      (gTSOPA_Laden.consumptionIFO * 24) / gTSOPA_Laden.timeIFO : 0;
+
+                    // DailyConsumption IFO Charter
+                    gTSOPA_Laden.dailyConsumptionCharterIFO = this.selectUser.sailingLoadConsumptionIFO;
+
+
+                    // Consumo por charter
+                    gTSOPA_Laden.consumptionIFOCharter = (gTSOPA_Laden.dailyConsumptionCharterIFO * gTSOPA_Laden.timeIFOCharter) / 24;
+
+
+                  }
+
+                  if (this.addInformationMGO) {
+
+
+                    // Time
+                    gTSOPA_Laden.timeMGOCharter = this.selectUser.contractSpeedSailingLadenMGO ?
+                      gTSOPA_Laden.distanceMGO / this.selectUser.contractSpeedSailingLadenMGO : 0;
+
+
+                    // Velocidad
+                    gTSOPA_Laden.speedMGO = gTSOPA_Laden.timeMGO ?
+                      gTSOPA_Laden.distanceMGO / gTSOPA_Laden.timeMGO : 0;
+
+
+                    // Velocidad Charter
+                    gTSOPA_Laden.speedMGOCharter = this.selectUser.contractSpeedSailingLadenMGO;
+
+
+                    // DailyConsumption MGO
+                    gTSOPA_Laden.dailyConsumptionMGO = gTSOPA_Laden.timeMGO ?
+                      (gTSOPA_Laden.consumptionMGO * 24) / gTSOPA_Laden.timeMGO : 0;
+
+                    // DailyConsumption MGO Charter
+                    gTSOPA_Laden.dailyConsumptionCharterMGO = this.selectUser.sailingLoadConsumptionMGO;
+
+
+                    // Consumo por charter
+                    gTSOPA_Laden.consumptionMGOCharter = (gTSOPA_Laden.dailyConsumptionCharterMGO * gTSOPA_Laden.timeMGOCharter) / 24;
+
+                  }
+
+
+
+                  listGTSOPA_Laden.push(gTSOPA_Laden)
+                }
+
+
+              }
+            }
+          );
+
+
+          // AQUI APLICAMOS LAS FORMULAS.
+          // Ballast
+          if (this.addSailingInBallast) {
+
+            if (this.addInformationIFO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO ?
+                gTTSOPA.distanceIFOBallast / this.selectUser.contractSpeedSailingBallastIFO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedIFOBallast = gTTSOPA.timeIFOBallast ?
+                gTTSOPA.distanceIFOBallast / gTTSOPA.timeIFOBallast : 0;
+
+
+              // Velocidad Charter
+              gTTSOPA.speedCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO;
+
+
+              // Daily Consumption IFO
+              gTTSOPA.dailyConsumptionIFOBallast = gTTSOPA.timeIFOBallast ?
+                (gTTSOPA.consumptionIFOBallast * 24) / gTTSOPA.timeIFOBallast : 0;
+
+
+              // DailyConsumption IFO Charter
+              gTTSOPA.dailyConsumptionCharterIFOBallast = this.selectUser.sailingBallastConsumptionIFO;
+
+
+              // Consumo por charter
+              gTTSOPA.consumptionCharterIFOBallast = (gTTSOPA.dailyConsumptionCharterIFOBallast * gTTSOPA.timeCharterIFOBallast) / 24;
+
+
+
+              // Calculamos el time annotate
+              gTTSOPA.anotateTimeBallastIFO = gTTSOPA.timeCharterIFOBallast ? gTTSOPA.timeCharterIFOBallast - gTTSOPA.timeIFOBallast : 0;
+              gTTSOPA.anotateConsumptionBallastIFO = gTTSOPA.dailyConsumptionCharterIFOBallast ? gTTSOPA.dailyConsumptionCharterIFOBallast - gTTSOPA.dailyConsumptionIFOBallast : 0;
+
+            }
+            if (this.addInformationMGO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO ?
+                gTTSOPA.distanceMGOBallast / this.selectUser.contractSpeedSailingBallastMGO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedMGOBallast = gTTSOPA.timeMGOBallast ?
+                gTTSOPA.distanceMGOBallast / gTTSOPA.timeMGOBallast : 0;
+
+
+              // Velocidad Charter
+              gTTSOPA.speedCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO;
+
+
+              // Daily Consumption MGO
+              gTTSOPA.dailyConsumptionMGOBallast = gTTSOPA.timeMGOBallast ?
+                (gTTSOPA.consumptionMGOBallast * 24) / gTTSOPA.timeMGOBallast : 0;
+
+
+              // DailyConsumption MGO Charter
+              gTTSOPA.dailyConsumptionCharterMGOBallast = this.selectUser.sailingBallastConsumptionMGO;
+
+              // Consumo por charter
+              gTTSOPA.consumptionCharterMGOBallast = (gTTSOPA.dailyConsumptionCharterMGOBallast * gTTSOPA.timeCharterMGOBallast) / 24;
+
+
+
+              // Calculamos el time annotate
+              gTTSOPA.anotateTimeBallastMGO = gTTSOPA.timeCharterMGOBallast ? gTTSOPA.timeCharterMGOBallast - gTTSOPA.timeMGOBallast : 0;
+              gTTSOPA.anotateConsumptionBallastMGO = gTTSOPA.dailyConsumptionCharterMGOBallast ? gTTSOPA.dailyConsumptionCharterMGOBallast - gTTSOPA.dailyConsumptionMGOBallast : 0;
+            }
+          }
+          // Laden
+          if (this.addSailingWithLaden) {
+
+            if (this.addInformationIFO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO ?
+                gTTSOPA.distanceIFOLaden / this.selectUser.contractSpeedSailingLadenIFO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedIFOLaden = gTTSOPA.timeIFOLaden ?
+                gTTSOPA.distanceIFOLaden / gTTSOPA.timeIFOLaden : 0;
+
+
+              // Velocidad Charter
+              gTTSOPA.speedCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO;
+
+
+
+              // Daily Consumption MGO
+              gTTSOPA.dailyConsumptionIFOLaden = gTTSOPA.timeIFOLaden ?
+                (gTTSOPA.consumptionIFOLaden * 24) / gTTSOPA.timeIFOLaden : 0;
+
+
+
+
+              // DailyConsumption IFO Charter
+              gTTSOPA.dailyConsumptionCharterIFOLaden = this.selectUser.sailingLoadConsumptionIFO;
+
+
+              // Conusmo diario calculado segun el charter.
+              gTTSOPA.consumptionCharterIFOLaden = (gTTSOPA.dailyConsumptionCharterIFOLaden * gTTSOPA.timeCharterIFOLaden) / 24;
+
+
+
+              // Anotate TIME
+              gTTSOPA.anotateTimeLadenIFO = gTTSOPA.timeCharterIFOLaden ? gTTSOPA.timeCharterIFOLaden - gTTSOPA.timeIFOLaden : 0;
+
+              // Anotate Laden
+              gTTSOPA.anotateConsumptionLadenIFO = gTTSOPA.dailyConsumptionCharterIFOLaden ? gTTSOPA.dailyConsumptionCharterIFOLaden - gTTSOPA.dailyConsumptionIFOLaden : 0;
+
+            }
+            if (this.addInformationMGO) {
+              // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+              gTTSOPA.timeCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO ?
+                gTTSOPA.distanceMGOLaden / this.selectUser.contractSpeedSailingLadenMGO : 0;
+
+
+              // VELOCIDAD
+              gTTSOPA.speedMGOLaden = gTTSOPA.timeMGOLaden ?
+                gTTSOPA.distanceMGOLaden / gTTSOPA.timeMGOLaden : 0;
+
+
+              // Velocidad Charter
+              gTTSOPA.speedCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO;
+
+
+
+              // Daily Consumption MGO
+              gTTSOPA.dailyConsumptionMGOLaden = gTTSOPA.timeMGOLaden ?
+                (gTTSOPA.consumptionMGOLaden * 24) / gTTSOPA.timeMGOLaden : 0;
+
+
+
+              // DailyConsumption MGO Charter
+              gTTSOPA.dailyConsumptionCharterMGOLaden = this.selectUser.sailingLoadConsumptionMGO;
+
+
+
+              // Consumo MGO Charter
+              gTTSOPA.consumptionCharterMGOLaden = (gTTSOPA.dailyConsumptionCharterMGOLaden * gTTSOPA.timeCharterMGOLaden) / 24;
+
+              // Anotate TIME
+              gTTSOPA.anotateTimeLadenMGO = gTTSOPA.timeCharterMGOLaden ? gTTSOPA.timeCharterMGOLaden - gTTSOPA.timeMGOLaden : 0;
+
+              // Anotate Laden
+              gTTSOPA.anotateConsumptionLadenMGO = gTTSOPA.dailyConsumptionCharterMGOLaden ? gTTSOPA.dailyConsumptionCharterMGOLaden - gTTSOPA.dailyConsumptionMGOLaden : 0;
+
+            }
+
+          }
+
+          gTTSOPA.anotateTimeBallast = gTTSOPA.anotateTimeBallastIFO + gTTSOPA.anotateTimeBallastMGO;
+          gTTSOPA.anotateTimeLaden = gTTSOPA.anotateTimeLadenIFO + gTTSOPA.anotateTimeLadenMGO;
+
+
+          gTTSOPA.anotateConsumptionBallast = gTTSOPA.anotateConsumptionBallastIFO + gTTSOPA.anotateConsumptionBallastMGO;
+          gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
+
+
+          // Agregamos la fecha de inicio y la fecha fin.
+          sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
+          sVPR.dateStart = '----'
+          sVPR.dateStart = '----'
+
+        }
+      ).then(
+        result => {
+
+          // Revisar los demas daptos podrian estar asi como listSummary
+          // lo mejor de todo searia si se arma en un objeto.
+          // Esto es de prueba tenemos que eliminarlo.
+          // Al recorrer tendriamos algo asi.
+          sVPR.listSummarySpeedCondition =
+            [
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+              new SummarySpeedCondition('Lima-Callao', 'Laden', 200, 0, 10, 0, 20, 0),
+              new SummarySpeedCondition('Callao-Ancon', 'Laden', 100, 0, 10, 0, 10, 0),
+              new SummarySpeedCondition('Ancon-Talara', 'Laden', 300, 0, 10, 0, 30, 0),
+            ];
+
+          // Luego deberiamos enviar esa informacion a los siguientes documentos.
+
+          // Agregamos la primera pagina,
+          // El cual tiene resumido todo el reporte.
+          this.AddOnePage(doc, sVPR, gTTSOPA);
+
+
+
+          return true;
+        }
+      ) // Aqui descargamos el documento de pdf.
+      .then(
+        result => {
+
+          // Inicializamos el height en 0,
+          let positionHeight = 0;
+
+          // Se desea agregar el overall performance?
+          if (this.addOverallPerformance) {
+
+            if (this.addSailingInBallast) {
+              // Agregamos una nueva pagina
+              doc.addPage();
+              this.numberPage += 1;
+              let isViewBallast = true;
+              let isViewLaden = false;
+              // Agregamos el OverallPerformanceAnalisis
+              this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Ballast, gTTSOPA, isViewBallast, isViewLaden)
+
+            }
+            if (this.addSailingWithLaden) {
+              // Agregamos una nueva pagina
+              doc.addPage();
+              this.numberPage += 1;
+              let isViewBallast = false;
+              let isViewLaden = true;
+              // Agregamos el OverallPerformanceAnalisis
+              this.OverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionHeight, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden)
+
+            }
+          }
+
+          return true;
+        }
+      ).then(
+        result => {
+
+          // Inicializamos el height en 0,
+          let positionHeight = 0;
+
+          let isViewBallast: boolean = this.addSailingInBallast;
+          let isViewLaden: boolean = this.addSailingWithLaden;
+          if (this.addVoyageSummary) {
+            this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, SummaryByVoyage, isViewBallast, isViewLaden)
+          }
+          return true;
+        }
+      ).then(
+        result => {
+
+          let ballastOrLaden = '';
+          if (this.addSailingInBallast && !this.addSailingWithLaden) {
+            ballastOrLaden = '(Ballast)';
+          }
+          if (this.addSailingWithLaden && !this.addSailingInBallast) {
+            ballastOrLaden = '(Laden)';
+          }
+          if (this.addSailingWithLaden && this.addSailingInBallast) {
+
+            ballastOrLaden = '(Ballast/Laden)';
+          }
+
+
+          doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
+          this.numberPage = 1;
+          
+          this.loadingService.Close();
+          return true;
+
+        }
+      );
+
+  }
+
+
+  private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis): jsPDF {
+
+    // Posicion de altura del height.
+    let positionHeight: number = 0;
+    // tamaño de pdf.
+    const widthPDF = doc.internal.pageSize.getWidth();
+    const heightPDF = doc.internal.pageSize.getHeight();
+
+    // Calculamos todo el alto que se pintara para poder centrarlo.
+    let contentOnePage: number = 0;
+    // Tamaño del logo
+    contentOnePage += 65;
+    contentOnePage += 10; // titulo
+    contentOnePage += 12; // Nombre del buque
+
+    contentOnePage += 20; // Total Voyage o Numero Voyage
+    contentOnePage += 10; // Total Port
+
+    contentOnePage += 18; // ATD
+    contentOnePage += 98.5; //  Table sresumen overall
+
+
+    // calculamos el tamaño del Contenido de la pagina
+    // con el tamaño del pdf y o dividimos para que
+    // tenga el mismo margen en la altura y bottom
+    positionHeight += (heightPDF - contentOnePage) / 2;
+    // Revisar Eliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    //doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
+
+    // ubicamos la imagen con un tamaño de 50 x 50
+    let widthImage = 50;
+    let heightImage = 50;
+    let centerPDF = widthPDF / 2;
+    let widthMedium = (widthPDF - 50) / 2;
+    doc.addImage(sVPR.logoTransgas, "JPEG", widthMedium, positionHeight, widthImage, heightImage)
+
+
+    // Agregamos el titulo del pdf
+    positionHeight += 65;
+    doc.setFontSize(35);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(sVPR.titleDocument, widthPDF / 2, positionHeight, { align: 'center' })
+
+
+    // Preparado por
+    positionHeight += 10;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('Prepared For:', widthPDF / 2, positionHeight, { align: 'center' })
+
+
+    // Agregamos el nombre del Buque
+    positionHeight += 12;
+    doc.setFontSize(30);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(sVPR.preparedFor, centerPDF, positionHeight, { align: 'center' })
+
+
+    // Agregamos la cantidad o el numero de viaje.
+    positionHeight += 20;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    if (sVPR.totalVoyageSailing > 1) {
+      doc.text('Total Voyages Sailed: ' + sVPR.totalVoyageSailing, centerPDF, positionHeight, { align: 'center' })
+    } else {
+      doc.text('N° Voyage: ' + sVPR.lastVoyageSailing, centerPDF, positionHeight, { align: 'center' })
+    }
+
+
+    // Agregamos el total de puertos que hay en ese viaje.
+    positionHeight += 10;
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('Total Ports Sailed: ' + sVPR.totalPortSailing, centerPDF, positionHeight, { align: 'center' })
+
+
+    // Fecha del analisi startdate y endDate
+    positionHeight += 18;
+    doc.setFontSize(16);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(
+      sVPR.atdAndAta,
+      centerPDF, positionHeight,
+      { align: 'center' }
+    );
+
+    positionHeight += 3;
+    let positionWidth = 10;
+
+    // Como es el resumen, verificamos que se a
+    let isViewBallast = this.addSailingInBallast;
+    let isViewLaden = this.addSailingWithLaden;
+
+    let titleTable = 'Overall Performance Analysis';
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTSOPA, isViewBallast, isViewLaden, titleTable)
+
+    return doc;
+  }
+
+
+  // Esta funcion agrega el cudro de resumen por viaje.
+  private GenerateSummaryTableByVoyage(doc: jsPDF, startY: number, listSummarySpeedCondition: SummarySpeedCondition[]) {
+    let titleTable = 'Report Summary - Speed Conditions (Laden, Ballast)';
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+    var data: RowInput[] = [
+
+      // Primera Fila titulo
+      [{ "content": titleTable, "colSpan": 9 }],
+      // Segunda Fila
+      [
+        { "content": "Departure to Arrival", "colSpan": 2, "rowSpan": 2 },
+        { "content": "Condition", "colSpan": 1, "rowSpan": 2 },
+        { "content": "Distance\n(MI)", "colSpan": 2 },
+        { "content": "Time\n(HRS)", "colSpan": 2 },
+        { "content": "Speed\n(AVG)", "colSpan": 2 }
+      ],
+      [
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 }
+      ],
+
+    ];
+
+    listSummarySpeedCondition.forEach(summarySpeedCondition => {
+      data.push(
+        [
+
+          // departure to arrival
+          { "content": summarySpeedCondition.departureToArrival, "colSpan": 2, "rowSpan": 1 },
+          // Condicion de navegacion
+          { "content": summarySpeedCondition.condition + '/eco', "colSpan": 1, "rowSpan": 1 },
+
+          // Distancia
+          { "content": summarySpeedCondition.distanceIFO, "colSpan": 1 },
+          { "content": summarySpeedCondition.distanceMGO, "colSpan": 1 },
+
+          // Time
+          { "content": summarySpeedCondition.timeIFO, "colSpan": 1 },
+          { "content": summarySpeedCondition.timeMGO, "colSpan": 1 },
+
+          //Speed
+          { "content": summarySpeedCondition.speedIFO, "colSpan": 1 },
+          { "content": summarySpeedCondition.speedMGO, "colSpan": 1 }
+
+        ]
+      )
+    });
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento se puede
+    userOptions.startY = startY;
+    //userOptions.head = head;
+    userOptions.body = data;
+    userOptions.margin = { left: 10 }
+
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      let section = data.section;
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+
+      if (section == 'body') {
+        let rowIndex = data.row.index;
+        let columIndex = data.column.index;
+        let raw = data.row.raw;
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+
+          if (columIndex == 0) {
+
+            cell.styles.fillColor = '#375f9a'
+            cell.styles.textColor = '#ffffff';
+            cell.styles.fontSize = 10;
+          }
+        }
+
+        // SEgunda linea
+        if (rowIndex == 1) {
+          // la primera columna Departure To Arrival, estara alineada en el medio 
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+          // La tercera columna Condition(Laden Blalast) alineada en el medio
+          if (columIndex == 2) {
+            cell.styles.valign = 'middle';
+          }
+        }
+
+
+        // REvisar esto parece que ya no iria.
+        if (rowIndex == 5) {
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+        }
+        // En la fila 7
+        if (rowIndex == 6) {
+
+
+          if (columIndex == 3) {
+
+            if (Number(cell.text) >= Number(raw[3].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+
+          }
+          if (columIndex == 6) {
+            if (Number(cell.text) <= Number(raw[6].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+          }
+
+        }
+        // Fin de la revision
+
+
+      }
+
+
+    };
+
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 55,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 9,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77]
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 18,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      }
+    };
+
+    userOptions.headStyles = {
+      halign: 'center',
+      valign: 'middle',
+      lineWidth: 0.15,
+      lineColor: [22, 33, 77],
+      fillColor: '#375f9a',
+      fontSize: 8
+    };
+
+
+    autoTable(doc, userOptions);
+
+  }
+
+
+  private OverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[], gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean) {
+    positionHeight += 10;
+    let positionWidth = 10;
+
+    let title: string = 'Overall Performance Analysis';
+    if (isViewBallast) {
+      title += ' (Ballast)'
+    }
+    if (isViewLaden) {
+      title += ' (Laden)'
+    }
+    // Agregamos la cabecera a la pagina.
+    positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+
+    ///////////////////////////////////////
+    ///////// Inicio del 1° Cuadro ////////
+    ///////////////////////////////////////
+
+    // Colocamos el rectangulo
+    positionHeight += 5.5;
+    //positionWidth = 63;
+    positionWidth = 5;
+
+    // Generamos la tabla resumen del viaje.
+    // this.GenerateSummaryTableOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gSTOPA);
+
+    // Generamos todo el resumen por viajes.
+    positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA, isViewBallast, isViewLaden);
+
+    // Le damos un espacio para el siguiente cuadro.
+    positionHeight += 6;
+    positionWidth = 10;
+
+    let titleTable = 'Overall Performance Analysis';
+    this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
+
+    this.addFoter(doc, widthPDF, heightPDF)
+    //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
+  }
+
+  // esta funcion agrega la cabecera al documento.
+  private AddHeaderPage(doc: jsPDF, widthPDF: number, positionHeight: number, HeaderTitle: string): number {
+
+    // Posicion del widht de los elementos,
+    // Nos ayuda a ubicar en el ancho del documento.
+    let positionWidthDragPage = 10;
+
+    //Agregamos el logo.
+    // tamaño de la imagen
+    let widthImage = 17;
+    let heightImage = 17;
+    doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidthDragPage, positionHeight, widthImage, heightImage);
+
+    // Bajamos un poco para agregar el titulo.
+    positionHeight += 5;
+    positionWidthDragPage = 60;
+    // Texto
+    doc.setFontSize(18);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bolditalic');
+    doc.text("Vessel Performance Report", positionWidthDragPage, positionHeight, { align: 'left' })
+
+    // Debajo del titulo agregamos una linea.
+    positionHeight += 2;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(positionWidthDragPage, positionHeight, widthPDF - positionWidthDragPage - 10, 0.5, "FD");
+
+    // Numeros de telefono y correo.
+    positionHeight += 10;
+    doc.setFontSize(10);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Lima Phone: +51-1-716-7600       Miami Phone: +1 954-575-1414       Email: transgas@transgas.com.pe", widthPDF - 10, positionHeight, { align: 'right' })
+
+    // Raya debajo de los numeros de telefono.
+    positionHeight += 2;
+    positionWidthDragPage = 10;
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(10, positionHeight, widthPDF - 20, 0.5, "FD");
+
+
+
+    // Titulo del pdf.
+    positionHeight += 6;
+    doc.setFontSize(15);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(HeaderTitle, widthPDF / 2, positionHeight, { align: 'center' })
+
+
+    return positionHeight;
+  }
+
+  // Genera la tabla performanve.
+  private GenerateSummaryTableOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gSTOPA: GenerateSummaryTableOverallPerformanceAnalisis) {
+    // title
+    let titleTable = gSTOPA.title;
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+    var data: RowInput[] = [
+
+      // Segunda Fila
+      [
+        { "content": "Voyage N°" + gSTOPA.numberVoyage + '\n' + "Total Ports " + gSTOPA.totalPort, "colSpan": 2, "rowSpan": 2 },
+        { "content": "Laden", "colSpan": 2 },
+        { "content": "Charter", "colSpan": 2 },
+        { "content": "Ballast", "colSpan": 2 },
+        { "content": "Charter", "colSpan": 2 }
+      ],
+      [
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 },
+        { "content": typeConsumptionSelectBuqueIFO, "colSpan": 1 },
+        { "content": "MGO", "colSpan": 1 }
+      ],
+
+
+
+      [
+        { "content": "Distance", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Time", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Consumption", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Daily Consumption", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+      [
+        { "content": "Speed", "colSpan": 2 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+        { "content": 0, "colSpan": 1 },
+      ],
+    ];
+
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 136;
+
+    // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      let section = data.section;
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+
+      if (section == 'body') {
+        let rowIndex = data.row.index;
+        let columIndex = data.column.index;
+        let raw = data.row.raw;
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+
+          if (columIndex == 0) {
+
+            cell.styles.fillColor = '#375f9a'
+            cell.styles.textColor = '#ffffff';
+            cell.styles.fontSize = 10;
+          }
+        }
+
+        // SEgunda linea
+        if (rowIndex == 1) {
+          // la primera columna Departure To Arrival, estara alineada en el medio 
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+          // La tercera columna Condition(Laden Blalast) alineada en el medio
+          if (columIndex == 2) {
+            cell.styles.valign = 'middle';
+          }
+        }
+
+
+        // REvisar esto parece que ya no iria.
+        if (rowIndex == 5) {
+          if (columIndex == 0) {
+            cell.styles.valign = 'middle';
+          }
+        }
+        // En la fila 7
+        if (rowIndex == 6) {
+
+
+          if (columIndex == 3) {
+
+            if (Number(cell.text) >= Number(raw[3].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+
+          }
+          if (columIndex == 6) {
+            if (Number(cell.text) <= Number(raw[6].content)) {
+              cell.styles.fillColor = [133, 252, 97];
+            } else {
+              cell.styles.fillColor = [255, 123, 123];
+            }
+          }
+
+        }
+        // Fin de la revision
+
+
+      }
+
+
+    };
+
+    // Total suma 136, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 15,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 15,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77]
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 14,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      },
+      9: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 12.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77]
+      }
+    };
+
+
+    // Agregamos la tabla.
+    autoTable(doc, userOptions);
+
+  }
+
+
+  // Genera el cuadro de 
+  // Overall Performance Analysis
+  // retorna el tamaño de la tabla
+  private GenerateTableOverallPerformanceAnalysis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listGTSOPA: GenerateTableSummaryOverallPerformanceAnalisis[], isViewBallast: boolean, isViewLaden: boolean): number {
+
+    // El generarl solo es por una actividad.
+    let titleTable: string = 'Summary by Voyage';
+    if (isViewBallast) {
+      titleTable += '\n(Ballast)'
+    }
+    if (isViewLaden) {
+      titleTable += '\n(Laden)'
+    }
+
+    let contentHeightTable = 0;
+    // Le sumamos el espacio de la cabecera de la tabla.
+    contentHeightTable += 16.7;
+    // Cada fila ocupa lo siguiente.
+    contentHeightTable += (6.8 * listGTSOPA.length);
+
+    // Revisar Eliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    //doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+
+
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+
+
+    var data: RowInput[] = [
+
+      // PRimera Fila
+      [
+        { "content": titleTable, "colSpan": 2, "rowSpan": 2 },
+        { "content": "Total Time\n(HRS)", "colSpan": 2 },
+        { "content": "Total Distance\n(MI)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)\n(Charter)", "colSpan": 2 },
+        { "content": "Time Per Navigation\n(HRS)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(MT)\n(Charter)", "colSpan": 2 }
+      ]
+    ];
+
+    let rowHeader2 = [];
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    data.push(rowHeader2);
+
+    listGTSOPA.forEach(
+      gTSOPA => {
+
+        let rowGenerit = [];
+        rowGenerit.push({ "content": 'Voyage ' + gTSOPA.voyageNumber, "colSpan": 2 });
+
+        // Time
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Distance
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Speed
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Speed Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Consumption
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // daily Consumption
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+        // daily Consumption Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionCharterIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionCharterMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+        // Time Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+
+        // Consumption Charter
+        if (this.addInformationIFO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
+        }
+        if (this.addInformationMGO) {
+          rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
+        }
+
+
+
+
+
+
+
+        data.push(rowGenerit);
+
+      }
+    );
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 200;
+
+
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      // Secction : head, body, footer
+      let section = data.section;
+      // guardamos la celda y verificamos que no sea underfiend
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+      // trabajaremos con el body.
+      if (section == 'body') {
+
+        // ubicacion del la fila
+        let rowIndex = data.row.index;
+        // ubicacion de la columna.
+        let columIndex = data.column.index;
+        // Raw ?????? <= agregar descripcion no lo se?
+        let raw = data.row.raw;
+
+
+
+
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
+          if (
+            columIndex == 2
+            || columIndex == 4
+            || columIndex == 6
+            || columIndex == 8
+            || columIndex == 10
+            || columIndex == 12
+            || columIndex == 14
+            || columIndex == 16
+            || columIndex == 18
+          ) {
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = 1
+          }
+          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
+          if (columIndex == 2 || columIndex == 4 || columIndex == 10) {
+            cell.styles.fillColor = this.colorBlueTable1;
+          }
+          // Solo las celdas que tienen formulas se pintan de blue2
+          if (columIndex == 6 || columIndex == 12) {
+            cell.styles.fillColor = this.colorBlueTable2;
+          }
+          // Solo las celdas que tienen datos del charter son de locor blue3
+          if (columIndex == 8 || columIndex == 14 || columIndex == 14 || columIndex == 16 || columIndex == 18) {
+            cell.styles.fillColor = this.colorBlueTable3;
+          }
+        }
+        // Segunda cabecera 
+        if (rowIndex == 1) {
+
+          if (
+            columIndex > 1) {
+
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = { top: 1, right: 1, bottom: 1, left: 1 };
+            cell.styles.minCellHeight = 6;
+          }
+        }
+
+        // de qui para adelante son los viajes.
+        if (rowIndex > 1) {
+
+          // nombre del viaje y numero.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            // cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
+          if (
+            (this.addInformationIFO && !this.addInformationMGO)
+            || (this.addInformationMGO && !this.addInformationIFO)
+          ) {
+            // Desde la columna 2 para adelante lo pintamos de gris.
+            if (columIndex >= 2) {
+              cell.styles.fillColor = this.colorGris;
+            }
+
+            // Time
+            if (columIndex == 2) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[8].content);
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+            // Speed
+            if (columIndex == 6) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[4].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+            // total consumo
+            if (columIndex == 10) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[9].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // daily consumo
+            if (columIndex == 12) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[7].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+          }
+
+          // Si se selecciona los dos tipos de combustible.
+          if (this.addInformationIFO && this.addInformationMGO) {
+            // Desde la columna 2 para adelante lo pintamos de gris.
+            if (columIndex >= 2) {
+              cell.styles.fillColor = this.colorGris;
+            }
+
+            // Time
+            if (columIndex == 2) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[15].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 3) {
+              let valorCell = Number(cell.text);
+              // Time charter
+              let valorCharter = Number(raw[16].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+            // Speed
+            if (columIndex == 6) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[7].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 7) {
+              let valorCell = Number(cell.text);
+              // speed
+              let valorCharter = Number(raw[8].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // total consumo
+            if (columIndex == 10) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[17].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 11) {
+              let valorCell = Number(cell.text);
+              // total ocnsumo charter 
+              let valorCharter = Number(raw[18].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+
+
+            // Daily Consumo
+            if (columIndex == 12) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[13].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+            if (columIndex == 13) {
+              let valorCell = Number(cell.text);
+              // total daily consumption charter
+              let valorCharter = Number(raw[14].content);
+
+              // Verificamos si existe un valor en el charter.
+              if (valorCharter && valorCell) {
+                if (valorCell < valorCharter) {
+                  cell.styles.textColor = this.colorTextSuccess;
+                }
+                if (valorCell > valorCharter) {
+                  cell.styles.textColor = this.colorTextWarning;
+                }
+              }
+            }
+
+          }
+
+
+        }
+
+
+      }
+
+
+    }
+
+
+    // Total suma 136, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      9: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      10: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      11: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      12: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      13: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      14: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      15: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      16: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      17: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      18: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      19: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 10,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      }
+    };
+
+
+    // Agregamos la tabla.
+    autoTable(doc, userOptions);
+
+
+    return contentHeightTable;
+  }
+
+  // Resumen total.
+  private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean, titleTable: string): number {
+
+    let contTextTitle = '';
+
+    if (isViewBallast) {
+      contTextTitle += '( Ballast';
+      if (!isViewLaden) {
+        contTextTitle += ' )';
+      }
+    }
+
+    if (isViewLaden) {
+      if (!isViewBallast) {
+        contTextTitle += '( Laden )';
+      } else {
+
+        contTextTitle += ' / Laden )';
+      }
+    }
+    let title = titleTable + '\n' + contTextTitle;
+
+    let contentHeightTable = 0;
+    // Le sumamos el espacio de la cabecera de la tabla.
+    contentHeightTable += 14.3;
+
+    contentHeightTable += (6.8 * 9)
+
+    // Linea vacia
+    contentHeightTable += 4;
+    // Linea Calcul result
+    contentHeightTable += 19;
+
+
+    //RevisarEliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+   // doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+
+
+    // title
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+
+    var data: RowInput[] = [];
+
+    let headerTable = [];
+    headerTable.push(
+      { "content": title, "colSpan": 4, "rowSpan": 2 }
+    );
+    if (isViewBallast) {
+      headerTable.push(
+        { "content": "Ballast", "colSpan": isViewBallast && isViewLaden ? 2 : 4 }
+      );
+    }
+    if (isViewLaden) {
+      headerTable.push(
+        { "content": "Laden", "colSpan": isViewLaden && isViewBallast ? 2 : 4 }
+      );
+    }
+    // Agregamos la cabecera
+    data.push(headerTable);
+
+
+    let header2Table = [];
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        header2Table.push(
+          {
+            "content": typeConsumptionSelectBuqueIFO, "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        header2Table.push(
+          {
+            "content": 'MGO', "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        header2Table.push(
+          {
+            "content": typeConsumptionSelectBuqueIFO, "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        header2Table.push(
+          {
+            "content": 'MGO', "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(header2Table);
+
+
+    // Time
+    let rowTransitTime = [];
+    rowTransitTime.push(
+      { "content": "Transit Time", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowTransitTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTransitTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowTransitTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTransitTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowTransitTime);
+
+
+
+
+    // Distance
+    let rowDistance = [];
+    rowDistance.push(
+      { "content": "Transit Distance", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowDistance.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.distanceIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDistance.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.distanceMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowDistance.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.distanceIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDistance.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.distanceMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowDistance);
+
+
+
+    // Average Speed
+    let rowAverageSpeed = [];
+    rowAverageSpeed.push(
+      { "content": "Average Speed", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowAverageSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowAverageSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowAverageSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowAverageSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowAverageSpeed);
+
+
+
+
+
+
+    let rowCharterSpeed = [];
+    rowCharterSpeed.push(
+      { "content": "Allowable Charter Speed", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowCharterSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedCharterIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedCharterMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowCharterSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedCharterIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterSpeed.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.speedCharterMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowCharterSpeed);
+
+
+
+
+
+    let rowTotalConsumption = [];
+    rowTotalConsumption.push(
+      { "content": "Actual Total Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowTotalConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTotalConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowTotalConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowTotalConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowTotalConsumption);
+
+
+
+
+
+    let rowDailyConsumption = [];
+    rowDailyConsumption.push(
+      { "content": "Daily Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowDailyConsumption);
+
+
+
+
+
+
+    let rowActualCharterDailyConsumption = [];
+    rowActualCharterDailyConsumption.push(
+      { "content": "Allowable Charter Daily Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterIFOLaden, 2), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowActualCharterDailyConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowActualCharterDailyConsumption);
+
+
+
+
+
+
+    let rowCharterTime = [];
+    rowCharterTime.push(
+      { "content": "Allowable Charter Time", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowCharterTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeCharterIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeCharterMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowCharterTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeCharterIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowCharterTime.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.timeCharterMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowCharterTime);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    let rowWarrantedConsumption = [];
+    rowWarrantedConsumption.push(
+      { "content": "Warranted Total Consumption", "colSpan": 4 }
+    );
+    // Ballast
+    if (isViewBallast) {
+      if (this.addInformationIFO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterIFOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterMGOBallast, 1), "colSpan":
+              isViewLaden ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    if (isViewLaden) {
+      if (this.addInformationIFO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterIFOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+      if (this.addInformationMGO) {
+        rowWarrantedConsumption.push(
+          {
+            "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterMGOLaden, 1), "colSpan":
+              isViewBallast ? (this.addInformationIFO && this.addInformationMGO ? 1 : 2) : (this.addInformationIFO && this.addInformationMGO ? 2 : 4)
+          }
+        );
+      }
+    }
+    data.push(rowWarrantedConsumption);
+
+
+
+    let rowEmpty = [];
+    rowEmpty.push(
+      { "content": "", "colSpan": 8 }
+    );
+    data.push(rowEmpty);
+
+
+
+
+
+    let rowAnotateTime = [];
+    rowAnotateTime.push(
+      { "content": "Calculation Results", "colSpan": 4, "rowSpan": 2 }
+    );
+
+    if (isViewBallast && isViewLaden) {
+      rowAnotateTime.push(
+        { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeBallast, 1), "colSpan": 2 }
+      );
+      rowAnotateTime.push(
+        { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeLaden, 1), "colSpan": 2 }
+      );
+    }
+
+    if (isViewBallast && !isViewLaden) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeBallastIFO, 1), "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeBallastMGO, 1), "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeBallastIFO, 1), "colSpan": 2 }
+        );
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeBallastMGO, 1), "colSpan": 2 }
+        );
+      }
+
+    }
+
+
+    if (isViewLaden && !isViewBallast) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeLadenIFO, 1), "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeLadenMGO, 1), "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeLadenIFO, 1), "colSpan": 2 }
+        );
+        rowAnotateTime.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateTimeLadenMGO, 1), "colSpan": 2 }
+        );
+      }
+
+    }
+    data.push(rowAnotateTime);
+
+
+
+    let rowAnotateConsumption = [];
+
+
+    if (isViewBallast && isViewLaden) {
+      rowAnotateConsumption.push(
+        { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionBallast, 1), "colSpan": 2 }
+      );
+      rowAnotateConsumption.push(
+        { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionLaden, 1), "colSpan": 2 }
+      );
+    }
+
+    if (isViewBallast && !isViewLaden) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionBallastIFO, 1), "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionBallastMGO, 1), "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionBallastIFO, 1), "colSpan": 2 }
+        );
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionBallastMGO, 1), "colSpan": 2 }
+        );
+      }
+
+    }
+
+
+    if (isViewLaden && !isViewBallast) {
+      if (this.addInformationIFO && !this.addInformationMGO) {
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionLadenIFO, 1), "colSpan": 4 }
+        );
+      }
+      if (this.addInformationMGO && !this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionLadenMGO, 1), "colSpan": 4 }
+        );
+      }
+
+
+      if (this.addInformationMGO && this.addInformationIFO) {
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionLadenIFO, 1), "colSpan": 2 }
+        );
+        rowAnotateConsumption.push(
+          { "content": this.MathRoundDecimal(gTTSOPA.anotateConsumptionLadenMGO, 1), "colSpan": 2 }
+        );
+      }
+
+    }
+    data.push(rowAnotateConsumption);
+
+
+
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 190;
+    userOptions.bodyStyles = { lineColor: [0, 0, 0] }
+
+
+    // Recorremos todas las celdas para ponerle un color o un diseño o condicion.
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      // Secction : head, body, footer
+      let section = data.section;
+      // guardamos la celda y verificamos que no sea underfiend
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+      // trabajaremos con el body.
+      if (section == 'body') {
+        // ubicacion del la fila
+        let rowIndex = data.row.index;
+        // ubicacion de la columna.
+        let columIndex = data.column.index;
+        // Raw ?????? <= agregar descripcion no lo se?
+        let raw = data.row.raw;
+
+
+
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+          // caso sea Ballas o Laden
+          // siempre la columna tendra la posicion 4
+          if (isViewBallast || isViewLaden) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorTextHedear;
+              cell.styles.textColor = this.colorYellowTransgas;
+              cell.styles.fontSize = 10;
+            }
+          }
+          // Solo si las dos opciones estan activadas,  la segunda opcion tendra la posicion 6
+          if (isViewBallast && isViewLaden) {
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorTextHedear;
+              cell.styles.textColor = this.colorYellowTransgas;
+              cell.styles.fontSize = 10;
+            }
+          }
+
+        }
+
+
+        // Segunda linea cabecera 2
+        if (rowIndex == 1) {
+
+          // solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
+                cell.styles.fontSize = 8;
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
+                cell.styles.fontSize = 8;
+              }
+            }
+
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
+                cell.styles.fontSize = 8;
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
+                cell.styles.fontSize = 8;
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+              if (columIndex == 5) {
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
+                cell.styles.fontSize = 8;
+              }
+              if (columIndex == 7) {
+                cell.styles.fillColor = this.colorBlueTable1;
+                cell.styles.textColor = this.colorWhite;
+                cell.styles.fontSize = 8;
+              }
+            }
+          }
+
+
+
+        }
+
+
+        // 2 linea Time
+        if (rowIndex == 2) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[3].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[9].raw[4].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+
+
+        }
+
+
+        // 3 linea Distance
+        if (rowIndex == 3) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+
+        }
+
+
+
+        // 4 linea Speed
+        if (rowIndex == 4) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[3].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[5].raw[4].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime > allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+
+
+        }
+
+        // 5 Allowable Charter Speed
+        if (rowIndex == 5) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+        }
+
+        // 6 total consumption
+        if (rowIndex == 6) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[3].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[10].raw[4].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+
+
+        }
+
+        // 7 Daily consumption
+        if (rowIndex == 7) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[1].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[2].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[3].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                // Obtenemos los datos de la fila 9
+                let allowableCharterTime = Number(data.table.body[8].raw[4].content);
+                // Guardamos los datos actuales de la celda
+                let transitTime = Number(cell.text);
+                cell.styles.fillColor = this.colorGris;
+                if (transitTime && allowableCharterTime) {
+                  cell.styles.textColor = transitTime < allowableCharterTime ? this.colorTextSuccess : this.colorTextWarning;
+                }
+                cell.styles.fontSize = 8;
+
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+
+
+        }
+
+        // 8 Allowable Charter Daily Consumption
+        if (rowIndex == 8) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+        }
+
+        // 9 Allowable Charter Time 
+        if (rowIndex == 9) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+        }
+
+        // 10 Warranted Total Consumption 
+        if (rowIndex == 10) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+
+
+          // Solo si se mostrara un tipo de navegacion 
+          // Solo se usaria la celda 4 y 6 dependiendo del IFO Y MGO
+          if (
+            (isViewBallast && !isViewLaden)
+            ||
+            (isViewLaden && !isViewBallast)
+          ) {
+
+
+            if (this.addInformationIFO || this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+            }
+            if (this.addInformationMGO && this.addInformationMGO) {
+
+
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+          }
+
+          // Si se desea mostrar las 2 informaciones
+          // Se usara la celda 4,5,6,7 depndendiendo del ifo y mgo.
+          if (isViewBallast && isViewLaden) {
+
+
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+
+              if (columIndex == 4) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+            }
+
+
+            if (this.addInformationIFO && this.addInformationMGO) {
+
+              if (columIndex == 4) {
+
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[1].content)
+              }
+              if (columIndex == 5) {
+
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[2].content)
+              }
+              if (columIndex == 6) {
+                cell.styles.fillColor = this.colorGris;
+                //console.log(cell.text + '----' + data.table.body[rowIndex].raw[3].content)
+              }
+              if (columIndex == 7) {
+                cell.styles.fillColor = this.colorGris;
+                // console.log(cell.text + '----' + data.table.body[rowIndex].raw[4].content)
+              }
+            }
+          }
+
+        }
+
+        // 11 Linea vacia
+        if (rowIndex == 11) {
+          // Le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.minCellHeight = 2;
+            cell.styles.fontSize = 1;
+          }
+
+
+
+        }
+
+        // 12 Time calcu
+        if (rowIndex == 12) {
+
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+
+
+          if (this.addInformationIFO || this.addInformationMGO) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+          if (this.addInformationMGO && this.addInformationMGO) {
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+          // Solo si las dos opciones estan activadas,  la segunda opcion tendra la posicion 6
+          if (isViewBallast && isViewLaden) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
+              }
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+        }
+
+        // 12 cONSUMPTION calcu
+        if (rowIndex == 13) {
+
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+
+
+          if (this.addInformationIFO || this.addInformationMGO) {
+
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Consumption Within The Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+          if (this.addInformationMGO && this.addInformationMGO) {
+
+
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Consumption Within The Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+
+
+          }
+          // Solo si las dos opciones estan activadas,  la segunda opcion tendra la posicion 6
+          if (isViewBallast && isViewLaden) {
+            if (columIndex == 4) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Consumption Within The Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+            if (columIndex == 6) {
+              cell.styles.fillColor = this.colorGris;
+              cell.styles.fontSize = 10;
+              let valorCell = Number(cell.text);
+              if (valorCell < 0) {
+                cell.styles.textColor = this.colorTextWarning;
+                cell.text = ["Consumption Outside The Guaranteed Limits"];
+              }
+              if (valorCell > 0) {
+                cell.styles.textColor = this.colorTextSuccess;
+                cell.text = ["Consumption Within The Guaranteed Limits"];
+
+              }
+
+              if (valorCell == 0) {
+                cell.text = ["-----"];
+              }
+            }
+          }
+
+
+
+        }
+
+
+
+        /* 
+        
+                // REvisar esto parece que ya no iria.
+                if (rowIndex == 5) {
+                  if (columIndex == 0) {
+                    cell.styles.valign = 'middle';
+                  }
+                }
+                // En la fila 7
+                if (rowIndex == 6) {
+        
+        
+                  if (columIndex == 3) {
+        
+                    if (Number(cell.text) >= Number(raw[3].content)) {
+                      cell.styles.fillColor = [133, 252, 97];
+                    } else {
+                      cell.styles.fillColor = [255, 123, 123];
+                    }
+        
+                  }
+                  if (columIndex == 6) {
+                    if (Number(cell.text) <= Number(raw[6].content)) {
+                      cell.styles.fillColor = [133, 252, 97];
+                    } else {
+                      cell.styles.fillColor = [255, 123, 123];
+                    }
+                  }
+        
+                }
+                // Fin de la revision 
+                */
+
+
+      }
+    };
+
+    // Total suma 190, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 8,
+        lineWidth: 0.15,
+        valign: 'middle',
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 8,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 29,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 29,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 29,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 29,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 29,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 8,
+        cellWidth: 29,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+    };
+
+
+    // Agregamos la tabla.
+    autoTable(doc, userOptions);
+
+    return contentHeightTable;
+  }
+
+  // Mejorar deberia retornar el tamaño donde se esta quedando.
+  private AddPreparedVessel(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number) {
+
+    // BUQUE
+    positionHeight += 20;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("M/V", 10, positionHeight, { align: 'left' })
+    doc.setFontSize(17);
+    doc.text(this.selectUser.name, 20, positionHeight, { align: 'left' })
+
+    // Prepared for
+    positionHeight += 8;
+    doc.setFontSize(8);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'italic');
+    doc.text("Prepared for", 10, positionHeight, { align: 'left' })
+
+    // Transgas Shipping
+    positionHeight += 4.5;
+    doc.setFontSize(13);
+    doc.setTextColor(22, 33, 77);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Transgas Shipping", 10, positionHeight, { align: 'left' });
+
+    // 27
+  }
+
+
+
+  private GenerateVoyageSumary(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, summaryVoyages: Voyage[], isViewBallast: boolean, isViewLaden: boolean) {
+
+
+
+    summaryVoyages.forEach(
+      iVoyage => {
+        // revisar si deberia ir
+        positionHeight = 0;
+
+        // Agregamos una nueva pagina
+        doc.addPage();
+        this.numberPage += 1;
+
+        positionHeight += 10;
+        let positionWidth = 10;
+
+        let title: string = 'Voyage ' + iVoyage.voyageNumber + ' Summary';
+        if (isViewBallast && isViewLaden) {
+          title += ' (Ballast/Laden)'
+        } else if (isViewBallast) {
+          title += ' (Ballast)'
+        } else if (isViewLaden) {
+          title += ' (Laden)'
+        }
+        // Agregamos la cabecera a la pagina.
+        positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+
+        ///////////////////////////////////////
+        ///////// Inicio del 1° Cuadro ////////
+        ///////////////////////////////////////
+
+        // Colocamos el rectangulo
+        positionHeight += 5.5;
+        //positionWidth = 63;
+        positionWidth = 5;
+
+        positionHeight += this.GenerateTableSumaryVoyage(doc, widthPDF, heightPDF, positionWidth, positionHeight, iVoyage, isViewBallast, isViewLaden);
+
+
+
+
+        let gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
+        positionWidth = 10;
+        positionHeight += 10
+
+
+
+        // recorreoms los viajes para saber el tamaño que tendra la tabla.
+        iVoyage.ports.forEach(
+          iPort => {
+            iPort.dailyReports.forEach(
+              dailyReport => {
+
+                let totalIFO = this.SumaIfo(dailyReport);
+                let totalMGO = this.SumaMgo(dailyReport);
+                // Verificamos si es navegando con carga
+                if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                  if (this.addInformationIFO && totalIFO) {
+                    gTTSOPA.distanceIFOBallast += dailyReport.distance;
+                    gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
+                    gTTSOPA.consumptionIFOBallast += totalIFO;
+                  }
+                  if (this.addInformationMGO && totalMGO) {
+                    gTTSOPA.distanceMGOBallast += dailyReport.distance;
+                    gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
+                    gTTSOPA.consumptionMGOBallast += totalMGO;
+                  }
+                  // Verificamos si es la actividad navegando sin carga
+                } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+
+                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
+                  if (this.addInformationIFO && totalIFO) {
+                    gTTSOPA.distanceIFOLaden += dailyReport.distance;
+                    gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
+                    gTTSOPA.consumptionIFOLaden += totalIFO;
+                  }
+                  if (this.addInformationMGO && totalMGO) {
+                    gTTSOPA.distanceMGOLaden += dailyReport.distance;
+                    gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
+                    gTTSOPA.consumptionMGOLaden += totalMGO;
+                  }
+                }
+              }
+            )
+          });
+
+
+        if (this.addSailingInBallast) {
+
+          if (this.addInformationIFO) {
+            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+            gTTSOPA.timeCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO ?
+              gTTSOPA.distanceIFOBallast / this.selectUser.contractSpeedSailingBallastIFO : 0;
+
+
+            // VELOCIDAD
+            gTTSOPA.speedIFOBallast = gTTSOPA.timeIFOBallast ?
+              gTTSOPA.distanceIFOBallast / gTTSOPA.timeIFOBallast : 0;
+
+
+            // Velocidad Charter
+            gTTSOPA.speedCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO;
+
+
+            // Daily Consumption IFO
+            gTTSOPA.dailyConsumptionIFOBallast = gTTSOPA.timeIFOBallast ?
+              (gTTSOPA.consumptionIFOBallast * 24) / gTTSOPA.timeIFOBallast : 0;
+
+
+            // DailyConsumption IFO Charter
+            gTTSOPA.dailyConsumptionCharterIFOBallast = this.selectUser.sailingBallastConsumptionIFO;
+
+
+            // Consumo por charter
+            gTTSOPA.consumptionCharterIFOBallast = (gTTSOPA.dailyConsumptionCharterIFOBallast * gTTSOPA.timeCharterIFOBallast) / 24;
+
+
+
+            // Calculamos el time annotate
+            gTTSOPA.anotateTimeBallastIFO = gTTSOPA.timeCharterIFOBallast ? gTTSOPA.timeCharterIFOBallast - gTTSOPA.timeIFOBallast : 0;
+            gTTSOPA.anotateConsumptionBallastIFO = gTTSOPA.dailyConsumptionCharterIFOBallast ? gTTSOPA.dailyConsumptionCharterIFOBallast - gTTSOPA.dailyConsumptionIFOBallast : 0;
+
+          }
+          if (this.addInformationMGO) {
+            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+            gTTSOPA.timeCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO ?
+              gTTSOPA.distanceMGOBallast / this.selectUser.contractSpeedSailingBallastMGO : 0;
+
+
+            // VELOCIDAD
+            gTTSOPA.speedMGOBallast = gTTSOPA.timeMGOBallast ?
+              gTTSOPA.distanceMGOBallast / gTTSOPA.timeMGOBallast : 0;
+
+
+            // Velocidad Charter
+            gTTSOPA.speedCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO;
+
+
+            // Daily Consumption MGO
+            gTTSOPA.dailyConsumptionMGOBallast = gTTSOPA.timeMGOBallast ?
+              (gTTSOPA.consumptionMGOBallast * 24) / gTTSOPA.timeMGOBallast : 0;
+
+
+            // DailyConsumption MGO Charter
+            gTTSOPA.dailyConsumptionCharterMGOBallast = this.selectUser.sailingBallastConsumptionMGO;
+
+            // Consumo por charter
+            gTTSOPA.consumptionCharterMGOBallast = (gTTSOPA.dailyConsumptionCharterMGOBallast * gTTSOPA.timeCharterMGOBallast) / 24;
+
+
+
+            // Calculamos el time annotate
+            gTTSOPA.anotateTimeBallastMGO = gTTSOPA.timeCharterMGOBallast ? gTTSOPA.timeCharterMGOBallast - gTTSOPA.timeMGOBallast : 0;
+            gTTSOPA.anotateConsumptionBallastMGO = gTTSOPA.dailyConsumptionCharterMGOBallast ? gTTSOPA.dailyConsumptionCharterMGOBallast - gTTSOPA.dailyConsumptionMGOBallast : 0;
+          }
+        }
+        // Laden
+        if (this.addSailingWithLaden) {
+
+          if (this.addInformationIFO) {
+            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+            gTTSOPA.timeCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO ?
+              gTTSOPA.distanceIFOLaden / this.selectUser.contractSpeedSailingLadenIFO : 0;
+
+
+            // VELOCIDAD
+            gTTSOPA.speedIFOLaden = gTTSOPA.timeIFOLaden ?
+              gTTSOPA.distanceIFOLaden / gTTSOPA.timeIFOLaden : 0;
+
+
+            // Velocidad Charter
+            gTTSOPA.speedCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO;
+
+
+
+            // Daily Consumption MGO
+            gTTSOPA.dailyConsumptionIFOLaden = gTTSOPA.timeIFOLaden ?
+              (gTTSOPA.consumptionIFOLaden * 24) / gTTSOPA.timeIFOLaden : 0;
+
+
+
+
+            // DailyConsumption IFO Charter
+            gTTSOPA.dailyConsumptionCharterIFOLaden = this.selectUser.sailingLoadConsumptionIFO;
+
+
+            // Conusmo diario calculado segun el charter.
+            gTTSOPA.consumptionCharterIFOLaden = (gTTSOPA.dailyConsumptionCharterIFOLaden * gTTSOPA.timeCharterIFOLaden) / 24;
+
+
+
+            // Anotate TIME
+            gTTSOPA.anotateTimeLadenIFO = gTTSOPA.timeCharterIFOLaden ? gTTSOPA.timeCharterIFOLaden - gTTSOPA.timeIFOLaden : 0;
+
+            // Anotate Laden
+            gTTSOPA.anotateConsumptionLadenIFO = gTTSOPA.dailyConsumptionCharterIFOLaden ? gTTSOPA.dailyConsumptionCharterIFOLaden - gTTSOPA.dailyConsumptionIFOLaden : 0;
+
+          }
+          if (this.addInformationMGO) {
+            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
+            gTTSOPA.timeCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO ?
+              gTTSOPA.distanceMGOLaden / this.selectUser.contractSpeedSailingLadenMGO : 0;
+
+
+            // VELOCIDAD
+            gTTSOPA.speedMGOLaden = gTTSOPA.timeMGOLaden ?
+              gTTSOPA.distanceMGOLaden / gTTSOPA.timeMGOLaden : 0;
+
+
+            // Velocidad Charter
+            gTTSOPA.speedCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO;
+
+
+
+            // Daily Consumption MGO
+            gTTSOPA.dailyConsumptionMGOLaden = gTTSOPA.timeMGOLaden ?
+              (gTTSOPA.consumptionMGOLaden * 24) / gTTSOPA.timeMGOLaden : 0;
+
+
+
+            // DailyConsumption MGO Charter
+            gTTSOPA.dailyConsumptionCharterMGOLaden = this.selectUser.sailingLoadConsumptionMGO;
+
+
+
+            // Consumo MGO Charter
+            gTTSOPA.consumptionCharterMGOLaden = (gTTSOPA.dailyConsumptionCharterMGOLaden * gTTSOPA.timeCharterMGOLaden) / 24;
+
+            // Anotate TIME
+            gTTSOPA.anotateTimeLadenMGO = gTTSOPA.timeCharterMGOLaden ? gTTSOPA.timeCharterMGOLaden - gTTSOPA.timeMGOLaden : 0;
+
+            // Anotate Laden
+            gTTSOPA.anotateConsumptionLadenMGO = gTTSOPA.dailyConsumptionCharterMGOLaden ? gTTSOPA.dailyConsumptionCharterMGOLaden - gTTSOPA.dailyConsumptionMGOLaden : 0;
+
+          }
+
+        }
+
+        gTTSOPA.anotateTimeBallast = gTTSOPA.anotateTimeBallastIFO + gTTSOPA.anotateTimeBallastMGO;
+        gTTSOPA.anotateTimeLaden = gTTSOPA.anotateTimeLadenIFO + gTTSOPA.anotateTimeLadenMGO;
+
+
+        gTTSOPA.anotateConsumptionBallast = gTTSOPA.anotateConsumptionBallastIFO + gTTSOPA.anotateConsumptionBallastMGO;
+        gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
+
+        let titleTable = 'Voyage ' + iVoyage.voyageNumber + ' Summary';
+        this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
+
+        this.addFoter(doc, widthPDF, heightPDF);
+      }
+    )
+  }
+
+
+  private GenerateTableSumaryVoyage(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, voyage: Voyage, isViewBallast: boolean, isViewLaden: boolean): number {
+
+    let title: string = 'Voyage ' + voyage.voyageNumber + ' Summary\n';
+    if (isViewBallast && isViewLaden) {
+      title += ' (Ballast/Laden)'
+    } else if (isViewBallast) {
+      title += ' (Ballast)'
+    } else if (isViewLaden) {
+      title += ' (Laden)'
+    }
+
+
+    let contentHeightTable = 0;
+    // Le sumamos el espacio de la cabecera de la tabla.
+    contentHeightTable += 21;
+
+    // Si solo hay un reporte en el puerto se suma 10.6
+    //contentHeightTable += 10.6;
+    // SI hay mas reporter lo multiplicamos
+    //contentHeightTable += 6.4*2;
+
+    // recorreoms los viajes para saber el tamaño que tendra la tabla.
+    voyage.ports.forEach(
+      iPort => {
+
+
+        // Calculamos la altura de la tabla
+        if (iPort.dailyReports.length == 1) {
+          // Si solo hay un reporte la fila tendra un tamañp de departure arriva y ballas
+          // 10.6
+          contentHeightTable += 10.6;
+        } else {
+          contentHeightTable += 6.4 * iPort.dailyReports.length;
+        }
+
+      });
+
+    // Revisar Eliminar esto, es solo com referencia.
+    doc.setDrawColor(0);
+    doc.setFillColor(255, 255, 255);
+    //doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
+
+
+
+    // Agregar la formula para saber si es IFO VLSFO LSFO
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+
+
+
+
+
+    var data: RowInput[] = [
+
+      // Segunda Fila
+      [
+        { "content": "Departure to Arrival", "colSpan": 2, "rowSpan": 2 },
+        { "content": "Total Time\n(HRS)", "colSpan": 2 },
+        { "content": "Total Distance\n(MI)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)", "colSpan": 2 },
+        { "content": "Average Speed\n(KN)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)", "colSpan": 2 },
+        { "content": "Daily Consumption\n(MT)\n(Charter)", "colSpan": 2 },
+        { "content": "Time Per Navigation\n(HRS)\n(Charter)", "colSpan": 2 },
+        { "content": "Total Consumption\n(MT)\n(Charter)", "colSpan": 2 },
+        { "content": "B\nE\nF\nO\nU\nR\nT", "colSpan": 1, "rowSpan": 2 }
+      ]
+    ];
+
+
+    let rowHeader2 = [];
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeader2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    data.push(rowHeader2);
+
+
+    voyage.ports.forEach(
+      iPort => {
+
+        iPort.dailyReports.forEach(
+          (iDailyReport, index, array) => {
+
+            // Tipo de navegacion
+            let typeNavigation = '';
+            if (iDailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
+              typeNavigation = '(Ballast)';
+            } else if (iDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+              typeNavigation = '(Laden)';
+            }
+            let rowGenerit = [];
+
+            // Guardamos el todal de consumo.
+            let totalIFO = this.SumaIfo(iDailyReport);
+            let totalMGO = this.SumaMgo(iDailyReport);
+
+            // Obtenemos la velocidad real.
+            let sṕeedReal = iDailyReport.steamingTime ? iDailyReport.distance / iDailyReport.steamingTime : 0;
+
+            // Obtenemos la velocidad por charter IFO y MGO
+            let speedCharterIFO: number = 0;
+            let speedCharterMGO: number = 0;
+            if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
+              if (totalIFO) {
+                speedCharterIFO = this.selectUser.contractSpeedSailingBallastIFO;
+              }
+              if (totalMGO) {
+                speedCharterMGO = this.selectUser.contractSpeedSailingBallastMGO;
+              }
+            } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
+              if (totalIFO) {
+                speedCharterIFO = this.selectUser.contractSpeedSailingLadenIFO;
+              }
+              if (totalMGO) {
+                speedCharterMGO = this.selectUser.contractSpeedSailingLadenMGO;
+              }
+            }
+
+
+            // Daily Consumption
+            let dailyConsumptionIFO = 0;
+            let dailyConsumptionMGO = 0;
+            if (totalIFO) {
+              dailyConsumptionIFO = iDailyReport.steamingTime ?
+                (totalIFO * 24) / iDailyReport.steamingTime : 0;
+            }
+            if (totalMGO) {
+              dailyConsumptionMGO = iDailyReport.steamingTime ?
+                (totalMGO * 24) / iDailyReport.steamingTime : 0;
+            }
+
+
+
+
+            // Daily Consumption Charter
+            let dailyConsumptionCharterIFO = 0;
+            let dailyConsumptionCharterMGO = 0;
+            if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
+              if (totalIFO) {
+                dailyConsumptionCharterIFO = this.selectUser.sailingBallastConsumptionIFO;
+              }
+              if (totalMGO) {
+                dailyConsumptionCharterMGO = this.selectUser.sailingBallastConsumptionMGO;
+              }
+            } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
+              if (totalIFO) {
+                dailyConsumptionCharterIFO = this.selectUser.sailingLoadConsumptionIFO;
+              }
+              if (totalMGO) {
+                dailyConsumptionCharterMGO = this.selectUser.sailingLoadConsumptionMGO;
+              }
+            }
+
+            // Time Charter
+            let timeCharterIFO = 0;
+            let timeCharterMGO = 0;
+            if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
+              if (totalIFO) {
+                timeCharterIFO = this.selectUser.contractSpeedSailingBallastIFO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingBallastIFO : 0;
+              }
+              if (totalMGO) {
+                timeCharterMGO = this.selectUser.contractSpeedSailingBallastMGO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingBallastMGO : 0;
+              }
+            } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
+              if (totalIFO) {
+                timeCharterIFO = this.selectUser.contractSpeedSailingLadenIFO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingLadenIFO : 0;
+              }
+              if (totalMGO) {
+                timeCharterMGO = this.selectUser.contractSpeedSailingLadenMGO ?
+                  iDailyReport.distance / this.selectUser.contractSpeedSailingLadenMGO : 0;
+              }
+            }
+
+
+            // Consumption Charter
+            let consumptionCharterIFO = 0;
+            let consumptionCharterMGO = 0;
+            if (totalIFO) {
+              consumptionCharterIFO = (dailyConsumptionCharterIFO * timeCharterIFO) / 24;
+            }
+            if (totalMGO) {
+              consumptionCharterMGO = (dailyConsumptionCharterMGO * timeCharterMGO) / 24;
+            }
+
+            // INICAMOS AGREGANDO EL ROW GENERIC
+
+            // departure to arribal
+            if (index == 0) {
+              rowGenerit.push({ "content": iPort.departurePort + '\n' + iPort.arrivalPort + '\n' + typeNavigation, "colSpan": 2, "rowSpan": array.length });
+            }
+
+            // Time
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(iDailyReport.steamingTime, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(iDailyReport.steamingTime, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Distance
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(iDailyReport.distance, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(iDailyReport.distance, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Speed
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(sṕeedReal, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(sṕeedReal, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Speed Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(speedCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(speedCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Consumption
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(totalIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(totalMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // daily Consumption
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(dailyConsumptionIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(dailyConsumptionMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+            // daily Consumption Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(dailyConsumptionCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(dailyConsumptionCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+            // Time Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(timeCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(timeCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+
+
+
+            // Consumption Charter
+            if (this.addInformationIFO) {
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(consumptionCharterIFO, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+            }
+            if (this.addInformationMGO) {
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(consumptionCharterMGO, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+            }
+            rowGenerit.push({ "content": iDailyReport.beaufour, "colSpan": 1 });
+
+
+
+            data.push(rowGenerit);
+          }
+        );
+
+
+
+
+      }
+    );
+
+
+    // Opciones como usuario al generar un table.
+    let userOptions: UserOptions = {};
+    // Agregamos en que altura del documento podnra la tabla
+    userOptions.startY = positionHeight;
+    // estructura del cuerpo
+    userOptions.body = data;
+    // Margen que tendra nuestra tabla.
+    userOptions.margin = { left: positionWidth }
+    // Tamaño de nuestra tabla
+    userOptions.tableWidth = 200;
+
+
+
+    userOptions.didParseCell = (data: CellHookData) => {
+
+      // Secction : head, body, footer
+      let section = data.section;
+      // guardamos la celda y verificamos que no sea underfiend
+      let cell: Cell = data.cell;
+      if (cell == undefined) { return; }
+
+
+      // trabajaremos con el body.
+      if (section == 'body') {
+
+        // ubicacion del la fila
+        let rowIndex = data.row.index;
+        // ubicacion de la columna.
+        let columIndex = data.column.index;
+        // Raw ?????? <= agregar descripcion no lo se?
+        let raw = data.row.raw;
+
+
+
+
+        // Primera cabecera de la tabla Titulo
+        if (rowIndex == 0) {
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
+          if (
+            columIndex == 2
+            || columIndex == 4
+            || columIndex == 6
+            || columIndex == 8
+            || columIndex == 10
+            || columIndex == 12
+            || columIndex == 14
+            || columIndex == 16
+            || columIndex == 18
+          ) {
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = 1
+          }
+          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
+          if (columIndex == 2 || columIndex == 4 || columIndex == 10) {
+            cell.styles.fillColor = this.colorBlueTable1;
+          }
+          // Solo las celdas que tienen formulas se pintan de blue2
+          if (columIndex == 6 || columIndex == 12) {
+            cell.styles.fillColor = this.colorBlueTable2;
+          }
+          // Solo las celdas que tienen datos del charter son de locor blue3
+          if (columIndex == 8 || columIndex == 14 || columIndex == 14 || columIndex == 16 || columIndex == 18) {
+            cell.styles.fillColor = this.colorBlueTable3;
+          }
+          if (columIndex == 20) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = 1;
+          }
+        }
+        // Segunda cabecera 
+        if (rowIndex == 1) {
+
+          if (
+            columIndex > 1) {
+
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = { top: 1, right: 1, bottom: 1, left: 1 };
+            cell.styles.minCellHeight = 6;
+          }
+        }
+
+
+        // de qui para adelante son los viajes.
+        if (rowIndex > 1) {
+
+          let rawLength = Object.keys(raw).length;
+
+
+
+          if (columIndex == 20) {
+            let text = String(cell.text);
+            let number = Number(text.replace('S', ''));
+            if (number) {
+
+              if (number >= 4) {
+
+                cell.styles.textColor = this.colorTextWarning;
+              }
+            }
+          }
+
+          if (rawLength == 20 || rawLength == 11) {
+
+            // nombre del viaje y numero.
+            if (columIndex == 0) {
+              cell.styles.fillColor = this.colorBlueTable1;
+              cell.styles.textColor = this.colorWhite;
+              cell.styles.fontSize = 7;
+              cell.styles.cellPadding = 1;
+            }
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[8].content);
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[4].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[9].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // daily consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[7].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+            }
+
+            // Si se selecciona los dos tipos de combustible.
+            if (this.addInformationIFO && this.addInformationMGO) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[15].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 3) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[16].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[7].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 7) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[8].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[17].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 11) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[18].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // Daily Consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[13].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 13) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[14].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+            }
+
+
+          } else if (rawLength == 19 || rawLength == 10) {
+
+            // nombre del viaje y numero.
+            if (columIndex == 0) {
+              cell.styles.fillColor = this.colorBlueTable1;
+              cell.styles.textColor = this.colorWhite;
+              cell.styles.fontSize = 7;
+              cell.styles.cellPadding = 1;
+            }
+            if (
+              (this.addInformationIFO && !this.addInformationMGO)
+              || (this.addInformationMGO && !this.addInformationIFO)
+            ) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[7].content);
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[3].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[8].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // daily consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[6].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+            }
+
+            // Si se selecciona los dos tipos de combustible.
+            if (this.addInformationIFO && this.addInformationMGO) {
+              // Desde la columna 2 para adelante lo pintamos de gris.
+              if (columIndex >= 2) {
+                cell.styles.fillColor = this.colorGris;
+              }
+
+              // Time
+              if (columIndex == 2) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[14].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 3) {
+                let valorCell = Number(cell.text);
+                // Time charter
+                let valorCharter = Number(raw[15].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+              // Speed
+              if (columIndex == 6) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[6].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 7) {
+                let valorCell = Number(cell.text);
+                // speed
+                let valorCharter = Number(raw[7].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // total consumo
+              if (columIndex == 10) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[16].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 11) {
+                let valorCell = Number(cell.text);
+                // total ocnsumo charter 
+                let valorCharter = Number(raw[17].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+
+
+              // Daily Consumo
+              if (columIndex == 12) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[12].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+              if (columIndex == 13) {
+                let valorCell = Number(cell.text);
+                // total daily consumption charter
+                let valorCharter = Number(raw[13].content);
+
+                // Verificamos si existe un valor en el charter.
+                if (valorCharter && valorCell) {
+                  if (valorCell < valorCharter) {
+                    cell.styles.textColor = this.colorTextSuccess;
+                  }
+                  if (valorCell > valorCharter) {
+                    cell.styles.textColor = this.colorTextWarning;
+                  }
+                }
+              }
+
+            }
+          }
+
+
+        }
+
+
+      }
+
+
+    }
+
+
+
+
+    // Total suma 136, pero el widt es 136 hay que revisar.
+    userOptions.columnStyles = {
+      0: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      1: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      2: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      3: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      4: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      5: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.2,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      6: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      7: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      8: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      9: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      10: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      11: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      12: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      13: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      14: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      15: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      16: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      17: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      18: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      19: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      },
+      20: {
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 7,
+        cellWidth: 9.5,
+        lineWidth: 0.15,
+        lineColor: [22, 33, 77],
+        valign: 'middle',
+      }
+    };
+
+
+
+    autoTable(doc, userOptions);
+
+
+    return contentHeightTable;
+  }
+
+
+  private addFoter(doc: jsPDF, widthPDF: number, heightPDF: number) {
+
+    let pageFooter = heightPDF - 10;
+
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
+    pageFooter += 4;
+
+    doc.setFontSize(8);
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(22, 33, 77);
+
+    doc.text('Page ' + this.numberPage, 10, pageFooter, { align: 'left' });
+    doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
+
+  }
+
+}

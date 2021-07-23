@@ -172,14 +172,14 @@ export const user: any = {
     NEW_USER: 'New User',
     COMFIMR_DISCARD_CHANGES: 'There are unsaved changes, do you want to discard the changes?',
     COMFIRM_DISCARD_DESCRIPTION: 'The changes are irreversible.',
-    MIN_CONSUMPTION_MGO: 'Minimum daily consumption MGO',
-    MAX_CONSUMPTION_MGO: 'Maximum daily consumption MGO',
-    MIN_CONSUMPTION_IFO: 'Minimum daily consumption IFO',
-    MIN_CONSUMPTION_VLSFO: 'Minimum daily consumption VLSFO',
-    MIN_CONSUMPTION_LSFO: 'Minimum daily consumption LSFO',
-    MAX_CONSUMPTION_IFO: 'Maximum daily consumption IFO',
-    MAX_CONSUMPTION_VLSFO: 'Maximum daily consumption VLSFO',
-    MAX_CONSUMPTION_LSFO: 'Maximum daily consumption LSFO',
+    MIN_CONSUMPTION_MGO: 'Min daily consumption MGO',
+    MAX_CONSUMPTION_MGO: 'Max daily consumption MGO',
+    MIN_CONSUMPTION_IFO: 'Min daily consumption IFO',
+    MIN_CONSUMPTION_VLSFO: 'Min daily consumption VLSFO',
+    MIN_CONSUMPTION_LSFO: 'Min daily consumption LSFO',
+    MAX_CONSUMPTION_IFO: 'Max daily consumption IFO',
+    MAX_CONSUMPTION_VLSFO: 'Max daily consumption VLSFO',
+    MAX_CONSUMPTION_LSFO: 'Max daily consumption LSFO',
     CONSUMPTION_TABLE_CONFIGURATION: 'Consumption Table Configuration',
     CONSUMPTIONEQUIPMENTME_MGO: 'C. M.E.',
     CONSUMPTIONEQUIPMENTAE_MGO: 'C. A.E.',
@@ -192,7 +192,7 @@ export const user: any = {
     CONSUMPTIONEQUIPMENTBOILER_IFO: 'C. Boiler',
     CONSUMPTIONEQUIPMENTOTHER_IFO: 'C. Other',
     NEW_YEAR: 'New year',
-
+    VESSEL_CONFIGURATION: 'Vessel Configuration'
 };
 
 export const fileUpload: any = {
@@ -352,7 +352,7 @@ export const dashboard: any = {
     TOTAL_CONSUMPTION_BY_FILTER: 'TOTAL CONSUMPTION (MT)',
     REAL_DAILY_CONSUMPTION: 'DAILY CONSUMPTION (MT)',
     DAILY_CONSUMPTION_BY_CONTRACT: 'DAILY CONSUMPTION (MT) (CHARTER)',
-    DAILY_BALANCE: 'BALANCE CONSUMPTION (MT)',
+    DAILY_BALANCE: 'BALANCE DAILY CONSUMPTION (MT)',
     // Opciones de Actividades realizadas / Activity performend
     LOADING: 'Loading',
     DOWNLOADING: 'Discharge',
@@ -396,7 +396,7 @@ export const dashboard: any = {
     TOOLTIP_BALANCE_HOURS_SAILED: 'Navigation time balance.\n( TOTAL TIME PER ACTIVITY (HRS) - TIME PER NAVIGATION (HRS) (CHARTER) )',
     TOOLTIP_EQUIPMENT: 'Equipment.',
     TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER: 'Total equipment consumption.',
-    TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
+    TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / EQUIPMENT USE TIME',
     TOOLTIP_DAILY_CONSUMPTION_BY_CONTRACT_EQUIPMENT: 'Daily consumption of equipment per contract.',
     TOOLTIP_DAILY_BALANCE_EQUIPMENT: 'Consumption balance.\n( DAILY CONSUMPTION (MT) - DAILY CONSUMPTION (MT) (CHARTER) )',
     TOOLTIP_GI_DAILY_CONSUMPTION_MGO: 'TOTAL CONSUMPTION (MT) * 24 / (Time Discharge + Time Other act.)',
@@ -452,9 +452,36 @@ export const dialog: any = {
     DEPARTURE: 'Departure :',
     ARRIVAL: 'Arrival :',
     BUQUE: 'Vessel',
-    TITLE_TABLE_SPEED:'Speed (KN)',
+    TITLE_TABLE_SPEED: 'Speed (KN)',
+    TOTAL: 'Total',
+    DAILY_CONSUMPTION: 'Daily Consp.',
+    CHARTER: 'Charter',
+    BUNKERING: 'Bunkering',
+    REPORT_INFORMATION: 'This report has the following information.',
+    ADD_SAILING_NAVIGATION: 'What navigation information do you want to add?',
+    IN_BALLAST: 'In Ballast',
+    WITH_LADEN: 'With Laden',
+    ECONOMICAL: 'Economical',
+    ADD_MACHINE_INFORMATION: 'Do you want to add the machine information?',
+    ADD_INFORMATION: 'What information do you want to add?',
+    ADD_INFORMATION_FUEL: 'What information do you want to add?',
+    MGO: 'MGO',
+    IFO: 'IFO',
+    VLSFO: 'VLSFO',
+    LSFO: 'LSFO',
+    MPLA: 'M.E',
+    AUX: 'A.E',
+    BOILER: 'Boiler',
+    GI: 'G.I',
+    PP: 'P.P',
+    OTHER: 'Other',
+    OVERALL_PERFORMANCE: 'Overall Performance Analysis',
+    VOYAGE_SUMMARY: 'Voyage Summary (Speed, Consumption)',
+    VOYAGE_SUMMARY_CONSUMPTION: 'Voyage Summary (Consumption)',
+    CHART_VOYAGE_SUMMARY: 'Chart Voyage Summary',
+    BUNKERING_INFORMATION: 'Bunkering Information'
 }
 
-export const guards:any = {
-    
+export const guards: any = {
+
 }
