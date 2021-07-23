@@ -1,18 +1,19 @@
 /* export const URL_Server = {
     front: 'https://transgas-test.web.app',
-    back: 'https://transgas.labcode.site',
-    version: 'v1.9e'
-}; */
+    back: 'https://transgas.codev.site/',
+    version: 'v1.9e',
+    puertoSocket: 4000,
+};
+ */
 
-
-
-/* export const URL_Server = {
+/* 
+export const URL_Server = {
     front: 'https://transgas-prod.web.app',
     back: 'https://transgas-prod.codev.site',
     version: 'v1.9e',
     puertoSocket: 4000,
-};
-*/
+}; */
+
 
 
 
