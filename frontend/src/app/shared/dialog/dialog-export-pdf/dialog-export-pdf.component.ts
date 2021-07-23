@@ -110,6 +110,8 @@ export class DialogExportPdfComponent implements OnInit {
   public chartLineIFO: Chart; // LINEA
   public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
+  // Variable para el pagina 
+  public numberPage = 1;
 
   // Colores
   public colorWhite = '#FFFFFF';
@@ -3326,6 +3328,7 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addSailingWithLaden) {
               // Agregamos una nueva pagina
               doc.addPage();
+              this.numberPage += 1;
               let isViewBallast = false;
               let isViewLaden = true;
               // Agregamos el OverallPerformanceAnalisis
@@ -3352,7 +3355,20 @@ export class DialogExportPdfComponent implements OnInit {
       ).then(
         result => {
 
-          doc.save("test.pdf")
+          let ballastOrLaden = '';
+          if (this.addSailingInBallast && !this.addSailingWithLaden) {
+            ballastOrLaden = '(Ballast)';
+          }
+          if (this.addSailingWithLaden && !this.addSailingInBallast) {
+            ballastOrLaden = '(Laden)';
+          }
+          if (this.addSailingWithLaden && this.addSailingInBallast) {
+
+            ballastOrLaden = '(Ballast/Laden)';
+          }
+
+
+          doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
 
           this.loadingService.Close();
           return true;
@@ -3729,7 +3745,7 @@ export class DialogExportPdfComponent implements OnInit {
     let titleTable = 'Overall Performance Analysis';
     this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
 
-
+    this.addFoter(doc, widthPDF, heightPDF)
     //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, null)
   }
 
@@ -6997,6 +7013,7 @@ export class DialogExportPdfComponent implements OnInit {
 
         // Agregamos una nueva pagina
         doc.addPage();
+        this.numberPage += 1;
 
         positionHeight += 10;
         let positionWidth = 10;
@@ -7233,6 +7250,8 @@ export class DialogExportPdfComponent implements OnInit {
 
         let titleTable = 'Voyage ' + iVoyage.voyageNumber + ' Summary';
         this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
+
+        this.addFoter(doc, widthPDF, heightPDF);
       }
     )
   }
@@ -8375,5 +8394,23 @@ export class DialogExportPdfComponent implements OnInit {
     return contentHeightTable;
   }
 
+
+  private addFoter(doc: jsPDF, widthPDF: number, heightPDF: number) {
+
+    let pageFooter = heightPDF - 10;
+
+    doc.setDrawColor(22, 33, 77);
+    doc.setFillColor(22, 33, 77);
+    doc.rect(10, pageFooter, widthPDF - 20, 0.5, "FD");
+    pageFooter += 4;
+
+    doc.setFontSize(8);
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(22, 33, 77);
+
+    doc.text('Page ' + this.numberPage, 10, pageFooter, { align: 'left' });
+    doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
+
+  }
 
 }
