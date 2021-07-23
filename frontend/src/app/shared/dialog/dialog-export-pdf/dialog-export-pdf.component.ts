@@ -3267,9 +3267,9 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           // Agregamos la fecha de inicio y la fecha fin.
-          sVPR.atdAndAta = '20/02/2021 22:00GTM  to 20/02/2021 22:00GTM'
-          sVPR.dateStart = ''
-          sVPR.dateStart = ''
+          sVPR.atdAndAta = FormatDate(this.data.dateStart)+' To '+FormatDate(this.data.dateEnd)
+          sVPR.dateStart = '----'
+          sVPR.dateStart = '----'
 
         }
       ).then(
