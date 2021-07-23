@@ -11,9 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
+const app_gateway_1 = require("./app.gateway");
 const moment_assets_1 = require("./assets/moment.assets");
 let AppService = class AppService {
-    constructor() {
+    constructor(gateway) {
+        this.gateway = gateway;
         this.loggedUsers = [];
     }
     getHello() {
@@ -66,7 +68,7 @@ let AppService = class AppService {
 };
 AppService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [app_gateway_1.AppGateway])
 ], AppService);
 exports.AppService = AppService;
 //# sourceMappingURL=app.service.js.map

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppGateway = void 0;
 const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
+const server_config_1 = require("./config/server.config");
 let AppGateway = class AppGateway {
     constructor() {
         this.logger = new common_1.Logger('AppGateway');
@@ -29,7 +30,7 @@ __decorate([
     __metadata("design:type", Object)
 ], AppGateway.prototype, "wss", void 0);
 AppGateway = __decorate([
-    websockets_1.WebSocketGateway(4000, { transport: ['websocket'] })
+    websockets_1.WebSocketGateway(server_config_1.URL_Server.puertoSocket, { transport: ['websocket'] })
 ], AppGateway);
 exports.AppGateway = AppGateway;
 //# sourceMappingURL=app.gateway.js.map

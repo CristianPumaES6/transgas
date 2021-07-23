@@ -16,6 +16,7 @@ const path_config_1 = require("./config/path.config");
 const users_module_1 = require("./components/users/users.module");
 const auth_module_1 = require("./components/auth/auth.module");
 const voyages_module_1 = require("./components/voyages/voyages.module");
+const app_gateway_1 = require("./app.gateway");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -30,9 +31,11 @@ AppModule = __decorate([
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
             voyages_module_1.VoyagesModule,
+            app_gateway_1.AppGateway,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService,
+            app_gateway_1.AppGateway
         ],
     })
 ], AppModule);
