@@ -3319,6 +3319,7 @@ export class DialogExportPdfComponent implements OnInit {
             if (this.addSailingInBallast) {
               // Agregamos una nueva pagina
               doc.addPage();
+              this.numberPage += 1;
               let isViewBallast = true;
               let isViewLaden = false;
               // Agregamos el OverallPerformanceAnalisis
@@ -3369,7 +3370,8 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
-
+          this.numberPage = 1;
+          
           this.loadingService.Close();
           return true;
 
@@ -3405,10 +3407,10 @@ export class DialogExportPdfComponent implements OnInit {
     // con el tamaño del pdf y o dividimos para que
     // tenga el mismo margen en la altura y bottom
     positionHeight += (heightPDF - contentOnePage) / 2;
-    // Eliminar esto, es solo com referencia.
+    // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
+    //doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
 
     // ubicamos la imagen con un tamaño de 50 x 50
     let widthImage = 50;
@@ -4088,7 +4090,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+    //doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
 
 
     // Agregar la formula para saber si es IFO VLSFO LSFO
@@ -4827,10 +4829,10 @@ export class DialogExportPdfComponent implements OnInit {
     contentHeightTable += 19;
 
 
-    // Eliminar esto, es solo com referencia.
+    //RevisarEliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+   // doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
 
 
     // title
@@ -7297,7 +7299,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
+    //doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
 
 
 
