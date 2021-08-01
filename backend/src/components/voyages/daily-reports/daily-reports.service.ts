@@ -132,7 +132,7 @@ export class DailyReportsService {
 
                         .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                        .andWhere('daily_report.date < :startDate', { startDate: startDate })
+                        .andWhere('datetime(daily_report.date) <= datetime(:startDate)', { startDate: startDate })
 
                         .getRawOne()
                         .then(
@@ -166,8 +166,8 @@ export class DailyReportsService {
 
                         .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                        .andWhere('daily_report.date >= :startDate', { startDate: startDate })
-                        .andWhere('daily_report.date < :endDate', { endDate: endDate })
+                        .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+                        .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
                         .getRawOne();
                 }
             ).then(
