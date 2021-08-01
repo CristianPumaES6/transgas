@@ -533,7 +533,19 @@ export class VoyagesController {
             newReport.portId = existePort.value;
 
             newReport.date = ConvertDDMMYYYToYYYYMMDD(importVoyage.date)
-            newReport.hour = importVoyage.hour;
+
+            // Verificamos si existe una hora,
+            if (importVoyage.hour) {
+                // Verificamos el tamaño de la hora,
+                // Lo normal seria 03:00 esto seria un total de 5 caracteres
+                // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
+                if (importVoyage.hour.length === 4) {
+                    // concatenamos el 0 a la hora.
+                    newReport.hour = '0' + importVoyage.hour;
+                } else {
+                    newReport.hour = importVoyage.hour;
+                }
+            }
 
             newReport.bunkeringIfo = 0
             newReport.bunkeringMgo = 0;
@@ -565,7 +577,7 @@ export class VoyagesController {
             } else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
                 newReport.beaufour = 'S6';
             } else {
-                newReport.beaufour = '';
+                newReport.beaufour = importVoyage.beaufour;
             }
 
             newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
