@@ -3410,7 +3410,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    //doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
+    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
 
     // ubicamos la imagen con un tamaño de 50 x 50
     let widthImage = 50;
@@ -4090,7 +4090,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    //doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
 
 
     // Agregar la formula para saber si es IFO VLSFO LSFO
@@ -4832,7 +4832,7 @@ export class DialogExportPdfComponent implements OnInit {
     //RevisarEliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-   // doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
 
 
     // title
@@ -7299,7 +7299,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    //doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
+    doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
 
 
 
