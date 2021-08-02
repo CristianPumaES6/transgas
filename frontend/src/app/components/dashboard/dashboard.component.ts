@@ -4002,9 +4002,9 @@ export class DashboardComponent implements OnInit {
 
         let lineMax = 0;
 
-        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.sailingBallastConsumptionIFO; }
-        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.sailingLoadConsumptionIFO; }
-        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.sailingEconomicConsumptionIFO; }
+        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
+        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
+        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
 
         if (lineMax > lineaMaxByActivity) {
           lineaMaxByActivity = lineMax;
