@@ -3296,22 +3296,67 @@ export class DialogExportPdfComponent implements OnInit {
           // Se desea agregar el overall performance?
           if (this.addOverallPerformance) {
 
+            // Los dos cuadros entran en una hora
+            let isChartInOnePage = false;
+            // Calculamos el tamaño que ocupara nuestros cuadros que deseamos agregar.
+            let contentTableBallast = 0;
+            let contentTableLaden = 0;
+            if (this.addSailingInBallast) {
+              // Le sumamos el espacio de la cabecera de la tabla.
+              contentTableBallast += 19.9;
+              // Cada fila ocupa lo siguiente.
+              contentTableBallast += (6.25 * listGTSOPA_Ballast.length);
+              // FOTTER de la tabla
+              contentTableBallast += 25.8;
+            }
+            if (this.addSailingWithLaden) {
+              // Le sumamos el espacio de la cabecera de la tabla.
+              contentTableLaden += 19.9;
+              // Cada fila ocupa lo siguiente.
+              contentTableLaden += (6.25 * listGTSOPA_Laden.length);
+              // FOTTER de la tabla
+              contentTableLaden += 25.8;
+            }
+
+            // El tamaño del header por el momento es 35.
+            // El footer 10
+
+            //Entonces 
+            if (
+              this.addSailingInBallast && this.addSailingWithLaden &&
+              (
+
+                // SUMAMOS LO Tamaños por defecto y se lo restamos al tamaño de la hoja.
+                (heightPDF - (35 + 10 + 20))
+                // esto debe de ser mayor a la suma de los 2 cuadros
+                // Para que los dos cuadros entren.
+                > (contentTableBallast + contentTableLaden)
+
+              )
+            ) {
+              // Si es asi le pongo true.
+              isChartInOnePage = true;
+            }
+
+
+            // Ahora verificamos si los dos cuadros entrarian en una hoja.
+            // La suma de los dos cuadros deben de ser menor al tamaño que nos permite la hoja.
+
+
             if (this.addSailingInBallast) {
               // Agregamos una nueva pagina
               doc.addPage();
-              this.numberPage += 1;
+
               let isViewBallast = true;
               let isViewLaden = false;
 
               positionHeight += 10;
               let positionWidth = 10;
-
               let title: string = 'Overall Performance Analysis';
-              if (isViewBallast) {
-                title += ' (Ballast)'
-              }
-              if (isViewLaden) {
-                title += ' (Laden)'
+              if (isChartInOnePage) {
+                title += '(Ballast / Laden)';
+              } else {
+                title += '(Ballast)';
               }
               // Agregamos la cabecera a la pagina.
               positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
@@ -3321,47 +3366,42 @@ export class DialogExportPdfComponent implements OnInit {
               ///////////////////////////////////////
 
               // Colocamos el rectangulo
-              positionHeight += 5.5;
+              //  positionHeight += 5.5;
               positionWidth = 5;
-
+              positionHeight += 10;
               // Generamos todo el resumen por viajes.
               positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA_Ballast, gTTSOPA, isViewBallast, isViewLaden);
 
-              alert('Tamaño del PDF :' + heightPDF + '       POSICION ACTUAL:' + positionHeight)
+              // agrgamos 1 al paginador.
+              this.numberPage += 1;
               this.addFoter(doc, widthPDF, heightPDF)
             }
             if (this.addSailingWithLaden) {
+
+              let positionWidth = 0;
+              if (!isChartInOnePage) {
+                positionHeight = 0;
+                doc.addPage();
+                this.numberPage += 1;
+
+                positionWidth = 10;
+                let title: string = 'Overall Performance Analysis (Laden)';
+                // Agregamos la cabecera a la pagina.
+                positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+                this.addFoter(doc, widthPDF, heightPDF)
+                // Le sumo 5 por que abajo le volvere a sumar 5
+                positionHeight += 5;
+              }
               // Agregamos una nueva pagina
-              doc.addPage();
-              this.numberPage += 1;
               let isViewBallast = false;
               let isViewLaden = true;
 
-              positionHeight = 0;
-              let positionWidth = 10;
-
-
-              let title: string = 'Overall Performance Analysis';
-              if (isViewBallast) {
-                title += ' (Ballast)'
-              }
-              if (isViewLaden) {
-                title += ' (Laden)'
-              }
-              // Agregamos la cabecera a la pagina.
-              positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
-
-              ///////////////////////////////////////
-              ///////// Inicio del 1° Cuadro ////////
-              ///////////////////////////////////////
-
-              // Colocamos el rectangulo
-              positionHeight += 5.5;
+              // Le sumo 5 mas.
+              positionHeight += 5;
               positionWidth = 5;
-
               // Generamos todo el resumen por viajes.
               positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA_Laden, gTTSOPA, isViewBallast, isViewLaden);
-              this.addFoter(doc, widthPDF, heightPDF)
+
             }
           }
 
@@ -4076,14 +4116,16 @@ export class DialogExportPdfComponent implements OnInit {
 
     let contentHeightTable = 0;
     // Le sumamos el espacio de la cabecera de la tabla.
-    contentHeightTable += 16.7;
+    contentHeightTable += 19.9;
     // Cada fila ocupa lo siguiente.
-    contentHeightTable += (6.8 * listGTSOPA.length);
+    contentHeightTable += (6.25 * listGTSOPA.length);
+    // FOTTER de la tabla
+    contentHeightTable += 25.8;
 
     // Revisar Eliminar esto, es solo com referencia.
     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
-    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+    doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
 
 
     // Agregar la formula para saber si es IFO VLSFO LSFO
