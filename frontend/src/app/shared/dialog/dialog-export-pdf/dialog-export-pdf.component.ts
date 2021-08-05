@@ -16,6 +16,7 @@ import { Voyage } from '../../../models/voyage';
 import { LanguageService } from '../../../services/language.service';
 import { DialogListReportComponent } from '../dialog-list-report/dialog-list-report.component';
 import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOverallPerformanceAnalisis, GenerateTableTotalSummaryOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
+import { DataChart } from 'src/app/models/chart';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
@@ -104,11 +105,13 @@ export class DialogExportPdfComponent implements OnInit {
   public chartLineSpeed: Chart; // LINEA
   public dataSpeed: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
-
+  // Chart Overall Performance Laden
+  public chartOverallPerformanceLaden: DataChart = new DataChart();
 
   public configLineaIFO: Chart.ChartConfiguration; // Configuracion del elemento
   public chartLineIFO: Chart; // LINEA
   public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
+
 
   // Variable para el pagina 
   public numberPage = 1;
@@ -154,14 +157,7 @@ export class DialogExportPdfComponent implements OnInit {
     ).then(
       result => {
 
-        // generamos la linea
-        return this.GenetareLineSpeed();
-      }
-    ).then(
-      result => {
-
-        // generamos la linea
-        return this.GenetareLineIFO();
+        return this.GenerateChartOverallPerformanceLaden();
       }
     ).then(
       result => {
@@ -2055,6 +2051,152 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
+  // GenerateChartOverallPerformanceLaden : generamos la linea del chart.
+  private GenerateChartOverallPerformanceLaden(): boolean {
+    console.log('GenerateChartOverallPerformanceLaden()');
+
+    // Agregamos la configuracion del chartIFO.
+    this.chartOverallPerformanceLaden.config = {
+      type: 'line',
+      data: {
+        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
+        datasets: [{
+          label: 'Overall Performance Daily Consumption', // Lo pongo vacio por que en el update se colocara el valor.
+          backgroundColor: 'rgb(255,205,6)',
+          borderColor: 'rgb(255,205,6)',
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
+          fill: false,
+        }]
+      },
+      options: {
+        // Habilitamos todos los tooltip esten abiertos.
+        showAllTooltips: true,
+        // Otras opciones dentro del Chart
+        legend: {
+          // La leyenda es el texto que esta arriva del cuadro.
+          display: true,
+          onClick: (event, legendItem) => {
+            console.log('onClick:' + legendItem.text);
+          },
+          labels: {
+            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
+            fontStyle: 'bold', // Tipo de texto de la leyenda.
+          }
+        },
+        // Habilitamos la opcion para que sea responsive
+        maintainAspectRatio: false,
+        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
+        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
+        hover: {
+          onHover: function (e: MouseEvent) {
+            // puntos GetElementAtaEvent
+            var point = this.getElementAtEvent(e);
+
+            // event targer.
+            let eventTarget = e.target as HTMLCanvasElement;
+            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
+            if (point.length) {
+              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+            } else {
+              eventTarget.style.cursor = 'default';
+            }
+          }
+        }
+      },
+      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
+    };
+
+    // Encapculamos el elemento del dom.
+    let canvaLineSpeed: any = document.getElementById('lineOverallPerformanceLaden');
+    // Convertimos el canvaLineIfo en 2d
+    let ctxLineSpeed = canvaLineSpeed.getContext('2d');
+    // 
+    this.chartOverallPerformanceLaden.chart = new Chart(ctxLineSpeed, this.chartOverallPerformanceLaden.config);
+
+    return true;
+  }
+
+
+
+  private UpdateChartOverallPerformanceLaden(): boolean {
+    console.log('UpdateChartOverallPerformanceLaden()');
+
+    // Actualizamos los labels
+    this.chartOverallPerformanceLaden.config.data.labels = this.chartOverallPerformanceLaden.xLabelReport;
+
+    // Actualizamos la data 
+    this.chartOverallPerformanceLaden.config.data.datasets[0].data = this.chartOverallPerformanceLaden.data;
+
+    // Vaciamos la configuracion de las lines SPEED
+    // La linea es el campo que agregamos en el plugin.
+    this.chartOverallPerformanceLaden.config.options.lines = [];
+
+
+    let maxConsumption = 0;
+    // Verificamos quien tiene el mayor consumo
+    if (this.selectUser.sailingBallastConsumptionIFO > maxConsumption) {
+      maxConsumption = this.selectUser.sailingBallastConsumptionIFO;
+    }
+    if (this.selectUser.sailingLoadConsumptionIFO > maxConsumption) {
+      maxConsumption = this.selectUser.sailingLoadConsumptionIFO;
+    }
+    if (this.selectUser.sailingBallastConsumptionMGO > maxConsumption) {
+      maxConsumption = this.selectUser.sailingBallastConsumptionMGO;
+    }
+    if (this.selectUser.sailingLoadConsumptionMGO > maxConsumption) {
+      maxConsumption = this.selectUser.sailingLoadConsumptionMGO;
+    }
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
+    if (maxConsumption) {
+      this.chartOverallPerformanceLaden.config.options.lines.push({
+        type: 'horizontal',
+        y: maxConsumption,
+        color: 'red',
+        label: 'Max Consumption'
+      });
+    };
+
+    let maxSpeed = 0;
+    // Verificamos quien tiene el mayor consumo
+    if (this.selectUser.contractSpeedSailingBallastIFO > maxSpeed) {
+      maxSpeed = this.selectUser.contractSpeedSailingBallastIFO;
+    }
+    if (this.selectUser.contractSpeedSailingLadenIFO > maxSpeed) {
+      maxSpeed = this.selectUser.contractSpeedSailingLadenIFO;
+    }
+    if (this.selectUser.contractSpeedSailingBallastMGO > maxSpeed) {
+      maxConsumption = this.selectUser.contractSpeedSailingBallastMGO;
+    }
+    if (this.selectUser.contractSpeedSailingLadenMGO > maxSpeed) {
+      maxSpeed = this.selectUser.contractSpeedSailingLadenMGO;
+    }
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
+    if (maxSpeed) {
+      this.chartOverallPerformanceLaden.config.options.lines.push({
+        type: 'horizontal',
+        y: maxSpeed,
+        color: 'red',
+        label: 'Max Speed'
+      });
+    };
+
+
+    // Configuracion Tooltips
+    this.chartOverallPerformanceLaden.config.options.tooltips = this.GetToolTipConfig('OverallPerformanceLaden');
+
+    if (this.chartOverallPerformanceLaden.config.lineaMax < this.selectUser.sailingBallastConsumptionIFO) {
+      this.chartOverallPerformanceLaden.config.lineaMax = this.selectUser.sailingBallastConsumptionIFO;
+    }
+
+    // Agregamos la configuracion de las escalas.
+    this.chartOverallPerformanceLaden.config.options.scales = this.ConfigScales(this.chartOverallPerformanceLaden.xLabelReport, true, mathRound(this.chartOverallPerformanceLaden.config.lineaMax, 0) + 2);
+
+
+    this.chartOverallPerformanceLaden.chart.update();
+
+    return true;
+  }
+
 
 
   // GenetareLineSpeed(): Generar linea en los canvas.
@@ -2310,7 +2452,7 @@ export class DialogExportPdfComponent implements OnInit {
           let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
 
           // dos veces estamos aplicando el formato.
-          result = TextMonthDayYearFormatYYYYMMDD(chartPoint.x);
+          //  result = chartPoint.x;
 
 
           return result;
@@ -2323,9 +2465,11 @@ export class DialogExportPdfComponent implements OnInit {
           // Resultado que se mostrara en el titulo.
 
           let result = '';
-          if (configIFOorMGOorSPEED === 'IFO') {
+          if (configIFOorMGOorSPEED === 'OverallPerformanceLaden') {
             result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            result = 'Daily consumption : ';
+            result = 'Overall Performance Laden : ';
+          } else if (configIFOorMGOorSPEED === 'IFO') {
+            result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
           } else if (configIFOorMGOorSPEED === 'MGO') {
             result = 'MGO Daily consumption : ';
           } else if (configIFOorMGOorSPEED === 'SPEED') {
@@ -2343,48 +2487,56 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Resultado que se mostrara en el titulo.
           let result = [];
+          if (configIFOorMGOorSPEED === 'OverallPerformanceLaden') {
+            result.push('T. Time : ' + mathRound(1.22, 2));
+            result.push('T. Distance : ' + mathRound(1.22, 2));
+            result.push('T. Consumption : ' + mathRound(1.22, 2));
+            result.push('Speed AVG: ' + mathRound(1.22, 2));
+          } else {
 
-          // DataSets.
-          let dataSets: Chart.ChartDataSets = data.datasets[0];
-          let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
-          let ubication = chartPoint.ubication;
-
-
-          // Revisar esto lo podriamos desaparecer si se lo agregamos al
-          // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
-          let dataExtra = chartPoint.dataExtra;
-
-          let speed = new Speed();
-          let activities = '';
-          let observations = '';
-          let totalReport = 0;
+            // DataSets.
+            let dataSets: Chart.ChartDataSets = data.datasets[0];
+            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+            let ubication = chartPoint.ubication;
 
 
-          dataExtra.forEach((report: DailyReport) => {
-            activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
-            observations = observations + ', ' + report.observation;
-            speed.add(report.distance, report.steamingTime);
-            totalReport = totalReport + 1;
-          });
+            // Revisar esto lo podriamos desaparecer si se lo agregamos al
+            // GenerateDataChart, los datos de la actividad y observaciones podrian estar en un atributo.
+            let dataExtra = chartPoint.dataExtra;
+
+            let speed = new Speed();
+            let activities = '';
+            let observations = '';
+            let totalReport = 0;
+
+
+            dataExtra.forEach((report: DailyReport) => {
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              observations = observations + ', ' + report.observation;
+              speed.add(report.distance, report.steamingTime);
+              totalReport = totalReport + 1;
+            });
 
 
 
 
-          if (chartPoint.speed.steamingTime > 0) {
-            result.push('T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2));
-          }
-          if (chartPoint.speed.distance > 0) {
-            result.push('T. Distance : ' + mathRound(chartPoint.speed.distance, 2));
-          }
-
-          if (configIFOorMGOorSPEED == 'IFO') {
-
-            if (chartPoint.totalConsumptionIFO > 0) {
-              result.push('T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2));
+            if (chartPoint.speed.steamingTime > 0) {
+              result.push('T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2));
+            }
+            if (chartPoint.speed.distance > 0) {
+              result.push('T. Distance : ' + mathRound(chartPoint.speed.distance, 2));
             }
 
-          }
+            if (configIFOorMGOorSPEED == 'IFO') {
 
+              if (chartPoint.totalConsumptionIFO > 0) {
+                result.push('T. Consumption : ' + mathRound(chartPoint.totalConsumptionIFO, 2));
+              }
+
+            }
+
+
+          }
           return result;
 
         },
@@ -2425,7 +2577,7 @@ export class DialogExportPdfComponent implements OnInit {
       }]
     };
 
-    config.xAxes[0].type = 'time';
+    /* config.xAxes[0].type = 'time';
     config.xAxes[0].time = {
 
       displayFormats: {
@@ -2434,7 +2586,7 @@ export class DialogExportPdfComponent implements OnInit {
       tooltipFormat: 'MM/DD/YY',
       unit: 'day',
 
-    }
+    } */
 
 
     return config;
@@ -2694,49 +2846,58 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
+
   private PluginChartDataLabels() {
+
 
     Chart.pluginService.register({
       beforeRender: function (chart: any) {
         if (chart.config.options.showAllTooltips) {
-          // create an array of tooltips, 
+          // create an array of tooltips
           // we can't use the chart tooltip because there is only one tooltip per chart
           chart.pluginTooltips = [];
           chart.config.data.datasets.forEach(function (dataset, i) {
             chart.getDatasetMeta(i).data.forEach(function (sector, j) {
-              chart.pluginTooltips.push({
+              // @ts-ignore
+              chart.pluginTooltips.push(new Chart.Tooltip({
                 _chart: chart.chart,
                 _chartInstance: chart,
                 _data: chart.data,
                 _options: chart.options.tooltips,
                 _active: [sector]
-              }, chart);
+              }, chart));
             });
           });
-          chart.options.tooltips.enabled = false; // turn off normal tooltips
+
+          // turn off normal tooltips
+          chart.options.tooltips.enabled = false;
         }
       },
       afterDraw: function (chart: any, easing) {
         if (chart.config.options.showAllTooltips) {
+          // we don't want the permanent tooltips to animate, so don't do anything till the animation runs atleast once
           if (!chart.allTooltipsOnce) {
-            if (Number(easing) !== 1) {
+            if (Number(easing) !== 1)
               return;
-            }
             chart.allTooltipsOnce = true;
           }
+
+          // turn on tooltips
           chart.options.tooltips.enabled = true;
           Chart.helpers.each(chart.pluginTooltips, function (tooltip) {
             tooltip.initialize();
             tooltip.update();
+            // we don't actually need this since we are not animating tooltips
             tooltip.pivot();
             tooltip.transition(easing).draw();
           });
           chart.options.tooltips.enabled = false;
         }
       }
-    });
+    })
 
   }
+
 
 
   // ExportPDFVesselPerformance2() esta funcion genera el pdf.
@@ -2774,6 +2935,11 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Esta variable contendra todos los viajes.
     let SummaryByVoyage: Voyage[] = [];
+
+    // Reset los datos del label y la data del chart
+    this.chartOverallPerformanceLaden.xLabelReport = [];
+    this.chartOverallPerformanceLaden.data = [];
+
     // Inicializamos sincrono.
     return Promise.resolve(true)
       .then(
@@ -2897,7 +3063,6 @@ export class DialogExportPdfComponent implements OnInit {
                                     gTSOPA_Ballast.distanceMGO += dailyReport.distance;
                                     gTSOPA_Ballast.consumptionMGO += totalMGO;
                                     gTSOPA_Ballast.timeMGO += dailyReport.steamingTime;
-
 
                                     gTTSOPA.distanceMGOBallast += dailyReport.distance;
                                     gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
@@ -3096,7 +3261,13 @@ export class DialogExportPdfComponent implements OnInit {
                   }
 
 
-
+                  this.chartOverallPerformanceLaden.xLabelReport.push('V' + gTSOPA_Laden.voyageNumber)
+                  this.chartOverallPerformanceLaden.data.push(
+                    { x: 'V' + gTSOPA_Laden.voyageNumber, y: gTSOPA_Laden.dailyConsumptionIFO }
+                  );
+                  /*  this.dataIFO.push(
+                     { x: day, y: dayliConsumptionIFO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra }
+                   ) */
                   listGTSOPA_Laden.push(gTSOPA_Laden)
                 }
 
@@ -3438,7 +3609,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
           this.numberPage = 1;
-
+          this.UpdateChartOverallPerformanceLaden();
           this.loadingService.Close();
           return true;
 
