@@ -215,12 +215,20 @@ export class DialogExportPdfComponent implements OnInit {
       data: {
         labels: [], // Lo pongo vacio por que en el update se colocara el valor.
         datasets: [{
-          label: 'Overall Performance Daily Consumption', // Lo pongo vacio por que en el update se colocara el valor.
+          label: 'Daily Consumption', // Lo pongo vacio por que en el update se colocara el valor.
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
           data: [], // Lo pongo vacio por que en el update se colocara el valor.
           fill: false,
-        }]
+        },
+        {
+          label: 'Speed AVG', // Lo pongo vacio por que en el update se colocara el valor.
+          backgroundColor: 'rgb(249, 46, 3)',
+          borderColor: 'rgb(102, 227, 10)',
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
+          fill: false,
+        }
+        ]
       },
       options: {
         // Habilitamos todos los tooltip esten abiertos.
@@ -280,6 +288,8 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Actualizamos la data 
     this.chartOverallPerformanceLaden.config.data.datasets[0].data = this.chartOverallPerformanceLaden.data;
+
+    this.chartOverallPerformanceLaden.config.data.datasets[1].data = this.chartOverallPerformanceLaden.data2;
 
     // Vaciamos la configuracion de las lines SPEED
     // La linea es el campo que agregamos en el plugin.
@@ -1094,6 +1104,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Reset los datos del label y la data del chart
     this.chartOverallPerformanceLaden.xLabelReport = [];
     this.chartOverallPerformanceLaden.data = [];
+    this.chartOverallPerformanceLaden.data2 = [];
 
     // Inicializamos sincrono.
     return Promise.resolve(true)
@@ -1415,11 +1426,29 @@ export class DialogExportPdfComponent implements OnInit {
 
                   }
 
+                  // Sumamos el consumo IFO y MGO
+                  let sumConsumption = (this.addInformationIFO ? gTSOPA_Laden.consumptionIFO : 0) + (this.addInformationMGO ? gTSOPA_Laden.consumptionMGO : 0);
+                  // SUMAMOS EL TIEMPO
+                  let sumTime = (this.addInformationIFO ? gTSOPA_Laden.timeIFO : 0) + (this.addInformationMGO ? gTSOPA_Laden.timeMGO : 0)
+                  // Calculamos el daily consumption
+                  let calcDaily = sumTime ? ((sumConsumption * 24) / sumTime) : 0;
 
-                  this.chartOverallPerformanceLaden.xLabelReport.push('V' + gTSOPA_Laden.voyageNumber)
+                  let textLabel = 'V' + gTSOPA_Laden.voyageNumber + '  Y';
+                  // SACAMOS EL DAILYCONSUMPTION
+                  this.chartOverallPerformanceLaden.xLabelReport.push(textLabel)
                   this.chartOverallPerformanceLaden.data.push(
-                    { x: 'V' + gTSOPA_Laden.voyageNumber, y: gTSOPA_Laden.dailyConsumptionIFO }
+                    { x: textLabel, y: this.MathRoundDecimal(calcDaily, 1) }
                   );
+
+                  // Sumo la distancia y calculo
+                  let sumDistance = (this.addInformationIFO ? gTSOPA_Laden.distanceIFO : 0) + (this.addInformationMGO ? gTSOPA_Laden.distanceMGO : 0)
+                  let calcSpeed = sumTime ? (sumDistance / sumTime) : 0;
+                  // Agregar el speed al char Overall
+                  this.chartOverallPerformanceLaden.data2.push(
+                    { x: textLabel, y: this.MathRoundDecimal(calcSpeed, 1) }
+                  );
+
+
                   /*  this.dataIFO.push(
                      { x: day, y: dayliConsumptionIFO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, dataExtra: dataExtra }
                    ) */
@@ -1598,6 +1627,7 @@ export class DialogExportPdfComponent implements OnInit {
           sVPR.dateStart = '----'
           sVPR.dateStart = '----'
 
+          // Actualizamos el Chart
           return this.UpdateChartOverallPerformanceLaden();
 
         }
