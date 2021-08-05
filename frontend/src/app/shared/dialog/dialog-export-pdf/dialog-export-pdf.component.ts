@@ -56,6 +56,9 @@ export class DialogExportPdfComponent implements OnInit {
   // Usuario seleccionado
   public selectUser: User = new User();
 
+  // resumen SummaryVesselPerformanceReport
+  public sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
+
   // Que informacion deseas agregar al reporte.
   public addOverallPerformance: boolean = false;
   public addVoyageSummary: boolean = false;
@@ -171,7 +174,7 @@ export class DialogExportPdfComponent implements OnInit {
       result => {
 
         // Exportar pdf
-        return this.ExportPDFVesselPerformance2(this.data.voyages);
+        return this.ExportPDFVesselPerformance(this.data.voyages);
       }
     ).then(
       result => {
@@ -1045,8 +1048,8 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-  // ExportPDFVesselPerformance2() esta funcion genera el pdf.
-  private ExportPDFVesselPerformance2(voyages: Voyage[]): Promise<boolean> {
+  // ExportPDFVesselPerformance() esta funcion genera el pdf.
+  private ExportPDFVesselPerformance(voyages: Voyage[]): Promise<boolean> {
 
     // Parseamos los viajes para que no se modifique.
     let parseVoyages: Voyage[] = JSON.parse(JSON.stringify(voyages));
@@ -1066,12 +1069,11 @@ export class DialogExportPdfComponent implements OnInit {
     let generalEndDate: String;
 
     // Resumen de todo el viaje.
-    const sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
-    sVPR.logoTransgas = './assets/icons/logotransgas.png';
-    sVPR.titleDocument = 'Vessel Performance Report';
-    sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
+    this.sVPR.logoTransgas = './assets/icons/logotransgas.png';
+    this.sVPR.titleDocument = 'Vessel Performance Report';
+    this.sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
 
-    // Objeto del cuadro de resument
+    // Objeto del cuadro de resumen
     let gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
 
     // Lista del resumen de viaje.
@@ -1157,10 +1159,10 @@ export class DialogExportPdfComponent implements OnInit {
                                 // Verifcamos si tenemos que sumar eli viaje.
                                 if (isNewVoyage) {
                                   isNewVoyage = false;
-                                  sVPR.totalVoyageSailing += 1;
+                                  this.sVPR.totalVoyageSailing += 1;
                                   console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
-                                  // Agregamos el numero de viaje.
-                                  sVPR.lastVoyageSailing = voyage.voyageNumber;
+                                  // Guardamos el ultimo viaje.
+                                  this.sVPR.lastVoyageSailing = voyage.voyageNumber;
 
 
                                   // Agregamos los datos del viaje.
@@ -1171,7 +1173,7 @@ export class DialogExportPdfComponent implements OnInit {
                                 // Verificamos si tenemos que sumar el puerto.
                                 if (isNewPort) {
                                   isNewPort = false;
-                                  sVPR.totalPortSailing += 1;
+                                  this.sVPR.totalPortSailing += 1;
                                   console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
 
                                   // Armamos el nuevo puerto.
@@ -1192,7 +1194,7 @@ export class DialogExportPdfComponent implements OnInit {
                                 if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
 
                                   // Si existe la actividad in ballast agrego la distancia
-                                  sVPR.totalDistanceBallast += dailyReport.distance;
+                                  this.sVPR.totalDistanceBallast += dailyReport.distance;
 
                                   // Solo si hay consumo sumamos el tiempo, distancia y consumo
                                   if (this.addInformationIFO && totalIFO) {
@@ -1221,7 +1223,7 @@ export class DialogExportPdfComponent implements OnInit {
                                 } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
 
                                   // Si existe la actividad laden agrego la distancia.
-                                  sVPR.totalDistanceLaden += dailyReport.distance;
+                                  this.sVPR.totalDistanceLaden += dailyReport.distance;
 
                                   // Solo si hay consumo sumamos el tiempo, distancia y consumo
                                   if (this.addInformationIFO && totalIFO) {
@@ -1584,9 +1586,9 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           // Agregamos la fecha de inicio y la fecha fin.
-          sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
-          sVPR.dateStart = '----'
-          sVPR.dateStart = '----'
+          this.sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
+          this.sVPR.dateStart = '----'
+          this.sVPR.dateStart = '----'
 
         }
       ).then(
@@ -1596,7 +1598,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Agregamos la primera pagina,
           // El cual tiene resumido todo el reporte.
-          this.AddOnePage(doc, sVPR, gTTSOPA);
+          this.AddOnePage(doc, this.sVPR, gTTSOPA);
 
 
 
