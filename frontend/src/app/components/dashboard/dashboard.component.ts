@@ -326,6 +326,9 @@ export class DashboardComponent implements OnInit {
 
         // Activamos el loading.
         this.loadingService.Close();
+
+
+        return this.OpenDialogExportPDF(this.getVoyages, this.selectUser);
       }
     ).catch(
       err => {
@@ -1212,7 +1215,7 @@ export class DashboardComponent implements OnInit {
 
   // ClickExportPDF() : Funcion que se ejecuta al dar click a exportar pdf, esto invoca a la funcion que genera el pdf.
   public ClickExportPDF() {
-
+    console.log('ClickExportPDF()')
     // Iniciamos las promesas.
     Promise.resolve(true).then(
       result => {
@@ -3841,7 +3844,7 @@ export class DashboardComponent implements OnInit {
               observations = observations + ', ' + report.observation;
               speed.add(report.distance, report.steamingTime);
               totalReport = totalReport + 1;
-              if(report.beaufour){
+              if (report.beaufour) {
                 beaufour = report.beaufour;
               }
             });
@@ -4084,6 +4087,7 @@ export class DashboardComponent implements OnInit {
     // Agregamos un plugin para saver los niveles.
     const chartPluginLineaHorizontal = {
       afterDraw: (chartobj: any) => {
+
         if (chartobj.options.lines) {
           let ctx = chartobj.chart.ctx;
 
@@ -4097,11 +4101,34 @@ export class DashboardComponent implements OnInit {
             line.label = line.label ? line.label : '';
 
             if (line.type === 'horizontal' && line.y) {
-              line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
-              line.endCoord[0] = chartobj.chart.width;
+              // Verificamos si existe un yAxesID
+              let yAxesID = line.yAxesID;
+              if (yAxesID) {
+                // Si es asi agregamos la linea hacia ese yAxesId
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales[yAxesID].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+                ctx.fillStyle = line.color;
+                if (yAxesID == 'A') {
+                  ctx.textAlign = "start";
+                  ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+                } else if (yAxesID == 'B') {
+                  ctx.textAlign = "end";
+                  ctx.fillText(line.label, chartobj.chart.width - 3, line.iniCoord[1] + 3);
+                }
+
+              } else {
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+
+                ctx.fillStyle = line.color;
+                ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+
+              }
             } else if (line.type === 'vertical' && line.x) {
               line.iniCoord[0] = line.endCoord[0] = chartobj.scales['x-axis-0'].getPixelForValue(line.x);
               line.endCoord[1] = chartobj.chart.height;
+              ctx.fillStyle = line.color;
+              ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
             }
 
             ctx.beginPath();
@@ -4109,8 +4136,6 @@ export class DashboardComponent implements OnInit {
             ctx.lineTo(line.endCoord[0], line.endCoord[1]);
             ctx.strokeStyle = line.color;
             ctx.stroke();
-            ctx.fillStyle = line.color;
-            ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
           }
         }
       }
@@ -4157,8 +4182,8 @@ export class DashboardComponent implements OnInit {
       voyages: voyages,
       selectUser: selectUser,
       selectVoyageId: this.selectVoyageId,
-      dateStart:this.startDate,
-      dateEnd:this.endDate,
+      dateStart: this.startDate,
+      dateEnd: this.endDate,
     };
 
 

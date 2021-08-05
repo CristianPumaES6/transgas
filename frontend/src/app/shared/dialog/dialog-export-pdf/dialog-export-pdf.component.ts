@@ -216,19 +216,21 @@ export class DialogExportPdfComponent implements OnInit {
         labels: [], // Lo pongo vacio por que en el update se colocara el valor.
         datasets: [{
           label: 'Daily Consumption', // Lo pongo vacio por que en el update se colocara el valor.
+          // Le colocamos un id de identidad
+          yAxisID: 'A',
           backgroundColor: 'rgb(255,205,6)',
           borderColor: 'rgb(255,205,6)',
           data: [], // Lo pongo vacio por que en el update se colocara el valor.
           fill: false,
-        },
-        {
+        }, {
           label: 'Speed AVG', // Lo pongo vacio por que en el update se colocara el valor.
+             // Le colocamos un id de identidad
+          yAxisID: 'B',
           backgroundColor: 'rgb(249, 46, 3)',
           borderColor: 'rgb(102, 227, 10)',
           data: [], // Lo pongo vacio por que en el update se colocara el valor.
           fill: false,
-        }
-        ]
+        }]
       },
       options: {
         // Habilitamos todos los tooltip esten abiertos.
@@ -237,9 +239,6 @@ export class DialogExportPdfComponent implements OnInit {
         legend: {
           // La leyenda es el texto que esta arriva del cuadro.
           display: true,
-          onClick: (event, legendItem) => {
-            console.log('onClick:' + legendItem.text);
-          },
           labels: {
             fontColor: 'rgb(255,255,255)', // Color de la leyenda.
             fontStyle: 'bold', // Tipo de texto de la leyenda.
@@ -248,21 +247,16 @@ export class DialogExportPdfComponent implements OnInit {
         // Habilitamos la opcion para que sea responsive
         maintainAspectRatio: false,
         tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
-        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
-        hover: {
-          onHover: function (e: MouseEvent) {
-            // puntos GetElementAtaEvent
-            var point = this.getElementAtEvent(e);
-
-            // event targer.
-            let eventTarget = e.target as HTMLCanvasElement;
-            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
-            if (point.length) {
-              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
-            } else {
-              eventTarget.style.cursor = 'default';
-            }
-          }
+        scales: {
+          yAxes: [{
+            id: 'A',
+            type: 'linear',
+            position: 'left',
+          }, {
+            id: 'B',
+            type: 'linear',
+            position: 'right',
+          }]
         }
       },
       lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
@@ -313,6 +307,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
     if (maxConsumption) {
       this.chartOverallPerformanceLaden.config.options.lines.push({
+        yAxesID: 'A',
         type: 'horizontal',
         y: maxConsumption,
         color: 'red',
@@ -337,9 +332,10 @@ export class DialogExportPdfComponent implements OnInit {
     // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
     if (maxSpeed) {
       this.chartOverallPerformanceLaden.config.options.lines.push({
+        yAxesID: 'B',
         type: 'horizontal',
         y: maxSpeed,
-        color: 'red',
+        color: '#39FF14',
         label: 'Max Speed'
       });
     };
@@ -716,6 +712,8 @@ export class DialogExportPdfComponent implements OnInit {
     // Variable que retornara la configuracion
     let config: any = {
       yAxes: [{
+        id: 'A',
+        position: 'left',
         ticks: {
           beginAtZero: true,
           fontColor: '#b8d1ff',
@@ -725,20 +723,29 @@ export class DialogExportPdfComponent implements OnInit {
           display: true,
           color: '#b8d1ff'
         },
-      }],
-      xAxes: [{
-        type: '',// ES SE MODIFICA ABAJO // 'category' or 'time'
-        //  time: {} // Se modificara abajo.
+        scaleLabel: {
+          display: true,
+          labelString: 'Consumption (MT)'
+        }
+      },
+      {
+        id: 'B',
+        position: 'right',
         ticks: {
           beginAtZero: true,
           fontColor: '#b8d1ff',
+          max: lineaMax,
         },
-        position: 'bottom', // NO QUE HACE ESTO
         gridLines: {
           display: true,
           color: '#b8d1ff'
         },
-      }]
+        scaleLabel: {
+          display: true,
+          labelString: 'Speed (KN)',
+        }
+      }
+      ]
     };
 
     /* config.xAxes[0].type = 'time';
