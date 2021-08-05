@@ -7,11 +7,16 @@ export class SummaryVesselPerformanceReport {
         public logoTransgas?: string,
         public titleDocument?: string,
         public preparedFor?: string,
+        // Total de viajes navegados.
         public totalVoyageSailing?: number,
+        // Numero del ultimo viaje.
         public lastVoyageSailing?: number,
+        // Total de puertos navegados.
         public totalPortSailing?: number,
+        // Distancia 
         public totalDistanceBallast?: number,
         public totalDistanceLaden?: number,
+        
         public atdAndAta?: string,
         public dateStart?: string,
         public dateEnd?: string,

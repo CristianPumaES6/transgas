@@ -56,8 +56,8 @@ export class DialogExportPdfComponent implements OnInit {
   // Usuario seleccionado
   public selectUser: User = new User();
 
-  // resumen SummaryVesselPerformanceReport
-  public sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
+  // Seleccionamos el tipo de exportacion que deseamos
+  public selectTypeExport: string = '';
 
   // Que informacion deseas agregar al reporte.
   public addOverallPerformance: boolean = false;
@@ -127,6 +127,7 @@ export class DialogExportPdfComponent implements OnInit {
     Promise.resolve(true).then(
       result => {
 
+        this.selectTypeExport = 'VESSEL_PERFORMANCE_REPORT'
         // seleccionar usuario.
         this.selectUser = this.data.selectUser;
 
@@ -144,7 +145,12 @@ export class DialogExportPdfComponent implements OnInit {
         // Verificamos que la linea speed se halla generado correctamente.
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
 
+        this.addOverallPerformance = true;
+        this.addInformationMGO = true;
+        this.addInformationIFO = true;
+        this.addSailingWithLaden = true;
 
+        this.ExportPDFVesselPerformance(this.data.voyages);
         return true;
       }
     ).catch(
@@ -1057,6 +1063,8 @@ export class DialogExportPdfComponent implements OnInit {
     // Armamos el objeto de JSPDF
     const doc = new jsPDF();
 
+    let sVPR: SummaryVesselPerformanceReport = new SummaryVesselPerformanceReport();
+
     // tamaño de pdf.
     const widthPDF = doc.internal.pageSize.getWidth();
     const heightPDF = doc.internal.pageSize.getHeight();
@@ -1069,9 +1077,9 @@ export class DialogExportPdfComponent implements OnInit {
     let generalEndDate: String;
 
     // Resumen de todo el viaje.
-    this.sVPR.logoTransgas = './assets/icons/logotransgas.png';
-    this.sVPR.titleDocument = 'Vessel Performance Report';
-    this.sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
+    sVPR.logoTransgas = './assets/icons/logotransgas.png';
+    sVPR.titleDocument = 'Vessel Performance Report';
+    sVPR.preparedFor = rolTraslate + ' ' + this.selectUser.name;
 
     // Objeto del cuadro de resumen
     let gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
@@ -1159,10 +1167,10 @@ export class DialogExportPdfComponent implements OnInit {
                                 // Verifcamos si tenemos que sumar eli viaje.
                                 if (isNewVoyage) {
                                   isNewVoyage = false;
-                                  this.sVPR.totalVoyageSailing += 1;
+                                  sVPR.totalVoyageSailing += 1;
                                   console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
                                   // Guardamos el ultimo viaje.
-                                  this.sVPR.lastVoyageSailing = voyage.voyageNumber;
+                                  sVPR.lastVoyageSailing = voyage.voyageNumber;
 
 
                                   // Agregamos los datos del viaje.
@@ -1173,7 +1181,7 @@ export class DialogExportPdfComponent implements OnInit {
                                 // Verificamos si tenemos que sumar el puerto.
                                 if (isNewPort) {
                                   isNewPort = false;
-                                  this.sVPR.totalPortSailing += 1;
+                                  sVPR.totalPortSailing += 1;
                                   console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
 
                                   // Armamos el nuevo puerto.
@@ -1194,7 +1202,7 @@ export class DialogExportPdfComponent implements OnInit {
                                 if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
 
                                   // Si existe la actividad in ballast agrego la distancia
-                                  this.sVPR.totalDistanceBallast += dailyReport.distance;
+                                  sVPR.totalDistanceBallast += dailyReport.distance;
 
                                   // Solo si hay consumo sumamos el tiempo, distancia y consumo
                                   if (this.addInformationIFO && totalIFO) {
@@ -1223,7 +1231,7 @@ export class DialogExportPdfComponent implements OnInit {
                                 } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
 
                                   // Si existe la actividad laden agrego la distancia.
-                                  this.sVPR.totalDistanceLaden += dailyReport.distance;
+                                  sVPR.totalDistanceLaden += dailyReport.distance;
 
                                   // Solo si hay consumo sumamos el tiempo, distancia y consumo
                                   if (this.addInformationIFO && totalIFO) {
@@ -1586,9 +1594,11 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           // Agregamos la fecha de inicio y la fecha fin.
-          this.sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
-          this.sVPR.dateStart = '----'
-          this.sVPR.dateStart = '----'
+          sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
+          sVPR.dateStart = '----'
+          sVPR.dateStart = '----'
+
+          return this.UpdateChartOverallPerformanceLaden();
 
         }
       ).then(
@@ -1598,7 +1608,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Agregamos la primera pagina,
           // El cual tiene resumido todo el reporte.
-          this.AddOnePage(doc, this.sVPR, gTTSOPA);
+          this.AddOnePage(doc, sVPR, gTTSOPA);
 
 
 
@@ -1756,7 +1766,6 @@ export class DialogExportPdfComponent implements OnInit {
 
           doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
           this.numberPage = 1;
-          this.UpdateChartOverallPerformanceLaden();
           this.loadingService.Close();
           return true;
 
