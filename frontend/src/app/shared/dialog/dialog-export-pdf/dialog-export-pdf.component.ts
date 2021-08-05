@@ -2934,7 +2934,7 @@ export class DialogExportPdfComponent implements OnInit {
     let listGTSOPA_Laden: GenerateTableSummaryOverallPerformanceAnalisis[] = [];
 
     // Esta variable contendra todos los viajes.
-    let SummaryByVoyage: Voyage[] = [];
+    let listSummaryByVoyage: Voyage[] = [];
 
     // Reset los datos del label y la data del chart
     this.chartOverallPerformanceLaden.xLabelReport = [];
@@ -3122,7 +3122,7 @@ export class DialogExportPdfComponent implements OnInit {
                 // Verificamos que exista algun puerto para agregalo.
                 console.log(newVoyage.ports.length)
                 if (newVoyage.ports.length) {
-                  SummaryByVoyage.push(newVoyage);
+                  listSummaryByVoyage.push(newVoyage);
                 }
 
                 // Solo si existen tiempo IFO o MGO
@@ -3587,7 +3587,7 @@ export class DialogExportPdfComponent implements OnInit {
           let isViewBallast: boolean = this.addSailingInBallast;
           let isViewLaden: boolean = this.addSailingWithLaden;
           if (this.addVoyageSummary) {
-            this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, SummaryByVoyage, isViewBallast, isViewLaden)
+            this.GenerateVoyageSumary(doc, widthPDF, heightPDF, positionHeight, listSummaryByVoyage, isViewBallast, isViewLaden)
           }
           return true;
         }
@@ -7806,11 +7806,11 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-  private GenerateVoyageSumary(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, summaryVoyages: Voyage[], isViewBallast: boolean, isViewLaden: boolean) {
+  private GenerateVoyageSumary(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listSummaryByVoyage: Voyage[], isViewBallast: boolean, isViewLaden: boolean) {
 
 
 
-    summaryVoyages.forEach(
+    listSummaryByVoyage.forEach(
       iVoyage => {
         // revisar si deberia ir
         positionHeight = 0;
