@@ -224,7 +224,7 @@ export class DialogExportPdfComponent implements OnInit {
           fill: false,
         }, {
           label: 'Speed AVG', // Lo pongo vacio por que en el update se colocara el valor.
-             // Le colocamos un id de identidad
+          // Le colocamos un id de identidad
           yAxisID: 'B',
           backgroundColor: 'rgb(249, 46, 3)',
           borderColor: 'rgb(102, 227, 10)',
@@ -1028,16 +1028,21 @@ export class DialogExportPdfComponent implements OnInit {
           // we can't use the chart tooltip because there is only one tooltip per chart
           chart.pluginTooltips = [];
           chart.config.data.datasets.forEach(function (dataset, i) {
-            chart.getDatasetMeta(i).data.forEach(function (sector, j) {
-              // @ts-ignore
-              chart.pluginTooltips.push(new Chart.Tooltip({
-                _chart: chart.chart,
-                _chartInstance: chart,
-                _data: chart.data,
-                _options: chart.options.tooltips,
-                _active: [sector]
-              }, chart));
-            });
+
+            // Solo quiero que muestre los tooltip de la primera linea.
+            if (i === 0) {
+              chart.getDatasetMeta(i).data.forEach(function (sector, j) {
+                // @ts-ignore
+                chart.pluginTooltips.push(new Chart.Tooltip({
+                  _chart: chart.chart,
+                  _chartInstance: chart,
+                  _data: chart.data,
+                  _options: chart.options.tooltips,
+                  _active: [sector]
+                }, chart));
+              });
+            }
+
           });
 
           // turn off normal tooltips
