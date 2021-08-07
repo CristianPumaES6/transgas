@@ -9,7 +9,7 @@ import autoTable, { Cell, CellHookData, RowInput, UserOptions } from 'jspdf-auto
 import { DailyReport, Speed } from '../../../../app/models/daily-report';
 import { LoadingService } from '../../../../app/services/loading.service';
 import { mathRound } from './../../../../assets/math/math.assets';
-import { FormatDate, FormatYYYYMMDD, IsAfter1Date, IsPrevious1Date, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
+import { FormatDate, FormatYYYYMMDD, getYear, GetYearFromDate, IsAfter1Date, IsPrevious1Date, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
 import { Port } from '../../../models/port';
 import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
@@ -586,6 +586,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
+    console.log('GetToolTipConfig(configIFOorMGOorSPEED)');
 
     // resultado de tooltip
     let tooltips: Chart.ChartTooltipOptions;
@@ -630,12 +631,15 @@ export class DialogExportPdfComponent implements OnInit {
             // DataSets.
             let dataSets: Chart.ChartDataSets = data.datasets[0];
             let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+            console.log(chartPoint);
 
+            let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
-            result.push('T. Time : ' + mathRound(1.22, 2));
-            result.push('T. Distance : ' + mathRound(1.22, 2));
-            result.push('T. Consumption : ' + mathRound(1.22, 2));
-            result.push('Speed AVG: ' + mathRound(1.22, 2));
+            result.push('Daily Consump.: ' + mathRound(Number(chartPoint.y), 1) + ' mt');
+            result.push('T. Consump.: ' + mathRound(chartPoint.totalConsumptionIFO + chartPoint.totalConsumptionMGO, 2) + ' mt');
+            result.push('T. Time: ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
+            result.push('T. Distan.: ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
+            result.push('Speed AVG: ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2) + ' kn');
           } else {
 
             // DataSets.
@@ -1429,11 +1433,21 @@ export class DialogExportPdfComponent implements OnInit {
                   // Calculamos el daily consumption
                   let calcDaily = sumTime ? ((sumConsumption * 24) / sumTime) : 0;
 
-                  let textLabel = 'V' + gTSOPA_Laden.voyageNumber + '  Y';
+                  let textLabel = 'V' + gTSOPA_Laden.voyageNumber + '  Y' + voyage.year;
                   // SACAMOS EL DAILYCONSUMPTION
                   this.chartOverallPerformanceLaden.xLabelReport.push(textLabel)
+
+                  let speedLaden = new Speed();
+                  speedLaden.distanceIFO = gTSOPA_Laden.distanceIFO;
+                  speedLaden.distanceMGO = gTSOPA_Laden.distanceMGO;
+                  speedLaden.timeOperationIFO = gTSOPA_Laden.timeIFO;
+                  speedLaden.timeOperationMGO = gTSOPA_Laden.timeMGO;
+
+                  speedLaden.distance = speedLaden.distanceIFO + speedLaden.distanceMGO;
+                  speedLaden.steamingTime = speedLaden.timeOperationIFO + speedLaden.timeOperationMGO;
+
                   this.chartOverallPerformanceLaden.data.push(
-                    { x: textLabel, y: this.MathRoundDecimal(calcDaily, 1) }
+                    { x: textLabel, y: this.MathRoundDecimal(calcDaily, 1), totalConsumptionIFO: gTSOPA_Laden.consumptionIFO, totalConsumptionMGO: gTSOPA_Laden.consumptionMGO, speed: speedLaden }
                   );
 
                   // Sumo la distancia y calculo

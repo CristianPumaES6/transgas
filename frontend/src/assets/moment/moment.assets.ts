@@ -141,6 +141,19 @@ export function TextMonthYearFormatYYYYMMDD(date: any): string {
     return result;
 }
 
+// ESTA FUNCION DEVUELVE EN TEXTO EL MES Y AÑO DE UN FORMATO EXPECIFICO.
+export function GetYearFromDate(date: any): string {
+
+    // Convertimos el string en formato moment,
+    // Con el formato YYYY MM DD
+    let momentDate = moment(date, 'YYYY-MM-DD');
+
+    let result = momentDate.format('YYYY')
+
+    return result;
+}
+
+
 
 // ESTA FUNCION DEVUELVE EN TEXTO EL DIA, EL MES Y AÑO DE UN FORMATO EXPECIFICO.
 export function TextMonthDayYearFormatYYYYMMDD(date: any): string {
