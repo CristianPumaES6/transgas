@@ -311,7 +311,7 @@ export class DialogExportPdfComponent implements OnInit {
         type: 'horizontal',
         y: maxConsumption,
         color: 'red',
-        label: 'Max Consumption'
+        label: '      Max'
       });
     };
 
@@ -336,7 +336,7 @@ export class DialogExportPdfComponent implements OnInit {
         type: 'horizontal',
         y: maxSpeed,
         color: '#39FF14',
-        label: 'Max Speed'
+        label: 'Min      '
       });
     };
 
@@ -487,8 +487,6 @@ export class DialogExportPdfComponent implements OnInit {
     return true;
   }
 
-
-
   private UpdateLineSpeed(): any {
     console.log('UpdateLineSPEED()');
 
@@ -605,41 +603,21 @@ export class DialogExportPdfComponent implements OnInit {
           let index = tooltipItem[0].index;
 
           // Resultado que se mostrara en el titulo.
-          let result = '';
+          let result: any = '';
 
           // DataSets.
           let dataSets: Chart.ChartDataSets = data.datasets[0];
           let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
 
           // dos veces estamos aplicando el formato.
-          //  result = chartPoint.x;
-
+          result = chartPoint.x;
 
           return result;
-
         },
         label: (tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData) => {
-          // REVISAR LOS TOOLTIP DEL CHART SPEED ESTABA PENSANDO QUE TODOS TENGAN LOS MISMOS DATOS
-          // QUE MUESTREN LA VELOCIDAD Y LOS CONSUMO MGO Y IFO APARTE 
-          // GITHUB VER COMO OBTENIA EL VLSFO Y IFO 
-          // Resultado que se mostrara en el titulo.
-
-          let result = '';
-          if (configIFOorMGOorSPEED === 'OverallPerformanceLaden') {
-            result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            result = 'Overall Performance Laden : ';
-          } else if (configIFOorMGOorSPEED === 'IFO') {
-            result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-          } else if (configIFOorMGOorSPEED === 'MGO') {
-            result = 'MGO Daily consumption : ';
-          } else if (configIFOorMGOorSPEED === 'SPEED') {
-            result = 'Avg Speed : ';
-          }
-          // Le agrgamos el vlaor.
-          result = result + mathRound(Number(tooltipItem.value), 2)
-
-          return result;
-
+          // No pondremos label.
+          // En este tooltip se mostrara consumo y viaje.
+          return '';
         },
         footer: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
           // Obtenemos la posicion del item.
@@ -648,6 +626,12 @@ export class DialogExportPdfComponent implements OnInit {
           // Resultado que se mostrara en el titulo.
           let result = [];
           if (configIFOorMGOorSPEED === 'OverallPerformanceLaden') {
+
+            // DataSets.
+            let dataSets: Chart.ChartDataSets = data.datasets[0];
+            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+
+
             result.push('T. Time : ' + mathRound(1.22, 2));
             result.push('T. Distance : ' + mathRound(1.22, 2));
             result.push('T. Consumption : ' + mathRound(1.22, 2));
