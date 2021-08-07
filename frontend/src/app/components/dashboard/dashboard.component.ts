@@ -4132,8 +4132,10 @@ export class DashboardComponent implements OnInit {
             }
 
             ctx.beginPath();
-            ctx.moveTo(line.iniCoord[0], line.iniCoord[1]);
-            ctx.lineTo(line.endCoord[0], line.endCoord[1]);
+
+            // Le sumamos y restamos 18 para que no tape la leyenda.
+            ctx.moveTo(line.iniCoord[0]+18, line.iniCoord[1]);
+            ctx.lineTo(line.endCoord[0]-18, line.endCoord[1]);
             ctx.strokeStyle = line.color;
             ctx.stroke();
           }
