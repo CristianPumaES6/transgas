@@ -4107,13 +4107,16 @@ export class DashboardComponent implements OnInit {
                 // Si es asi agregamos la linea hacia ese yAxesId
                 line.iniCoord[1] = line.endCoord[1] = chartobj.scales[yAxesID].getPixelForValue(line.y);
                 line.endCoord[0] = chartobj.chart.width;
+                // Solo si enviamos un tamaño especifico, 
+                if (line.fontSize) { ctx.font = line.fontSize; }
+                if (line.lineWidth) { ctx.lineWidth = line.lineWidth; }
                 ctx.fillStyle = line.color;
                 if (yAxesID == 'A') {
                   ctx.textAlign = "start";
-                  ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+                  ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 10);
                 } else if (yAxesID == 'B') {
                   ctx.textAlign = "end";
-                  ctx.fillText(line.label, chartobj.chart.width - 3, line.iniCoord[1] + 3);
+                  ctx.fillText(line.label, chartobj.chart.width - 3, line.iniCoord[1] - 10);
                 }
 
               } else {
@@ -4134,8 +4137,8 @@ export class DashboardComponent implements OnInit {
             ctx.beginPath();
 
             // Le sumamos y restamos 18 para que no tape la leyenda.
-            ctx.moveTo(line.iniCoord[0]+18, line.iniCoord[1]);
-            ctx.lineTo(line.endCoord[0]-18, line.endCoord[1]);
+            ctx.moveTo(line.iniCoord[0] + 18, line.iniCoord[1]);
+            ctx.lineTo(line.endCoord[0] - 18, line.endCoord[1]);
             ctx.strokeStyle = line.color;
             ctx.stroke();
           }

@@ -149,8 +149,9 @@ export class DialogExportPdfComponent implements OnInit {
         this.addInformationMGO = true;
         this.addInformationIFO = true;
         this.addSailingWithLaden = true;
+        this.addChartVoyageSummary = true;
 
-        this.ExportPDFVesselPerformance(this.data.voyages);
+
         return true;
       }
     ).catch(
@@ -248,15 +249,18 @@ export class DialogExportPdfComponent implements OnInit {
         maintainAspectRatio: false,
         tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
         scales: {
-          yAxes: [{
-            id: 'A',
-            type: 'linear',
-            position: 'left',
-          }, {
-            id: 'B',
-            type: 'linear',
-            position: 'right',
-          }]
+          // Le agregamos un id a los axes por que podremos 2 dataset con diferentes valores.
+          yAxes: [
+            {
+              id: 'A',
+              type: 'linear',
+              position: 'left',
+            }, {
+              id: 'B',
+              type: 'linear',
+              position: 'right',
+            }
+          ]
         }
       },
       lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
@@ -304,6 +308,12 @@ export class DialogExportPdfComponent implements OnInit {
     if (this.selectUser.sailingLoadConsumptionMGO > maxConsumption) {
       maxConsumption = this.selectUser.sailingLoadConsumptionMGO;
     }
+
+    let fontSizeTitle = (this.chartOverallPerformanceLaden.data.length * 3);
+
+    // grosor de l alinea.
+    let AxesLineWidth = this.MathRoundDecimal(this.chartOverallPerformanceLaden.data.length / 3, 0);
+
     // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
     if (maxConsumption) {
       this.chartOverallPerformanceLaden.config.options.lines.push({
@@ -311,7 +321,9 @@ export class DialogExportPdfComponent implements OnInit {
         type: 'horizontal',
         y: maxConsumption,
         color: 'red',
-        label: '      Max'
+        label: '      Max',
+        fontSize: (fontSizeTitle - (fontSizeTitle * 0.2)) + 'px Arial',
+        lineWidth: AxesLineWidth
       });
     };
 
@@ -336,10 +348,11 @@ export class DialogExportPdfComponent implements OnInit {
         type: 'horizontal',
         y: maxSpeed,
         color: '#39FF14',
-        label: 'Min      '
+        label: 'Min      ',
+        fontSize: (fontSizeTitle - (fontSizeTitle * 0.2)) + 'px Arial',
+        lineWidth: AxesLineWidth
       });
     };
-
 
     // Configuracion Tooltips
     this.chartOverallPerformanceLaden.config.options.tooltips = this.GetToolTipConfig('OverallPerformanceLaden');
@@ -348,9 +361,18 @@ export class DialogExportPdfComponent implements OnInit {
       this.chartOverallPerformanceLaden.config.lineaMax = this.selectUser.sailingBallastConsumptionIFO;
     }
 
-    // Agregamos la configuracion de las escalas.
-    this.chartOverallPerformanceLaden.config.options.scales = this.ConfigScales(this.chartOverallPerformanceLaden.xLabelReport, true, mathRound(this.chartOverallPerformanceLaden.config.lineaMax, 0) + 2);
+    this.chartOverallPerformanceLaden.config.options.legend = {
+      display: true,
+      labels: {
+        fontSize: fontSizeTitle,
+        fontStyle: "bold",
+        fontColor: '#b8d1ff'
+      }
+    };
 
+
+    // Agregamos la configuracion de las escalas.
+    this.chartOverallPerformanceLaden.config.options.scales = this.ConfigScales(this.chartOverallPerformanceLaden.xLabelReport, true, mathRound(this.chartOverallPerformanceLaden.config.lineaMax, 0) + 2, fontSizeTitle);
 
     this.chartOverallPerformanceLaden.chart.update();
 
@@ -631,7 +653,6 @@ export class DialogExportPdfComponent implements OnInit {
             // DataSets.
             let dataSets: Chart.ChartDataSets = data.datasets[0];
             let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
-            console.log(chartPoint);
 
             let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
@@ -695,44 +716,64 @@ export class DialogExportPdfComponent implements OnInit {
 
   // Configuracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
   // esta configuracion depente del selectSummary
-  private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
+  private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number, ticksFontSize?: number) {
 
     // Variable que retornara la configuracion
     let config: any = {
-      yAxes: [{
-        id: 'A',
-        position: 'left',
+      xAxes: [{
         ticks: {
-          beginAtZero: true,
+          //only show large font size for 'Blue'
+          fontSize: ticksFontSize - (ticksFontSize * 0.2),
           fontColor: '#b8d1ff',
-          max: lineaMax,
         },
         gridLines: {
           display: true,
           color: '#b8d1ff'
         },
-        scaleLabel: {
-          display: true,
-          labelString: 'Consumption (MT)'
-        }
-      },
-      {
-        id: 'B',
-        position: 'right',
-        ticks: {
-          beginAtZero: true,
-          fontColor: '#b8d1ff',
-          max: lineaMax,
+      }],
+      yAxes: [
+        {
+          id: 'A',
+          position: 'left',
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+            max: lineaMax,
+            fontSize: ticksFontSize - (ticksFontSize * 0.2)
+          },
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Consumption (MT)',
+            fontSize: ticksFontSize - (ticksFontSize * 0.1),
+            fontStyle: "bold",
+            fontColor: '#b8d1ff',
+          }
         },
-        gridLines: {
-          display: true,
-          color: '#b8d1ff'
-        },
-        scaleLabel: {
-          display: true,
-          labelString: 'Speed (KN)',
+        {
+          id: 'B',
+          position: 'right',
+          ticks: {
+            beginAtZero: true,
+            fontColor: '#b8d1ff',
+            max: lineaMax,
+            fontSize: ticksFontSize - (ticksFontSize * 0.2)
+          },
+          gridLines: {
+            display: true,
+            color: '#b8d1ff'
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Speed (KN)',
+            fontSize: ticksFontSize - (ticksFontSize * 0.1),
+            fontStyle: "bold",
+            fontColor: '#b8d1ff',
+          }
         }
-      }
       ]
     };
 
@@ -1634,27 +1675,28 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Agregamos la fecha de inicio y la fecha fin.
           sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
-          sVPR.dateStart = '----'
-          sVPR.dateStart = '----'
+          sVPR.dateStart = '----';
+          sVPR.dateStart = '----';
 
-          // Actualizamos el Chart
           return this.UpdateChartOverallPerformanceLaden();
-
         }
       ).then(
         result => {
 
+
+          // Le damos un tamaño a la pagina.
+          $('#dash-line-Overall-Performance-Laden').css({
+            width: 192 * listGTSOPA_Laden.length,
+            height: 380 * (listGTSOPA_Laden.length / 6)
+          });
           // Luego deberiamos enviar esa informacion a los siguientes documentos.
 
           // Agregamos la primera pagina,
           // El cual tiene resumido todo el reporte.
           this.AddOnePage(doc, sVPR, gTTSOPA);
 
-
-
           return true;
-        }
-      ) // overall performance
+        }) // overall performance
       .then(
         result => {
 
@@ -1752,6 +1794,7 @@ export class DialogExportPdfComponent implements OnInit {
                 doc.addPage();
                 this.numberPage += 1;
 
+                positionHeight += 10;
                 positionWidth = 10;
                 let title: string = 'Overall Performance Analysis (Laden)';
                 // Agregamos la cabecera a la pagina.
@@ -1774,6 +1817,20 @@ export class DialogExportPdfComponent implements OnInit {
           }
 
           return true;
+        }
+      ).then(
+        result => {
+
+          // reset positionHeight
+          let positionHeight = 0;
+          let positionWidth = 10;
+
+          if (this.addChartVoyageSummary) {
+            return this.AddChart(doc, widthPDF, heightPDF, positionWidth, positionHeight);
+
+          } else {
+            return true;
+          }
         }
       ).then(
         result => {
@@ -7411,6 +7468,87 @@ export class DialogExportPdfComponent implements OnInit {
     doc.text('Page ' + this.numberPage, 10, pageFooter, { align: 'left' });
     doc.text('Transgas Shipping Lines All Rights Reserved. © 2021', widthPDF - 10, pageFooter, { align: 'right' });
 
+  }
+
+
+  private async AddChart(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number) {
+
+
+    return await Promise.resolve(true).then(
+      (result: boolean) => {
+
+        doc.addPage();
+
+        let isViewBallast = true;
+        let isViewLaden = false;
+
+        positionHeight += 10;
+        let positionWidth = 10;
+
+        let title: string = 'Performance Analysis Graph ';
+        if (this.addSailingInBallast && this.addSailingWithLaden) {
+          title += '(Ballast / Laden)';
+        } else if (this.addSailingInBallast) {
+          title += '(Ballast)';
+        } else if (this.addSailingWithLaden) {
+          title += '(Laden)';
+        }
+        // Agregamos la cabecera a la pagina.
+        positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+
+        return true;
+
+      }).then(
+        (result: boolean) => {
+
+          // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+          const options = {
+            background: 'black',
+            scale: 1
+          };
+
+          let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Laden');
+
+          return html2canvas(elementlineaSpeed, options);
+        }
+      ).then(
+        (canvas: any) => {
+
+
+          //let positionHeight = 170;
+
+          // Si el elemento canvas existe.de
+          if (canvas) {
+            // Obtenemos la imagen
+            let img = canvas.toDataURL('image/PNG');
+
+            let mgProps = (doc as any).getImageProperties(img);
+
+            // ubicamos la imagen con un tamaño de 50 x 50
+            // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+            // Calculamos un tamaño para el pdf.
+            let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
+            // Agregamos la imagen al pdf.
+            doc.addImage(img, 'PNG', positionWidth, positionHeight, widthDash, 95, undefined, 'FAST');
+
+          }
+
+          return true;
+
+        }
+      )
+  }
+
+  private TimeOut(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  private CreateCustomTimeout(seconds) {
+    return new Promise((resolve: any, reject) => {
+      setTimeout(() => {
+        console.log('bla bla');
+        resolve();
+      }, seconds * 1000);
+    });
   }
 
 }
