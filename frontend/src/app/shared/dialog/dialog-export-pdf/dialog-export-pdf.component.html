@@ -4,110 +4,142 @@
 </div>
 
 
-<h2 class="az-content-title tx-24 mg-b-0 pl-0">
+<mat-horizontal-stepper linear #stepper>
 
-  <mat-form-field class="w-100">
-    <mat-label>Generate PDF</mat-label>
-    <mat-select [(ngModel)]="selectTypeExport">
+  <mat-step [completed]="isFirstCompleted" label="PDF options" state="pdfOption">
+    <!-- Icon overrides. -->
 
-      <mat-option value='VESSEL_PERFORMANCE_REPORT'>
-        Vessel Performance Report
-      </mat-option>
+    <div class="tx-24 mg-b-0 pl-0">
 
-    </mat-select>
-  </mat-form-field>
+      <mat-form-field class="w-100">
+        <mat-label>Generate PDF</mat-label>
+        <mat-select [(ngModel)]="selectTypeExport">
 
-</h2>
+          <mat-option value='VESSEL_PERFORMANCE_REPORT'>
+            Vessel Performance Report
+          </mat-option>
 
-<div class="az-content p-0">
-
-  <h5>
-    {{'REPORT_INFORMATION' | translateMessage:translateCategory}}
-  </h5>
-
-  <div class="row lh-1 mg-b-4 pl-0">
-
-    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addOverallPerformance" class="pl-2">
-        {{ 'OVERALL_PERFORMANCE' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addVoyageSummary" class="pl-2">
-        {{ 'VOYAGE_SUMMARY' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addBunkeringInformation" class="pl-2" [disabled]="true">
-        {{ 'BUNKERING_INFORMATION' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-      <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2">
-        {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-
-
-  </div>
-
-
-  <h5>
-    {{'ADD_INFORMATION_FUEL' | translateMessage:translateCategory}}
-  </h5>
-
-  <div class="row lh-1 mg-b-4 pl-0">
-
-    <div class="col-6 col-sm-6 col-md-6 col-lg-6"
-      *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO">
-      <mat-checkbox [(ngModel)]="addInformationIFO" class="pl-2">
-        {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
-        'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-6 col-sm-6 col-md-6 col-lg-6" *ngIf="selectUser.isConsumptionMGO">
-      <mat-checkbox [(ngModel)]="addInformationMGO" class="pl-2">
-        {{'MGO' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-  </div>
-
-
-  <h5>
-    {{'ADD_SAILING_NAVIGATION' | translateMessage:translateCategory}}
-  </h5>
-
-  <div class="row lh-1 mg-b-4 pl-0">
-
-    <div class="col-4 col-sm-12 col-md-6 col-lg-4">
-      <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
-        {{'IN_BALLAST' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-
-    <div class="col-4 col-sm-12 col-md-6 col-lg-4">
-      <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
-        {{'WITH_LADEN' | translateMessage:translateCategory}}
-      </mat-checkbox>
-    </div>
-  </div>
-
-
-
-  <div class="row">
-    <div class="col-6 ">
-
-      <button mat-raised-button color="primary" (click)="ClickExportPDF()"
-        [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
-        <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
-      </button>
+        </mat-select>
+      </mat-form-field>
 
     </div>
-  </div>
-</div>
+
+    <div class="az-content p-0">
+
+      <h5>
+        {{'REPORT_INFORMATION' | translateMessage:translateCategory}}
+      </h5>
+
+      <div class="row lh-1 mg-b-4 pl-0">
+
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addOverallPerformance" class="pl-2">
+            {{ 'OVERALL_PERFORMANCE' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addVoyageSummary" class="pl-2">
+            {{ 'VOYAGE_SUMMARY' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addBunkeringInformation" class="pl-2" [disabled]="true">
+            {{ 'BUNKERING_INFORMATION' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2">
+            {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
+
+
+      </div>
+
+
+      <h5>
+        {{'ADD_INFORMATION_FUEL' | translateMessage:translateCategory}}
+      </h5>
+
+      <div class="row lh-1 mg-b-4 pl-0">
+
+        <div class="col-6 col-sm-6 col-md-6 col-lg-6"
+          *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO">
+          <mat-checkbox [(ngModel)]="addInformationIFO" class="pl-2">
+            {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+            'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
+        <div class="col-6 col-sm-6 col-md-6 col-lg-6" *ngIf="selectUser.isConsumptionMGO">
+          <mat-checkbox [(ngModel)]="addInformationMGO" class="pl-2">
+            {{'MGO' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
+      </div>
+
+
+      <h5>
+        {{'ADD_SAILING_NAVIGATION' | translateMessage:translateCategory}}
+      </h5>
+
+      <div class="row lh-1 mg-b-4 pl-0">
+
+        <div class="col-4 col-sm-12 col-md-6 col-lg-4">
+          <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+            {{'IN_BALLAST' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
+        <div class="col-4 col-sm-12 col-md-6 col-lg-4">
+          <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+            {{'WITH_LADEN' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 ">
+
+          <button mat-raised-button color="primary" matStepperNext
+            [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">
+            Next
+            <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
+          </button>
+
+        </div>
+      </div>
+
+
+    </div>
+
+  </mat-step>
+
+  <mat-step label="PDF preview" state="pdfView">
+
+
+    <div class="row">
+      <div class="col-6 ">
+
+        <button mat-raised-button color="primary" (click)="ClickExportPDF()"
+          [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
+          <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
+        </button>
+
+      </div>
+    </div>
+  </mat-step>
+
+  <ng-template matStepperIcon="pdfOption">
+    <mat-icon>settings</mat-icon>
+  </ng-template>
+
+  <ng-template matStepperIcon="pdfView">
+    <mat-icon class="icon-archivo-pdf"></mat-icon>
+  </ng-template>
+</mat-horizontal-stepper>
 
 
 <div style="opacity: 0; height: 0px; width: 0px; overflow: hidden;">

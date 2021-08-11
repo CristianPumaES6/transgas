@@ -17,6 +17,7 @@ import { LanguageService } from '../../../services/language.service';
 import { DialogListReportComponent } from '../dialog-list-report/dialog-list-report.component';
 import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOverallPerformanceAnalisis, GenerateTableTotalSummaryOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
 import { DataChart } from 'src/app/models/chart';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
@@ -30,7 +31,10 @@ export interface IDialogExportPdf {
 @Component({
   selector: 'app-dialog-export-pdf',
   templateUrl: './dialog-export-pdf.component.html',
-  styleUrls: ['./dialog-export-pdf.component.scss']
+  styleUrls: ['./dialog-export-pdf.component.scss'],
+  providers: [{
+    provide: STEPPER_GLOBAL_OPTIONS, useValue: { displayDefaultIndicatorType: false }
+  }]
 })
 export class DialogExportPdfComponent implements OnInit {
 
@@ -106,6 +110,8 @@ export class DialogExportPdfComponent implements OnInit {
   public chartLineIFO: Chart; // LINEA
   public dataIFO: Chart.ChartPoint[] = []; // Data de los puntos de chartjs.
 
+  // el primer paso esta completado, si es asi el segundo paso se habilita.
+  public isFirstCompleted: boolean = false;
 
   // Variable para el pagina 
   public numberPage = 1;
