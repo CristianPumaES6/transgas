@@ -278,7 +278,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
 
-  private UpdateChartOverallPerformanceLaden(): boolean {
+  private async UpdateChartOverallPerformanceLaden(): Promise<boolean> {
     console.log('UpdateChartOverallPerformanceLaden()');
 
     // Actualizamos los labels
@@ -374,8 +374,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Agregamos la configuracion de las escalas.
     this.chartOverallPerformanceLaden.config.options.scales = this.ConfigScales(this.chartOverallPerformanceLaden.xLabelReport, true, mathRound(this.chartOverallPerformanceLaden.config.lineaMax, 0) + 2, fontSizeTitle);
 
-    this.chartOverallPerformanceLaden.chart.update();
-
+    await this.chartOverallPerformanceLaden.chart.update();
     return true;
   }
 
@@ -1818,7 +1817,9 @@ export class DialogExportPdfComponent implements OnInit {
 
           return true;
         }
-      ).then(
+      )
+      // AddChart
+      .then(
         result => {
 
           // reset positionHeight
@@ -7476,7 +7477,6 @@ export class DialogExportPdfComponent implements OnInit {
 
     return await Promise.resolve(true).then(
       (result: boolean) => {
-
         doc.addPage();
 
         let isViewBallast = true;
@@ -7498,45 +7498,43 @@ export class DialogExportPdfComponent implements OnInit {
 
         return true;
 
-      }).then(
-        (result: boolean) => {
+      }
+    ).then(
+      (result: boolean) => {
 
-          // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
-          const options = {
-            background: 'black',
-            scale: 1
-          };
+        // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+        const options = {
+          background: 'black',
+          scale: 1
+        };
 
-          let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Laden');
+        let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Laden');
 
-          return html2canvas(elementlineaSpeed, options);
+        return html2canvas(elementlineaSpeed, options);
+      }
+    ).then(
+      (canvas: any) => {
+
+        // Si el elemento canvas existe.de
+        if (canvas) {
+          // Obtenemos la imagen
+          let img = canvas.toDataURL('image/PNG');
+
+          let mgProps = (doc as any).getImageProperties(img);
+
+          // ubicamos la imagen con un tamaño de 50 x 50
+          // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
+          // Calculamos un tamaño para el pdf.
+          let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
+
+          // Agregamos la imagen al pdf.
+          doc.addImage(img, 'PNG', positionWidth, positionHeight, widthDash, 95, undefined, 'FAST');
         }
-      ).then(
-        (canvas: any) => {
 
+        return true;
 
-          //let positionHeight = 170;
-
-          // Si el elemento canvas existe.de
-          if (canvas) {
-            // Obtenemos la imagen
-            let img = canvas.toDataURL('image/PNG');
-
-            let mgProps = (doc as any).getImageProperties(img);
-
-            // ubicamos la imagen con un tamaño de 50 x 50
-            // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
-            // Calculamos un tamaño para el pdf.
-            let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
-            // Agregamos la imagen al pdf.
-            doc.addImage(img, 'PNG', positionWidth, positionHeight, widthDash, 95, undefined, 'FAST');
-
-          }
-
-          return true;
-
-        }
-      )
+      }
+    );
   }
 
   private TimeOut(ms) {
