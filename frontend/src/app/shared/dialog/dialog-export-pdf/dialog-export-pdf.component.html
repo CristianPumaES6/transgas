@@ -104,7 +104,8 @@
         <div class="col-6 ">
 
           <button mat-raised-button color="primary" matStepperNext
-            [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">
+            [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)"
+            (click)="ClickNext()">
             Next
             <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
           </button>
@@ -132,10 +133,10 @@
     </div>
   </mat-step>
 
+  <!--  -->
   <ng-template matStepperIcon="pdfOption">
     <mat-icon>settings</mat-icon>
   </ng-template>
-
   <ng-template matStepperIcon="pdfView">
     <mat-icon class="icon-archivo-pdf"></mat-icon>
   </ng-template>

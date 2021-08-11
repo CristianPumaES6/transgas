@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
 import { Chart } from 'chart.js';
@@ -18,6 +18,7 @@ import { DialogListReportComponent } from '../dialog-list-report/dialog-list-rep
 import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOverallPerformanceAnalisis, GenerateTableTotalSummaryOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
 import { DataChart } from 'src/app/models/chart';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { MatStepper } from '@angular/material/stepper';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
@@ -112,6 +113,8 @@ export class DialogExportPdfComponent implements OnInit {
 
   // el primer paso esta completado, si es asi el segundo paso se habilita.
   public isFirstCompleted: boolean = false;
+  @ViewChild('stepper') private myStepper: MatStepper;
+
 
   // Variable para el pagina 
   public numberPage = 1;
@@ -211,6 +214,39 @@ export class DialogExportPdfComponent implements OnInit {
     );
 
   }
+
+  // Al dar click a Next desde el formulario pasamos al siguiente paso que seria View.
+  public ClickNext() {
+    this.CheckFirstCompleted();
+
+    // Solo si esta completado el primer paso verificmaos.
+    if (this.isFirstCompleted) {
+
+      setTimeout(() => {
+
+        this.StepperGoForward();
+      }, 0.2);
+    }
+  }
+
+  // Verifica si el primer paso esta completado.
+  public CheckFirstCompleted() {
+    this.isFirstCompleted = !(!(this.addOverallPerformance || this.addVoyageSummary || this.addBunkeringInformation || this.addChartVoyageSummary)
+      || !(this.addInformationIFO || this.addInformationMGO)
+      || !(this.addSailingInBallast || this.addSailingWithLaden))
+
+  }
+
+  // Paso anter
+  private StepperGoBack() {
+    this.myStepper.previous();
+  }
+  // Siguiente paso
+  private StepperGoForward() {
+    this.myStepper.next();
+  }
+
+
 
   // GenerateChartOverallPerformanceLaden : generamos la linea del chart.
   private GenerateChartOverallPerformanceLaden(): boolean {
