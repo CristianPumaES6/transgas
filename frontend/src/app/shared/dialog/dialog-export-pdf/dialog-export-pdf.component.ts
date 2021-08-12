@@ -114,7 +114,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   // el primer paso esta completado, si es asi el segundo paso se habilita.
   public isFirstCompleted: boolean = false;
-  
+
   // Creamos los View para poder controlar los elementos del html.
   @ViewChild('stepper') private myStepper: MatStepper;
   @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: PdfJsViewerComponent;
@@ -153,7 +153,7 @@ export class DialogExportPdfComponent implements OnInit {
         // le damos una tamaño al contenedor del pdf
         let alturaDelViewport = window.innerHeight;
         $('.content-PDF').css({
-          height: alturaDelViewport - 200
+          height: alturaDelViewport - 150
         });
 
         // Generamos el ChartOverall
@@ -193,14 +193,15 @@ export class DialogExportPdfComponent implements OnInit {
 
 
   // Cuando le das click al boton exportar pdf
-  public ClickExportPDF() {
-    console.log('ClickExportPDF()');
+  private async ClickExportPDF() {
 
-    Promise.resolve(true).then(
+
+    await Promise.resolve(true).then(
       result => {
 
         // Exportar pdf
-        return this.ExportPDFVesselPerformance(this.data.voyages);
+        // return this.ExportPDFVesselPerformance(this.data.voyages);
+        return true
       }
     ).then(
       result => {
@@ -223,19 +224,46 @@ export class DialogExportPdfComponent implements OnInit {
       }
     );
 
+
   }
 
   // Al dar click a Next desde el formulario pasamos al siguiente paso que seria View.
-  public ClickNext() {
+  public async ClickNext() {
     this.CheckFirstCompleted();
 
     // Solo si esta completado el primer paso verificmaos.
     if (this.isFirstCompleted) {
+      // Esperamos unos segundos para que se actualice
+      await this.CreateCustomTimeout(0.1)
 
-      setTimeout(() => {
+      // Pasamos al siguiente paso
+      this.StepperGoForward();
+      // Iniciamos la promesa para generar nuestro PDF
+      await Promise.resolve(true).then(
+        result => {
+          return this.GenerateViewPDF(this.data.voyages);
+        }
+      ).then(
+        result => {
+          if (!result) throw 'ERROR_EXPORT_PDF_VESSEL_PERFORMANCE';
 
-        this.StepperGoForward();
-      }, 0.2);
+          return true;
+        }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, 'ERROR_ON_LOAD');
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+          return true;
+        }
+      );
+
     }
   }
 
@@ -1157,7 +1185,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
   // ExportPDFVesselPerformance() esta funcion genera el pdf.
-  private ExportPDFVesselPerformance(voyages: Voyage[]): Promise<boolean> {
+  private async GenerateViewPDF(voyages: Voyage[]): Promise<boolean> {
 
     // Parseamos los viajes para que no se modifique.
     let parseVoyages: Voyage[] = JSON.parse(JSON.stringify(voyages));
@@ -1199,7 +1227,7 @@ export class DialogExportPdfComponent implements OnInit {
     this.chartOverallPerformanceLaden.data2 = [];
 
     // Inicializamos sincrono.
-    return Promise.resolve(true)
+    return await Promise.resolve(true)
       .then(
         result => {
 
@@ -1271,7 +1299,7 @@ export class DialogExportPdfComponent implements OnInit {
                                 if (isNewVoyage) {
                                   isNewVoyage = false;
                                   sVPR.totalVoyageSailing += 1;
-                                  console.log('Voyage' + voyage.voyageNumber + ' ' + dailyReport.activityPerformed)
+
                                   // Guardamos el ultimo viaje.
                                   sVPR.lastVoyageSailing = voyage.voyageNumber;
 
@@ -1285,7 +1313,6 @@ export class DialogExportPdfComponent implements OnInit {
                                 if (isNewPort) {
                                   isNewPort = false;
                                   sVPR.totalPortSailing += 1;
-                                  console.log('Voyage' + voyage.voyageNumber + '  Numero de puerto:' + port.portNumber + ' ' + dailyReport.activityPerformed);
 
                                   // Armamos el nuevo puerto.
                                   let portSummary = new Port(port.id, port.userId, port.voyageId, port.portNumber, port.departurePort, port.arrivalPort, port.userIdCreated, port.dateCreated, port.userIdUpdated, port.dateUpdated, port.status);
@@ -1729,17 +1756,19 @@ export class DialogExportPdfComponent implements OnInit {
           sVPR.dateStart = '----';
           sVPR.dateStart = '----';
 
-          return this.UpdateChartOverallPerformanceLaden();
-        }
-      ).then(
-        result => {
-
-
           // Le damos un tamaño a la pagina.
           $('#dash-line-Overall-Performance-Laden').css({
             width: 192 * listGTSOPA_Laden.length,
             height: 380 * (listGTSOPA_Laden.length / 6)
           });
+
+          // Actualizamos el chart.
+          return this.UpdateChartOverallPerformanceLaden();
+        })
+      // Primera pagina Resumen total.
+      .then(
+        result => {
+
           // Luego deberiamos enviar esa informacion a los siguientes documentos.
 
           // Agregamos la primera pagina,
@@ -7547,7 +7576,9 @@ export class DialogExportPdfComponent implements OnInit {
         // Agregamos la cabecera a la pagina.
         positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
 
-        return true;
+        // Esperamos una milesima de segundo para tomar la captura al html
+        // esto se debe a un problema del renderizado.
+        return this.CreateCustomTimeout(0.1);
 
       }
     ).then(
@@ -7594,7 +7625,6 @@ export class DialogExportPdfComponent implements OnInit {
   private CreateCustomTimeout(seconds) {
     return new Promise((resolve: any, reject) => {
       setTimeout(() => {
-        console.log('bla bla');
         resolve();
       }, seconds * 1000);
     });

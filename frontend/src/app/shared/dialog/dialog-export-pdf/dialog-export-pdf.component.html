@@ -124,21 +124,26 @@
       <div class="col-12">
 
         <div class="content-PDF" style="width: 100%; height: 100%">
-    
-            <ng2-pdfjs-viewer #pdfViewerOnDemand></ng2-pdfjs-viewer>
-          </div>
 
+          <ng2-pdfjs-viewer #pdfViewerOnDemand></ng2-pdfjs-viewer>
+
+        </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-6 ">
+      <div class="col-6 pb-2">
 
-        <button mat-raised-button color="primary" (click)="ClickExportPDF()"
-          [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
+        <button mat-raised-button color="primary"
+          [disabled]=" !(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary)
+          || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
           <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
         </button>
 
       </div>
+    </div>
+    <div id="dash-line-Overall-Performance-Laden"
+      style="min-width:960px; min-height: 380px;background:  #121c3c; padding: 10px 20px 10px 15px;">
+      <canvas id="lineOverallPerformanceLaden" style="width:100%; height: 100%"></canvas>
     </div>
   </mat-step>
 
@@ -166,9 +171,4 @@
     <canvas id="lineaIfo" class="w-100"></canvas>
   </div>
 
-<div id="dash-line-Overall-Performance-Laden"
-  style="min-width:960px; min-height: 380px;background:  #121c3c; padding: 10px 20px 10px 15px;">
-  <canvas id="lineOverallPerformanceLaden" style="width:100%; height: 100%"></canvas>
 </div>
-</div>
-
