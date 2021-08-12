@@ -107,6 +107,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   // Chart Overall Performance Laden
   public chartOverallPerformanceLaden: DataChart = new DataChart();
+  public chartOverallPerformanceBallast: DataChart = new DataChart();
 
   public configLineaIFO: Chart.ChartConfiguration; // Configuracion del elemento
   public chartLineIFO: Chart; // LINEA
@@ -157,7 +158,9 @@ export class DialogExportPdfComponent implements OnInit {
         });
 
         // Generamos el ChartOverall
-        return this.GenerateChartOverallPerformanceLaden();
+        this.GenerateChartOverallPerformanceLaden();
+        this.GenerateChartOverallPerformanceBallast();
+        return true;
       }
     ).then(
       result => {
@@ -168,6 +171,7 @@ export class DialogExportPdfComponent implements OnInit {
         this.addInformationMGO = true;
         this.addInformationIFO = true;
         this.addSailingWithLaden = true;
+        this.addSailingInBallast = true;
         this.addChartVoyageSummary = true;
 
 
@@ -356,7 +360,75 @@ export class DialogExportPdfComponent implements OnInit {
     return true;
   }
 
+  // GenerateChartOverallPerformanceBallast : generamos la linea del chart.
+  private GenerateChartOverallPerformanceBallast(): boolean {
+    console.log('GenerateChartOverallPerformanceBallast()');
 
+    // Agregamos la configuracion del chartIFO.
+    this.chartOverallPerformanceBallast.config = {
+      type: 'line',
+      data: {
+        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
+        datasets: [{
+          label: 'Daily Consumption', // Lo pongo vacio por que en el update se colocara el valor.
+          // Le colocamos un id de identidad
+          yAxisID: 'A',
+          backgroundColor: 'rgb(255,205,6)',
+          borderColor: 'rgb(255,205,6)',
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
+          fill: false,
+        }, {
+          label: 'Speed AVG', // Lo pongo vacio por que en el update se colocara el valor.
+          // Le colocamos un id de identidad
+          yAxisID: 'B',
+          backgroundColor: 'rgb(249, 46, 3)',
+          borderColor: 'rgb(102, 227, 10)',
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
+          fill: false,
+        }]
+      },
+      options: {
+        // Habilitamos todos los tooltip esten abiertos.
+        showAllTooltips: true,
+        // Otras opciones dentro del Chart
+        legend: {
+          // La leyenda es el texto que esta arriva del cuadro.
+          display: true,
+          labels: {
+            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
+            fontStyle: 'bold', // Tipo de texto de la leyenda.
+          }
+        },
+        // Habilitamos la opcion para que sea responsive
+        maintainAspectRatio: false,
+        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
+        scales: {
+          // Le agregamos un id a los axes por que podremos 2 dataset con diferentes valores.
+          yAxes: [
+            {
+              id: 'A',
+              type: 'linear',
+              position: 'left',
+            }, {
+              id: 'B',
+              type: 'linear',
+              position: 'right',
+            }
+          ]
+        }
+      },
+      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
+    };
+
+    // Encapculamos el elemento del dom.
+    let canvaLineSpeed: any = document.getElementById('lineOverallPerformanceBallast');
+    // Convertimos el canvaLineIfo en 2d
+    let ctxLineSpeed = canvaLineSpeed.getContext('2d');
+    // 
+    this.chartOverallPerformanceBallast.chart = new Chart(ctxLineSpeed, this.chartOverallPerformanceBallast.config);
+
+    return true;
+  }
 
   private async UpdateChartOverallPerformanceLaden(): Promise<boolean> {
     console.log('UpdateChartOverallPerformanceLaden()');
@@ -375,24 +447,22 @@ export class DialogExportPdfComponent implements OnInit {
 
 
     let maxConsumption = 0;
-    // Verificamos quien tiene el mayor consumo
-    if (this.selectUser.sailingBallastConsumptionIFO > maxConsumption) {
-      maxConsumption = this.selectUser.sailingBallastConsumptionIFO;
-    }
-    if (this.selectUser.sailingLoadConsumptionIFO > maxConsumption) {
+    if (this.addInformationIFO && this.selectUser.sailingLoadConsumptionIFO > maxConsumption) {
       maxConsumption = this.selectUser.sailingLoadConsumptionIFO;
     }
-    if (this.selectUser.sailingBallastConsumptionMGO > maxConsumption) {
-      maxConsumption = this.selectUser.sailingBallastConsumptionMGO;
-    }
-    if (this.selectUser.sailingLoadConsumptionMGO > maxConsumption) {
+    if (this.addInformationMGO && this.selectUser.sailingLoadConsumptionMGO > maxConsumption) {
       maxConsumption = this.selectUser.sailingLoadConsumptionMGO;
     }
 
     let fontSizeTitle = (this.chartOverallPerformanceLaden.data.length * 3);
+    // El tamaño minimo del font debe ser 14 
+    fontSizeTitle = fontSizeTitle > 14 ? fontSizeTitle : 14;
 
     // grosor de l alinea.
-    let AxesLineWidth = this.MathRoundDecimal(this.chartOverallPerformanceLaden.data.length / 3, 0);
+    let AxesLineWidth = this.MathRoundDecimal(fontSizeTitle / 9, 0);
+
+    this.chartOverallPerformanceLaden.config.data.datasets[0].borderWidth = this.MathRoundDecimal(fontSizeTitle / 7, 0);
+    this.chartOverallPerformanceLaden.config.data.datasets[1].borderWidth = this.MathRoundDecimal(fontSizeTitle / 7, 0);
 
     // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
     if (maxConsumption) {
@@ -408,17 +478,12 @@ export class DialogExportPdfComponent implements OnInit {
     };
 
     let maxSpeed = 0;
-    // Verificamos quien tiene el mayor consumo
-    if (this.selectUser.contractSpeedSailingBallastIFO > maxSpeed) {
-      maxSpeed = this.selectUser.contractSpeedSailingBallastIFO;
-    }
-    if (this.selectUser.contractSpeedSailingLadenIFO > maxSpeed) {
+
+
+    if (this.addInformationIFO && this.selectUser.contractSpeedSailingLadenIFO > maxSpeed) {
       maxSpeed = this.selectUser.contractSpeedSailingLadenIFO;
     }
-    if (this.selectUser.contractSpeedSailingBallastMGO > maxSpeed) {
-      maxConsumption = this.selectUser.contractSpeedSailingBallastMGO;
-    }
-    if (this.selectUser.contractSpeedSailingLadenMGO > maxSpeed) {
+    if (this.addInformationMGO && this.selectUser.contractSpeedSailingLadenMGO > maxSpeed) {
       maxSpeed = this.selectUser.contractSpeedSailingLadenMGO;
     }
     // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
@@ -458,6 +523,103 @@ export class DialogExportPdfComponent implements OnInit {
     return true;
   }
 
+
+  private async UpdateChartOverallPerformanceBallast(): Promise<boolean> {
+    console.log('UpdateChartOverallPerformanceBallast()');
+
+    // Actualizamos los labels
+    this.chartOverallPerformanceBallast.config.data.labels = this.chartOverallPerformanceBallast.xLabelReport;
+
+    // Actualizamos la data 
+    this.chartOverallPerformanceBallast.config.data.datasets[0].data = this.chartOverallPerformanceBallast.data;
+
+    this.chartOverallPerformanceBallast.config.data.datasets[1].data = this.chartOverallPerformanceBallast.data2;
+
+    // Vaciamos la configuracion de las lines SPEED
+    // La linea es el campo que agregamos en el plugin.
+    this.chartOverallPerformanceBallast.config.options.lines = [];
+
+
+    let maxConsumption = 0;
+    // Verificamos quien tiene el mayor consumo
+    if (this.addInformationIFO && this.selectUser.sailingBallastConsumptionIFO > maxConsumption) {
+      maxConsumption = this.selectUser.sailingBallastConsumptionIFO;
+    }
+
+    if (this.addInformationMGO && this.selectUser.sailingBallastConsumptionMGO > maxConsumption) {
+      maxConsumption = this.selectUser.sailingBallastConsumptionMGO;
+    }
+
+
+    let fontSizeTitle = (this.chartOverallPerformanceBallast.data.length * 3);
+    // El tamaño minimo del font debe ser 14 
+    fontSizeTitle = fontSizeTitle > 14 ? fontSizeTitle : 14;
+
+    // grosor de l alinea.
+    let AxesLineWidth = this.MathRoundDecimal(fontSizeTitle / 9, 0);
+
+    this.chartOverallPerformanceBallast.config.data.datasets[0].borderWidth = this.MathRoundDecimal(fontSizeTitle / 7, 0);
+    this.chartOverallPerformanceBallast.config.data.datasets[1].borderWidth = this.MathRoundDecimal(fontSizeTitle / 7, 0);
+
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
+    if (maxConsumption) {
+      this.chartOverallPerformanceBallast.config.options.lines.push({
+        yAxesID: 'A',
+        type: 'horizontal',
+        y: maxConsumption,
+        color: 'red',
+        label: '      Max',
+        fontSize: (fontSizeTitle - (fontSizeTitle * 0.2)) + 'px Arial',
+        lineWidth: AxesLineWidth
+      });
+    };
+
+    let maxSpeed = 0;
+    // Verificamos quien tiene el mayor consumo
+    if (this.selectUser.contractSpeedSailingBallastIFO > maxSpeed) {
+      maxSpeed = this.selectUser.contractSpeedSailingBallastIFO;
+    }
+
+    if (this.selectUser.contractSpeedSailingBallastMGO > maxSpeed) {
+      maxConsumption = this.selectUser.contractSpeedSailingBallastMGO;
+    }
+
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no haria falta.
+    if (maxSpeed) {
+      this.chartOverallPerformanceBallast.config.options.lines.push({
+        yAxesID: 'B',
+        type: 'horizontal',
+        y: maxSpeed,
+        color: '#39FF14',
+        label: 'Min      ',
+        fontSize: (fontSizeTitle - (fontSizeTitle * 0.2)) + 'px Arial',
+        lineWidth: AxesLineWidth
+      });
+    };
+
+    // Configuracion Tooltips
+    this.chartOverallPerformanceBallast.config.options.tooltips = this.GetToolTipConfig('OverallPerformanceBallast');
+
+    if (this.chartOverallPerformanceBallast.config.lineaMax < this.selectUser.sailingBallastConsumptionIFO) {
+      this.chartOverallPerformanceBallast.config.lineaMax = this.selectUser.sailingBallastConsumptionIFO;
+    }
+
+    this.chartOverallPerformanceBallast.config.options.legend = {
+      display: true,
+      labels: {
+        fontSize: fontSizeTitle,
+        fontStyle: "bold",
+        fontColor: '#b8d1ff'
+      }
+    };
+
+
+    // Agregamos la configuracion de las escalas.
+    this.chartOverallPerformanceBallast.config.options.scales = this.ConfigScales(this.chartOverallPerformanceBallast.xLabelReport, true, mathRound(this.chartOverallPerformanceBallast.config.lineaMax, 0) + 2, fontSizeTitle);
+
+    await this.chartOverallPerformanceBallast.chart.update();
+    return true;
+  }
 
 
   // GenetareLineSpeed(): Generar linea en los canvas.
@@ -728,6 +890,19 @@ export class DialogExportPdfComponent implements OnInit {
           // Resultado que se mostrara en el titulo.
           let result = [];
           if (configIFOorMGOorSPEED === 'OverallPerformanceLaden') {
+
+            // DataSets.
+            let dataSets: Chart.ChartDataSets = data.datasets[0];
+            let chartPoint: Chart.ChartPoint = <Chart.ChartPoint>dataSets.data[index];
+
+            let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
+
+            result.push('Daily Consump.: ' + mathRound(Number(chartPoint.y), 1) + ' mt');
+            result.push('T. Consump.: ' + mathRound(chartPoint.totalConsumptionIFO + chartPoint.totalConsumptionMGO, 2) + ' mt');
+            result.push('T. Time: ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
+            result.push('T. Distan.: ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
+            result.push('Speed AVG: ' + mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2) + ' kn');
+          } else if (configIFOorMGOorSPEED === 'OverallPerformanceBallast') {
 
             // DataSets.
             let dataSets: Chart.ChartDataSets = data.datasets[0];
@@ -1226,6 +1401,11 @@ export class DialogExportPdfComponent implements OnInit {
     this.chartOverallPerformanceLaden.data = [];
     this.chartOverallPerformanceLaden.data2 = [];
 
+    // Reset los datos del label y la data del chart
+    this.chartOverallPerformanceBallast.xLabelReport = [];
+    this.chartOverallPerformanceBallast.data = [];
+    this.chartOverallPerformanceBallast.data2 = [];
+
     // Inicializamos sincrono.
     return await Promise.resolve(true)
       .then(
@@ -1472,6 +1652,40 @@ export class DialogExportPdfComponent implements OnInit {
                     gTSOPA_Ballast.consumptionMGOCharter = (gTSOPA_Ballast.dailyConsumptionCharterMGO * gTSOPA_Ballast.timeMGOCharter) / 24;
 
                   }
+
+                  // Sumamos el consumo IFO y MGO
+                  let sumConsumption = (this.addInformationIFO ? gTSOPA_Ballast.consumptionIFO : 0) + (this.addInformationMGO ? gTSOPA_Ballast.consumptionMGO : 0);
+                  // SUMAMOS EL TIEMPO
+                  let sumTime = (this.addInformationIFO ? gTSOPA_Ballast.timeIFO : 0) + (this.addInformationMGO ? gTSOPA_Ballast.timeMGO : 0)
+                  // Calculamos el daily consumption
+                  let calcDaily = sumTime ? ((sumConsumption * 24) / sumTime) : 0;
+
+                  let textLabel = 'V' + gTSOPA_Ballast.voyageNumber + '  Y' + voyage.year;
+                  // SACAMOS EL DAILYCONSUMPTION
+                  this.chartOverallPerformanceBallast.xLabelReport.push(textLabel)
+
+                  let speedBallast = new Speed();
+                  speedBallast.distanceIFO = gTSOPA_Ballast.distanceIFO;
+                  speedBallast.distanceMGO = gTSOPA_Ballast.distanceMGO;
+                  speedBallast.timeOperationIFO = gTSOPA_Ballast.timeIFO;
+                  speedBallast.timeOperationMGO = gTSOPA_Ballast.timeMGO;
+
+                  speedBallast.distance = speedBallast.distanceIFO + speedBallast.distanceMGO;
+                  speedBallast.steamingTime = speedBallast.timeOperationIFO + speedBallast.timeOperationMGO;
+
+                  this.chartOverallPerformanceBallast.data.push(
+                    { x: textLabel, y: this.MathRoundDecimal(calcDaily, 1), totalConsumptionIFO: gTSOPA_Ballast.consumptionIFO, totalConsumptionMGO: gTSOPA_Ballast.consumptionMGO, speed: speedBallast }
+                  );
+
+                  // Sumo la distancia y calculo
+                  let sumDistance = (this.addInformationIFO ? gTSOPA_Ballast.distanceIFO : 0) + (this.addInformationMGO ? gTSOPA_Ballast.distanceMGO : 0)
+                  let calcSpeed = sumTime ? (sumDistance / sumTime) : 0;
+                  // Agregar el speed al char Overall
+                  this.chartOverallPerformanceBallast.data2.push(
+                    { x: textLabel, y: this.MathRoundDecimal(calcSpeed, 1) }
+                  );
+
+
 
                   listGTSOPA_Ballast.push(gTSOPA_Ballast)
                 }
@@ -1756,13 +1970,23 @@ export class DialogExportPdfComponent implements OnInit {
           sVPR.dateStart = '----';
           sVPR.dateStart = '----';
 
-       // Le damos un tamaño a la pagina.
+          // Le damos un tamaño a la pagina.
           $('#dash-line-Overall-Performance-Laden').css({
-            width: 200 * listGTSOPA_Laden.length,
-            height: 110 * listGTSOPA_Laden.length
+            width: 180 * listGTSOPA_Laden.length,
+            height: 99 * listGTSOPA_Laden.length
+          });
+
+
+          // Le damos un tamaño a la pagina.
+          $('#dash-line-Overall-Performance-Ballast').css({
+            width: 180 * listGTSOPA_Ballast.length,
+            height: 99 * listGTSOPA_Ballast.length
           });
           // Actualizamos el chart.
-          return this.UpdateChartOverallPerformanceLaden();
+          this.UpdateChartOverallPerformanceLaden();
+          this.UpdateChartOverallPerformanceBallast();
+
+          return true;
         })
       // Primera pagina Resumen total.
       .then(
@@ -7610,10 +7834,10 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Agregamos la imagen al pdf.
           doc.addImage(img, 'PNG', 5, positionHeight, widthDash, HeightDash, undefined, 'FAST');
-       /*
-       doc.setDrawColor(0);
-          doc.setFillColor(255, 255, 255);
-          doc.rect(5, positionHeight, widthDash, HeightDash, "FD"); */
+          /*
+          doc.setDrawColor(0);
+             doc.setFillColor(255, 255, 255);
+             doc.rect(5, positionHeight, widthDash, HeightDash, "FD"); */
           positionHeight += HeightDash;
           // Titulo del pdf.   
 
@@ -7623,23 +7847,63 @@ export class DialogExportPdfComponent implements OnInit {
           doc.setFont('Helvetica', 'bold');
           doc.text('testtttttttttttttt tt', widthPDF / 2, positionHeight, { align: 'center' })
 
+          return this.ChartBallast(doc, widthPDF, positionHeight);
+        }
+      }).then(
+        (result: number) => {
 
 
-
-          positionHeight += 5;
-          doc.setDrawColor(0);
-          doc.setFillColor(255, 255, 255);
-          doc.rect(5, positionHeight, widthDash, HeightDash, "FD");
 
           this.AddFoter(doc, widthPDF, heightPDF)
           // Agregamos la imagen al pdf.
           // doc.addImage(img, 'PNG', positionWidth, positionHeight, widthDash, 95, undefined, 'FAST');
+
+
+          return true;
+
         }
+      );
+  }
 
-        return true;
+  private async ChartBallast(doc, widthPDF, positionHeight): Promise<number> {
+    return await Promise.resolve(true).then(
+      (result: boolean) => {
 
+        // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+        const options = {
+          background: 'black',
+          scale: 1
+        };
+
+        let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Ballast');
+
+        return html2canvas(elementlineaSpeed, options);
       }
-    );
+    ).then(
+      (canvas: any) => {
+
+        // Si el elemento canvas existe.de
+        if (canvas) {
+          // Obtenemos la imagen
+          let img = canvas.toDataURL('image/PNG');
+
+          let mgProps = (doc as any).getImageProperties(img);
+
+          // Calculamos un tamaño para el pdf.
+          let widthDash = widthPDF - 10;// Tamaño del pdf menos el margen
+          let HeightDash = 110;// Tamaño del pdf menos el margen
+
+          // Agregamos la imagen al pdf.
+          doc.addImage(img, 'PNG', 5, positionHeight, widthDash, HeightDash, undefined, 'FAST');
+          /*
+          doc.setDrawColor(0);
+             doc.setFillColor(255, 255, 255);
+             doc.rect(5, positionHeight, widthDash, HeightDash, "FD"); */
+          positionHeight += HeightDash;
+
+          return positionHeight;
+        }
+      });
   }
 
   private TimeOut(ms) {

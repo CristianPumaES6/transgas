@@ -133,18 +133,25 @@
     <div class="row">
       <div class="col-6 pb-2">
 
-        <button mat-raised-button color="primary"
-          [disabled]=" !(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary)
+        <button mat-raised-button color="primary" [disabled]=" !(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary)
           || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
           <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
         </button>
 
       </div>
     </div>
+
+
     <div id="dash-line-Overall-Performance-Laden"
-      style="min-width:600px; min-height: 330px;background:  #121c3c; padding: 10px 20px 10px 15px;">
+      style="min-width:800px; min-height: 440px;background:  #121c3c; padding: 10px 20px 10px 15px;">
       <canvas id="lineOverallPerformanceLaden" style="width:100%; height: 100%"></canvas>
     </div>
+
+    <div id="dash-line-Overall-Performance-Ballast"
+      style="min-width:800px; min-height: 440px;background:  #121c3c; padding: 10px 20px 10px 15px;">
+      <canvas id="lineOverallPerformanceBallast" style="width:100%; height: 100%"></canvas>
+    </div>
+
   </mat-step>
 
   <!--  -->
