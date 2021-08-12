@@ -19,6 +19,7 @@ import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOve
 import { DataChart } from 'src/app/models/chart';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
+import { PdfJsViewerComponent } from 'ng2-pdfjs-viewer';
 
 // Interface de los input del componente.
 export interface IDialogExportPdf {
@@ -113,8 +114,10 @@ export class DialogExportPdfComponent implements OnInit {
 
   // el primer paso esta completado, si es asi el segundo paso se habilita.
   public isFirstCompleted: boolean = false;
+  
+  // Creamos los View para poder controlar los elementos del html.
   @ViewChild('stepper') private myStepper: MatStepper;
-
+  @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: PdfJsViewerComponent;
 
   // Variable para el pagina 
   public numberPage = 1;
@@ -147,6 +150,13 @@ export class DialogExportPdfComponent implements OnInit {
     ).then(
       result => {
 
+        // le damos una tamaño al contenedor del pdf
+        let alturaDelViewport = window.innerHeight;
+        $('.content-PDF').css({
+          height: alturaDelViewport - 200
+        });
+
+        // Generamos el ChartOverall
         return this.GenerateChartOverallPerformanceLaden();
       }
     ).then(
@@ -1891,24 +1901,23 @@ export class DialogExportPdfComponent implements OnInit {
       ).then(
         result => {
 
-          let ballastOrLaden = '';
-          if (this.addSailingInBallast && !this.addSailingWithLaden) {
-            ballastOrLaden = '(Ballast)';
-          }
-          if (this.addSailingWithLaden && !this.addSailingInBallast) {
-            ballastOrLaden = '(Laden)';
-          }
-          if (this.addSailingWithLaden && this.addSailingInBallast) {
+          // doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
+          // Convertimos en Blob el html
+          return new Blob([doc.output('blob'), 'application/pdf']);
+        }
+      ).then(
+        blobPDF => {
 
-            ballastOrLaden = '(Ballast/Laden)';
-          }
+          // Blob Pdf
+          if (!blobPDF) alert('ERROR');
 
+          // Agregamos el blob al componente ademas le damos refresh para que se vea.
+          this.pdfViewerOnDemand.pdfSrc = blobPDF; // pdfSrc can be Blob or Uint8Array
+          this.pdfViewerOnDemand.downloadFileName = 'revisar';
+          this.pdfViewerOnDemand.refresh();
 
-          doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
-          this.numberPage = 1;
           this.loadingService.Close();
           return true;
-
         }
       );
 
