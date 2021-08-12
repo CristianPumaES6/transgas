@@ -1756,12 +1756,11 @@ export class DialogExportPdfComponent implements OnInit {
           sVPR.dateStart = '----';
           sVPR.dateStart = '----';
 
-          // Le damos un tamaño a la pagina.
+       // Le damos un tamaño a la pagina.
           $('#dash-line-Overall-Performance-Laden').css({
-            width: 192 * listGTSOPA_Laden.length,
-            height: 380 * (listGTSOPA_Laden.length / 6)
+            width: 200 * listGTSOPA_Laden.length,
+            height: 110 * listGTSOPA_Laden.length
           });
-
           // Actualizamos el chart.
           return this.UpdateChartOverallPerformanceLaden();
         })
@@ -1863,7 +1862,6 @@ export class DialogExportPdfComponent implements OnInit {
               positionHeight += this.GenerateTableOverallPerformanceAnalysis(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGTSOPA_Ballast, gTTSOPA, isViewBallast, isViewLaden);
 
               // agrgamos 1 al paginador.
-              this.numberPage += 1;
               this.AddFoter(doc, widthPDF, heightPDF)
             }
             if (this.addSailingWithLaden) {
@@ -1872,7 +1870,6 @@ export class DialogExportPdfComponent implements OnInit {
               if (!isChartInOnePage) {
                 positionHeight = 0;
                 doc.addPage();
-                this.numberPage += 1;
 
                 positionHeight += 10;
                 positionWidth = 10;
@@ -6151,7 +6148,6 @@ export class DialogExportPdfComponent implements OnInit {
 
         // Agregamos una nueva pagina
         doc.addPage();
-        this.numberPage += 1;
 
         positionHeight += 10;
         let positionWidth = 10;
@@ -7535,6 +7531,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   private AddFoter(doc: jsPDF, widthPDF: number, heightPDF: number) {
 
+    this.numberPage += 1;
     let pageFooter = heightPDF - 10;
 
     doc.setDrawColor(22, 33, 77);
@@ -7576,7 +7573,10 @@ export class DialogExportPdfComponent implements OnInit {
         // Agregamos la cabecera a la pagina.
         positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
 
-        // Esperamos una milesima de segundo para tomar la captura al html
+        // Colocamos el rectangulo
+        positionHeight += 5.5;
+
+        // Esperamos una milesima de un segundo para tomar la captura al html
         // esto se debe a un problema del renderizado.
         return this.CreateCustomTimeout(0.1);
 
@@ -7604,13 +7604,36 @@ export class DialogExportPdfComponent implements OnInit {
 
           let mgProps = (doc as any).getImageProperties(img);
 
-          // ubicamos la imagen con un tamaño de 50 x 50
-          // doc.addImage("./assets/icons/logotransgas.png", "JPEG", positionWidth, positionHeight, 17, 17);
           // Calculamos un tamaño para el pdf.
-          let widthDash = widthPDF - 20;// Tamaño del pdf menos el margen
+          let widthDash = widthPDF - 10;// Tamaño del pdf menos el margen
+          let HeightDash = 110;// Tamaño del pdf menos el margen
 
           // Agregamos la imagen al pdf.
-          doc.addImage(img, 'PNG', positionWidth, positionHeight, widthDash, 95, undefined, 'FAST');
+          doc.addImage(img, 'PNG', 5, positionHeight, widthDash, HeightDash, undefined, 'FAST');
+       /*
+       doc.setDrawColor(0);
+          doc.setFillColor(255, 255, 255);
+          doc.rect(5, positionHeight, widthDash, HeightDash, "FD"); */
+          positionHeight += HeightDash;
+          // Titulo del pdf.   
+
+          positionHeight += 10;
+          doc.setFontSize(15);
+          doc.setTextColor(22, 33, 77);
+          doc.setFont('Helvetica', 'bold');
+          doc.text('testtttttttttttttt tt', widthPDF / 2, positionHeight, { align: 'center' })
+
+
+
+
+          positionHeight += 5;
+          doc.setDrawColor(0);
+          doc.setFillColor(255, 255, 255);
+          doc.rect(5, positionHeight, widthDash, HeightDash, "FD");
+
+          this.AddFoter(doc, widthPDF, heightPDF)
+          // Agregamos la imagen al pdf.
+          // doc.addImage(img, 'PNG', positionWidth, positionHeight, widthDash, 95, undefined, 'FAST');
         }
 
         return true;
