@@ -7784,16 +7784,8 @@ export class DialogExportPdfComponent implements OnInit {
         let isViewLaden = false;
 
         positionHeight += 10;
-        let positionWidth = 10;
 
-        let title: string = 'Performance Analysis Graph ';
-        if (this.addSailingInBallast && this.addSailingWithLaden) {
-          title += '(Ballast / Laden)';
-        } else if (this.addSailingInBallast) {
-          title += '(Ballast)';
-        } else if (this.addSailingWithLaden) {
-          title += '(Laden)';
-        }
+        let title: string = '';
         // Agregamos la cabecera a la pagina.
         positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
 
@@ -7808,66 +7800,43 @@ export class DialogExportPdfComponent implements OnInit {
     ).then(
       (result: boolean) => {
 
-        // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
-        const options = {
-          background: 'black',
-          scale: 1
-        };
+        if (this.addSailingInBallast) {
+          return this.ChartBallast(doc, widthPDF, positionHeight);
+        } else {
+          return positionHeight;
+        }
 
-        let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Laden');
-
-        return html2canvas(elementlineaSpeed, options);
       }
     ).then(
-      (canvas: any) => {
+      (resultPositionHeight: number) => {
 
-        // Si el elemento canvas existe.de
-        if (canvas) {
-          // Obtenemos la imagen
-          let img = canvas.toDataURL('image/PNG');
-
-          let mgProps = (doc as any).getImageProperties(img);
-
-          // Calculamos un tamaño para el pdf.
-          let widthDash = widthPDF - 10;// Tamaño del pdf menos el margen
-          let HeightDash = 110;// Tamaño del pdf menos el margen
-
-          // Agregamos la imagen al pdf.
-          doc.addImage(img, 'PNG', 5, positionHeight, widthDash, HeightDash, undefined, 'FAST');
-          /*
-          doc.setDrawColor(0);
-             doc.setFillColor(255, 255, 255);
-             doc.rect(5, positionHeight, widthDash, HeightDash, "FD"); */
-          positionHeight += HeightDash;
-          // Titulo del pdf.   
-
-          positionHeight += 10;
-          doc.setFontSize(15);
-          doc.setTextColor(22, 33, 77);
-          doc.setFont('Helvetica', 'bold');
-          doc.text('testtttttttttttttt tt', widthPDF / 2, positionHeight, { align: 'center' })
-
-          return this.ChartBallast(doc, widthPDF, positionHeight);
+        if (this.addSailingWithLaden) {
+          if (this.addSailingInBallast) { positionHeight = resultPositionHeight +10; }
+          return this.ChartLaden(doc, widthPDF, positionHeight);
+        } else {
+          return positionHeight;
         }
-      }).then(
-        (result: number) => {
 
+      }
+    ).then(
+      (result: number) => {
 
+        this.AddFoter(doc, widthPDF, heightPDF)
 
-          this.AddFoter(doc, widthPDF, heightPDF)
-          // Agregamos la imagen al pdf.
-          // doc.addImage(img, 'PNG', positionWidth, positionHeight, widthDash, 95, undefined, 'FAST');
-
-
-          return true;
-
-        }
-      );
+        return true;
+      }
+    );
   }
 
   private async ChartBallast(doc, widthPDF, positionHeight): Promise<number> {
     return await Promise.resolve(true).then(
       (result: boolean) => {
+
+        doc.setFontSize(15);
+        doc.setTextColor(22, 33, 77);
+        doc.setFont('Helvetica', 'bold');
+        doc.text('Performance Analysis Graph (Ballast)', widthPDF / 2, positionHeight, { align: 'center' })
+        positionHeight += 4;
 
         // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
         const options = {
@@ -7906,6 +7875,53 @@ export class DialogExportPdfComponent implements OnInit {
       });
   }
 
+
+  private async ChartLaden(doc, widthPDF, positionHeight): Promise<number> {
+    return await Promise.resolve(true).then(
+      (result: boolean) => {
+
+        doc.setFontSize(15);
+        doc.setTextColor(22, 33, 77);
+        doc.setFont('Helvetica', 'bold');
+        doc.text('Performance Analysis Graph (Laden)', widthPDF / 2, positionHeight, { align: 'center' })
+        positionHeight += 4;
+
+        // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
+        const options = {
+          background: 'black',
+          scale: 1
+        };
+
+        let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Laden');
+
+        return html2canvas(elementlineaSpeed, options);
+      })
+      .then((canvas: any) => {
+
+        // Si el elemento canvas existe.de
+        if (canvas) {
+          // Obtenemos la imagen
+          let img = canvas.toDataURL('image/PNG');
+
+          let mgProps = (doc as any).getImageProperties(img);
+
+          // Calculamos un tamaño para el pdf.
+          let widthDash = widthPDF - 10;// Tamaño del pdf menos el margen
+          let HeightDash = 110;// Tamaño del pdf menos el margen
+
+          // Agregamos la imagen al pdf.
+          doc.addImage(img, 'PNG', 5, positionHeight, widthDash, HeightDash, undefined, 'FAST');
+          /*
+          doc.setDrawColor(0);
+             doc.setFillColor(255, 255, 255);
+             doc.rect(5, positionHeight, widthDash, HeightDash, "FD"); */
+          positionHeight += HeightDash;
+          // Titulo del pdf.   positionHeight += HeightDash;
+
+          return positionHeight;
+        }
+      });
+  }
   private TimeOut(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
