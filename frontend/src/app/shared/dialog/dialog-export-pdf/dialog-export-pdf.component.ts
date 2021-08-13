@@ -2151,7 +2151,7 @@ export class DialogExportPdfComponent implements OnInit {
       ).then(
         result => {
 
-          // doc.save(this.selectUser.name + ballastOrLaden + ".pdf")
+          // doc.save(this.selectUser.name + ".odt")
           // Convertimos en Blob el html
           return new Blob([doc.output('blob'), 'application/pdf']);
         }
@@ -7811,7 +7811,7 @@ export class DialogExportPdfComponent implements OnInit {
       (resultPositionHeight: number) => {
 
         if (this.addSailingWithLaden) {
-          if (this.addSailingInBallast) { positionHeight = resultPositionHeight +10; }
+          if (this.addSailingInBallast) { positionHeight = resultPositionHeight + 10; }
           return this.ChartLaden(doc, widthPDF, positionHeight);
         } else {
           return positionHeight;
@@ -7828,7 +7828,7 @@ export class DialogExportPdfComponent implements OnInit {
     );
   }
 
-  private async ChartBallast(doc, widthPDF, positionHeight): Promise<number> {
+  private async ChartBallast(doc: jsPDF, widthPDF: number, positionHeight: number): Promise<number> {
     return await Promise.resolve(true).then(
       (result: boolean) => {
 
@@ -7876,7 +7876,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private async ChartLaden(doc, widthPDF, positionHeight): Promise<number> {
+  private async ChartLaden(doc: jsPDF, widthPDF: number, positionHeight: number): Promise<number> {
     return await Promise.resolve(true).then(
       (result: boolean) => {
 
