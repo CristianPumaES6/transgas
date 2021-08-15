@@ -2014,6 +2014,8 @@ export class DialogExportPdfComponent implements OnInit {
             // Calculamos el tamaño que ocupara nuestros cuadros que deseamos agregar.
             let contentTableBallast = 0;
             let contentTableLaden = 0;
+
+            // Agregar viaje Ballast
             if (this.addSailingInBallast) {
               // Le sumamos el espacio de la cabecera de la tabla.
               contentTableBallast += 19.9;
@@ -2022,6 +2024,8 @@ export class DialogExportPdfComponent implements OnInit {
               // FOTTER de la tabla
               contentTableBallast += 25.8;
             }
+
+            // Agregar viaje Laden
             if (this.addSailingWithLaden) {
               // Le sumamos el espacio de la cabecera de la tabla.
               contentTableLaden += 19.9;
@@ -2117,26 +2121,86 @@ export class DialogExportPdfComponent implements OnInit {
             }
           }
 
-          return true;
+          return positionHeight;
         }
       )
       // AddChart
       .then(
-        result => {
+        (positionHeight: number) => {
 
-          // reset positionHeight
-          let positionHeight = 0;
-          let positionWidth = 10;
-
+          // Verificamos si se desea agregar los graficos.
           if (this.addChartVoyageSummary) {
-            return this.AddChart(doc, widthPDF, heightPDF, positionWidth, positionHeight);
+
+            // Esta variable nos ayudara a saber si entra en la misma pagina
+            let isChartInOnePage: boolean = false;
+
+            // Solo debe estar seleccionado un grafico
+            // Caso contrario que agrege una nueva pagina.
+            if (
+              // solo debe estar seleccionada una actividad.
+              !(this.addSailingInBallast && this.addSailingWithLaden)
+            ) {
+
+              // un cuadro chart mide 114
+              let heightChart = 114
+              let heightfooter = 20
+
+              let masEspacioTitle = 10;
+
+              // Sumamos todas las posiciones que que hay para agregar el chart.
+              let sumChartPosition = positionHeight + masEspacioTitle + heightChart + heightfooter;
+
+              // La posicion del charth deberia ser menore que el tamaño de la hoja.
+              let spaceSobrante = heightPDF > sumChartPosition;
+
+              // Si la suma de la posicion es mayor a 10
+              if (heightPDF > sumChartPosition) {
+                // le sumamos 10 mas
+                // Es el espacion que le dara el titulo.
+                positionHeight += masEspacioTitle;
+                // Si es asi le pongo true.
+                isChartInOnePage = true;
+              }
+
+            }
+
+            // Si no entran en una pagina , que se agrege la cabecera y el footer.
+            if (!isChartInOnePage) {
+
+              // reset positionHeight
+              positionHeight = 0;
+
+              doc.addPage();
+              positionHeight += 10;
+
+              let title: string = '';
+
+              // Agregamos la cabecera a la pagina.
+              positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
+
+
+              // A la cabecera le sumamos 10
+              positionHeight += 5;
+
+              // Si es una nueva pagina, le tenemos que agregar el footer.
+              this.AddFoter(doc, widthPDF, heightPDF)
+            }
+
+            let positionWidth = 10;
+
+
+
+            // Agregamos el cuadro chart.
+            return this.AddChart(doc, widthPDF, heightPDF, positionWidth, positionHeight, isChartInOnePage);
 
           } else {
+
+            // caso contrario continuamos.
             return true;
           }
         }
       ).then(
-        result => {
+        (result: boolean) => {
 
           // Inicializamos el height en 0,
           let positionHeight = 0;
@@ -4260,7 +4324,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Time
     let rowTransitTime = [];
     rowTransitTime.push(
-      { "content": "Transit Time", "colSpan": 4 }
+      { "content": "Transit Time (HRS)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4307,7 +4371,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Distance
     let rowDistance = [];
     rowDistance.push(
-      { "content": "Transit Distance", "colSpan": 4 }
+      { "content": "Transit Distance (MI)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4353,7 +4417,7 @@ export class DialogExportPdfComponent implements OnInit {
     // Average Speed
     let rowAverageSpeed = [];
     rowAverageSpeed.push(
-      { "content": "Average Speed", "colSpan": 4 }
+      { "content": "Average Speed (KN)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4401,7 +4465,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowCharterSpeed = [];
     rowCharterSpeed.push(
-      { "content": "Allowable Charter Speed", "colSpan": 4 }
+      { "content": "Allowable Charter Speed (KN)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4448,7 +4512,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowTotalConsumption = [];
     rowTotalConsumption.push(
-      { "content": "Actual Total Consumption", "colSpan": 4 }
+      { "content": "Actual Total Consumption (MT)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4495,7 +4559,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowDailyConsumption = [];
     rowDailyConsumption.push(
-      { "content": "Daily Consumption", "colSpan": 4 }
+      { "content": "Daily Consumption (MT)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4543,7 +4607,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowActualCharterDailyConsumption = [];
     rowActualCharterDailyConsumption.push(
-      { "content": "Allowable Charter Daily Consumption", "colSpan": 4 }
+      { "content": "Allowable Charter Daily Consumption (MT)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4591,7 +4655,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowCharterTime = [];
     rowCharterTime.push(
-      { "content": "Allowable Charter Time", "colSpan": 4 }
+      { "content": "Allowable Charter Time (HRS)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -4649,7 +4713,7 @@ export class DialogExportPdfComponent implements OnInit {
 
     let rowWarrantedConsumption = [];
     rowWarrantedConsumption.push(
-      { "content": "Warranted Total Consumption", "colSpan": 4 }
+      { "content": "Warranted Total Consumption (MT)", "colSpan": 4 }
     );
     // Ballast
     if (isViewBallast) {
@@ -7773,24 +7837,12 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-  private async AddChart(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number) {
+  private async AddChart(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, isChartInOnePage: boolean) {
 
 
     return await Promise.resolve(true).then(
       (result: boolean) => {
-        doc.addPage();
 
-        let isViewBallast = true;
-        let isViewLaden = false;
-
-        positionHeight += 10;
-
-        let title: string = '';
-        // Agregamos la cabecera a la pagina.
-        positionHeight = this.AddHeaderPage(doc, widthPDF, positionHeight, title);
-
-        // Colocamos el rectangulo
-        positionHeight += 5.5;
 
         // Esperamos una milesima de un segundo para tomar la captura al html
         // esto se debe a un problema del renderizado.
@@ -7799,8 +7851,9 @@ export class DialogExportPdfComponent implements OnInit {
       }
     ).then(
       (result: boolean) => {
-
+        // Verificamos si se tiene que agregar el cuadro ballast
         if (this.addSailingInBallast) {
+          // Agregamos el cuadro.
           return this.ChartBallast(doc, widthPDF, positionHeight);
         } else {
           return positionHeight;
@@ -7808,10 +7861,14 @@ export class DialogExportPdfComponent implements OnInit {
 
       }
     ).then(
-      (resultPositionHeight: number) => {
+      (resultPositionActualt: number) => {
 
+        // Verificamos si se tiene que agregar el cuadro laden
         if (this.addSailingWithLaden) {
-          if (this.addSailingInBallast) { positionHeight = resultPositionHeight + 10; }
+          // Verificamos si se agrego el cuadro ballast.
+          // Para sumarle +10
+          if (this.addSailingInBallast) { positionHeight = resultPositionActualt + 10; }
+          // Agregamos el cuadro.
           return this.ChartLaden(doc, widthPDF, positionHeight);
         } else {
           return positionHeight;
@@ -7819,15 +7876,15 @@ export class DialogExportPdfComponent implements OnInit {
 
       }
     ).then(
-      (result: number) => {
-
-        this.AddFoter(doc, widthPDF, heightPDF)
-
+      (resultPositionActualt: number) => {
         return true;
       }
     );
   }
 
+
+  // El chart tiene un tamaño de 113
+  // Retorna la pocion luefo de agregar el chart,
   private async ChartBallast(doc: jsPDF, widthPDF: number, positionHeight: number): Promise<number> {
     return await Promise.resolve(true).then(
       (result: boolean) => {
@@ -7836,7 +7893,7 @@ export class DialogExportPdfComponent implements OnInit {
         doc.setTextColor(22, 33, 77);
         doc.setFont('Helvetica', 'bold');
         doc.text('Performance Analysis Graph (Ballast)', widthPDF / 2, positionHeight, { align: 'center' })
-        positionHeight += 4;
+        positionHeight += 3;
 
         // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
         const options = {
@@ -7876,6 +7933,8 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
+  // El chart tiene un tamaño de 113
+  // Retorna la pocion luefo de agregar el chart,
   private async ChartLaden(doc: jsPDF, widthPDF: number, positionHeight: number): Promise<number> {
     return await Promise.resolve(true).then(
       (result: boolean) => {
@@ -7884,7 +7943,7 @@ export class DialogExportPdfComponent implements OnInit {
         doc.setTextColor(22, 33, 77);
         doc.setFont('Helvetica', 'bold');
         doc.text('Performance Analysis Graph (Laden)', widthPDF / 2, positionHeight, { align: 'center' })
-        positionHeight += 4;
+        positionHeight += 3;
 
         // Revisar AQUI DEBERIAMOS DE VIALIDAR SI LA IMAGEN DEVERIA IR A UNA NUEVA PGINA
         const options = {
