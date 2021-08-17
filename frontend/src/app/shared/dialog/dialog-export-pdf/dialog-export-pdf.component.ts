@@ -3859,7 +3859,7 @@ export class DialogExportPdfComponent implements OnInit {
             if (columIndex == 3) {
               let valorCell = Number(cell.text);
               // Time charter
-              let valorCharter = Number(raw[16].content);
+              let valorCharter = Number(raw[15].content);
 
               // Verificamos si existe un valor en el charter.
               if (valorCharter && valorCell) {
