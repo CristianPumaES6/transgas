@@ -16,10 +16,10 @@ export class DailyReport {
     @Column()
     portId: number;
     // El daily report tambien puede retornar un puerto.
-    @ManyToOne(type => Port, port => port.id )
+    @ManyToOne(type => Port, port => port.id)
     port: Port;
 
-    
+
 
     // actividad Registrada
     @Column({ default: "Otros" })
@@ -110,11 +110,83 @@ export class DailyReport {
 
 }
 
-export class GetROBByUser{
+
+export class GetROBByUser {
 
     total_ifo: number;
     total_mgo: number;
     total_bunkering_ifo: number;
     total_bunkering_mgo: number;
-    
+
+}
+
+
+// Info de consumo de viaje y bunkering.
+export class GetInfoVoyageROBBunkering {
+
+    voyageId: number;
+    voyageNumber: number;
+    minDate: Date;
+    maxDate: Date;
+    totalIFO: number;
+    totalMGO: number;
+    listInfoBunkering: GetInfoBunkering[]
+
+
+    constructor(
+
+        voyageId?: number,
+        voyageNumber?: number,
+        minDate?: Date,
+        maxDate?: Date,
+        totalIFO?: number,
+        totalMGO?: number,
+        listInfoBunkering?: GetInfoBunkering[]
+
+    ) {
+
+        this.voyageId = voyageId || 0;
+        this.voyageNumber = voyageNumber || 0;
+        this.minDate = minDate || null;
+        this.maxDate = maxDate || null;
+        this.totalIFO = totalIFO || 0;
+        this.totalMGO = totalMGO || 0;
+        this.listInfoBunkering = listInfoBunkering || [];
+
+    }
+
+}
+
+
+// datos de bunkering
+export class GetInfoBunkering {
+
+    portId: number;
+    portNumber: number;
+    portDeparture: string;
+    daily_reportId: number;
+    dailyReportDate: Date;
+    bunkeringIfo: number;
+    bunkeringMgo: number;
+    observation: string;
+
+    constructor(
+        portId?: number,
+        portNumber?: number,
+        portDeparture?: string,
+        daily_reportId?: number,
+        dailyReportDate?: Date,
+        bunkeringIfo?: number,
+        bunkeringMgo?: number,
+        observation?: string,
+    ) {
+        this.portId = portId || 0;
+        this.portNumber = portNumber || 0;
+        this.portDeparture = portDeparture || '';
+        this.daily_reportId = daily_reportId || 0;
+        this.dailyReportDate = dailyReportDate || null;
+        this.bunkeringIfo = bunkeringIfo || 0;
+        this.bunkeringMgo = bunkeringMgo || 0;
+        this.observation = observation || '';
+    }
 }

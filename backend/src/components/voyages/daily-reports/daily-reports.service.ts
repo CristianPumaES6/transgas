@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DailyReport, GetROBByUser } from '../../../models/daily-report.entity';
+import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetROBByUser } from '../../../models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
@@ -307,4 +307,116 @@ export class DailyReportsService {
     }
 
 
+    // Obtener la informacion de combustible, consumo y faena.
+    async GetInfoVoyageROBAndBunkeringByBuqueAndDate(startDate: Date, endDate: Date, userId: number): Promise<GetInfoVoyageROBBunkering[]> {
+
+        // Este arreglo contendra la info del rob del inicio del viaje y cuanto consumio en el rango de fecha.
+        let firstResultInfoVoyage: GetInfoVoyageROBBunkering[] = [];
+
+        // Hacemos where por todos los campos de la entidad
+        // Buscamos la info del rob asta antes del inicio de fecha
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+
+            .select(' voyage.id ', 'voyageId')
+            .addSelect(' voyage.voyageNumber ', 'voyageNumber')
+            .addSelect(' MIN(daily_report.date) ', "minDate")
+            .addSelect(' MAX(daily_report.date) ', "maxDate")
+            .addSelect(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', "totalIFO")
+            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', "totalMGO")
+
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+            .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+
+            .groupBy('voyage.id, voyage.voyageNumber')
+
+            .getRawMany()
+
+            .then(
+                (result: GetInfoVoyageROBBunkering[]) => {
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetROBByUser';
+
+
+                    firstResultInfoVoyage = result;
+
+                    return this._dailyReportRepository.createQueryBuilder('daily_report')
+                        .select(' voyage.id ', 'voyageId')
+                        .addSelect(' voyage.voyageNumber ', 'voyageNumber')
+                        .addSelect(' port.id ', 'portId')
+                        .addSelect(' port.voyageId ', 'voyageId')
+                        .addSelect(' port.portNumber ', 'portNumber')
+                        .addSelect(' port.departurePort ', 'portDeparture')
+                        .addSelect(' daily_report.id ', "daily_reportId")
+                        .addSelect(' daily_report.date ', "dailyReportDate")
+                        .addSelect(' daily_report.bunkeringIfo ', "bunkeringIfo")
+                        .addSelect(' daily_report.bunkeringMgo ', "bunkeringMgo")
+                        .addSelect(' daily_report.observation ', "observation")
+
+                        .innerJoinAndSelect('daily_report.port', 'port')
+                        .innerJoinAndSelect('port.voyage', 'voyage')
+
+                        .where('daily_report.status = :status', { status: 1 })
+                        .andWhere('port.status = :status', { status: 1 })
+                        .andWhere('voyage.status = :status', { status: 1 })
+
+                        .andWhere('daily_report.userId = :userId', { userId: userId })
+                        .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+                        .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                        .andWhere('daily_report.bunkeringIfo > :bunkeringIFO OR daily_report.bunkeringMgo > :bunkeringMGO', { bunkeringIFO: 0, bunkeringMGO: 0 })
+
+                        .getRawMany();
+                }
+            )
+            .then(
+                (listInfoBunkering: GetInfoBunkering[]) => {
+                    let listGetInfoVoyageROBBunkering: GetInfoVoyageROBBunkering[] = [];
+
+                    // Recorremos el primer resultado.
+                    firstResultInfoVoyage.forEach(
+                        (itemInfoVoyage: GetInfoVoyageROBBunkering) => {
+                            // Armamos el objeto.
+                            let getInfoVoyageROBBunkering = new GetInfoVoyageROBBunkering();
+                            getInfoVoyageROBBunkering.voyageId = itemInfoVoyage.voyageId;
+                            getInfoVoyageROBBunkering.voyageNumber = itemInfoVoyage.voyageNumber;
+                            getInfoVoyageROBBunkering.minDate = itemInfoVoyage.minDate;
+                            getInfoVoyageROBBunkering.maxDate = itemInfoVoyage.maxDate;
+                            getInfoVoyageROBBunkering.totalIFO = itemInfoVoyage.totalIFO;
+                            getInfoVoyageROBBunkering.totalMGO = itemInfoVoyage.totalMGO;
+
+                            let filterInfoBunkering = listInfoBunkering.filter((item: any) => item.voyageId === itemInfoVoyage.voyageId)
+
+                            filterInfoBunkering.forEach(
+                                item => {
+                                    let getInfoBunkering: GetInfoBunkering = new GetInfoBunkering();
+
+                                    getInfoBunkering.portId = item.portId;
+                                    getInfoBunkering.portNumber  = item.portNumber;
+                                    getInfoBunkering.portDeparture = item.portDeparture;
+                                    getInfoBunkering.daily_reportId = item.daily_reportId;
+                                    getInfoBunkering.dailyReportDate = item.dailyReportDate;
+                                    getInfoBunkering.bunkeringIfo = item.bunkeringIfo;
+                                    getInfoBunkering.bunkeringMgo = item.bunkeringMgo;
+                                    getInfoBunkering.observation = item.observation;
+
+
+                                    getInfoVoyageROBBunkering.listInfoBunkering.push(getInfoBunkering)
+                                }
+                            );
+
+                            
+                            listGetInfoVoyageROBBunkering.push(getInfoVoyageROBBunkering);
+                        }
+                    );
+
+                    return listGetInfoVoyageROBBunkering;
+                });
+    }
 }
