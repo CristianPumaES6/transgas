@@ -10,7 +10,7 @@ import { UserService } from './user.service';
 import { AuthGuardService } from './auth-guard.service';
 
 // Modelos
-import { DailyReport, GetROBByUser } from '../models/daily-report';
+import { DailyReport, GetInfoVoyageROBBunkering, GetROBByUser } from '../models/daily-report';
 
 @Injectable({ providedIn: 'root' })
 export class DailyReportService {
@@ -233,5 +233,35 @@ export class DailyReportService {
             })
         );
     }
+
+
+    // Obtenemos el consumo actual
+    GetInfoVoyageROBAndBunkeringByBuqueAndDate(userId: number, startDate: string, endDate: string): Observable<GetInfoVoyageROBBunkering[]> {
+        // Armo el request
+        let url: string = this.url + '/daily-reports/get-info-voyage-rob-bunkering/' + userId+'/'+startDate+'/'+endDate;
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    // Verifico si la respuesta fue correcta.
+                    if (response.status && response.status === 200) {
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
+                return this.authGuardService.HandleError(err);
+            })
+        );
+    }
+
 
 }
