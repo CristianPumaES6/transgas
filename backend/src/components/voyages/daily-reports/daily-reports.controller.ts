@@ -514,8 +514,8 @@ export class DailyReportsController {
     }
 
 
-    @Get('get-info-rob-bunkering/:userId/:startDate/:endDate')
-    GetInfoROBBunkeringByBuque(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date): Promise<any> {
+    @Get('get-info-voyage-rob-bunkering/:userId/:startDate/:endDate')
+    GetInfoVoyageROBAndBunkeringByBuqueAndDate(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
