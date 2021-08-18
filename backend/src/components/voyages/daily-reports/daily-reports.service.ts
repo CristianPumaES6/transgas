@@ -70,6 +70,59 @@ export class DailyReportsService {
         )
     }
 
+    // Actualiza un voyage
+    async Update(dailyReport: DailyReport): Promise<DailyReport> {
+
+        // Hacemos una busqueda por id
+        return await this._dailyReportRepository.findOne({
+            where: [
+                // hacemos un where donde buscamos por id.
+                { id: dailyReport.id }
+            ]
+        }).then(resultFind => {
+
+            // Validamos si encontro al SailingAnality.
+            if (!resultFind) throw new Error('does_not_exist');
+
+            // Actualizamos
+            return this._dailyReportRepository.update(dailyReport.id, dailyReport);
+
+        }).then(resultUpdate => {
+
+            if (!resultUpdate) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+
+            // Envio respuesta con el resultado recibido del ultimo paso
+            return dailyReport;
+        });
+    }
+
+    // Elimina a un voyage por id
+    async Delete(dailyReport: DailyReport): Promise<DailyReport> {
+        // Eliminamos de la base de dato al usuario.
+        return await this._dailyReportRepository.findOne({
+            where: [
+                // hacemos un where donde buscamos por id.
+                { id: dailyReport.id }
+            ]
+        }).then(resultFind => {
+            // Validamos si encontro al usuario.
+            if (!resultFind) throw new Error('does_not_exist');
+
+            resultFind.status = false;
+            // verificamos que el email no este en uso, recordemos que el email es unico.
+            return this._dailyReportRepository.update(dailyReport.id, resultFind);
+        }).then(
+            resultSave => {
+
+                // Validamos si encontro al usuario.
+                if (!resultSave) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+
+                return dailyReport;
+            }
+        );
+    }
+
+    // QUERY PERSONALIZATE
     // Retorna todos los viajes segun filtro.
     async GetROBByUser(userId: number): Promise<GetROBByUser> {
 
@@ -113,29 +166,29 @@ export class DailyReportsService {
 
         // Este arreglo contendra la info del rob del inicio del viaje y cuanto consumio en el rango de fecha.
         let StartEndROB: any[] = [];
-        
+
         // Hacemos where por todos los campos de la entidad
         // Buscamos la info del rob asta antes del inicio de fecha
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
 
-                        .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
-                        .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
-                        .addSelect(' SUM( daily_report.bunkeringIfo ) ', "total_bunkering_ifo")
-                        .addSelect(' SUM( daily_report.bunkeringMgo ) ', "total_bunkering_mgo")
+            .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+            .addSelect(' SUM( daily_report.bunkeringIfo ) ', "total_bunkering_ifo")
+            .addSelect(' SUM( daily_report.bunkeringMgo ) ', "total_bunkering_mgo")
 
-                        .innerJoinAndSelect('daily_report.port', 'port')
-                        .innerJoinAndSelect('port.voyage', 'voyage')
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
 
-                        .where('daily_report.status = :status', { status: 1 })
-                        .andWhere('port.status = :status', { status: 1 })
-                        .andWhere('voyage.status = :status', { status: 1 })
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
 
-                        .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                        .andWhere('datetime(daily_report.date) <= datetime(:startDate)', { startDate: startDate })
+            .andWhere('datetime(daily_report.date) <= datetime(:startDate)', { startDate: startDate })
 
-                        .getRawOne()
-                        .then(
+            .getRawOne()
+            .then(
                 (result: GetROBByUser) => {
                     // Verificamos que el resultado no este vacio.
                     if (!result) throw 'ERROR GetROBByUser';
@@ -189,7 +242,6 @@ export class DailyReportsService {
                 }
             );
     }
-
 
     // Retorna todos los viajes segun filtro.
     async GetBunkeringByUserIFO(userId: number): Promise<GetROBByUser> {
@@ -252,58 +304,6 @@ export class DailyReportsService {
                         return result;
                     }
                 );
-    }
-
-    // Actualiza un voyage
-    async Update(dailyReport: DailyReport): Promise<DailyReport> {
-
-        // Hacemos una busqueda por id
-        return await this._dailyReportRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                { id: dailyReport.id }
-            ]
-        }).then(resultFind => {
-
-            // Validamos si encontro al SailingAnality.
-            if (!resultFind) throw new Error('does_not_exist');
-
-            // Actualizamos
-            return this._dailyReportRepository.update(dailyReport.id, dailyReport);
-
-        }).then(resultUpdate => {
-
-            if (!resultUpdate) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
-
-            // Envio respuesta con el resultado recibido del ultimo paso
-            return dailyReport;
-        });
-    }
-
-    // Elimina a un voyage por id
-    async Delete(dailyReport: DailyReport): Promise<DailyReport> {
-        // Eliminamos de la base de dato al usuario.
-        return await this._dailyReportRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                { id: dailyReport.id }
-            ]
-        }).then(resultFind => {
-            // Validamos si encontro al usuario.
-            if (!resultFind) throw new Error('does_not_exist');
-
-            resultFind.status = false;
-            // verificamos que el email no este en uso, recordemos que el email es unico.
-            return this._dailyReportRepository.update(dailyReport.id, resultFind);
-        }).then(
-            resultSave => {
-
-                // Validamos si encontro al usuario.
-                if (!resultSave) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
-
-                return dailyReport;
-            }
-        );
     }
 
 
