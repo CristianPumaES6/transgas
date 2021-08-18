@@ -37,6 +37,13 @@
             {{ 'OVERALL_PERFORMANCE' | translateMessage:translateCategory}}
           </mat-checkbox>
         </div>
+
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2">
+            {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
         <div class="col-12 col-sm-12 col-md-12 col-lg-12">
           <mat-checkbox [(ngModel)]="addVoyageSummary" class="pl-2">
             {{ 'VOYAGE_SUMMARY' | translateMessage:translateCategory}}
@@ -47,12 +54,6 @@
             {{ 'BUNKERING_INFORMATION' | translateMessage:translateCategory}}
           </mat-checkbox>
         </div>
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-          <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2">
-            {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
-          </mat-checkbox>
-        </div>
-
 
 
       </div>

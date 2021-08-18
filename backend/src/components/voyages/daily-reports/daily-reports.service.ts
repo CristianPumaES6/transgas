@@ -120,8 +120,8 @@ export class DailyReportsService {
 
                         .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
                         .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
-                        .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
-                        .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+                        .addSelect(' SUM( daily_report.bunkeringIfo ) ', "total_bunkering_ifo")
+                        .addSelect(' SUM( daily_report.bunkeringMgo ) ', "total_bunkering_mgo")
 
                         .innerJoinAndSelect('daily_report.port', 'port')
                         .innerJoinAndSelect('port.voyage', 'voyage')
