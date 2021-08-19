@@ -446,7 +446,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  // GetUsers: Cargo todos los Users para el listado de Users.
+  // GetStartEndROByFilterDate: Cargamos la fecha de inicio y la fecha fin.
   private GetStartEndROByFilterDate(userId: number, startDate: string, endDate: string): Observable<boolean> {
     this.listInfoFuel = [];
 
