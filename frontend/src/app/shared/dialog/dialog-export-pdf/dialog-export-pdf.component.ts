@@ -8078,9 +8078,9 @@ export class DialogExportPdfComponent implements OnInit {
       // Primera Header
       [
         { "content": "Summary by Voyage", "colSpan": 2, "rowSpan": 2 },
-        { "content": "Information at the beginning of the voyage", "colSpan": 4 },
+        { "content": "Information at the\nbeginning of the voyage", "colSpan": 4 },
         { "content": "Fuel consumption", "colSpan": 2 },
-        { "content": "Information at the end of the voyage", "colSpan": 4 },
+        { "content": "Information at the\nend of the voyage", "colSpan": 4 },
         { "content": "Bunkering information", "colSpan": 8 }
       ]
     ];
@@ -8477,8 +8477,67 @@ export class DialogExportPdfComponent implements OnInit {
         let raw = data.row.raw;
 
 
+        // primera Fila
+        if (rowIndex == 0) {
+           // le damos un color y le aumentamos de tamaño a la primera columna.
+           if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
+          if (columIndex == 2) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+            cell.styles.cellPadding = {
+              top: 1,
+              right: 0,
+              bottom: 1,
+              left: 0
+            };
+          }
+          if (columIndex == 6) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+            cell.styles.cellPadding = {
+              top: 1,
+              right: 0,
+              bottom: 1,
+              left: 0
+            };
+          }
+          if (columIndex == 8) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+            cell.styles.cellPadding = {
+              top: 1,
+              right: 0,
+              bottom: 1,
+              left: 0
+            };
+          }
+          if (columIndex == 12) {
+            cell.styles.fillColor = this.colorBlueTable1;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+            cell.styles.cellPadding = {
+              top: 1,
+              right: 0,
+              bottom: 1,
+              left: 0
+            };
+          }
+
+        }
 
 
+        if (rowIndex == 1) {
+          // ColumIndex
+          console.log(columIndex);
+        }
         /* // Primera cabecera de la tabla Titulo
         if (rowIndex == 0) {
           // le damos un color y le aumentamos de tamaño a la primera columna.
@@ -9149,7 +9208,7 @@ export class DialogExportPdfComponent implements OnInit {
       0: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9158,7 +9217,7 @@ export class DialogExportPdfComponent implements OnInit {
       1: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9167,7 +9226,7 @@ export class DialogExportPdfComponent implements OnInit {
       2: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9176,7 +9235,7 @@ export class DialogExportPdfComponent implements OnInit {
       3: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9185,7 +9244,7 @@ export class DialogExportPdfComponent implements OnInit {
       4: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9194,7 +9253,7 @@ export class DialogExportPdfComponent implements OnInit {
       5: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.2,
         lineColor: [22, 33, 77],
@@ -9203,7 +9262,7 @@ export class DialogExportPdfComponent implements OnInit {
       6: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9212,7 +9271,7 @@ export class DialogExportPdfComponent implements OnInit {
       7: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9221,7 +9280,7 @@ export class DialogExportPdfComponent implements OnInit {
       8: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9230,7 +9289,7 @@ export class DialogExportPdfComponent implements OnInit {
       9: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9239,7 +9298,7 @@ export class DialogExportPdfComponent implements OnInit {
       10: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9248,7 +9307,7 @@ export class DialogExportPdfComponent implements OnInit {
       11: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9257,7 +9316,7 @@ export class DialogExportPdfComponent implements OnInit {
       12: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9266,7 +9325,7 @@ export class DialogExportPdfComponent implements OnInit {
       13: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9275,7 +9334,7 @@ export class DialogExportPdfComponent implements OnInit {
       14: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9284,7 +9343,7 @@ export class DialogExportPdfComponent implements OnInit {
       15: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9293,7 +9352,7 @@ export class DialogExportPdfComponent implements OnInit {
       16: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9302,7 +9361,7 @@ export class DialogExportPdfComponent implements OnInit {
       17: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9311,7 +9370,7 @@ export class DialogExportPdfComponent implements OnInit {
       18: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
@@ -9320,7 +9379,7 @@ export class DialogExportPdfComponent implements OnInit {
       19: {
         halign: 'center',
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
         cellWidth: 10,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
