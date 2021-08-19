@@ -8479,8 +8479,15 @@ export class DialogExportPdfComponent implements OnInit {
 
         // primera Fila
         if (rowIndex == 0) {
-           // le damos un color y le aumentamos de tamaño a la primera columna.
-           if (columIndex == 0) {
+
+          cell.styles.cellPadding = {
+            top: 2,
+            right: 0,
+            bottom: 2,
+            left: 0
+          };
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
             cell.styles.fillColor = this.colorWhite;
             cell.styles.textColor = this.colorTextHedear;
             cell.styles.fontSize = 9;
@@ -8490,52 +8497,56 @@ export class DialogExportPdfComponent implements OnInit {
             cell.styles.fillColor = this.colorBlueTable1;
             cell.styles.textColor = this.colorWhite;
             cell.styles.fontSize = 8;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
           }
           if (columIndex == 6) {
             cell.styles.fillColor = this.colorBlueTable2;
             cell.styles.textColor = this.colorWhite;
             cell.styles.fontSize = 8;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
           }
           if (columIndex == 8) {
             cell.styles.fillColor = this.colorBlueTable1;
             cell.styles.textColor = this.colorWhite;
             cell.styles.fontSize = 8;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
           }
           if (columIndex == 12) {
             cell.styles.fillColor = this.colorBlueTable1;
             cell.styles.textColor = this.colorWhite;
             cell.styles.fontSize = 8;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
           }
 
         }
 
-
+        // segunda cabecera.
         if (rowIndex == 1) {
-          // ColumIndex
+          cell.styles.fillColor = this.colorBlueTable1;
+          cell.styles.textColor = this.colorWhite;
+          cell.styles.fontSize = 8;
+          cell.styles.cellPadding = {
+            top: 1,
+            right: 0,
+            bottom: 1,
+            left: 0
+          };
+          if (columIndex == 4) {
+            cell.styles.fontSize = 7;
+          }
+          if (columIndex == 6) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.fontSize = 7;
+          }
+          if (columIndex == 7) {
+            cell.styles.fillColor = this.colorBlueTable2;
+          }
+          if (columIndex == 10) {
+            cell.styles.fontSize = 7;
+          }
+          if (columIndex == 16) {
+            cell.styles.fontSize = 7;
+          }
+        }
+
+
+        if (rowIndex == 2) {          // ColumIndex
           console.log(columIndex);
         }
         /* // Primera cabecera de la tabla Titulo
