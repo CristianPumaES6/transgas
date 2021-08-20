@@ -141,7 +141,7 @@ export class DialogExportPdfComponent implements OnInit {
   public colorTextSuccess = '#008000';
   public colorTextWarning = '#ff0000';
   public colorGris = '#ebecec';
-
+  public colorGreen = '#d4e6ff';
 
   ngOnInit(): void {
 
@@ -8150,7 +8150,7 @@ export class DialogExportPdfComponent implements OnInit {
     }
     rowHeader2.push({ "content": "Observation", "colSpan": 2 })
 
-
+    // agregar header 2
     data.push(rowHeader2);
 
 
@@ -8209,12 +8209,13 @@ export class DialogExportPdfComponent implements OnInit {
 
         } else {
 
-          // recorremos el bunkering y lo agregamos.
+          // Recorremos el bunkering y lo agregamos.
           item.listInfoBunkering.forEach(
             (itemInfoBunkering, index) => {
+              // Solo al inicio le agreegamos el bunkerin al mismo del setData.
               if (index === 0) {
 
-
+                // SetData 
                 setData.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 });
                 setData.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 });
                 setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 });
@@ -8233,7 +8234,7 @@ export class DialogExportPdfComponent implements OnInit {
                 setDataBunkering.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 });
 
                 data.push(setDataBunkering);
-              }
+              };
 
             }
           );
@@ -8241,7 +8242,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
       }
-    )
+    );
     /* 
         listGTSOPA.forEach(
           gTSOPA => {
@@ -8572,6 +8573,8 @@ export class DialogExportPdfComponent implements OnInit {
     // Tamaño de nuestra tabla
     userOptions.tableWidth = 200;
 
+    // esta variable nos ayudara a saber si la linea lleva color o no
+    let addColor = true;
 
     userOptions.didParseCell = (data: CellHookData) => {
 
@@ -8589,8 +8592,7 @@ export class DialogExportPdfComponent implements OnInit {
         // ubicacion de la columna.
         let columIndex = data.column.index;
         // Raw ?????? <= agregar descripcion no lo se?
-        let raw = data.row.raw;
-
+        let raw: any = data.row.raw;
 
         // primera Fila
         if (rowIndex == 0) {
@@ -8605,7 +8607,7 @@ export class DialogExportPdfComponent implements OnInit {
           if (columIndex == 0) {
             cell.styles.fillColor = this.colorWhite;
             cell.styles.textColor = this.colorTextHedear;
-            cell.styles.fontSize = 9;
+            cell.styles.fontSize = 8;
             cell.styles.cellPadding = 1;
           }
           if (columIndex == 2) {
@@ -8660,7 +8662,7 @@ export class DialogExportPdfComponent implements OnInit {
           }
         }
 
-        // apartir del la 3 fila empieza a llenarce desde el arreglo.
+        // apartir de la 3 fila empieza a llenarce desde el arreglo.
         if (rowIndex >= 2) {
           cell.styles.cellPadding = {
             top: 1,
@@ -8668,669 +8670,33 @@ export class DialogExportPdfComponent implements OnInit {
             bottom: 1,
             left: 0
           };
-        }
 
-        if (rowIndex == 2) {          // ColumIndex
-          console.log(columIndex);
-        }
-        /* // Primera cabecera de la tabla Titulo
-        if (rowIndex == 0) {
-          // le damos un color y le aumentamos de tamaño a la primera columna.
           if (columIndex == 0) {
-            cell.styles.fillColor = this.colorWhite;
-            cell.styles.textColor = this.colorTextHedear;
-            cell.styles.fontSize = 9;
-            cell.styles.cellPadding = 1;
+            addColor = !addColor;
           }
-          if (columIndex >= 2) {
+          if (columIndex < 12) {
+            cell.styles.fillColor = addColor ? this.colorWhite : this.colorGris;
+          } else {
             cell.styles.fillColor = this.colorWhite;
-            cell.styles.textColor = this.colorWhite;
-            cell.styles.fontSize = 7;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
           }
-          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
-          if (columIndex == 2 || columIndex == 4 || columIndex == 10) {
+
+          if (columIndex == 0) {
             cell.styles.fillColor = this.colorBlueTable1;
-          }
-          // Solo las celdas que tienen formulas se pintan de blue2
-          if (columIndex == 6 || columIndex == 12) {
-            cell.styles.fillColor = this.colorBlueTable2;
-          }
-          // Solo las celdas que tienen datos del charter son de locor blue3
-          if (columIndex == 8 || columIndex == 14 || columIndex == 14 || columIndex == 16 || columIndex == 18) {
-            cell.styles.fillColor = this.colorBlueTable3;
-          }
-        }
-        // Segunda cabecera 
-        if (rowIndex == 1) {
-          // le damos un color y le aumentamos de tamaño a la primera columna.
-          if (columIndex == 0) {
-            cell.styles.fillColor = this.colorWhite;
-            cell.styles.textColor = this.colorTextHedear;
-            //cell.styles.fontSize = 9;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 7.5;
             cell.styles.cellPadding = 1;
           }
 
-          if (columIndex >= 2) {
-            cell.styles.fillColor = this.colorWhite;
-            cell.styles.textColor = this.colorWhite;
-            cell.styles.fontSize = 7;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
+          // existe entre 12 o es diferente a 10 le pones un color qque identifiaca al bunkeirng
+          if (columIndex >= 12 && raw.length !== 10) {
+            cell.styles.fillColor = this.colorGreen;
+            //cell.styles.textColor = this.colorWhite;
           }
-          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
-          if (columIndex == 2 || columIndex == 4 || columIndex == 10) {
-            cell.styles.fillColor = this.colorBlueTable1;
-          }
-          // Solo las celdas que tienen formulas se pintan de blue2
-          if (columIndex == 6 || columIndex == 12) {
-            cell.styles.fillColor = this.colorBlueTable2;
-          }
-          // Solo las celdas que tienen datos del charter son de locor blue3
-          if (columIndex == 8 || columIndex == 14 || columIndex == 16 || columIndex == 18) {
-            cell.styles.fillColor = this.colorBlueTable3;
-          }
-
-
-          // VERIFICAMOS SI ES PARA EL 2
-          if (this.addInformationIFO && this.addInformationMGO) {
-
-            // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
-            if (columIndex == 3 || columIndex == 5 || columIndex == 11) {
-              cell.styles.fillColor = this.colorBlueTable1;
-            }
-            // Solo las celdas que tienen formulas se pintan de blue2
-            if (columIndex == 7 || columIndex == 13) {
-              cell.styles.fillColor = this.colorBlueTable2;
-            }
-            // Solo las celdas que tienen datos del charter son de locor blue3
-            if (columIndex == 9 || columIndex == 15 || columIndex == 17 || columIndex == 19) {
-              cell.styles.fillColor = this.colorBlueTable3;
-            }
-          }
-
-        }
-
-
-
-        // de qui para adelante son los viajes.
-        if (rowIndex > 1 && rowIndex < positionHeader) {
-
-          // nombre del viaje y numero.
-          if (columIndex == 0) {
-            cell.styles.fillColor = this.colorBlueTable1;
-            cell.styles.textColor = this.colorWhite;
-            // cell.styles.fontSize = 9;
-            cell.styles.cellPadding = {
-              top: 1.5,
-              right: 0,
-              bottom: 1.5,
-              left: 0
-            };
-          }
-
-          if (columIndex >= 2) {
-            cell.styles.fillColor = this.colorGris;
-            cell.styles.fontSize = 7;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
-          }
-
-          if (
-            (this.addInformationIFO && !this.addInformationMGO)
-            || (this.addInformationMGO && !this.addInformationIFO)
-          ) {
-
-            // Time
-            if (columIndex == 2) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[8].content);
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-            // Speed
-            if (columIndex == 6) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[4].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-            // total consumo
-            if (columIndex == 10) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[9].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-
-            // daily consumo
-            if (columIndex == 12) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[7].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-          }
-
-          // Si se selecciona los dos tipos de combustible.
-          if (this.addInformationIFO && this.addInformationMGO) {
-
-            // Time
-            if (columIndex == 2) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[15].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 3) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[16].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-            // Speed
-            if (columIndex == 6) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[7].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 7) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[8].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-
-            // total consumo
-            if (columIndex == 10) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[17].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 11) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[18].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-
-            // Daily Consumo
-            if (columIndex == 12) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[13].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 13) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[14].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-          }
-
-
-        }
-
-
-        // Verificamos que el row este en la posicion del header.
-        if (rowIndex == positionHeader) {
-          // le damos un color y le aumentamos de tamaño a la primera columna.
-          if (columIndex == 0) {
-            cell.styles.fillColor = this.colorWhite;
-            cell.styles.textColor = this.colorTextHedear;
-            cell.styles.fontSize = 9;
-            cell.styles.cellPadding = 1;
-          }
-          if (columIndex >= 2) {
-            cell.styles.textColor = this.colorWhite;
-            cell.styles.fontSize = 7;
-            cell.styles.cellPadding = {
-              top: 1.5,
-              right: 0,
-              bottom: 1.5,
-              left: 0
-            };
-          }
-
-          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
-          if (columIndex == 2 || columIndex == 4 || columIndex == 10) {
-            cell.styles.fillColor = this.colorBlueTable1;
-          }
-          // Solo las celdas que tienen formulas se pintan de blue2
-          if (columIndex == 6 || columIndex == 12) {
-            cell.styles.fillColor = this.colorBlueTable2;
-          }
-          // Solo las celdas que tienen datos del charter son de locor blue3
-          if (columIndex == 8 || columIndex == 14 || columIndex == 16 || columIndex == 18) {
-            cell.styles.fillColor = this.colorBlueTable3;
-          }
-
-
-          // VERIFICAMOS SI ES PARA EL 2
-          if (this.addInformationIFO && this.addInformationMGO) {
-
-            // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
-            if (columIndex == 3 || columIndex == 5 || columIndex == 11) {
-              cell.styles.fillColor = this.colorBlueTable1;
-            }
-            // Solo las celdas que tienen formulas se pintan de blue2
-            if (columIndex == 7 || columIndex == 13) {
-              cell.styles.fillColor = this.colorBlueTable2;
-            }
-            // Solo las celdas que tienen datos del charter son de locor blue3
-            if (columIndex == 9 || columIndex == 15 || columIndex == 17 || columIndex == 19) {
-              cell.styles.fillColor = this.colorBlueTable3;
-            }
+          // observaciones mas chico para que entre mas texto
+          if (columIndex == 18) {
+            cell.styles.fontSize = 6;
           }
         }
-
-        if (rowIndex == (positionHeader + 1)) {
-          // le damos un color y le aumentamos de tamaño a la primera columna.
-          if (columIndex >= 2) {
-            cell.styles.fillColor = this.colorGris;
-            cell.styles.fontSize = 7;
-            cell.styles.cellPadding = {
-              top: 1,
-              right: 0,
-              bottom: 1,
-              left: 0
-            };
-          }
-          if (
-            (this.addInformationIFO && !this.addInformationMGO)
-            || (this.addInformationMGO && !this.addInformationIFO)
-          ) {
-
-            // Time
-            if (columIndex == 2) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[7].content);
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-            // Speed
-            if (columIndex == 6) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[3].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-            // total consumo
-            if (columIndex == 10) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[8].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-
-            // daily consumo
-            if (columIndex == 12) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[6].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-          }
-
-          // Si se selecciona los dos tipos de combustible.
-          if (this.addInformationIFO && this.addInformationMGO) {
-
-            // Time
-            if (columIndex == 2) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[14].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 3) {
-              let valorCell = Number(cell.text);
-              // Time charter
-              let valorCharter = Number(raw[15].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-            // Speed
-            if (columIndex == 6) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[6].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 7) {
-              let valorCell = Number(cell.text);
-              // speed
-              let valorCharter = Number(raw[7].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-
-            // total consumo
-            if (columIndex == 10) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[16].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 11) {
-              let valorCell = Number(cell.text);
-              // total ocnsumo charter 
-              let valorCharter = Number(raw[17].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-
-
-            // Daily Consumo
-            if (columIndex == 12) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[12].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-            if (columIndex == 13) {
-              let valorCell = Number(cell.text);
-              // total daily consumption charter
-              let valorCharter = Number(raw[13].content);
-
-              // Verificamos si existe un valor en el charter.
-              if (valorCharter && valorCell) {
-                if (valorCell < valorCharter) {
-                  cell.styles.textColor = this.colorTextSuccess;
-                }
-                if (valorCell > valorCharter) {
-                  cell.styles.textColor = this.colorTextWarning;
-                }
-              }
-            }
-
-          }
-
-
-        }
-
-
-
-        if (rowIndex == (positionHeader + 2)) {
-          if (columIndex == 2) {
-            cell.styles.fillColor = this.colorGris;
-            cell.styles.fontSize = 10;
-            let valorCell = Number(cell.text);
-            if (valorCell < 0) {
-              cell.styles.textColor = this.colorTextWarning;
-              cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
-            }
-            if (valorCell > 0) {
-              cell.styles.textColor = this.colorTextSuccess;
-              cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
-            }
-            if (valorCell == 0) {
-              cell.text = ["-----"];
-            }
-          }
-        }
-
-
-        if (rowIndex == (positionHeader + 3)) {
-          if (columIndex == 2) {
-            cell.styles.fillColor = this.colorGris;
-            cell.styles.fontSize = 10;
-            let valorCell = Number(cell.text);
-            if (valorCell < 0) {
-              cell.styles.textColor = this.colorTextWarning;
-              cell.text = ["Consumption Outside The Guaranteed Limits"];
-            }
-            if (valorCell > 0) {
-              cell.styles.textColor = this.colorTextSuccess;
-              cell.text = ["Consumption Within The Guaranteed Limits"];
-
-            }
-            if (valorCell == 0) {
-              cell.text = ["-----"];
-            }
-          }
-        }
-         */
-
 
       }
 
