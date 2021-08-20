@@ -7,6 +7,13 @@ export class SummaryVesselPerformanceReport {
         public logoTransgas?: string,
         public titleDocument?: string,
         public preparedFor?: string,
+        
+        // Fecha en la cual se inicia el analisis.
+        public startDate?: Date,
+        // Con cuanto se inicio de combustible.
+        public startFuelIFO?: number,
+        public startFuelMGO?: number,
+
         // Total de viajes navegados.
         public totalVoyageSailing?: number,
         // Numero del ultimo viaje.
@@ -16,6 +23,13 @@ export class SummaryVesselPerformanceReport {
         // Distancia 
         public totalDistanceBallast?: number,
         public totalDistanceLaden?: number,
+
+        // Fecha en la cual finalizo el reporte.
+        public endDate?: Date,
+        // Con cuanto se finalizo de combustible.
+        public endFuelIFO?: number,
+        public endFuelMGO?: number,
+        
         
         public atdAndAta?: string,
         public dateStart?: string,
@@ -25,11 +39,17 @@ export class SummaryVesselPerformanceReport {
         this.logoTransgas = logoTransgas || '';
         this.titleDocument = titleDocument || '';
         this.preparedFor = preparedFor || '';
+        this.startDate = startDate || null;
+        this.startFuelIFO = startFuelIFO || 0;
+        this.startFuelMGO = startFuelMGO || 0;
         this.totalVoyageSailing = totalVoyageSailing || 0;
         this.lastVoyageSailing = lastVoyageSailing || 0;
         this.totalPortSailing = totalPortSailing || 0;
         this.totalDistanceBallast = totalDistanceBallast || 0;
         this.totalDistanceLaden = totalDistanceLaden || 0;
+        this.endDate = endDate || null;
+        this.endFuelIFO = endFuelIFO || 0;
+        this.endFuelMGO = endFuelMGO || 0;
         this.atdAndAta = atdAndAta || '';
         this.dateStart = dateStart || '';
         this.dateEnd = dateEnd || '';

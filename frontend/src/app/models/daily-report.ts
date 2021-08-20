@@ -162,7 +162,7 @@ export class Speed {
 }
 
 // Estructura del servicio.
-export class GetROBByUser{
+export class GetROBByUser {
     constructor(
         public total_ifo?: number,
         public total_mgo?: number,
@@ -174,7 +174,18 @@ export class GetROBByUser{
         this.total_bunkering_ifo = total_bunkering_ifo || 0;
         this.total_bunkering_mgo = total_bunkering_mgo || 0;
     }
-    
+
+}
+
+export class InfoFuelStartEndForDate {
+
+    constructor(
+        public infoFuelStart?: GetROBByUser,
+        public infoFuelEnd?: GetROBByUser
+    ) {
+        this.infoFuelStart = infoFuelStart || new GetROBByUser();
+        this.infoFuelEnd = infoFuelEnd || new GetROBByUser();
+    }
 }
 
 

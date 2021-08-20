@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
 import autoTable, { Cell, CellHookData, RowInput, UserOptions } from 'jspdf-autotable'
 
-import { DailyReport, GetInfoVoyageROBBunkering, Speed } from '../../../../app/models/daily-report';
+import { DailyReport, GetInfoVoyageROBBunkering, GetROBByUser, InfoFuelStartEndForDate, Speed } from '../../../../app/models/daily-report';
 import { LoadingService } from '../../../../app/services/loading.service';
 import { mathRound } from './../../../../assets/math/math.assets';
 import { FormatDate, FormatYYYYMMDD, getYear, GetYearFromDate, IsAfter1Date, IsPrevious1Date, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
@@ -1415,6 +1415,8 @@ export class DialogExportPdfComponent implements OnInit {
     this.chartOverallPerformanceBallast.data = [];
     this.chartOverallPerformanceBallast.data2 = [];
 
+    // reset la info de info de combustible.
+    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate = new InfoFuelStartEndForDate();
     // esta variable tendra toda la informacion del consumo y bunkering que se hizo en el viaje.
     let listGetInfoVoyageROBBunkering: GetInfoVoyageROBBunkering[] = []
 
@@ -1977,6 +1979,11 @@ export class DialogExportPdfComponent implements OnInit {
           gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
 
 
+          // Fecha de inicio.
+          sVPR.startDate = this.data.dateStart;
+          // Fecha del fin.
+          sVPR.endDate = this.data.dateEnd;
+
           // Agregamos la fecha de inicio y la fecha fin.
           sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
           sVPR.dateStart = '----';
@@ -1998,7 +2005,25 @@ export class DialogExportPdfComponent implements OnInit {
           this.UpdateChartOverallPerformanceLaden();
           this.UpdateChartOverallPerformanceBallast();
 
+          // buscamos la informacion del combustible de inicio y fin segun la fecha.
+          return this.GetInfoFuelStartEndByFilterDate(this.selectUser.id, '2019-01-19T08:00:00.000Z', '2022-06-05T13:47:58.000Z').pipe().toPromise();
+        })
+      .then(
+        (resultGetInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate) => {
+
+          // Incio de combustible.
+          sVPR.startFuelIFO = resultGetInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
+          sVPR.startFuelMGO = resultGetInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
+          // Con cuanto termino
+          sVPR.endFuelIFO = resultGetInfoFuelStartEndByFilterDate.infoFuelEnd.total_ifo;
+          sVPR.endFuelMGO = resultGetInfoFuelStartEndByFilterDate.infoFuelEnd.total_mgo;
+
+          // Guardamos el resultado.
+          getInfoFuelStartEndByFilterDate = resultGetInfoFuelStartEndByFilterDate;
+
+          // COnsultamos la informacion de combustible segun viaje
           return this.GetInfoVoyageROBAndBunkeringByBuqueAndDate(this.selectUser.id, '2019-01-19T08:00:00.000Z', '2022-06-05T13:47:58.000Z').pipe().toPromise();
+
         })
       // Primera pagina Resumen total.
       .then(
@@ -2257,7 +2282,7 @@ export class DialogExportPdfComponent implements OnInit {
 
             positionHeight += 10;
 
-            return this.GenerateTableInfoConsumptionBunkering(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGetInfoVoyageROBBunkering);
+            return this.GenerateTableInfoConsumptionBunkering(doc, widthPDF, heightPDF, positionWidth, positionHeight, listGetInfoVoyageROBBunkering, sVPR.startFuelIFO, sVPR.startFuelMGO);
           } else {
 
             return positionHeight;
@@ -8051,17 +8076,17 @@ export class DialogExportPdfComponent implements OnInit {
   // Genera el cuadro de 
   // Overall Performance Analysis
   // retorna el tamaño de la tabla
-  private GenerateTableInfoConsumptionBunkering(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listInfoVoyageROBBunkering: GetInfoVoyageROBBunkering[]): number {
+  private GenerateTableInfoConsumptionBunkering(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, listInfoVoyageROBBunkering: GetInfoVoyageROBBunkering[], startFuelIFO: number, startFuelMGO: number): number {
 
 
-    // esta variable tiene, suma todos los tamaños que se agregara, para saber el tamaño final de la tanbla (Informacion.)
+    // Esta variable tiene, suma todos los tamaños que se agregara, para saber el tamaño final de la tanbla (Informacion.)
     let contentHeightTable = 0;
 
     // Le sumamos el espacio de la cabecera de la tabla.
     contentHeightTable += 19.9;
     // Cada fila ocupa lo siguiente.
     contentHeightTable += (6.25 * listInfoVoyageROBBunkering.length);
-    // FOTTER de la tabla
+    // Fotter de la tabla
     contentHeightTable += 25.8;
 
     // Revisar Eliminar esto, es solo com referencia.
@@ -8127,6 +8152,101 @@ export class DialogExportPdfComponent implements OnInit {
 
 
     data.push(rowHeader2);
+
+
+    // Recorremos la lista de informacion de combustible y de faena.
+    listInfoVoyageROBBunkering.forEach(
+      item => {
+
+
+        // Esta variables se estan creando para sumar el total de bunkering que se hizo en el viaje.
+        let totalBunkeringIFO = 0;
+        let totalBunkeringMGO = 0;
+        item.listInfoBunkering.forEach(
+          itemInfoBunkering => {
+            totalBunkeringIFO += itemInfoBunkering.bunkeringIfo;
+            totalBunkeringMGO += itemInfoBunkering.bunkeringMgo;
+          }
+        );
+
+        // 
+        let rowSpan = item.listInfoBunkering.length || 1;
+
+
+        let setData = [];
+        // Info
+        setData.push({ "content": "Voyage " + item.voyageNumber, "colSpan": 2, "rowSpan": rowSpan })
+        // Info
+        setData.push({ "content": FormatYYYYMMDD(item.minDate), "colSpan": 2, "rowSpan": rowSpan })
+        if (this.addInformationIFO) {
+          setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan })
+        }
+        if (this.addInformationMGO) {
+          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan })
+        }
+
+        // Fuel
+        if (this.addInformationIFO) {
+          setData.push({ "content": this.MathRoundDecimal(item.totalIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan })
+        }
+        if (this.addInformationMGO) {
+          setData.push({ "content": this.MathRoundDecimal(item.totalMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan })
+        }
+        startFuelIFO += totalBunkeringIFO
+        startFuelIFO -= item.totalIFO;
+        // Info
+        setData.push({ "content": FormatYYYYMMDD(item.maxDate), "colSpan": 2, "rowSpan": rowSpan })
+        if (this.addInformationIFO) {
+          setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan })
+        }
+        if (this.addInformationMGO) {
+          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan })
+        }
+
+        if (item.listInfoBunkering.length == 0) {
+
+          setData.push({ "content": "", "colSpan": 8, "rowSpan": rowSpan })
+          data.push(setData);
+
+        } else {
+
+          // recorremos el bunkering y lo agregamos.
+          item.listInfoBunkering.forEach(
+            (itemInfoBunkering, index) => {
+              if (index === 0) {
+
+                // 
+                setData.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 })
+                // 
+                setData.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 })
+                // 
+                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 })
+                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 })
+                setData.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 })
+
+                data.push(setData);
+              } else {
+
+                let setDataBunkering = [];
+                // 
+                setDataBunkering.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 })
+                // 
+                setDataBunkering.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 })
+                // 
+                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 })
+                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 })
+                setDataBunkering.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 })
+
+                data.push(setDataBunkering);
+              }
+
+            }
+          );
+        }
+
+
+      }
+    )
     /* 
         listGTSOPA.forEach(
           gTSOPA => {
@@ -9220,7 +9340,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 8,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9391,7 +9511,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 12,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9405,6 +9525,8 @@ export class DialogExportPdfComponent implements OnInit {
 
     return contentHeightTable;
   }
+
+
 
   // Obtenemos la informacion del viaje( Conusmo y faena)
   private GetInfoVoyageROBAndBunkeringByBuqueAndDate(userId: number, startDate: string, endDate: string): Observable<GetInfoVoyageROBBunkering[]> {
@@ -9422,5 +9544,43 @@ export class DialogExportPdfComponent implements OnInit {
     ));
 
   }
+
+  // Obtenemos la info del combustible inicio fin
+  private GetInfoFuelStartEndByFilterDate(userId: number, startDate: string, endDate: string): Observable<InfoFuelStartEndForDate> {
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetStartEndROByFilterDate(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetROBByUser[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+
+
+        // Trabajaremos con las siguientes variables.
+        let startDataROB: GetROBByUser = new GetROBByUser();
+        let endDataROB: GetROBByUser = new GetROBByUser()
+
+
+        // IFO
+        startDataROB.total_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo - resultGetROBByUser[0].total_ifo, 1);
+        startDataROB.total_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo - resultGetROBByUser[0].total_mgo, 1);
+        startDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo, 1);
+        startDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo, 1);
+
+        // MGO
+        endDataROB.total_ifo = this.MathRoundDecimal(endDataROB.total_ifo - (resultGetROBByUser[1].total_bunkering_ifo - resultGetROBByUser[1].total_ifo), 1);
+        endDataROB.total_mgo = this.MathRoundDecimal(endDataROB.total_mgo - (resultGetROBByUser[1].total_bunkering_mgo - resultGetROBByUser[1].total_mgo), 1);
+        endDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_ifo, 1);
+        endDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_mgo, 1);
+
+        return new InfoFuelStartEndForDate(
+          startDataROB,
+          endDataROB
+        );
+
+      }
+    ));
+
+  }
+
 
 }
