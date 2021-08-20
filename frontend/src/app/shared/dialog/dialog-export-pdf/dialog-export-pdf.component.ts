@@ -8175,37 +8175,36 @@ export class DialogExportPdfComponent implements OnInit {
 
         let setData = [];
         // Info
-        setData.push({ "content": "Voyage " + item.voyageNumber, "colSpan": 2, "rowSpan": rowSpan })
-        // Info
-        setData.push({ "content": FormatYYYYMMDD(item.minDate), "colSpan": 2, "rowSpan": rowSpan })
+        setData.push({ "content": "Voyage " + item.voyageNumber, "colSpan": 2, "rowSpan": rowSpan });
+        setData.push({ "content": FormatYYYYMMDD(item.minDate), "colSpan": 2, "rowSpan": rowSpan });
         if (this.addInformationIFO) {
-          setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan })
+          setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan });
         }
         if (this.addInformationMGO) {
-          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan })
+          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
 
         // Fuel
         if (this.addInformationIFO) {
-          setData.push({ "content": this.MathRoundDecimal(item.totalIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan })
+          setData.push({ "content": this.MathRoundDecimal(item.totalIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan });
         }
         if (this.addInformationMGO) {
-          setData.push({ "content": this.MathRoundDecimal(item.totalMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan })
+          setData.push({ "content": this.MathRoundDecimal(item.totalMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
         startFuelIFO += totalBunkeringIFO
         startFuelIFO -= item.totalIFO;
         // Info
-        setData.push({ "content": FormatYYYYMMDD(item.maxDate), "colSpan": 2, "rowSpan": rowSpan })
+        setData.push({ "content": FormatYYYYMMDD(item.maxDate), "colSpan": 2, "rowSpan": rowSpan });
         if (this.addInformationIFO) {
-          setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan })
+          setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan });
         }
         if (this.addInformationMGO) {
-          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan })
+          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
 
         if (item.listInfoBunkering.length == 0) {
 
-          setData.push({ "content": "", "colSpan": 8, "rowSpan": rowSpan })
+          setData.push({ "content": "", "colSpan": 8, "rowSpan": rowSpan });
           data.push(setData);
 
         } else {
@@ -8215,27 +8214,23 @@ export class DialogExportPdfComponent implements OnInit {
             (itemInfoBunkering, index) => {
               if (index === 0) {
 
-                // 
-                setData.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 })
-                // 
-                setData.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 })
-                // 
-                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 })
-                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 })
-                setData.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 })
+
+                setData.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 });
+                setData.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 });
+                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 });
+                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 });
+                setData.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 });
 
                 data.push(setData);
               } else {
 
                 let setDataBunkering = [];
-                // 
-                setDataBunkering.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 })
-                // 
-                setDataBunkering.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 })
-                // 
-                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 })
-                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 })
-                setDataBunkering.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 })
+
+                setDataBunkering.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 });
+                setDataBunkering.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 });
+                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 });
+                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 });
+                setDataBunkering.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 });
 
                 data.push(setDataBunkering);
               }
@@ -8665,6 +8660,15 @@ export class DialogExportPdfComponent implements OnInit {
           }
         }
 
+        // apartir del la 3 fila empieza a llenarce desde el arreglo.
+        if (rowIndex >= 2) {
+          cell.styles.cellPadding = {
+            top: 1,
+            right: 0,
+            bottom: 1,
+            left: 0
+          };
+        }
 
         if (rowIndex == 2) {          // ColumIndex
           console.log(columIndex);
@@ -9349,7 +9353,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 8,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9358,7 +9362,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 7,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9367,7 +9371,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 7,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9408,11 +9412,12 @@ export class DialogExportPdfComponent implements OnInit {
         lineColor: [22, 33, 77],
         valign: 'middle',
       },
+      // fecha de fin
       8: {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 7,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9421,7 +9426,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 7,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9448,7 +9453,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 7,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9457,7 +9462,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 7,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9502,7 +9507,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 10,
+        cellWidth: 21,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9511,7 +9516,7 @@ export class DialogExportPdfComponent implements OnInit {
         halign: 'center',
         fontStyle: 'bold',
         fontSize: 7,
-        cellWidth: 12,
+        cellWidth: 21,
         lineWidth: 0.15,
         lineColor: [22, 33, 77],
         valign: 'middle',
@@ -9554,11 +9559,9 @@ export class DialogExportPdfComponent implements OnInit {
 
         if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
 
-
         // Trabajaremos con las siguientes variables.
         let startDataROB: GetROBByUser = new GetROBByUser();
         let endDataROB: GetROBByUser = new GetROBByUser()
-
 
         // IFO
         startDataROB.total_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo - resultGetROBByUser[0].total_ifo, 1);
@@ -9576,7 +9579,6 @@ export class DialogExportPdfComponent implements OnInit {
           startDataROB,
           endDataROB
         );
-
       }
     ));
 
