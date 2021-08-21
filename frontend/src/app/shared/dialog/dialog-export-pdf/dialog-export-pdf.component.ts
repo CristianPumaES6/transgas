@@ -8443,8 +8443,18 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           // existe entre 12 o es diferente a 10 le pones un color qque identifiaca al bunkeirng
-          if (columIndex >= 12 && (raw.length == 4 || raw.length == 5 || raw.length == 14 || raw.length == 10)) {
-            console.log(raw.length)
+          if (columIndex >= 12 
+              && 
+              (
+                (this.addInformationIFO && this.addInformationMGO && (raw.length != 10)) 
+                ||
+                (this.addInformationIFO && !this.addInformationMGO && (raw.length != 7))
+                ||
+                (!this.addInformationIFO && this.addInformationMGO && (raw.length != 7))
+              )
+
+            ){
+              
             cell.styles.fillColor = this.colorGreen;
           }
 
