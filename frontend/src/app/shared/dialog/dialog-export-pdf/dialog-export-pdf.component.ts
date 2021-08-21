@@ -103,7 +103,7 @@ export class DialogExportPdfComponent implements OnInit {
   public addSailingEconomical: boolean = false;
 
 
- 
+
   // Chart Overall Performance Laden
   public chartOverallPerformanceLaden: DataChart = new DataChart();
   public chartOverallPerformanceBallast: DataChart = new DataChart();
@@ -1256,9 +1256,6 @@ export class DialogExportPdfComponent implements OnInit {
                   listGTSOPA_Ballast.push(gTSOPA_Ballast)
                 }
 
-
-
-
                 if (gTSOPA_Laden.timeIFO || gTSOPA_Laden.timeMGO) {
 
 
@@ -1363,7 +1360,6 @@ export class DialogExportPdfComponent implements OnInit {
                    ) */
                   listGTSOPA_Laden.push(gTSOPA_Laden)
                 }
-
 
               }
             }
@@ -6054,9 +6050,8 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
 
-
+  // Resumen del viaje, todos los puerto que se navego en el viaje.
   private GenerateVoyageSumary(doc: jsPDF, widthPDF: number, heightPDF: number, positionHeight: number, listSummaryByVoyage: Voyage[], isViewBallast: boolean, isViewLaden: boolean) {
-
 
 
     listSummaryByVoyage.forEach(
@@ -6301,7 +6296,7 @@ export class DialogExportPdfComponent implements OnInit {
         gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
 
         let titleTable = 'Voyage ' + iVoyage.voyageNumber + ' Summary';
-        this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
+        //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
 
         this.AddFoter(doc, widthPDF, heightPDF);
       }
@@ -6446,11 +6441,16 @@ export class DialogExportPdfComponent implements OnInit {
     data.push(rowHeader2);
 
 
+    // esta variable nos ayudara a saber cuantas filas tendra la tabla.
+    let countRow = 1;
     voyage.ports.forEach(
       iPort => {
 
         iPort.dailyReports.forEach(
           (iDailyReport, index, array) => {
+
+            // Contador de filas.
+            countRow += 1;
 
             // Tipo de navegacion
             let typeNavigation = '';
@@ -6657,6 +6657,78 @@ export class DialogExportPdfComponent implements OnInit {
     );
 
 
+    let rowHeaderTotal2 = [];
+    rowHeaderTotal2.push(
+      { "content": "Total Calculation", "colSpan": 2, "rowSpan": 1 },
+    )
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    rowHeaderTotal2.push({ "content": "", "colSpan": 1 });
+    data.push(rowHeaderTotal2);
+
+
+
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};
     // Agregamos en que altura del documento podnra la tabla
@@ -6736,22 +6808,44 @@ export class DialogExportPdfComponent implements OnInit {
           }
         }
         // Segunda cabecera 
-        if (rowIndex == 1) {
-
+        if (rowIndex == 1 || rowIndex == (countRow + 1)) {
+          // le damos un color y le aumentamos de tamaño a la primera columna.
+          if (columIndex == 0) {
+            cell.styles.fillColor = this.colorWhite;
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 9;
+            cell.styles.cellPadding = 1;
+          }
           if (
-            columIndex > 1) {
-
-            cell.styles.fillColor = this.colorBlueTable1;
+            columIndex >= 2) {
             cell.styles.textColor = this.colorWhite;
             cell.styles.fontSize = 6;
-            cell.styles.cellPadding = { top: 1, right: 1, bottom: 1, left: 1 };
-            cell.styles.minCellHeight = 6;
+            cell.styles.cellPadding = 1
           }
+          // solo las celdas que son la suma de datos ingresados por el capitan el Blue1
+          if (columIndex == 2 || columIndex == 3 || columIndex == 4 || columIndex == 5 || columIndex == 10 || columIndex == 11) {
+            cell.styles.fillColor = this.colorBlueTable1;
+          }
+          // Solo las celdas que tienen formulas se pintan de blue2
+          if (columIndex == 6 || columIndex == 7 || columIndex == 12 || columIndex == 13) {
+            cell.styles.fillColor = this.colorBlueTable2;
+          }
+          // Solo las celdas que tienen datos del charter son de locor blue3
+          if (columIndex == 8 || columIndex == 9 || columIndex == 14 || columIndex == 15 || columIndex == 16 || columIndex == 17 || columIndex == 18 || columIndex == 19) {
+            cell.styles.fillColor = this.colorBlueTable3;
+          }
+          if (columIndex == 20) {
+            cell.styles.fillColor = this.colorBlueTable3;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 6;
+            cell.styles.cellPadding = 1;
+          }
+
         }
 
 
-        // de qui para adelante son los viajes.
-        if (rowIndex > 1) {
+        // de aqui para adelante son los viajes.
+        if (rowIndex > 1 && rowIndex <= countRow) {
 
           let rawLength = Object.keys(raw).length;
 
@@ -7234,6 +7328,11 @@ export class DialogExportPdfComponent implements OnInit {
           }
 
 
+        }
+
+        if (rowIndex == (countRow + 2)) {
+
+          alert('')
         }
 
 
@@ -7995,18 +8094,18 @@ export class DialogExportPdfComponent implements OnInit {
 
 
           // existe entre 12 o es diferente a 10 le pones un color qque identifiaca al bunkeirng
-          if (columIndex >= 12 
-              && 
-              (
-                (this.addInformationIFO && this.addInformationMGO && (raw.length != 10)) 
-                ||
-                (this.addInformationIFO && !this.addInformationMGO && (raw.length != 7))
-                ||
-                (!this.addInformationIFO && this.addInformationMGO && (raw.length != 7))
-              )
+          if (columIndex >= 12
+            &&
+            (
+              (this.addInformationIFO && this.addInformationMGO && (raw.length != 10))
+              ||
+              (this.addInformationIFO && !this.addInformationMGO && (raw.length != 7))
+              ||
+              (!this.addInformationIFO && this.addInformationMGO && (raw.length != 7))
+            )
 
-            ){
-              
+          ) {
+
             cell.styles.fillColor = this.colorGreen;
           }
 
