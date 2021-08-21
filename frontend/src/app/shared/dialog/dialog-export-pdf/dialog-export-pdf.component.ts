@@ -8181,7 +8181,7 @@ export class DialogExportPdfComponent implements OnInit {
           setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan });
         }
         if (this.addInformationMGO) {
-          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
+          setData.push({ "content": this.MathRoundDecimal(startFuelMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
 
         // Fuel
@@ -8191,15 +8191,17 @@ export class DialogExportPdfComponent implements OnInit {
         if (this.addInformationMGO) {
           setData.push({ "content": this.MathRoundDecimal(item.totalMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
-        startFuelIFO += totalBunkeringIFO
+        startFuelIFO += totalBunkeringIFO;
         startFuelIFO -= item.totalIFO;
+        startFuelMGO += totalBunkeringMGO;
+        startFuelMGO -= item.totalMGO;
         // Info
         setData.push({ "content": FormatYYYYMMDD(item.maxDate), "colSpan": 2, "rowSpan": rowSpan });
         if (this.addInformationIFO) {
           setData.push({ "content": this.MathRoundDecimal(startFuelIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan });
         }
         if (this.addInformationMGO) {
-          setData.push({ "content": "RV", "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
+          setData.push({ "content": this.MathRoundDecimal(startFuelMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
 
         if (item.listInfoBunkering.length == 0) {
