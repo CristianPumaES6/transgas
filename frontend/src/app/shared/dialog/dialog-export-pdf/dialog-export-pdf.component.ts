@@ -8156,17 +8156,22 @@ export class DialogExportPdfComponent implements OnInit {
 
     // Consumo total Ifo y MGO
     let totalVoyageConsumptionIFO = 0;
-    let totalVoyageConsumptionMGO= 0;
+    let totalVoyageConsumptionMGO = 0;
     // bunkering total IFO y MGO
     let totalVoyageBunkeringIFO = 0;
-    let totalVoyageBunkeringMGO= 0;
+    let totalVoyageBunkeringMGO = 0;
 
+    // Esta variable nos ayudara a saber cuantas lineas seran inceratada.
+    let countRaw: number = 1;
     // Recorremos la lista de informacion de combustible y de faena.
     listInfoVoyageROBBunkering.forEach(
       item => {
+
+        countRaw += 1;
+
         // Total de consumo.
-        totalVoyageConsumptionIFO +=  item.totalIFO;
-        totalVoyageConsumptionMGO +=  item.totalMGO;
+        totalVoyageConsumptionIFO += item.totalIFO;
+        totalVoyageConsumptionMGO += item.totalMGO;
 
         // Esta variables se estan creando para sumar el total de bunkering que se hizo en el viaje.
         let totalBunkeringIFO = 0;
@@ -8242,6 +8247,7 @@ export class DialogExportPdfComponent implements OnInit {
 
                 data.push(setData);
               } else {
+                countRaw += 1;
 
                 let setDataBunkering = [];
 
@@ -8290,17 +8296,17 @@ export class DialogExportPdfComponent implements OnInit {
     // Total
     let rowTotal = []
     if (this.addInformationIFO) {
-      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageConsumptionIFO,1) , "colSpan": this.addInformationMGO ? 1 : 2 })
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageConsumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
-      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageConsumptionMGO,1), "colSpan": this.addInformationIFO ? 1 : 2 })
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageConsumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
     }
     // Total bunkerinf
     if (this.addInformationIFO) {
-      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageBunkeringIFO,1), "colSpan": this.addInformationMGO ? 1 : 2 })
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageBunkeringIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
     }
     if (this.addInformationMGO) {
-      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageBunkeringMGO,1), "colSpan": this.addInformationIFO ? 1 : 2 })
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageBunkeringMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
     }
     // agregar Total
     data.push(rowTotal);
@@ -8407,7 +8413,7 @@ export class DialogExportPdfComponent implements OnInit {
         }
 
         // apartir de la 3 fila empieza a llenarce desde el arreglo.
-        if (rowIndex >= 2) {
+        if (rowIndex >= 2 && rowIndex <= countRaw) {
           cell.styles.cellPadding = {
             top: 1,
             right: 0,
@@ -8441,6 +8447,69 @@ export class DialogExportPdfComponent implements OnInit {
             cell.styles.fontSize = 6;
           }
         }
+
+
+        // Le sumo 1 que es el header
+        if (rowIndex == (countRaw + 1)) {
+          cell.styles.fillColor = this.colorWhite;
+
+          cell.styles.cellPadding = {
+            top: 1,
+            right: 0,
+            bottom: 1,
+            left: 0
+          };
+
+          //TITLE
+          if (columIndex == 0) {
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+          // VLSFO
+          if (columIndex == 6) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 7;
+          }
+          // MGO
+          if (columIndex == 7) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+          //TITLE
+          if (columIndex == 8) {
+            cell.styles.textColor = this.colorTextHedear;
+            cell.styles.fontSize = 10;
+          }
+          // VLSFO
+          if (columIndex == 16) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 7;
+          }
+          // MGO
+          if (columIndex == 17) {
+            cell.styles.fillColor = this.colorBlueTable2;
+            cell.styles.textColor = this.colorWhite;
+            cell.styles.fontSize = 8;
+          }
+
+        }
+
+
+        // La segunda fila es el total en numero
+        if (rowIndex == (countRaw + 2)) {
+          cell.styles.cellPadding = {
+            top: 1,
+            right: 0,
+            bottom: 1,
+            left: 0
+          };
+          cell.styles.fontSize = 7;
+        }
+
 
       }
 
