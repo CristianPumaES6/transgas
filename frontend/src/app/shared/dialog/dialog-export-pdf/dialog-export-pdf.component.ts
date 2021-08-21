@@ -8154,14 +8154,24 @@ export class DialogExportPdfComponent implements OnInit {
     data.push(rowHeader2);
 
 
+    // Consumo total Ifo y MGO
+    let totalVoyageConsumptionIFO = 0;
+    let totalVoyageConsumptionMGO= 0;
+    // bunkering total IFO y MGO
+    let totalVoyageBunkeringIFO = 0;
+    let totalVoyageBunkeringMGO= 0;
+
     // Recorremos la lista de informacion de combustible y de faena.
     listInfoVoyageROBBunkering.forEach(
       item => {
-
+        // Total de consumo.
+        totalVoyageConsumptionIFO +=  item.totalIFO;
+        totalVoyageConsumptionMGO +=  item.totalMGO;
 
         // Esta variables se estan creando para sumar el total de bunkering que se hizo en el viaje.
         let totalBunkeringIFO = 0;
         let totalBunkeringMGO = 0;
+
         item.listInfoBunkering.forEach(
           itemInfoBunkering => {
             totalBunkeringIFO += itemInfoBunkering.bunkeringIfo;
@@ -8169,6 +8179,9 @@ export class DialogExportPdfComponent implements OnInit {
           }
         );
 
+        // Total de bunkering.
+        totalVoyageBunkeringIFO += totalBunkeringIFO;
+        totalVoyageBunkeringMGO += totalBunkeringMGO;
         // 
         let rowSpan = item.listInfoBunkering.length || 1;
 
@@ -8184,6 +8197,7 @@ export class DialogExportPdfComponent implements OnInit {
           setData.push({ "content": this.MathRoundDecimal(startFuelMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
 
+        // Total de consumo.
         // Fuel
         if (this.addInformationIFO) {
           setData.push({ "content": this.MathRoundDecimal(item.totalIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": rowSpan });
@@ -8191,6 +8205,8 @@ export class DialogExportPdfComponent implements OnInit {
         if (this.addInformationMGO) {
           setData.push({ "content": this.MathRoundDecimal(item.totalMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": rowSpan });
         }
+
+        // Con cuanto terminamos.
         startFuelIFO += totalBunkeringIFO;
         startFuelIFO -= item.totalIFO;
         startFuelMGO += totalBunkeringMGO;
@@ -8230,7 +8246,7 @@ export class DialogExportPdfComponent implements OnInit {
                 let setDataBunkering = [];
 
                 setDataBunkering.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 });
-                setDataBunkering.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 });
+                setDataBunkering.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 }); rowSpan
                 setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 });
                 setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 });
                 setDataBunkering.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 });
@@ -8245,323 +8261,49 @@ export class DialogExportPdfComponent implements OnInit {
 
       }
     );
-    /* 
-        listGTSOPA.forEach(
-          gTSOPA => {
-    
-            let rowGenerit = [];
-            rowGenerit.push({ "content": 'Voyage ' + gTSOPA.voyageNumber, "colSpan": 2 });
-    
-            // Time
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-    
-    
-            // Distance
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.distanceMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-    
-    
-            // Speed
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-    
-    
-            // Speed Charter
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.speedIFOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-    
-    
-            // Consumption
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-    
-    
-            // daily Consumption
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-    
-            // daily Consumption Charter
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionCharterIFO, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.dailyConsumptionCharterMGO, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-            
-            // Time Charter
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.timeMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-            
-            // Consumption Charter
-            if (this.addInformationIFO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionIFOCharter, 1), "colSpan": this.addInformationMGO ? 1 : 2 });
-            }
-            if (this.addInformationMGO) {
-              rowGenerit.push({ "content": this.MathRoundDecimal(gTSOPA.consumptionMGOCharter, 1), "colSpan": this.addInformationIFO ? 1 : 2 });
-            }
-            
-            data.push(rowGenerit);
-    
-          }
-        );
-     */
 
-    /* 
-        // Posicion donde inicia el header
-        let positionHeader = 2 + listGTSOPA.length;
-    
-        let rowHeaderTotal2 = [];
-        rowHeaderTotal2.push(
-          { "content": "Total Calculation", "colSpan": 2, "rowSpan": 4 },
-        )
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-    
-        if (this.addInformationIFO) {
-          rowHeaderTotal2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
-        }
-        if (this.addInformationMGO) {
-          rowHeaderTotal2.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
-        }
-        data.push(rowHeaderTotal2);
-    
-    
-    
-        // VEr el resumen ballast
-        if (isViewBallast) {
-    
-    
-          let totalCaculate = [];
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.distanceIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.distanceMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedCharterIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedCharterMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeCharterIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeCharterMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterIFOBallast, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterMGOBallast, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-          data.push(totalCaculate);
-    
-          let textAnnotateTime = gTTSOPA.anotateTimeBallast;
-          data.push([{ "content": textAnnotateTime, "colSpan": 18 }]);
-    
-          let textAnnotateConsumption = gTTSOPA.anotateConsumptionBallast;
-          data.push([{ "content": textAnnotateConsumption, "colSpan": 18 }]);
-        }
-    
-    
-        if (isViewLaden) {
-    
-    
-          let totalCaculate = [];
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.distanceIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.distanceMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedCharterIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.speedCharterMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.dailyConsumptionCharterMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeCharterIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.timeCharterMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-    
-          if (this.addInformationIFO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterIFOLaden, 1), "colSpan": this.addInformationMGO ? 1 : 2 })
-          }
-          if (this.addInformationMGO) {
-            totalCaculate.push({ "content": this.MathRoundDecimal(gTTSOPA.consumptionCharterMGOLaden, 1), "colSpan": this.addInformationIFO ? 1 : 2 })
-          }
-          data.push(totalCaculate);
-    
-          let textAnnotateTime = gTTSOPA.anotateTimeLaden;
-          data.push([{ "content": textAnnotateTime, "colSpan": 18 }]);
-    
-          let textAnnotateConsumption = gTTSOPA.anotateConsumptionLaden;
-          data.push([{ "content": textAnnotateConsumption, "colSpan": 18 }]);
-    
-        } */
+
+    // Segundo header
+    let rowHeaderTotal = [];
+    // Info
+    rowHeaderTotal.push({ "content": "Total Consumption", "colSpan": 6, "rowSpan": 2 })
+    if (this.addInformationIFO) {
+      rowHeaderTotal.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    // Info
+    rowHeaderTotal.push({ "content": "Total Bunkering", "colSpan": 8, "rowSpan": 2 })
+    // Fuel
+    if (this.addInformationIFO) {
+      rowHeaderTotal.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowHeaderTotal.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    rowHeaderTotal.push({ "content": "", "colSpan": 2, "rowSpan": 2 })
+    // agregar header 2
+    data.push(rowHeaderTotal);
+
+
+    // Total
+    let rowTotal = []
+    if (this.addInformationIFO) {
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageConsumptionIFO,1) , "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageConsumptionMGO,1), "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    // Total bunkerinf
+    if (this.addInformationIFO) {
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageBunkeringIFO,1), "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowTotal.push({ "content": this.MathRoundDecimal(totalVoyageBunkeringMGO,1), "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    // agregar Total
+    data.push(rowTotal);
 
 
     // Opciones como usuario al generar un table.
