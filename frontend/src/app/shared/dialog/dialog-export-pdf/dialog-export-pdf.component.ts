@@ -8241,8 +8241,12 @@ export class DialogExportPdfComponent implements OnInit {
                 // SetData 
                 setData.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 });
                 setData.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 });
-                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 });
-                setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 });
+                if (this.addInformationIFO) {
+                  setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": 1 });
+                }
+                if (this.addInformationMGO) {
+                  setData.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": 1 });
+                }
                 setData.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 });
 
                 data.push(setData);
@@ -8253,8 +8257,12 @@ export class DialogExportPdfComponent implements OnInit {
 
                 setDataBunkering.push({ "content": FormatYYYYMMDD(itemInfoBunkering.dailyReportDate), "colSpan": 2, "rowSpan": 1 });
                 setDataBunkering.push({ "content": itemInfoBunkering.portDeparture, "colSpan": 2, "rowSpan": 1 }); rowSpan
-                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": 1, "rowSpan": 1 });
-                setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": 1, "rowSpan": 1 });
+                if (this.addInformationIFO) {
+                  setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringIfo, 1), "colSpan": this.addInformationMGO ? 1 : 2, "rowSpan": 1 });
+                }
+                if (this.addInformationMGO) {
+                  setDataBunkering.push({ "content": this.MathRoundDecimal(itemInfoBunkering.bunkeringMgo, 1), "colSpan": this.addInformationIFO ? 1 : 2, "rowSpan": 1 });
+                }
                 setDataBunkering.push({ "content": itemInfoBunkering.observation, "colSpan": 2, "rowSpan": 1 });
 
                 data.push(setDataBunkering);
@@ -8420,10 +8428,6 @@ export class DialogExportPdfComponent implements OnInit {
             bottom: 1,
             left: 0
           };
-
-          if (columIndex == 0) {
-            addColor = !addColor;
-          }
           if (columIndex < 12) {
             cell.styles.fillColor = addColor ? this.colorWhite : this.colorGris;
           } else {
@@ -8437,10 +8441,19 @@ export class DialogExportPdfComponent implements OnInit {
             cell.styles.cellPadding = 1;
           }
 
+
           // existe entre 12 o es diferente a 10 le pones un color qque identifiaca al bunkeirng
-          if (columIndex >= 12 && raw.length !== 10) {
+          if (columIndex >= 12 && (raw.length == 4 || raw.length == 5 || raw.length == 14 || raw.length == 10)) {
+            console.log(raw.length)
             cell.styles.fillColor = this.colorGreen;
-            //cell.styles.textColor = this.colorWhite;
+          }
+
+          if (columIndex < 12) {
+
+            if (columIndex == 0) {
+              addColor = !addColor;
+            }
+
           }
           // observaciones mas chico para que entre mas texto
           if (columIndex == 18) {
