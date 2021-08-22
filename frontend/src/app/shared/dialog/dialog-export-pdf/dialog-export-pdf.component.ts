@@ -6088,213 +6088,6 @@ export class DialogExportPdfComponent implements OnInit {
         positionHeight += this.GenerateTableSumaryVoyage(doc, widthPDF, heightPDF, positionWidth, positionHeight, iVoyage, isViewBallast, isViewLaden);
 
 
-
-
-        let gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis = new GenerateTableTotalSummaryOverallPerformanceAnalisis();
-        positionWidth = 10;
-        positionHeight += 10
-
-
-
-        // recorreoms los viajes para saber el tamaño que tendra la tabla.
-        iVoyage.ports.forEach(
-          iPort => {
-            iPort.dailyReports.forEach(
-              dailyReport => {
-
-                let totalIFO = this.SumaIfo(dailyReport);
-                let totalMGO = this.SumaMgo(dailyReport);
-                // Verificamos si es navegando con carga
-                if (this.addSailingInBallast && dailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
-                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
-                  if (this.addInformationIFO && totalIFO) {
-                    gTTSOPA.distanceIFOBallast += dailyReport.distance;
-                    gTTSOPA.timeIFOBallast += dailyReport.steamingTime;
-                    gTTSOPA.consumptionIFOBallast += totalIFO;
-                  }
-                  if (this.addInformationMGO && totalMGO) {
-                    gTTSOPA.distanceMGOBallast += dailyReport.distance;
-                    gTTSOPA.timeMGOBallast += dailyReport.steamingTime;
-                    gTTSOPA.consumptionMGOBallast += totalMGO;
-                  }
-                  // Verificamos si es la actividad navegando sin carga
-                } else if (this.addSailingWithLaden && dailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
-
-                  // Solo si hay consumo sumamos el tiempo, distancia y consumo
-                  if (this.addInformationIFO && totalIFO) {
-                    gTTSOPA.distanceIFOLaden += dailyReport.distance;
-                    gTTSOPA.timeIFOLaden += dailyReport.steamingTime;
-                    gTTSOPA.consumptionIFOLaden += totalIFO;
-                  }
-                  if (this.addInformationMGO && totalMGO) {
-                    gTTSOPA.distanceMGOLaden += dailyReport.distance;
-                    gTTSOPA.timeMGOLaden += dailyReport.steamingTime;
-                    gTTSOPA.consumptionMGOLaden += totalMGO;
-                  }
-                }
-              }
-            )
-          });
-
-
-        if (this.addSailingInBallast) {
-
-          if (this.addInformationIFO) {
-            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
-            gTTSOPA.timeCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO ?
-              gTTSOPA.distanceIFOBallast / this.selectUser.contractSpeedSailingBallastIFO : 0;
-
-
-            // VELOCIDAD
-            gTTSOPA.speedIFOBallast = gTTSOPA.timeIFOBallast ?
-              gTTSOPA.distanceIFOBallast / gTTSOPA.timeIFOBallast : 0;
-
-
-            // Velocidad Charter
-            gTTSOPA.speedCharterIFOBallast = this.selectUser.contractSpeedSailingBallastIFO;
-
-
-            // Daily Consumption IFO
-            gTTSOPA.dailyConsumptionIFOBallast = gTTSOPA.timeIFOBallast ?
-              (gTTSOPA.consumptionIFOBallast * 24) / gTTSOPA.timeIFOBallast : 0;
-
-
-            // DailyConsumption IFO Charter
-            gTTSOPA.dailyConsumptionCharterIFOBallast = this.selectUser.sailingBallastConsumptionIFO;
-
-
-            // Consumo por charter
-            gTTSOPA.consumptionCharterIFOBallast = (gTTSOPA.dailyConsumptionCharterIFOBallast * gTTSOPA.timeCharterIFOBallast) / 24;
-
-
-
-            // Calculamos el time annotate
-            gTTSOPA.anotateTimeBallastIFO = gTTSOPA.timeCharterIFOBallast ? gTTSOPA.timeCharterIFOBallast - gTTSOPA.timeIFOBallast : 0;
-            gTTSOPA.anotateConsumptionBallastIFO = gTTSOPA.dailyConsumptionCharterIFOBallast ? gTTSOPA.dailyConsumptionCharterIFOBallast - gTTSOPA.dailyConsumptionIFOBallast : 0;
-
-          }
-          if (this.addInformationMGO) {
-            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
-            gTTSOPA.timeCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO ?
-              gTTSOPA.distanceMGOBallast / this.selectUser.contractSpeedSailingBallastMGO : 0;
-
-
-            // VELOCIDAD
-            gTTSOPA.speedMGOBallast = gTTSOPA.timeMGOBallast ?
-              gTTSOPA.distanceMGOBallast / gTTSOPA.timeMGOBallast : 0;
-
-
-            // Velocidad Charter
-            gTTSOPA.speedCharterMGOBallast = this.selectUser.contractSpeedSailingBallastMGO;
-
-
-            // Daily Consumption MGO
-            gTTSOPA.dailyConsumptionMGOBallast = gTTSOPA.timeMGOBallast ?
-              (gTTSOPA.consumptionMGOBallast * 24) / gTTSOPA.timeMGOBallast : 0;
-
-
-            // DailyConsumption MGO Charter
-            gTTSOPA.dailyConsumptionCharterMGOBallast = this.selectUser.sailingBallastConsumptionMGO;
-
-            // Consumo por charter
-            gTTSOPA.consumptionCharterMGOBallast = (gTTSOPA.dailyConsumptionCharterMGOBallast * gTTSOPA.timeCharterMGOBallast) / 24;
-
-
-
-            // Calculamos el time annotate
-            gTTSOPA.anotateTimeBallastMGO = gTTSOPA.timeCharterMGOBallast ? gTTSOPA.timeCharterMGOBallast - gTTSOPA.timeMGOBallast : 0;
-            gTTSOPA.anotateConsumptionBallastMGO = gTTSOPA.dailyConsumptionCharterMGOBallast ? gTTSOPA.dailyConsumptionCharterMGOBallast - gTTSOPA.dailyConsumptionMGOBallast : 0;
-          }
-        }
-        // Laden
-        if (this.addSailingWithLaden) {
-
-          if (this.addInformationIFO) {
-            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
-            gTTSOPA.timeCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO ?
-              gTTSOPA.distanceIFOLaden / this.selectUser.contractSpeedSailingLadenIFO : 0;
-
-
-            // VELOCIDAD
-            gTTSOPA.speedIFOLaden = gTTSOPA.timeIFOLaden ?
-              gTTSOPA.distanceIFOLaden / gTTSOPA.timeIFOLaden : 0;
-
-
-            // Velocidad Charter
-            gTTSOPA.speedCharterIFOLaden = this.selectUser.contractSpeedSailingLadenIFO;
-
-
-
-            // Daily Consumption MGO
-            gTTSOPA.dailyConsumptionIFOLaden = gTTSOPA.timeIFOLaden ?
-              (gTTSOPA.consumptionIFOLaden * 24) / gTTSOPA.timeIFOLaden : 0;
-
-
-
-
-            // DailyConsumption IFO Charter
-            gTTSOPA.dailyConsumptionCharterIFOLaden = this.selectUser.sailingLoadConsumptionIFO;
-
-
-            // Conusmo diario calculado segun el charter.
-            gTTSOPA.consumptionCharterIFOLaden = (gTTSOPA.dailyConsumptionCharterIFOLaden * gTTSOPA.timeCharterIFOLaden) / 24;
-
-
-
-            // Anotate TIME
-            gTTSOPA.anotateTimeLadenIFO = gTTSOPA.timeCharterIFOLaden ? gTTSOPA.timeCharterIFOLaden - gTTSOPA.timeIFOLaden : 0;
-
-            // Anotate Laden
-            gTTSOPA.anotateConsumptionLadenIFO = gTTSOPA.dailyConsumptionCharterIFOLaden ? gTTSOPA.dailyConsumptionCharterIFOLaden - gTTSOPA.dailyConsumptionIFOLaden : 0;
-
-          }
-          if (this.addInformationMGO) {
-            // Validamos y calculamos el tiempo que debio aver navegado segun la velocidad del charter.
-            gTTSOPA.timeCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO ?
-              gTTSOPA.distanceMGOLaden / this.selectUser.contractSpeedSailingLadenMGO : 0;
-
-
-            // VELOCIDAD
-            gTTSOPA.speedMGOLaden = gTTSOPA.timeMGOLaden ?
-              gTTSOPA.distanceMGOLaden / gTTSOPA.timeMGOLaden : 0;
-
-
-            // Velocidad Charter
-            gTTSOPA.speedCharterMGOLaden = this.selectUser.contractSpeedSailingLadenMGO;
-
-
-
-            // Daily Consumption MGO
-            gTTSOPA.dailyConsumptionMGOLaden = gTTSOPA.timeMGOLaden ?
-              (gTTSOPA.consumptionMGOLaden * 24) / gTTSOPA.timeMGOLaden : 0;
-
-
-
-            // DailyConsumption MGO Charter
-            gTTSOPA.dailyConsumptionCharterMGOLaden = this.selectUser.sailingLoadConsumptionMGO;
-
-
-
-            // Consumo MGO Charter
-            gTTSOPA.consumptionCharterMGOLaden = (gTTSOPA.dailyConsumptionCharterMGOLaden * gTTSOPA.timeCharterMGOLaden) / 24;
-
-            // Anotate TIME
-            gTTSOPA.anotateTimeLadenMGO = gTTSOPA.timeCharterMGOLaden ? gTTSOPA.timeCharterMGOLaden - gTTSOPA.timeMGOLaden : 0;
-
-            // Anotate Laden
-            gTTSOPA.anotateConsumptionLadenMGO = gTTSOPA.dailyConsumptionCharterMGOLaden ? gTTSOPA.dailyConsumptionCharterMGOLaden - gTTSOPA.dailyConsumptionMGOLaden : 0;
-
-          }
-
-        }
-
-        gTTSOPA.anotateTimeBallast = gTTSOPA.anotateTimeBallastIFO + gTTSOPA.anotateTimeBallastMGO;
-        gTTSOPA.anotateTimeLaden = gTTSOPA.anotateTimeLadenIFO + gTTSOPA.anotateTimeLadenMGO;
-
-
-        gTTSOPA.anotateConsumptionBallast = gTTSOPA.anotateConsumptionBallastIFO + gTTSOPA.anotateConsumptionBallastMGO;
-        gTTSOPA.anotateConsumptionLaden = gTTSOPA.anotateConsumptionLadenIFO + gTTSOPA.anotateConsumptionLadenMGO;
-
         let titleTable = 'Voyage ' + iVoyage.voyageNumber + ' Summary';
         //this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTTSOPA, isViewBallast, isViewLaden, titleTable)
 
@@ -6728,6 +6521,75 @@ export class DialogExportPdfComponent implements OnInit {
     data.push(rowHeaderTotal2);
 
 
+    let rowCalcTotalLaden = [];
+    rowCalcTotalLaden.push(
+      { "content": "Laden", "colSpan": 2, "rowSpan": 2 },
+    )
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+
+    if (this.addInformationIFO) {
+      rowCalcTotalLaden.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
+    }
+    if (this.addInformationMGO) {
+      rowCalcTotalLaden.push({ "content": "MGO", "colSpan": this.addInformationIFO ? 1 : 2 })
+    }
+    rowCalcTotalLaden.push({ "content": "", "colSpan": 1 });
+    data.push(rowCalcTotalLaden);
 
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};
@@ -7332,7 +7194,7 @@ export class DialogExportPdfComponent implements OnInit {
 
         if (rowIndex == (countRow + 2)) {
 
-          alert('')
+          // alert('')
         }
 
 
