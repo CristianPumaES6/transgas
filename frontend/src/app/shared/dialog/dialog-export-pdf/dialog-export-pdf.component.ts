@@ -6166,7 +6166,7 @@ export class DialogExportPdfComponent implements OnInit {
       ]
     ];
 
-
+    // segundo header con el calculo total.
     let rowHeader2 = [];
     if (this.addInformationIFO) {
       rowHeader2.push({ "content": typeConsumptionSelectBuqueIFO, "colSpan": this.addInformationMGO ? 1 : 2 })
@@ -6449,7 +6449,7 @@ export class DialogExportPdfComponent implements OnInit {
       }
     );
 
-
+    // este row tiene el tota.
     let rowHeaderTotal2 = [];
     rowHeaderTotal2.push(
       { "content": "Total Calculation", "colSpan": 2, "rowSpan": 1 },
@@ -6523,86 +6523,181 @@ export class DialogExportPdfComponent implements OnInit {
 
     let SummaryVoyage: GenerateTableTotalSummaryOverallPerformanceAnalisis = this.GenerateSummaryOneVoyage(voyage);
 
-    let rowCalcTotalLaden = [];
-    rowCalcTotalLaden.push(
-      { "content": "Laden", "colSpan": 2, "rowSpan": 2 },
-    )
+    if (this.addSailingWithLaden) {
 
-    //Tiempo total
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.timeIFOLaden ? this.MathRoundDecimal(SummaryVoyage.timeIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.timeMGOLaden ? this.MathRoundDecimal(SummaryVoyage.timeMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      let rowCalcTotalLaden = [];
+      rowCalcTotalLaden.push(
+        { "content": "Laden", "colSpan": 2, "rowSpan": 2 },
+      )
+
+      //Tiempo total
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.timeIFOLaden ? this.MathRoundDecimal(SummaryVoyage.timeIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.timeMGOLaden ? this.MathRoundDecimal(SummaryVoyage.timeMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Distancia toal
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.distanceIFOLaden ? this.MathRoundDecimal(SummaryVoyage.distanceIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.distanceMGOLaden ? this.MathRoundDecimal(SummaryVoyage.distanceMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Velocidad promedio
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.speedIFOLaden ? this.MathRoundDecimal(SummaryVoyage.speedIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.speedMGOLaden ? this.MathRoundDecimal(SummaryVoyage.speedMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Velocidad charter
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.speedIFOLaden ? this.MathRoundDecimal(SummaryVoyage.speedCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.speedMGOLaden ? this.MathRoundDecimal(SummaryVoyage.speedCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Consumo total
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionIFOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionMGOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Daily consumption
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionIFOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionMGOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Daily consumption charter
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionIFOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionMGOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Sialing time charter
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.timeCharterIFOLaden ? this.MathRoundDecimal(SummaryVoyage.timeCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.timeCharterMGOLaden ? this.MathRoundDecimal(SummaryVoyage.timeCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Total consumption segun charter
+      if (this.addInformationIFO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionCharterIFOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionCharterMGOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+      rowCalcTotalLaden.push({ "content": "", "colSpan": 1 });
+      data.push(rowCalcTotalLaden);
+
+      // agregamos las anotaciones.
+      data.push([
+        { "content": SummaryVoyage.anotateTimeLaden, "colSpan": 9 },
+        { "content": SummaryVoyage.anotateConsumptionLaden, "colSpan": 11 }
+      ]);
     }
 
-    // Distancia toal
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.distanceIFOLaden ? this.MathRoundDecimal(SummaryVoyage.distanceIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.distanceMGOLaden ? this.MathRoundDecimal(SummaryVoyage.distanceMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
+    if (this.addSailingInBallast) {
 
-    // Velocidad promedio
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.speedIFOLaden ? this.MathRoundDecimal(SummaryVoyage.speedIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.speedMGOLaden ? this.MathRoundDecimal(SummaryVoyage.speedMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
+      let rowCalcTotalBallast = [];
+      rowCalcTotalBallast.push(
+        { "content": "Ballast", "colSpan": 2, "rowSpan": 2 },
+      )
 
-    // Velocidad charter
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.speedIFOLaden ? this.MathRoundDecimal(SummaryVoyage.speedCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.speedMGOLaden ? this.MathRoundDecimal(SummaryVoyage.speedCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
+      //Tiempo total
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.timeIFOBallast ? this.MathRoundDecimal(SummaryVoyage.timeIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.timeMGOBallast ? this.MathRoundDecimal(SummaryVoyage.timeMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
 
-    // Consumo total
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionIFOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionMGOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
+      // Distancia toal
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.distanceIFOBallast ? this.MathRoundDecimal(SummaryVoyage.distanceIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.distanceMGOBallast ? this.MathRoundDecimal(SummaryVoyage.distanceMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
 
-    // Daily consumption
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionIFOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionMGOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
+      // Velocidad promedio
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.speedIFOBallast ? this.MathRoundDecimal(SummaryVoyage.speedIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.speedMGOBallast ? this.MathRoundDecimal(SummaryVoyage.speedMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
 
-    // Daily consumption charter
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionIFOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.dailyConsumptionMGOLaden ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
+      // Velocidad charter
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.speedIFOBallast ? this.MathRoundDecimal(SummaryVoyage.speedCharterIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.speedMGOBallast ? this.MathRoundDecimal(SummaryVoyage.speedCharterMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
 
-    // Sialing time charter
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.timeCharterIFOLaden ? this.MathRoundDecimal(SummaryVoyage.timeCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.timeCharterMGOLaden ? this.MathRoundDecimal(SummaryVoyage.timeCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
+      // Consumo total
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.consumptionIFOBallast ? this.MathRoundDecimal(SummaryVoyage.consumptionIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.consumptionMGOBallast ? this.MathRoundDecimal(SummaryVoyage.consumptionMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
 
-    // Total consumption segun charter
-    if (this.addInformationIFO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionCharterIFOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionCharterIFOLaden, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
-    }
-    if (this.addInformationMGO) {
-      rowCalcTotalLaden.push({ "content": SummaryVoyage.consumptionCharterMGOLaden ? this.MathRoundDecimal(SummaryVoyage.consumptionCharterMGOLaden, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
-    }
-    rowCalcTotalLaden.push({ "content": "", "colSpan": 1 });
-    data.push(rowCalcTotalLaden);
+      // Daily consumption
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.dailyConsumptionIFOBallast ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.dailyConsumptionMGOBallast ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
 
+      // Daily consumption charter
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.dailyConsumptionIFOBallast ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionCharterIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.dailyConsumptionMGOBallast ? this.MathRoundDecimal(SummaryVoyage.dailyConsumptionCharterMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
 
+      // Sialing time charter
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.timeCharterIFOBallast ? this.MathRoundDecimal(SummaryVoyage.timeCharterIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.timeCharterMGOBallast ? this.MathRoundDecimal(SummaryVoyage.timeCharterMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+
+      // Total consumption segun charter
+      if (this.addInformationIFO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.consumptionCharterIFOBallast ? this.MathRoundDecimal(SummaryVoyage.consumptionCharterIFOBallast, 1) : '', "colSpan": this.addInformationMGO ? 1 : 2 })
+      }
+      if (this.addInformationMGO) {
+        rowCalcTotalBallast.push({ "content": SummaryVoyage.consumptionCharterMGOBallast ? this.MathRoundDecimal(SummaryVoyage.consumptionCharterMGOBallast, 1) : '', "colSpan": this.addInformationIFO ? 1 : 2 })
+      }
+      rowCalcTotalBallast.push({ "content": "", "colSpan": 1 });
+      data.push(rowCalcTotalBallast);
+
+      // agregamos las anotaciones.
+      data.push([
+        { "content": SummaryVoyage.anotateTimeBallast, "colSpan": 9 },
+        { "content": SummaryVoyage.anotateConsumptionBallast, "colSpan": 11 }
+      ]);
+    }
 
     // Opciones como usuario al generar un table.
     let userOptions: UserOptions = {};
@@ -6682,7 +6777,7 @@ export class DialogExportPdfComponent implements OnInit {
             cell.styles.cellPadding = 1;
           }
         }
-        // Segunda cabecera 
+        // Segunda cabecera y la cabecera del total.
         if (rowIndex == 1 || rowIndex == (countRow + 1)) {
           // le damos un color y le aumentamos de tamaño a la primera columna.
           if (columIndex == 0) {
@@ -6720,7 +6815,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
         // de aqui para adelante son los viajes.
-        if (rowIndex > 1 && rowIndex <= countRow) {
+        if ((rowIndex > 1 && rowIndex <= countRow) || (rowIndex == (countRow + 2) || rowIndex == (countRow + 4))) {
 
           let rawLength = Object.keys(raw).length;
 
@@ -7205,11 +7300,73 @@ export class DialogExportPdfComponent implements OnInit {
 
         }
 
+        // Aqui esta la primera fila con el total.
         if (rowIndex == (countRow + 2)) {
 
-          // alert('')
 
         }
+        // AQUI ESTA ANOTATE TIme Consumotion
+        if (rowIndex == (countRow + 3) || rowIndex == (countRow + 5)) {
+          cell.styles.cellPadding = {
+            top: 1.5,
+            right: 0,
+            bottom: 1.5,
+            left: 0
+          };
+          if (columIndex == 2) {
+            cell.styles.fillColor = this.colorGris;
+            cell.styles.fontSize = 10;
+            let valorCell = Number(cell.text);
+            if (valorCell < 0) {
+              cell.styles.textColor = this.colorTextWarning;
+              cell.text = [this.MathRoundDecimal(-valorCell, 1) + " Hours Lost"];
+            }
+            if (valorCell > 0) {
+              cell.styles.textColor = this.colorTextSuccess;
+              cell.text = [this.MathRoundDecimal(valorCell, 1) + " Hours Saved"];
+            }
+            if (valorCell == 0) {
+              cell.text = ["-----"];
+            }
+          }
+
+
+          if (columIndex == 11) {
+            cell.styles.fillColor = this.colorGris;
+            cell.styles.fontSize = 10;
+            let valorCell = Number(cell.text);
+            if (valorCell < 0) {
+              cell.styles.textColor = this.colorTextWarning;
+              cell.text = ["Consumption Outside The Guaranteed Limits"];
+            }
+            if (valorCell > 0) {
+              cell.styles.textColor = this.colorTextSuccess;
+              cell.text = ["Consumption Within The Guaranteed Limits"];
+
+            }
+
+            if (valorCell == 0) {
+              cell.text = ["-----"];
+            }
+          }
+        }
+        // aqui esta la ultima fila
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
       }
