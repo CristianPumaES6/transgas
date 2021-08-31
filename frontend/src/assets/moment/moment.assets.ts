@@ -3,6 +3,14 @@ import * as momentTimezone from 'moment-timezone';
 
 moment.locale();
 momentTimezone().tz("America/Los_Angeles").format();
+//momentTimezone().tz("Africa/Abidjan").format();
+
+export function ConvertMoment(date): moment.Moment {
+
+    // lo desencripto
+    return moment(date);
+}
+
 
 // AL ser una class lo tengo que poner en el constructor para que pueda ser utilizado.
 export function GetDate(): any {
