@@ -5,6 +5,7 @@ moment.locale();
 momentTimezone().tz("America/Los_Angeles").format();
 //momentTimezone().tz("Africa/Abidjan").format();
 
+// Revisar.
 export function ConvertMoment(date): moment.Moment {
 
     // lo desencripto
@@ -25,52 +26,61 @@ export function getYear(): string {
     return moment().format('YYYY');
 }
 
-export function stringToDate(fecha: any): string {
+// convierte un string a una fecha, la fecha debe ser UTC,
+export function stringToDate(fechaUTC: any): string {
 
-    let formatfecha = moment(fecha).format('MM-DD-YYYY');
+    let formatfecha = moment.utc(fechaUTC);
+    console.log(formatfecha);
 
-    return formatfecha;
+    let text = formatfecha.local().format('MM-DD-YYYY');
+
+    return text;
 }
 
-export function GetMonthYearFromDate(fecha: any): string {
+// obtiene el mes y el año de una fecha.
+export function GetMonthYearFromDate(fechaUTC: any): string {
 
-    let formatfecha = moment(fecha);
+    let formatfecha = moment.utc(fechaUTC).local();
 
     let result = formatfecha.month() + '/' + formatfecha.year();
     return result;
 
 }
 
-export function FormatDate(fecha: any): string {
+// Convierte a un formate Date a un horario UTC.'MM-DD-YYYY'
+export function FormatDate(fechaUTC: any): string {
 
-    let formatfecha = moment(fecha).format('MM-DD-YYYY');
+    let formatfecha = moment.utc(fechaUTC).local().format('MM-DD-YYYY');
 
     return formatfecha;
 }
 
-export function ComparePreviousDates(date1: any, date2: any): String {
+// La primera fecha es la misma o es antes.
+export function ComparePreviousDates(date1UTC: any, date2UTC: any): String {
 
+    if (!date1UTC) return date2UTC;
 
-    if (!date1) return date2;
-
-    let d1 = moment(date1, 'YYYY-MM-DD');
-    let d2 = moment(date2, 'YYYY-MM-DD');
+    let d1 = moment.utc(date1UTC).local();
+    let d2 = moment.utc(date2UTC).local();
 
     let condition = d1.isSameOrBefore(d2);
     if (condition) {
-        return date1;
+        return date1UTC;
     } else {
-        return date2;
+        return date2UTC;
     }
 
 }
-export function IsPrevious1Date(date1: any, date2: any): boolean {
 
 
-    if (!date1) return false;
+// La primera fecha es la misma o antes.
+export function IsPrevious1Date(date1UTC: any, date2UTC: any): boolean {
 
-    let d1 = moment(date1, 'YYYY-MM-DD');
-    let d2 = moment(date2, 'YYYY-MM-DD');
+
+    if (!date1UTC) return false;
+
+    let d1 = moment.utc(date1UTC).local();
+    let d2 = moment.utc(date2UTC).local();
 
     let condition = d1.isSameOrBefore(d2);
     if (condition) {
@@ -81,44 +91,47 @@ export function IsPrevious1Date(date1: any, date2: any): boolean {
 
 }
 
-export function DiffDates(date1: any, date2: any): number {
+// Devuelven los dias que han pasado.
+export function DiffDates(date1UTC: any, date2UTC: any): number {
 
 
-    if (!date1) return date2;
+    if (!date1UTC) return date2UTC;
 
-    let d1 = moment(date1, 'YYYY-MM-DD');
-    let d2 = moment(date2, 'YYYY-MM-DD');
+    let d1 = moment.utc(date1UTC).local();
+    let d2 = moment.utc(date2UTC).local();
 
     let nDay = d1.diff(d2, 'days');
     return -nDay;
 }
 
 
-export function CompareAfterDates(date1: any, date2: any): String {
+// La primera fecha es la misma o es despues.
+export function CompareAfterDates(date1UTC: any, date2UTC: any): String {
 
 
-    if (!date1) return date2;
+    if (!date1UTC) return date2UTC;
 
-    let d1 = moment(date1, 'YYYY-MM-DD');
-    let d2 = moment(date2, 'YYYY-MM-DD');
+    let d1 = moment.utc(date1UTC).local();
+    let d2 = moment.utc(date2UTC).local();
 
     let condition = d1.isSameOrAfter(d2);
     if (condition) {
-        return date1;
+        return date1UTC;
     } else {
-        return date2;
+        return date2UTC;
     }
 
 }
 
 
-export function IsAfter1Date(date1: any, date2: any): boolean {
+// Verifica si la fecha es antes o no, revisar como esta entrando
+export function IsAfter1Date(date1UTC: any, date2UTC: any): boolean {
+    
+    let d1 = moment.utc(date1UTC).local();
+    let d2 = moment.utc(date2UTC).local();
 
+    if (!date1UTC) return false;
 
-    if (!date1) return false;
-
-    let d1 = moment(date1, 'YYYY-MM-DD');
-    let d2 = moment(date2, 'YYYY-MM-DD');
 
     let condition = d1.isSameOrAfter(d2);
     if (condition) {
@@ -128,8 +141,8 @@ export function IsAfter1Date(date1: any, date2: any): boolean {
     }
 
 }
-// retorna true si es valido false si no lo es.
 
+// retorna true si es valido false si no lo es.
 export function validateDate(fecha: any): boolean {
 
     let result = !!moment(fecha).isValid();
@@ -138,11 +151,11 @@ export function validateDate(fecha: any): boolean {
 }
 
 // ESTA FUNCION DEVUELVE EN TEXTO EL MES Y AÑO DE UN FORMATO EXPECIFICO.
-export function TextMonthYearFormatYYYYMMDD(date: any): string {
+export function TextMonthYearFormatYYYYMMDD(dateUTC: any): string {
 
     // Convertimos el string en formato moment,
     // Con el formato YYYY MM DD
-    let momentDate = moment(date, 'YYYY-MM-DD');
+    let momentDate = moment.utc(dateUTC).local();
 
     let result = momentDate.format('MMMM') + ' ' + momentDate.format('YYYY')
 
@@ -150,11 +163,11 @@ export function TextMonthYearFormatYYYYMMDD(date: any): string {
 }
 
 // ESTA FUNCION DEVUELVE EN TEXTO EL MES Y AÑO DE UN FORMATO EXPECIFICO.
-export function GetYearFromDate(date: any): string {
+export function GetYearFromDate(dateUTC: any): string {
 
     // Convertimos el string en formato moment,
     // Con el formato YYYY MM DD
-    let momentDate = moment(date, 'YYYY-MM-DD');
+    let momentDate = moment.utc(dateUTC).local();
 
     let result = momentDate.format('YYYY')
 
@@ -164,11 +177,11 @@ export function GetYearFromDate(date: any): string {
 
 
 // ESTA FUNCION DEVUELVE EN TEXTO EL DIA, EL MES Y AÑO DE UN FORMATO EXPECIFICO.
-export function TextMonthDayYearFormatYYYYMMDD(date: any): string {
+export function TextMonthDayYearFormatYYYYMMDD(dateUTC: any): string {
 
     // Convertimos el string en formato moment,
     // Con el formato YYYY MM DD
-    let momentDate = moment(date, 'YYYY-MM-DD');
+    let momentDate = moment.utc(dateUTC, 'YYYY-MM-DD').local();
 
     let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ', ' + momentDate.format('YYYY')
 
@@ -177,10 +190,11 @@ export function TextMonthDayYearFormatYYYYMMDD(date: any): string {
 
 
 // retorna el primero y ultimo dia del mes de la fecha enviada.
-export function FisrtOldDayFromDate(date: any): any {
-    if (!date) return null;
+export function FisrtOldDayFromDate(dateUTC: any): any {
 
-    let momentDate = moment(date, 'YYYY-MM-DD');
+    if (!dateUTC) return null;
+
+    let momentDate = moment.utc(dateUTC, 'YYYY-MM-DD').local();
 
     const startOfMonth = momentDate.startOf('month').format('YYYY-MM-DD hh:mm');
     const endOfMonth = momentDate.endOf('month').format('YYYY-MM-DD hh:mm');
@@ -201,6 +215,8 @@ export function FormatYYYYMMDD(date: any): string {
     return result;
 }
 
+
+// Tal cual es Año mes y dia, tal cual lo retorna
 export function FormatYYYYMMDDToSTRING(date: any): string {
 
     
@@ -210,6 +226,10 @@ export function FormatYYYYMMDDToSTRING(date: any): string {
     
     return result;
 }
+
+
+// esto lo voy a quitar.
+// Revisar si es necesario, el query como esta trabajando aqui?
 export function AddOneDayAndConvertYYYYMMDDToSTRING(date: any): string {
 
     
@@ -222,28 +242,40 @@ export function AddOneDayAndConvertYYYYMMDDToSTRING(date: any): string {
     return result;
 }
 
-// ESTA FUNCION junta una fehca y le setea una ora.
-export function ConvertirDateHourToMoment(date: any, hour: any): moment.Moment {
+
+export function FormatDateUTCToDateHour(dateUTC:any): String{
+    // Con el formato YYYY MM DD
+    let momentDate = moment.utc(dateUTC);
+
+    let local = momentDate.local();
+
+    let format =local.format('MM/DD/YYYY HH:mm');
+    
+    return format;
+}
+
+// revisar, 
+// ESTA FUNCION junta una fecha y le setea una hora.
+// revisar como lo esta asiendo.
+export function ConvertirDateHourToMoment(dateLocal: any, hourLocal: any): moment.Moment {
 
     // Convertimos el string en formato moment,
     // Con el formato YYYY MM DD
-    let momentDate = moment(date, 'YYYY-MM-DD');
+    let momentDate = moment(dateLocal, 'YYYY-MM-DD');
 
-    momentDate.add(hour);
-
+    momentDate.add(hourLocal);
 
     let momentLastDaily = moment(momentDate, 'YYYY-MM-DD hh:mm');
 
     return momentLastDaily;
 }
+
 // ESTA FUNCION junta una fehca y le setea una ora.
 export function ConvertirDateToMoment(date: any): moment.Moment {
 
     // Convertimos el string en formato moment,
     // Con el formato YYYY MM DD
     let momentDate = moment(date, 'YYYY-MM-DD hh:mm');
-
-
 
     let momentLastDaily = moment(momentDate, 'YYYY-MM-DD hh:mm');
 
