@@ -24,7 +24,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { ConvertMoment, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { ConvertMoment, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -1018,7 +1018,7 @@ export class VoyageComponent implements OnInit {
     let dialogData: DialogData = {
       color: "warning",
       icon: "icon-delete",
-      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the Report ' + this.FormatDate(dailyReportDelete.date) + ' - ' + dailyReportDelete.hour),
+      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the Report ' + FormatDateUTCToDateHour(dailyReportDelete.date)),
       mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
     };
 
@@ -2408,11 +2408,8 @@ export class VoyageComponent implements OnInit {
         this.databaseService.GetLastReportDailys().then(
           result => {
 
-            let now = new Date();
-            let hours = ("0" + now.getHours()).slice(-2);
-            let minutes = ("0" + now.getMinutes()).slice(-2);
 
-            this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
+            this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
 
 
             this.GenerateTimeOperation();
@@ -2496,7 +2493,6 @@ export class VoyageComponent implements OnInit {
 
   // Mejorar esto
   public FormatDate(fecha: any): string {
-
     let formatfecha = stringToDate(fecha);
 
     return formatfecha;

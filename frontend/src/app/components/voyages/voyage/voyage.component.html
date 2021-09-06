@@ -166,13 +166,12 @@
         </ng-template>
 
         <ng-template [ngIf]="List_Voyages_Ports_DailyReports==='DailyReports'">
-
           <div class="row pl-2 pb-2">
 
 
             <div class="col-3 row no-gutters">
               <mat-form-field>
-                <input matInput type="datetime-local"
+                <input matInput type="datetime"
                   placeholder="{{'LAST_RECORDED_HOUR' | translateMessage:translateCategory}}"
                   [(ngModel)]="lastRecordedHour" (click)="onKeyUpEvent($event)" [disabled]='true'>
               </mat-form-field>
