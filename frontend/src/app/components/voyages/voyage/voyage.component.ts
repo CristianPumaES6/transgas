@@ -713,13 +713,17 @@ export class VoyageComponent implements OnInit {
         let newDailyReport = this.selectDailyReport;
         newDailyReport.userId = this.selectUser.id;
         newDailyReport.portId = this.selectPort.id;
+        // Le agregamos la hora a la fecha.
+        newDailyReport.date  = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
         newDailyReport.status = true;
 
         this.CreateDailyReportOnlineOffline(newDailyReport);
 
       } else {
         let dailyReportToSave = this.selectDailyReport;
-
+        // Le agregamos la hora a la fecha.
+        dailyReportToSave.date  = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
+       
         this.UpdateDailyReportOnelineOffline(dailyReportToSave);
 
       }
