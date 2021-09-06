@@ -25,6 +25,7 @@ import { DailyReportService } from 'src/app/services/daily-report.service';
 // RXJS
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import * as moment from 'moment';
 
 
 // Interface de los input del componente.
@@ -162,15 +163,7 @@ export class DialogExportPdfComponent implements OnInit {
         // Verificamos que la linea speed se halla generado correctamente.
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
 
-        this.addOverallPerformance = true;
-        this.addInformationMGO = true;
-        this.addInformationIFO = true;
-        this.addSailingWithLaden = true;
-        this.addSailingInBallast = true;
-        this.addChartVoyageSummary = true;
-        this.addBunkeringInformation = true;
-
-
+        alert(moment().tz('America/Los_Angeles'))
         return true;
       }
     ).catch(
@@ -1569,8 +1562,21 @@ export class DialogExportPdfComponent implements OnInit {
           // Guardamos el resultado.
           getInfoFuelStartEndByFilterDate = resultGetInfoFuelStartEndByFilterDate;
 
-          // COnsultamos la informacion de combustible segun viaje
-          return this.GetInfoVoyageROBAndBunkeringByBuqueAndDate(this.selectUser.id, '2019-01-19T08:00:00.000Z', '2022-06-05T13:47:58.000Z').pipe().toPromise();
+          let dateStart = this.data.dateStart;
+          let dateEnd = this.data.dateEnd;
+
+          console.log('==================================');
+          console.log('==================================');
+          console.log('==================================');
+          console.log(dateStart.toString());
+          console.log(dateEnd.toString());
+          console.log('==================================');
+          console.log('==================================');
+          console.log('==================================');
+          
+          // Revisar como esta consultando esto.
+          // Consultamos la informacion de combustible segun viaje
+          return this.GetInfoVoyageROBAndBunkeringByBuqueAndDate(this.selectUser.id, dateStart.toString(), dateEnd.toString()).pipe().toPromise();
 
         })
       // Primera pagina Resumen total.
@@ -1863,7 +1869,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
-
+  // agrega la primera Hoja con el resumen general.
   private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis): jsPDF {
 
     // Posicion de altura del height.
@@ -3842,7 +3848,7 @@ export class DialogExportPdfComponent implements OnInit {
     return contentHeightTable;
   }
 
-  // Resumen total.
+  // Resumen general, overall Performance
   private GenerateTableTotalOverallPerformanceAnalisis(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, gTTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis, isViewBallast: boolean, isViewLaden: boolean, titleTable: string): number {
 
     let contTextTitle = '';
@@ -6096,7 +6102,7 @@ export class DialogExportPdfComponent implements OnInit {
     )
   }
 
-
+  // genera la tabla de resumen que hay dentro de un viaje.
   private GenerateTableSumaryVoyage(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, voyage: Voyage, isViewBallast: boolean, isViewLaden: boolean): number {
 
     let title: string = 'Voyage ' + voyage.voyageNumber + ' Summary\n';
@@ -7578,6 +7584,7 @@ export class DialogExportPdfComponent implements OnInit {
     return contentHeightTable;
   }
 
+  // Retorna el resumen de un viaje.
   private GenerateSummaryOneVoyage(iVoyage: Voyage): GenerateTableTotalSummaryOverallPerformanceAnalisis {
 
 
@@ -7788,6 +7795,7 @@ export class DialogExportPdfComponent implements OnInit {
     return gTTSOPA;
   }
 
+  // agrega un fotter al final de la hora.
   private AddFoter(doc: jsPDF, widthPDF: number, heightPDF: number) {
 
     this.numberPage += 1;
@@ -7807,7 +7815,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   }
 
-
+  // Opcion para agregar un chart.
   private async AddChart(doc: jsPDF, widthPDF: number, heightPDF: number, positionWidth: number, positionHeight: number, isChartInOnePage: boolean) {
 
 
@@ -7902,8 +7910,7 @@ export class DialogExportPdfComponent implements OnInit {
         }
       });
   }
-
-
+  
   // El chart tiene un tamaño de 113
   // Retorna la pocion luefo de agregar el chart,
   private async ChartLaden(doc: jsPDF, widthPDF: number, positionHeight: number): Promise<number> {
@@ -7952,10 +7959,11 @@ export class DialogExportPdfComponent implements OnInit {
         }
       });
   }
+
+  // Formas de crear un tiempo de espera, tiempo muerto-
   private TimeOut(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
   private CreateCustomTimeout(seconds) {
     return new Promise((resolve: any, reject) => {
       setTimeout(() => {
