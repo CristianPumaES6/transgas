@@ -56,7 +56,7 @@ export function FormatDate(fechaUTC: any): string {
 }
 
 // La primera fecha es la misma o es antes.
-export function ComparePreviousDates(date1UTC: any, date2UTC: any): String {
+export function ComparePreviousDates(date1UTC: any, date2UTC: any): string {
 
     if (!date1UTC) return date2UTC;
 
@@ -106,7 +106,7 @@ export function DiffDates(date1UTC: any, date2UTC: any): number {
 
 
 // La primera fecha es la misma o es despues.
-export function CompareAfterDates(date1UTC: any, date2UTC: any): String {
+export function CompareAfterDates(date1UTC: any, date2UTC: any): string {
 
 
     if (!date1UTC) return date2UTC;
