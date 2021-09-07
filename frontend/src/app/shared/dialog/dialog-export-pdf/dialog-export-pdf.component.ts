@@ -9,7 +9,7 @@ import autoTable, { Cell, CellHookData, RowInput, UserOptions } from 'jspdf-auto
 import { DailyReport, GetInfoVoyageROBBunkering, GetROBByUser, InfoFuelStartEndForDate, Speed } from '../../../../app/models/daily-report';
 import { LoadingService } from '../../../../app/services/loading.service';
 import { mathRound } from './../../../../assets/math/math.assets';
-import { FormatDate, FormatYYYYMMDD, getYear, GetYearFromDate, IsAfter1Date, IsPrevious1Date, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
+import { FormatDate, FormatDateUTCToDateHour, FormatYYYYMMDD, getYear, GetYearFromDate, IsAfter1Date, IsPrevious1Date, TextMonthDayYearFormatYYYYMMDD } from './../../../../assets/moment/moment.assets';
 import { Port } from '../../../models/port';
 import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
@@ -136,7 +136,7 @@ export class DialogExportPdfComponent implements OnInit {
     Promise.resolve(true).then(
       result => {
 
-        this.selectTypeExport = 'VESSEL_PERFORMANCE_REPORT'
+        this.selectTypeExport = 'VESSEL_PERFORMANCE_REPORT';
         // seleccionar usuario.
         this.selectUser = this.data.selectUser;
 
@@ -163,7 +163,7 @@ export class DialogExportPdfComponent implements OnInit {
         // Verificamos que la linea speed se halla generado correctamente.
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
 
-       
+
         return true;
       }
     ).catch(
@@ -1525,10 +1525,13 @@ export class DialogExportPdfComponent implements OnInit {
           // Fecha del fin.
           sVPR.endDate = this.data.dateEnd;
 
+          // Fecha de inicio.
+          sVPR.dateStart = FormatDateUTCToDateHour(sVPR.startDate);
+          // Fecha del fin.
+          sVPR.dateEnd = FormatDateUTCToDateHour(sVPR.endDate);
+
           // Agregamos la fecha de inicio y la fecha fin.
           sVPR.atdAndAta = FormatDate(this.data.dateStart) + ' To ' + FormatDate(this.data.dateEnd)
-          sVPR.dateStart = '----';
-          sVPR.dateStart = '----';
 
           // Le damos un tamaño a la pagina.
           $('#dash-line-Overall-Performance-Laden').css({
@@ -1547,7 +1550,7 @@ export class DialogExportPdfComponent implements OnInit {
           this.UpdateChartOverallPerformanceBallast();
 
           // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-          return this.GetInfoFuelStartEndByFilterDate(this.selectUser.id,  sVPR.startDate.toString(),  sVPR.endDate.toString()).pipe().toPromise();
+          return this.GetInfoFuelStartEndByFilterDate(this.selectUser.id, sVPR.startDate.toString(), sVPR.endDate.toString()).pipe().toPromise();
         })
       .then(
         (resultGetInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate) => {
@@ -1565,15 +1568,6 @@ export class DialogExportPdfComponent implements OnInit {
           let dateStart = this.data.dateStart;
           let dateEnd = this.data.dateEnd;
 
-          console.log('==================================');
-          console.log('==================================');
-          console.log('==================================');
-          console.log(dateStart.toString());
-          console.log(dateEnd.toString());
-          console.log('==================================');
-          console.log('==================================');
-          console.log('==================================');
-          
           // Revisar como esta consultando esto.
           // Consultamos la informacion de combustible segun viaje
           return this.GetInfoVoyageROBAndBunkeringByBuqueAndDate(this.selectUser.id, dateStart.toString(), dateEnd.toString()).pipe().toPromise();
@@ -1871,6 +1865,7 @@ export class DialogExportPdfComponent implements OnInit {
 
   // agrega la primera Hoja con el resumen general.
   private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis): jsPDF {
+    let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
     // Posicion de altura del height.
     let positionHeight: number = 0;
@@ -1884,11 +1879,15 @@ export class DialogExportPdfComponent implements OnInit {
     contentOnePage += 65;
     contentOnePage += 10; // titulo
     contentOnePage += 12; // Nombre del buque
+    contentOnePage += 14; // Fecha de inicio
+    contentOnePage += 6; // Combustible.
+   
+    contentOnePage += 10; // Total Voyage o Numero Voyage
+    contentOnePage += 8; // Total Port
 
-    contentOnePage += 20; // Total Voyage o Numero Voyage
-    contentOnePage += 10; // Total Port
-
-    contentOnePage += 18; // ATD
+    contentOnePage += 10; // ATD
+    contentOnePage += 6; // combustible fin.
+    contentOnePage += 14; // combustible fin.
     contentOnePage += 98.5; //  Table sresumen overall
 
 
@@ -1897,10 +1896,10 @@ export class DialogExportPdfComponent implements OnInit {
     // tenga el mismo margen en la altura y bottom
     positionHeight += (heightPDF - contentOnePage) / 2;
     // Revisar Eliminar esto, es solo com referencia.
-    doc.setDrawColor(0);
+/*     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
     doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
-
+ */
     // ubicamos la imagen con un tamaño de 50 x 50
     let widthImage = 50;
     let heightImage = 50;
@@ -1932,9 +1931,35 @@ export class DialogExportPdfComponent implements OnInit {
     doc.setFont('Helvetica', 'bold');
     doc.text(sVPR.preparedFor, centerPDF, positionHeight, { align: 'center' })
 
-
+    // Fecha en el cual inicia el reporte
+    positionHeight += 14;
+    doc.setFontSize(15);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(
+      sVPR.dateStart,
+      centerPDF, positionHeight,
+      { align: 'center' }
+    );
+    let ROBDateStart = '';
+    if (this.addInformationIFO) {
+      ROBDateStart = typeConsumptionSelectBuqueIFO + ': ' + sVPR.startFuelIFO;
+      if (this.addInformationMGO) { ROBDateStart += '     '; }
+    }
+    if (this.addInformationMGO) {
+      ROBDateStart += 'MGO: ' + sVPR.startFuelMGO;
+    }
+    positionHeight += 6;
+    doc.setFontSize(12);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(
+      ROBDateStart,
+      centerPDF, positionHeight,
+      { align: 'center' }
+    );
     // Agregamos la cantidad o el numero de viaje.
-    positionHeight += 20;
+    positionHeight += 10;
     doc.setFontSize(18);
     doc.setTextColor(40);
     doc.setFont('Helvetica', 'bold');
@@ -1946,7 +1971,7 @@ export class DialogExportPdfComponent implements OnInit {
 
 
     // Agregamos el total de puertos que hay en ese viaje.
-    positionHeight += 10;
+    positionHeight += 8;
     doc.setFontSize(18);
     doc.setTextColor(40);
     doc.setFont('Helvetica', 'bold');
@@ -1954,17 +1979,35 @@ export class DialogExportPdfComponent implements OnInit {
 
 
     // Fecha del analisi startdate y endDate
-    positionHeight += 18;
-    doc.setFontSize(16);
+    positionHeight += 10;
+    doc.setFontSize(15);
     doc.setTextColor(40);
     doc.setFont('Helvetica', 'bold');
     doc.text(
-      sVPR.atdAndAta,
+      sVPR.dateEnd,
       centerPDF, positionHeight,
       { align: 'center' }
     );
 
-    positionHeight += 3;
+    let ROBDateEnd = '';
+    if (this.addInformationIFO) {
+      ROBDateEnd = typeConsumptionSelectBuqueIFO + ': ' + sVPR.endFuelIFO;
+      if (this.addInformationMGO) { ROBDateEnd += '     '; }
+    }
+    if (this.addInformationMGO) {
+      ROBDateEnd += 'MGO: ' + sVPR.endFuelMGO;
+    }
+    positionHeight += 6;
+    doc.setFontSize(12);
+    doc.setTextColor(40);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(
+      ROBDateEnd,
+      centerPDF, positionHeight,
+      { align: 'center' }
+    );
+
+    positionHeight += 14;
     let positionWidth = 10;
 
     // Como es el resumen, verificamos que se a
@@ -2545,10 +2588,10 @@ export class DialogExportPdfComponent implements OnInit {
     contentHeightTable += 25.8;
 
     // Revisar Eliminar esto, es solo com referencia.
-    doc.setDrawColor(0);
+  /*   doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
     doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
-
+ */
 
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
@@ -3883,10 +3926,10 @@ export class DialogExportPdfComponent implements OnInit {
 
 
     //RevisarEliminar esto, es solo com referencia.
-    doc.setDrawColor(0);
+/*     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
     doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
-
+ */
 
     // title
     // Agregar la formula para saber si es IFO VLSFO LSFO
@@ -6141,10 +6184,10 @@ export class DialogExportPdfComponent implements OnInit {
       });
 
     // Revisar Eliminar esto, es solo com referencia.
-    doc.setDrawColor(0);
+/*     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
     doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
-
+ */
 
 
     // Agregar la formula para saber si es IFO VLSFO LSFO
@@ -7910,7 +7953,7 @@ export class DialogExportPdfComponent implements OnInit {
         }
       });
   }
-  
+
   // El chart tiene un tamaño de 113
   // Retorna la pocion luefo de agregar el chart,
   private async ChartLaden(doc: jsPDF, widthPDF: number, positionHeight: number): Promise<number> {
@@ -7991,11 +8034,11 @@ export class DialogExportPdfComponent implements OnInit {
     contentHeightTable += 25.8;
 
     // Revisar Eliminar esto, es solo com referencia.
-    doc.setDrawColor(0);
+/*     doc.setDrawColor(0);
     doc.setFillColor(255, 255, 255);
     doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
 
-
+ */
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
@@ -8673,8 +8716,8 @@ export class DialogExportPdfComponent implements OnInit {
         startDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo, 1);
 
         // MGO
-        endDataROB.total_ifo = this.MathRoundDecimal(endDataROB.total_ifo - (resultGetROBByUser[1].total_bunkering_ifo - resultGetROBByUser[1].total_ifo), 1);
-        endDataROB.total_mgo = this.MathRoundDecimal(endDataROB.total_mgo - (resultGetROBByUser[1].total_bunkering_mgo - resultGetROBByUser[1].total_mgo), 1);
+        endDataROB.total_ifo = this.MathRoundDecimal(startDataROB.total_ifo + (resultGetROBByUser[1].total_bunkering_ifo - resultGetROBByUser[1].total_ifo), 1);
+        endDataROB.total_mgo = this.MathRoundDecimal(startDataROB.total_mgo + (resultGetROBByUser[1].total_bunkering_mgo - resultGetROBByUser[1].total_mgo), 1);
         endDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_ifo, 1);
         endDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_mgo, 1);
 
