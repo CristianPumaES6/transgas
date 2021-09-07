@@ -37,7 +37,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING, FormatDateUTCToDateHour } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -313,8 +313,6 @@ export class DashboardComponent implements OnInit {
 
         if (!result) throw 'ERROR_SELECT_USER';
 
-
-        // Revisar por que aqui el rob se debe buuscar por fecha y hora.
         let startDate =this.startDate.toString();
         let endDate = this.endDate.toString();
         // Buscamos la info
@@ -467,24 +465,22 @@ export class DashboardComponent implements OnInit {
         fuelIfo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_ifo - this.getROBByUser.total_ifo, 2);
         fuelIfo.typeFuel = this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'VLSFO';
         fuelIfo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_ifo - startDataROB.total_ifo, 2);
-       // revisar, me gustaria que en el cuadro de bunkering se muestre la fecha y hora.
-        fuelIfo.startDate = FormatYYYYMMDD(this.startDate)
+        fuelIfo.startDate = FormatDateUTCToDateHour(this.startDate)
         fuelIfo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoConsumption, 2);
         fuelIfo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoBunkering, 2);
         fuelIfo.endRob = this.MathRoundOneDecimal(fuelIfo.startRob + (consumptionDataROB.total_bunkering_ifo - consumptionDataROB.total_ifo), 2);
-        fuelIfo.endDate = FormatYYYYMMDD(this.endDate);
+        fuelIfo.endDate = FormatDateUTCToDateHour(this.endDate);
 
         // MGO
         let fuelMgo: DashboardBunkering = new DashboardBunkering();
         fuelMgo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_mgo - this.getROBByUser.total_mgo, 2);
         fuelMgo.typeFuel = 'MGO';
         fuelMgo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_mgo - startDataROB.total_mgo, 2);
-        // revisar me gustaria que se muestre la fecha y hora.
-        fuelMgo.startDate = FormatYYYYMMDD(this.startDate);
+        fuelMgo.startDate = FormatDateUTCToDateHour(this.startDate); 
         fuelMgo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoConsumption, 2);
         fuelMgo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoBunkering, 2);
         fuelMgo.endRob = this.MathRoundOneDecimal(fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo), 2);
-        fuelMgo.endDate = FormatYYYYMMDD(this.endDate);
+        fuelMgo.endDate = FormatDateUTCToDateHour(this.endDate);
 
         if (this.selectUser.isConsumptionVLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO) {
 

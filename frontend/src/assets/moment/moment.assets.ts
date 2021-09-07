@@ -196,8 +196,8 @@ export function FisrtOldDayFromDate(dateUTC: any): any {
 
     let momentDate = moment.utc(dateUTC, 'YYYY-MM-DD').local();
 
-    const startOfMonth = momentDate.startOf('month').format('YYYY-MM-DD hh:mm');
-    const endOfMonth = momentDate.endOf('month').format('YYYY-MM-DD hh:mm');
+    const startOfMonth = momentDate.startOf('month').format('YYYY-MM-DD HH:mm');
+    const endOfMonth = momentDate.endOf('month').format('YYYY-MM-DD HH:mm');
 
     return {
         start: startOfMonth,
@@ -243,7 +243,7 @@ export function AddOneDayAndConvertYYYYMMDDToSTRING(date: any): string {
 }
 
 
-export function FormatDateUTCToDateHour(dateUTC:any): String{
+export function FormatDateUTCToDateHour(dateUTC:any): string{
     // Con el formato YYYY MM DD
     let momentDate = moment.utc(dateUTC);
 
@@ -265,19 +265,7 @@ export function ConvertirDateHourToMoment(dateLocal: any, hourLocal: any): momen
 
     momentDate.add(hourLocal);
 
-    let momentLastDaily = moment(momentDate, 'YYYY-MM-DD hh:mm');
-
-    return momentLastDaily;
-}
-
-// ESTA FUNCION junta una fehca y le setea una ora.
-export function ConvertirDateToMoment(date: any): moment.Moment {
-
-    // Convertimos el string en formato moment,
-    // Con el formato YYYY MM DD
-    let momentDate = moment(date, 'YYYY-MM-DD hh:mm');
-
-    let momentLastDaily = moment(momentDate, 'YYYY-MM-DD hh:mm');
+    let momentLastDaily = moment(momentDate, 'YYYY-MM-DD HH:mm');
 
     return momentLastDaily;
 }
