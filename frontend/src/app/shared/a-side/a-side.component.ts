@@ -82,7 +82,7 @@ export class ASideComponent implements OnInit {
         $('body').addClass(' az-iconbar-show');
         break;
       case 'close-menu':
-        alert('close')
+      //  alert('close')
         break;
       case 'open-formulario':
         $('body').addClass('az-content-body-show');

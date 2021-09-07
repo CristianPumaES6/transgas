@@ -163,7 +163,7 @@ export class DialogExportPdfComponent implements OnInit {
         // Verificamos que la linea speed se halla generado correctamente.
         if (!result) throw 'ERROR_GENERATE_LINE_SPEED';
 
-        alert(moment().tz('America/Los_Angeles'))
+       
         return true;
       }
     ).catch(
@@ -1546,8 +1546,8 @@ export class DialogExportPdfComponent implements OnInit {
           this.UpdateChartOverallPerformanceLaden();
           this.UpdateChartOverallPerformanceBallast();
 
-          // buscamos la informacion del combustible de inicio y fin segun la fecha.
-          return this.GetInfoFuelStartEndByFilterDate(this.selectUser.id, '2019-01-19T08:00:00.000Z', '2022-06-05T13:47:58.000Z').pipe().toPromise();
+          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+          return this.GetInfoFuelStartEndByFilterDate(this.selectUser.id,  sVPR.startDate.toString(),  sVPR.endDate.toString()).pipe().toPromise();
         })
       .then(
         (resultGetInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate) => {
