@@ -173,7 +173,7 @@
               <mat-form-field>
                 <input matInput type="datetime"
                   placeholder="{{'LAST_RECORDED_HOUR' | translateMessage:translateCategory}}"
-                  [(ngModel)]="lastRecordedHour" (click)="onKeyUpEvent($event)" [disabled]='true'>
+                  [(ngModel)]="lastRecordedHour" (click)="onKeyUpEvent($event)" [disabled]="roleUser==='SUPPORT'? false : true">
               </mat-form-field>
             </div>
             <div class="col-3 row no-gutters">
@@ -369,7 +369,7 @@
             <div class="col">
               <mat-form-field>
                 <input matInput type="number" placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
-                  [(ngModel)]="selectDailyReport.steamingTime" [disabled]='true'>
+                  [(ngModel)]="selectDailyReport.steamingTime"  [disabled]="roleUser==='SUPPORT'? false : true">
               </mat-form-field>
             </div>
             <div class="col">
