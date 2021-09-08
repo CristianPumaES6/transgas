@@ -313,8 +313,9 @@ export class DashboardComponent implements OnInit {
 
         if (!result) throw 'ERROR_SELECT_USER';
 
-        let startDate = this.startDate.toString();
-        let endDate = this.endDate.toString();
+        let startDate = ConvertMoment(this.startDate).toString();
+        let endDate = ConvertMoment(this.endDate).toString();
+
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
       }
@@ -801,8 +802,8 @@ export class DashboardComponent implements OnInit {
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
 
-            let startDate = this.startDate.toString();
-            let endDate = this.endDate.toString();
+            let startDate = ConvertMoment(this.startDate).toString();
+            let endDate = ConvertMoment(this.endDate).toString();
             // Buscamos la info
             return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
           }
@@ -871,8 +872,8 @@ export class DashboardComponent implements OnInit {
     ).then(
       result => {
 
-        let startDate = this.startDate.toString();
-        let endDate = this.endDate.toString();
+        let startDate = ConvertMoment(this.startDate).toString();
+        let endDate = ConvertMoment(this.endDate).toString();
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
       }
@@ -1060,8 +1061,8 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-            let startDate = this.startDate.toString();
-            let endDate = this.endDate.toString();
+            let startDate = ConvertMoment(this.startDate).toString();
+            let endDate = ConvertMoment(this.endDate).toString();
             // Buscamos la info
             return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
           }
@@ -1143,8 +1144,8 @@ export class DashboardComponent implements OnInit {
         if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
 
-        let startDate = this.startDate.toString();
-        let endDate = this.endDate.toString();
+        let startDate = ConvertMoment(this.startDate).toString();
+        let endDate = ConvertMoment(this.endDate).toString();
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
       }
@@ -2830,8 +2831,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateReporteByDate();
 
 
-              let startDate = this.startDate.toString();
-              let endDate = this.endDate.toString();
+              let startDate = ConvertMoment(this.startDate).toString();
+              let endDate = ConvertMoment(this.endDate).toString();
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3007,8 +3008,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateReporteByDate();
 
 
-              let startDate = this.startDate.toString();
-              let endDate = this.endDate.toString();
+              let startDate = ConvertMoment(this.startDate).toString();
+              let endDate = ConvertMoment(this.endDate).toString();
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3187,8 +3188,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateReporteByDate();
 
 
-              let startDate = this.startDate.toString();
-              let endDate = this.endDate.toString();
+              let startDate = ConvertMoment(this.startDate).toString();
+              let endDate = ConvertMoment(this.endDate).toString();
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
