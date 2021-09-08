@@ -312,13 +312,15 @@ export class DashboardComponent implements OnInit {
       result => {
 
         if (!result) throw 'ERROR_SELECT_USER';
+ 
 
-        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
-        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
-        
-
+              // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+              let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
+              let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
+               
+         
         // Buscamos la info
-        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        return this.GetStartEndROByFilterDate(this.selectUserId, String(startDate), String(endDate)).pipe().toPromise();
       }
     ).then(
       result => {
@@ -1157,8 +1159,8 @@ export class DashboardComponent implements OnInit {
 
 
     
-        let startDate = ConvertMoment(this.startDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
-        let endDate = ConvertMoment(this.endDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
+        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
+        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss')+'Z';
         
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
