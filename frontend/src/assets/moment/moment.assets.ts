@@ -200,7 +200,7 @@ export function FisrtOldDayFromDate(dateUTC: any): any {
 
     if (!dateUTC) return null;
 
-    let momentDate = moment.utc(dateUTC, 'YYYY-MM-DD').local();
+    let momentDate = moment.utc(dateUTC).local();
 
     const startOfMonth = momentDate.startOf('month').format('YYYY-MM-DD HH:mm');
     const endOfMonth = momentDate.endOf('month').format('YYYY-MM-DD HH:mm');
