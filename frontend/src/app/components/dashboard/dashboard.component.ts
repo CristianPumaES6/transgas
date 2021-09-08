@@ -2837,8 +2837,9 @@ export class DashboardComponent implements OnInit {
               let result = FisrtOldDayFromDate(ubication);
 
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = ConvertMomentUTC(result.start).toDate();
-              this.endDate = ConvertMomentUTC(result.end).toDate();
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
               this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
@@ -2847,8 +2848,8 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
-              let startDate = ConvertMoment(result.start).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
-              let endDate = ConvertMoment(result.end).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
@@ -3013,12 +3014,16 @@ export class DashboardComponent implements OnInit {
               // Encapsulamos las ubicaciones.
               let date = this.dataMGO[index].x;
 
+              // Encapsulamos las ubicaciones.
+              let ubication = this.dataMGO[index].x;
+
               // retorna el primero y ultimo dia del mes de la fecha enviada.
-              let result = FisrtOldDayFromDate(date);
+              let result = FisrtOldDayFromDate(ubication);
 
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = ConvertMomentUTC(result.start).toDate();
-              this.endDate = ConvertMomentUTC(result.end).toDate();
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
               this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
@@ -3027,8 +3032,9 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
-              let startDate = ConvertMoment(result.start).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
-              let endDate = ConvertMoment(result.end).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3197,8 +3203,9 @@ export class DashboardComponent implements OnInit {
               let result = FisrtOldDayFromDate(ubication);
 
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = ConvertMomentUTC(result.start).toDate();
-              this.endDate = ConvertMomentUTC(result.end).toDate();
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
               this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
@@ -3207,12 +3214,11 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
-              let startDate = ConvertMoment(result.start).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
-              let endDate = ConvertMoment(result.end).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-
 
 
             } else if (this.selectSummaryBy === 'DAYS') {
