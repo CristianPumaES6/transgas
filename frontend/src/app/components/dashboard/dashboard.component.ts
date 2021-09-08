@@ -313,7 +313,7 @@ export class DashboardComponent implements OnInit {
 
         if (!result) throw 'ERROR_SELECT_USER';
 
-        let startDate =this.startDate.toString();
+        let startDate = this.startDate.toString();
         let endDate = this.endDate.toString();
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
@@ -476,7 +476,7 @@ export class DashboardComponent implements OnInit {
         fuelMgo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_mgo - this.getROBByUser.total_mgo, 2);
         fuelMgo.typeFuel = 'MGO';
         fuelMgo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_mgo - startDataROB.total_mgo, 2);
-        fuelMgo.startDate = FormatDateUTCToDateHour(this.startDate); 
+        fuelMgo.startDate = FormatDateUTCToDateHour(this.startDate);
         fuelMgo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoConsumption, 2);
         fuelMgo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoBunkering, 2);
         fuelMgo.endRob = this.MathRoundOneDecimal(fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo), 2);
@@ -858,7 +858,7 @@ export class DashboardComponent implements OnInit {
         startDate.minute(0)
 
         // Seteamos la ultima hora que tendria el dia
-        let endDate = ConvertMoment( this.endDate);
+        let endDate = ConvertMoment(this.endDate);
         endDate.hour(23)
         endDate.minute(59)
 
@@ -1059,7 +1059,7 @@ export class DashboardComponent implements OnInit {
           resultGenerateDashboard => {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
-            
+
             let startDate = this.startDate.toString();
             let endDate = this.endDate.toString();
             // Buscamos la info
@@ -2830,8 +2830,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateReporteByDate();
 
 
-              let startDate = this.startDate.toString() ;
-              let endDate =  this.endDate.toString() ;
+              let startDate = this.startDate.toString();
+              let endDate = this.endDate.toString();
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -2955,8 +2955,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true);
 
 
-              let startDate =  voyage.dayStart ;
-              let endDate =  voyage.dayEnd ;
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -2984,8 +2984,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true)
 
 
-              let startDate =  port.dayStart ;
-              let endDate =  port.dayEnd ;
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3007,8 +3007,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateReporteByDate();
 
 
-              let startDate =  this.startDate.toString() ;
-              let endDate =  this.endDate.toString() ;
+              let startDate = this.startDate.toString();
+              let endDate = this.endDate.toString();
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3131,8 +3131,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true)
 
 
-              let startDate =  voyage.dayStart ;
-              let endDate =  voyage.dayEnd ;
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3162,8 +3162,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true)
 
 
-              let startDate =  port.dayStart ;
-              let endDate =  port.dayEnd ;
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3187,8 +3187,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateReporteByDate();
 
 
-              let startDate =  this.startDate.toString() ;
-              let endDate =  this.endDate.toString() ;
+              let startDate = this.startDate.toString();
+              let endDate = this.endDate.toString();
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
