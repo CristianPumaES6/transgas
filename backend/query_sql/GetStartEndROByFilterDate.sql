@@ -14,7 +14,7 @@ WHERE
     AND port.status = 1
     AND voyage.status = 1   
     AND daily_report.userId = 2
-    AND datetime(daily_report.date) <= datetime('2021-09-01T05:00:00.000Z');
+    AND datetime(daily_report.date) < datetime('2021-09-01T05:00:00.000Z');
     
 
 
@@ -34,6 +34,6 @@ WHERE
     AND port.status = 1
     AND voyage.status = 1   
     AND daily_report.userId = 2
-    AND datetime(daily_report.date) > datetime('2021-09-01T05:00:00.000Z')
+    AND datetime(daily_report.date) >= datetime('2021-09-01T05:00:00.000Z')
     AND datetime(daily_report.date) <= datetime('2021-09-02T04:32:00.000Z')
     

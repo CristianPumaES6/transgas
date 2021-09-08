@@ -12,6 +12,12 @@ export function ConvertMoment(date): moment.Moment {
     return moment(date);
 }
 
+export function ConvertMomentUTC(dateUTC): moment.Moment {
+
+    // lo desencripto
+    return moment.utc(dateUTC);
+}
+
 
 // AL ser una class lo tengo que poner en el constructor para que pueda ser utilizado.
 export function GetDate(): any {
