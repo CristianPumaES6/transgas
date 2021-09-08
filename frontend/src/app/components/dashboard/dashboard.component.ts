@@ -37,7 +37,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING, FormatDateUTCToDateHour } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING, FormatDateUTCToDateHour, ConvertMoment } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -851,6 +851,16 @@ export class DashboardComponent implements OnInit {
         if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
         // Verificamos que la fecha inicio sea antes que la fecha fin.
         if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
+
+        // Setenemos el inicio de la hora que tendria la fecha.
+        let startDate = ConvertMoment(this.startDate);
+        startDate.hour(0)
+        startDate.minute(0)
+
+        // Seteamos la ultima hora que tendria el dia
+        let endDate = ConvertMoment( this.endDate);
+        endDate.hour(23)
+        endDate.minute(59)
 
         // avisamos, se esta seteando una fecha.
         this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
