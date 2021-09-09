@@ -187,7 +187,7 @@ export function TextMonthDayYearFormatYYYYMMDD(dateUTC: any): string {
 
     // Convertimos el string en formato moment,
     // Con el formato YYYY MM DD
-    let momentDate = moment.utc(dateUTC, 'YYYY-MM-DD').local();
+    let momentDate = moment.utc(dateUTC).local();
 
     let result = momentDate.format('MMMM') + ' ' + momentDate.format('DD') + ', ' + momentDate.format('YYYY')
 
