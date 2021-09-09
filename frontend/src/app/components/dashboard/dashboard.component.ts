@@ -884,8 +884,8 @@ export class DashboardComponent implements OnInit {
 
 
         // Ya que es un filtro por fecha, se obtiene mediante la fecha local del navegador.
-        startDate = ConvertMoment(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
-        endDate = ConvertMoment(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
@@ -1074,8 +1074,8 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-            let startDate = ConvertMoment(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
-            let endDate = ConvertMoment(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+            let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+            let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
             // Buscamos la info
             return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
