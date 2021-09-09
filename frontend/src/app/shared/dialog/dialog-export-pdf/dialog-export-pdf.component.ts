@@ -1582,19 +1582,19 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Agregamos la primera pagina,
           // El cual tiene resumido todo el reporte.
-          this.AddOnePage(doc, sVPR, gTTSOPA);
+          // ademas nos retorna la posicion del page.
+          let positionHeight = this.AddOnePage(doc, sVPR, gTTSOPA);
 
-          return true;
+          return positionHeight;
         })
       // overall performance
       .then(
-        result => {
-
-          // Inicializamos el height en 0,
-          let positionHeight = 0;
+        positionHeight => {
 
           // Se desea agregar el overall performance?
           if (this.addOverallPerformance) {
+            // Si se desea agregar el analisis general lo reseteamos en 0 la altura.
+            positionHeight = 0;
 
             // Los dos cuadros entran en una hora
             let isChartInOnePage = false;
@@ -1864,7 +1864,7 @@ export class DialogExportPdfComponent implements OnInit {
   }
 
   // agrega la primera Hoja con el resumen general.
-  private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis): jsPDF {
+  private AddOnePage(doc: jsPDF, sVPR: SummaryVesselPerformanceReport, gTSOPA: GenerateTableTotalSummaryOverallPerformanceAnalisis): number {
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
     // Posicion de altura del height.
@@ -1881,7 +1881,7 @@ export class DialogExportPdfComponent implements OnInit {
     contentOnePage += 12; // Nombre del buque
     contentOnePage += 14; // Fecha de inicio
     contentOnePage += 6; // Combustible.
-   
+
     contentOnePage += 10; // Total Voyage o Numero Voyage
     contentOnePage += 8; // Total Port
 
@@ -1896,10 +1896,10 @@ export class DialogExportPdfComponent implements OnInit {
     // tenga el mismo margen en la altura y bottom
     positionHeight += (heightPDF - contentOnePage) / 2;
     // Revisar Eliminar esto, es solo com referencia.
-/*     doc.setDrawColor(0);
-    doc.setFillColor(255, 255, 255);
-    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
- */
+    /*     doc.setDrawColor(0);
+        doc.setFillColor(255, 255, 255);
+        doc.rect(5, positionHeight, widthPDF - (5 * 2), contentOnePage, "FD");
+     */
     // ubicamos la imagen con un tamaño de 50 x 50
     let widthImage = 50;
     let heightImage = 50;
@@ -2017,7 +2017,7 @@ export class DialogExportPdfComponent implements OnInit {
     let titleTable = 'Overall Performance Analysis';
     this.GenerateTableTotalOverallPerformanceAnalisis(doc, widthPDF, heightPDF, positionWidth, positionHeight, gTSOPA, isViewBallast, isViewLaden, titleTable)
 
-    return doc;
+    return positionHeight;
   }
 
 
@@ -2588,10 +2588,10 @@ export class DialogExportPdfComponent implements OnInit {
     contentHeightTable += 25.8;
 
     // Revisar Eliminar esto, es solo com referencia.
-  /*   doc.setDrawColor(0);
-    doc.setFillColor(255, 255, 255);
-    doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
- */
+    /*   doc.setDrawColor(0);
+      doc.setFillColor(255, 255, 255);
+      doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
+   */
 
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
@@ -3926,10 +3926,10 @@ export class DialogExportPdfComponent implements OnInit {
 
 
     //RevisarEliminar esto, es solo com referencia.
-/*     doc.setDrawColor(0);
-    doc.setFillColor(255, 255, 255);
-    doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
- */
+    /*     doc.setDrawColor(0);
+        doc.setFillColor(255, 255, 255);
+        doc.rect(5, positionHeight, widthPDF - (5 * 2), contentHeightTable, "FD");
+     */
 
     // title
     // Agregar la formula para saber si es IFO VLSFO LSFO
@@ -6184,10 +6184,10 @@ export class DialogExportPdfComponent implements OnInit {
       });
 
     // Revisar Eliminar esto, es solo com referencia.
-/*     doc.setDrawColor(0);
-    doc.setFillColor(255, 255, 255);
-    doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
- */
+    /*     doc.setDrawColor(0);
+        doc.setFillColor(255, 255, 255);
+        doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
+     */
 
 
     // Agregar la formula para saber si es IFO VLSFO LSFO
@@ -8034,11 +8034,11 @@ export class DialogExportPdfComponent implements OnInit {
     contentHeightTable += 25.8;
 
     // Revisar Eliminar esto, es solo com referencia.
-/*     doc.setDrawColor(0);
-    doc.setFillColor(255, 255, 255);
-    doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
-
- */
+    /*     doc.setDrawColor(0);
+        doc.setFillColor(255, 255, 255);
+        doc.rect(2, positionHeight, widthPDF - (2 * 2), contentHeightTable, "FD");
+    
+     */
     // Agregar la formula para saber si es IFO VLSFO LSFO
     let typeConsumptionSelectBuqueIFO = (this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO');
 
