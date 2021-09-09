@@ -6308,24 +6308,24 @@ export class DialogExportPdfComponent implements OnInit {
             let totalMGO = this.SumaMgo(iDailyReport);
 
             // Obtenemos la velocidad real.
-            let sṕeedReal = iDailyReport.steamingTime ? iDailyReport.distance / iDailyReport.steamingTime : 0;
+            let speedReal = iDailyReport.steamingTime ? iDailyReport.distance / iDailyReport.steamingTime : 0;
 
             // Obtenemos la velocidad por charter IFO y MGO
             let speedCharterIFO: number = 0;
             let speedCharterMGO: number = 0;
             if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
               if (totalIFO) {
-                speedCharterIFO = this.selectUser.contractSpeedSailingBallastIFO;
+                speedCharterIFO = speedReal ? this.selectUser.contractSpeedSailingBallastIFO : 0;
               }
               if (totalMGO) {
-                speedCharterMGO = this.selectUser.contractSpeedSailingBallastMGO;
+                speedCharterMGO = speedReal ? this.selectUser.contractSpeedSailingBallastMGO : 0;
               }
             } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
               if (totalIFO) {
-                speedCharterIFO = this.selectUser.contractSpeedSailingLadenIFO;
+                speedCharterIFO = speedReal ? this.selectUser.contractSpeedSailingLadenIFO : 0;
               }
               if (totalMGO) {
-                speedCharterMGO = this.selectUser.contractSpeedSailingLadenMGO;
+                speedCharterMGO = speedReal ? this.selectUser.contractSpeedSailingLadenMGO : 0;
               }
             }
 
@@ -6350,17 +6350,17 @@ export class DialogExportPdfComponent implements OnInit {
             let dailyConsumptionCharterMGO = 0;
             if (iDailyReport.activityPerformed == 'SAILING_IN_BALLAST') {
               if (totalIFO) {
-                dailyConsumptionCharterIFO = this.selectUser.sailingBallastConsumptionIFO;
+                dailyConsumptionCharterIFO = dailyConsumptionIFO ? this.selectUser.sailingBallastConsumptionIFO : 0;
               }
               if (totalMGO) {
-                dailyConsumptionCharterMGO = this.selectUser.sailingBallastConsumptionMGO;
+                dailyConsumptionCharterMGO =dailyConsumptionMGO ? this.selectUser.sailingBallastConsumptionMGO : 0;
               }
             } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
               if (totalIFO) {
-                dailyConsumptionCharterIFO = this.selectUser.sailingLoadConsumptionIFO;
+                dailyConsumptionCharterIFO = dailyConsumptionIFO ? this.selectUser.sailingLoadConsumptionIFO : 0;
               }
               if (totalMGO) {
-                dailyConsumptionCharterMGO = this.selectUser.sailingLoadConsumptionMGO;
+                dailyConsumptionCharterMGO =dailyConsumptionMGO? this.selectUser.sailingLoadConsumptionMGO:0;
               }
             }
 
@@ -6425,10 +6425,10 @@ export class DialogExportPdfComponent implements OnInit {
 
             // Speed
             if (this.addInformationIFO) {
-              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(sṕeedReal, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
+              rowGenerit.push({ "content": totalIFO ? this.MathRoundDecimal(speedReal, 1) || '' : '', "colSpan": this.addInformationMGO ? 1 : 2 });
             }
             if (this.addInformationMGO) {
-              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(sṕeedReal, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
+              rowGenerit.push({ "content": totalMGO ? this.MathRoundDecimal(speedReal, 1) || '' : '', "colSpan": this.addInformationIFO ? 1 : 2 });
             }
 
 
