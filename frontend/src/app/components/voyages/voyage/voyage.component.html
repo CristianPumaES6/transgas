@@ -118,7 +118,7 @@
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'OBSERVATIONS' | translateMessage:translateCategory}}</th>
                     <th class="color-title-table blue-1 border align-top pt-1"></th>
-                    
+
                   </tr>
                 </thead>
                 <tbody>
@@ -173,13 +173,14 @@
               <mat-form-field>
                 <input matInput type="datetime"
                   placeholder="{{'LAST_RECORDED_HOUR' | translateMessage:translateCategory}}"
-                  [(ngModel)]="lastRecordedHour" (click)="onKeyUpEvent($event)" [disabled]="roleUser==='SUPPORT'? false : true">
+                  [(ngModel)]="lastRecordedHour" (click)="onKeyUpEvent($event)"
+                  [disabled]="roleUser==='SUPPORT'? false : true">
               </mat-form-field>
             </div>
             <div class="col-3 row no-gutters">
               <mat-form-field>
                 <mat-label>{{'DATE' | translateMessage:translateCategory}}</mat-label>
-                <input matInput [matDatepicker]="picker" [(ngModel)]="selectDailyReport.date"  (change)="onKeyUpEvent()">
+                <input matInput [matDatepicker]="picker" [(ngModel)]="selectDailyReport.date" (change)="onKeyUpEvent()">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker startView="year"></mat-datepicker>
               </mat-form-field>
@@ -188,7 +189,7 @@
 
               <mat-form-field>
                 <input matInput type="time" placeholder="{{'HOUR' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectDailyReport.hour"    (change)="onKeyUpEvent()">
+                  [(ngModel)]="selectDailyReport.hour" (change)="onKeyUpEvent()">
               </mat-form-field>
 
             </div>
@@ -220,7 +221,8 @@
                 [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
                 <div class="col row no-gutters">
                   <mat-form-field>
-                    <input matInput type="number" placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}} (MT)"
+                    <input matInput type="number"
+                      placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}} (MT)"
                       [(ngModel)]="selectDailyReport.bunkeringIfo">
                   </mat-form-field>
                 </div>
@@ -368,8 +370,9 @@
 
             <div class="col">
               <mat-form-field>
-                <input matInput type="number" placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
-                  [(ngModel)]="selectDailyReport.steamingTime"  [disabled]="roleUser==='SUPPORT'? false : true">
+                <input matInput type="number"
+                  placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
+                  [(ngModel)]="selectDailyReport.steamingTime" [disabled]="roleUser==='SUPPORT'? false : true">
               </mat-form-field>
             </div>
             <div class="col">
