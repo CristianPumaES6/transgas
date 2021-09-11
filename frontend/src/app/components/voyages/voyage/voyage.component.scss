@@ -2,6 +2,17 @@
 .PerfectScrollbar-reportTable{
   overflow: scroll;
 }
+
+.cont-speed-straction {
+  label {   
+    color: rgba(0,0,0,.54);
+    padding-bottom: 0;
+    margin-bottom: 0;
+    line-height: 1;
+    font-size: 10px;
+  }
+}
+
 .modi {
   &.table {
     overflow: hidden hidden;

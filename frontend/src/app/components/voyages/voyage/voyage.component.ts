@@ -714,7 +714,7 @@ export class VoyageComponent implements OnInit {
         newDailyReport.userId = this.selectUser.id;
         newDailyReport.portId = this.selectPort.id;
         // Le agregamos la hora a la fecha.
-        newDailyReport.date  = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
+        newDailyReport.date = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
         newDailyReport.status = true;
 
         this.CreateDailyReportOnlineOffline(newDailyReport);
@@ -722,8 +722,8 @@ export class VoyageComponent implements OnInit {
       } else {
         let dailyReportToSave = this.selectDailyReport;
         // Le agregamos la hora a la fecha.
-        dailyReportToSave.date  = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
-       
+        dailyReportToSave.date = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
+
         this.UpdateDailyReportOnelineOffline(dailyReportToSave);
 
       }
@@ -2421,6 +2421,9 @@ export class VoyageComponent implements OnInit {
         )
       }
 
+      // ya que se inicia un formulario editable o un nuevo reporte, verificamos los cambios de la actividad.
+      this.ChangeActivityPerformed();
+
       // actualizo el valor del InitializeSailingAnality.
       this.initialDailyReport = this.Collect();
     }
@@ -2551,5 +2554,20 @@ export class VoyageComponent implements OnInit {
     return result;
   }
 
+  public ChangeActivityPerformed() {
+    console.log('ChangeActivityPerformed()')
+    if (
+      this.selectDailyReport.activityPerformed !== 'SAILING_IN_BALLAST' &&
+      this.selectDailyReport.activityPerformed !== 'SAILING_WITH_LADEN' &&
+      this.selectDailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION') {
+      this.selectDailyReport.speedStraction = '';
+    }
+    if (
+      this.selectDailyReport.activityPerformed === 'SAILING_IN_BALLAST' ||
+      this.selectDailyReport.activityPerformed === 'SAILING_WITH_LADEN' ||
+      this.selectDailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+      this.selectDailyReport.speedStraction = 'FULL_SPEED';
+    }
+  }
 
 }
