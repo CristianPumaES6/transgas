@@ -2564,9 +2564,12 @@ export class VoyageComponent implements OnInit {
     }
     if (
       this.selectDailyReport.activityPerformed === 'SAILING_IN_BALLAST' ||
-      this.selectDailyReport.activityPerformed === 'SAILING_WITH_LADEN' ||
-      this.selectDailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') {
+      this.selectDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
       this.selectDailyReport.speedStraction = 'FULL_SPEED';
+    } else if (
+      this.selectDailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION'
+    ) {
+      this.selectDailyReport.speedStraction = 'ECO_SPEED';
     }
   }
 
