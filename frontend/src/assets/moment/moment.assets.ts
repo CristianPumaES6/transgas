@@ -18,6 +18,9 @@ export function ConvertMomentUTC(dateUTC): moment.Moment {
     return moment.utc(dateUTC);
 }
 
+export function ConvertMMDDYYYYHHmmToMomment(dateMMDDYYYYHHmm):moment.Moment {
+    return moment(dateMMDDYYYYHHmm,'MM/DD/YYYY HH:mm');
+}
 
 // AL ser una class lo tengo que poner en el constructor para que pueda ser utilizado.
 export function GetDate(): any {

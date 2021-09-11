@@ -24,7 +24,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { ConvertMoment, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMoment, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -2441,9 +2441,8 @@ export class VoyageComponent implements OnInit {
   private GenerateTimeOperation(): void {
 
     let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
-    let momendate = ConvertMoment(this.lastRecordedHour);
-
-
+    let momendate = ConvertMMDDYYYYHHmmToMomment(this.lastRecordedHour);
+ 
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
 
 
