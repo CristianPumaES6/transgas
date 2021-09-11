@@ -2416,13 +2416,14 @@ export class VoyageComponent implements OnInit {
             this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
 
 
+            // ya que se inicia un nuevo reporte, verificamos los cambios de la actividad.
+            this.ChangeActivityPerformed();
+
             this.GenerateTimeOperation();
           }
         )
-      }
+      } 
 
-      // ya que se inicia un formulario editable o un nuevo reporte, verificamos los cambios de la actividad.
-      this.ChangeActivityPerformed();
 
       // actualizo el valor del InitializeSailingAnality.
       this.initialDailyReport = this.Collect();
