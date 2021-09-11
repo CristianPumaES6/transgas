@@ -24,6 +24,9 @@ export class DailyReport {
     // actividad Registrada
     @Column({ default: "Otros" })
     activityPerformed: string;
+    
+    @Column({ default: '' , nullable: false })
+    speedStraction: number;
 
     // Fecha de registro
     @Column()

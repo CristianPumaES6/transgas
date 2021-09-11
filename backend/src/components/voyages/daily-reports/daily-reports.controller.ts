@@ -123,7 +123,18 @@ export class DailyReportsController {
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
-                if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id) {
+                if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id
+                    // Y speed estraction oslo debe existir si se tiene una actividad de navegacion, caso contrario deberia estar vacio.
+                    && (
+                            ((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                            && dailyReport.speedStraction)
+                            || 
+                            ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                            && !dailyReport.speedStraction)
+                        )
+                    ) {
+                    
+
 
                     // Si eres un buque 
                     if (headerToken.role === 'BUQUE') {
@@ -197,8 +208,16 @@ export class DailyReportsController {
 
 
                 // Validamos los datos del objeto a registar.
-                if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id) {
-
+                if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id  
+                       // Y speed estraction oslo debe existir si se tiene una actividad de navegacion, caso contrario deberia estar vacio.
+                        && (
+                            ((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                            && dailyReport.speedStraction)
+                            || 
+                            ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                            && !dailyReport.speedStraction)
+                        )
+                    ) {
 
                     if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
 

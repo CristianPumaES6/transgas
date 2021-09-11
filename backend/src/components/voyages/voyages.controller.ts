@@ -611,6 +611,9 @@ export class VoyagesController {
                 newReport.activityPerformed = 'OTHER_ACT';
             }
 
+            // Tipo de velocidad.
+            newReport.speedStraction = importVoyage.speedStraction;
+
             // Auditoria.
             newReport.userIdCreated = headerToken.id;
             newReport.dateCreated = GetDate();
