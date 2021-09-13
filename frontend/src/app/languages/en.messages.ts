@@ -425,7 +425,9 @@ export const dashboard: any = {
     TOOLTIP_BUNKERING_IFO: 'Total bunkering.',
     TOOLTIP_BUNKERING_MGO: 'Total bunkering.',
     TOOLTIP_ROB_IFO: 'ROB',
-    TOOLTIP_ROB_MGO: 'ROB'
+    TOOLTIP_ROB_MGO: 'ROB',
+    ECO_SPEED: 'Eco',
+    FULL_SPEED: 'Full'
 }
 
 export const dialog: any = {
@@ -482,7 +484,9 @@ export const dialog: any = {
     VOYAGE_SUMMARY: 'Voyage Summary (Speed, Consumption)',
     VOYAGE_SUMMARY_CONSUMPTION: 'Voyage Summary (Consumption)',
     CHART_VOYAGE_SUMMARY: 'Chart Voyage Summary',
-    BUNKERING_INFORMATION: 'Bunkering Information'
+    BUNKERING_INFORMATION: 'Bunkering Information',
+    ECO_SPEED: 'Eco',
+    FULL_SPEED: 'Full'
 }
 
 export const guards: any = {

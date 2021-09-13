@@ -6297,9 +6297,9 @@ export class DialogExportPdfComponent implements OnInit {
             // Tipo de navegacion
             let typeNavigation = '';
             if (iDailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
-              typeNavigation = '(Ballast)';
+              typeNavigation = '(Ballast/'+this.languageService.GetMessage(this.translateCategory, iDailyReport.speedStraction)+')';
             } else if (iDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
-              typeNavigation = '(Laden)';
+              typeNavigation = '(Laden/'+this.languageService.GetMessage(this.translateCategory, iDailyReport.speedStraction)+')';
             }
             let rowGenerit = [];
 
@@ -6353,14 +6353,14 @@ export class DialogExportPdfComponent implements OnInit {
                 dailyConsumptionCharterIFO = dailyConsumptionIFO ? this.selectUser.sailingBallastConsumptionIFO : 0;
               }
               if (totalMGO) {
-                dailyConsumptionCharterMGO =dailyConsumptionMGO ? this.selectUser.sailingBallastConsumptionMGO : 0;
+                dailyConsumptionCharterMGO = dailyConsumptionMGO ? this.selectUser.sailingBallastConsumptionMGO : 0;
               }
             } else if (iDailyReport.activityPerformed == 'SAILING_WITH_LADEN') {
               if (totalIFO) {
                 dailyConsumptionCharterIFO = dailyConsumptionIFO ? this.selectUser.sailingLoadConsumptionIFO : 0;
               }
               if (totalMGO) {
-                dailyConsumptionCharterMGO =dailyConsumptionMGO? this.selectUser.sailingLoadConsumptionMGO:0;
+                dailyConsumptionCharterMGO = dailyConsumptionMGO ? this.selectUser.sailingLoadConsumptionMGO : 0;
               }
             }
 

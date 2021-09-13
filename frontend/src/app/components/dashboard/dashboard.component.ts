@@ -3876,7 +3876,7 @@ export class DashboardComponent implements OnInit {
             let beaufour = '';
 
             dataExtra.forEach((report: DailyReport) => {
-              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed)+(report.speedStraction?'/'+this.languageService.GetMessage(this.translateCategory, report.speedStraction):'');
               observations = observations + ', ' + report.observation;
               speed.add(report.distance, report.steamingTime);
               totalReport = totalReport + 1;
