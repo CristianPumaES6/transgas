@@ -329,9 +329,6 @@ export class DashboardComponent implements OnInit {
 
         // Activamos el loading.
         this.loadingService.Close();
-
-
-        return this.OpenDialogExportPDF(this.getVoyages, this.selectUser);
       }
     ).catch(
       err => {
