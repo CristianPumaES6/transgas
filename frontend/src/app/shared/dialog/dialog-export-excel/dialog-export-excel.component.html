@@ -1,19 +1,57 @@
 <div class="az-content-breadcrumb lh-1 mg-b-2 pl-0">
-    <span>dashboard</span>
-    <span>export Excel</span>
-    <span>{{this.data.dateStart}}</span>
-    <span>{{this.data.dateEnd}}</span>
-  </div>
-  
-  <mat-horizontal-stepper linear #stepper>
+  <span>dashboard</span>
+  <span>export Excel</span>
+  <span>{{this.data.dateStart}}</span>
+  <span>{{this.data.dateEnd}}</span>
+</div>
 
-    <mat-step [completed]="isFirstCompleted" label="Excel options" state="pdfOption">
-      
-    </mat-step>
-  
-    <mat-step label="PDF preview" state="pdfView">
-  
-  
-    </mat-step>
-  
-  </mat-horizontal-stepper>
+<mat-horizontal-stepper linear #stepper>
+  <mat-step [completed]="isFirstCompleted" label="Excel options" state="pdfOption">
+
+    <div class="az-content p-0">
+
+      <h5>
+        {{'REPORT_INFORMATION' | translateMessage:translateCategory}}
+      </h5>
+
+      <div class="row ml-1 lh-1 mg-b-4 pl-0">
+        <mat-radio-group>
+          <mat-radio-button class="ml-1" value="OVERALL_PERFORMANCE">{{'OVERALL_PERFORMANCE' |
+            translateMessage:translateCategory}}
+          </mat-radio-button>
+          <br>
+          <mat-radio-button class="ml-1" value="CHART_VOYAGE_SUMMARY">{{'CHART_VOYAGE_SUMMARY' |
+            translateMessage:translateCategory}}
+          </mat-radio-button>
+          <br>
+          <mat-radio-button class="ml-1" value="VOYAGE_SUMMARY">{{'VOYAGE_SUMMARY' |
+            translateMessage:translateCategory}}
+          </mat-radio-button>
+          <br>
+          <mat-radio-button class="ml-1" value="BUNKERING_INFORMATION">{{'BUNKERING_INFORMATION' |
+            translateMessage:translateCategory}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-6 ">
+
+        <button mat-raised-button color="primary" matStepperNext (click)="ClickDownloading()">
+          {{'DOWNLOAD' | translateMessage:translateCategory}}
+          <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
+        </button>
+
+      </div>
+    </div>
+
+
+  </mat-step>
+  <mat-step label="PDF preview" state="pdfView">
+
+
+  </mat-step>
+
+</mat-horizontal-stepper>

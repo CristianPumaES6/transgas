@@ -486,7 +486,8 @@ export const dialog: any = {
     CHART_VOYAGE_SUMMARY: 'Chart Voyage Summary',
     BUNKERING_INFORMATION: 'Bunkering Information',
     ECO_SPEED: 'Eco',
-    FULL_SPEED: 'Full'
+    FULL_SPEED: 'Full',
+    DOWNLOAD: 'DOWNLOADING'
 }
 
 export const guards: any = {

@@ -22,6 +22,10 @@ export class DialogExportExcelComponent implements OnInit {
   // el primer paso esta completado, si es asi el segundo paso se habilita.
   public isFirstCompleted: boolean = false;
   
+  // Traducciones
+  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public translateCategory: string = 'dialog';
+
   constructor(
     // Dialog referencia es el mismo.
     public dialogRef: MatDialogRef<DialogExportExcelComponent>,
@@ -38,4 +42,9 @@ export class DialogExportExcelComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
+  public ClickDownloading(){
+    console.log('cLick');
+    
+  }
 }
