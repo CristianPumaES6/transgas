@@ -1,14 +1,15 @@
 <div class="az-content-breadcrumb lh-1 mg-b-2 pl-0">
   <span>dashboard</span>
   <span>export Excel</span>
-  <span>{{this.data.dateStart}}</span>
-  <span>{{this.data.dateEnd}}</span>
+  <span>{{this.data.dateStartUTC}}</span>
+  <span>{{this.data.dateEndUTC}}</span>
 </div>
 
 <mat-horizontal-stepper linear #stepper>
   <mat-step [completed]="isFirstCompleted" label="Excel options" state="pdfOption">
 
     <div class="az-content p-0">
+
 
       <h5>
         {{'REPORT_INFORMATION' | translateMessage:translateCategory}}

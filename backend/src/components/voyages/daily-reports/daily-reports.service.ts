@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetROBByUser } from '../../../models/daily-report.entity';
+import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
@@ -307,6 +307,69 @@ export class DailyReportsService {
     }
 
 
+    // Retorna todos los viajes segun filtro.
+    async GetReportVoyagePortDaily(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+
+                .select('voyage.userId', 'userId')
+                .addSelect('voyage.year', 'year')
+                .addSelect('voyage.id', 'voyageId')
+                .addSelect('voyage.voyageNumber', 'voyageNumber')
+
+                .addSelect('port.id', 'portId')
+                .addSelect('port.portNumber', 'portNumber')
+                .addSelect('port.departurePort', 'departurePort')
+                .addSelect('port.arrivalPort', 'arrivalPort')
+
+
+                .addSelect('daily_report.id', 'daily_reportId')
+                .addSelect('daily_report.date', 'date')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.steamingTime', 'steamingTime')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.speedStraction', 'speedStraction')
+                .addSelect('daily_report.observation', 'observation')
+
+                .addSelect('daily_report.mplaIfo', 'mplaIfo')
+                .addSelect('daily_report.auxIfo', 'auxIfo')
+                .addSelect('daily_report.boilerIfo', 'boilerIfo')
+                .addSelect('daily_report.otherIfo', 'otherIfo')
+                .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+
+                .addSelect('daily_report.mplaMgo', 'mplaMgo')
+                .addSelect('daily_report.auxMgo', 'auxMgo')
+                .addSelect('daily_report.boilerMgo', 'boilerMgo')
+                .addSelect('daily_report.ppMgo', 'ppMgo')
+                .addSelect('daily_report.giMgo', 'giMgo')
+                .addSelect('daily_report.otherMgo', 'otherMgo')
+                .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
+
+
+                .innerJoin('daily_report.port', 'port')
+                .innerJoin('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                .getRawMany()
+                .then(
+                    (result: any) => {
+                        // Verificamos que el resultado no este vacio.
+                        if (!result) throw 'ERROR GetReportVoyagePortDaily';
+
+                        return result;
+                    }
+                );
+    }
+
     // Obtener la informacion de combustible, consumo y faena.
     async GetInfoVoyageROBAndBunkeringByBuqueAndDate(startDate: Date, endDate: Date, userId: number): Promise<GetInfoVoyageROBBunkering[]> {
 
@@ -398,7 +461,7 @@ export class DailyReportsService {
                                     let getInfoBunkering: GetInfoBunkering = new GetInfoBunkering();
 
                                     getInfoBunkering.portId = item.portId;
-                                    getInfoBunkering.portNumber  = item.portNumber;
+                                    getInfoBunkering.portNumber = item.portNumber;
                                     getInfoBunkering.portDeparture = item.portDeparture;
                                     getInfoBunkering.daily_reportId = item.daily_reportId;
                                     getInfoBunkering.dailyReportDate = item.dailyReportDate;
@@ -411,7 +474,7 @@ export class DailyReportsService {
                                 }
                             );
 
-                            
+
                             listGetInfoVoyageROBBunkering.push(getInfoVoyageROBBunkering);
                         }
                     );

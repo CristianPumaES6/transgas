@@ -24,8 +24,8 @@ export class DailyReport {
     // actividad Registrada
     @Column({ default: "Otros" })
     activityPerformed: string;
-    
-    @Column({ default: '' , nullable: false })
+
+    @Column({ default: '', nullable: false })
     speedStraction: number;
 
     // Fecha de registro
@@ -278,7 +278,7 @@ export class GetReportVoyagePortDaily {
         this.boilerIfo = boilerIfo || 0;
         this.otherIfo = otherIfo || 0;
         this.bunkeringIfo = bunkeringIfo || 0;
-        
+
         // Consumo MGO
         this.mplaMgo = mplaMgo || 0;
         this.auxMgo = auxMgo || 0;
@@ -289,6 +289,5 @@ export class GetReportVoyagePortDaily {
         this.bunkeringMgo = bunkeringMgo || 0;
 
     }
-
 
 }
