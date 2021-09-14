@@ -253,7 +253,7 @@ export class DailyReportService {
                 (response: any) => {
                     // Verifico si la respuesta fue correcta.
                     if (response.status && response.status === 200) {
-                        debugger
+                        
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
