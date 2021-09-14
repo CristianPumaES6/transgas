@@ -4246,10 +4246,15 @@ export class DashboardComponent implements OnInit {
 
   private OpenDialogExportExcel(selectUser: User, startDate:Date, endDate:Date):boolean {
 
+        // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+        let mommentStartDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let mommentEndDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+
     let dialogReport: IDialogExportExcel = {
-      selectUser :selectUser,
-      dateStart: startDate,
-      dateEnd: endDate 
+      selectUser: selectUser,
+      dateStartUTC: mommentStartDate,
+      dateEndUTC: mommentEndDate
     };
 
 

@@ -10,8 +10,8 @@ import { FormatDateUTCToDateHour } from 'src/assets/moment/moment.assets';
 // Interface de los input del componente.
 export interface IDialogExportExcel {
   selectUser: User,
-  dateStart: string,
-  dateEnd: string
+  dateStartUTC: string,
+  dateEndUTC: string
 }
 
 @Component({
@@ -51,8 +51,8 @@ export class DialogExportExcelComponent implements OnInit {
 
 
     // Fecha de inicio.
-    let dateStart = FormatDateUTCToDateHour(this.data.dateStart);
-    let dateEnd = FormatDateUTCToDateHour(this.data.dateEnd)
+    let dateStart = this.data.dateStartUTC;
+    let dateEnd = this.data.dateEndUTC;
     
     this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd);
   }

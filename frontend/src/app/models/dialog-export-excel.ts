@@ -9,11 +9,17 @@ export class GetReportVoyagePortDaily {
         public voyageNumber?: number,
         public portId?: number,
         public portNumber?: number,
+        public departurePort?: string,
+        public arrivalPort?: string,
+
         public dailyReportId?: number,
         // Fecha de registro
         public date?: Date,
         // Hora
         public hour?: string,
+        // Tempo transcurrido
+        public steamingTime?: number,
+
         // Actividades realizada
         public activityPerformed?: string,
         //  SpeedStraction ECO_SPEED | FULL_SPEED
@@ -21,8 +27,6 @@ export class GetReportVoyagePortDaily {
         // Observaciones
         public observation?: string,
 
-        // Tempo transcurrido
-        public steamingTime?: number,
         // beaufour
         public beaufour?: string,
 
@@ -58,20 +62,27 @@ export class GetReportVoyagePortDaily {
         this.voyageNumber = voyageNumber || 0;
         this.portId = portId || 0;
         this.portNumber = portNumber || 0;
+        this.departurePort = departurePort || '';
+        this.arrivalPort = arrivalPort || '';
+
         this.dailyReportId = dailyReportId || 0;
         this.date = date || null;
         this.hour = hour || '';
+        this.steamingTime = steamingTime || 0;
+
         this.activityPerformed = activityPerformed || '';
         this.speedStraction = speedStraction || '';
         this.observation = observation || '';
-        this.steamingTime = steamingTime || 0;
+
         this.beaufour = beaufour || '';
+
         // Consumo IFO
         this.mplaIfo = mplaIfo || 0;
         this.auxIfo = auxIfo || 0;
         this.boilerIfo = boilerIfo || 0;
         this.otherIfo = otherIfo || 0;
         this.bunkeringIfo = bunkeringIfo || 0;
+        
         // Consumo MGO
         this.mplaMgo = mplaMgo || 0;
         this.auxMgo = auxMgo || 0;

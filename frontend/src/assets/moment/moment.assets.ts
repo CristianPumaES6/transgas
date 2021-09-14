@@ -258,7 +258,7 @@ export function FormatDateUTCToDateHour(dateUTC:any): string{
 
     let local = momentDate.local();
 
-    let format =local.format('MM/DD/YYYY HH:mm');
+    let format = local.format('MM/DD/YYYY HH:mm');
     
     return format;
 }
