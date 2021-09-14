@@ -25,6 +25,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { DialogExportPdfComponent } from '../shared/dialog/dialog-export-pdf/dialog-export-pdf.component';
 import { HelpsComponent } from '../components/helps/helps.component';
 import { DashboardBunkeringComponent } from '../components/dashboard/dashboard-bunkering/dashboard-bunkering.component';
+import { DialogExportExcelComponent } from '../shared/dialog/dialog-export-excel/dialog-export-excel.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { DashboardBunkeringComponent } from '../components/dashboard/dashboard-b
     DialogExportPdfComponent,
     HelpsComponent,
     DashboardBunkeringComponent,
+    DialogExportExcelComponent,
   ],
   imports: [
     GlobalModule,
