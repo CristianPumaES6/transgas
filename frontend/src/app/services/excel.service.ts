@@ -317,12 +317,93 @@ export class ExcelService {
 
   // Opcion que exporta el excel.
   public async ExportExcel(selectUserId: number, startDate: string, endDate: string) {
+
+    const title = 'CONSUMPTION FORMAT';
+    const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
+
+
+    // Creamos una nueva hoja de trabajo
+    let workbook = new Workbook();
+    workbook.creator = 'transgas.web.app';
+
+
+    let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+
     return await Promise.resolve(true)
       .then(
         result => {
           // Buscamos la informacion del combustible de inicio y fin segun la fecha.
           return this.GetReportVoyagePortDaily(selectUserId, startDate, endDate).pipe().toPromise();
-        })
+        }).then(
+          result => {
+            if (!result) throw 'ERROR GER REPORT';
+            listGetReportVoyagePortDaily = result;
+
+            this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily[0])
+            for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
+              /* 
+              this.ReportVoyage(workbook,title,getReportVoyagePortDaily)
+              */
+            }
+
+            // Escribimos el excel
+            workbook.xlsx.writeBuffer().then((data) => {
+              let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+              fs.saveAs(blob, 'Report.xlsx');
+            });
+
+          }
+        )
+  }
+
+  private ReportVoyage(workbook: Workbook, title: string, getReportVoyagePortDaily: GetReportVoyagePortDaily): Workbook {
+
+    // Creamos la hoja de trabajo.
+    let worksheet = workbook.addWorksheet('Voyage ' + getReportVoyagePortDaily.voyageNumber);
+
+
+
+    worksheet.columns = [
+      { width: 10 },
+      { width: 30 },
+      { width: 30 },
+      { width: 18 },
+      { width: 10 },
+      { width: 25 },// Activity
+      { width: 30 },// Observaciones
+      { width: 10 },// Distance
+      { width: 10 },// Time
+      { width: 10 },// Speed
+      { width: 15 },// Befourt
+      { width: 7 },// M.E
+      { width: 7 },// A.E
+      { width: 7 },// Boiler
+      { width: 10 },// Total
+      { width: 7 },// M.E
+      { width: 7 },// A.E
+      { width: 7 },// Boiler
+      { width: 7 },// P.P
+      { width: 7 },// G.I
+      { width: 10 },// Total
+    ];
+
+
+    // Agregamos una fila con el titulo
+    let titleRow = worksheet.addRow([title]);
+    // Le agregamos un font
+    titleRow.font = { name: 'Arial Black', family: 2, size: 16, underline: 'double', bold: true };
+    // unir celdas
+    worksheet.mergeCells('A1:F1');
+    worksheet.addRow([]);
+
+    worksheet.addRow([
+      '', '', '', '', '', '', '',
+      'NAVIGATION DATA', '', '', '',
+      'VLSFO CONSUMPTION IN MT', '', '', '',
+      'MGO CONSUMPTION IN MT'
+    ]);
+
+    return workbook;
   }
 
   // Agrega el reporte al excel.
