@@ -1,1 +1,19 @@
-<p>dialog-export-excel works!</p>
+<div class="az-content-breadcrumb lh-1 mg-b-2 pl-0">
+    <span>dashboard</span>
+    <span>export Excel</span>
+    <span>{{this.data.dateStart}}</span>
+    <span>{{this.data.dateEnd}}</span>
+  </div>
+  
+  <mat-horizontal-stepper linear #stepper>
+
+    <mat-step [completed]="isFirstCompleted" label="Excel options" state="pdfOption">
+      
+    </mat-step>
+  
+    <mat-step label="PDF preview" state="pdfView">
+  
+  
+    </mat-step>
+  
+  </mat-horizontal-stepper>

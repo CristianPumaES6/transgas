@@ -56,6 +56,7 @@ import * as Html2canvas from 'html2canvas';
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
 import { OnlineOfflineService } from '../../services/online-offline.service';
+import { DialogExportExcelComponent, IDialogExportExcel } from 'src/app/shared/dialog/dialog-export-excel/dialog-export-excel.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -1207,7 +1208,7 @@ export class DashboardComponent implements OnInit {
 
 
         // Generatamos el report daily.
-        return this.excelService.ExportReportDaily(this.generateVoyages);
+        return this.OpenDialogExportExcel(this.selectUser,this.startDate,this.endDate);
 
       }
     ).then(
@@ -4242,5 +4243,32 @@ export class DashboardComponent implements OnInit {
 
   }
 
+
+  private OpenDialogExportExcel(selectUser: User, startDate:Date, endDate:Date):boolean {
+
+    let dialogReport: IDialogExportExcel = {
+      selectUser :selectUser,
+      dateStart: startDate,
+      dateEnd: endDate 
+    };
+
+
+    const dialogRef = this.dialog.open(DialogExportExcelComponent, {
+      data: dialogReport
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+
+          // alert('OKK');
+        }
+      });
+    
+      return true;
+
+  }
 
 }
