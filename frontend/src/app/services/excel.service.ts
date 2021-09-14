@@ -2,10 +2,15 @@ import { Injectable } from '@angular/core';
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 import { promise } from 'protractor';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { mathRound } from '../../assets/math/math.assets';
 import { FormatDate } from '../../assets/moment/moment.assets';
 import { ActivityPerformed } from '../models/dashboard';
+import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
+import { User } from '../models/user';
 import { Voyage } from '../models/voyage';
+import { DailyReportService } from './daily-report.service';
 import { LanguageService } from './language.service';
 
 @Injectable({
@@ -15,8 +20,10 @@ export class ExcelService {
 
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dashboard';
+
   constructor(
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private dailyReportService: DailyReportService,
   ) { }
 
   public GenerateExcel() {
@@ -308,6 +315,43 @@ export class ExcelService {
 
   };
 
+  // Opcion que exporta el excel.
+  public async ExportExcel(selectUserId: number, startDate: string, endDate: string) {
+    return await Promise.resolve(true)
+      .then(
+        result => {
+          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+          return this.GetReportVoyagePortDaily(selectUserId, startDate, endDate).pipe().toPromise();
+        })
+  }
+
+  // Agrega el reporte al excel.
+  public async ReportDaily(selectUser: User, startDate: Date, endDate: Date): Promise<boolean> {
+
+    return await Promise.resolve(true).then(
+      result => {
+
+        // Seleccionamos al usuairo segun el selectUserId
+        return true;
+      }
+    )
+  }
+
+  // Obtenemos la info de todos los viajes agregado.
+  private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetReportVoyagePortDailyByUserIdAndDate(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+
+
+        return resultGetROBByUser;
+      }
+    ));
+
+  }
 
   private StyleCellHeader(worksheet: any, cell: string, bg: string) {
     // Border
