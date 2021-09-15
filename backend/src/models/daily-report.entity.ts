@@ -223,6 +223,7 @@ export class GetReportVoyagePortDaily {
         // Observaciones
         public observation?: string,
 
+        public distance?: number,
         // beaufour
         public beaufour?: string,
 
@@ -270,6 +271,7 @@ export class GetReportVoyagePortDaily {
         this.speedStraction = speedStraction || '';
         this.observation = observation || '';
 
+        this.distance = distance || 0;
         this.beaufour = beaufour || '';
 
         // Consumo IFO
