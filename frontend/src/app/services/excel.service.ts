@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TableProperties, Workbook } from 'exceljs';
- 
+
 import * as fs from 'file-saver';
 import { promise } from 'protractor';
 import { Observable } from 'rxjs';
@@ -318,18 +318,18 @@ export class ExcelService {
 
   // Opcion que exporta el excel.
   public async ExportExcel(selectUserId: number, startDate: string, endDate: string) {
-/*   
-const wb = new Workbook();
+    /*   
+    const wb = new Workbook();
+    
+    
+      // Escribimos el excel
+      wb.xlsx.writeBuffer().then((data) => {
+        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        fs.saveAs(blob, 'Report.xlsx');
+      });
+     */
 
-
-  // Escribimos el excel
-  wb.xlsx.writeBuffer().then((data) => {
-    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    fs.saveAs(blob, 'Report.xlsx');
-  });
- */
-
-      const title = 'CONSUMPTION FORMAT';
+    const title = 'CONSUMPTION FORMAT';
     const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
 
 
@@ -352,7 +352,7 @@ const wb = new Workbook();
 
             this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily)
             for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
-      
+
             }
 
             // Escribimos el excel
@@ -362,50 +362,71 @@ const wb = new Workbook();
             });
 
           }
-        ) 
+        )
   }
 
   private ReportVoyage(workbook: Workbook, title: string, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): Workbook {
 
-    
-    
+
+
     // Creamos la hoja de trabajo.
     let worksheet = workbook.addWorksheet('Voyage ' + 2);
     //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
     debugger
 
     let tableProperties: TableProperties = <TableProperties>{};
-    
+
     tableProperties = {
       name: 'TestTable',
       ref: 'A4',
-      headerRow: false,
-      totalsRow: false,
+      headerRow: true,
+      totalsRow: true,
       style: {
         theme: 'TableStyleDark3',
         showRowStripes: true,
       },
       columns: [
-        {name: 'Voyage', totalsRowLabel: 'Totally', filterButton: true},
-        {name: 'Date', totalsRowLabel: 'Totally', filterButton: true},
-        {name: 'Hour', totalsRowLabel: 'Totally', filterButton: true},
-        {name: 'Activity Performed', totalsRowLabel: 'Totally', filterButton: true},
-        {name: 'Observation', totalsRowLabel: 'Totally', filterButton: true}, 
+        { name: 'Voyage', filterButton: false },
+        { name: 'Date', filterButton: false },
+        { name: 'Hour', filterButton: false },
+        { name: 'Time', totalsRowFunction: 'sum', filterButton: true },
+        { name: 'Activity Performed', filterButton: true },
+        { name: 'Observation', filterButton: false },
+
+        { name: 'Distance', filterButton: false },
+        { name: 'Time Navigation', filterButton: false },
+        { name: 'Speed', filterButton: false },
+        { name: 'Beaufort', filterButton: false },
+
+        { name: 'mplaIfo', filterButton: false },
+        { name: 'auxIfo', filterButton: false },
+        { name: 'boilerIfo', filterButton: false },
+        { name: 'otherIfo', filterButton: false },
+        { name: 'bunkeringIfo', filterButton: false },
+
+        { name: 'mplaMgo', filterButton: false },
+        { name: 'auxMgo', filterButton: false },
+        { name: 'boilerMgo', filterButton: false },
+        { name: 'ppMgo', filterButton: false },
+        { name: 'giMgo', filterButton: false },
+        { name: 'otherMgo', filterButton: false },
+        { name: 'bunkeringMgo', filterButton: false },
       ],
       rows: []
     }
-    
+
 
     listGetReportVoyagePortDaily.forEach(
       getReportVoyagePortDaily => {
- 
+
         tableProperties.rows.push([
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year,
           getReportVoyagePortDaily.date,
           getReportVoyagePortDaily.hour,
           getReportVoyagePortDaily.steamingTime,
-          getReportVoyagePortDaily.activityPerformed,/* 
+          getReportVoyagePortDaily.activityPerformed,
           getReportVoyagePortDaily.observation,
+
           getReportVoyagePortDaily.distance,
           // Solo si es de la actividad de navegacion deberia de agregarse.
           getReportVoyagePortDaily.steamingTime,
@@ -425,55 +446,55 @@ const wb = new Workbook();
           getReportVoyagePortDaily.ppMgo,
           getReportVoyagePortDaily.giMgo,
           getReportVoyagePortDaily.otherMgo,
-          getReportVoyagePortDaily.bunkeringMgo, */
-        ]);  
+          getReportVoyagePortDaily.bunkeringMgo,
+        ]);
       }
     );
 
-    const  words= [
-      'Twas',
-      'brillig',
-      'and',
-      'the',
-      'slithy',
-      'toves',
-      'did',
-      'gyre',
-      'and',
-      'gimble',
-      'in',
-      'the',
-      'wabe',
-    ];
-
-    tableProperties = {
-      name: 'TestTable',
-      ref: 'A1',
-      headerRow: true,
-      totalsRow: true,
-      style: {
-        theme: 'TableStyleDark3',
-        showRowStripes: true,
-      },
-      columns: [
-        {name: 'Date', totalsRowLabel: 'Totally', filterButton: true},
-        {
-          name: 'Id',
-          totalsRowFunction: 'max',
-          filterButton: true,
-         // totalsRowResult: 8,
+    /*   
+      const  words= [
+        'Twas',
+        'brillig',
+        'and',
+        'the',
+        'slithy',
+        'toves',
+        'did',
+        'gyre',
+        'and',
+        'gimble',
+        'in',
+        'the',
+        'wabe',
+      ];
+   tableProperties = {
+        name: 'TestTable',
+        ref: 'A1',
+        headerRow: true,
+        totalsRow: true,
+        style: {
+          theme: 'TableStyleDark3',
+          showRowStripes: true,
         },
-        {
-          name: 'Word',
-          filterButton: false,
-         // style: {font: {bold: true, name: 'Comic Sans MS'}},
-        },
-      ],
-      rows: words.map((word, i) =>  ['09/14/2021', i, word]),
-    };
-
+        columns: [
+          {name: 'Date', totalsRowLabel: 'Totally', filterButton: true},
+          {
+            name: 'Id',
+            totalsRowFunction: 'max',
+            filterButton: true,
+           // totalsRowResult: 8,
+          },
+          {
+            name: 'Word',
+            filterButton: false,
+           // style: {font: {bold: true, name: 'Comic Sans MS'}},
+          },
+        ],
+        rows: words.map((word, i) =>  ['09/14/2021', i, word]),
+      }; 
+   */
     worksheet.addTable(tableProperties);
-    
+
     /*
       worksheet.columns = [
         { width: 4 , headerCount:3},
@@ -482,15 +503,15 @@ const wb = new Workbook();
     */
 
 
-/* 
-    // Agregamos una fila con el titulo
-    let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ,'Observation' ]);
-    // Le agregamos un font
-    titleRow.font = { name: 'Arial Black', family: 2, size: 16, underline: 'double', bold: true };
-    // unir celdas
-    worksheet.mergeCells('A1:F1');
-    worksheet.addRow([]);
- */
+    /* 
+        // Agregamos una fila con el titulo
+        let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ,'Observation' ]);
+        // Le agregamos un font
+        titleRow.font = { name: 'Arial Black', family: 2, size: 16, underline: 'double', bold: true };
+        // unir celdas
+        worksheet.mergeCells('A1:F1');
+        worksheet.addRow([]);
+     */
 
     return workbook;
   }
