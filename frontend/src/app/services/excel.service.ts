@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TableProperties, Workbook } from 'exceljs';
+import { CellFormulaValue, TableProperties, Workbook, Worksheet } from 'exceljs';
 
 import * as fs from 'file-saver';
 import { promise } from 'protractor';
@@ -372,149 +372,241 @@ export class ExcelService {
     // Creamos la hoja de trabajo.
     let worksheet = workbook.addWorksheet('Voyage ' + 2);
     //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
-    debugger
 
-    let tableProperties: TableProperties = <TableProperties>{};
+    worksheet.columns = [
+      { width: 0 },
+      { width: 0 },
+      { width: 0 },
+      { width: 0 },
+      { width: 0 },
+      // D
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+      { width: 4 },
+    ];
 
-    tableProperties = {
-      name: 'TestTable',
-      ref: 'A4',
-      headerRow: true,
-      totalsRow: true,
-      style: {
-        theme: 'TableStyleDark3',
-        showRowStripes: true,
-      },
-      columns: [
-        { name: 'Voyage', filterButton: false },
-        { name: 'date', filterButton: false },
-        { name: 'hour', filterButton: false },
-        { name: 'steamingTime', totalsRowFunction: 'sum', filterButton: true },
-        { name: 'activityPerformed', filterButton: true },
-        { name: 'observation', filterButton: false },
+    let position = 6;
+    // nos ubicamos en una posicion para empezar a poner los row
+    this.mergeCellReport(worksheet, position);
 
-        { name: 'Distance', filterButton: false },
-        { name: 'Time Navigation', filterButton: false },
-        { name: 'Speed', filterButton: false },
-        { name: 'Beaufort', filterButton: false },
+    position += 1;
+    worksheet.addRow([
+      '', '', '', '', '',//E
 
-        { name: 'mplaIfo', filterButton: false },
-        { name: 'auxIfo', filterButton: false },
-        { name: 'boilerIfo', filterButton: false },
-        { name: 'otherIfo', filterButton: false },
-        { name: 'bunkeringIfo', filterButton: false },
+      'Voyage', '', //G
+      'date', '', '', //J
+      'hours', '',  //L
+      'steamingTime', '', //N
+      'activityPerformed', '', '', '',//R
+      'observation', '', '', '',//V
 
-        { name: 'mplaMgo', filterButton: false },
-        { name: 'auxMgo', filterButton: false },
-        { name: 'boilerMgo', filterButton: false },
-        { name: 'ppMgo', filterButton: false },
-        { name: 'giMgo', filterButton: false },
-        { name: 'otherMgo', filterButton: false },
-        { name: 'bunkeringMgo', filterButton: false },
-      ],
-      rows: []
-    }
+      'distance', '',//X
+      'timeNavigation', '',//Z
+      'speed', '',//AB
+      'Beaufort', '',//AD
+
+      'mplaIfo', '',//AF
+      'auxIfo', '',//AH
+      'boilerIfo', '',//AJ
+      'otherIfo', '',//AL
+      'totalIfo', '',//AN
+      'bunkeringIfo', '',//AP
+      'robIfo', '',//AR
+
+
+      'mplaMgo', '',//AF
+      'auxMgo', '',//AH
+      'boilerMgo', '',//AJ
+      'ppMgo', '',//AJ
+      'giMgo', '',//AJ
+      'otherMgo', '',//AL
+      'totalMgo', '',//AN
+      'bunkeringMgo', '',//AP
+      'robMgo', '',//AR },
+    ]);
+    this.mergeCellReport(worksheet, position);
 
 
     listGetReportVoyagePortDaily.forEach(
-      getReportVoyagePortDaily => {
+      (getReportVoyagePortDaily, index) => {
 
-        tableProperties.rows.push([
-          'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year,
-          getReportVoyagePortDaily.date,
-          getReportVoyagePortDaily.hour,
-          getReportVoyagePortDaily.steamingTime,
-          getReportVoyagePortDaily.activityPerformed,
-          getReportVoyagePortDaily.observation,
 
-          getReportVoyagePortDaily.distance,
+
+
+        position += 1;
+        worksheet.addRow([
+          '', '', '', '', '',
+          'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
+          getReportVoyagePortDaily.date, '', '',
+          getReportVoyagePortDaily.hour, '',
+          getReportVoyagePortDaily.steamingTime, '',
+          getReportVoyagePortDaily.activityPerformed, '', '', '',
+          getReportVoyagePortDaily.observation, '', '', '',
+
+          getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          getReportVoyagePortDaily.steamingTime,
+          getReportVoyagePortDaily.steamingTime, '',
           // Velocidad formula.
-          0,
-          getReportVoyagePortDaily.beaufour,
+          { formula: 'IF(ISERROR(W' + position + '/Y' + position + '),0,W' + position + '/Y' + position + ')' }, '',
+          getReportVoyagePortDaily.beaufour, '',
 
-          getReportVoyagePortDaily.mplaIfo,
-          getReportVoyagePortDaily.auxIfo,
-          getReportVoyagePortDaily.boilerIfo,
-          getReportVoyagePortDaily.otherIfo,
-          getReportVoyagePortDaily.bunkeringIfo,
+          //IFO
+          getReportVoyagePortDaily.mplaIfo, '',
+          getReportVoyagePortDaily.auxIfo, '',
+          getReportVoyagePortDaily.boilerIfo, '',
+          getReportVoyagePortDaily.otherIfo, '',
+          // Total
+          { formula: 'SUM(AE' + position + ':AK' + position + ')' }, '',
+          getReportVoyagePortDaily.bunkeringIfo, '',
+          // RobIFO
+          0, '',
 
-          getReportVoyagePortDaily.mplaMgo,
-          getReportVoyagePortDaily.auxMgo,
-          getReportVoyagePortDaily.boilerMgo,
-          getReportVoyagePortDaily.ppMgo,
-          getReportVoyagePortDaily.giMgo,
-          getReportVoyagePortDaily.otherMgo,
-          getReportVoyagePortDaily.bunkeringMgo,
+          getReportVoyagePortDaily.mplaMgo, '',
+          getReportVoyagePortDaily.auxMgo, '',
+          getReportVoyagePortDaily.boilerMgo, '',
+          getReportVoyagePortDaily.ppMgo, '',
+          getReportVoyagePortDaily.giMgo, '',
+          getReportVoyagePortDaily.otherMgo, '',
+          // Total
+          { formula: 'SUM(AS' + position + ':BC' + position + ')' }, '',
+          getReportVoyagePortDaily.bunkeringMgo, '',
+          // RobIFO
+          0, '',
         ]);
+
+        this.mergeCellReport(worksheet, position);
+
       }
+
     );
 
-    /*   
-      const  words= [
-        'Twas',
-        'brillig',
-        'and',
-        'the',
-        'slithy',
-        'toves',
-        'did',
-        'gyre',
-        'and',
-        'gimble',
-        'in',
-        'the',
-        'wabe',
-      ];
-   tableProperties = {
-        name: 'TestTable',
-        ref: 'A1',
-        headerRow: true,
-        totalsRow: true,
-        style: {
-          theme: 'TableStyleDark3',
-          showRowStripes: true,
-        },
-        columns: [
-          {name: 'Date', totalsRowLabel: 'Totally', filterButton: true},
-          {
-            name: 'Id',
-            totalsRowFunction: 'max',
-            filterButton: true,
-           // totalsRowResult: 8,
-          },
-          {
-            name: 'Word',
-            filterButton: false,
-           // style: {font: {bold: true, name: 'Comic Sans MS'}},
-          },
-        ],
-        rows: words.map((word, i) =>  ['09/14/2021', i, word]),
-      }; 
-   */
-    worksheet.addTable(tableProperties);
-
-    /*
-      worksheet.columns = [
-        { width: 4 , headerCount:3},
-        { width: 4 },
-      ];
-    */
-
-
-    /* 
-        // Agregamos una fila con el titulo
-        let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ,'Observation' ]);
-        // Le agregamos un font
-        titleRow.font = { name: 'Arial Black', family: 2, size: 16, underline: 'double', bold: true };
-        // unir celdas
-        worksheet.mergeCells('A1:F1');
-        worksheet.addRow([]);
-     */
+    console.log('Fin');
 
     return workbook;
   }
+
+  private mergeCellReport(worksheet: Worksheet, position) {
+
+
+    worksheet.mergeCells('F' + position, 'G' + position);
+    worksheet.mergeCells('H' + position, 'J' + position);
+    worksheet.mergeCells('K' + position, 'L' + position);
+    worksheet.mergeCells('M' + position, 'N' + position);
+    worksheet.mergeCells('O' + position, 'R' + position);
+    worksheet.mergeCells('S' + position, 'V' + position);
+
+    worksheet.mergeCells('W' + position, 'X' + position);
+    worksheet.mergeCells('Y' + position, 'Z' + position);
+    worksheet.mergeCells('AA' + position, 'AB' + position);
+    worksheet.mergeCells('AC' + position, 'AD' + position);
+
+
+    worksheet.mergeCells('AE' + position, 'AF' + position);
+    worksheet.mergeCells('AG' + position, 'AH' + position);
+    worksheet.mergeCells('AI' + position, 'AJ' + position);
+    worksheet.mergeCells('AK' + position, 'AL' + position);
+    worksheet.mergeCells('AM' + position, 'AN' + position);
+    worksheet.mergeCells('AO' + position, 'AP' + position);
+    worksheet.mergeCells('AQ' + position, 'AR' + position);
+
+
+
+    worksheet.mergeCells('AS' + position, 'AT' + position);
+    worksheet.mergeCells('AU' + position, 'AV' + position);
+    worksheet.mergeCells('AW' + position, 'AX' + position);
+    worksheet.mergeCells('AY' + position, 'AZ' + position);
+    worksheet.mergeCells('BA' + position, 'BB' + position);
+    worksheet.mergeCells('BC' + position, 'BD' + position);
+    worksheet.mergeCells('BE' + position, 'BF' + position);
+    worksheet.mergeCells('BG' + position, 'BH' + position);
+    worksheet.mergeCells('BI' + position, 'BJ' + position);
+  }
+
+
+
 
   // Agrega el reporte al excel.
   public async ReportDaily(selectUser: User, startDate: Date, endDate: Date): Promise<boolean> {
