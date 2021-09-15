@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Workbook } from 'exceljs';
+import { TableProperties, Workbook } from 'exceljs';
+ 
 import * as fs from 'file-saver';
 import { promise } from 'protractor';
 import { Observable } from 'rxjs';
@@ -317,8 +318,18 @@ export class ExcelService {
 
   // Opcion que exporta el excel.
   public async ExportExcel(selectUserId: number, startDate: string, endDate: string) {
+/*   
+const wb = new Workbook();
 
-    const title = 'CONSUMPTION FORMAT';
+
+  // Escribimos el excel
+  wb.xlsx.writeBuffer().then((data) => {
+    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    fs.saveAs(blob, 'Report.xlsx');
+  });
+ */
+
+      const title = 'CONSUMPTION FORMAT';
     const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
 
 
@@ -339,11 +350,9 @@ export class ExcelService {
             if (!result) throw 'ERROR GER REPORT';
             listGetReportVoyagePortDaily = result;
 
-            this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily[0])
+            this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily)
             for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
-              /* 
-              this.ReportVoyage(workbook,title,getReportVoyagePortDaily)
-              */
+      
             }
 
             // Escribimos el excel
@@ -353,55 +362,135 @@ export class ExcelService {
             });
 
           }
-        )
+        ) 
   }
 
-  private ReportVoyage(workbook: Workbook, title: string, getReportVoyagePortDaily: GetReportVoyagePortDaily): Workbook {
+  private ReportVoyage(workbook: Workbook, title: string, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): Workbook {
 
+    
+    
     // Creamos la hoja de trabajo.
-    let worksheet = workbook.addWorksheet('Voyage ' + getReportVoyagePortDaily.voyageNumber);
+    let worksheet = workbook.addWorksheet('Voyage ' + 2);
+    //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
+    debugger
 
+    let tableProperties: TableProperties = <TableProperties>{};
+    
+    tableProperties = {
+      name: 'TestTable',
+      ref: 'A4',
+      headerRow: false,
+      totalsRow: false,
+      style: {
+        theme: 'TableStyleDark3',
+        showRowStripes: true,
+      },
+      columns: [
+        {name: 'Voyage', totalsRowLabel: 'Totally', filterButton: true},
+        {name: 'Date', totalsRowLabel: 'Totally', filterButton: true},
+        {name: 'Hour', totalsRowLabel: 'Totally', filterButton: true},
+        {name: 'Activity Performed', totalsRowLabel: 'Totally', filterButton: true},
+        {name: 'Observation', totalsRowLabel: 'Totally', filterButton: true}, 
+      ],
+      rows: []
+    }
+    
 
+    listGetReportVoyagePortDaily.forEach(
+      getReportVoyagePortDaily => {
+ 
+        tableProperties.rows.push([
+          'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year,
+          getReportVoyagePortDaily.date,
+          getReportVoyagePortDaily.hour,
+          getReportVoyagePortDaily.steamingTime,
+          getReportVoyagePortDaily.activityPerformed,/* 
+          getReportVoyagePortDaily.observation,
+          getReportVoyagePortDaily.distance,
+          // Solo si es de la actividad de navegacion deberia de agregarse.
+          getReportVoyagePortDaily.steamingTime,
+          // Velocidad formula.
+          0,
+          getReportVoyagePortDaily.beaufour,
 
-    worksheet.columns = [
-      { width: 10 },
-      { width: 30 },
-      { width: 30 },
-      { width: 18 },
-      { width: 10 },
-      { width: 25 },// Activity
-      { width: 30 },// Observaciones
-      { width: 10 },// Distance
-      { width: 10 },// Time
-      { width: 10 },// Speed
-      { width: 15 },// Befourt
-      { width: 7 },// M.E
-      { width: 7 },// A.E
-      { width: 7 },// Boiler
-      { width: 10 },// Total
-      { width: 7 },// M.E
-      { width: 7 },// A.E
-      { width: 7 },// Boiler
-      { width: 7 },// P.P
-      { width: 7 },// G.I
-      { width: 10 },// Total
+          getReportVoyagePortDaily.mplaIfo,
+          getReportVoyagePortDaily.auxIfo,
+          getReportVoyagePortDaily.boilerIfo,
+          getReportVoyagePortDaily.otherIfo,
+          getReportVoyagePortDaily.bunkeringIfo,
+
+          getReportVoyagePortDaily.mplaMgo,
+          getReportVoyagePortDaily.auxMgo,
+          getReportVoyagePortDaily.boilerMgo,
+          getReportVoyagePortDaily.ppMgo,
+          getReportVoyagePortDaily.giMgo,
+          getReportVoyagePortDaily.otherMgo,
+          getReportVoyagePortDaily.bunkeringMgo, */
+        ]);  
+      }
+    );
+
+    const  words= [
+      'Twas',
+      'brillig',
+      'and',
+      'the',
+      'slithy',
+      'toves',
+      'did',
+      'gyre',
+      'and',
+      'gimble',
+      'in',
+      'the',
+      'wabe',
     ];
 
+    tableProperties = {
+      name: 'TestTable',
+      ref: 'A1',
+      headerRow: true,
+      totalsRow: true,
+      style: {
+        theme: 'TableStyleDark3',
+        showRowStripes: true,
+      },
+      columns: [
+        {name: 'Date', totalsRowLabel: 'Totally', filterButton: true},
+        {
+          name: 'Id',
+          totalsRowFunction: 'max',
+          filterButton: true,
+         // totalsRowResult: 8,
+        },
+        {
+          name: 'Word',
+          filterButton: false,
+         // style: {font: {bold: true, name: 'Comic Sans MS'}},
+        },
+      ],
+      rows: words.map((word, i) =>  ['09/14/2021', i, word]),
+    };
 
+    worksheet.addTable(tableProperties);
+    
+    /*
+      worksheet.columns = [
+        { width: 4 , headerCount:3},
+        { width: 4 },
+      ];
+    */
+
+
+/* 
     // Agregamos una fila con el titulo
-    let titleRow = worksheet.addRow([title]);
+    let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ,'Observation' ]);
     // Le agregamos un font
     titleRow.font = { name: 'Arial Black', family: 2, size: 16, underline: 'double', bold: true };
     // unir celdas
     worksheet.mergeCells('A1:F1');
     worksheet.addRow([]);
-
-    worksheet.addRow([
-      '', '', '', '', '', '', '',
-      'NAVIGATION DATA', '', '', '',
-      'VLSFO CONSUMPTION IN MT', '', '', '',
-      'MGO CONSUMPTION IN MT'
-    ]);
+ */
 
     return workbook;
   }
