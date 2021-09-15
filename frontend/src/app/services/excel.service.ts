@@ -387,11 +387,11 @@ export class ExcelService {
       },
       columns: [
         { name: 'Voyage', filterButton: false },
-        { name: 'Date', filterButton: false },
-        { name: 'Hour', filterButton: false },
-        { name: 'Time', totalsRowFunction: 'sum', filterButton: true },
-        { name: 'Activity Performed', filterButton: true },
-        { name: 'Observation', filterButton: false },
+        { name: 'date', filterButton: false },
+        { name: 'hour', filterButton: false },
+        { name: 'steamingTime', totalsRowFunction: 'sum', filterButton: true },
+        { name: 'activityPerformed', filterButton: true },
+        { name: 'observation', filterButton: false },
 
         { name: 'Distance', filterButton: false },
         { name: 'Time Navigation', filterButton: false },
