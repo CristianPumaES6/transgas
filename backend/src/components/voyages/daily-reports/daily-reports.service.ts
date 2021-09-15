@@ -332,6 +332,9 @@ export class DailyReportsService {
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
                 .addSelect('daily_report.observation', 'observation')
+                
+                .addSelect('daily_report.distance', 'distance')
+                .addSelect('daily_report.beaufour', 'beaufour')
 
                 .addSelect('daily_report.mplaIfo', 'mplaIfo')
                 .addSelect('daily_report.auxIfo', 'auxIfo')
