@@ -671,6 +671,52 @@ export class ExcelService {
     let redLow = 'ffd6d6';
 
 
+    // Agrega formato a Actividad
+    worksheet.addConditionalFormatting({
+      ref: 'W' + position + ':Z' + position,
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AJ' + position + ') )'],
+          style: {
+            border: {
+              top: { style: 'double', color: { argb: redHard } },
+              left: { style: 'double', color: { argb: redHard } },
+              bottom: { style: 'double', color: { argb: redHard } },
+              right: { style: 'double', color: { argb: redHard } }
+            }
+          },
+        },
+
+      ],
+    });
+
+
+    // Agrega formato a distancia
+    worksheet.addConditionalFormatting({
+      ref: 'AJ' + position + ':AK' + position,
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AJ' + position + ') )'],
+          style: {
+            border: {
+              top: { style: 'double', color: { argb: redHard } },
+              left: { style: 'double', color: { argb: redHard } },
+              bottom: { style: 'double', color: { argb: redHard } },
+              right: { style: 'double', color: { argb: redHard } }
+            }
+          },
+        },
+
+      ],
+    });
+
+    // Agrega el formato a speed
     worksheet.addConditionalFormatting({
       ref: 'AN' + position + ':AO' + position,
       rules: [
@@ -711,6 +757,27 @@ export class ExcelService {
           type: 'expression',
           priority: 2,
           formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AN' + position + ') )'],
+          style: {
+            border: {
+              top: { style: 'double', color: { argb: redHard } },
+              left: { style: 'double', color: { argb: redHard } },
+              bottom: { style: 'double', color: { argb: redHard } },
+              right: { style: 'double', color: { argb: redHard } }
+            }
+          },
+        },
+
+      ],
+    });
+    // Agrega formato a Tiempo
+    worksheet.addConditionalFormatting({
+      ref: 'AL' + position + ':AM' + position,
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(  (0=AL' + position + ') )'],
           style: {
             border: {
               top: { style: 'double', color: { argb: redHard } },
