@@ -325,7 +325,7 @@ export class DailyReportsService {
                 .addSelect('port.arrivalPort', 'arrivalPort')
 
 
-                .addSelect('daily_report.id', 'daily_reportId')
+                .addSelect('daily_report.id', 'dailyReportId')
                 .addSelect('daily_report.date', 'date')
                 .addSelect('daily_report.hour', 'hour')
                 .addSelect('daily_report.steamingTime', 'steamingTime')
