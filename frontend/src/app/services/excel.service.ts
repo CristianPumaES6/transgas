@@ -541,7 +541,7 @@ export class ExcelService {
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
           getReportVoyagePortDaily.dailyReportId,
-          '', '',
+          '', { formula: 'AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), SMALL(AI' + position + ',1) )' },
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
           getReportVoyagePortDaily.departurePort, '', '', '',
           getReportVoyagePortDaily.arrivalPort, '', '', '',
@@ -582,15 +582,19 @@ export class ExcelService {
           { formula: 'BQ' + (position - 1) + '-BM' + position + '+BO' + position }, '',
         ];
 
-
         worksheet.addRow(dataRow);
+        this.mergeCellReport(worksheet, position);
         // Si es el primer registro se debe calcular con el rob del viaje anterior
         if (index == 0) {
           worksheet.getCell('AY' + position).value = <any>{ formula: 'AX' + (position - 2) + '-AU' + position + '+AW' + position };
           worksheet.getCell('BQ' + position).value = <any>{ formula: 'BP' + (position - 2) + '-BM' + position + '+BO' + position };
 
+          this.addFormatting(worksheet, position)
+        } else {
+          this.addFormatting(worksheet, position)
         }
-        this.mergeCellReport(worksheet, position);
+
+
 
       }
 
@@ -634,7 +638,75 @@ export class ExcelService {
 
   }
 
+  private addFormatting(worksheet: Worksheet, position: number) {
 
+    // Variables de colores-
+    let grisFuerte = 'd4d4d4'
+    let grisMedio = 'ebe8e8'
+    let grisSuave = 'f3f3f3';
+
+    let greenHard = '228e30';
+    let greenMedium = '0eb924';
+    let greenLow = 'c0fdc8';
+
+    let redHard = '9a2929';
+    let redMedium = 'ffa4a4';
+    let redLow = 'ffd6d6';
+
+
+    worksheet.addConditionalFormatting({
+      ref: 'AI' + position + ':AJ' + position,
+      rules: [
+
+        {
+          type: 'cellIs',
+          priority: 13,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            border: {},
+            font: { color: { argb: grisMedio } },
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: grisSuave } },
+          },
+        },
+        // Menor que 
+        {
+          type: 'expression',
+          priority: 3,
+          formulae: ['Y( AI' + position + ' <12, AI' + position + ' > 0 )'],
+          style: {
+            font: { color: { argb: redHard } },
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        },
+        // Mayor que 
+        {
+          type: 'expression',
+          priority: 3,
+          formulae: ['AI' + position + ' >=12'],
+          style: {
+            font: { color: { argb: greenHard } },
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+          },
+        },
+        // si la actividad es navegando deberia tener una velocidad.       
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AI' + position + ') )'],
+          style: {
+            border: {
+              top: { style: 'double', color: { argb: redHard } },
+              left: { style: 'double', color: { argb: redHard } },
+              bottom: { style: 'double', color: { argb: redHard } },
+              right: { style: 'double', color: { argb: redHard } }
+            }
+          },
+        },
+
+      ],
+    });
+  }
 
 
   // Agrega el reporte al excel.
