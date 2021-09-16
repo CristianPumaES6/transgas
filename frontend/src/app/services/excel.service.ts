@@ -470,25 +470,25 @@ export class ExcelService {
     // nos ubicamos en una posicion para empezar a poner los row
     //this.mergeCellReport(worksheet, position);
 
-    worksheet.getCell('AE' + position).value = "NAVIGATION DATA";
-    worksheet.mergeCells('AE' + position, 'AL' + position);
+    worksheet.getCell('AJ' + position).value = "NAVIGATION DATA";
+    worksheet.mergeCells('AJ' + position, 'AQ' + position);
 
-    worksheet.getCell('AM' + position).value = "VLSFO CONSUMPTION IN MT";
-    worksheet.mergeCells('AM' + position, 'AZ' + position);
+    worksheet.getCell('AR' + position).value = "VLSFO CONSUMPTION IN MT";
+    worksheet.mergeCells('AR' + position, 'BG' + position);
 
-    worksheet.getCell('BA' + position).value = "MGO CONSUMPTION IN MT";
-    worksheet.mergeCells('BA' + position, 'BQ' + position);
+    worksheet.getCell('BH' + position).value = "MGO CONSUMPTION IN MT";
+    worksheet.mergeCells('BH' + position, 'CA' + position);
 
     position += 1;
-    worksheet.getCell('AM' + position).value = "PREVIOUS VOYAGE";
-    worksheet.mergeCells('AM' + position, 'AW' + position);
-    worksheet.getCell('AX' + position).value = 200;
-    worksheet.mergeCells('AX' + position, 'AZ' + position);
+    worksheet.getCell('AR' + position).value = "PREVIOUS VOYAGE";
+    worksheet.mergeCells('AR' + position, 'BD' + position);
+    worksheet.getCell('BE' + position).value = 200;
+    worksheet.mergeCells('BE' + position, 'BG' + position);
 
-    worksheet.getCell('BA' + position).value = "PREVIOUS VOYAGE";
-    worksheet.mergeCells('BA' + position, 'BO' + position);
-    worksheet.getCell('BP' + position).value = 200;
-    worksheet.mergeCells('BP' + position, 'BR' + position);
+    worksheet.getCell('BH' + position).value = "PREVIOUS VOYAGE";
+    worksheet.mergeCells('BH' + position, 'BX' + position);
+    worksheet.getCell('BY' + position).value = 200;
+    worksheet.mergeCells('BY' + position, 'CA' + position);
 
     position += 1;
     worksheet.addRow([
@@ -502,7 +502,8 @@ export class ExcelService {
       'hours', '',  //L
       'steamingTime', '', //N
       'activityPerformed', '', '', '',//R
-      'observation', '', '', '',//V
+      'speedStraction', '',
+      'observation', '', '', '', '', '', '',//V
 
       'distance', '',//X
       'timeNavigation', '',//Z
@@ -514,6 +515,7 @@ export class ExcelService {
       'boilerIfo', '',//AJ
       'otherIfo', '',//AL
       'totalIfo', '',//AN
+      'dailyCosumtionIFO', '',
       'bunkeringIfo', '',//AP
       'robIfo', '',//AR
 
@@ -525,6 +527,7 @@ export class ExcelService {
       'giMgo', '',//AJ
       'otherMgo', '',//AL
       'totalMgo', '',//AN
+      'dailyCosumtionIFO', '',
       'bunkeringMgo', '',//AP
       'robMgo', '',//AR },
     ]);
@@ -541,7 +544,7 @@ export class ExcelService {
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
           getReportVoyagePortDaily.dailyReportId,
-          '', { formula:'AND( AI' + position + ' <12, AI' + position + ' > 0 )' },
+          '', { formula: 'AND( AI' + position + ' <12, AI' + position + ' > 0 )' },
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
           getReportVoyagePortDaily.departurePort, '', '', '',
           getReportVoyagePortDaily.arrivalPort, '', '', '',
@@ -549,12 +552,17 @@ export class ExcelService {
           getReportVoyagePortDaily.hour, '',
           getReportVoyagePortDaily.steamingTime, '',
           getReportVoyagePortDaily.activityPerformed, '', '', '',
-          getReportVoyagePortDaily.observation, '', '', '',
+
+
+          getReportVoyagePortDaily.speedStraction, '',
+
+          getReportVoyagePortDaily.observation, '', '', '', '', '', '',
+
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
           getReportVoyagePortDaily.steamingTime, '',
           // Velocidad formula.
-          { formula: 'IF(ISERROR(AE' + position + '/AG' + position + '),0,AE' + position + '/AG' + position + ')' }, '',
+          { formula: 'IF(ISERROR(AJ' + position + '/AL' + position + '),0,AJ' + position + '/AL' + position + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
 
           //IFO
@@ -563,10 +571,12 @@ export class ExcelService {
           getReportVoyagePortDaily.boilerIfo, '',
           getReportVoyagePortDaily.otherIfo, '',
           // Total
-          { formula: 'SUM(AM' + position + ':AT' + position + ')' }, '',
+          { formula: 'SUM(AR' + position + ':AX' + position + ')' }, '',
+          // dailyConsumption
+          { formula: 'IF(ISERROR(' + 'AZ' + position + '*24/' + 'AL' + position + '),0,' + 'AZ' + position + '*24/' + 'AL' + position + ')' }, '',
           getReportVoyagePortDaily.bunkeringIfo, '',
           // RobIFO
-          { formula: 'AY' + (position - 1) + '-AU' + position + '+AW' + position }, '',
+          { formula: 'BF' + (position - 1) + '-AZ' + position + '+BD' + position }, '',
 
           getReportVoyagePortDaily.mplaMgo, '',
           getReportVoyagePortDaily.auxMgo, '',
@@ -576,18 +586,22 @@ export class ExcelService {
           getReportVoyagePortDaily.otherMgo, '',
 
           // Total
-          { formula: 'SUM(BA' + position + ':BL' + position + ')' }, '',
+          { formula: 'SUM(BH' + position + ':BS' + position + ')' }, '',
+
+          // dailyConsumption
+          { formula: 'IF(ISERROR(' + 'BT' + position + '*24/' + 'AL' + position + '),0,' + 'BT' + position + '*24/' + 'AL' + position + ')' }, '',
           getReportVoyagePortDaily.bunkeringMgo, '',
+
           // RobIFO
-          { formula: 'BQ' + (position - 1) + '-BM' + position + '+BO' + position }, '',
+          { formula: 'BZ' + (position - 1) + '-BT' + position + '+BX' + position }, '',
         ];
 
         worksheet.addRow(dataRow);
         this.mergeCellReport(worksheet, position);
         // Si es el primer registro se debe calcular con el rob del viaje anterior
         if (index == 0) {
-          worksheet.getCell('AY' + position).value = <any>{ formula: 'AX' + (position - 2) + '-AU' + position + '+AW' + position };
-          worksheet.getCell('BQ' + position).value = <any>{ formula: 'BP' + (position - 2) + '-BM' + position + '+BO' + position };
+          worksheet.getCell('BF' + position).value = <any>{ formula: 'BE' + (position - 2) + '-AZ' + position + '+BD' + position };
+          worksheet.getCell('BZ' + position).value = <any>{ formula: 'BY' + (position - 2) + '-BT' + position + '+BX' + position };
 
           this.addFormatting(worksheet, position)
         } else {
@@ -614,27 +628,30 @@ export class ExcelService {
     worksheet.mergeCells('S' + position, 'T' + position);
     worksheet.mergeCells('U' + position, 'V' + position);
     worksheet.mergeCells('W' + position, 'Z' + position);
-    worksheet.mergeCells('AA' + position, 'AD' + position);
-    worksheet.mergeCells('AE' + position, 'AF' + position);
-    worksheet.mergeCells('AG' + position, 'AH' + position);
-    worksheet.mergeCells('AI' + position, 'AJ' + position);
-    worksheet.mergeCells('AK' + position, 'AL' + position);
-    worksheet.mergeCells('AM' + position, 'AN' + position);
-    worksheet.mergeCells('AO' + position, 'AP' + position);
-    worksheet.mergeCells('AQ' + position, 'AR' + position);
-    worksheet.mergeCells('AS' + position, 'AT' + position);
-    worksheet.mergeCells('AU' + position, 'AV' + position);
-    worksheet.mergeCells('AW' + position, 'AX' + position);
-    worksheet.mergeCells('AY' + position, 'AZ' + position);
-    worksheet.mergeCells('BA' + position, 'BB' + position);
-    worksheet.mergeCells('BC' + position, 'BD' + position);
-    worksheet.mergeCells('BE' + position, 'BF' + position);
-    worksheet.mergeCells('BG' + position, 'BH' + position);
-    worksheet.mergeCells('BI' + position, 'BJ' + position);
-    worksheet.mergeCells('BK' + position, 'BL' + position);
-    worksheet.mergeCells('BM' + position, 'BN' + position);
-    worksheet.mergeCells('BO' + position, 'BP' + position);
-    worksheet.mergeCells('BQ' + position, 'BR' + position);
+    worksheet.mergeCells('AA' + position, 'AB' + position);
+    worksheet.mergeCells('AC' + position, 'AI' + position);
+    worksheet.mergeCells('AJ' + position, 'AK' + position);
+    worksheet.mergeCells('AL' + position, 'AM' + position);
+    worksheet.mergeCells('AN' + position, 'AO' + position);
+    worksheet.mergeCells('AP' + position, 'AQ' + position);
+    worksheet.mergeCells('AR' + position, 'AS' + position);
+    worksheet.mergeCells('AT' + position, 'AU' + position);
+    worksheet.mergeCells('AV' + position, 'AW' + position);
+    worksheet.mergeCells('AX' + position, 'AY' + position);
+    worksheet.mergeCells('AZ' + position, 'BA' + position);
+    worksheet.mergeCells('BB' + position, 'BC' + position);
+    worksheet.mergeCells('BD' + position, 'BE' + position);
+    worksheet.mergeCells('BF' + position, 'BG' + position);
+    worksheet.mergeCells('BH' + position, 'BI' + position);
+    worksheet.mergeCells('BJ' + position, 'BK' + position);
+    worksheet.mergeCells('BL' + position, 'BM' + position);
+    worksheet.mergeCells('BN' + position, 'BO' + position);
+    worksheet.mergeCells('BP' + position, 'BQ' + position);
+    worksheet.mergeCells('BR' + position, 'BS' + position);
+    worksheet.mergeCells('BT' + position, 'BU' + position);
+    worksheet.mergeCells('BV' + position, 'BW' + position);
+    worksheet.mergeCells('BX' + position, 'BY' + position);
+    worksheet.mergeCells('BZ' + position, 'CA' + position);
 
   }
 
@@ -655,7 +672,7 @@ export class ExcelService {
 
 
     worksheet.addConditionalFormatting({
-      ref: 'AI' + position + ':AJ' + position,
+      ref: 'AN' + position + ':AO' + position,
       rules: [
 
         {
@@ -673,7 +690,7 @@ export class ExcelService {
         {
           type: 'expression',
           priority: 3,
-          formulae: ['AND( AI' + position + ' <12, AI' + position + ' > 0 )'],
+          formulae: ['AND( AN' + position + ' <12, AN' + position + ' > 0 )'],
           style: {
             font: { color: { argb: redHard } },
             fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
@@ -683,7 +700,7 @@ export class ExcelService {
         {
           type: 'expression',
           priority: 3,
-          formulae: ['AI' + position + ' >=12'],
+          formulae: ['AN' + position + ' >=12'],
           style: {
             font: { color: { argb: greenHard } },
             fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
@@ -693,7 +710,7 @@ export class ExcelService {
         {
           type: 'expression',
           priority: 2,
-          formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AI' + position + ') )'],
+          formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AN' + position + ') )'],
           style: {
             border: {
               top: { style: 'double', color: { argb: redHard } },
