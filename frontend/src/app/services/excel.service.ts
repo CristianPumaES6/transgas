@@ -541,7 +541,7 @@ export class ExcelService {
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
           getReportVoyagePortDaily.dailyReportId,
-          '', { formula: 'AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), SMALL(AI' + position + ',1) )' },
+          '', { formula:'AND( AI' + position + ' <12, AI' + position + ' > 0 )' },
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
           getReportVoyagePortDaily.departurePort, '', '', '',
           getReportVoyagePortDaily.arrivalPort, '', '', '',
@@ -673,7 +673,7 @@ export class ExcelService {
         {
           type: 'expression',
           priority: 3,
-          formulae: ['Y( AI' + position + ' <12, AI' + position + ' > 0 )'],
+          formulae: ['AND( AI' + position + ' <12, AI' + position + ' > 0 )'],
           style: {
             font: { color: { argb: redHard } },
             fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
