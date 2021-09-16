@@ -566,7 +566,7 @@ export class ExcelService {
           { formula: 'SUM(AM' + position + ':AT' + position + ')' }, '',
           getReportVoyagePortDaily.bunkeringIfo, '',
           // RobIFO
-          { formula: 'AY' + (position - 1) + '-AU' + position }, '',
+          { formula: 'AY' + (position - 1) + '-AU' + position + '+AW' + position }, '',
 
           getReportVoyagePortDaily.mplaMgo, '',
           getReportVoyagePortDaily.auxMgo, '',
@@ -579,14 +579,16 @@ export class ExcelService {
           { formula: 'SUM(BA' + position + ':BL' + position + ')' }, '',
           getReportVoyagePortDaily.bunkeringMgo, '',
           // RobIFO
-          0, '',
+          { formula: 'BQ' + (position - 1) + '-BM' + position + '+BO' + position }, '',
         ];
 
 
         worksheet.addRow(dataRow);
-
+        // Si es el primer registro se debe calcular con el rob del viaje anterior
         if (index == 0) {
-          worksheet.getCell('AY' + position).value = <any>{ formula: 'AX' + (position - 2) + '-AU' + position };
+          worksheet.getCell('AY' + position).value = <any>{ formula: 'AX' + (position - 2) + '-AU' + position + '+AW' + position };
+          worksheet.getCell('BQ' + position).value = <any>{ formula: 'BP' + (position - 2) + '-BM' + position + '+BO' + position };
+
         }
         this.mergeCellReport(worksheet, position);
 
