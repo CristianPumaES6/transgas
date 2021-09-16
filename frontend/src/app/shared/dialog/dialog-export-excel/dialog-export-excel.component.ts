@@ -53,7 +53,9 @@ export class DialogExportExcelComponent implements OnInit {
     // Fecha de inicio.
     let dateStart = this.data.dateStartUTC;
     let dateEnd = this.data.dateEndUTC;
-    
-    this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd);
+
+    let selectUser: User = this.data.selectUser;
+
+    this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd, selectUser);
   }
 }

@@ -317,7 +317,7 @@ export class ExcelService {
   };
 
   // Opcion que exporta el excel.
-  public async ExportExcel(selectUserId: number, startDate: string, endDate: string) {
+  public async ExportExcel(selectUserId: number, startDate: string, endDate: string, selectUser: User) {
     /*   
     const wb = new Workbook();
     
@@ -350,7 +350,7 @@ export class ExcelService {
             if (!result) throw 'ERROR GER REPORT';
             listGetReportVoyagePortDaily = result;
 
-            this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily)
+            this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily, selectUser)
             for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
 
             }
@@ -365,7 +365,9 @@ export class ExcelService {
         )
   }
 
-  private ReportVoyage(workbook: Workbook, title: string, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): Workbook {
+  private ReportVoyage(workbook: Workbook, title: string, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], selectUser: User): Workbook {
+
+    let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
     // Creamos la hoja de trabajo.
     let worksheet = workbook.addWorksheet('Voyage ' + 2);
@@ -470,16 +472,16 @@ export class ExcelService {
     // nos ubicamos en una posicion para empezar a poner los row
     //this.mergeCellReport(worksheet, position);
 
-    worksheet.getCell('AJ' + position).value = "NAVIGATION DATA";
-    worksheet.mergeCells('AJ' + position, 'AQ' + position);
-
-    worksheet.getCell('AR' + position).value = "VLSFO CONSUMPTION IN MT";
+    worksheet.getCell('AR' + position).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
     worksheet.mergeCells('AR' + position, 'BG' + position);
 
     worksheet.getCell('BH' + position).value = "MGO CONSUMPTION IN MT";
     worksheet.mergeCells('BH' + position, 'CA' + position);
 
     position += 1;
+    worksheet.getCell('AJ' + position).value = "NAVIGATION DATA";
+    worksheet.mergeCells('AJ' + position, 'AQ' + position);
+
     worksheet.getCell('AR' + position).value = "PREVIOUS VOYAGE";
     worksheet.mergeCells('AR' + position, 'BD' + position);
     worksheet.getCell('BE' + position).value = 200;
