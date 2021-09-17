@@ -472,10 +472,16 @@ export class ExcelService {
     // nos ubicamos en una posicion para empezar a poner los row
     //this.mergeCellReport(worksheet, position);
 
+    let colorYellowTransgas = 'FFCD06';
     // Variables de colores-
-    let blueHard = '091556'
+    let blueHard = '001556'
     let blueMedium = '09155694'
     let blueLow = 'b6c2ff94';
+
+
+    let blueHard1 = '375f9a'
+    let blueHard2 = '0040d8'
+    let blueHard3 = '001556'
 
     let greenHard = '091556'
     let greenMedium = '09155694'
@@ -494,15 +500,21 @@ export class ExcelService {
       font: {
         size: 20,
         bold: true,
-        color: { argb:greenLow  },
+        color: { argb: colorYellowTransgas },
       },
       fill: {
         type: 'pattern',
-        pattern: 'lightGray',
-        bgColor: {
+        pattern: 'solid',
+        fgColor: {
           argb: blueHard
         }
       },
+      border: {
+        top: { style: 'double', color: { argb: grisSuave } },
+        left: { style: 'double', color: { argb: grisSuave } },
+        bottom: { style: 'double', color: { argb: grisSuave } },
+        right: { style: 'double', color: { argb: grisSuave } }
+      }
 
     }
     worksheet.mergeCells('AR' + position, 'BG' + position);
@@ -516,31 +528,161 @@ export class ExcelService {
       font: {
         size: 20,
         bold: true,
-        color: { argb:greenLow  },
+        color: { argb: colorYellowTransgas },
       },
       fill: {
         type: 'pattern',
-        pattern: 'lightGray',
-        bgColor: {
-          argb: blueMedium
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard
         }
       },
+      border: {
+        top: { style: 'double', color: { argb: grisSuave } },
+        left: { style: 'double', color: { argb: grisSuave } },
+        bottom: { style: 'double', color: { argb: grisSuave } },
+        right: { style: 'double', color: { argb: grisSuave } }
+      }
 
-    }
+    };
     worksheet.mergeCells('BH' + position, 'CA' + position);
 
     position += 1;
     worksheet.getCell('AJ' + position).value = "NAVIGATION DATA";
+    worksheet.getCell('AJ' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 15,
+        bold: true,
+        color: { argb: colorYellowTransgas },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard
+        }
+      },
+      border: {
+        top: { style: 'double', color: { argb: grisSuave } },
+        left: { style: 'double', color: { argb: grisSuave } },
+        bottom: { style: 'double', color: { argb: grisSuave } },
+        right: { style: 'double', color: { argb: grisSuave } }
+      }
+
+    }
     worksheet.mergeCells('AJ' + position, 'AQ' + position);
 
     worksheet.getCell('AR' + position).value = "PREVIOUS VOYAGE";
+    worksheet.getCell('AR' + position).style = {
+      alignment: {
+        horizontal: 'right',
+        vertical: 'middle'
+      },
+      font: {
+        size: 10,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
     worksheet.mergeCells('AR' + position, 'BD' + position);
+
     worksheet.getCell('BE' + position).value = 200;
+    worksheet.getCell('BE' + position).style = {
+      alignment: {
+        horizontal: 'right',
+        vertical: 'middle'
+      },
+      font: {
+        size: 18,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+
     worksheet.mergeCells('BE' + position, 'BG' + position);
 
+
     worksheet.getCell('BH' + position).value = "PREVIOUS VOYAGE";
+    worksheet.getCell('BH' + position).style = {
+      alignment: {
+        horizontal: 'right',
+        vertical: 'middle'
+      },
+      font: {
+        size: 10,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
     worksheet.mergeCells('BH' + position, 'BX' + position);
     worksheet.getCell('BY' + position).value = 200;
+    worksheet.getCell('BY' + position).style = {
+      alignment: {
+        horizontal: 'right',
+        vertical: 'middle'
+      },
+      font: {
+        size: 18,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
     worksheet.mergeCells('BY' + position, 'CA' + position);
 
     position += 1;
@@ -584,6 +726,752 @@ export class ExcelService {
       'bunkeringMgo', '',//AP
       'robMgo', '',//AR },
     ]);
+    worksheet.getCell('F' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+
+    worksheet.getCell('H' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('L' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+
+    worksheet.getCell('P' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('S' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('U' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('W' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AA' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AC' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AJ' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AL' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AN' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AP' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AR' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AT' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AV' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AX' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('AZ' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BB' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BD' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BF' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BH' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BJ' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BL' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BN' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BP' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BR' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BT' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BV' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BX' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
+    worksheet.getCell('BZ' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard2
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
     this.mergeCellReport(worksheet, position);
 
 
@@ -658,6 +1546,7 @@ export class ExcelService {
 
           this.addFormatting(worksheet, position)
         } else {
+          
           this.addFormatting(worksheet, position)
         }
 
@@ -723,7 +1612,6 @@ export class ExcelService {
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
 
-
     // Agrega formato a Actividad
     worksheet.addConditionalFormatting({
       ref: 'W' + position + ':Z' + position,
@@ -776,19 +1664,18 @@ export class ExcelService {
 
         {
           type: 'cellIs',
-          priority: 13,
+          priority: 1,
           operator: 'equal',
           formulae: [0],
           style: {
             border: {},
             font: { color: { argb: grisMedio } },
-            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: grisSuave } },
-          },
+            },
         },
         // Menor que 
         {
           type: 'expression',
-          priority: 3,
+          priority:1,
           formulae: ['AND( AN' + position + ' <12, AN' + position + ' > 0 )'],
           style: {
             font: { color: { argb: redHard } },
@@ -798,7 +1685,7 @@ export class ExcelService {
         // Mayor que 
         {
           type: 'expression',
-          priority: 3,
+          priority:1,
           formulae: ['AN' + position + ' >=12'],
           style: {
             font: { color: { argb: greenHard } },
@@ -822,6 +1709,7 @@ export class ExcelService {
 
       ],
     });
+
     // Agrega formato a Tiempo
     worksheet.addConditionalFormatting({
       ref: 'AL' + position + ':AM' + position,
@@ -843,6 +1731,29 @@ export class ExcelService {
 
       ],
     });
+
+    if (position % 2 === 0){
+         // Agrega formato a Actividad
+   worksheet.addConditionalFormatting({
+    ref: 'F' + position + ':CA' + position,
+    rules: [
+      // si la actividad es navegando deberia tener una distancia.    
+      {
+        type: 'expression',
+        priority: 20,
+        formulae: [true],
+        style: {
+          fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: grisSuave } },
+          
+        },
+      },
+
+    ],
+  });
+    } else {
+     
+    }
+
   }
 
 
