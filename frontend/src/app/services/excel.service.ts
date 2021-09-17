@@ -472,10 +472,61 @@ export class ExcelService {
     // nos ubicamos en una posicion para empezar a poner los row
     //this.mergeCellReport(worksheet, position);
 
+    // Variables de colores-
+    let blueHard = '091556'
+    let blueMedium = '09155694'
+    let blueLow = 'b6c2ff94';
+
+    let greenHard = '091556'
+    let greenMedium = '09155694'
+    let greenLow = 'b6c2ff94';
+
+    let black = '000'
+    let white = 'ffffff';
+
+    let grisSuave = 'f3f3f3';
     worksheet.getCell('AR' + position).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
+    worksheet.getCell('AR' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 20,
+        bold: true,
+        color: { argb:greenLow  },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'lightGray',
+        bgColor: {
+          argb: blueHard
+        }
+      },
+
+    }
     worksheet.mergeCells('AR' + position, 'BG' + position);
 
     worksheet.getCell('BH' + position).value = "MGO CONSUMPTION IN MT";
+    worksheet.getCell('BH' + position).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 20,
+        bold: true,
+        color: { argb:greenLow  },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'lightGray',
+        bgColor: {
+          argb: blueMedium
+        }
+      },
+
+    }
     worksheet.mergeCells('BH' + position, 'CA' + position);
 
     position += 1;
