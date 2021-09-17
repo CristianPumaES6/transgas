@@ -1489,9 +1489,9 @@ export class ExcelService {
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
           getReportVoyagePortDaily.departurePort, '', '', '',
           getReportVoyagePortDaily.arrivalPort, '', '', '',
-          getReportVoyagePortDaily.date, '', '',
+          FormatDate(getReportVoyagePortDaily.date), '', '',
           getReportVoyagePortDaily.hour, '',
-          getReportVoyagePortDaily.steamingTime, '',
+          {formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)'}, '',
           getReportVoyagePortDaily.activityPerformed, '', '', '',
 
 
@@ -1501,7 +1501,7 @@ export class ExcelService {
 
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          getReportVoyagePortDaily.steamingTime, '',
+          {formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)'}, '',
           // Velocidad formula.
           { formula: 'IF(ISERROR(AJ' + position + '/AL' + position + '),0,AJ' + position + '/AL' + position + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
@@ -1541,10 +1541,18 @@ export class ExcelService {
         this.mergeCellReport(worksheet, position);
         // Si es el primer registro se debe calcular con el rob del viaje anterior
         if (index == 0) {
+
+          // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
+          worksheet.getCell('U' + position).value = <any>{ formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)' };
+          worksheet.getCell('AL' + position).value = <any>{ formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)' };
+          
+
+         
           worksheet.getCell('BF' + position).value = <any>{ formula: 'BE' + (position - 2) + '-AZ' + position + '+BD' + position };
           worksheet.getCell('BZ' + position).value = <any>{ formula: 'BY' + (position - 2) + '-BT' + position + '+BX' + position };
 
           this.addFormatting(worksheet, position)
+          // Agregamos el formadate
         } else {
           
           this.addFormatting(worksheet, position)
@@ -1611,6 +1619,9 @@ export class ExcelService {
     let redHard = '9a2929';
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
+
+    // Agregar formato a una fcelda
+    worksheet.getCell('P' + position).numFmt = 'm/d/yyyy';
 
     // Agrega formato a Actividad
     worksheet.addConditionalFormatting({
