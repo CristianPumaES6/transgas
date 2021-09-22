@@ -49,13 +49,27 @@ export class DialogExportExcelComponent implements OnInit {
   public ClickDownloading() {
     console.log('cLick');
 
+    return Promise.resolve(true)
+      .then(
+        result => {
 
-    // Fecha de inicio.
-    let dateStart = this.data.dateStartUTC;
-    let dateEnd = this.data.dateEndUTC;
+          this.loadingService.Open();
 
-    let selectUser: User = this.data.selectUser;
 
-    this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd, selectUser);
+          // Fecha de inicio.
+          let dateStart = this.data.dateStartUTC;
+          let dateEnd = this.data.dateEndUTC;
+      
+          let selectUser: User = this.data.selectUser;
+      
+          return this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd, selectUser);
+        }
+      ).then(
+        result => {
+          this.loadingService.Close();
+        }
+      )
+
+    
   }
 }

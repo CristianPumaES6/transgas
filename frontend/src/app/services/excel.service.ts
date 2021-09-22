@@ -317,7 +317,7 @@ export class ExcelService {
   };
 
   // Opcion que exporta el excel.
-  public async ExportExcel(selectUserId: number, startDate: string, endDate: string, selectUser: User) {
+  public async ExportExcel(selectUserId: number, startDate: string, endDate: string, selectUser: User): Promise<boolean> {
     /*   
     const wb = new Workbook();
     
@@ -361,8 +361,9 @@ export class ExcelService {
               fs.saveAs(blob, 'Report.xlsx');
             });
 
+            return true;
           }
-        )
+        );
   }
 
   private ReportVoyage(workbook: Workbook, title: string, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], selectUser: User): Workbook {
@@ -549,7 +550,6 @@ export class ExcelService {
     posicionColumn = [71,77];
     this.addStyleByColums(worksheet,posicion,posicionColumn,'DAILY CONSUMPTION',10,colorYellowTransgas,blueHard3,'')
    
-
 
     position += 1;
  
@@ -1538,9 +1538,9 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
+
     this.mergeCellReport(worksheet, position);
-
-
+    
     listGetReportVoyagePortDaily.forEach(
       (getReportVoyagePortDaily, index) => {
 
