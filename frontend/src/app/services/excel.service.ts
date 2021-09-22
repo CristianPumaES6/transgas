@@ -491,6 +491,72 @@ export class ExcelService {
     let white = 'ffffff';
 
     let grisSuave = 'f3f3f3';
+
+
+    let posicion = [position,position];
+    let posicionColumn = [25,78];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'INFO VESSEL',20,colorYellowTransgas,blueHard3,'')
+    position += 1;
+
+    //Espacio de separacion
+    position += 1;
+
+    
+    posicion = [position,position];
+    posicionColumn = [7,17];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'LEGEND',10,colorYellowTransgas,blueHard3,'')
+
+    posicion = [position,position];
+    posicionColumn = [26,30];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,selectUser.name,15,blueHard3,white,'')
+
+    
+    posicion = [position,position];
+    posicionColumn = [44,45];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'SPEED',10,colorYellowTransgas,blueHard3,'')
+
+    posicion = [position,position];
+    posicionColumn = [46,47];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'CHARTER',8,white,blueHard3,'')
+    
+    posicion = [position,position];
+    posicionColumn = [48,49];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'PERFORMEND',8,white,blueHard2,'')
+
+
+    posicion = [position,position];
+    posicionColumn = [51,57];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'DAILY CONSUMPTION',10,colorYellowTransgas,blueHard3,'')
+    
+    
+    
+    
+    
+    posicion = [position,position];
+    posicionColumn = [64,65];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'SPEED',10,colorYellowTransgas,blueHard3,'')
+
+    posicion = [position,position];
+    posicionColumn = [66,67];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'CHARTER',8,white,blueHard3,'')
+    
+    posicion = [position,position];
+    posicionColumn = [68,69];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'PERFORMEND',8,white,blueHard2,'')
+
+
+    posicion = [position,position];
+    posicionColumn = [71,77];
+    this.addStyleByColums(worksheet,posicion,posicionColumn,'DAILY CONSUMPTION',10,colorYellowTransgas,blueHard3,'')
+   
+
+
+    position += 1;
+ 
+    position += 1;
+
+
+    position += 1;
     worksheet.getCell('AR' + position).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
     worksheet.getCell('AR' + position).style = {
       alignment: {
@@ -1491,7 +1557,7 @@ export class ExcelService {
           getReportVoyagePortDaily.arrivalPort, '', '', '',
           FormatDate(getReportVoyagePortDaily.date), '', '',
           getReportVoyagePortDaily.hour, '',
-          {formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)'}, '',
+          { formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' }, '',
           getReportVoyagePortDaily.activityPerformed, '', '', '',
 
 
@@ -1501,7 +1567,7 @@ export class ExcelService {
 
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          {formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)'}, '',
+          { formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' }, '',
           // Velocidad formula.
           { formula: 'IF(ISERROR(AJ' + position + '/AL' + position + '),0,AJ' + position + '/AL' + position + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
@@ -1543,18 +1609,18 @@ export class ExcelService {
         if (index == 0) {
 
           // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
-          worksheet.getCell('U' + position).value = <any>{ formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)' };
-          worksheet.getCell('AL' + position).value = <any>{ formula: 'IF(P'+position+'-P'+(position-1)+'=1,((S'+position+'-S'+(position-1)+')*24)+24,(S'+position+'-S'+(position-1)+')*24)' };
-          
+          worksheet.getCell('U' + position).value = <any>{ formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' };
+          worksheet.getCell('AL' + position).value = <any>{ formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' };
 
-         
+
+
           worksheet.getCell('BF' + position).value = <any>{ formula: 'BE' + (position - 2) + '-AZ' + position + '+BD' + position };
           worksheet.getCell('BZ' + position).value = <any>{ formula: 'BY' + (position - 2) + '-BT' + position + '+BX' + position };
 
           this.addFormatting(worksheet, position)
           // Agregamos el formadate
         } else {
-          
+
           this.addFormatting(worksheet, position)
         }
 
@@ -1568,6 +1634,95 @@ export class ExcelService {
 
     return workbook;
   }
+
+  private addStyleByColums(worksheet: Worksheet, position: number[], column :number[],text:string,sizeFont:number,colortText:string,colorBackgraund:string,border ) {
+
+    
+    let colorYellowTransgas = 'FFCD06';
+    // Variables de colores-
+    let blueHard = '001556'
+    let blueMedium = '09155694'
+    let blueLow = 'b6c2ff94';
+
+
+    let blueHard1 = '375f9a'
+    let blueHard2 = '0040d8'
+    let blueHard3 = '001556'
+
+    let greenHard = '091556'
+    let greenMedium = '09155694'
+    let greenLow = 'b6c2ff94';
+
+    let black = '000'
+    let white = 'ffffff';
+
+    let grisSuave = 'f3f3f3';
+
+    // SEparamos las posiciones.
+ let positionDesde= position[0];
+ let positionHasta= position[1];
+
+ let columnDesde= column[0];
+ let columnHasta= column[1];
+
+
+ let style:any= {
+  alignment: {
+    horizontal: 'center',
+    vertical: 'middle'
+  },
+  font: {
+    size: sizeFont,
+    bold: true,
+    color: { argb: colortText },
+  },
+  fill: {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: {
+      argb: colorBackgraund
+    }
+  },
+  border: {
+    top: { style: 'double', color: { argb: grisSuave } },
+    left: { style: 'double', color: { argb: grisSuave } },
+    bottom: { style: 'double', color: { argb: grisSuave } },
+    right: { style: 'double', color: { argb: grisSuave } }
+  }
+
+};
+    worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).value  =text;
+    worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).style = style;
+    worksheet.mergeCells(this.PositByCell(columnDesde) + positionDesde,this.PositByCell(columnHasta) + positionHasta);
+
+  }
+
+  // ingresas el numero y devuelve la letra
+  private PositByCell(positionColum: number): string {
+    let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+      'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ',
+      'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ',
+      'CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'CJ', 'CK', 'CL', 'CM', 'CN', 'CO', 'CP', 'CQ', 'CR', 'CS', 'CT', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ'];
+
+    return letras[positionColum];
+  }
+  // Busca la letra y devuelve el numero.
+  private SearchPositByCell(letraColum: string): any {
+    let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+      'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ',
+      'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ',
+      'CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'CJ', 'CK', 'CL', 'CM', 'CN', 'CO', 'CP', 'CQ', 'CR', 'CS', 'CT', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ'];
+
+
+    letras.forEach(
+      (letra, index) => {
+        if (letra === letraColum) {
+          return index;
+        }
+      }
+    );
+  }
+
 
   private mergeCellReport(worksheet: Worksheet, position) {
 
@@ -1681,12 +1836,12 @@ export class ExcelService {
           style: {
             border: {},
             font: { color: { argb: grisMedio } },
-            },
+          },
         },
         // Menor que 
         {
           type: 'expression',
-          priority:1,
+          priority: 1,
           formulae: ['AND( AN' + position + ' <12, AN' + position + ' > 0 )'],
           style: {
             font: { color: { argb: redHard } },
@@ -1696,7 +1851,7 @@ export class ExcelService {
         // Mayor que 
         {
           type: 'expression',
-          priority:1,
+          priority: 1,
           formulae: ['AN' + position + ' >=12'],
           style: {
             font: { color: { argb: greenHard } },
@@ -1743,26 +1898,26 @@ export class ExcelService {
       ],
     });
 
-    if (position % 2 === 0){
-         // Agrega formato a Actividad
-   worksheet.addConditionalFormatting({
-    ref: 'F' + position + ':CA' + position,
-    rules: [
-      // si la actividad es navegando deberia tener una distancia.    
-      {
-        type: 'expression',
-        priority: 20,
-        formulae: [true],
-        style: {
-          fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: grisSuave } },
-          
-        },
-      },
+    if (position % 2 === 0) {
+      // Agrega formato a Actividad
+      worksheet.addConditionalFormatting({
+        ref: 'F' + position + ':CA' + position,
+        rules: [
+          // si la actividad es navegando deberia tener una distancia.    
+          {
+            type: 'expression',
+            priority: 20,
+            formulae: [true],
+            style: {
+              fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: grisSuave } },
 
-    ],
-  });
+            },
+          },
+
+        ],
+      });
     } else {
-     
+
     }
 
   }
