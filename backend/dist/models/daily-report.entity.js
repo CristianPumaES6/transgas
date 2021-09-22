@@ -1,0 +1,228 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GetReportVoyagePortDaily = exports.GetInfoBunkering = exports.GetInfoVoyageROBBunkering = exports.GetROBByUser = exports.DailyReport = void 0;
+const typeorm_1 = require("typeorm");
+const port_entity_1 = require("./port.entity");
+let DailyReport = class DailyReport {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "id", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "userId", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "portId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => port_entity_1.Port, port => port.id),
+    __metadata("design:type", port_entity_1.Port)
+], DailyReport.prototype, "port", void 0);
+__decorate([
+    typeorm_1.Column({ default: "Otros" }),
+    __metadata("design:type", String)
+], DailyReport.prototype, "activityPerformed", void 0);
+__decorate([
+    typeorm_1.Column({ default: '', nullable: false }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "speedStraction", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Date)
+], DailyReport.prototype, "date", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], DailyReport.prototype, "hour", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "bunkeringIfo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "bunkeringMgo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "mplaIfo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "auxIfo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "boilerIfo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "otherIfo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "mplaMgo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "auxMgo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "boilerMgo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "ppMgo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "giMgo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "otherMgo", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "steamingTime", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0 }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "distance", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], DailyReport.prototype, "beaufour", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], DailyReport.prototype, "observation", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "userIdCreated", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], DailyReport.prototype, "dateCreated", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "userIdUpdated", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], DailyReport.prototype, "dateUpdated", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: false }),
+    __metadata("design:type", Boolean)
+], DailyReport.prototype, "status", void 0);
+DailyReport = __decorate([
+    typeorm_1.Entity()
+], DailyReport);
+exports.DailyReport = DailyReport;
+class GetROBByUser {
+}
+exports.GetROBByUser = GetROBByUser;
+class GetInfoVoyageROBBunkering {
+    constructor(voyageId, voyageNumber, minDate, maxDate, totalIFO, totalMGO, listInfoBunkering) {
+        this.voyageId = voyageId || 0;
+        this.voyageNumber = voyageNumber || 0;
+        this.minDate = minDate || null;
+        this.maxDate = maxDate || null;
+        this.totalIFO = totalIFO || 0;
+        this.totalMGO = totalMGO || 0;
+        this.listInfoBunkering = listInfoBunkering || [];
+    }
+}
+exports.GetInfoVoyageROBBunkering = GetInfoVoyageROBBunkering;
+class GetInfoBunkering {
+    constructor(portId, portNumber, portDeparture, daily_reportId, dailyReportDate, bunkeringIfo, bunkeringMgo, observation) {
+        this.portId = portId || 0;
+        this.portNumber = portNumber || 0;
+        this.portDeparture = portDeparture || '';
+        this.daily_reportId = daily_reportId || 0;
+        this.dailyReportDate = dailyReportDate || null;
+        this.bunkeringIfo = bunkeringIfo || 0;
+        this.bunkeringMgo = bunkeringMgo || 0;
+        this.observation = observation || '';
+    }
+}
+exports.GetInfoBunkering = GetInfoBunkering;
+class GetReportVoyagePortDaily {
+    constructor(userId, year, voyageId, voyageNumber, portId, portNumber, departurePort, arrivalPort, dailyReportId, date, hour, steamingTime, activityPerformed, speedStraction, observation, distance, beaufour, mplaIfo, auxIfo, boilerIfo, otherIfo, bunkeringIfo, mplaMgo, auxMgo, boilerMgo, ppMgo, giMgo, otherMgo, bunkeringMgo) {
+        this.userId = userId;
+        this.year = year;
+        this.voyageId = voyageId;
+        this.voyageNumber = voyageNumber;
+        this.portId = portId;
+        this.portNumber = portNumber;
+        this.departurePort = departurePort;
+        this.arrivalPort = arrivalPort;
+        this.dailyReportId = dailyReportId;
+        this.date = date;
+        this.hour = hour;
+        this.steamingTime = steamingTime;
+        this.activityPerformed = activityPerformed;
+        this.speedStraction = speedStraction;
+        this.observation = observation;
+        this.distance = distance;
+        this.beaufour = beaufour;
+        this.mplaIfo = mplaIfo;
+        this.auxIfo = auxIfo;
+        this.boilerIfo = boilerIfo;
+        this.otherIfo = otherIfo;
+        this.bunkeringIfo = bunkeringIfo;
+        this.mplaMgo = mplaMgo;
+        this.auxMgo = auxMgo;
+        this.boilerMgo = boilerMgo;
+        this.ppMgo = ppMgo;
+        this.giMgo = giMgo;
+        this.otherMgo = otherMgo;
+        this.bunkeringMgo = bunkeringMgo;
+        this.userId = userId || 0;
+        this.year = year || 0;
+        this.voyageId = voyageId || 0;
+        this.voyageNumber = voyageNumber || 0;
+        this.portId = portId || 0;
+        this.portNumber = portNumber || 0;
+        this.departurePort = departurePort || '';
+        this.arrivalPort = arrivalPort || '';
+        this.dailyReportId = dailyReportId || 0;
+        this.date = date || null;
+        this.hour = hour || '';
+        this.steamingTime = steamingTime || 0;
+        this.activityPerformed = activityPerformed || '';
+        this.speedStraction = speedStraction || '';
+        this.observation = observation || '';
+        this.distance = distance || 0;
+        this.beaufour = beaufour || '';
+        this.mplaIfo = mplaIfo || 0;
+        this.auxIfo = auxIfo || 0;
+        this.boilerIfo = boilerIfo || 0;
+        this.otherIfo = otherIfo || 0;
+        this.bunkeringIfo = bunkeringIfo || 0;
+        this.mplaMgo = mplaMgo || 0;
+        this.auxMgo = auxMgo || 0;
+        this.boilerMgo = boilerMgo || 0;
+        this.ppMgo = ppMgo || 0;
+        this.giMgo = giMgo || 0;
+        this.otherMgo = otherMgo || 0;
+        this.bunkeringMgo = bunkeringMgo || 0;
+    }
+}
+exports.GetReportVoyagePortDaily = GetReportVoyagePortDaily;
+//# sourceMappingURL=daily-report.entity.js.map

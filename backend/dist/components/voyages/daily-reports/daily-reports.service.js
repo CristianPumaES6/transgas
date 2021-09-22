@@ -1,0 +1,330 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DailyReportsService = void 0;
+const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const daily_report_entity_1 = require("../../../models/daily-report.entity");
+const typeorm_2 = require("typeorm");
+let DailyReportsService = class DailyReportsService {
+    constructor(_dailyReportRepository) {
+        this._dailyReportRepository = _dailyReportRepository;
+    }
+    async Create(dailyReport) {
+        return await this._dailyReportRepository.save(dailyReport).then((resultSave) => {
+            if (!resultSave)
+                throw new Error('No se puedo registrar el viaje en la BD.');
+            return resultSave;
+        });
+    }
+    async Get(id) {
+        return await this._dailyReportRepository.findOne({
+            where: {
+                id: id,
+                status: typeorm_2.Not(false)
+            }
+        }).then((resultFind) => {
+            if (!resultFind)
+                throw new Error('does_not_exist');
+            return resultFind;
+        });
+    }
+    async Gets(dailyReport) {
+        return await this._dailyReportRepository.find({
+            where: [
+                {
+                    userId: typeorm_2.Like('%' + (dailyReport.userId || '') + '%'),
+                    portId: typeorm_2.Like('%' + dailyReport.portId + '%'),
+                    status: typeorm_2.Not(false)
+                }
+            ],
+            order: {
+                date: 'ASC',
+                hour: 'ASC'
+            },
+        }).then((result) => {
+            return result;
+        });
+    }
+    async Update(dailyReport) {
+        return await this._dailyReportRepository.findOne({
+            where: [
+                { id: dailyReport.id }
+            ]
+        }).then(resultFind => {
+            if (!resultFind)
+                throw new Error('does_not_exist');
+            return this._dailyReportRepository.update(dailyReport.id, dailyReport);
+        }).then(resultUpdate => {
+            if (!resultUpdate)
+                throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+            return dailyReport;
+        });
+    }
+    async Delete(dailyReport) {
+        return await this._dailyReportRepository.findOne({
+            where: [
+                { id: dailyReport.id }
+            ]
+        }).then(resultFind => {
+            if (!resultFind)
+                throw new Error('does_not_exist');
+            resultFind.status = false;
+            return this._dailyReportRepository.update(dailyReport.id, resultFind);
+        }).then(resultSave => {
+            if (!resultSave)
+                throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+            return dailyReport;
+        });
+    }
+    async GetROBByUser(userId) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+            .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+            .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .getRawOne()
+            .then((result) => {
+            let getROBByUser = {};
+            getROBByUser.total_ifo = result.total_ifo || 0;
+            getROBByUser.total_mgo = result.total_mgo || 0;
+            getROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+            getROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+            return getROBByUser;
+        });
+    }
+    async GetStartEndROByFilterDate(startDate, endDate, userId) {
+        let StartEndROB = [];
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+            .addSelect(' SUM( daily_report.bunkeringIfo ) ', "total_bunkering_ifo")
+            .addSelect(' SUM( daily_report.bunkeringMgo ) ', "total_bunkering_mgo")
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('datetime(daily_report.date) < datetime(:startDate)', { startDate: startDate })
+            .getRawOne()
+            .then((result) => {
+            if (!result)
+                throw 'ERROR GetROBByUser';
+            let getStartROB = {};
+            getStartROB.total_ifo = result.total_ifo || 0;
+            getStartROB.total_mgo = result.total_mgo || 0;
+            getStartROB.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+            getStartROB.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+            StartEndROB.push(getStartROB);
+            return this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', 'total_ifo')
+                .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', 'total_mgo')
+                .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
+                .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                .getRawOne();
+        }).then((result) => {
+            if (!result)
+                throw 'ERROR GetEndROBByUser';
+            let getEndROBByUser = {};
+            getEndROBByUser.total_ifo = result.total_ifo || 0;
+            getEndROBByUser.total_mgo = result.total_mgo || 0;
+            getEndROBByUser.total_bunkering_ifo = result.total_bunkering_ifo || 0;
+            getEndROBByUser.total_bunkering_mgo = result.total_bunkering_mgo || 0;
+            StartEndROB.push(getEndROBByUser);
+            return StartEndROB;
+        });
+    }
+    async GetBunkeringByUserIFO(userId) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select('daily_report.date', 'date')
+            .addSelect('daily_report.hour', 'hour')
+            .addSelect('daily_report.activityPerformed', 'activityPerformed')
+            .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('daily_report.bunkeringIfo > 0', {})
+            .orderBy('daily_report.date', 'DESC')
+            .limit(5)
+            .getRawMany()
+            .then((result) => {
+            return result;
+        });
+    }
+    async GetBunkeringByUserMGO(userId) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select('daily_report.date', 'date')
+            .addSelect('daily_report.hour', 'hour')
+            .addSelect('daily_report.activityPerformed', 'activityPerformed')
+            .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('daily_report.bunkeringMgo > 0', {})
+            .orderBy('daily_report.date', 'DESC')
+            .limit(5)
+            .getRawMany()
+            .then((result) => {
+            return result;
+        });
+    }
+    async GetReportVoyagePortDaily(userId, startDate, endDate) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select('voyage.userId', 'userId')
+            .addSelect('voyage.year', 'year')
+            .addSelect('voyage.id', 'voyageId')
+            .addSelect('voyage.voyageNumber', 'voyageNumber')
+            .addSelect('port.id', 'portId')
+            .addSelect('port.portNumber', 'portNumber')
+            .addSelect('port.departurePort', 'departurePort')
+            .addSelect('port.arrivalPort', 'arrivalPort')
+            .addSelect('daily_report.id', 'dailyReportId')
+            .addSelect('daily_report.date', 'date')
+            .addSelect('daily_report.hour', 'hour')
+            .addSelect('daily_report.steamingTime', 'steamingTime')
+            .addSelect('daily_report.activityPerformed', 'activityPerformed')
+            .addSelect('daily_report.speedStraction', 'speedStraction')
+            .addSelect('daily_report.observation', 'observation')
+            .addSelect('daily_report.distance', 'distance')
+            .addSelect('daily_report.beaufour', 'beaufour')
+            .addSelect('daily_report.mplaIfo', 'mplaIfo')
+            .addSelect('daily_report.auxIfo', 'auxIfo')
+            .addSelect('daily_report.boilerIfo', 'boilerIfo')
+            .addSelect('daily_report.otherIfo', 'otherIfo')
+            .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+            .addSelect('daily_report.mplaMgo', 'mplaMgo')
+            .addSelect('daily_report.auxMgo', 'auxMgo')
+            .addSelect('daily_report.boilerMgo', 'boilerMgo')
+            .addSelect('daily_report.ppMgo', 'ppMgo')
+            .addSelect('daily_report.giMgo', 'giMgo')
+            .addSelect('daily_report.otherMgo', 'otherMgo')
+            .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
+            .innerJoin('daily_report.port', 'port')
+            .innerJoin('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+            .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+            .getRawMany()
+            .then((result) => {
+            if (!result)
+                throw 'ERROR GetReportVoyagePortDaily';
+            return result;
+        });
+    }
+    async GetInfoVoyageROBAndBunkeringByBuqueAndDate(startDate, endDate, userId) {
+        let firstResultInfoVoyage = [];
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select(' voyage.id ', 'voyageId')
+            .addSelect(' voyage.voyageNumber ', 'voyageNumber')
+            .addSelect(' MIN(daily_report.date) ', "minDate")
+            .addSelect(' MAX(daily_report.date) ', "maxDate")
+            .addSelect(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', "totalIFO")
+            .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', "totalMGO")
+            .innerJoinAndSelect('daily_report.port', 'port')
+            .innerJoinAndSelect('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+            .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+            .groupBy('voyage.id, voyage.voyageNumber')
+            .getRawMany()
+            .then((result) => {
+            if (!result)
+                throw 'ERROR GetROBByUser';
+            firstResultInfoVoyage = result;
+            return this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select(' voyage.id ', 'voyageId')
+                .addSelect(' voyage.voyageNumber ', 'voyageNumber')
+                .addSelect(' port.id ', 'portId')
+                .addSelect(' port.voyageId ', 'voyageId')
+                .addSelect(' port.portNumber ', 'portNumber')
+                .addSelect(' port.departurePort ', 'portDeparture')
+                .addSelect(' daily_report.id ', "daily_reportId")
+                .addSelect(' daily_report.date ', "dailyReportDate")
+                .addSelect(' daily_report.bunkeringIfo ', "bunkeringIfo")
+                .addSelect(' daily_report.bunkeringMgo ', "bunkeringMgo")
+                .addSelect(' daily_report.observation ', "observation")
+                .innerJoinAndSelect('daily_report.port', 'port')
+                .innerJoinAndSelect('port.voyage', 'voyage')
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                .andWhere('daily_report.bunkeringIfo > :bunkeringIFO OR daily_report.bunkeringMgo > :bunkeringMGO', { bunkeringIFO: 0, bunkeringMGO: 0 })
+                .getRawMany();
+        })
+            .then((listInfoBunkering) => {
+            let listGetInfoVoyageROBBunkering = [];
+            firstResultInfoVoyage.forEach((itemInfoVoyage) => {
+                let getInfoVoyageROBBunkering = new daily_report_entity_1.GetInfoVoyageROBBunkering();
+                getInfoVoyageROBBunkering.voyageId = itemInfoVoyage.voyageId;
+                getInfoVoyageROBBunkering.voyageNumber = itemInfoVoyage.voyageNumber;
+                getInfoVoyageROBBunkering.minDate = itemInfoVoyage.minDate;
+                getInfoVoyageROBBunkering.maxDate = itemInfoVoyage.maxDate;
+                getInfoVoyageROBBunkering.totalIFO = itemInfoVoyage.totalIFO;
+                getInfoVoyageROBBunkering.totalMGO = itemInfoVoyage.totalMGO;
+                let filterInfoBunkering = listInfoBunkering.filter((item) => item.voyageId === itemInfoVoyage.voyageId);
+                filterInfoBunkering.forEach(item => {
+                    let getInfoBunkering = new daily_report_entity_1.GetInfoBunkering();
+                    getInfoBunkering.portId = item.portId;
+                    getInfoBunkering.portNumber = item.portNumber;
+                    getInfoBunkering.portDeparture = item.portDeparture;
+                    getInfoBunkering.daily_reportId = item.daily_reportId;
+                    getInfoBunkering.dailyReportDate = item.dailyReportDate;
+                    getInfoBunkering.bunkeringIfo = item.bunkeringIfo;
+                    getInfoBunkering.bunkeringMgo = item.bunkeringMgo;
+                    getInfoBunkering.observation = item.observation;
+                    getInfoVoyageROBBunkering.listInfoBunkering.push(getInfoBunkering);
+                });
+                listGetInfoVoyageROBBunkering.push(getInfoVoyageROBBunkering);
+            });
+            return listGetInfoVoyageROBBunkering;
+        });
+    }
+};
+DailyReportsService = __decorate([
+    common_1.Injectable(),
+    __param(0, typeorm_1.InjectRepository(daily_report_entity_1.DailyReport)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
+], DailyReportsService);
+exports.DailyReportsService = DailyReportsService;
+//# sourceMappingURL=daily-reports.service.js.map
