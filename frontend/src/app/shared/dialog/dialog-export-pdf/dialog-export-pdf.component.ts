@@ -150,7 +150,7 @@ export class DialogExportPdfComponent implements OnInit {
         // le damos una tamaño al contenedor del pdf
         let alturaDelViewport = window.innerHeight;
         $('.content-PDF').css({
-          height: alturaDelViewport - 150
+          height: alturaDelViewport
         });
 
         // Generamos el ChartOverall
@@ -1853,7 +1853,7 @@ export class DialogExportPdfComponent implements OnInit {
 
           // Agregamos el blob al componente ademas le damos refresh para que se vea.
           this.pdfViewerOnDemand.pdfSrc = blobPDF; // pdfSrc can be Blob or Uint8Array
-          this.pdfViewerOnDemand.downloadFileName = 'revisar';
+          this.pdfViewerOnDemand.downloadFileName = this.selectUser.name;
           this.pdfViewerOnDemand.refresh();
 
           this.loadingService.Close();
