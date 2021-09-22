@@ -8,3 +8,10 @@ npm install
 nest start
 
 copiamos el dist 
+
+
+/
+
+Cambiamos el archivo 
+server.config.ts
+
