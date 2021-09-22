@@ -350,7 +350,12 @@ export class ExcelService {
             if (!result) throw 'ERROR GER REPORT';
             listGetReportVoyagePortDaily = result;
 
+
+            // Armamos el reporte.
             this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily, selectUser)
+
+
+            // Aqui seria por por viaje y pagina, cada viaje una nueva hoja.
             for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
 
             }
@@ -373,6 +378,16 @@ export class ExcelService {
     // Creamos la hoja de trabajo.
     let worksheet = workbook.addWorksheet('Voyage ' + 2);
     //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
+
+    let date_start = '22/22/22'
+    let hour_start = '20:20'
+    let ifo_start = 200;
+    let mgo_start = 300;
+    let date_end = '22/22/22'
+    let hour_end = '22:21'
+    let ifo_end = 222;
+    let mgo_end = 440;
+
 
     worksheet.columns = [
       { width: 0 },
@@ -494,65 +509,169 @@ export class ExcelService {
     let grisSuave = 'f3f3f3';
 
 
-    let posicion = [position,position];
-    let posicionColumn = [25,78];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'INFO VESSEL',20,colorYellowTransgas,blueHard3,'')
+
+    // ================= Linea 1
+    let posicion = [position, position];
+    let posicionColumn = [25, 78];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3, '')
     position += 1;
 
     //Espacio de separacion
     position += 1;
 
-    
-    posicion = [position,position];
-    posicionColumn = [7,17];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'LEGEND',10,colorYellowTransgas,blueHard3,'')
-
-    posicion = [position,position];
-    posicionColumn = [26,30];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,selectUser.name,15,blueHard3,white,'')
-
-    
-    posicion = [position,position];
-    posicionColumn = [44,45];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'SPEED',10,colorYellowTransgas,blueHard3,'')
-
-    posicion = [position,position];
-    posicionColumn = [46,47];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'CHARTER',8,white,blueHard3,'')
-    
-    posicion = [position,position];
-    posicionColumn = [48,49];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'PERFORMEND',8,white,blueHard2,'')
 
 
-    posicion = [position,position];
-    posicionColumn = [51,57];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'DAILY CONSUMPTION',10,colorYellowTransgas,blueHard3,'')
-    
-    
-    
-    
-    
-    posicion = [position,position];
-    posicionColumn = [64,65];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'SPEED',10,colorYellowTransgas,blueHard3,'')
+    // ================= Linea 2
+    posicion = [position, position];
+    posicionColumn = [7, 17];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '')
 
-    posicion = [position,position];
-    posicionColumn = [66,67];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'CHARTER',8,white,blueHard3,'')
-    
-    posicion = [position,position];
-    posicionColumn = [68,69];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'PERFORMEND',8,white,blueHard2,'')
+    posicion = [position, position];
+    posicionColumn = [26, 30];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.name, 15, blueHard3, white, '')
+
+    posicion = [position, position];
+    posicionColumn = [36, 37];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, textIFOorVLSFOorLSFO, 8, white, blueHard3, '')
+
+    posicion = [position, position];
+    posicionColumn = [38, 39];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'MGO', 8, white, blueHard3, '')
 
 
-    posicion = [position,position];
-    posicionColumn = [71,77];
-    this.addStyleByColums(worksheet,posicion,posicionColumn,'DAILY CONSUMPTION',10,colorYellowTransgas,blueHard3,'')
-   
+
+
+    posicion = [position, position + 1];
+    posicionColumn = [44, 45];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'SPEED', 10, colorYellowTransgas, blueHard3, '')
+
+    posicion = [position, position];
+    posicionColumn = [46, 47];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'CHARTER', 8, white, blueHard3, '')
+
+    posicion = [position, position];
+    posicionColumn = [48, 49];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'PERFORMEND', 8, white, blueHard2, '')
+
+
+    posicion = [position, position];
+    posicionColumn = [51, 57];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DAILY CONSUMPTION', 10, colorYellowTransgas, blueHard3, '')
+
+
+    // ========== LInea 3
+
+    posicion = [position, position + 1];
+    posicionColumn = [64, 65];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'SPEED', 10, colorYellowTransgas, blueHard3, '')
+
+    posicion = [position, position];
+    posicionColumn = [66, 67];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'CHARTER', 8, white, blueHard3, '')
+
+    posicion = [position, position];
+    posicionColumn = [68, 69];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'PERFORMEND', 8, white, blueHard2, '')
+
+
+    posicion = [position, position];
+    posicionColumn = [71, 77];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DAILY CONSUMPTION', 10, colorYellowTransgas, blueHard3, '')
+
 
     position += 1;
- 
+
+
+    // ================= Linea 4
+
+
+    // Start date
+    posicion = [position, position];
+    posicionColumn = [26, 30];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'START DATE', 8, black, white, '');
+
+    // date start
+    posicion = [position, position];
+    posicionColumn = [31, 33];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, date_start, 8, black, white, '');
+
+    // date start
+    posicion = [position, position];
+    posicionColumn = [34, 35];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, hour_start, 8, black, white, '');
+
+    // IFO start
+    posicion = [position, position];
+    posicionColumn = [36, 37];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, ifo_start, 8, black, white, '');
+
+
+    posicion = [position, position];
+    posicionColumn = [38, 39];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, mgo_start, 8, black, white, '');
+
+
+    // FULL Y ECO
+    posicion = [position, position];
+    posicionColumn = [46, 46];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard3, '')
+    posicion = [position, position];
+    posicionColumn = [47, 47];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard3, '')
+
+    // FULL Y ECO
+    posicion = [position, position];
+    posicionColumn = [48, 48];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard2, '')
+    posicion = [position, position];
+    posicionColumn = [49, 49];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard2, '')
+
+
+    posicion = [position, position];
+    posicionColumn = [51, 53];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'LOADING', 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [54, 55];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.loadingConsumptionIFO, 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [56, 57];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 666, 10, black, white, '')
+
+
+    // FULL Y ECO
+    posicion = [position, position];
+    posicionColumn = [66, 66];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard3, '')
+    posicion = [position, position];
+    posicionColumn = [67, 67];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard3, '')
+
+    // FULL Y ECO
+    posicion = [position, position];
+    posicionColumn = [68, 68];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard2, '')
+    posicion = [position, position];
+    posicionColumn = [69, 69];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard2, '')
+
+
+    posicion = [position, position];
+    posicionColumn = [71, 73];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'LOADING', 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [74, 75];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.loadingConsumptionMGO, 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [76, 77];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 777, 10, black, white, '')
+
+
+    position += 1;
+
+
+
+
     position += 1;
 
 
@@ -1540,7 +1659,7 @@ export class ExcelService {
     };
 
     this.mergeCellReport(worksheet, position);
-    
+
     listGetReportVoyagePortDaily.forEach(
       (getReportVoyagePortDaily, index) => {
 
@@ -1635,9 +1754,9 @@ export class ExcelService {
     return workbook;
   }
 
-  private addStyleByColums(worksheet: Worksheet, position: number[], column :number[],text:string,sizeFont:number,colortText:string,colorBackgraund:string,border ) {
+  private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], text: string | number, sizeFont: number, colortText: string, colorBackgraund: string, border) {
 
-    
+
     let colorYellowTransgas = 'FFCD06';
     // Variables de colores-
     let blueHard = '001556'
@@ -1659,41 +1778,41 @@ export class ExcelService {
     let grisSuave = 'f3f3f3';
 
     // SEparamos las posiciones.
- let positionDesde= position[0];
- let positionHasta= position[1];
+    let positionDesde = position[0];
+    let positionHasta = position[1];
 
- let columnDesde= column[0];
- let columnHasta= column[1];
+    let columnDesde = column[0];
+    let columnHasta = column[1];
 
 
- let style:any= {
-  alignment: {
-    horizontal: 'center',
-    vertical: 'middle'
-  },
-  font: {
-    size: sizeFont,
-    bold: true,
-    color: { argb: colortText },
-  },
-  fill: {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: {
-      argb: colorBackgraund
-    }
-  },
-  border: {
-    top: { style: 'double', color: { argb: grisSuave } },
-    left: { style: 'double', color: { argb: grisSuave } },
-    bottom: { style: 'double', color: { argb: grisSuave } },
-    right: { style: 'double', color: { argb: grisSuave } }
-  }
+    let style: any = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: sizeFont,
+        bold: true,
+        color: { argb: colortText },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: colorBackgraund
+        }
+      },
+      border: {
+        top: { style: 'double', color: { argb: grisSuave } },
+        left: { style: 'double', color: { argb: grisSuave } },
+        bottom: { style: 'double', color: { argb: grisSuave } },
+        right: { style: 'double', color: { argb: grisSuave } }
+      }
 
-};
-    worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).value  =text;
+    };
+    worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).value = text;
     worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).style = style;
-    worksheet.mergeCells(this.PositByCell(columnDesde) + positionDesde,this.PositByCell(columnHasta) + positionHasta);
+    worksheet.mergeCells(this.PositByCell(columnDesde) + positionDesde, this.PositByCell(columnHasta) + positionHasta);
 
   }
 
