@@ -18,3 +18,8 @@ WHERE id >= 1;
 UPDATE daily_report
 SET date =  DATETIME(date, '+300 minutes') 
 WHERE id >= 1;
+
+-- Verificamos si esta ok.
+SELECT id, DATETIME(date, '-300 minutes')   , daily_report.date , daily_report.hour from daily_report;
+
+
