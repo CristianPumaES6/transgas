@@ -387,7 +387,8 @@ export class ExcelService {
     let hour_end = '22:21'
     let ifo_end = 222;
     let mgo_end = 440;
-
+    let totalBunkeringIfo = 0;
+    let totalBunkeringMGO = 0;
 
     worksheet.columns = [
       { width: 0 },
@@ -506,7 +507,14 @@ export class ExcelService {
     let black = '000'
     let white = 'ffffff';
 
+    // Variables de colores-
+    let grisFuerte = 'd4d4d4'
+    let grisMedio = 'ebe8e8'
     let grisSuave = 'f3f3f3';
+
+    let redHard = '9a2929';
+    let redMedium = 'ffa4a4';
+    let redLow = 'ffd6d6';
 
 
 
@@ -589,29 +597,24 @@ export class ExcelService {
     posicion = [position, position];
     posicionColumn = [26, 30];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'START DATE', 8, black, white, '');
-
     // date start
     posicion = [position, position];
     posicionColumn = [31, 33];
     this.addStyleByColums(worksheet, posicion, posicionColumn, date_start, 8, black, white, '');
-
     // date start
     posicion = [position, position];
     posicionColumn = [34, 35];
     this.addStyleByColums(worksheet, posicion, posicionColumn, hour_start, 8, black, white, '');
-
     // IFO start
     posicion = [position, position];
     posicionColumn = [36, 37];
     this.addStyleByColums(worksheet, posicion, posicionColumn, ifo_start, 8, black, white, '');
-
-
+    //MGO Start
     posicion = [position, position];
     posicionColumn = [38, 39];
     this.addStyleByColums(worksheet, posicion, posicionColumn, mgo_start, 8, black, white, '');
 
-
-    // FULL Y ECO
+    // FULL Y ECO Charter SPEED
     posicion = [position, position];
     posicionColumn = [46, 46];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard3, '')
@@ -619,7 +622,7 @@ export class ExcelService {
     posicionColumn = [47, 47];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard3, '')
 
-    // FULL Y ECO
+    // FULL Y ECO Performan SPEED
     posicion = [position, position];
     posicionColumn = [48, 48];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard2, '')
@@ -627,7 +630,7 @@ export class ExcelService {
     posicionColumn = [49, 49];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard2, '')
 
-
+    // Actividades. dailyconsumption
     posicion = [position, position];
     posicionColumn = [51, 53];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'LOADING', 10, black, white, '')
@@ -639,7 +642,7 @@ export class ExcelService {
     this.addStyleByColums(worksheet, posicion, posicionColumn, 666, 10, black, white, '')
 
 
-    // FULL Y ECO
+    // FULL Y ECO SPEED Charter
     posicion = [position, position];
     posicionColumn = [66, 66];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard3, '')
@@ -647,7 +650,7 @@ export class ExcelService {
     posicionColumn = [67, 67];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard3, '')
 
-    // FULL Y ECO
+    // FULL Y ECO Speed PErformend
     posicion = [position, position];
     posicionColumn = [68, 68];
     this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard2, '')
@@ -669,6 +672,101 @@ export class ExcelService {
 
     position += 1;
 
+    // ================= Linea 5
+    // Color leyenda
+    posicion = [position, position];
+    posicionColumn = [8, 8];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, '', 10, null, redLow, '')
+
+    // texto.
+    posicion = [position, position];
+    posicionColumn = [10, 16];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'Data recorded by the captain', 8, black, white, '')
+
+
+    // date start
+    posicion = [position, position];
+    posicionColumn = [32, 35];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'Total bunkering', 8, black, white, '');
+
+    // IFO start
+    posicion = [position, position];
+    posicionColumn = [36, 37];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, totalBunkeringIfo, 8, black, white, '');
+
+
+    posicion = [position, position];
+    posicionColumn = [38, 39];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, totalBunkeringIfo, 8, black, white, '');
+
+
+
+    // FULL Y ECO Charter SPEED IFO
+    posicion = [position, position];
+    posicionColumn = [44, 45];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'Ballast', 8, black, white, '');
+    posicion = [position, position];
+    posicionColumn = [46, 46];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingBallastConsumptionIFO, 8, black, white, '');
+    posicion = [position, position];
+    posicionColumn = [47, 47];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingEconomicConsumptionIFO, 8, black, white, '');
+
+    // FULL Y ECO Performan SPEED
+    posicion = [position, position];
+    posicionColumn = [48, 48];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'codifo del performent', 8, black, white, '');
+    posicion = [position, position];
+    posicionColumn = [49, 49];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'codifo del performent', 8, black, white, '')
+
+    // Actividades. dailyconsumption
+    posicion = [position, position];
+    posicionColumn = [51, 53];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DOWNLOADING', 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [54, 55];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.dischargeConsumptionIFO, 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [56, 57];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 666, 10, black, white, '')
+
+
+    // FULL Y ECO SPEED Charter
+    /*  posicion = [position, position];
+     posicionColumn = [66, 66];
+     this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingBallastConsumptionMGO, 8, white, blueHard3, '')
+     posicion = [position, position];
+     posicionColumn = [67, 67];
+     this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingEconomicConsumptionMGO, 8, white, blueHard3, '')
+  */
+    // FULL Y ECO Speed PErformend
+    posicion = [position, position];
+    posicionColumn = [64, 65];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'BALLAST', 8, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [66, 66];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingBallastConsumptionMGO, 8, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [67, 67];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingEconomicConsumptionMGO, 8, black, white, '')
+
+    posicionColumn = [68, 68];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingBallastConsumptionMGO, 8, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [69, 69];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingEconomicConsumptionMGO, 8, black, white, '')
+
+
+    posicion = [position, position];
+    posicionColumn = [71, 73];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DOWNLOADING', 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [74, 75];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.dischargeConsumptionMGO, 10, black, white, '')
+    posicion = [position, position];
+    posicionColumn = [76, 77];
+    this.addStyleByColums(worksheet, posicion, posicionColumn, 777, 10, black, white, '')
 
 
 
