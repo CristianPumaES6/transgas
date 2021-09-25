@@ -2481,8 +2481,6 @@ export class ExcelService {
 
     return posit;
   }
-
-
   private StyleDashSpeed(worksheet, posit, colum, selectUser: User): number {
     let date_start = '22/22/22'
     let hour_start = '20:20'
