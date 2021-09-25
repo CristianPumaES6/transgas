@@ -486,6 +486,7 @@ export class ExcelService {
     ];
 
     let position = 6;
+
     // nos ubicamos en una posicion para empezar a poner los row
     //this.mergeCellReport(worksheet, position);
 
@@ -529,10 +530,10 @@ export class ExcelService {
 
 
 
+    let positionRow = position;
+    let positionColum = 7
     // ================= Linea 2
-    posicion = [position, position];
-    posicionColumn = [7, 17];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '')
+    let tamanioLegend = this.StyleDashLegend(worksheet, positionRow, positionColum);
 
     posicion = [position, position];
     posicionColumn = [26, 30];
@@ -673,16 +674,6 @@ export class ExcelService {
     position += 1;
 
     // ================= Linea 5
-    // Color leyenda
-    posicion = [position, position];
-    posicionColumn = [8, 8];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, '', 10, null, redLow, '')
-
-    // texto.
-    posicion = [position, position];
-    posicionColumn = [10, 16];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'Data recorded by the captain', 8, black, white, '')
-
 
     // date start
     posicion = [position, position];
@@ -769,6 +760,7 @@ export class ExcelService {
     this.addStyleByColums(worksheet, posicion, posicionColumn, 777, 10, black, white, '')
 
 
+    position += tamanioLegend;
 
     position += 1;
 
@@ -1914,6 +1906,95 @@ export class ExcelService {
 
   }
 
+
+
+  private addStyleBorder(worksheet: Worksheet, position: number[], column: number[], borderStyle, colorborder: string) {
+
+    // SEparamos las posiciones.
+    let positionDesde = position[0];
+    let positionHasta = position[1];
+
+    let columnDesde = column[0];
+    let columnHasta = column[1];
+
+
+
+    // nos ayudara a saber en que columna estamos.
+    let positionColum = columnDesde;
+
+    //recorremos las celdas del arrededor
+    for (let index = positionDesde; index <= positionHasta; index++) {
+
+      if (
+        //index == positionDesde
+        false
+      ) {
+        this.addBorder(worksheet, index, positionColum, '', colorborder, 'leftUpperRorner');
+        this.addBorder(worksheet, index, columnHasta, '', colorborder, 'righUpperRorner');
+      } else if (index == positionHasta) {
+        this.addBorder(worksheet, index, positionColum, '', colorborder, 'leftLowRorner');
+        this.addBorder(worksheet, index, columnHasta, '', colorborder, 'righLowRorner');
+      } else {
+
+        console.log('entro------------------sss' + 'positionColum' + positionColum + 'index' + index)
+        this.addBorder(worksheet, index, positionColum, '', colorborder, 'left');
+        this.addBorder(worksheet, index, columnHasta, '', colorborder, 'right');
+
+      }
+    }
+
+    //recorremos las celdas del arrededor
+    for (let index = columnDesde + 1; index <= columnHasta - 1; index++) {
+      this.addBorder(worksheet, positionHasta, index, '', colorborder, 'bottom');
+
+    }
+
+  }
+
+  // Agrega borde a una celda en expeciofica
+  //righUpperRorner =
+  private addBorder(worksheet: Worksheet, positionRow: number, positionColumn: number, borderStyle, colorborder: string, lugardelBorde: string) {
+
+
+    let border: any = {}
+
+    if (lugardelBorde == 'left') {
+      border.left = { style: 'double', color: { argb: colorborder } };
+    } else if (lugardelBorde == 'right') {
+      border.right = { style: 'double', color: { argb: colorborder } };
+    } else if (lugardelBorde == 'bottom') {
+      border.bottom = { style: 'double', color: { argb: colorborder } };
+    } else if (lugardelBorde == 'righUpperRorner') {
+      border.top = { style: 'double', color: { argb: colorborder } };
+      border.right = { style: 'double', color: { argb: colorborder } };
+    } else if (lugardelBorde == 'righLowRorner') {
+      border.bottom = { style: 'double', color: { argb: colorborder } };
+      border.right = { style: 'double', color: { argb: colorborder } };
+    }
+    else if (lugardelBorde == 'leftUpperRorner') {
+      border.top = { style: 'double', color: { argb: colorborder } };
+      border.left = { style: 'double', color: { argb: colorborder } };
+    }
+    else if (lugardelBorde == 'leftLowRorner') {
+      border.bottom = { style: 'double', color: { argb: colorborder } };
+      border.left = { style: 'double', color: { argb: colorborder } };
+    }
+    else {
+      border.top = { style: 'double', color: { argb: colorborder } };
+      border.right = { style: 'double', color: { argb: colorborder } };
+      border.bottom = { style: 'double', color: { argb: colorborder } };
+      border.left = { style: 'double', color: { argb: colorborder } };
+    }
+
+
+    let style: any = {}
+    style.border = border;
+
+    console.log(style)
+    worksheet.getCell(this.PositByCell(positionColumn) + positionRow).style = style;
+
+
+  }
   // ingresas el numero y devuelve la letra
   private PositByCell(positionColum: number): string {
     let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
@@ -2248,4 +2329,112 @@ export class ExcelService {
     };
   };
   // 3119898 *225
+
+  // Esta funcion permite poner un cuadro de leyenda.
+  private StyleDashLegend(worksheet, posit, colum): number {
+
+    let colorYellowTransgas = 'FFCD06';
+    // Variables de colores-
+    let blueHard = '001556'
+    let blueMedium = '09155694'
+    let blueLow = 'b6c2ff94';
+
+
+    let blueHard1 = '375f9a'
+    let blueHard2 = '0040d8'
+    let blueHard3 = '001556'
+
+    let greenHard = '091556'
+    let greenMedium = ''
+    let greenLow = 'b6c2ff94';
+
+    let black = '000'
+    let white = 'ffffff';
+
+    // Variables de colores-
+    let grisFuerte = 'd4d4d4'
+    let grisMedio = 'ebe8e8'
+    let grisSuave = 'f3f3f3';
+
+    let redHard = '9a2929';
+    let redMedium = 'ffa4a4';
+    let redLow = 'ffd6d6';
+
+
+    //Agregamos la leyenda
+    // segimos en la misma linea.
+    let position = [posit, posit];
+    // le sumo 7 celdas por que la logitud de la leyenda es 7celdas
+    let positionColumn = [colum, colum + 11];
+    this.addStyleByColums(worksheet, position, positionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '')
+
+    let posititonRow = posit;
+
+    //ITEM
+    // Le damos un salto vacio.
+    posititonRow = posititonRow + 2;
+    // Item de la leyenda
+    position = [posititonRow, posititonRow];
+    positionColumn = [colum + 1, colum + 1];
+    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, blueHard3, '')
+    // texto.
+    positionColumn = [colum + 3, colum + 10];
+    this.addStyleByColums(worksheet, position, positionColumn, 'Data recorded by the captain', 8, black, white, '')
+
+    //ITEM
+    // bajamos
+    posititonRow = posititonRow + 1;
+    // Item de la leyenda
+    position = [posititonRow, posititonRow];
+    positionColumn = [colum + 1, colum + 1];
+    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, blueHard2, '')
+    // texto.
+    positionColumn = [colum + 3, colum + 10];
+    this.addStyleByColums(worksheet, position, positionColumn, 'Value obtained by a formula.', 8, black, white, '')
+
+
+    //ITEM
+    // bajamos
+    posititonRow = posititonRow + 1;
+    // Item de la leyenda
+    position = [posititonRow, posititonRow];
+    positionColumn = [colum + 1, colum + 1];
+    this.addStyleByColums(worksheet, position, positionColumn, '0', 10, grisSuave, null, '')
+    // texto.
+    positionColumn = [colum + 3, colum + 10];
+    this.addStyleByColums(worksheet, position, positionColumn, 'Null value', 8, black, white, '')
+
+
+    //ITEM
+    // bajamos
+    posititonRow = posititonRow + 1;
+    // Item de la leyenda
+    position = [posititonRow, posititonRow];
+    positionColumn = [colum + 1, colum + 1];
+    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, greenLow, '')
+    // texto.
+    positionColumn = [colum + 3, colum + 10];
+    this.addStyleByColums(worksheet, position, positionColumn, 'Positive value', 8, black, white, '')
+
+
+    //ITEM
+    // bajamos
+    posititonRow = posititonRow + 1;
+    // Item de la leyenda
+    position = [posititonRow, posititonRow];
+    positionColumn = [colum + 1, colum + 1];
+    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, redLow, '')
+    // texto.
+    positionColumn = [colum + 3, colum + 10];
+    this.addStyleByColums(worksheet, position, positionColumn, 'Negative value', 8, black, white, '')
+
+
+    // disminuimos las filas registradas
+    position = [posititonRow - 5, posititonRow = posititonRow + 1];
+    positionColumn = [colum, colum + 11];
+    this.addStyleBorder(worksheet, position, positionColumn, '', blueHard2)
+
+    return posititonRow;
+  }
+
 }
