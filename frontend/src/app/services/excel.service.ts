@@ -379,16 +379,8 @@ export class ExcelService {
     let worksheet = workbook.addWorksheet('Voyage ' + 2);
     //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
 
-    let date_start = '22/22/22'
-    let hour_start = '20:20'
-    let ifo_start = 200;
-    let mgo_start = 300;
-    let date_end = '22/22/22'
-    let hour_end = '22:21'
-    let ifo_end = 222;
-    let mgo_end = 440;
+
     let totalBunkeringIfo = 0;
-    let totalBunkeringMGO = 0;
 
     worksheet.columns = [
       { width: 0 },
@@ -535,18 +527,8 @@ export class ExcelService {
     // ================= Linea 2
     let tamanioLegend = this.StyleDashLegend(worksheet, positionRow, positionColum);
 
-    posicion = [position, position];
-    posicionColumn = [26, 30];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.name, 15, blueHard3, white, '')
-
-    posicion = [position, position];
-    posicionColumn = [36, 37];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, textIFOorVLSFOorLSFO, 8, white, blueHard3, '')
-
-    posicion = [position, position];
-    posicionColumn = [38, 39];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'MGO', 8, white, blueHard3, '')
-
+    positionColum = 25;
+    let tamanioBuque = this.StyleDashBuque(worksheet, positionRow, positionColum, selectUser);
 
 
 
@@ -593,27 +575,6 @@ export class ExcelService {
 
     // ================= Linea 4
 
-
-    // Start date
-    posicion = [position, position];
-    posicionColumn = [26, 30];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'START DATE', 8, black, white, '');
-    // date start
-    posicion = [position, position];
-    posicionColumn = [31, 33];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, date_start, 8, black, white, '');
-    // date start
-    posicion = [position, position];
-    posicionColumn = [34, 35];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, hour_start, 8, black, white, '');
-    // IFO start
-    posicion = [position, position];
-    posicionColumn = [36, 37];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, ifo_start, 8, black, white, '');
-    //MGO Start
-    posicion = [position, position];
-    posicionColumn = [38, 39];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, mgo_start, 8, black, white, '');
 
     // FULL Y ECO Charter SPEED
     posicion = [position, position];
@@ -674,22 +635,6 @@ export class ExcelService {
     position += 1;
 
     // ================= Linea 5
-
-    // date start
-    posicion = [position, position];
-    posicionColumn = [32, 35];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'Total bunkering', 8, black, white, '');
-
-    // IFO start
-    posicion = [position, position];
-    posicionColumn = [36, 37];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, totalBunkeringIfo, 8, black, white, '');
-
-
-    posicion = [position, position];
-    posicionColumn = [38, 39];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, totalBunkeringIfo, 8, black, white, '');
-
 
 
     // FULL Y ECO Charter SPEED IFO
@@ -1955,6 +1900,9 @@ export class ExcelService {
   //righUpperRorner =
   private addBorder(worksheet: Worksheet, positionRow: number, positionColumn: number, borderStyle, colorborder: string, lugardelBorde: string) {
 
+    let getCell = worksheet.getCell(this.PositByCell(positionColumn) + positionRow);
+
+    let style = getCell.style || {};
 
     let border: any = {}
 
@@ -1964,6 +1912,8 @@ export class ExcelService {
       border.right = { style: 'double', color: { argb: colorborder } };
     } else if (lugardelBorde == 'bottom') {
       border.bottom = { style: 'double', color: { argb: colorborder } };
+    } else if (lugardelBorde == 'top') {
+      border.top = { style: 'double', color: { argb: colorborder } };
     } else if (lugardelBorde == 'righUpperRorner') {
       border.top = { style: 'double', color: { argb: colorborder } };
       border.right = { style: 'double', color: { argb: colorborder } };
@@ -1987,7 +1937,6 @@ export class ExcelService {
     }
 
 
-    let style: any = {}
     style.border = border;
 
     console.log(style)
@@ -2436,5 +2385,143 @@ export class ExcelService {
 
     return posititonRow;
   }
+  private StyleDashBuque(worksheet, posit, colum, selectUser: User): number {
+    let date_start = '22/22/22'
+    let hour_start = '20:20'
+    let ifo_start = 200;
+    let mgo_start = 300;
+    let date_end = '22/22/22'
+    let hour_end = '22:21'
+    let ifo_end = 222;
+    let mgo_end = 440;
+    let totalBunkeringIFO = 0;
+    let totalBunkeringMGO = 0;
 
+    let totalConsumptIFO = 0;
+    let totalConsumptMGO = 0;
+
+
+
+    let colorYellowTransgas = 'FFCD06';
+    // Variables de colores-
+    let blueHard = '001556'
+    let blueMedium = '09155694'
+    let blueLow = 'b6c2ff94';
+
+
+    let blueHard1 = '375f9a'
+    let blueHard2 = '0040d8'
+    let blueHard3 = '001556'
+
+    let greenHard = '091556'
+    let greenMedium = ''
+    let greenLow = 'b6c2ff94';
+
+    let black = '000'
+    let white = 'ffffff';
+
+    // Variables de colores-
+    let grisFuerte = 'd4d4d4'
+    let grisMedio = 'ebe8e8'
+    let grisSuave = 'f3f3f3';
+
+    let redHard = '9a2929';
+    let redMedium = 'ffa4a4';
+    let redLow = 'ffd6d6';
+
+    let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+
+
+    //Agregamos la leyenda
+    // segimos en la misma linea.
+    let positionRows = [posit, posit];
+    colum += 1;
+    positionRows = [posit, posit];
+    let positionColumns = [colum, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.name, 15, blueHard3, white, '')
+    this.addBorder(worksheet, posit, colum, '', blueHard3, '');
+
+    positionColumns = [colum + 10, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, textIFOorVLSFOorLSFO, 8, white, blueHard3, '')
+
+    positionColumns = [colum + 12, colum + 13];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MGO', 8, white, blueHard3, '')
+
+
+    posit += 1;
+    // Start date
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'START DATE', 8, black, white, '');
+    // date start
+    positionColumns = [colum + 5, colum + 7];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, date_start, 8, black, white, '');
+    // date start
+    positionColumns = [colum + 8, colum + 9];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, hour_start, 8, black, white, '');
+    // IFO start
+    positionColumns = [colum + 10, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, ifo_start, 8, black, white, '');
+    //MGO Start
+    positionColumns = [colum + 12, colum + 13];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, mgo_start, 8, black, white, '');
+
+
+    posit += 1;
+    // Start date
+    positionRows = [posit, posit];
+    positionColumns = [colum + 6, colum + 9];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Bunkering', 8, black, white, '');
+    // IFO start
+    positionColumns = [colum + 10, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, totalBunkeringIFO, 8, black, white, '');
+    //MGO Start
+    positionColumns = [colum + 12, colum + 13];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, totalBunkeringMGO, 8, black, white, '');
+
+
+    posit += 1;
+    // Start date
+    positionRows = [posit, posit];
+    positionColumns = [colum + 6, colum + 9];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Consumption', 8, black, white, '');
+    // IFO start
+    positionColumns = [colum + 10, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, totalConsumptIFO, 8, black, white, '');
+    //MGO Start
+    positionColumns = [colum + 12, colum + 13];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, totalConsumptMGO, 8, black, white, '');
+
+
+    posit += 1;
+    // Start date
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'END DATE', 8, black, white, '');
+    // date start
+    positionColumns = [colum + 5, colum + 7];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, date_end, 8, black, white, '');
+    // date start
+    positionColumns = [colum + 8, colum + 9];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, hour_end, 8, black, white, '');
+    // IFO start
+    positionColumns = [colum + 10, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, ifo_end, 8, black, white, '');
+    //MGO Start
+    positionColumns = [colum + 12, colum + 13];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, mgo_end, 8, black, white, '');
+
+
+    positionRows = [posit - 3, posit];
+    positionColumns = [colum, colum + 13];
+    this.addStyleBorder(worksheet, positionRows, positionColumns, '', blueHard3)
+
+
+    this.addBorder(worksheet, posit, colum, '', blueHard3, 'leftLowRorner');
+    this.addBorder(worksheet, posit, colum + 13, '', blueHard3, 'righLowRorner')
+    this.addBorder(worksheet, posit - 3, colum + 5, '', blueHard3, 'top')
+    this.addBorder(worksheet, posit - 3, colum + 8, '', blueHard3, 'top')
+
+    return posit;
+  }
 }
