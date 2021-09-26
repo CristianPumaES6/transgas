@@ -535,11 +535,8 @@ export class ExcelService {
     positionColum = 44;
     let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRow, positionColum, selectUser);
 
-
-
-    posicion = [position, position];
-    posicionColumn = [51, 57];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DAILY CONSUMPTION', 10, colorYellowTransgas, blueHard3, '')
+    positionColum = 51;
+    let tamanioActivity = this.StyleDashActivity(worksheet, positionRow, positionColum, selectUser);
 
 
     // ========== LInea 3
@@ -567,17 +564,6 @@ export class ExcelService {
 
     // ================= Linea 4
 
-
-    // Actividades. dailyconsumption
-    posicion = [position, position];
-    posicionColumn = [51, 53];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'LOADING', 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [54, 55];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.loadingConsumptionIFO, 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [56, 57];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 666, 10, black, white, '')
 
 
     // FULL Y ECO SPEED Charter
@@ -611,18 +597,6 @@ export class ExcelService {
     position += 1;
 
     // ================= Linea 5
-
-
-    // Actividades. dailyconsumption
-    posicion = [position, position];
-    posicionColumn = [51, 53];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DOWNLOADING', 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [54, 55];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.dischargeConsumptionIFO, 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [56, 57];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 666, 10, black, white, '')
 
 
     // FULL Y ECO SPEED Charter
@@ -2620,4 +2594,177 @@ export class ExcelService {
      */
     return posit;
   }
+
+  private StyleDashActivity(worksheet, posit, colum, selectUser: User): number {
+    let date_start = '22/22/22'
+    let hour_start = '20:20'
+    let ifo_start = 200;
+    let mgo_start = 300;
+    let date_end = '22/22/22'
+    let hour_end = '22:21'
+    let ifo_end = 222;
+    let mgo_end = 440;
+    let totalBunkeringIFO = 0;
+    let totalBunkeringMGO = 0;
+
+    let totalConsumptIFO = 0;
+    let totalConsumptMGO = 0;
+
+
+
+    let colorYellowTransgas = 'FFCD06';
+    // Variables de colores-
+    let blueHard = '001556'
+    let blueMedium = '09155694'
+    let blueLow = 'b6c2ff94';
+
+
+    let blueHard1 = '375f9a'
+    let blueHard2 = '0040d8'
+    let blueHard3 = '001556'
+
+    let greenHard = '091556'
+    let greenMedium = ''
+    let greenLow = 'b6c2ff94';
+
+    let black = '000'
+    let white = 'ffffff';
+
+    // Variables de colores-
+    let grisFuerte = 'd4d4d4'
+    let grisMedio = 'ebe8e8'
+    let grisSuave = 'f3f3f3';
+
+    let redHard = '9a2929';
+    let redMedium = 'ffa4a4';
+    let redLow = 'ffd6d6';
+
+    let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+
+
+    let positionRows = [posit, posit];
+    let positionColumns = [colum, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION', 10, colorYellowTransgas, blueHard3, '')
+
+
+    // 51
+    posit += 1;
+
+    // Actividades. dailyconsumption
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 10, black, white, '')
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 666, 10, black, white, '')
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DOWNLOADING', 10, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.dischargeConsumptionIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 666, 10, black, white, '')
+
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALLAST', 10, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingBallastConsumptionIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LADEN', 10, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingLadenIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ECONOMICAL', 10, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingEconomicConsumptionIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+
+
+
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ANCHORED', 10, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.anchoredConsumptionIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+
+
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MANEUVER', 10, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.maneuverConsumptionIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+
+
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'OTHER', 10, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.otherConsumptionIFO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+
+    /* 
+      let positionRows = [posit, posit + 1];
+      let positionColumns = [colum, colum + 1];
+      this.addStyleByColums(worksheet, positionRows, positionColumns, 'SPEED', 10, colorYellowTransgas, blueHard3, '') */
+
+    /* 
+        this.addBorder(worksheet, posit, colum, '', blueHard3, 'leftLowRorner');
+        this.addBorder(worksheet, posit, colum + 13, '', blueHard3, 'righLowRorner')
+        this.addBorder(worksheet, posit - 3, colum + 5, '', blueHard3, 'top')
+        this.addBorder(worksheet, posit - 3, colum + 8, '', blueHard3, 'top')
+     */
+    return posit;
+  }
+
+
 }
