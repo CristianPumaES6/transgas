@@ -541,104 +541,19 @@ export class ExcelService {
 
     // ========== LInea 3
 
-    posicion = [position, position + 1];
-    posicionColumn = [64, 65];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'SPEED', 10, colorYellowTransgas, blueHard3, '')
 
-    posicion = [position, position];
-    posicionColumn = [66, 67];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'CHARTER', 8, white, blueHard3, '')
+    positionColum = 64;
+    let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRow, positionColum, selectUser);
 
-    posicion = [position, position];
-    posicionColumn = [68, 69];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'PERFORMEND', 8, white, blueHard2, '')
-
-
-    posicion = [position, position];
-    posicionColumn = [71, 77];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DAILY CONSUMPTION', 10, colorYellowTransgas, blueHard3, '')
-
+   
+    positionColum = 71;
+    let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRow, positionColum, selectUser);
 
     position += 1;
-
-
-    // ================= Linea 4
-
-
-
-    // FULL Y ECO SPEED Charter
-    posicion = [position, position];
-    posicionColumn = [66, 66];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard3, '')
-    posicion = [position, position];
-    posicionColumn = [67, 67];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard3, '')
-
-    // FULL Y ECO Speed PErformend
-    posicion = [position, position];
-    posicionColumn = [68, 68];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'FULL', 8, white, blueHard2, '')
-    posicion = [position, position];
-    posicionColumn = [69, 69];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'ECO', 8, white, blueHard2, '')
-
-
-    posicion = [position, position];
-    posicionColumn = [71, 73];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'LOADING', 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [74, 75];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.loadingConsumptionMGO, 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [76, 77];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 777, 10, black, white, '')
-
-
-    position += 1;
-
-    // ================= Linea 5
-
-
-    // FULL Y ECO SPEED Charter
-    /*  posicion = [position, position];
-     posicionColumn = [66, 66];
-     this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingBallastConsumptionMGO, 8, white, blueHard3, '')
-     posicion = [position, position];
-     posicionColumn = [67, 67];
-     this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingEconomicConsumptionMGO, 8, white, blueHard3, '')
-  */
-    // FULL Y ECO Speed PErformend
-    posicion = [position, position];
-    posicionColumn = [64, 65];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'BALLAST', 8, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [66, 66];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingBallastConsumptionMGO, 8, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [67, 67];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingEconomicConsumptionMGO, 8, black, white, '')
-
-    posicionColumn = [68, 68];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingBallastConsumptionMGO, 8, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [69, 69];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.sailingEconomicConsumptionMGO, 8, black, white, '')
-
-
-    posicion = [position, position];
-    posicionColumn = [71, 73];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'DOWNLOADING', 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [74, 75];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, selectUser.dischargeConsumptionMGO, 10, black, white, '')
-    posicion = [position, position];
-    posicionColumn = [76, 77];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 777, 10, black, white, '')
 
 
     position += tamanioLegend;
 
-    position += 1;
 
 
     position += 1;
