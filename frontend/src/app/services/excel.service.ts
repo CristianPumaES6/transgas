@@ -509,12 +509,18 @@ export class ExcelService {
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
 
-
+let positionColumn = 25;
 
     // ================= Linea 1
     let posicion = [position, position];
-    let posicionColumn = [25, 78];
-    this.addStyleByColums(worksheet, posicion, posicionColumn, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3, '')
+    let positionColumns = [positionColumn, positionColumn+53];
+    this.addStyleByColums(worksheet, posicion, positionColumns, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3, '')
+    this.addBorder(worksheet, position, positionColumn, 'thick', blueHard3, '');
+
+    // disminuimos las filas registradas
+    posicion = [position+1, position + 11];
+    this.addStyleBorder(worksheet, posicion, positionColumns, 'thick', blueHard3)
+
     position += 1;
 
     //Espacio de separacion
@@ -1682,19 +1688,14 @@ export class ExcelService {
         fgColor: {
           argb: colorBackgraund
         }
-      },
-      border: {
-        top: { style: 'double', color: { argb: grisSuave } },
-        left: { style: 'double', color: { argb: grisSuave } },
-        bottom: { style: 'double', color: { argb: grisSuave } },
-        right: { style: 'double', color: { argb: grisSuave } }
       }
 
     };
+
+    
     worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).value = text;
     worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).style = style;
     worksheet.mergeCells(this.PositByCell(columnDesde) + positionDesde, this.PositByCell(columnHasta) + positionHasta);
-
   }
 
 
@@ -1720,24 +1721,20 @@ export class ExcelService {
         //index == positionDesde
         false
       ) {
-        this.addBorder(worksheet, index, positionColum, '', colorborder, 'leftUpperRorner');
-        this.addBorder(worksheet, index, columnHasta, '', colorborder, 'righUpperRorner');
+        this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'leftUpperRorner');
+        this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'righUpperRorner');
       } else if (index == positionHasta) {
-        this.addBorder(worksheet, index, positionColum, '', colorborder, 'leftLowRorner');
-        this.addBorder(worksheet, index, columnHasta, '', colorborder, 'righLowRorner');
+        this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'leftLowRorner');
+        this.addBorder(worksheet, index, columnHasta,borderStyle, colorborder, 'righLowRorner');
       } else {
-
-        console.log('entro------------------sss' + 'positionColum' + positionColum + 'index' + index)
-        this.addBorder(worksheet, index, positionColum, '', colorborder, 'left');
-        this.addBorder(worksheet, index, columnHasta, '', colorborder, 'right');
-
+        this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'left');
+        this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'right');
       }
     }
 
     //recorremos las celdas del arrededor
     for (let index = columnDesde + 1; index <= columnHasta - 1; index++) {
-      this.addBorder(worksheet, positionHasta, index, '', colorborder, 'bottom');
-
+      this.addBorder(worksheet, positionHasta, index, borderStyle, colorborder, 'bottom');
     }
 
   }
@@ -1746,47 +1743,44 @@ export class ExcelService {
   //righUpperRorner =
   private addBorder(worksheet: Worksheet, positionRow: number, positionColumn: number, borderStyle, colorborder: string, lugardelBorde: string) {
 
-    let getCell = worksheet.getCell(this.PositByCell(positionColumn) + positionRow);
-
-    let style = getCell.style || {};
-
-    let border: any = {}
-
+    borderStyle = borderStyle || 'solid';
+    let border: any =  worksheet.getCell(this.PositByCell(positionColumn) + positionRow).style.border ;
+    
+    border = border || {};
     if (lugardelBorde == 'left') {
-      border.left = { style: 'double', color: { argb: colorborder } };
+      border.left = { style: borderStyle, color: { argb: colorborder } };
     } else if (lugardelBorde == 'right') {
-      border.right = { style: 'double', color: { argb: colorborder } };
+      border.right = { style: borderStyle, color: { argb: colorborder } };
     } else if (lugardelBorde == 'bottom') {
-      border.bottom = { style: 'double', color: { argb: colorborder } };
+      border.bottom = { style: borderStyle, color: { argb: colorborder } };
     } else if (lugardelBorde == 'top') {
-      border.top = { style: 'double', color: { argb: colorborder } };
+      border.top = { style: borderStyle, color: { argb: colorborder } };
     } else if (lugardelBorde == 'righUpperRorner') {
-      border.top = { style: 'double', color: { argb: colorborder } };
-      border.right = { style: 'double', color: { argb: colorborder } };
+      border.top = { style: borderStyle, color: { argb: colorborder } };
+      border.right = { style: borderStyle, color: { argb: colorborder } };
     } else if (lugardelBorde == 'righLowRorner') {
-      border.bottom = { style: 'double', color: { argb: colorborder } };
-      border.right = { style: 'double', color: { argb: colorborder } };
+      border.bottom = { style: borderStyle, color: { argb: colorborder } };
+      border.right = { style: borderStyle, color: { argb: colorborder } };
     }
     else if (lugardelBorde == 'leftUpperRorner') {
-      border.top = { style: 'double', color: { argb: colorborder } };
-      border.left = { style: 'double', color: { argb: colorborder } };
+      border.top = { style: borderStyle, color: { argb: colorborder } };
+      border.left = { style: borderStyle, color: { argb: colorborder } };
     }
     else if (lugardelBorde == 'leftLowRorner') {
-      border.bottom = { style: 'double', color: { argb: colorborder } };
-      border.left = { style: 'double', color: { argb: colorborder } };
+      border.bottom = { style: borderStyle, color: { argb: colorborder } };
+      border.left = { style: borderStyle, color: { argb: colorborder } };
     }
     else {
-      border.top = { style: 'double', color: { argb: colorborder } };
-      border.right = { style: 'double', color: { argb: colorborder } };
-      border.bottom = { style: 'double', color: { argb: colorborder } };
-      border.left = { style: 'double', color: { argb: colorborder } };
-    }
+
+      border.top = { style: borderStyle, color: { argb: colorborder } };
+      border.right = { style: borderStyle, color: { argb: colorborder } };
+      border.bottom = { style: borderStyle, color: { argb: colorborder } };
+      border.left = { style: borderStyle, color: { argb: colorborder } };
+
+}
 
 
-    style.border = border;
-
-    console.log(style)
-    worksheet.getCell(this.PositByCell(positionColumn) + positionRow).style = style;
+  worksheet.getCell(this.PositByCell(positionColumn) + positionRow).border = border;
 
 
   }
@@ -2161,10 +2155,10 @@ export class ExcelService {
     let position = [posit, posit];
     // le sumo 7 celdas por que la logitud de la leyenda es 7celdas
     let positionColumn = [colum, colum + 11];
-    this.addStyleByColums(worksheet, position, positionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '')
-
     let posititonRow = posit;
-
+    this.addStyleByColums(worksheet, position, positionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '')
+    this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
+ 
     //ITEM
     // Le damos un salto vacio.
     posititonRow = posititonRow + 2;
@@ -2227,7 +2221,7 @@ export class ExcelService {
     // disminuimos las filas registradas
     position = [posititonRow - 5, posititonRow = posititonRow + 1];
     positionColumn = [colum, colum + 11];
-    this.addStyleBorder(worksheet, position, positionColumn, '', blueHard2)
+    this.addStyleBorder(worksheet, position, positionColumn, 'thick', blueHard3 )
 
     return posititonRow;
   }
@@ -2263,7 +2257,7 @@ export class ExcelService {
     let greenMedium = ''
     let greenLow = 'b6c2ff94';
 
-    let black = '000'
+    let black = '000000'
     let white = 'ffffff';
 
     // Variables de colores-
@@ -2285,7 +2279,7 @@ export class ExcelService {
     positionRows = [posit, posit];
     let positionColumns = [colum, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.name, 15, blueHard3, white, '')
-    this.addBorder(worksheet, posit, colum, '', blueHard3, '');
+     this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
 
     positionColumns = [colum + 10, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, textIFOorVLSFOorLSFO, 8, white, blueHard3, '')
@@ -2360,13 +2354,8 @@ export class ExcelService {
 
     positionRows = [posit - 3, posit];
     positionColumns = [colum, colum + 13];
-    this.addStyleBorder(worksheet, positionRows, positionColumns, '', blueHard3)
+    this.addStyleBorder(worksheet, positionRows, positionColumns, 'thick', redHard)
 
-
-    this.addBorder(worksheet, posit, colum, '', blueHard3, 'leftLowRorner');
-    this.addBorder(worksheet, posit, colum + 13, '', blueHard3, 'righLowRorner')
-    this.addBorder(worksheet, posit - 3, colum + 5, '', blueHard3, 'top')
-    this.addBorder(worksheet, posit - 3, colum + 8, '', blueHard3, 'top')
 
     return posit;
   }
