@@ -509,16 +509,16 @@ export class ExcelService {
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
 
-let positionColumn = 25;
+    let positionColumn = 25;
 
     // ================= Linea 1
     let posicion = [position, position];
-    let positionColumns = [positionColumn, positionColumn+53];
+    let positionColumns = [positionColumn, positionColumn + 53];
     this.addStyleByColums(worksheet, posicion, positionColumns, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3, '')
     this.addBorder(worksheet, position, positionColumn, 'thick', blueHard3, '');
 
     // disminuimos las filas registradas
-    posicion = [position+1, position + 11];
+    posicion = [position + 1, position + 11];
     this.addStyleBorder(worksheet, posicion, positionColumns, 'thick', blueHard3)
 
     position += 1;
@@ -551,7 +551,7 @@ let positionColumn = 25;
     positionColum = 64;
     let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRow, positionColum, selectUser);
 
-   
+
     positionColum = 71;
     let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRow, positionColum, selectUser);
 
@@ -1692,7 +1692,7 @@ let positionColumn = 25;
 
     };
 
-    
+
     worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).value = text;
     worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).style = style;
     worksheet.mergeCells(this.PositByCell(columnDesde) + positionDesde, this.PositByCell(columnHasta) + positionHasta);
@@ -1714,6 +1714,8 @@ let positionColumn = 25;
     // nos ayudara a saber en que columna estamos.
     let positionColum = columnDesde;
 
+
+
     //recorremos las celdas del arrededor
     for (let index = positionDesde; index <= positionHasta; index++) {
 
@@ -1723,9 +1725,11 @@ let positionColumn = 25;
       ) {
         this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'leftUpperRorner');
         this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'righUpperRorner');
-      } else if (index == positionHasta) {
+      }
+      // si es el ultimo para insertar
+      else if (index == positionHasta) {
         this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'leftLowRorner');
-        this.addBorder(worksheet, index, columnHasta,borderStyle, colorborder, 'righLowRorner');
+        this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'righLowRorner');
       } else {
         this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'left');
         this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'right');
@@ -1739,13 +1743,93 @@ let positionColumn = 25;
 
   }
 
+  private addStyleToBorders(worksheet: Worksheet, position: number[], column: number[], borderStyle, colorborder: string, top: boolean, right: boolean, bottom: boolean, left: boolean) {
+
+    // SEparamos las posiciones.
+    let positionDesde = position[0];
+    let positionHasta = position[1];
+
+    let columnDesde = column[0];
+    let columnHasta = column[1];
+
+
+
+    // nos ayudara a saber en que columna estamos.
+    let positionColum = columnDesde;
+
+
+
+    //recorremos las celdas del arrededor
+    for (let index = positionDesde; index <= positionHasta; index++) {
+
+
+      if (top || right || bottom || left) {
+        if (top) {
+          this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'top');
+        }
+        if (right) {
+          this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'right');
+        }
+        if (bottom) {
+          this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'bottom');
+        }
+        if (left) {
+          this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'left');
+        }
+      } else {
+
+        if (
+          index == positionDesde
+        ) {
+          this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'leftUpperRorner');
+          this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'righUpperRorner');
+        }
+        // si es el ultimo para insertar
+        else if (index == positionHasta) {
+          this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'leftLowRorner');
+          this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'righLowRorner');
+        } else {
+          this.addBorder(worksheet, index, positionColum, borderStyle, colorborder, 'left');
+          this.addBorder(worksheet, index, columnHasta, borderStyle, colorborder, 'right');
+        }
+      }
+    }
+
+
+
+
+
+
+    //recorremos las celdas del arrededor
+    for (let index = columnDesde + 1; index <= columnHasta - 1; index++) {
+      if (top || right || bottom || left) {
+        if (top) {
+          this.addBorder(worksheet,  positionDesde, index, borderStyle, colorborder, 'top');
+        }
+        if (right) {
+          this.addBorder(worksheet,  positionDesde, index, borderStyle, colorborder, 'right');
+        }
+        if (bottom) {
+          this.addBorder(worksheet, positionDesde, index, borderStyle, colorborder, 'bottom');
+        }
+        if (left) {
+          this.addBorder(worksheet, positionDesde, index, borderStyle, colorborder, 'left');
+        }
+      } else {
+
+        this.addBorder(worksheet, positionDesde, index, borderStyle, colorborder, 'top');
+        this.addBorder(worksheet, positionHasta, index, borderStyle, colorborder, 'bottom');
+      }
+    }
+
+  }
   // Agrega borde a una celda en expeciofica
   //righUpperRorner =
   private addBorder(worksheet: Worksheet, positionRow: number, positionColumn: number, borderStyle, colorborder: string, lugardelBorde: string) {
 
     borderStyle = borderStyle || 'solid';
-    let border: any =  worksheet.getCell(this.PositByCell(positionColumn) + positionRow).style.border ;
-    
+    let border: any = worksheet.getCell(this.PositByCell(positionColumn) + positionRow).style.border;
+
     border = border || {};
     if (lugardelBorde == 'left') {
       border.left = { style: borderStyle, color: { argb: colorborder } };
@@ -1777,10 +1861,11 @@ let positionColumn = 25;
       border.bottom = { style: borderStyle, color: { argb: colorborder } };
       border.left = { style: borderStyle, color: { argb: colorborder } };
 
-}
+    }
 
+console.log(this.PositByCell(positionColumn) + positionRow);
 
-  worksheet.getCell(this.PositByCell(positionColumn) + positionRow).border = border;
+    worksheet.getCell(this.PositByCell(positionColumn) + positionRow).border = border;
 
 
   }
@@ -2158,7 +2243,7 @@ let positionColumn = 25;
     let posititonRow = posit;
     this.addStyleByColums(worksheet, position, positionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '')
     this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
- 
+
     //ITEM
     // Le damos un salto vacio.
     posititonRow = posititonRow + 2;
@@ -2221,7 +2306,7 @@ let positionColumn = 25;
     // disminuimos las filas registradas
     position = [posititonRow - 5, posititonRow = posititonRow + 1];
     positionColumn = [colum, colum + 11];
-    this.addStyleBorder(worksheet, position, positionColumn, 'thick', blueHard3 )
+    this.addStyleBorder(worksheet, position, positionColumn, 'thick', blueHard3)
 
     return posititonRow;
   }
@@ -2279,7 +2364,7 @@ let positionColumn = 25;
     positionRows = [posit, posit];
     let positionColumns = [colum, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.name, 15, blueHard3, white, '')
-     this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
+    this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
 
     positionColumns = [colum + 10, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, textIFOorVLSFOorLSFO, 8, white, blueHard3, '')
@@ -2352,10 +2437,31 @@ let positionColumn = 25;
     this.addStyleByColums(worksheet, positionRows, positionColumns, mgo_end, 8, black, white, '');
 
 
-    positionRows = [posit - 3, posit];
     positionColumns = [colum, colum + 13];
-    this.addStyleBorder(worksheet, positionRows, positionColumns, 'thick', redHard)
+    // Lineas suabes internas
+    positionRows = [posit - 3, posit-3];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,false,false,true,true)
+    
+    positionRows = [posit - 2, posit-2];
+    positionColumns = [colum+6, colum + 13];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,false,false,true,true)
+    positionRows = [posit - 1, posit-1];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,false,false,true,true)
+   
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 13];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,true,false,true,true)
 
+    // BOrde alrededor.
+   positionRows = [posit - 3, posit];
+    positionColumns = [colum, colum + 13];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3 ,false,false,false,false)
+    
+    
+   positionRows = [posit - 4, posit-4];
+   positionColumns = [colum+10, colum + 13];
+   this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3 ,false,false,false,false)
+   
 
     return posit;
   }
