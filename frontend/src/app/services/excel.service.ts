@@ -1679,7 +1679,7 @@ export class ExcelService {
       },
       font: {
         size: sizeFont,
-        bold: true,
+        bold: sizeFont < 6 ? false : true,
         color: { argb: colortText },
       },
       fill: {
@@ -1801,13 +1801,13 @@ export class ExcelService {
 
 
     //recorremos las celdas del arrededor
-    for (let index = columnDesde + 1; index <= columnHasta - 1; index++) {
+    for (let index = columnDesde; index <= columnHasta; index++) {
       if (top || right || bottom || left) {
         if (top) {
-          this.addBorder(worksheet,  positionDesde, index, borderStyle, colorborder, 'top');
+          this.addBorder(worksheet, positionDesde, index, borderStyle, colorborder, 'top');
         }
         if (right) {
-          this.addBorder(worksheet,  positionDesde, index, borderStyle, colorborder, 'right');
+          this.addBorder(worksheet, positionDesde, index, borderStyle, colorborder, 'right');
         }
         if (bottom) {
           this.addBorder(worksheet, positionDesde, index, borderStyle, colorborder, 'bottom');
@@ -1863,7 +1863,7 @@ export class ExcelService {
 
     }
 
-console.log(this.PositByCell(positionColumn) + positionRow);
+    console.log(this.PositByCell(positionColumn) + positionRow);
 
     worksheet.getCell(this.PositByCell(positionColumn) + positionRow).border = border;
 
@@ -2439,29 +2439,29 @@ console.log(this.PositByCell(positionColumn) + positionRow);
 
     positionColumns = [colum, colum + 13];
     // Lineas suabes internas
-    positionRows = [posit - 3, posit-3];
-    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,false,false,true,true)
-    
-    positionRows = [posit - 2, posit-2];
-    positionColumns = [colum+6, colum + 13];
-    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,false,false,true,true)
-    positionRows = [posit - 1, posit-1];
-    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,false,false,true,true)
-   
+    positionRows = [posit - 3, posit - 3];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, false, true, true)
+
+    positionRows = [posit - 2, posit - 2];
+    positionColumns = [colum + 6, colum + 13];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, false, true, true)
+    positionRows = [posit - 1, posit - 1];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, false, true, true)
+
     positionRows = [posit, posit];
     positionColumns = [colum, colum + 13];
-    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3,true,false,true,true)
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, false, true, true)
 
     // BOrde alrededor.
-   positionRows = [posit - 3, posit];
+    positionRows = [posit - 3, posit];
     positionColumns = [colum, colum + 13];
-    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3 ,false,false,false,false)
-    
-    
-   positionRows = [posit - 4, posit-4];
-   positionColumns = [colum+10, colum + 13];
-   this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3 ,false,false,false,false)
-   
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
+
+
+    positionRows = [posit - 4, posit - 4];
+    positionColumns = [colum + 10, colum + 13];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
+
 
     return posit;
   }
@@ -2529,7 +2529,7 @@ console.log(this.PositByCell(positionColumn) + positionRow);
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'CHARTER', 8, white, blueHard3, '')
 
     positionColumns = [colum + 4, colum + 5];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'PERFORMEND', 8, white, blueHard2, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'PERFORMEND', 5, white, blueHard2, '')
 
     posit += 1;
     positionRows = [posit, posit];
@@ -2596,12 +2596,39 @@ console.log(this.PositByCell(positionColumn) + positionRow);
 
 
 
-    /* 
-        this.addBorder(worksheet, posit, colum, '', blueHard3, 'leftLowRorner');
-        this.addBorder(worksheet, posit, colum + 13, '', blueHard3, 'righLowRorner')
-        this.addBorder(worksheet, posit - 3, colum + 5, '', blueHard3, 'top')
-        this.addBorder(worksheet, posit - 3, colum + 8, '', blueHard3, 'top')
-     */
+
+    // Linea abajo
+    positionRows = [posit - 1, posit - 1];
+    positionColumns = [colum, colum + 3];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, true)
+
+    positionColumns = [colum + 4, colum + 5];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard2, false, false, true, true)
+
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 3];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, true)
+    positionColumns = [colum + 4, colum + 5];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard2, false, false, true, true)
+
+
+
+
+
+
+
+    // BOrde final alrededor
+    positionColumns = [colum, colum + 3];
+    // Lineas suabes internas
+    positionRows = [posit - 3, posit];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
+
+    positionColumns = [colum + 4, colum + 5];
+    // Lineas suabes internas
+    positionRows = [posit - 3, posit];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard2, false, false, false, false)
+
+
     return posit;
   }
 
