@@ -1679,7 +1679,7 @@ export class ExcelService {
       },
       font: {
         size: sizeFont,
-        bold: sizeFont < 6 ? false : true,
+        bold: sizeFont <= 7 ? false : true,
         color: { argb: colortText },
       },
       fill: {
@@ -2690,7 +2690,7 @@ export class ExcelService {
     // Actividades. dailyconsumption
     positionRows = [posit, posit];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 7, black, white, '')
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
@@ -2701,7 +2701,7 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DOWNLOADING', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DOWNLOADING', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.dischargeConsumptionIFO, 10, black, white, '')
@@ -2714,7 +2714,7 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALLAST', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALLAST', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingBallastConsumptionIFO, 10, black, white, '')
@@ -2727,7 +2727,7 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LADEN', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LADEN', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingLadenIFO, 10, black, white, '')
@@ -2739,7 +2739,7 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ECONOMICAL', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ECONOMICAL', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingEconomicConsumptionIFO, 10, black, white, '')
@@ -2754,7 +2754,7 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ANCHORED', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ANCHORED', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.anchoredConsumptionIFO, 10, black, white, '')
@@ -2768,7 +2768,7 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MANEUVER', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MANEUVER', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.maneuverConsumptionIFO, 10, black, white, '')
@@ -2782,12 +2782,29 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'OTHER', 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'OTHER', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.otherConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+
+
+
+    // Lineas suabes internas
+    positionRows = [posit - 8, posit];
+    positionColumns = [colum, colum];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum + 3, colum + 3];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum + 5, colum + 5];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+
+
+    // BOrde final alrededor
+    positionColumns = [colum, colum + 6];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
+
 
     /* 
       let positionRows = [posit, posit + 1];
