@@ -329,8 +329,6 @@ export class ExcelService {
       });
      */
 
-    const title = 'CONSUMPTION FORMAT';
-    const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
 
 
     // Creamos una nueva hoja de trabajo
@@ -352,7 +350,7 @@ export class ExcelService {
 
 
             // Armamos el reporte.
-            this.ReportVoyage(workbook, title, listGetReportVoyagePortDaily, selectUser)
+            this.ReportVoyage(workbook, listGetReportVoyagePortDaily, selectUser)
 
 
             // Aqui seria por por viaje y pagina, cada viaje una nueva hoja.
@@ -371,7 +369,7 @@ export class ExcelService {
         );
   }
 
-  private ReportVoyage(workbook: Workbook, title: string, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], selectUser: User): Workbook {
+  private ReportVoyage(workbook: Workbook, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], selectUser: User): Workbook {
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
