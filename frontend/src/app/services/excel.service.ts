@@ -2968,7 +2968,7 @@ export class ExcelService {
     posit += 1;
     positionRows = [posit, posit];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING_WITH_BALLAST', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING_IN_BALLAST', 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 6, colum + 8];
