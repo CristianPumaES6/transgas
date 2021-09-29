@@ -381,8 +381,8 @@ export class ExcelService {
 
 
     let totalBunkeringIfo = 0;
-// Hasta la E las columnas son invisibles para guardar algo.
-// apartir de la F todas las columnas tienen el mismo tamanio
+    // Hasta la E las columnas son invisibles para guardar algo.
+    // apartir de la F todas las columnas tienen el mismo tamanio
     worksheet.columns = [
       { width: 0 },
       { width: 0 },
@@ -511,7 +511,7 @@ export class ExcelService {
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
 
-    
+
     let positionColumn = 7
     let positionRow = position;
 
@@ -520,53 +520,21 @@ export class ExcelService {
 
     // Agregamos la informacion del buque.
     positionColumn = 25;
-    
-    // Cuadro del Info VeSSEL
-    let posicion = [position, position];
-    let positionColumns = [positionColumn, positionColumn + 53];
-    this.addStyleByColums(worksheet, posicion, positionColumns, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3, '')
-    this.addBorder(worksheet, position, positionColumn, 'thick', blueHard3, '');
-    // disminuimos las filas registradas
-    posicion = [position + 1, position + 11];
-    this.addStyleBorder(worksheet, posicion, positionColumns, 'thick', blueHard3)
-    position += 1;
-    
-    //Espacio de separacion
-    position += 1;
+    let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser);
 
-    positionRow = position;
-    let tamanioBuque = this.StyleDashBuque(worksheet, positionRow, positionColumn, selectUser);
-
-
-
-    positionColumn = 44;
-    let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRow, positionColumn, selectUser);
-
-    positionColumn = 51;
-    let tamanioActivity = this.StyleDashActivity(worksheet, positionRow, positionColumn, selectUser);
-
-
-    // ========== LInea 3
-
-
-    positionColumn = 64;
-    let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRow, positionColumn, selectUser);
-
-
-    positionColumn = 71;
-    let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRow, positionColumn, selectUser);
-
-    position = tamanioActivityMGO + 4;
+    // a la posicion del row le sumamos el tamaño del cuadro.
+    positionRow += tamanioInfoVessel;
+    // Salto de linea
+    positionRow += 1;
 
     positionColumn = 7;
-    positionRow = position;
     let tamanioCosumption = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser);
     /// Filas aprox del cuadro de consumo.
-    position += 20;
+    positionRow += 20;
 
-    position += 1;
-    worksheet.getCell('AR' + position).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
-    worksheet.getCell('AR' + position).style = {
+    positionRow += 1;
+    worksheet.getCell('AR' + positionRow).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
+    worksheet.getCell('AR' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -591,10 +559,10 @@ export class ExcelService {
       }
 
     }
-    worksheet.mergeCells('AR' + position, 'BG' + position);
+    worksheet.mergeCells('AR' + positionRow, 'BG' + positionRow);
 
-    worksheet.getCell('BH' + position).value = "MGO CONSUMPTION IN MT";
-    worksheet.getCell('BH' + position).style = {
+    worksheet.getCell('BH' + positionRow).value = "MGO CONSUMPTION IN MT";
+    worksheet.getCell('BH' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -619,11 +587,11 @@ export class ExcelService {
       }
 
     };
-    worksheet.mergeCells('BH' + position, 'CA' + position);
+    worksheet.mergeCells('BH' + positionRow, 'CA' + positionRow);
 
-    position += 1;
-    worksheet.getCell('AJ' + position).value = "NAVIGATION DATA";
-    worksheet.getCell('AJ' + position).style = {
+    positionRow += 1;
+    worksheet.getCell('AJ' + positionRow).value = "NAVIGATION DATA";
+    worksheet.getCell('AJ' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -648,10 +616,10 @@ export class ExcelService {
       }
 
     }
-    worksheet.mergeCells('AJ' + position, 'AQ' + position);
+    worksheet.mergeCells('AJ' + positionRow, 'AQ' + positionRow);
 
-    worksheet.getCell('AR' + position).value = "PREVIOUS VOYAGE";
-    worksheet.getCell('AR' + position).style = {
+    worksheet.getCell('AR' + positionRow).value = "PREVIOUS VOYAGE";
+    worksheet.getCell('AR' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -675,10 +643,10 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.mergeCells('AR' + position, 'BD' + position);
+    worksheet.mergeCells('AR' + positionRow, 'BD' + positionRow);
 
-    worksheet.getCell('BE' + position).value = 200;
-    worksheet.getCell('BE' + position).style = {
+    worksheet.getCell('BE' + positionRow).value = 200;
+    worksheet.getCell('BE' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -703,11 +671,11 @@ export class ExcelService {
       }
     };
 
-    worksheet.mergeCells('BE' + position, 'BG' + position);
+    worksheet.mergeCells('BE' + positionRow, 'BG' + positionRow);
 
 
-    worksheet.getCell('BH' + position).value = "PREVIOUS VOYAGE";
-    worksheet.getCell('BH' + position).style = {
+    worksheet.getCell('BH' + positionRow).value = "PREVIOUS VOYAGE";
+    worksheet.getCell('BH' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -731,9 +699,9 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.mergeCells('BH' + position, 'BX' + position);
-    worksheet.getCell('BY' + position).value = 200;
-    worksheet.getCell('BY' + position).style = {
+    worksheet.mergeCells('BH' + positionRow, 'BX' + positionRow);
+    worksheet.getCell('BY' + positionRow).value = 200;
+    worksheet.getCell('BY' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -757,9 +725,9 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.mergeCells('BY' + position, 'CA' + position);
+    worksheet.mergeCells('BY' + positionRow, 'CA' + positionRow);
 
-    position += 1;
+    positionRow += 1;
     worksheet.addRow([
       'voyageId', 'portId', 'dailyReportId', '', '',//E
 
@@ -800,7 +768,7 @@ export class ExcelService {
       'bunkeringMgo', '',//AP
       'robMgo', '',//AR },
     ]);
-    worksheet.getCell('F' + position).style = {
+    worksheet.getCell('F' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -825,7 +793,7 @@ export class ExcelService {
       }
     };
 
-    worksheet.getCell('H' + position).style = {
+    worksheet.getCell('H' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -849,7 +817,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('L' + position).style = {
+    worksheet.getCell('L' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -874,7 +842,7 @@ export class ExcelService {
       }
     };
 
-    worksheet.getCell('P' + position).style = {
+    worksheet.getCell('P' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -898,7 +866,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('S' + position).style = {
+    worksheet.getCell('S' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -922,7 +890,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('U' + position).style = {
+    worksheet.getCell('U' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -946,7 +914,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('W' + position).style = {
+    worksheet.getCell('W' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -970,7 +938,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AA' + position).style = {
+    worksheet.getCell('AA' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -994,7 +962,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AC' + position).style = {
+    worksheet.getCell('AC' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1018,7 +986,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AJ' + position).style = {
+    worksheet.getCell('AJ' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1042,7 +1010,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AL' + position).style = {
+    worksheet.getCell('AL' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1066,7 +1034,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AN' + position).style = {
+    worksheet.getCell('AN' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1090,7 +1058,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AP' + position).style = {
+    worksheet.getCell('AP' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1114,7 +1082,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AR' + position).style = {
+    worksheet.getCell('AR' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1138,7 +1106,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AT' + position).style = {
+    worksheet.getCell('AT' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1162,7 +1130,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AV' + position).style = {
+    worksheet.getCell('AV' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1186,7 +1154,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AX' + position).style = {
+    worksheet.getCell('AX' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1210,7 +1178,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AZ' + position).style = {
+    worksheet.getCell('AZ' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1234,7 +1202,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BB' + position).style = {
+    worksheet.getCell('BB' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1258,7 +1226,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BD' + position).style = {
+    worksheet.getCell('BD' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1282,7 +1250,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BF' + position).style = {
+    worksheet.getCell('BF' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1306,7 +1274,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BH' + position).style = {
+    worksheet.getCell('BH' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1330,7 +1298,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BJ' + position).style = {
+    worksheet.getCell('BJ' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1354,7 +1322,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BL' + position).style = {
+    worksheet.getCell('BL' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1378,7 +1346,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BN' + position).style = {
+    worksheet.getCell('BN' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1402,7 +1370,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BP' + position).style = {
+    worksheet.getCell('BP' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1426,7 +1394,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BR' + position).style = {
+    worksheet.getCell('BR' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1450,7 +1418,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BT' + position).style = {
+    worksheet.getCell('BT' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1474,7 +1442,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BV' + position).style = {
+    worksheet.getCell('BV' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1498,7 +1466,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BX' + position).style = {
+    worksheet.getCell('BX' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1522,7 +1490,7 @@ export class ExcelService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('BZ' + position).style = {
+    worksheet.getCell('BZ' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1547,25 +1515,25 @@ export class ExcelService {
       }
     };
 
-    this.mergeCellReport(worksheet, position);
+    this.mergeCellReport(worksheet, positionRow);
 
     listGetReportVoyagePortDaily.forEach(
       (getReportVoyagePortDaily, index) => {
 
 
 
-        position += 1;
+        positionRow += 1;
         let dataRow = [
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
           getReportVoyagePortDaily.dailyReportId,
-          '', { formula: 'AND( AI' + position + ' <12, AI' + position + ' > 0 )' },
+          '', { formula: 'AND( AI' + positionRow + ' <12, AI' + positionRow + ' > 0 )' },
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
           getReportVoyagePortDaily.departurePort, '', '', '',
           getReportVoyagePortDaily.arrivalPort, '', '', '',
           FormatDate(getReportVoyagePortDaily.date), '', '',
           getReportVoyagePortDaily.hour, '',
-          { formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' }, '',
+          { formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
           getReportVoyagePortDaily.activityPerformed, '', '', '',
 
 
@@ -1575,9 +1543,9 @@ export class ExcelService {
 
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          { formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' }, '',
+          { formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
           // Velocidad formula.
-          { formula: 'IF(ISERROR(AJ' + position + '/AL' + position + '),0,AJ' + position + '/AL' + position + ')' }, '',
+          { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
 
           //IFO
@@ -1586,12 +1554,12 @@ export class ExcelService {
           getReportVoyagePortDaily.boilerIfo, '',
           getReportVoyagePortDaily.otherIfo, '',
           // Total
-          { formula: 'SUM(AR' + position + ':AX' + position + ')' }, '',
+          { formula: 'SUM(AR' + positionRow + ':AX' + positionRow + ')' }, '',
           // dailyConsumption
-          { formula: 'IF(ISERROR(' + 'AZ' + position + '*24/' + 'AL' + position + '),0,' + 'AZ' + position + '*24/' + 'AL' + position + ')' }, '',
+          { formula: 'IF(ISERROR(' + 'AZ' + positionRow + '*24/' + 'AL' + positionRow + '),0,' + 'AZ' + positionRow + '*24/' + 'AL' + positionRow + ')' }, '',
           getReportVoyagePortDaily.bunkeringIfo, '',
           // RobIFO
-          { formula: 'BF' + (position - 1) + '-AZ' + position + '+BD' + position }, '',
+          { formula: 'BF' + (positionRow - 1) + '-AZ' + positionRow + '+BD' + positionRow }, '',
 
           getReportVoyagePortDaily.mplaMgo, '',
           getReportVoyagePortDaily.auxMgo, '',
@@ -1601,35 +1569,35 @@ export class ExcelService {
           getReportVoyagePortDaily.otherMgo, '',
 
           // Total
-          { formula: 'SUM(BH' + position + ':BS' + position + ')' }, '',
+          { formula: 'SUM(BH' + positionRow + ':BS' + positionRow + ')' }, '',
 
           // dailyConsumption
-          { formula: 'IF(ISERROR(' + 'BT' + position + '*24/' + 'AL' + position + '),0,' + 'BT' + position + '*24/' + 'AL' + position + ')' }, '',
+          { formula: 'IF(ISERROR(' + 'BT' + positionRow + '*24/' + 'AL' + positionRow + '),0,' + 'BT' + positionRow + '*24/' + 'AL' + positionRow + ')' }, '',
           getReportVoyagePortDaily.bunkeringMgo, '',
 
           // RobIFO
-          { formula: 'BZ' + (position - 1) + '-BT' + position + '+BX' + position }, '',
+          { formula: 'BZ' + (positionRow - 1) + '-BT' + positionRow + '+BX' + positionRow }, '',
         ];
 
         worksheet.addRow(dataRow);
-        this.mergeCellReport(worksheet, position);
+        this.mergeCellReport(worksheet, positionRow);
         // Si es el primer registro se debe calcular con el rob del viaje anterior
         if (index == 0) {
 
           // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
-          worksheet.getCell('U' + position).value = <any>{ formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' };
-          worksheet.getCell('AL' + position).value = <any>{ formula: 'IF(P' + position + '-P' + (position - 1) + '=1,((S' + position + '-S' + (position - 1) + ')*24)+24,(S' + position + '-S' + (position - 1) + ')*24)' };
+          worksheet.getCell('U' + positionRow).value = <any>{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' };
+          worksheet.getCell('AL' + positionRow).value = <any>{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' };
 
 
 
-          worksheet.getCell('BF' + position).value = <any>{ formula: 'BE' + (position - 2) + '-AZ' + position + '+BD' + position };
-          worksheet.getCell('BZ' + position).value = <any>{ formula: 'BY' + (position - 2) + '-BT' + position + '+BX' + position };
+          worksheet.getCell('BF' + positionRow).value = <any>{ formula: 'BE' + (positionRow - 2) + '-AZ' + positionRow + '+BD' + positionRow };
+          worksheet.getCell('BZ' + positionRow).value = <any>{ formula: 'BY' + (positionRow - 2) + '-BT' + positionRow + '+BX' + positionRow };
 
-          this.addFormatting(worksheet, position)
+          this.addFormatting(worksheet, positionRow)
           // Agregamos el formadate
         } else {
 
-          this.addFormatting(worksheet, position)
+          this.addFormatting(worksheet, positionRow)
         }
 
 
@@ -2317,6 +2285,99 @@ export class ExcelService {
 
     let totaldeRow = 11;
     return totaldeRow;
+  }
+  private StyleDashInfoVessel(worksheet, posit, colum, selectUser: User): number {
+    let date_start = '22/22/22'
+    let hour_start = '20:20'
+    let ifo_start = 200;
+    let mgo_start = 300;
+    let date_end = '22/22/22'
+    let hour_end = '22:21'
+    let ifo_end = 222;
+    let mgo_end = 440;
+    let totalBunkeringIFO = 0;
+    let totalBunkeringMGO = 0;
+
+    let totalConsumptIFO = 0;
+    let totalConsumptMGO = 0;
+
+
+
+    let colorYellowTransgas = 'FFCD06';
+    // Variables de colores-
+    let blueHard = '001556'
+    let blueMedium = '09155694'
+    let blueLow = 'b6c2ff94';
+
+
+    let blueHard1 = '375f9a'
+    let blueHard2 = '0040d8'
+    let blueHard3 = '001556'
+
+    let greenHard = '091556'
+    let greenMedium = ''
+    let greenLow = 'b6c2ff94';
+
+    let black = '000'
+    let white = 'ffffff';
+
+    // Variables de colores-
+    let grisFuerte = 'd4d4d4'
+    let grisMedio = 'ebe8e8'
+    let grisSuave = 'f3f3f3';
+
+    let redHard = '9a2929';
+    let redMedium = 'ffa4a4';
+    let redLow = 'ffd6d6';
+
+    let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+
+
+    let positionRow = posit;
+
+    let positionRows = [positionRow, positionRow];
+    let positionColumns = [colum, colum + 53];
+
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3, '')
+    this.addBorder(worksheet, positionRow, colum, 'thick', blueHard3, '');
+    positionRow += 1;
+    // disminuimos las filas registradas
+    positionRows = [positionRow, positionRow + 11];
+    this.addStyleBorder(worksheet, positionRows, positionColumns, 'thick', blueHard3)
+
+
+    positionRow += 1;
+
+    //Espacio de separacion
+    positionRow += 1;
+
+    positionRows = positionRow;
+    let positionColumn = colum;
+    let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser);
+
+
+
+    positionColumn = colum + 19;
+    let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser);
+
+    positionColumn = colum + 26;
+    let tamanioActivity = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser);
+
+
+    // ========== LInea 3
+
+
+    positionColumn = colum + 39;
+    let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser);
+
+
+    positionColumn = colum + 46;
+    let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser);
+
+    positionRow = tamanioActivityMGO + 4;
+
+
+    return positionRow - posit;
   }
   private StyleDashBuque(worksheet, posit, colum, selectUser: User): number {
     let date_start = '22/22/22'
