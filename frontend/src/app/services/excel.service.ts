@@ -3052,6 +3052,90 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
 
 
+    //================= Primera actividad ANCHORED
+    posit += 1;
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ANCHORED', 10, blueHard3, white, '')
+    positionColumns = [colum + 3, colum + 5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 6, colum + 8];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 9, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/K' + posit + '),0,N' + posit + '/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 12, colum + 14];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    positionColumns = [colum + 15, colum + 17];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 18, colum + 20];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(W' + posit + '*24/K' + posit + '),0,W' + posit + '*24/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 21, colum + 23];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.anchoredConsumptionIFO, 8, blueHard3, white, '')
+    positionColumns = [colum + 24, colum + 26];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 27, colum + 29];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 30, colum + 32];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 33, colum + 35];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+
+    //================= Primera actividad ANCHORED
+    posit += 1;
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MANEUVER', 10, blueHard3, white, '')
+    positionColumns = [colum + 3, colum + 5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 6, colum + 8];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 9, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/K' + posit + '),0,N' + posit + '/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 12, colum + 14];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    positionColumns = [colum + 15, colum + 17];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 18, colum + 20];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(W' + posit + '*24/K' + posit + '),0,W' + posit + '*24/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 21, colum + 23];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.maneuverConsumptionIFO, 8, blueHard3, white, '')
+    positionColumns = [colum + 24, colum + 26];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 27, colum + 29];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 30, colum + 32];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 33, colum + 35];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+
+    //================= Primera actividad OTHER
+    posit += 1;
+    positionRows = [posit, posit];
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'OTHER_ACT', 10, blueHard3, white, '')
+    positionColumns = [colum + 3, colum + 5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 6, colum + 8];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 9, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/K' + posit + '),0,N' + posit + '/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 12, colum + 14];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    positionColumns = [colum + 15, colum + 17];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 18, colum + 20];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(W' + posit + '*24/K' + posit + '),0,W' + posit + '*24/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 21, colum + 23];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.otherConsumptionIFO, 8, blueHard3, white, '')
+    positionColumns = [colum + 24, colum + 26];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 27, colum + 29];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 30, colum + 32];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 33, colum + 35];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+
     // { formula: 'AND( AI' + position + ' <12, AI' + position + ' > 0 )' }
     /* 
         // 51
