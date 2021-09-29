@@ -511,8 +511,14 @@ export class ExcelService {
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
 
-    let positionColumn = 25;
 
+    let positionRow = position;
+    let positionColumn = 7
+    // ================= Linea 2
+    let tamanioLegend = this.StyleDashLegend(worksheet, positionRow, positionColumn);
+
+
+    positionColumn = 25;
     // ================= Linea 1
     let posicion = [position, position];
     let positionColumns = [positionColumn, positionColumn + 53];
@@ -530,38 +536,33 @@ export class ExcelService {
 
 
 
-    let positionRow = position;
-    let positionColum = 7
-    // ================= Linea 2
-    let tamanioLegend = this.StyleDashLegend(worksheet, positionRow, positionColum);
-
-    positionColum = 25;
-    let tamanioBuque = this.StyleDashBuque(worksheet, positionRow, positionColum, selectUser);
+    positionColumn = 25;
+    let tamanioBuque = this.StyleDashBuque(worksheet, positionRow, positionColumn, selectUser);
 
 
 
-    positionColum = 44;
-    let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRow, positionColum, selectUser);
+    positionColumn = 44;
+    let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRow, positionColumn, selectUser);
 
-    positionColum = 51;
-    let tamanioActivity = this.StyleDashActivity(worksheet, positionRow, positionColum, selectUser);
+    positionColumn = 51;
+    let tamanioActivity = this.StyleDashActivity(worksheet, positionRow, positionColumn, selectUser);
 
 
     // ========== LInea 3
 
 
-    positionColum = 64;
-    let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRow, positionColum, selectUser);
+    positionColumn = 64;
+    let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRow, positionColumn, selectUser);
 
 
-    positionColum = 71;
-    let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRow, positionColum, selectUser);
+    positionColumn = 71;
+    let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRow, positionColumn, selectUser);
 
     position = tamanioActivityMGO + 4;
 
-    positionColum = 7;
+    positionColumn = 7;
     positionRow = position;
-    let tamanioCosumption = this.StyleDashCosumption(worksheet, positionRow, positionColum, selectUser);
+    let tamanioCosumption = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser);
     /// Filas aprox del cuadro de consumo.
     position += 20;
 
