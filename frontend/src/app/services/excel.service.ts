@@ -2928,7 +2928,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
@@ -2956,7 +2956,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
@@ -2986,7 +2986,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
@@ -3015,7 +3015,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
@@ -3045,7 +3045,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
@@ -3074,7 +3074,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
@@ -3102,7 +3102,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
@@ -3130,7 +3130,7 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + posit + '=0, AC' + posit + '*K' + posit + '/24,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
