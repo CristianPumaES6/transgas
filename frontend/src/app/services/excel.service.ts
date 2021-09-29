@@ -369,6 +369,8 @@ export class ExcelService {
         );
   }
 
+
+  // Agrega el reporte.
   private ReportVoyage(workbook: Workbook, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], selectUser: User): Workbook {
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
@@ -379,7 +381,8 @@ export class ExcelService {
 
 
     let totalBunkeringIfo = 0;
-
+    // Hasta la E las columnas son invisibles para guardar algo.
+    // apartir de la F todas las columnas tienen el mismo tamanio
     worksheet.columns = [
       { width: 0 },
       { width: 0 },
@@ -475,7 +478,8 @@ export class ExcelService {
       { width: 4 },
     ];
 
-    let position = 6;
+    // la posicion inicioa en la fila 3
+    let position = 3;
 
     // nos ubicamos en una posicion para empezar a poner los row
     //this.mergeCellReport(worksheet, position);
