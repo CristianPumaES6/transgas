@@ -555,7 +555,7 @@ export class ExcelService {
     positionColum = 71;
     let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRow, positionColum, selectUser);
 
-    position =tamanioActivityMGO +4;
+    position = tamanioActivityMGO + 4;
 
     positionColum = 7;
     positionRow = position;
@@ -1674,7 +1674,7 @@ export class ExcelService {
 
 
     let style: any = {
-      
+
       alignment: {
         horizontal: 'center',
         vertical: 'middle',
@@ -2870,75 +2870,77 @@ export class ExcelService {
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
-// Primer titulo
+    // Primer titulo
     let positionRows = [posit, posit];
     let positionColumns = [colum, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'VESSEL PERFORMANCE '+textIFOorVLSFOorLSFO, 10, colorYellowTransgas, blueHard3, '')
-    
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'VESSEL PERFORMANCE ' + textIFOorVLSFOorLSFO, 10, colorYellowTransgas, blueHard3, '')
+
+    let startRowReport = posit + 24;
 
     //================AGREGAMOS LA CEBECERA=========
     // TItulo 
-    posit+=1;
-    positionRows = [posit, posit+1];
-    positionColumns = [colum, colum +2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ACTIVITY\nPERFORMED', 8,white,blueHard1,'')
-    positionColumns = [colum+3, colum +5];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL TIME\nPER ACTIVITY\n(HRS)', 8,white,blueHard1,'')
-    positionColumns = [colum+6, colum +8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL DISTANCE (MILES)', 8,white,blueHard1,'')
-    positionColumns = [colum+9, colum +11];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)', 8,white,blueHard2,'')
-    positionColumns = [colum+12, colum +14];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)\n(CHARTER)', 8,white,blueHard3,'')
-    positionColumns = [colum+15, colum +17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT)', 8,white,blueHard1,'')
-    positionColumns = [colum+18, colum +20];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT)', 8,white,blueHard2,'')
-    positionColumns = [colum+21, colum +23];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT) (CHARTER)', 8,white,blueHard3,'')
-    positionColumns = [colum+24, colum +26];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING TIME\n(HRS) (CHARTER)', 8,white,blueHard3,'')
-    positionColumns = [colum+27, colum +29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT) (CHARTER)', 8,white,blueHard3,'')
-    positionColumns = [colum+30, colum +32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE CONSUMPTION\n(MT)', 8,white,blueHard2,'')
-    positionColumns = [colum+33, colum +35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE TIME\n(HRS)', 8,white,blueHard2,'')
-   
+    posit += 1;
+    positionRows = [posit, posit + 1];
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ACTIVITY\nPERFORMED', 8, white, blueHard1, '')
+    positionColumns = [colum + 3, colum + 5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL TIME\nPER ACTIVITY\n(HRS)', 8, white, blueHard1, '')
+    positionColumns = [colum + 6, colum + 8];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL DISTANCE (MILES)', 8, white, blueHard1, '')
+    positionColumns = [colum + 9, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)', 8, white, blueHard2, '')
+    positionColumns = [colum + 12, colum + 14];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)\n(CHARTER)', 8, white, blueHard3, '')
+    positionColumns = [colum + 15, colum + 17];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT)', 8, white, blueHard1, '')
+    positionColumns = [colum + 18, colum + 20];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT)', 8, white, blueHard2, '')
+    positionColumns = [colum + 21, colum + 23];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT) (CHARTER)', 8, white, blueHard3, '')
+    positionColumns = [colum + 24, colum + 26];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING TIME\n(HRS) (CHARTER)', 8, white, blueHard3, '')
+    positionColumns = [colum + 27, colum + 29];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT) (CHARTER)', 8, white, blueHard3, '')
+    positionColumns = [colum + 30, colum + 32];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE CONSUMPTION\n(MT)', 8, white, blueHard2, '')
+    positionColumns = [colum + 33, colum + 35];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE TIME\n(HRS)', 8, white, blueHard2, '')
+
     //================= Primera actividad Loading
-    posit+=2;
+    posit += 2;
     positionRows = [posit, posit];
-    positionColumns = [colum, colum+2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 10,blueHard3,white, '')
-    positionColumns = [colum+3, colum +5];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'SUMIFS($U$44:$U$163,$W$44:$W$163,H23,$AZ$44:$AZ$163,">0")  ', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+6, colum +8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula:'SUMIFS($AJ$44:$AJ$163,$W$44:$W$163,H23,$AZ$44:$AZ$163,">0")', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+9, colum +11];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'IF(ISERROR(N23/K23),0,N23/K23)', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+12, colum +14];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  0 , 8,blueHard3,white,'')
-    positionColumns = [colum+15, colum +17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula:'SUMIFS($AZ$44:$AZ$163,$W$44:$W$163,H23,$AZ$44:$AZ$163,">0")', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+18, colum +20];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula:'IF(ISERROR(W23*24/K23),0,W23*24/K23)', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+21, colum +23];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 8,blueHard3,white,'')
-    positionColumns = [colum+24, colum +26];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'IF(ISERROR(N23/T23),0,N23/T23)', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+27, colum +29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'IF(ISERROR(AC23*AF23/24),0,AC23*AF23/24)', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+30, colum +32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'W26-AI26', result: 0.14 }, 8,blueHard3,white,'')
-    positionColumns = [colum+33, colum +35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'K26-AF26', result: 0.14 }, 8,blueHard3,white,'')
-   
-   
-   
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 10, blueHard3, white, '')
+    positionColumns = [colum + 3, colum + 5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 6, colum + 8];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 9, colum + 11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/K' + posit + '),0,N' + posit + '/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 12, colum + 14];
+    alert(posit)
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    positionColumns = [colum + 15, colum + 17];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,H' + posit + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 18, colum + 20];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(W' + posit + '*24/K' + posit + '),0,W' + posit + '*24/K' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 21, colum + 23];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 8, blueHard3, white, '')
+    positionColumns = [colum + 24, colum + 26];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(N' + posit + '/T' + posit + '),0,N' + posit + '/T' + posit + ')', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 27, colum + 29];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(AC' + posit + '*AF' + posit + '/24),0,AC' + posit + '*AF' + posit + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 30, colum + 32];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    positionColumns = [colum + 33, colum + 35];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
 
 
 
-   // { formula: 'AND( AI' + position + ' <12, AI' + position + ' > 0 )' }
+
+
+
+    // { formula: 'AND( AI' + position + ' <12, AI' + position + ' > 0 )' }
     /* 
         // 51
         posit += 1;
