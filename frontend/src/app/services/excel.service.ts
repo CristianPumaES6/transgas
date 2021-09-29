@@ -381,8 +381,8 @@ export class ExcelService {
 
 
     let totalBunkeringIfo = 0;
-    // Hasta la E las columnas son invisibles para guardar algo.
-    // apartir de la F todas las columnas tienen el mismo tamanio
+// Hasta la E las columnas son invisibles para guardar algo.
+// apartir de la F todas las columnas tienen el mismo tamanio
     worksheet.columns = [
       { width: 0 },
       { width: 0 },
@@ -511,32 +511,30 @@ export class ExcelService {
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
 
-
-    let positionRow = position;
+    
     let positionColumn = 7
-    // ================= Linea 2
+    let positionRow = position;
+
+    // Agregamos el cuadro de la leyenda
     let tamanioLegend = this.StyleDashLegend(worksheet, positionRow, positionColumn);
 
-
+    // Agregamos la informacion del buque.
     positionColumn = 25;
-    // ================= Linea 1
+    
+    // Cuadro del Info VeSSEL
     let posicion = [position, position];
     let positionColumns = [positionColumn, positionColumn + 53];
     this.addStyleByColums(worksheet, posicion, positionColumns, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3, '')
     this.addBorder(worksheet, position, positionColumn, 'thick', blueHard3, '');
-
     // disminuimos las filas registradas
     posicion = [position + 1, position + 11];
     this.addStyleBorder(worksheet, posicion, positionColumns, 'thick', blueHard3)
-
     position += 1;
-
+    
     //Espacio de separacion
     position += 1;
 
-
-
-    positionColumn = 25;
+    positionRow = position;
     let tamanioBuque = this.StyleDashBuque(worksheet, positionRow, positionColumn, selectUser);
 
 
@@ -2316,7 +2314,9 @@ export class ExcelService {
     positionColumn = [colum, colum + 11];
     this.addStyleBorder(worksheet, position, positionColumn, 'thick', blueHard3)
 
-    return posititonRow;
+
+    let totaldeRow = 11;
+    return totaldeRow;
   }
   private StyleDashBuque(worksheet, posit, colum, selectUser: User): number {
     let date_start = '22/22/22'
