@@ -2932,7 +2932,7 @@ export class ExcelService {
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
     //================= Primera actividad Discharge
     posit += 1;
@@ -2960,7 +2960,7 @@ export class ExcelService {
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
 
 
@@ -3078,7 +3078,7 @@ export class ExcelService {
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
     //================= Primera actividad ANCHORED
     posit += 1;
@@ -3106,7 +3106,7 @@ export class ExcelService {
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
     //================= Primera actividad OTHER
     posit += 1;
@@ -3134,7 +3134,7 @@ export class ExcelService {
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'W' + posit + '-AI' + posit, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'K' + posit + '-AF' + posit, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
     // { formula: 'AND( AI' + position + ' <12, AI' + position + ' > 0 )' }
     /* 
