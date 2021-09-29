@@ -2205,6 +2205,8 @@ export class ExcelService {
       horizontal: 'center'
     };
   };
+
+
   // 3119898 *225
 
   // Esta funcion permite poner un cuadro de leyenda.
@@ -2634,7 +2636,6 @@ export class ExcelService {
 
     return posit;
   }
-
   private StyleDashActivity(worksheet, posit, colum, selectUser: User): number {
     let date_start = '22/22/22'
     let hour_start = '20:20'
@@ -2822,8 +2823,6 @@ export class ExcelService {
      */
     return posit;
   }
-
-
   private StyleDashCosumption(worksheet, posit, colum, selectUser: User): number {
     let date_start = '22/22/22'
     let hour_start = '20:20'
