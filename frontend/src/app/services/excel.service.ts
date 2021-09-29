@@ -1642,7 +1642,7 @@ export class ExcelService {
     return workbook;
   }
 
-  private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], text: string | number, sizeFont: number, colortText: string, colorBackgraund: string, border) {
+  private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], textorFormule: string | number | any, sizeFont: number, colortText: string, colorBackgraund: string, border) {
 
 
     let colorYellowTransgas = 'FFCD06';
@@ -1696,7 +1696,7 @@ export class ExcelService {
     };
 
 
-    worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).value = text;
+    worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).value = textorFormule;
     worksheet.getCell(this.PositByCell(columnDesde) + positionDesde).style = style;
     worksheet.mergeCells(this.PositByCell(columnDesde) + positionDesde, this.PositByCell(columnHasta) + positionHasta);
   }
@@ -2909,8 +2909,36 @@ export class ExcelService {
     posit+=2;
     positionRows = [posit, posit];
     positionColumns = [colum, colum+2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'Loading', 10,blueHard3,white, '')
-    
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 10,blueHard3,white, '')
+    positionColumns = [colum+3, colum +5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'SUMIFS($U$44:$U$163,$W$44:$W$163,H23,$AZ$44:$AZ$163,">0")  ', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+6, colum +8];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula:'SUMIFS($AJ$44:$AJ$163,$W$44:$W$163,H23,$AZ$44:$AZ$163,">0")', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+9, colum +11];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'IF(ISERROR(N23/K23),0,N23/K23)', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+12, colum +14];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  0 , 8,blueHard3,white,'')
+    positionColumns = [colum+15, colum +17];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula:'SUMIFS($AZ$44:$AZ$163,$W$44:$W$163,H23,$AZ$44:$AZ$163,">0")', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+18, colum +20];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula:'IF(ISERROR(W23*24/K23),0,W23*24/K23)', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+21, colum +23];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 8,blueHard3,white,'')
+    positionColumns = [colum+24, colum +26];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'IF(ISERROR(N23/T23),0,N23/T23)', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+27, colum +29];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'IF(ISERROR(AC23*AF23/24),0,AC23*AF23/24)', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+30, colum +32];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'W26-AI26', result: 0.14 }, 8,blueHard3,white,'')
+    positionColumns = [colum+33, colum +35];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula:'K26-AF26', result: 0.14 }, 8,blueHard3,white,'')
+   
+   
+   
+
+
+
+   // { formula: 'AND( AI' + position + ' <12, AI' + position + ' > 0 )' }
     /* 
         // 51
         posit += 1;
