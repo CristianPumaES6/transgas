@@ -2587,8 +2587,8 @@ export class ExcelService {
     let blueHard2 = '0040d8'
     let blueHard3 = '001556'
 
-    let greenHard = '091556'
-    let greenMedium = '091556'
+    let greenHard = ''
+    let greenMedium = 'b6c2ff94'
     let greenLow = 'b6c2ff94';
 
     let black = '000'
@@ -2913,7 +2913,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 666, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z21' }, 10, black, white, '')
 
     posit += 1;
     positionRows = [posit, posit];
@@ -2925,7 +2925,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.dischargeConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 666, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z22' }, 10, black, white, '')
 
 
     posit += 1;
@@ -2938,7 +2938,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingBallastConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z23' }, 10, black, white, '')
 
 
     posit += 1;
@@ -2949,9 +2949,9 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'LADEN', 7, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingLadenIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingLoadConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z24' }, 10, black, white, '')
 
     posit += 1;
     positionRows = [posit, posit];
@@ -2963,7 +2963,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingEconomicConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z25' }, 10, black, white, '')
 
 
 
@@ -2978,7 +2978,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.anchoredConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z26' }, 10, black, white, '')
 
 
 
@@ -2992,7 +2992,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.maneuverConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z27' }, 10, black, white, '')
 
 
 
@@ -3006,7 +3006,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.otherConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 888, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z28' }, 10, black, white, '')
 
 
 
@@ -3091,7 +3091,7 @@ export class ExcelService {
     let positionColumns = [colum, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'VESSEL PERFORMANCE ' + textIFOorVLSFOorLSFO, 10, colorYellowTransgas, blueHard3, '')
 
-    let startRowReport = positionRow + 24;
+    let startRowReport = positionRow + 16;
 
     //================AGREGAMOS LA CEBECERA=========
     // TItulo 
