@@ -6,7 +6,7 @@ import { promise } from 'protractor';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mathRound } from '../../assets/math/math.assets';
-import { FormatDate } from '../../assets/moment/moment.assets';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour } from '../../assets/moment/moment.assets';
 import { ActivityPerformed } from '../models/dashboard';
 import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
 import { User } from '../models/user';
@@ -518,9 +518,18 @@ export class ExcelService {
     // Agregamos el cuadro de la leyenda
     let tamanioLegend = this.StyleDashLegend(worksheet, positionRow, positionColumn);
 
+
+
+
+
+
+    let infoVessel: InfoVessel = new InfoVessel();
+    infoVessel.date_start = listGetReportVoyagePortDaily[0].date + '';
+    infoVessel.date_end = listGetReportVoyagePortDaily[listGetReportVoyagePortDaily.length - 1].date + '';
+
     // Agregamos la informacion del buque.
     positionColumn = 25;
-    let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser);
+    let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel);
     // a la posicion del row le sumamos el tamaño del cuadro.
     positionRow += tamanioInfoVessel;
 
@@ -2288,22 +2297,9 @@ export class ExcelService {
     let totaldeRow = 11;
     return totaldeRow;
   }
-  private StyleDashInfoVessel(worksheet, posit, colum, selectUser: User): number {
-    let date_start = '22/22/22'
-    let hour_start = '20:20'
-    let ifo_start = 200;
-    let mgo_start = 300;
-    let date_end = '22/22/22'
-    let hour_end = '22:21'
-    let ifo_end = 222;
-    let mgo_end = 440;
-    let totalBunkeringIFO = 0;
-    let totalBunkeringMGO = 0;
-
-    let totalConsumptIFO = 0;
-    let totalConsumptMGO = 0;
 
 
+  private StyleDashInfoVessel(worksheet, posit, colum, selectUser: User, infoVessel: InfoVessel): number {
 
     let colorYellowTransgas = 'FFCD06';
     // Variables de colores-
@@ -2355,7 +2351,7 @@ export class ExcelService {
 
     positionRows = positionRow;
     let positionColumn = colum;
-    let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser);
+    let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser, infoVessel);
 
 
 
@@ -2381,13 +2377,16 @@ export class ExcelService {
 
     return positionRow - posit;
   }
-  private StyleDashBuque(worksheet, posit, colum, selectUser: User): number {
-    let date_start = '22/22/22'
-    let hour_start = '20:20'
+
+
+  
+  private StyleDashBuque(worksheet, posit, colum, selectUser: User, infoVessel: InfoVessel): number {
+    let date_start = FormatDateUTCToDateHour(infoVessel.date_start);
+    let hour_start = infoVessel.hour_start;
     let ifo_start = 200;
     let mgo_start = 300;
-    let date_end = '22/22/22'
-    let hour_end = '22:21'
+    let date_end = FormatDateUTCToDateHour(infoVessel.date_end);
+    let hour_end = infoVessel.hour_end;
     let ifo_end = 222;
     let mgo_end = 440;
     let totalBunkeringIFO = 0;
@@ -2450,11 +2449,9 @@ export class ExcelService {
     positionColumns = [colum, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'START DATE', 8, black, white, '');
     // date start
-    positionColumns = [colum + 5, colum + 7];
+    positionColumns = [colum + 5, colum + 9];
     this.addStyleByColums(worksheet, positionRows, positionColumns, date_start, 8, black, white, '');
-    // date start
-    positionColumns = [colum + 8, colum + 9];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, hour_start, 8, black, white, '');
+
     // IFO start
     positionColumns = [colum + 10, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, ifo_start, 8, black, white, '');
@@ -2495,11 +2492,8 @@ export class ExcelService {
     positionColumns = [colum, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'END DATE', 8, black, white, '');
     // date start
-    positionColumns = [colum + 5, colum + 7];
+    positionColumns = [colum + 5, colum + 9];
     this.addStyleByColums(worksheet, positionRows, positionColumns, date_end, 8, black, white, '');
-    // date start
-    positionColumns = [colum + 8, colum + 9];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, hour_end, 8, black, white, '');
     // IFO start
     positionColumns = [colum + 10, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, ifo_end, 8, black, white, '');
@@ -3209,4 +3203,36 @@ export class ExcelService {
   }
 
 
+}
+
+export class InfoVessel {
+  constructor(
+    public date_start?: string,
+    public hour_start?: string,
+    public ifo_start?: number,
+    public mgo_start?: number,
+    public date_end?: string,
+    public hour_end?: string,
+    public ifo_end?: number,
+    public mgo_end?: number,
+    public totalBunkeringIFO?: number,
+    public totalBunkeringMGO?: number,
+    public totalConsumptIFO?: number,
+    public totalConsumptMGO?: number,
+  ) {
+    this.date_start = date_start || '';
+    this.hour_start = hour_start || '';
+    this.ifo_start = ifo_start || 0;
+    this.mgo_start = mgo_start || 0;
+
+    this.date_end = date_end || '';
+    this.hour_end = hour_end || '';
+    this.ifo_end = ifo_end || 0;
+    this.mgo_end = mgo_end || 0;
+
+    this.totalBunkeringIFO = totalBunkeringIFO || 0;
+    this.totalBunkeringMGO = totalBunkeringMGO || 0;
+    this.totalConsumptIFO = totalConsumptIFO || 0;
+    this.totalConsumptMGO = totalConsumptMGO || 0;
+  }
 }
