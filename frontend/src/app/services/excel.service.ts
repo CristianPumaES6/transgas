@@ -3381,8 +3381,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
 
     //================= Primera actividad Discharge
     positionRow += 1;
@@ -3413,8 +3415,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
 
 
 
@@ -3447,8 +3451,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-' + this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
 
 
     //================= Primera actividad Laden
@@ -3480,8 +3486,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-' + this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
 
 
 
@@ -3514,8 +3522,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-' + this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
 
 
     //================= Primera actividad ANCHORED
@@ -3547,8 +3557,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
 
     //================= Primera actividad ANCHORED
     positionRow += 1;
@@ -3579,8 +3591,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
 
     //================= Primera actividad OTHER
     positionRow += 1;
@@ -3611,8 +3625,10 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
+    this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
     // Ultimo slato
     positionRow += 1;
 
@@ -3687,8 +3703,6 @@ export class ExcelService {
     let redLow = 'ffd6d6';
 
     if (typeFormat === 'TOTAL_TIME') {
-
-
       worksheet.addConditionalFormatting({
         ref: this.PositByCell(positionColum) + positionRow,
         rules: [
@@ -3774,6 +3788,52 @@ export class ExcelService {
             type: 'expression',
             priority: 2,
             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+            style: {
+              fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+            },
+          }
+
+        ],
+      });
+    }else if (typeFormat === 'BALANCE_CONSUMPTION') {
+      worksheet.addConditionalFormatting({
+        ref: this.PositByCell(positionColum) + positionRow,
+        rules: [
+          // si la actividad es navegando deberia tener una distancia.    
+          {
+            type: 'expression',
+            priority: 2,
+            formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+            style: {
+              fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+            },
+          }, {
+            type: 'expression',
+            priority: 2,
+            formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+            style: {
+              fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+            },
+          }
+
+        ],
+      });
+    }else if (typeFormat === 'BALANCE_TIME') {
+      worksheet.addConditionalFormatting({
+        ref: this.PositByCell(positionColum) + positionRow,
+        rules: [
+          // si la actividad es navegando deberia tener una distancia.    
+          {
+            type: 'expression',
+            priority: 2,
+            formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+            style: {
+              fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+            },
+          }, {
+            type: 'expression',
+            priority: 2,
+            formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
             style: {
               fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
             },
