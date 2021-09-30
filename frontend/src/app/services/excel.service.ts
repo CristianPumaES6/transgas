@@ -2371,7 +2371,7 @@ export class ExcelService {
 
 
     positionColumn = colum + 19;
-    let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser);
+    let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'IFO');
 
     positionColumn = colum + 26;
     let tamanioActivity = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser);
@@ -2381,7 +2381,7 @@ export class ExcelService {
 
 
     positionColumn = colum + 39;
-    let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser);
+    let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'MGO');
 
 
     positionColumn = colum + 46;
@@ -2559,7 +2559,7 @@ export class ExcelService {
 
     return posit;
   }
-  private StyleDashSpeed(worksheet, posit, colum, selectUser: User): number {
+  private StyleDashSpeed(worksheet, posit, colum, selectUser: User, isIFOorMGO: string): number {
     let date_start = '22/22/22'
     let hour_start = '20:20'
     let ifo_start = 200;
@@ -2641,14 +2641,14 @@ export class ExcelService {
     positionColumns = [colum, colum + 1];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'Ballast', 8, black, white, '');
     positionColumns = [colum + 2, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingBallastIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO, 8, black, white, '');
     positionColumns = [colum + 3, colum + 3];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingEconomicalIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO, 8, black, white, '');
 
     // FULL Y ECO Performan SPEED
     positionColumns = [colum + 4, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: 'Q23' },
+      { formula: isIFOorMGO == 'IFO' ? 'Q23' : 'EE' },
       8, black, white, '');
     // Agrega formato a Actividad
     worksheet.addConditionalFormatting({
@@ -2684,7 +2684,7 @@ export class ExcelService {
 
     positionColumns = [colum + 5, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: 'Q25' },
+      { formula: isIFOorMGO == 'IFO' ? 'Q25' : 'EE' },
       8, black, white, '')
 
     // Agrega formato a Actividad
@@ -2729,14 +2729,14 @@ export class ExcelService {
     positionColumns = [colum, colum + 1];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'Laden', 8, black, white, '');
     positionColumns = [colum + 2, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingLadenIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO, 8, black, white, '');
     positionColumns = [colum + 3, colum + 3];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingEconomicConsumptionIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO, 8, black, white, '');
 
     // FULL Y ECO Performan SPEED
     positionColumns = [colum + 4, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: 'Q24' },
+      { formula: isIFOorMGO == 'IFO' ? 'Q24' : 'II' },
       8, black, white, '');
     // Agrega formato a Actividad
     worksheet.addConditionalFormatting({
@@ -2772,7 +2772,7 @@ export class ExcelService {
 
     positionColumns = [colum + 5, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: 'Q25' },
+      { formula: isIFOorMGO == 'IFO' ? 'Q25' : 'IO' },
       8, black, white, '')
 
     // Agrega formato a Actividad
