@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mathRound } from '../../assets/math/math.assets';
 import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour } from '../../assets/moment/moment.assets';
+import { GetROBByUser, InfoFuelStartEndForDate } from '../models/daily-report';
 import { ActivityPerformed } from '../models/dashboard';
 import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
 import { User } from '../models/user';
@@ -337,6 +338,7 @@ export class ExcelService {
 
 
     let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
     return await Promise.resolve(true)
       .then(
@@ -349,29 +351,38 @@ export class ExcelService {
             listGetReportVoyagePortDaily = result;
 
 
-            // Armamos el reporte.
-            this.ReportVoyage(workbook, listGetReportVoyagePortDaily, selectUser)
+            // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+            return this.GetInfoFuelStartEndByFilterDate(selectUserId, startDate, endDate).pipe().toPromise();
+
+          }).then(
+            result => {
+
+              if (!result) throw 'ERROR GER REPORT';
+              getInfoFuelStartEndByFilterDate = result;
+
+              // Armamos el reporte.
+              this.ReportVoyage(workbook, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser)
 
 
-            // Aqui seria por por viaje y pagina, cada viaje una nueva hoja.
-            for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
+              // Aqui seria por por viaje y pagina, cada viaje una nueva hoja.
+              for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
 
+              }
+
+              // Escribimos el excel
+              workbook.xlsx.writeBuffer().then((data) => {
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                fs.saveAs(blob, 'Report.xlsx');
+              });
+
+              return true;
             }
-
-            // Escribimos el excel
-            workbook.xlsx.writeBuffer().then((data) => {
-              let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-              fs.saveAs(blob, 'Report.xlsx');
-            });
-
-            return true;
-          }
-        );
+          );
   }
 
 
   // Agrega el reporte.
-  private ReportVoyage(workbook: Workbook, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], selectUser: User): Workbook {
+  private ReportVoyage(workbook: Workbook, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: User): Workbook {
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
@@ -526,6 +537,8 @@ export class ExcelService {
     let infoVessel: InfoVessel = new InfoVessel();
     infoVessel.date_start = listGetReportVoyagePortDaily[0].date + '';
     infoVessel.date_end = listGetReportVoyagePortDaily[listGetReportVoyagePortDaily.length - 1].date + '';
+    infoVessel.ifo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
+    infoVessel.mgo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
 
     // Agregamos la informacion del buque.
     positionColumn = 25;
@@ -2379,12 +2392,12 @@ export class ExcelService {
   }
 
 
-  
+
   private StyleDashBuque(worksheet, posit, colum, selectUser: User, infoVessel: InfoVessel): number {
     let date_start = FormatDateUTCToDateHour(infoVessel.date_start);
     let hour_start = infoVessel.hour_start;
-    let ifo_start = 200;
-    let mgo_start = 300;
+    let ifo_start = infoVessel.ifo_start;
+    let mgo_start = infoVessel.mgo_start;
     let date_end = FormatDateUTCToDateHour(infoVessel.date_end);
     let hour_end = infoVessel.hour_end;
     let ifo_end = 222;
@@ -3201,6 +3214,53 @@ export class ExcelService {
 
     return positionRow - posit;
   }
+
+
+
+  // Obtenemos la info del combustible inicio fin
+  private GetInfoFuelStartEndByFilterDate(userId: number, startDate: string, endDate: string): Observable<InfoFuelStartEndForDate> {
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetStartEndROByFilterDate(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetROBByUser[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+
+        // Trabajaremos con las siguientes variables.
+        let startDataROB: GetROBByUser = new GetROBByUser();
+        let endDataROB: GetROBByUser = new GetROBByUser()
+
+        // IFO
+        startDataROB.total_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo - resultGetROBByUser[0].total_ifo, 1);
+        startDataROB.total_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo - resultGetROBByUser[0].total_mgo, 1);
+        startDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo, 1);
+        startDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo, 1);
+
+        // MGO
+        endDataROB.total_ifo = this.MathRoundDecimal(startDataROB.total_ifo + (resultGetROBByUser[1].total_bunkering_ifo - resultGetROBByUser[1].total_ifo), 1);
+        endDataROB.total_mgo = this.MathRoundDecimal(startDataROB.total_mgo + (resultGetROBByUser[1].total_bunkering_mgo - resultGetROBByUser[1].total_mgo), 1);
+        endDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_ifo, 1);
+        endDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_mgo, 1);
+
+        return new InfoFuelStartEndForDate(
+          startDataROB,
+          endDataROB
+        );
+      }
+    ));
+
+  }
+
+  public MathRoundDecimal(valor, cantDecimales: number) {
+
+    if (!valor) { return 0; }
+
+    let result = mathRound(valor, cantDecimales || 0)
+
+    return result;
+  }
+
+
 
 
 }
