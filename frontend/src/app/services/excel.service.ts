@@ -2374,7 +2374,7 @@ export class ExcelService {
     let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'IFO');
 
     positionColumn = colum + 26;
-    let tamanioActivity = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser);
+    let tamanioActivity = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'IFO');
 
 
     // ========== LInea 3
@@ -2385,7 +2385,7 @@ export class ExcelService {
 
 
     positionColumn = colum + 46;
-    let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser);
+    let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'MGO');
 
     positionRow = tamanioActivityMGO + 2;
 
@@ -2851,7 +2851,7 @@ export class ExcelService {
 
     return posit;
   }
-  private StyleDashActivity(worksheet, posit, colum, selectUser: User): number {
+  private StyleDashActivity(worksheet, posit, colum, selectUser: User, isIFOorMGO: string): number {
     let date_start = '22/22/22'
     let hour_start = '20:20'
     let ifo_start = 200;
@@ -2909,11 +2909,11 @@ export class ExcelService {
     // Actividades. dailyconsumption
     positionRows = [posit, posit];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 7, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 8, black, white, '')
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.loadingConsumptionIFO : selectUser.loadingConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z21' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z21' : 'EE' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -2951,12 +2951,12 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DOWNLOADING', 7, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DOWNLOADING', 8, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.dischargeConsumptionIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.dischargeConsumptionIFO : selectUser.dischargeConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z22' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z22' : 'EE' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -2994,12 +2994,12 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALLAST', 7, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALLAST', 8, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingBallastConsumptionIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingBallastConsumptionIFO : selectUser.sailingBallastConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z23' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z23' : 'SS' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3037,12 +3037,12 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LADEN', 7, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LADEN', 8, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingLoadConsumptionIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingLoadConsumptionIFO : selectUser.sailingLoadConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z24' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z24' : 'DD' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3080,12 +3080,12 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ECONOMICAL', 7, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ECONOMICAL', 8, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingEconomicConsumptionIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z25' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z25' : 'DD' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3125,56 +3125,12 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ANCHORED', 7, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ANCHORED', 8, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.anchoredConsumptionIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.anchoredConsumptionIFO : selectUser.anchoredConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z26' }, 10, black, white, '')
-    worksheet.addConditionalFormatting({
-      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
-      rules: [
-        // si la actividad es navegando deberia tener una distancia.    
-        {
-          type: 'expression',
-          priority: 2,
-          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
-          style: {
-            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
-          },
-        }, {
-          type: 'expression',
-          priority: 2,
-          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
-          style: {
-            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
-          },
-        }, {
-          type: 'cellIs',
-          priority: 1,
-          operator: 'equal',
-          formulae: [0],
-          style: {
-            font: { color: { argb: grisMedio } },
-          },
-        },
-
-      ],
-    });
-
-
-
-    posit += 1;
-    positionRows = [posit, posit];
-
-    // Actividades. dailyconsumption
-    positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MANEUVER', 7, black, white, '')
-
-    positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.maneuverConsumptionIFO, 10, black, white, '')
-    positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z27' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z26' : 'DD' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3213,12 +3169,56 @@ export class ExcelService {
 
     // Actividades. dailyconsumption
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'OTHER', 7, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MANEUVER', 8, black, white, '')
 
     positionColumns = [colum + 3, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.otherConsumptionIFO, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.maneuverConsumptionIFO : selectUser.maneuverConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z28' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z27' : 'SS' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
+
+
+
+    posit += 1;
+    positionRows = [posit, posit];
+
+    // Actividades. dailyconsumption
+    positionColumns = [colum, colum + 2];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'OTHER', 8, black, white, '')
+
+    positionColumns = [colum + 3, colum + 4];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.otherConsumptionIFO : selectUser.otherConsumptionMGO, 10, black, white, '')
+    positionColumns = [colum + 5, colum + 6];
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z28' : 'DD' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
