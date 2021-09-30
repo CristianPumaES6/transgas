@@ -540,6 +540,8 @@ export class ExcelService {
     infoVessel.ifo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
     infoVessel.mgo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
 
+
+
     // Agregamos la informacion del buque.
     positionColumn = 25;
     let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel);
@@ -2400,8 +2402,8 @@ export class ExcelService {
     let mgo_start = infoVessel.mgo_start;
     let date_end = FormatDateUTCToDateHour(infoVessel.date_end);
     let hour_end = infoVessel.hour_end;
-    let ifo_end = 222;
-    let mgo_end = 440;
+    let ifo_end = infoVessel.ifo_end;
+    let mgo_end = infoVessel.mgo_end;
     let totalBunkeringIFO = 0;
     let totalBunkeringMGO = 0;
 
@@ -2480,13 +2482,13 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Bunkering', 8, black, white, '');
     // IFO start
     positionColumns = [colum + 10, colum + 11];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
       { formula: 'SUM(BD34:BD4000)' },
-       8, black, white, '');
+      8, black, white, '');
     //MGO Start
     positionColumns = [colum + 12, colum + 13];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 
-      
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
+
       { formula: 'SUM(BX34:BX4000)' }
       , 8, black, white, '');
 
@@ -2498,14 +2500,14 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Consumption', 8, black, white, '');
     // IFO start
     positionColumns = [colum + 10, colum + 11];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
       { formula: 'SUM(AR34:AY4000)' },
-       8, black, white, '');
+      8, black, white, '');
     //MGO Start
     positionColumns = [colum + 12, colum + 13];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
       { formula: 'SUM(BH34:BS4000)' },
-       8, black, white, '');
+      8, black, white, '');
 
 
     posit += 1;
@@ -2518,10 +2520,15 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, date_end, 8, black, white, '');
     // IFO start
     positionColumns = [colum + 10, colum + 11];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, ifo_end, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
+
+      { formula: this.PositByCell(positionColumns[0]) + (posit - 3) + '-' + this.PositByCell(positionColumns[0]) + (posit - 1) + '+' + this.PositByCell(positionColumns[0]) + (posit - 2) },
+      8, black, white, '');
     //MGO Start
     positionColumns = [colum + 12, colum + 13];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, mgo_end, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+      { formula: this.PositByCell(positionColumns[0]) + (posit - 3) + '-' + this.PositByCell(positionColumns[0]) + (posit - 1) + '+' + this.PositByCell(positionColumns[0]) + (posit - 2) },
+      8, black, white, '');
 
 
     positionColumns = [colum, colum + 13];
@@ -3240,16 +3247,16 @@ export class ExcelService {
         let endDataROB: GetROBByUser = new GetROBByUser()
 
         // IFO
-        startDataROB.total_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo - resultGetROBByUser[0].total_ifo, 1);
-        startDataROB.total_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo - resultGetROBByUser[0].total_mgo, 1);
-        startDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo, 1);
-        startDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo, 1);
+        startDataROB.total_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo - resultGetROBByUser[0].total_ifo, 2);
+        startDataROB.total_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo - resultGetROBByUser[0].total_mgo, 2);
+        startDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_ifo, 2);
+        startDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[0].total_bunkering_mgo, 2);
 
         // MGO
-        endDataROB.total_ifo = this.MathRoundDecimal(startDataROB.total_ifo + (resultGetROBByUser[1].total_bunkering_ifo - resultGetROBByUser[1].total_ifo), 1);
-        endDataROB.total_mgo = this.MathRoundDecimal(startDataROB.total_mgo + (resultGetROBByUser[1].total_bunkering_mgo - resultGetROBByUser[1].total_mgo), 1);
-        endDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_ifo, 1);
-        endDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_mgo, 1);
+        endDataROB.total_ifo = this.MathRoundDecimal(startDataROB.total_ifo + (resultGetROBByUser[1].total_bunkering_ifo - resultGetROBByUser[1].total_ifo), 2);
+        endDataROB.total_mgo = this.MathRoundDecimal(startDataROB.total_mgo + (resultGetROBByUser[1].total_bunkering_mgo - resultGetROBByUser[1].total_mgo), 2);
+        endDataROB.total_bunkering_ifo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_ifo, 2);
+        endDataROB.total_bunkering_mgo = this.MathRoundDecimal(resultGetROBByUser[1].total_bunkering_mgo, 2);
 
         return new InfoFuelStartEndForDate(
           startDataROB,
