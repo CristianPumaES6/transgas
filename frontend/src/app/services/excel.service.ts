@@ -2526,7 +2526,7 @@ export class ExcelService {
       8, black, white, '');
     //MGO Start
     positionColumns = [colum + 12, colum + 13];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
       { formula: this.PositByCell(positionColumns[0]) + (posit - 3) + '-' + this.PositByCell(positionColumns[0]) + (posit - 1) + '+' + this.PositByCell(positionColumns[0]) + (posit - 2) },
       8, black, white, '');
 
@@ -2588,7 +2588,7 @@ export class ExcelService {
     let blueHard3 = '001556'
 
     let greenHard = '091556'
-    let greenMedium = ''
+    let greenMedium = '091556'
     let greenLow = 'b6c2ff94';
 
     let black = '000'
@@ -2604,15 +2604,7 @@ export class ExcelService {
     let redLow = 'ffd6d6';
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-    //44
-    /* 
-       let positionRows = [posit, posit];
-        colum += 1;
-        positionRows = [posit, posit];
-        let positionColumns = [colum, colum + 4];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.name, 15, blueHard3, white, '')
-        this.addBorder(worksheet, posit, colum, '', blueHard3, '');
-    */
+
 
     let positionRows = [posit, posit + 1];
     let positionColumns = [colum, colum + 1];
@@ -2649,16 +2641,83 @@ export class ExcelService {
     positionColumns = [colum, colum + 1];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'Ballast', 8, black, white, '');
     positionColumns = [colum + 2, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingBallastConsumptionIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingBallastIFO, 8, black, white, '');
     positionColumns = [colum + 3, colum + 3];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingEconomicConsumptionIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingEconomicalIFO, 8, black, white, '');
 
     // FULL Y ECO Performan SPEED
     positionColumns = [colum + 4, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'E4', 8, black, white, '');
-    positionColumns = [colum + 5, colum + 5];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'E5', 8, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
+      { formula: 'Q23' },
+      8, black, white, '');
+    // Agrega formato a Actividad
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
 
+      ],
+    });
+
+    positionColumns = [colum + 5, colum + 5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
+      { formula: 'Q25' },
+      8, black, white, '')
+
+    // Agrega formato a Actividad
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
 
@@ -2676,10 +2735,77 @@ export class ExcelService {
 
     // FULL Y ECO Performan SPEED
     positionColumns = [colum + 4, colum + 4];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'E4', 8, black, white, '');
-    positionColumns = [colum + 5, colum + 5];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'E5', 8, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
+      { formula: 'Q24' },
+      8, black, white, '');
+    // Agrega formato a Actividad
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(colum + 4) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 2) + positionRows[0] + '>' + this.PositByCell(colum + 4) + positionRows[0] + ',' + this.PositByCell(colum + 4) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 2) + positionRows[0] + '<' + this.PositByCell(colum + 4) + positionRows[0] + ',' + this.PositByCell(colum + 4) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
 
+      ],
+    });
+
+    positionColumns = [colum + 5, colum + 5];
+    this.addStyleByColums(worksheet, positionRows, positionColumns,
+      { formula: 'Q25' },
+      8, black, white, '')
+
+    // Agrega formato a Actividad
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
 
