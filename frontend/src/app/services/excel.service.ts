@@ -552,7 +552,7 @@ export class ExcelService {
     positionRow += 2;
 
     positionColumn = 7;
-    let tamanioCosumption = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser);
+    let tamanioCosumption = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser,'IFO');
     /// Filas aprox del cuadro de consumo.
     positionRow += tamanioCosumption;
 
@@ -3280,7 +3280,7 @@ export class ExcelService {
      */
     return posit;
   }
-  private StyleDashCosumption(worksheet, posit, colum, selectUser: User): number {
+  private StyleDashCosumption(worksheet, posit, colum, selectUser: User, isIFOorMGO: string): number {
     let date_start = '22/22/22'
     let hour_start = '20:20'
     let ifo_start = 200;
@@ -3331,7 +3331,7 @@ export class ExcelService {
     // Primer titulo
     let positionRows = [positionRow, positionRow];
     let positionColumns = [colum, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'VESSEL PERFORMANCE ' + textIFOorVLSFOorLSFO, 10, colorYellowTransgas, blueHard3, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'VESSEL PERFORMANCE ' + (isIFOorMGO == 'IFO' ? textIFOorVLSFOorLSFO : 'MGO'), 20, colorYellowTransgas, blueHard3, '')
 
     let startRowReport = positionRow + 16;
 
@@ -3342,25 +3342,25 @@ export class ExcelService {
     positionColumns = [colum, colum + 2];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'ACTIVITY\nPERFORMED', 8, white, blueHard1, '')
     positionColumns = [colum + 3, colum + 5];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL TIME\nPER ACTIVITY\n(HRS)', 8, white, blueHard1, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL TIME\nPER ACTIVITY\n(HRS)', 6, white, blueHard1, '')
     positionColumns = [colum + 6, colum + 8];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL DISTANCE (MILES)', 8, white, blueHard1, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)', 8, white, blueHard2, '')
     positionColumns = [colum + 12, colum + 14];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)\n(CHARTER)', 8, white, blueHard3, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)\n(CHARTER)', 6, white, blueHard3, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT)', 8, white, blueHard1, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT)', 7, white, blueHard1, '')
     positionColumns = [colum + 18, colum + 20];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT)', 8, white, blueHard2, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT)', 7, white, blueHard2, '')
     positionColumns = [colum + 21, colum + 23];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT) (CHARTER)', 8, white, blueHard3, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT) (CHARTER)',7, white, blueHard3, '')
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING TIME\n(HRS) (CHARTER)', 8, white, blueHard3, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT) (CHARTER)', 8, white, blueHard3, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT) (CHARTER)', 6, white, blueHard3, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE CONSUMPTION\n(MT)', 8, white, blueHard2, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE CONSUMPTION\n(MT)', 7, white, blueHard2, '')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE TIME\n(HRS)', 8, white, blueHard2, '')
 
