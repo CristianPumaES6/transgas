@@ -2880,7 +2880,7 @@ export class ExcelService {
     let blueHard3 = '001556'
 
     let greenHard = '091556'
-    let greenMedium = ''
+    let greenMedium = 'b6c2ff94'
     let greenLow = 'b6c2ff94';
 
     let black = '000'
@@ -2914,6 +2914,37 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.loadingConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z21' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
+
 
     posit += 1;
     positionRows = [posit, posit];
@@ -2926,6 +2957,36 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.dischargeConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z22' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
     posit += 1;
@@ -2939,6 +3000,36 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingBallastConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z23' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
     posit += 1;
@@ -2951,7 +3042,38 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingLoadConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z24' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z24' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
+
 
     posit += 1;
     positionRows = [posit, posit];
@@ -2963,7 +3085,37 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.sailingEconomicConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z25' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z25' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
 
@@ -2978,7 +3130,37 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.anchoredConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z26' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z26' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
 
@@ -2992,7 +3174,37 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.maneuverConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z27' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z27' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
 
@@ -3006,7 +3218,37 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.otherConsumptionIFO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  { formula: 'Z28' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'Z28' }, 10, black, white, '')
+    worksheet.addConditionalFormatting({
+      ref: this.PositByCell(positionColumns[0]) + positionRows[0],
+      rules: [
+        // si la actividad es navegando deberia tener una distancia.    
+        {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+          },
+        }, {
+          type: 'expression',
+          priority: 2,
+          formulae: ['AND(' + this.PositByCell(positionColumns[0] - 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ')'],
+          style: {
+            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
+          },
+        }, {
+          type: 'cellIs',
+          priority: 1,
+          operator: 'equal',
+          formulae: [0],
+          style: {
+            font: { color: { argb: grisMedio } },
+          },
+        },
+
+      ],
+    });
 
 
 
