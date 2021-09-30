@@ -2480,10 +2480,15 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Bunkering', 8, black, white, '');
     // IFO start
     positionColumns = [colum + 10, colum + 11];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, totalBunkeringIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+      { formula: 'SUM(BD34:BD4000)' },
+       8, black, white, '');
     //MGO Start
     positionColumns = [colum + 12, colum + 13];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, totalBunkeringMGO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+      
+      { formula: 'SUM(BX34:BX4000)' }
+      , 8, black, white, '');
 
 
     posit += 1;
@@ -2493,10 +2498,14 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Consumption', 8, black, white, '');
     // IFO start
     positionColumns = [colum + 10, colum + 11];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, totalConsumptIFO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+      { formula: 'SUM(AR34:AY4000)' },
+       8, black, white, '');
     //MGO Start
     positionColumns = [colum + 12, colum + 13];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, totalConsumptMGO, 8, black, white, '');
+    this.addStyleByColums(worksheet, positionRows, positionColumns, 
+      { formula: 'SUM(BH34:BS4000)' },
+       8, black, white, '');
 
 
     posit += 1;
