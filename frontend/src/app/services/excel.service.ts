@@ -3374,9 +3374,9 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
@@ -3402,9 +3402,9 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
@@ -3432,11 +3432,11 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-AF' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-'+this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
 
 
     //================= Primera actividad Laden
@@ -3461,11 +3461,11 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-AF' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-'+this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
 
 
 
@@ -3491,11 +3491,11 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-AF' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-'+this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
 
 
     //================= Primera actividad ANCHORED
@@ -3520,9 +3520,9 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
@@ -3548,9 +3548,9 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
 
@@ -3576,9 +3576,9 @@ export class ExcelService {
     positionColumns = [colum + 24, colum + 26];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR('+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + '),0,'+this.PositByCell(colum + 6) + + positionRow + '/'+this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 27, colum + 29];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(AF' + positionRow + '=0, AC' + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,AC' + positionRow + '*AF' + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF('+this.PositByCell(colum + 24) + + positionRow + '=0, '+this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,'+this.PositByCell(colum + 21) + + positionRow + '*'+this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 30, colum + 32];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-AI' + positionRow, result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-'+this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
     // Ultimo slato
