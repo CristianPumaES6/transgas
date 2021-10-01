@@ -659,7 +659,7 @@ export class ExcelService {
     };
     worksheet.mergeCells('AR' + positionRow, 'BD' + positionRow);
 
-    worksheet.getCell('BE' + positionRow).value = 200;
+    worksheet.getCell('BE' + positionRow).value = <any>{ formula: 'AK7' }    ;
     worksheet.getCell('BE' + positionRow).style = {
       alignment: {
         horizontal: 'right',
@@ -714,7 +714,7 @@ export class ExcelService {
       }
     };
     worksheet.mergeCells('BH' + positionRow, 'BX' + positionRow);
-    worksheet.getCell('BY' + positionRow).value = 200;
+    worksheet.getCell('BY' + positionRow).value = <any>{ formula: 'AM7' } ;
     worksheet.getCell('BY' + positionRow).style = {
       alignment: {
         horizontal: 'right',
@@ -1599,8 +1599,8 @@ export class ExcelService {
         if (index == 0) {
 
           // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
-          worksheet.getCell('U' + positionRow).value = <any>{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' };
-          worksheet.getCell('AL' + positionRow).value = <any>{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' };
+          worksheet.getCell('U' + positionRow).value = getReportVoyagePortDaily.steamingTime;
+          worksheet.getCell('AL' + positionRow).value = getReportVoyagePortDaily.steamingTime;
 
 
 
