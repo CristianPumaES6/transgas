@@ -549,13 +549,13 @@ export class VoyagesController {
             newReport.mplaIfo = importVoyage.mplaIfo || 0;
             newReport.auxIfo = importVoyage.auxIfo || 0;
             newReport.boilerIfo = importVoyage.boilerIfo || 0;
-            newReport.otherIfo = 0;
+            newReport.otherIfo = importVoyage.otherIfo || 0;
             newReport.mplaMgo = importVoyage.mplaMgo || 0;
             newReport.auxMgo = importVoyage.auxMgo || 0;
             newReport.boilerMgo = importVoyage.boilerMgo || 0;
             newReport.ppMgo = importVoyage.ppMgo || 0;
             newReport.giMgo = importVoyage.giMgo || 0;
-            newReport.otherMgo = 0;
+            newReport.otherMgo =  importVoyage.otherMgo || 0;
             newReport.steamingTime = importVoyage.steamingTime || 0;
             newReport.distance = importVoyage.distance || 0;
 

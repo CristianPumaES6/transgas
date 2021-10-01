@@ -65,6 +65,7 @@ export class ImportVoyage {
     mplaIfo: number;
     auxIfo: number;
     boilerIfo: number;
+    otherIfo:number;
     TOTAL: number[];
     bunkeringIfo: number;
     ROB: number[];
@@ -73,5 +74,6 @@ export class ImportVoyage {
     boilerMgo: number;
     ppMgo: number;
     giMgo: number;
+    otherMgo:number;
     bunkeringMgo?: any;
 }
