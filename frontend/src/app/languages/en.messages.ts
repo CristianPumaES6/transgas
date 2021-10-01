@@ -493,3 +493,17 @@ export const dialog: any = {
 export const guards: any = {
 
 }
+
+export const exportExcel: any = {
+    LOADING: 'LOADING',
+    DOWNLOADING: 'DISCHARGE',
+    SAILING_IN_BALLAST: 'S. BALLAST',
+    SAILING_WITH_LADEN: 'S. LADEN',
+    ECONOMICAL_NAVIGATION: 'S. ECONOMICAL',
+    ANCHORED: 'ANCHORED',
+    MANEUVER: 'MANEUVER',
+    OTHER_ACT: 'OTHER ACT.',
+
+    FULL_SPEED:'FULL',
+    ECO_SPEED:'ECO',
+}

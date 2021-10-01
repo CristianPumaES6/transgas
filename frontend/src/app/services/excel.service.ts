@@ -21,7 +21,7 @@ import { LanguageService } from './language.service';
 export class ExcelService {
 
   public userLanguage: string = this.languageService.GetCurrentLanguage();
-  public translateCategory: string = 'dashboard';
+  public translateCategory: string = 'exportExcel';
 
   constructor(
     private languageService: LanguageService,
@@ -1548,10 +1548,10 @@ export class ExcelService {
           FormatDate(getReportVoyagePortDaily.date), '', '',
           getReportVoyagePortDaily.hour, '',
           { formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-          getReportVoyagePortDaily.activityPerformed, '', '', '',
+          this.languageService.GetMessage(this.translateCategory,  getReportVoyagePortDaily.activityPerformed), '', '', '',
 
 
-          getReportVoyagePortDaily.speedStraction, '',
+          this.languageService.GetMessage(this.translateCategory,  getReportVoyagePortDaily.speedStraction), '',
 
           getReportVoyagePortDaily.observation, '', '', '', '', '', '',
 
@@ -3356,7 +3356,7 @@ export class ExcelService {
     positionRow += 2;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'LOADING', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'LOADING'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
@@ -3390,7 +3390,7 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'DOWNLOADING', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'DOWNLOADING'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
@@ -3426,7 +3426,7 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING_IN_BALLAST', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'SAILING_IN_BALLAST'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
@@ -3461,7 +3461,7 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING_WITH_LADEN', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns,  this.languageService.GetMessage(this.translateCategory, 'SAILING_WITH_LADEN'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
@@ -3497,7 +3497,7 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING_WITH_ECONOMICAL', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'ECONOMICAL_NAVIGATION'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
@@ -3532,7 +3532,7 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'ANCHORED', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'ANCHORED'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
@@ -3566,7 +3566,7 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'MANEUVER', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'MANEUVER') , 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
@@ -3600,7 +3600,7 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, 'OTHER_ACT', 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'OTHER_ACT'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
