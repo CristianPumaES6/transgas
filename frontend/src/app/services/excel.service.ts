@@ -3642,10 +3642,41 @@ export class ExcelService {
      */
     // BOrde final alrededor
 
+    positionRows = [posit+2, posit +10];
+    positionColumns = [colum, colum+2];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionRows = [posit+2, posit +10];
+    positionColumns = [colum+3, colum+5];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionRows = [posit+2, posit +10];
+    positionColumns = [colum+6, colum+8];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionRows = [posit+2, posit +10];
+    positionColumns = [colum+9, colum+11];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionRows = [posit+2, posit +10];
+    positionColumns = [colum+12, colum+14];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum+15, colum+18];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum+19, colum+21];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum+22, colum+24];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum+25, colum+27];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum+28, colum+30];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum+31, colum+33];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    positionColumns = [colum+34, colum+35];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+   
+
     positionRows = [posit, positionRow];
     positionColumns = [colum, colum + 35];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
-
+    
     return positionRow - posit;
   }
 
