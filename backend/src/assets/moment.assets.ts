@@ -14,9 +14,9 @@ export function GetDate(): any {
 
 
 // Convierte el formato de fecha.
-export function ConvertDDMMYYYToYYYYMMDD(dateDDMMYYY: any): Date {
+export function ConvertMMDDYYYToYYYYMMDD(dateMMDDYYY: any): Date {
 
-    let date = moment(dateDDMMYYY, "MM/DD/YYYY");
+    let date = moment(dateMMDDYYY, "MM/DD/YYYY");
 
     return new Date(date.format("YYYY/MM/DD"));
 

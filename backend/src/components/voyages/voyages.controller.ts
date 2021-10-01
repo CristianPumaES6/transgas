@@ -10,7 +10,7 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertDDMMYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
+import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport } from '../../models/daily-report.entity';
@@ -514,12 +514,9 @@ export class VoyagesController {
                     // Lo registramos
                     let portRegister = await this._portsService.Create(newPort);
                     MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
-
                 } else {
-
                     // Agregamos al mapping el id buscado por numero de viaje.
                     MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id))
-
                 }
 
             }
@@ -532,7 +529,7 @@ export class VoyagesController {
             newReport.userId = importVoyage.userId;
             newReport.portId = existePort.value;
 
-            newReport.date = ConvertDDMMYYYToYYYYMMDD(importVoyage.date)
+            newReport.date = ConvertMMDDYYYToYYYYMMDD(importVoyage.date)
 
             // Verificamos si existe una hora,
             if (importVoyage.hour) {
@@ -610,7 +607,6 @@ export class VoyagesController {
             } else if (newReport.activityPerformed == 'OTRAS ACT.') {
                 newReport.activityPerformed = 'OTHER_ACT';
             }
-
             // Tipo de velocidad.
             newReport.speedStraction = importVoyage.speedStraction;
 
