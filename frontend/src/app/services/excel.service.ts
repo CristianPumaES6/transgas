@@ -542,7 +542,7 @@ export class ExcelService {
     let tamanioCosumptionMGO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'MGO');
 
     /// Filas aprox del cuadro de consumo.
-    positionRow += tamanioCosumptionIFO;
+    positionRow += tamanioCosumptionIFO+1;
 
     // Dos saltos de linea
     positionRow += 2;
@@ -3629,8 +3629,22 @@ export class ExcelService {
     positionColumns = [colum + 33, colum + 35];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
-    // Ultimo slato
-    positionRow += 1;
+
+    // Lineas suabes internas
+    /*     positionRows = [posit - 8, posit];
+        positionColumns = [colum, colum];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+        positionColumns = [colum + 3, colum + 3];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+        positionColumns = [colum + 5, colum + 5];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+    
+     */
+    // BOrde final alrededor
+
+    positionRows = [posit, positionRow];
+    positionColumns = [colum, colum + 35];
+    this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
 
     return positionRow - posit;
   }
@@ -3795,7 +3809,7 @@ export class ExcelService {
 
         ],
       });
-    }else if (typeFormat === 'BALANCE_CONSUMPTION') {
+    } else if (typeFormat === 'BALANCE_CONSUMPTION') {
       worksheet.addConditionalFormatting({
         ref: this.PositByCell(positionColum) + positionRow,
         rules: [
@@ -3818,7 +3832,7 @@ export class ExcelService {
 
         ],
       });
-    }else if (typeFormat === 'BALANCE_TIME') {
+    } else if (typeFormat === 'BALANCE_TIME') {
       worksheet.addConditionalFormatting({
         ref: this.PositByCell(positionColum) + positionRow,
         rules: [
