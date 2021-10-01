@@ -464,6 +464,7 @@ export class VoyagesController {
                     let newVoyage = new Voyage();
                     delete newVoyage.id;
                     newVoyage.userId = importVoyage.userId;
+                    newVoyage.voyageNumber = importVoyage.voyageNumber;
                     newVoyage.year = importVoyage.year;
                     // Auditoria.
                     newVoyage.userIdCreated = headerToken.id;

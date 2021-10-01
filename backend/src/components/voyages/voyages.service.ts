@@ -42,10 +42,14 @@ export class VoyagesService {
             (result: Voyage[]) => {
                 // result length 
                 if (result && (result.length > 0)) {
+                    voyage.voyageNumber = voyage.voyageNumber;
+                    /* 
                     voyage.voyageNumber = Number(result[0].voyageNumber) + 1;
+                    */
                 }
                 else {
-                    voyage.voyageNumber = 1;
+                    // Caso contrario el numero del viaje es el numero de viaje.
+                    voyage.voyageNumber = voyage.voyageNumber;
                 };
 
                 // No lo validamos por que puede llegar vacio.
