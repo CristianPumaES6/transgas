@@ -542,7 +542,7 @@ export class ExcelService {
     let tamanioCosumptionMGO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'MGO');
 
     /// Filas aprox del cuadro de consumo.
-    positionRow += tamanioCosumptionIFO+1;
+    positionRow += tamanioCosumptionIFO + 1;
 
     // Dos saltos de linea
     positionRow += 2;
@@ -659,7 +659,7 @@ export class ExcelService {
     };
     worksheet.mergeCells('AR' + positionRow, 'BD' + positionRow);
 
-    worksheet.getCell('BE' + positionRow).value = <any>{ formula: 'AK7' }    ;
+    worksheet.getCell('BE' + positionRow).value = <any>{ formula: 'AK7' };
     worksheet.getCell('BE' + positionRow).style = {
       alignment: {
         horizontal: 'right',
@@ -714,7 +714,7 @@ export class ExcelService {
       }
     };
     worksheet.mergeCells('BH' + positionRow, 'BX' + positionRow);
-    worksheet.getCell('BY' + positionRow).value = <any>{ formula: 'AM7' } ;
+    worksheet.getCell('BY' + positionRow).value = <any>{ formula: 'AM7' };
     worksheet.getCell('BY' + positionRow).style = {
       alignment: {
         horizontal: 'right',
@@ -746,41 +746,41 @@ export class ExcelService {
       'voyageId', 'portId', 'dailyReportId', '', '',//E
 
 
-      'Voyage', '', //G
-      'departure', '', '', '', //G
-      'arrival', '', '', '', //G
-      'date', '', '', //J
-      'hours', '',  //L
-      'steamingTime', '', //N
-      'activityPerformed', '', '', '',//R
-      'speedStraction', '',
-      'observation', '', '', '', '', '', '',//V
+      'VOYAGE', '', //G
+      'DEPARTURE', '', '', '', //G
+      'ARRIVAL', '', '', '', //G
+      'DATE', '', '', //J
+      'HOURS', '',  //L
+      'TIME', '', //N
+      'ACTIVITY PERFORMED', '', '', '',//R
+      'SPEED', '',
+      'OBSERVATION', '', '', '', '', '', '',//V
 
-      'distance', '',//X
-      'timeNavigation', '',//Z
-      'speed', '',//AB
-      'Beaufort', '',//AD
+      'DISTANCE', '',//X
+      'TIME', '',//Z
+      'SPEED', '',//AB
+      'BEAUFORT', '',//AD
 
-      'mplaIfo', '',//AF
-      'auxIfo', '',//AH
-      'boilerIfo', '',//AJ
-      'otherIfo', '',//AL
-      'totalIfo', '',//AN
-      'dailyCosumtionIFO', '',
-      'bunkeringIfo', '',//AP
-      'robIfo', '',//AR
+      'MPLA', '',//AF
+      'AUX', '',//AH
+      'BOILER', '',//AJ
+      'OTHER', '',//AL
+      'TOTAL', '',//AN
+      'DAILY COSUMTION', '',
+      'BUNKERING', '',//AP
+      'ROB', '',//AR
 
 
-      'mplaMgo', '',//AF
-      'auxMgo', '',//AH
-      'boilerMgo', '',//AJ
-      'ppMgo', '',//AJ
-      'giMgo', '',//AJ
-      'otherMgo', '',//AL
-      'totalMgo', '',//AN
-      'dailyCosumtionIFO', '',
-      'bunkeringMgo', '',//AP
-      'robMgo', '',//AR },
+      'MPLA', '',//AF
+      'AUX', '',//AH
+      'BOILER', '',//AJ
+      'P.P', '',//AJ
+      'G.I', '',//AJ
+      'OTHER', '',//AL
+      'TOTAL', '',//AN
+      'DAILY COSUMTION', '',
+      'BUNKERING', '',//AP
+      'ROB', '',//AR },
     ]);
     worksheet.getCell('F' + positionRow).style = {
       alignment: {
@@ -1548,10 +1548,10 @@ export class ExcelService {
           FormatDate(getReportVoyagePortDaily.date), '', '',
           getReportVoyagePortDaily.hour, '',
           { formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-          this.languageService.GetMessage(this.translateCategory,  getReportVoyagePortDaily.activityPerformed), '', '', '',
+          this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), '', '', '',
 
 
-          this.languageService.GetMessage(this.translateCategory,  getReportVoyagePortDaily.speedStraction), '',
+          this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.speedStraction), '',
 
           getReportVoyagePortDaily.observation, '', '', '', '', '', '',
 
@@ -3358,17 +3358,17 @@ export class ExcelService {
     positionColumns = [colum, colum + 2];
     this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'LOADING'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ' + startRowReport + ':$AZ$163,">0"' : '$BT' + startRowReport + ':$BT$163,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
     positionColumns = [colum + 12, colum + 14];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -3395,14 +3395,14 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
     positionColumns = [colum + 12, colum + 14];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -3431,7 +3431,7 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
@@ -3439,7 +3439,7 @@ export class ExcelService {
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingBallastIFO, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
@@ -3461,19 +3461,19 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns,  this.languageService.GetMessage(this.translateCategory, 'SAILING_WITH_LADEN'), 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'SAILING_WITH_LADEN'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
     positionColumns = [colum + 12, colum + 14];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingLadenIFO, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -3497,19 +3497,19 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'ECONOMICAL_NAVIGATION'), 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'ECONOMICAL_NAVIGATION'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
     positionColumns = [colum + 12, colum + 14];
     this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.contractSpeedSailingEconomicalIFO, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -3532,19 +3532,19 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'ANCHORED'), 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'ANCHORED'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
     positionColumns = [colum + 12, colum + 14];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -3566,19 +3566,19 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'MANEUVER') , 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'MANEUVER'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
     positionColumns = [colum + 12, colum + 14];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -3600,19 +3600,19 @@ export class ExcelService {
     positionRow += 1;
     positionRows = [positionRow, positionRow];
     positionColumns = [colum, colum + 2];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory,  'OTHER_ACT'), 10, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, this.languageService.GetMessage(this.translateCategory, 'OTHER_ACT'), 10, blueHard3, white, '')
     positionColumns = [colum + 3, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")  ', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
     positionColumns = [colum + 6, colum + 8];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     positionColumns = [colum + 9, colum + 11];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
     positionColumns = [colum + 12, colum + 14];
     this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
     positionColumns = [colum + 15, colum + 17];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',$AZ$' + startRowReport + ':$AZ$163,">0")', result: 0.14 }, 8, blueHard3, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$163,$W$' + startRowReport + ':$W$163,' + this.PositByCell(colum) + positionRow + ',' +( isIFOorMGO == 'IFO' ? '$AZ'+ startRowReport + ':$AZ$163,">0"':'$BT'+ startRowReport + ':$BT$163,">0"')+')', result: 0.14 }, 8, blueHard3, white, '')
     this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
     positionColumns = [colum + 18, colum + 20];
     this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -3642,41 +3642,41 @@ export class ExcelService {
      */
     // BOrde final alrededor
 
-    positionRows = [posit+2, posit +10];
-    positionColumns = [colum, colum+2];
+    positionRows = [posit + 2, posit + 10];
+    positionColumns = [colum, colum + 2];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionRows = [posit+2, posit +10];
-    positionColumns = [colum+3, colum+5];
+    positionRows = [posit + 2, posit + 10];
+    positionColumns = [colum + 3, colum + 5];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionRows = [posit+2, posit +10];
-    positionColumns = [colum+6, colum+8];
+    positionRows = [posit + 2, posit + 10];
+    positionColumns = [colum + 6, colum + 8];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionRows = [posit+2, posit +10];
-    positionColumns = [colum+9, colum+11];
+    positionRows = [posit + 2, posit + 10];
+    positionColumns = [colum + 9, colum + 11];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionRows = [posit+2, posit +10];
-    positionColumns = [colum+12, colum+14];
+    positionRows = [posit + 2, posit + 10];
+    positionColumns = [colum + 12, colum + 14];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionColumns = [colum+15, colum+18];
+    positionColumns = [colum + 15, colum + 18];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionColumns = [colum+19, colum+21];
+    positionColumns = [colum + 19, colum + 21];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionColumns = [colum+22, colum+24];
+    positionColumns = [colum + 22, colum + 24];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionColumns = [colum+25, colum+27];
+    positionColumns = [colum + 25, colum + 27];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionColumns = [colum+28, colum+30];
+    positionColumns = [colum + 28, colum + 30];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionColumns = [colum+31, colum+33];
+    positionColumns = [colum + 31, colum + 33];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-    positionColumns = [colum+34, colum+35];
+    positionColumns = [colum + 34, colum + 35];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-   
+
 
     positionRows = [posit, positionRow];
     positionColumns = [colum, colum + 35];
     this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
-    
+
     return positionRow - posit;
   }
 
