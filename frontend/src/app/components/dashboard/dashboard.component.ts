@@ -599,13 +599,27 @@ export class DashboardComponent implements OnInit {
 
         // Invocamos nuestra funcion SelectUser.
         return this.SelectUser(this.selectUserId);
+      
       }).then(
         result => {
 
           // Verificamos que todo este OK.
           if (!result) throw 'ERROR_COMBO_BUQUE';
-          // Cerramos el loading.
-          this.loadingService.Close();
+         
+           
+        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => { 
+        // Cerramos el loading.
+         
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+        this.loadingService.Close();
         }
       ).catch(
         err => {
