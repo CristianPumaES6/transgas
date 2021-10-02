@@ -2636,7 +2636,7 @@ export class ExcelService {
     // FULL Y ECO Performan SPEED
     positionColumns = [colum + 4, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: isIFOorMGO == 'IFO' ? 'Q23' : 'EE' },
+      { formula: isIFOorMGO == 'IFO' ? 'AD23' : 'BR23' },
       8, black, white, '');
     // Agrega formato a Actividad
     worksheet.addConditionalFormatting({
@@ -2672,7 +2672,7 @@ export class ExcelService {
 
     positionColumns = [colum + 5, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: isIFOorMGO == 'IFO' ? 'Q25' : 'EE' },
+      { formula: isIFOorMGO == 'IFO' ? 'AD25' : 'BR25' },
       8, black, white, '')
 
     // Agrega formato a Actividad
@@ -2724,7 +2724,7 @@ export class ExcelService {
     // FULL Y ECO Performan SPEED
     positionColumns = [colum + 4, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: isIFOorMGO == 'IFO' ? 'Q24' : 'II' },
+      { formula: isIFOorMGO == 'IFO' ? 'AD24' : 'BR24' },
       8, black, white, '');
     // Agrega formato a Actividad
     worksheet.addConditionalFormatting({
@@ -2760,7 +2760,7 @@ export class ExcelService {
 
     positionColumns = [colum + 5, colum + 5];
     this.addStyleByColums(worksheet, positionRows, positionColumns,
-      { formula: isIFOorMGO == 'IFO' ? 'Q25' : 'IO' },
+      { formula: isIFOorMGO == 'IFO' ? 'AD25' : 'BR25' },
       8, black, white, '')
 
     // Agrega formato a Actividad
@@ -2901,7 +2901,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.loadingConsumptionIFO : selectUser.loadingConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z21' : 'EE' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM21' : 'CA21' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -2944,7 +2944,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.dischargeConsumptionIFO : selectUser.dischargeConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z22' : 'EE' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM22' : 'CA22' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -2987,7 +2987,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingBallastConsumptionIFO : selectUser.sailingBallastConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z23' : 'SS' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM23' : 'CA23' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3030,7 +3030,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingLoadConsumptionIFO : selectUser.sailingLoadConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z24' : 'DD' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM24' : 'CA24' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3073,7 +3073,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z25' : 'DD' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM25' : 'CA25' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3118,7 +3118,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.anchoredConsumptionIFO : selectUser.anchoredConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z26' : 'DD' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM26' : 'CA26' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3162,7 +3162,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.maneuverConsumptionIFO : selectUser.maneuverConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z27' : 'SS' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM27' : 'CA27' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [
@@ -3206,7 +3206,7 @@ export class ExcelService {
     positionColumns = [colum + 3, colum + 4];
     this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.otherConsumptionIFO : selectUser.otherConsumptionMGO, 10, black, white, '')
     positionColumns = [colum + 5, colum + 6];
-    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'Z28' : 'DD' }, 10, black, white, '')
+    this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: isIFOorMGO == 'IFO' ? 'AM28' : 'CA28' }, 10, black, white, '')
     worksheet.addConditionalFormatting({
       ref: this.PositByCell(positionColumns[0]) + positionRows[0],
       rules: [

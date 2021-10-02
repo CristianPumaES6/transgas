@@ -463,6 +463,7 @@ export const dialog: any = {
     CHARTER: 'Charter',
     BUNKERING: 'Bunkering',
     REPORT_INFORMATION: 'This report has the following information.',
+    EXCEL_FORMAT: 'It allows to export in Excel all the reports registered by the captain.',
     ADD_SAILING_NAVIGATION: 'What navigation information do you want to add?',
     IN_BALLAST: 'In Ballast',
     WITH_LADEN: 'With Laden',

@@ -15,14 +15,14 @@ export interface EnvConfig {
 };
 */
 
-
-/* export const EnvConfig: EnvConfig = {
+/* 
+export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
     VERSION: 'v1.9h',
     SOCKET: 'https://socket-transgas.codev.site'
-}; */
- 
+};
+  */
 
 
 export const EnvConfig: EnvConfig = {
