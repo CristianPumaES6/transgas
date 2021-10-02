@@ -38,10 +38,10 @@ let VoyagesService = class VoyagesService {
             }
         }).then((result) => {
             if (result && (result.length > 0)) {
-                voyage.voyageNumber = Number(result[0].voyageNumber) + 1;
+                voyage.voyageNumber = voyage.voyageNumber;
             }
             else {
-                voyage.voyageNumber = 1;
+                voyage.voyageNumber = voyage.voyageNumber;
             }
             ;
             return this.voyageRepository.save(voyage);

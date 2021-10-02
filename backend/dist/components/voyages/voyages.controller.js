@@ -300,6 +300,7 @@ let VoyagesController = class VoyagesController {
                         let newVoyage = new voyage_entity_1.Voyage();
                         delete newVoyage.id;
                         newVoyage.userId = importVoyage.userId;
+                        newVoyage.voyageNumber = importVoyage.voyageNumber;
                         newVoyage.year = importVoyage.year;
                         newVoyage.userIdCreated = headerToken.id;
                         newVoyage.dateCreated = moment_assets_1.GetDate();
@@ -342,7 +343,7 @@ let VoyagesController = class VoyagesController {
                 delete newReport.id;
                 newReport.userId = importVoyage.userId;
                 newReport.portId = existePort.value;
-                newReport.date = moment_assets_1.ConvertDDMMYYYToYYYYMMDD(importVoyage.date);
+                newReport.date = moment_assets_1.ConvertMMDDYYYToYYYYMMDD(importVoyage.date);
                 if (importVoyage.hour) {
                     if (importVoyage.hour.length === 4) {
                         newReport.hour = '0' + importVoyage.hour;
@@ -356,13 +357,13 @@ let VoyagesController = class VoyagesController {
                 newReport.mplaIfo = importVoyage.mplaIfo || 0;
                 newReport.auxIfo = importVoyage.auxIfo || 0;
                 newReport.boilerIfo = importVoyage.boilerIfo || 0;
-                newReport.otherIfo = 0;
+                newReport.otherIfo = importVoyage.otherIfo || 0;
                 newReport.mplaMgo = importVoyage.mplaMgo || 0;
                 newReport.auxMgo = importVoyage.auxMgo || 0;
                 newReport.boilerMgo = importVoyage.boilerMgo || 0;
                 newReport.ppMgo = importVoyage.ppMgo || 0;
                 newReport.giMgo = importVoyage.giMgo || 0;
-                newReport.otherMgo = 0;
+                newReport.otherMgo = importVoyage.otherMgo || 0;
                 newReport.steamingTime = importVoyage.steamingTime || 0;
                 newReport.distance = importVoyage.distance || 0;
                 if (!importVoyage.beaufour) {

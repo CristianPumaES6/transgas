@@ -1627,7 +1627,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "cbaf461858f6b88f92f37888a0484bdc209456936f9a041e98cade9fe828671b",
+        "version": "46bad23c88756cc8fe0c5ab6c555dd1f7701fe8613f13189a9e38c3cf60b73c0",
         "signature": "763cd44130b781bae958d22ac07c6711029f8fac6cc718bd60e1bf6a056ec919",
         "affectsGlobalScope": false
       },
@@ -1647,8 +1647,8 @@
         "affectsGlobalScope": false
       },
       "../src/assets/moment.assets.ts": {
-        "version": "395dcd0807bd17773876ad692af1191610602108603bd7296956a5838873c148",
-        "signature": "011a2df1c7034ff8b7d7252eda7261b0f40097eda272fac9b387f296c7598049",
+        "version": "3712a13e94caed3da7e1d2889a5fdf9ebf5c6ac8e06dbdef21eb662a5c737825",
+        "signature": "e51486a3d61eaf48e8768b4e78e151a6bd078bf1dd4b653ca6cb8627ba75399a",
         "affectsGlobalScope": false
       },
       "../src/models/loggeduser.ts": {
@@ -3242,12 +3242,12 @@
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "639f25754c3ca800d7369f4007adea613216dec745cb298249ee95873cd52d30",
-        "signature": "1478e56fadfc574ebc9e250759271951d7529c851c2dcaac1f9ab79be2527817",
+        "version": "d76c567abff1e47101c68569c1950d046813fd452141cb6d81f09f4b58059f5c",
+        "signature": "a907a97351d82d2f52dedb1ee9fd6df82dfe75d8e2581c700e9684c91c95bd39",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "6cebacd4115f257b392b792e63f2452bdd19cda75150493576ace906a88df524",
+        "version": "f00b0f518a656ffc2a52a3766d35889855223ce99156c56cbf8b0224d9d43f3a",
         "signature": "258ffe2ec140b88564333ae4922cadc48d091c1e4da121808f5fcae52127f546",
         "affectsGlobalScope": false
       },
@@ -3262,7 +3262,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "730bba9b03e57323f8049976c27ac565eb768be0a3b42b0e0dfafb52118786aa",
+        "version": "3d5967f3d20e49329724f5a1615583ebcb72d2d145dd17518e7bb81deac4c7b6",
         "signature": "73b941819318f118eeaac1a054dc6893b71b71ffa9f2d483a75989bb13d6358c",
         "affectsGlobalScope": false
       },
