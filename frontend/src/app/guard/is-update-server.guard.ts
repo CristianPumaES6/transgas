@@ -33,15 +33,15 @@ export class IsUpdateServerGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    console.log('canActivate()')
+      console.log('canActivate()')
 
     // Solo si esta estamos en linea actualizamos consultamos la version del servidor.
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (true) {
 
       // Retornaremos true solo si la la plataforma esta actualizada.
       return Promise.resolve(true).then(
         result => {
-          // COnsultamos la version de la plataforma
+          // Consultamos la version de la plataforma
           return this._authService.GetVersionPlataform().pipe().toPromise();
         }
       ).then(
@@ -62,7 +62,7 @@ export class IsUpdateServerGuard implements CanActivate {
           let msg = this.languageService.GetMessage(this.translateCategory, error);
 
           // Muestro notificación
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'Offline'), msg);
 
 
           // Igual retornamos true.

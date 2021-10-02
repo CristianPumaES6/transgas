@@ -24,7 +24,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMoment, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,7 +34,6 @@ import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
 import { ConvertirDateHourToMoment, DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
-import * as moment from 'moment';
 
 
 @Component({
@@ -714,12 +713,16 @@ export class VoyageComponent implements OnInit {
         let newDailyReport = this.selectDailyReport;
         newDailyReport.userId = this.selectUser.id;
         newDailyReport.portId = this.selectPort.id;
+        // Le agregamos la hora a la fecha.
+        newDailyReport.date = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
         newDailyReport.status = true;
 
         this.CreateDailyReportOnlineOffline(newDailyReport);
 
       } else {
         let dailyReportToSave = this.selectDailyReport;
+        // Le agregamos la hora a la fecha.
+        dailyReportToSave.date = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
 
         this.UpdateDailyReportOnelineOffline(dailyReportToSave);
 
@@ -1019,7 +1022,7 @@ export class VoyageComponent implements OnInit {
     let dialogData: DialogData = {
       color: "warning",
       icon: "icon-delete",
-      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the Report ' + this.FormatDate(dailyReportDelete.date) + ' - ' + dailyReportDelete.hour),
+      title: this.languageService.GetMessage(this.translateCategory, 'COMFIMR_DELETE_TITLE_REPLACE').replace('[NAME]', 'the Report ' + FormatDateUTCToDateHour(dailyReportDelete.date)),
       mensage: this.languageService.GetMessage(this.translateCategory, 'COMFIRM_DELETE_DESCRIPTION'),
     };
 
@@ -2409,17 +2412,18 @@ export class VoyageComponent implements OnInit {
         this.databaseService.GetLastReportDailys().then(
           result => {
 
-            let now = new Date();
-            let hours = ("0" + now.getHours()).slice(-2);
-            let minutes = ("0" + now.getMinutes()).slice(-2);
 
-            this.lastRecordedHour = FormatYYYYMMDDToSTRING(result.date) + 'T' + result.hour;
+            this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
 
+
+            // ya que se inicia un nuevo reporte, verificamos los cambios de la actividad.
+            this.ChangeActivityPerformed();
 
             this.GenerateTimeOperation();
           }
         )
-      }
+      } 
+
 
       // actualizo el valor del InitializeSailingAnality.
       this.initialDailyReport = this.Collect();
@@ -2438,9 +2442,8 @@ export class VoyageComponent implements OnInit {
   private GenerateTimeOperation(): void {
 
     let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
-    let momendate = moment(this.lastRecordedHour);
-
-
+    let momendate = ConvertMMDDYYYYHHmmToMomment(this.lastRecordedHour);
+ 
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
 
 
@@ -2497,7 +2500,6 @@ export class VoyageComponent implements OnInit {
 
   // Mejorar esto
   public FormatDate(fecha: any): string {
-
     let formatfecha = stringToDate(fecha);
 
     return formatfecha;
@@ -2552,5 +2554,23 @@ export class VoyageComponent implements OnInit {
     return result;
   }
 
+  public ChangeActivityPerformed() {
+    console.log('ChangeActivityPerformed()')
+    if (
+      this.selectDailyReport.activityPerformed !== 'SAILING_IN_BALLAST' &&
+      this.selectDailyReport.activityPerformed !== 'SAILING_WITH_LADEN' &&
+      this.selectDailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION') {
+      this.selectDailyReport.speedStraction = '';
+    }
+    if (
+      this.selectDailyReport.activityPerformed === 'SAILING_IN_BALLAST' ||
+      this.selectDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
+      this.selectDailyReport.speedStraction = 'FULL_SPEED';
+    } else if (
+      this.selectDailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION'
+    ) {
+      this.selectDailyReport.speedStraction = 'ECO_SPEED';
+    }
+  }
 
 }

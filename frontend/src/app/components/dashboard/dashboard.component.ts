@@ -37,7 +37,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING, FormatDateUTCToDateHour, ConvertMoment, ConvertMomentUTC } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -56,6 +56,7 @@ import * as Html2canvas from 'html2canvas';
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
 import { OnlineOfflineService } from '../../services/online-offline.service';
+import { DialogExportExcelComponent, IDialogExportExcel } from 'src/app/shared/dialog/dialog-export-excel/dialog-export-excel.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -314,10 +315,13 @@ export class DashboardComponent implements OnInit {
         if (!result) throw 'ERROR_SELECT_USER';
 
 
-        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+        // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+
         // Buscamos la info
-        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        return this.GetStartEndROByFilterDate(this.selectUserId, String(startDate), String(endDate)).pipe().toPromise();
       }
     ).then(
       result => {
@@ -443,7 +447,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  // GetUsers: Cargo todos los Users para el listado de Users.
+  // GetStartEndROByFilterDate: Cargamos la fecha de inicio y la fecha fin.
   private GetStartEndROByFilterDate(userId: number, startDate: string, endDate: string): Observable<boolean> {
     this.listInfoFuel = [];
 
@@ -463,22 +467,24 @@ export class DashboardComponent implements OnInit {
         fuelIfo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_ifo - this.getROBByUser.total_ifo, 2);
         fuelIfo.typeFuel = this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'VLSFO';
         fuelIfo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_ifo - startDataROB.total_ifo, 2);
-        fuelIfo.startDate = FormatYYYYMMDD(this.startDate)
+        fuelIfo.startDate = FormatDateUTCToDateHour(this.startDate)
+        // Revisar por que aqui se esta usando la variable que se recorre
         fuelIfo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoConsumption, 2);
         fuelIfo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoBunkering, 2);
+
         fuelIfo.endRob = this.MathRoundOneDecimal(fuelIfo.startRob + (consumptionDataROB.total_bunkering_ifo - consumptionDataROB.total_ifo), 2);
-        fuelIfo.endDate = FormatYYYYMMDD(this.endDate);
+        fuelIfo.endDate = FormatDateUTCToDateHour(this.endDate);
 
         // MGO
         let fuelMgo: DashboardBunkering = new DashboardBunkering();
         fuelMgo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_mgo - this.getROBByUser.total_mgo, 2);
         fuelMgo.typeFuel = 'MGO';
         fuelMgo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_mgo - startDataROB.total_mgo, 2);
-        fuelMgo.startDate = FormatYYYYMMDD(this.startDate);
+        fuelMgo.startDate = FormatDateUTCToDateHour(this.startDate);
         fuelMgo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoConsumption, 2);
         fuelMgo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoBunkering, 2);
         fuelMgo.endRob = this.MathRoundOneDecimal(fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo), 2);
-        fuelMgo.endDate = FormatYYYYMMDD(this.endDate);
+        fuelMgo.endDate = FormatDateUTCToDateHour(this.endDate);
 
         if (this.selectUser.isConsumptionVLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO) {
 
@@ -593,13 +599,27 @@ export class DashboardComponent implements OnInit {
 
         // Invocamos nuestra funcion SelectUser.
         return this.SelectUser(this.selectUserId);
+      
       }).then(
         result => {
 
           // Verificamos que todo este OK.
           if (!result) throw 'ERROR_COMBO_BUQUE';
-          // Cerramos el loading.
-          this.loadingService.Close();
+         
+           
+        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => { 
+        // Cerramos el loading.
+         
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+        this.loadingService.Close();
         }
       ).catch(
         err => {
@@ -798,9 +818,10 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+            // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+            let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+            let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
-            let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-            let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
             // Buscamos la info
             return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
           }
@@ -850,6 +871,18 @@ export class DashboardComponent implements OnInit {
         // Verificamos que la fecha inicio sea antes que la fecha fin.
         if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
 
+        // Setenemos el inicio de la hora que tendria la fecha.
+        let startDate = ConvertMoment(this.startDate);
+        startDate.hour(0)
+        startDate.minute(0)
+        this.startDate = startDate.toDate();
+
+        // Seteamos la ultima hora que tendria el dia
+        let endDate = ConvertMoment(this.endDate);
+        endDate.hour(23)
+        endDate.minute(59)
+        this.endDate = endDate.toDate();
+
         // avisamos, se esta seteando una fecha.
         this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
@@ -858,9 +891,14 @@ export class DashboardComponent implements OnInit {
       }
     ).then(
       result => {
+        let startDate = '';
+        let endDate = '';
 
-        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+
+        // Ya que es un filtro por fecha, se obtiene mediante la fecha local del navegador.
+        startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
       }
@@ -1048,8 +1086,9 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
-            let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-            let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+            let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+            let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
             // Buscamos la info
             return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
           }
@@ -1131,8 +1170,10 @@ export class DashboardComponent implements OnInit {
         if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
 
-        let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-        let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
+
+        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
         // Buscamos la info
         return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
       }
@@ -1181,7 +1222,7 @@ export class DashboardComponent implements OnInit {
 
 
         // Generatamos el report daily.
-        return this.excelService.ExportReportDaily(this.generateVoyages);
+        return this.OpenDialogExportExcel(this.selectUser,this.startDate,this.endDate);
 
       }
     ).then(
@@ -1212,7 +1253,7 @@ export class DashboardComponent implements OnInit {
 
   // ClickExportPDF() : Funcion que se ejecuta al dar click a exportar pdf, esto invoca a la funcion que genera el pdf.
   public ClickExportPDF() {
-
+    console.log('ClickExportPDF()')
     // Iniciamos las promesas.
     Promise.resolve(true).then(
       result => {
@@ -1384,9 +1425,9 @@ export class DashboardComponent implements OnInit {
               let totalSpeedByVoyage: Speed = new Speed();
 
               // Fecha donde se inicio el registro.
-              let dayStartByVoyage: String;
+              let dayStartByVoyage: string;
               // fecha donde termino el registro.
-              let dayEndByVoyage: String;
+              let dayEndByVoyage: string;
 
               // Total de abastecimiento.
               let totalBunkeringIFOByVoyage: number = 0;
@@ -1404,8 +1445,8 @@ export class DashboardComponent implements OnInit {
                   // Total de distancia y tiempo del puerto.
                   let totalSpeedByPort: Speed = new Speed();
                   // Fecha donde se inicio y finaliza el puerto.
-                  let dayStartByPort: String;
-                  let dayEndByPort: String;
+                  let dayStartByPort: string;
+                  let dayEndByPort: string;
 
                   // Total de abastecimiento.
                   let totalBunkeringIFOByPort: number = 0;
@@ -2762,8 +2803,8 @@ export class DashboardComponent implements OnInit {
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
 
-              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -2794,8 +2835,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true);
 
 
-              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -2808,8 +2849,10 @@ export class DashboardComponent implements OnInit {
               let result = FisrtOldDayFromDate(ubication);
 
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = new Date(result.start);
-              this.endDate = new Date(result.end);
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
+              this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
               this.selectSummaryBy = 'DAYS';
@@ -2817,9 +2860,9 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
-              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -2943,8 +2986,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true);
 
 
-              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -2972,8 +3015,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true)
 
 
-              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -2983,20 +3026,27 @@ export class DashboardComponent implements OnInit {
               // Encapsulamos las ubicaciones.
               let date = this.dataMGO[index].x;
 
+              // Encapsulamos las ubicaciones.
+              let ubication = this.dataMGO[index].x;
+
               // retorna el primero y ultimo dia del mes de la fecha enviada.
-              let result = FisrtOldDayFromDate(date);
+              let result = FisrtOldDayFromDate(ubication);
+
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = new Date(result.start);
-              this.endDate = new Date(result.end);
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
+              this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
               this.selectSummaryBy = 'DAYS';
+
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
-              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3119,8 +3169,8 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true)
 
 
-              let startDate = FormatYYYYMMDDToSTRING(voyage.dayStart);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(voyage.dayEnd);
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
@@ -3150,14 +3200,13 @@ export class DashboardComponent implements OnInit {
               this.GenerateDashboardBySumary(true)
 
 
-              let startDate = FormatYYYYMMDDToSTRING(port.dayStart);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(port.dayEnd);
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
 
 
             } else if (this.selectSummaryBy === 'MONTHS') {
-
 
               // Encapsulamos las ubicaciones.
               let ubication = this.dataSPEED[index].x;
@@ -3166,20 +3215,22 @@ export class DashboardComponent implements OnInit {
               let result = FisrtOldDayFromDate(ubication);
 
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = new Date(result.start);
-              this.endDate = new Date(result.end);
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
+              this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
               this.selectSummaryBy = 'DAYS';
+
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
-              let startDate = FormatYYYYMMDDToSTRING(this.startDate);
-              let endDate = AddOneDayAndConvertYYYYMMDDToSTRING(this.endDate);
               // Buscamos la info
               this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-
 
 
             } else if (this.selectSummaryBy === 'DAYS') {
@@ -3837,11 +3888,11 @@ export class DashboardComponent implements OnInit {
             let beaufour = '';
 
             dataExtra.forEach((report: DailyReport) => {
-              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed)+(report.speedStraction?'/'+this.languageService.GetMessage(this.translateCategory, report.speedStraction):'');
               observations = observations + ', ' + report.observation;
               speed.add(report.distance, report.steamingTime);
               totalReport = totalReport + 1;
-              if(report.beaufour){
+              if (report.beaufour) {
                 beaufour = report.beaufour;
               }
             });
@@ -4002,9 +4053,9 @@ export class DashboardComponent implements OnInit {
 
         let lineMax = 0;
 
-        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.sailingBallastConsumptionIFO; }
-        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.sailingLoadConsumptionIFO; }
-        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.sailingEconomicConsumptionIFO; }
+        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
+        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
+        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
 
         if (lineMax > lineaMaxByActivity) {
           lineaMaxByActivity = lineMax;
@@ -4084,6 +4135,7 @@ export class DashboardComponent implements OnInit {
     // Agregamos un plugin para saver los niveles.
     const chartPluginLineaHorizontal = {
       afterDraw: (chartobj: any) => {
+
         if (chartobj.options.lines) {
           let ctx = chartobj.chart.ctx;
 
@@ -4097,20 +4149,46 @@ export class DashboardComponent implements OnInit {
             line.label = line.label ? line.label : '';
 
             if (line.type === 'horizontal' && line.y) {
-              line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
-              line.endCoord[0] = chartobj.chart.width;
+              // Verificamos si existe un yAxesID
+              let yAxesID = line.yAxesID;
+              if (yAxesID) {
+                // Si es asi agregamos la linea hacia ese yAxesId
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales[yAxesID].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+                // Solo si enviamos un tamaño especifico, 
+                if (line.fontSize) { ctx.font = line.fontSize; }
+                if (line.lineWidth) { ctx.lineWidth = line.lineWidth; }
+                ctx.fillStyle = line.color;
+                if (yAxesID == 'A') {
+                  ctx.textAlign = "start";
+                  ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 10);
+                } else if (yAxesID == 'B') {
+                  ctx.textAlign = "end";
+                  ctx.fillText(line.label, chartobj.chart.width - 3, line.iniCoord[1] - 10);
+                }
+
+              } else {
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+
+                ctx.fillStyle = line.color;
+                ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+
+              }
             } else if (line.type === 'vertical' && line.x) {
               line.iniCoord[0] = line.endCoord[0] = chartobj.scales['x-axis-0'].getPixelForValue(line.x);
               line.endCoord[1] = chartobj.chart.height;
+              ctx.fillStyle = line.color;
+              ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
             }
 
             ctx.beginPath();
-            ctx.moveTo(line.iniCoord[0], line.iniCoord[1]);
-            ctx.lineTo(line.endCoord[0], line.endCoord[1]);
+
+            // Le sumamos y restamos 18 para que no tape la leyenda.
+            ctx.moveTo(line.iniCoord[0] + 18, line.iniCoord[1]);
+            ctx.lineTo(line.endCoord[0] - 18, line.endCoord[1]);
             ctx.strokeStyle = line.color;
             ctx.stroke();
-            ctx.fillStyle = line.color;
-            ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
           }
         }
       }
@@ -4157,8 +4235,8 @@ export class DashboardComponent implements OnInit {
       voyages: voyages,
       selectUser: selectUser,
       selectVoyageId: this.selectVoyageId,
-      dateStart:this.startDate,
-      dateEnd:this.endDate,
+      dateStart: this.startDate,
+      dateEnd: this.endDate,
     };
 
 
@@ -4179,5 +4257,37 @@ export class DashboardComponent implements OnInit {
 
   }
 
+
+  private OpenDialogExportExcel(selectUser: User, startDate:Date, endDate:Date):boolean {
+
+        // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+        let mommentStartDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let mommentEndDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+
+    let dialogReport: IDialogExportExcel = {
+      selectUser: selectUser,
+      dateStartUTC: mommentStartDate,
+      dateEndUTC: mommentEndDate
+    };
+
+
+    const dialogRef = this.dialog.open(DialogExportExcelComponent, {
+      data: dialogReport
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+
+          // alert('OKK');
+        }
+      });
+    
+      return true;
+
+  }
 
 }

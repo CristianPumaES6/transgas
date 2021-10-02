@@ -79,7 +79,7 @@ export class OnlineOfflineService {
 
     this.webSocketService.listen('connection2').subscribe(
       (data) => {
-        alert('connection2')
+       // alert('connection2')
 
         console.log('registrar el usuario de ocneccion.')
 

@@ -12,6 +12,8 @@ export class DailyReport {
         public portId?: number,
         // Actividades realizada
         public activityPerformed?: string,
+        //  SpeedStraction ECO_SPEED | FULL_SPEED
+        public speedStraction?: string,
         // Fecha de registro
         public date?: Date,
         // Hora
@@ -69,6 +71,7 @@ export class DailyReport {
         this.userId = userId || null;
         this.portId = portId || null;
         this.activityPerformed = activityPerformed || '';
+        this.speedStraction = speedStraction || '';
         this.date = date || null;
         this.hour = hour || '';
         this.bunkeringIfo = bunkeringIfo || 0;
@@ -162,7 +165,7 @@ export class Speed {
 }
 
 // Estructura del servicio.
-export class GetROBByUser{
+export class GetROBByUser {
     constructor(
         public total_ifo?: number,
         public total_mgo?: number,
@@ -174,5 +177,88 @@ export class GetROBByUser{
         this.total_bunkering_ifo = total_bunkering_ifo || 0;
         this.total_bunkering_mgo = total_bunkering_mgo || 0;
     }
-    
+
+}
+
+export class InfoFuelStartEndForDate {
+
+    constructor(
+        public infoFuelStart?: GetROBByUser,
+        public infoFuelEnd?: GetROBByUser
+    ) {
+        this.infoFuelStart = infoFuelStart || new GetROBByUser();
+        this.infoFuelEnd = infoFuelEnd || new GetROBByUser();
+    }
+}
+
+
+
+// Info de consumo de viaje y bunkering.
+export class GetInfoVoyageROBBunkering {
+
+    voyageId: number;
+    voyageNumber: number;
+    minDate: Date;
+    maxDate: Date;
+    totalIFO: number;
+    totalMGO: number;
+    listInfoBunkering: GetInfoBunkering[]
+
+
+    constructor(
+
+        voyageId?: number,
+        voyageNumber?: number,
+        minDate?: Date,
+        maxDate?: Date,
+        totalIFO?: number,
+        totalMGO?: number,
+        listInfoBunkering?: GetInfoBunkering[]
+
+    ) {
+
+        this.voyageId = voyageId || 0;
+        this.voyageNumber = voyageNumber || 0;
+        this.minDate = minDate || null;
+        this.maxDate = maxDate || null;
+        this.totalIFO = totalIFO || 0;
+        this.totalMGO = totalMGO || 0;
+        this.listInfoBunkering = listInfoBunkering || [];
+
+    }
+
+}
+
+
+// datos de bunkering
+export class GetInfoBunkering {
+
+    portId: number;
+    portNumber: number;
+    portDeparture: string;
+    daily_reportId: number;
+    dailyReportDate: Date;
+    bunkeringIfo: number;
+    bunkeringMgo: number;
+    observation: string;
+
+    constructor(
+        portId?: number,
+        portNumber?: number,
+        portDeparture?: string,
+        daily_reportId?: number,
+        dailyReportDate?: Date,
+        bunkeringIfo?: number,
+        bunkeringMgo?: number,
+        observation?: string,
+    ) {
+        this.portId = portId || 0;
+        this.portNumber = portNumber || 0;
+        this.portDeparture = portDeparture || '';
+        this.daily_reportId = daily_reportId || 0;
+        this.dailyReportDate = dailyReportDate || null;
+        this.bunkeringIfo = bunkeringIfo || 0;
+        this.bunkeringMgo = bunkeringMgo || 0;
+        this.observation = observation || '';
+    }
 }

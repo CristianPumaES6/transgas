@@ -284,6 +284,9 @@ export const voyage: any = {
     STEAMING_TIME: 'Steaming time',
     TIME_OPERATION: 'Time operation',
     LAST_RECORDED_HOUR: 'Last recorded hour',
+    SPEED_STRACTION: 'Speed Straction',
+    ECO_SPEED: 'Eco',
+    FULL_SPEED: 'Full',
     DISTANCE: 'Distance',
     BEFOURT: 'Befourt',
     OBSERVATIONS: 'Observations',
@@ -376,7 +379,7 @@ export const dashboard: any = {
     REAL_TOTAL_CONSUMPTION: 'TOTAL CONSUMPTION (MT)',
     HOURS_NAVIGATED_BY_CONTRACT: 'DAILY CONSUMPTION (MT)',
     DAILY_CONSUMPTION_CHARTER: 'DAILY CONSUMPTION (MT) (CHARTER)',
-    TIME_PER_NAVIGATION_CHARTER: 'TIME PER NAVIGATION (HRS) (CHARTER)',
+    TIME_PER_NAVIGATION_CHARTER: 'SAILING TIME (HRS) (CHARTER)',
     TOTAL_CONSUMPTION_BY_CONTRACT: 'TOTAL CONSUMPTION (MT) (CHARTER)',
     FUEL_BALANCE: 'BALANCE CONSUMPTION (MT)',
     BALANCE_HOURS_SAILED: 'BALANCE TIME (HRS)',
@@ -391,9 +394,9 @@ export const dashboard: any = {
     TOOLTIP_REAL_DAILY_CONSUMPTION: 'Daily consumption\n( (TOTAL CONSUMPTION (MT) x 24)/TOTAL TIME PER ACTIVITY (HRS) ) ',
     TOOLTIP_DAILY_CONSUMPTION_CHARTER: 'Daily consumption per contract.',
     TOOLTIP_TIME_PER_NAVIGATION_CHARTER: 'Navigation time calculated at the speed of the contract.\n( TOTAL DISTANCE (MILES) / AVERAGE SPEED (MILES/HRS) (CHARTER) )',
-    TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT: 'Navigation consumption calculated with the contract data.\n( DAILY CONSUMPTION (MT) (CHARTER) x ( TIME PER NAVIGATION (HRS) (CHARTER) or TOTAL TIME PER ACTIVITY (HRS) ) /  24 )',
+    TOOLTIP_TOTAL_CONSUMPTION_BY_CONTRACT: 'Navigation consumption calculated with the contract data.\n( DAILY CONSUMPTION (MT) (CHARTER) x ( SAILING TIME (HRS) (CHARTER) or TOTAL TIME PER ACTIVITY (HRS) ) /  24 )',
     TOOLTIP_FUEL_BALANCE: 'Consumption balance.\n( TOTAL CONSUMPTION (MT) - TOTAL CONSUMPTION (MT) (CHARTER))',
-    TOOLTIP_BALANCE_HOURS_SAILED: 'Navigation time balance.\n( TOTAL TIME PER ACTIVITY (HRS) - TIME PER NAVIGATION (HRS) (CHARTER) )',
+    TOOLTIP_BALANCE_HOURS_SAILED: 'Navigation time balance.\n( TOTAL TIME PER ACTIVITY (HRS) - SAILING TIME (HRS) (CHARTER) )',
     TOOLTIP_EQUIPMENT: 'Equipment.',
     TOOLTIP_TOTAL_CONSUMPTION_BY_FILTER: 'Total equipment consumption.',
     TOOLTIP_REAL_DAILY_CONSUMPTION_EQUIPMENT: 'Daily consumption.\n TOTAL CONSUMPTION (MT) * 24 / EQUIPMENT USE TIME',
@@ -422,7 +425,9 @@ export const dashboard: any = {
     TOOLTIP_BUNKERING_IFO: 'Total bunkering.',
     TOOLTIP_BUNKERING_MGO: 'Total bunkering.',
     TOOLTIP_ROB_IFO: 'ROB',
-    TOOLTIP_ROB_MGO: 'ROB'
+    TOOLTIP_ROB_MGO: 'ROB',
+    ECO_SPEED: 'Eco',
+    FULL_SPEED: 'Full'
 }
 
 export const dialog: any = {
@@ -479,9 +484,26 @@ export const dialog: any = {
     VOYAGE_SUMMARY: 'Voyage Summary (Speed, Consumption)',
     VOYAGE_SUMMARY_CONSUMPTION: 'Voyage Summary (Consumption)',
     CHART_VOYAGE_SUMMARY: 'Chart Voyage Summary',
-    BUNKERING_INFORMATION: 'Bunkering Information'
+    BUNKERING_INFORMATION: 'Bunkering Information',
+    ECO_SPEED: 'Eco',
+    FULL_SPEED: 'Full',
+    DOWNLOAD: 'DOWNLOADING'
 }
 
 export const guards: any = {
 
+}
+
+export const exportExcel: any = {
+    LOADING: 'LOADING',
+    DOWNLOADING: 'DISCHARGE',
+    SAILING_IN_BALLAST: 'S. BALLAST',
+    SAILING_WITH_LADEN: 'S. LADEN',
+    ECONOMICAL_NAVIGATION: 'ECONOMICAL',
+    ANCHORED: 'ANCHORED',
+    MANEUVER: 'MANEUVER',
+    OTHER_ACT: 'OTHER ACT.',
+
+    FULL_SPEED:'FULL',
+    ECO_SPEED:'ECO',
 }

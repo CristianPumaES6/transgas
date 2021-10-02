@@ -15,19 +15,19 @@ export interface EnvConfig {
 };
 */
 
-/* 
-export const EnvConfig: EnvConfig = {
+
+/* export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
-    VERSION: 'v1.9e',
+    VERSION: 'v1.9h',
     SOCKET: 'https://socket-transgas.codev.site'
-};
- */
+}; */
+ 
 
 
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
-    VERSION: 'v1.9e',
+    VERSION: 'v1.9h',
     SOCKET:'ws://localhost:4000'
 };

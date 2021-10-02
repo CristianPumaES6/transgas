@@ -55,6 +55,7 @@ export class ImportVoyage {
     hour: string;
     steamingTime: number;
     activityPerformed: string;
+    speedStraction:number;
     observation: string;
     distance?: any;
     TIEMPO_DE_NAVEGACION?: any;
@@ -64,6 +65,7 @@ export class ImportVoyage {
     mplaIfo: number;
     auxIfo: number;
     boilerIfo: number;
+    otherIfo:number;
     TOTAL: number[];
     bunkeringIfo: number;
     ROB: number[];
@@ -72,5 +74,6 @@ export class ImportVoyage {
     boilerMgo: number;
     ppMgo: number;
     giMgo: number;
+    otherMgo:number;
     bunkeringMgo?: any;
 }

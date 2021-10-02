@@ -3,6 +3,7 @@ import * as momentTimezone from 'moment-timezone';
 
 moment.locale();
 momentTimezone().tz("America/Los_Angeles").format();
+//momentTimezone().tz("Africa/Abidjan").format();
 
 // AL ser una class lo tengo que poner en el constructor para que pueda ser utilizado.
 export function GetDate(): any {
@@ -13,9 +14,9 @@ export function GetDate(): any {
 
 
 // Convierte el formato de fecha.
-export function ConvertDDMMYYYToYYYYMMDD(dateDDMMYYY: any): Date {
+export function ConvertMMDDYYYToYYYYMMDD(dateMMDDYYY: any): Date {
 
-    let date = moment(dateDDMMYYY, "MM/DD/YYYY");
+    let date = moment(dateMMDDYYY, "MM/DD/YYYY");
 
     return new Date(date.format("YYYY/MM/DD"));
 

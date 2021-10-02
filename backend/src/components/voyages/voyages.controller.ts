@@ -10,7 +10,7 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertDDMMYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
+import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport } from '../../models/daily-report.entity';
@@ -464,6 +464,7 @@ export class VoyagesController {
                     let newVoyage = new Voyage();
                     delete newVoyage.id;
                     newVoyage.userId = importVoyage.userId;
+                    newVoyage.voyageNumber = importVoyage.voyageNumber;
                     newVoyage.year = importVoyage.year;
                     // Auditoria.
                     newVoyage.userIdCreated = headerToken.id;
@@ -514,12 +515,9 @@ export class VoyagesController {
                     // Lo registramos
                     let portRegister = await this._portsService.Create(newPort);
                     MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
-
                 } else {
-
                     // Agregamos al mapping el id buscado por numero de viaje.
                     MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id))
-
                 }
 
             }
@@ -532,21 +530,33 @@ export class VoyagesController {
             newReport.userId = importVoyage.userId;
             newReport.portId = existePort.value;
 
-            newReport.date = ConvertDDMMYYYToYYYYMMDD(importVoyage.date)
-            newReport.hour = importVoyage.hour;
+            newReport.date = ConvertMMDDYYYToYYYYMMDD(importVoyage.date)
+
+            // Verificamos si existe una hora,
+            if (importVoyage.hour) {
+                // Verificamos el tamaño de la hora,
+                // Lo normal seria 03:00 esto seria un total de 5 caracteres
+                // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
+                if (importVoyage.hour.length === 4) {
+                    // concatenamos el 0 a la hora.
+                    newReport.hour = '0' + importVoyage.hour;
+                } else {
+                    newReport.hour = importVoyage.hour;
+                }
+            }
 
             newReport.bunkeringIfo = 0
             newReport.bunkeringMgo = 0;
             newReport.mplaIfo = importVoyage.mplaIfo || 0;
             newReport.auxIfo = importVoyage.auxIfo || 0;
             newReport.boilerIfo = importVoyage.boilerIfo || 0;
-            newReport.otherIfo = 0;
+            newReport.otherIfo = importVoyage.otherIfo || 0;
             newReport.mplaMgo = importVoyage.mplaMgo || 0;
             newReport.auxMgo = importVoyage.auxMgo || 0;
             newReport.boilerMgo = importVoyage.boilerMgo || 0;
             newReport.ppMgo = importVoyage.ppMgo || 0;
             newReport.giMgo = importVoyage.giMgo || 0;
-            newReport.otherMgo = 0;
+            newReport.otherMgo =  importVoyage.otherMgo || 0;
             newReport.steamingTime = importVoyage.steamingTime || 0;
             newReport.distance = importVoyage.distance || 0;
 
@@ -565,7 +575,7 @@ export class VoyagesController {
             } else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
                 newReport.beaufour = 'S6';
             } else {
-                newReport.beaufour = '';
+                newReport.beaufour = importVoyage.beaufour;
             }
 
             newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
@@ -598,6 +608,8 @@ export class VoyagesController {
             } else if (newReport.activityPerformed == 'OTRAS ACT.') {
                 newReport.activityPerformed = 'OTHER_ACT';
             }
+            // Tipo de velocidad.
+            newReport.speedStraction = importVoyage.speedStraction;
 
             // Auditoria.
             newReport.userIdCreated = headerToken.id;
