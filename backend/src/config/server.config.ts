@@ -6,16 +6,14 @@
 };
  */
 
-/* 
+/*  
 export const URL_Server = {
     front: 'https://transgas.web.app',
     back: 'https://transgas.codev.site',
-    version: 'v1.9h',
+    version: 'v1.9i',
     puertoSocket: 4000,
-};  */
-
-
-
+}; */
+ 
 
 export const URL_Server = {
     front: 'http://localhost:3001',
