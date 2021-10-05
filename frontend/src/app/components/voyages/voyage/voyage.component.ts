@@ -139,6 +139,7 @@ export class VoyageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('ngOnInit()');
 
     // Activamos el loading.
     this.loadingService.Open();
@@ -180,7 +181,6 @@ export class VoyageComponent implements OnInit {
 
     // Verifico si tenemos conexion al servidor.
     if (this.onlineOfflineService.GetStatusOnline()) {
-
 
       let user: User = new User();
 

@@ -126,14 +126,14 @@ export class DailyReportsController {
                 if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id
                     // Y speed estraction oslo debe existir si se tiene una actividad de navegacion, caso contrario deberia estar vacio.
                     && (
-                            ((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                        ((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                             && dailyReport.speedStraction)
-                            || 
-                            ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                        ||
+                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                             && !dailyReport.speedStraction)
-                        )
-                    ) {
-                    
+                    )
+                ) {
+
 
 
                     // Si eres un buque 
@@ -208,16 +208,16 @@ export class DailyReportsController {
 
 
                 // Validamos los datos del objeto a registar.
-                if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id  
-                       // Y speed estraction oslo debe existir si se tiene una actividad de navegacion, caso contrario deberia estar vacio.
-                        && (
-                            ((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id
+                    // Y speed estraction oslo debe existir si se tiene una actividad de navegacion, caso contrario deberia estar vacio.
+                    && (
+                        ((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                             && dailyReport.speedStraction)
-                            || 
-                            ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                        ||
+                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION')
                             && !dailyReport.speedStraction)
-                        )
-                    ) {
+                    )
+                ) {
 
                     if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
 
@@ -623,7 +623,7 @@ export class DailyReportsController {
             (resultValidate: Boolean) => {
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._dailyReportsService.GetReportVoyagePortDaily(userId,startDate, endDate);
+                return this._dailyReportsService.GetReportVoyagePortDaily(userId, startDate, endDate);
             }
         ).then(
             (results: GetReportVoyagePortDaily[]) => {
@@ -652,5 +652,5 @@ export class DailyReportsController {
     }
 
 
-    
+
 }
