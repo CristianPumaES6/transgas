@@ -67,18 +67,20 @@
                                             {{iArrModules.text}}
                                         </span>
                                         <ul>
-                                            <ng-template ngFor let-iList_option [ngForOf]="iArrModules.list_option" let-i="index">
+                                            <ng-template ngFor let-iList_option [ngForOf]="iArrModules.list_option"
+                                                let-i="index">
                                                 <li>{{iList_option}}</li>
                                             </ng-template>
                                         </ul>
-                                        <span href="{{iArrModules.href}}" class="text_href">{{iArrModules.text_ref}}</span>
+                                        <span href="{{iArrModules.href}}"
+                                            class="text_href">{{iArrModules.text_ref}}</span>
                                     </a>
 
                                 </div>
                             </div>
-                            
+
                         </ng-template>
-                       
+
                     </div>
 
                 </div>
@@ -89,6 +91,63 @@
 
     </div><!-- az-home-slider -->
 
+    <div #azUser class="az-content az-content-choose-demo azUser">
+        <div class="container">
+            <br>
+            <h1 class="title">{{onlineAndOffline.text}}</h1>
+            <br>
+
+            <div class="row">
+                <div class="col-sm-6 m-auto">
+                    <div class="card"> 
+                        <iframe class="img-fluid"
+                            src="https://www.youtube.com/embed/3LX2hoONksE"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; loop; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="col-sm-6 m-auto">
+                    <div class="card">
+                        <iframe class="img-fluid"
+                            src="https://www.youtube.com/embed/S8ep4-sUVag"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; loop; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>     
+            </div><!-- row -->
+        </div><!-- container-fluid -->
+    </div><!-- az-content -->
+
+    <div #azUser1 class="az-content az-content-choose-demo azDemo">
+        <div class="container">
+            <label class="title-label"> </label>
+            <h1 class="title">User Module</h1>
+            <p class="title-text">Module in charge of the registry of administrators, owner, vessel.</p>
+            <div class="row">
+                <div class="col-sm-6 m-auto">
+                    <div class="card"> 
+                        <iframe class="img-fluid"
+                            src="https://www.youtube.com/embed/J6xLM0S3-8I"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; loop; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="col-sm-6 m-auto">
+                    <div class="card">
+                        <iframe class="img-fluid"
+                            src="https://www.youtube.com/embed/YuE8PBxHxo0"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; loop; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>     
+            </div><!-- row -->
+       
+        </div><!-- container-fluid -->
+    </div><!-- az-content -->
     <div #azDemo class="az-content az-content-choose-demo azDemo">
         <div class="container">
             <label class="title-label">{{title_list_videos}}</label>
@@ -128,5 +187,4 @@
             </div><!-- row -->
         </div><!-- container-fluid -->
     </div><!-- az-content -->
-
 </div>
