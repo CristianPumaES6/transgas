@@ -129,7 +129,7 @@ export class DailyReportsController {
                         ((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                             && dailyReport.speedStraction)
                         ||
-                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION')
                             && !dailyReport.speedStraction)
                     )
                 ) {
