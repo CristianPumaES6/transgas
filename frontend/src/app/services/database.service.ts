@@ -848,8 +848,7 @@ export class DatabaseService {
 
             }
         ).then(
-            (results: DailyReport[]) => {
-
+            (results: DailyReport[]) => { 
                 return results[0];
 
             }
