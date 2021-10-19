@@ -1889,6 +1889,13 @@ export class VoyageComponent implements OnInit {
       error = true;
     }
 
+    if (newDailyReport.activityPerformed == 'SAILING_IN_BALLAST' || newDailyReport.activityPerformed == 'SAILING_WITH_LADEN' || newDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION') {
+
+      if (!newDailyReport.distance) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DISTANCE'));
+        error = true;
+      }
+    }
 
     if (error) throw 'OK';
 
@@ -2081,6 +2088,16 @@ export class VoyageComponent implements OnInit {
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR ACTIVITY'));
       error = true;
     }
+
+    if (dailyReportToSave.activityPerformed == 'SAILING_IN_BALLAST' || dailyReportToSave.activityPerformed == 'SAILING_WITH_LADEN' || dailyReportToSave.activityPerformed == 'ECONOMICAL_NAVIGATION') {
+
+      if (!dailyReportToSave.distance) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DISTANCE'));
+        error = true;
+      }
+    }
+
+    if (error) throw 'OK';
 
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
@@ -2422,7 +2439,7 @@ export class VoyageComponent implements OnInit {
             this.GenerateTimeOperation();
           }
         )
-      } 
+      }
 
 
       // actualizo el valor del InitializeSailingAnality.
@@ -2443,7 +2460,7 @@ export class VoyageComponent implements OnInit {
 
     let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
     let momendate = ConvertMMDDYYYYHHmmToMomment(this.lastRecordedHour);
- 
+
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
 
 
