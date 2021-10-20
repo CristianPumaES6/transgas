@@ -1627,7 +1627,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "ec5a35001f67d9f60fba8c47b07263a7968a8026c5b11151891d6e55e374d919",
+        "version": "f38bd18905a56799a3a4acb314eac15c56ba1ce8c9bd428dae538a52fd6f93fc",
         "signature": "763cd44130b781bae958d22ac07c6711029f8fac6cc718bd60e1bf6a056ec919",
         "affectsGlobalScope": false
       },
@@ -3277,7 +3277,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.controller.ts": {
-        "version": "16330ce564f12756c3d6462d065caff2261d51e50ecf4b241e080904e7bec9cb",
+        "version": "5783862f20e6178eb4d2ed4b21a4f31f54241b8325dd38743f57b8186fc8ae53",
         "signature": "4a1f1f907fd8a7d0a8831ba0fae067bcf7ab916fe6bfaa56ec583ce1d16e1b79",
         "affectsGlobalScope": false
       },

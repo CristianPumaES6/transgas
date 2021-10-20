@@ -87,7 +87,7 @@ let DailyReportsController = class DailyReportsController {
                 && (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                     && dailyReport.speedStraction)
                     ||
-                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION')
                             && !dailyReport.speedStraction))) {
                 if (headerToken.role === 'BUQUE') {
                     if (Number(headerToken.id) !== Number(dailyReport.userId))
@@ -141,7 +141,7 @@ let DailyReportsController = class DailyReportsController {
                 && (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                     && dailyReport.speedStraction)
                     ||
-                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
+                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION')
                             && !dailyReport.speedStraction))) {
                 if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
                 }
