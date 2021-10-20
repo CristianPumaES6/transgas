@@ -24,7 +24,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { ConvertMMDDYYYYHHmmToMomment, ConvertMoment, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMoment, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -426,6 +426,8 @@ export class VoyageComponent implements OnInit {
       dailyReports => {
         this.getDailyReports = dailyReports;
 
+
+        // AQui debe de restar la hora.
         this.Initialize();
 
         return true;
@@ -926,11 +928,16 @@ export class VoyageComponent implements OnInit {
 
 
     this.List_Voyages_Ports_DailyReports = 'DailyReports';
-    this.selectDailyReport = this.getDailyReports.find(report => Number(report.id) === Number(dailyReport.id));
+    let dailyReportFind = this.getDailyReports.find(report => Number(report.id) === Number(dailyReport.id));
 
 
     // Parseamos el obj para evirar cambios de valor de regerencia
-    this.selectDailyReport = JSON.parse(JSON.stringify(this.selectDailyReport));
+    this.selectDailyReport = JSON.parse(JSON.stringify(dailyReportFind));
+
+    // Le asignamos la hora lastRecort
+    let convertMomentUTC = ConvertMomentUTC(dailyReportFind.date);
+    let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime,'hours');
+    this.lastRecordedHour = FormatDateUTCToDateHour(restarStemintime)
 
     this.Initialize();
     this.disableEdit = false;
