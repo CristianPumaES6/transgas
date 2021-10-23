@@ -2580,7 +2580,7 @@ export class DashboardComponent implements OnInit {
                         }
                       );
 
-                      // Verificamos si se encontro un resultado ese mes.
+                      // Verificamos si se encontro un resultado ese dia.
                       if (!resultSearch) {
 
                         // todos los meses almenos tenfras un viaje
