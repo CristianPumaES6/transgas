@@ -2051,6 +2051,7 @@ export class DashboardComponent implements OnInit {
   // GenerateDataForChart(): genera data para los chart.
   // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
   private GenerateDataForChart(setDate: boolean) {
+    console.log('GenerateDataForChart(setDate: boolean)'+setDate)
     // Texto x de los reportes.
     this.xLabelReport = [];
 
@@ -2376,7 +2377,7 @@ export class DashboardComponent implements OnInit {
                         let newSpeed = new Speed();
                         let ySpeed = 0;
                         if (report.distance > 0) {
-                          newSpeed.add(newSpeed.distance, newSpeed.steamingTime);
+                          newSpeed.add(report.distance, report.steamingTime);
                           // Agregamos los datos de velocidad.
                           ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
                           if (ySpeed > this.configLineaSPEED.lineaMax) {
@@ -2450,15 +2451,14 @@ export class DashboardComponent implements OnInit {
 
                           // Verificamos si el dia ya se encuentra registrado.
                           if (FormatDate(day) === FormatDate(xDay)) {
-
+ 
                             // Obtenemos los datos de velocidad.
                             let speedI: Speed = this.dataSPEED[iL].speed;
-
                             // Si la distancia es mayor a 0
                             if (report.distance > 0) {
                               // Agregamos la distancia y velocidad.
                               speedI.add(report.distance, report.steamingTime);
-                              // Actualizamos el vlaor por la posicion.
+                              // Actualizamos el valor por la posicion.
                               let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
                               this.dataSPEED[iL].y = ySpeed;
                               // Linea maxima SPEED
@@ -2501,7 +2501,7 @@ export class DashboardComponent implements OnInit {
                               }
                             }
 
-
+                            
                             // ACTUALIZMAOS EL VALOR POR POSICION
                             // Actualizamos los datos de la velocidad
                             this.dataSPEED[iL].speed = speedI;
@@ -2579,10 +2579,10 @@ export class DashboardComponent implements OnInit {
                           return false;
                         }
                       );
-
-                      // Verificamos si se encontro un resultado ese dia.
+                      
+                        
                       if (!resultSearch) {
-
+                        
                         // todos los meses almenos tenfras un viaje
                         // asi que si o si lo agregams.
                         isAddNewVoyage = false;
@@ -2599,7 +2599,7 @@ export class DashboardComponent implements OnInit {
                         let newSpeed = new Speed();
                         let ySpeed = 0;
                         if (report.distance > 0) {
-                          newSpeed.add(newSpeed.distance, newSpeed.steamingTime);
+                          newSpeed.add(report.distance, report.steamingTime);
                           // Agregamos los datos de velocidad.
                           ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
                           if (ySpeed > this.configLineaSPEED.lineaMax) {
