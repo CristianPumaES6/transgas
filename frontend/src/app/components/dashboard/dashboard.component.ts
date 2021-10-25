@@ -599,27 +599,27 @@ export class DashboardComponent implements OnInit {
 
         // Invocamos nuestra funcion SelectUser.
         return this.SelectUser(this.selectUserId);
-      
+
       }).then(
         result => {
 
           // Verificamos que todo este OK.
           if (!result) throw 'ERROR_COMBO_BUQUE';
-         
-           
-        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
-        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
-        // Buscamos la info
-        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
-      }
-    ).then(
-      result => { 
-        // Cerramos el loading.
-         
-        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
 
-        this.loadingService.Close();
+          let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+          let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+          // Buscamos la info
+          return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        }
+      ).then(
+        result => {
+          // Cerramos el loading.
+
+          if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+          this.loadingService.Close();
         }
       ).catch(
         err => {
@@ -1222,7 +1222,7 @@ export class DashboardComponent implements OnInit {
 
 
         // Generatamos el report daily.
-        return this.OpenDialogExportExcel(this.selectUser,this.startDate,this.endDate);
+        return this.OpenDialogExportExcel(this.selectUser, this.startDate, this.endDate);
 
       }
     ).then(
@@ -2051,7 +2051,7 @@ export class DashboardComponent implements OnInit {
   // GenerateDataForChart(): genera data para los chart.
   // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
   private GenerateDataForChart(setDate: boolean) {
-    console.log('GenerateDataForChart(setDate: boolean)'+setDate)
+    console.log('GenerateDataForChart(setDate: boolean)' + setDate)
     // Texto x de los reportes.
     this.xLabelReport = [];
 
@@ -2451,7 +2451,7 @@ export class DashboardComponent implements OnInit {
 
                           // Verificamos si el dia ya se encuentra registrado.
                           if (FormatDate(day) === FormatDate(xDay)) {
- 
+
                             // Obtenemos los datos de velocidad.
                             let speedI: Speed = this.dataSPEED[iL].speed;
                             // Si la distancia es mayor a 0
@@ -2501,7 +2501,7 @@ export class DashboardComponent implements OnInit {
                               }
                             }
 
-                            
+
                             // ACTUALIZMAOS EL VALOR POR POSICION
                             // Actualizamos los datos de la velocidad
                             this.dataSPEED[iL].speed = speedI;
@@ -2579,10 +2579,10 @@ export class DashboardComponent implements OnInit {
                           return false;
                         }
                       );
-                      
-                        
+
+
                       if (!resultSearch) {
-                        
+
                         // todos los meses almenos tenfras un viaje
                         // asi que si o si lo agregams.
                         isAddNewVoyage = false;
@@ -3888,7 +3888,7 @@ export class DashboardComponent implements OnInit {
             let beaufour = '';
 
             dataExtra.forEach((report: DailyReport) => {
-              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed)+(report.speedStraction?'/'+this.languageService.GetMessage(this.translateCategory, report.speedStraction):'');
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed) + (report.speedStraction ? '/' + this.languageService.GetMessage(this.translateCategory, report.speedStraction) : '');
               observations = observations + ', ' + report.observation;
               speed.add(report.distance, report.steamingTime);
               totalReport = totalReport + 1;
@@ -4258,11 +4258,11 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  private OpenDialogExportExcel(selectUser: User, startDate:Date, endDate:Date):boolean {
+  private OpenDialogExportExcel(selectUser: User, startDate: Date, endDate: Date): boolean {
 
-        // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
-        let mommentStartDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
-        let mommentEndDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+    // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+    let mommentStartDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+    let mommentEndDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
 
 
     let dialogReport: IDialogExportExcel = {
@@ -4285,8 +4285,8 @@ export class DashboardComponent implements OnInit {
           // alert('OKK');
         }
       });
-    
-      return true;
+
+    return true;
 
   }
 
