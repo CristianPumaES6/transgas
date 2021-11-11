@@ -1,5 +1,4 @@
-<div class="card card-body background-cuadro p-2">
-
+<div class="card card-body background-cuadro p-2"> 
     <div class="container mt-2">
 
         <ng-template ngFor let-iListInfoFuel [ngForOf]="listInfoFuel" let-i="index">
@@ -8,7 +7,7 @@
                 <div class="card-title tx-14 mb-1 color-blue-3">ROB</div>
 
                 <h1 class="card-title pricing-card-title color-blue-3">
-                    {{iListInfoFuel.rob}}<span style="font-size: 8pt;">mt</span>
+                    {{ MathRoundOneDecimal(iListInfoFuel.rob,cantDecimal) }}<span style="font-size: 8pt;">mt</span>
                     <small class="text-muted"> / {{iListInfoFuel.typeFuel}}</small>
                 </h1>
 
@@ -17,16 +16,16 @@
                     <ul class="list-unstyled mt-3 mb-4">
                         <li class="color-blue-3 font-weight-bold">By Filter:</li>
                         <li class="color-blue-3">
-                            {{iListInfoFuel.startRob}}mt {{iListInfoFuel.startDate}}
+                            {{ MathRoundOneDecimal(iListInfoFuel.startRob,cantDecimal) }}mt {{iListInfoFuel.startDate}}
                         </li>
                         <li class="color-blue-3">
-                            {{iListInfoFuel.comsumption}}mt consumption
+                            {{ MathRoundOneDecimal(iListInfoFuel.comsumption,cantDecimal) }}mt consumption
                         </li>
                         <li class="color-blue-3">
-                            {{iListInfoFuel.bunkering}}mt bunkering
+                            {{ MathRoundOneDecimal(iListInfoFuel.bunkering,cantDecimal) }}mt bunkering
                         </li>
                         <li class="color-blue-3">
-                            {{iListInfoFuel.endRob}}mt {{iListInfoFuel.endDate}}
+                            {{ MathRoundOneDecimal(iListInfoFuel.endRob,cantDecimal) }}mt {{iListInfoFuel.endDate}}
                         </li>
                     </ul>
                 </ng-template>
