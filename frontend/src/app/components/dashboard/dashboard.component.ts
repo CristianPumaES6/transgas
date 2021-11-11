@@ -145,6 +145,7 @@ export class DashboardComponent implements OnInit {
   public chartLineSPEED: Chart; // LINEA
   public dataSPEED: Chart.ChartPoint[] = []; // Data
 
+  public cantDecimal: number = 3;
 
   // Consumo IFO POR ACTIVIDAD
   public totalTimePerActivityIFO: ActivityPerformed = new ActivityPerformed();
@@ -464,26 +465,26 @@ export class DashboardComponent implements OnInit {
 
         // IFO
         let fuelIfo: DashboardBunkering = new DashboardBunkering();
-        fuelIfo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_ifo - this.getROBByUser.total_ifo, 2);
+        fuelIfo.rob = this.getROBByUser.total_bunkering_ifo - this.getROBByUser.total_ifo;
         fuelIfo.typeFuel = this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'VLSFO';
-        fuelIfo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_ifo - startDataROB.total_ifo, 2);
+        fuelIfo.startRob = startDataROB.total_bunkering_ifo - startDataROB.total_ifo;
         fuelIfo.startDate = FormatDateUTCToDateHour(this.startDate)
         // Revisar por que aqui se esta usando la variable que se recorre
-        fuelIfo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoConsumption, 2);
-        fuelIfo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.ifoBunkering, 2);
+        fuelIfo.comsumption = this.consumptionAndBunkering.ifoConsumption;
+        fuelIfo.bunkering = this.consumptionAndBunkering.ifoBunkering;
 
-        fuelIfo.endRob = this.MathRoundOneDecimal(fuelIfo.startRob + (consumptionDataROB.total_bunkering_ifo - consumptionDataROB.total_ifo), 2);
+        fuelIfo.endRob = fuelIfo.startRob + (consumptionDataROB.total_bunkering_ifo - consumptionDataROB.total_ifo);
         fuelIfo.endDate = FormatDateUTCToDateHour(this.endDate);
 
         // MGO
         let fuelMgo: DashboardBunkering = new DashboardBunkering();
-        fuelMgo.rob = this.MathRoundOneDecimal(this.getROBByUser.total_bunkering_mgo - this.getROBByUser.total_mgo, 2);
+        fuelMgo.rob = this.getROBByUser.total_bunkering_mgo - this.getROBByUser.total_mgo;
         fuelMgo.typeFuel = 'MGO';
-        fuelMgo.startRob = this.MathRoundOneDecimal(startDataROB.total_bunkering_mgo - startDataROB.total_mgo, 2);
+        fuelMgo.startRob = startDataROB.total_bunkering_mgo - startDataROB.total_mgo;
         fuelMgo.startDate = FormatDateUTCToDateHour(this.startDate);
-        fuelMgo.comsumption = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoConsumption, 2);
-        fuelMgo.bunkering = this.MathRoundOneDecimal(this.consumptionAndBunkering.mgoBunkering, 2);
-        fuelMgo.endRob = this.MathRoundOneDecimal(fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo), 2);
+        fuelMgo.comsumption = this.consumptionAndBunkering.mgoConsumption;
+        fuelMgo.bunkering = this.consumptionAndBunkering.mgoBunkering;
+        fuelMgo.endRob = fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo);
         fuelMgo.endDate = FormatDateUTCToDateHour(this.endDate);
 
         if (this.selectUser.isConsumptionVLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO) {
@@ -4122,7 +4123,7 @@ export class DashboardComponent implements OnInit {
 
     if (!valor) { return 0; }
 
-    let result = mathRound(valor, 2)
+    let result = mathRound(valor, cantDecimales)
 
     return result;
   }

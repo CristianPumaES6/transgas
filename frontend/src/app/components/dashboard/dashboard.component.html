@@ -234,20 +234,20 @@
                     <tr>
                       <th class="p-1 color-title-table border">M.E</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.mpal,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.mpal,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                       'color-max': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && consumptionDaysByContractMGO.mpal < consumptionDaysRealMGO.mpal),
                       'color-min': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && consumptionDaysByContractMGO.mpal > consumptionDaysRealMGO.mpal)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealMGO.mpal,2)}}
+                        {{MathRoundOneDecimal(consumptionDaysRealMGO.mpal,cantDecimal)}}
                       </td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.mpal,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.mpal,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="
                       {
-                      'color-max': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) > 0),
-                      'color-min': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2) < 0 )}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,2)}}</td>
+                      'color-max': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,cantDecimal) > 0),
+                      'color-min': (consumptionDaysByContractMGO.mpal!==0 && consumptionDaysRealMGO.mpal != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,cantDecimal) < 0 )}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.mpal,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -255,19 +255,19 @@
                     <tr>
                       <th class="p-1 color-title-table border">A.E</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.aux,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.aux,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                         'color-max': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && consumptionDaysByContractMGO.aux < consumptionDaysRealMGO.aux),
                         'color-min': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && consumptionDaysByContractMGO.aux > consumptionDaysRealMGO.aux)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealMGO.aux,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.aux,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealMGO.aux,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.aux,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="
                         {
-                        'color-max': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) > 0),
-                        'color-min': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,2)}}</td>
+                        'color-max': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,cantDecimal) > 0),
+                        'color-min': (consumptionDaysByContractMGO.aux !==0 && consumptionDaysRealMGO.aux != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.aux,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -275,19 +275,19 @@
                     <tr>
                       <th class="p-1 color-title-table border">Boiler</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.boiler,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.boiler,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                         'color-max': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && consumptionDaysByContractMGO.boiler < consumptionDaysRealMGO.boiler),
                         'color-min': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && consumptionDaysByContractMGO.boiler > consumptionDaysRealMGO.boiler)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealMGO.boiler,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.boiler,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealMGO.boiler,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.boiler,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="
                         {
-                          'color-max': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) > 0),
-                          'color-min': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,2)}}</td>
+                          'color-max': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,cantDecimal) > 0),
+                          'color-min': (consumptionDaysByContractMGO.boiler !==0 && consumptionDaysRealMGO.boiler != 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.boiler,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -295,19 +295,19 @@
                     <tr>
                       <th class="p-1 color-title-table border">I.G</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.gi,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.gi,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                         'color-max': (consumptionDaysRealMGO.gi !==0 && consumptionDaysByContractMGO.gi !== 0 && consumptionDaysByContractMGO.gi < consumptionDaysRealMGO.gi),
                         'color-min': (consumptionDaysRealMGO.gi !==0 && consumptionDaysByContractMGO.gi !== 0 && consumptionDaysByContractMGO.gi > consumptionDaysRealMGO.gi)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealMGO.gi,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.gi,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealMGO.gi,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.gi,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="
                       {
-                      'color-max': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) > 0),
-                      'color-min': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,2)}}</td>
+                      'color-max': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,cantDecimal) > 0),
+                      'color-min': (consumptionDaysRealMGO.gi != 0  && consumptionDaysByContractMGO.gi !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.gi,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -315,19 +315,19 @@
                     <tr>
                       <th class="p-1 color-title-table border">POWER P</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.pp,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.pp,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                         'color-max': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !== 0 && consumptionDaysByContractMGO.pp < consumptionDaysRealMGO.pp),
                         'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !== 0 && consumptionDaysByContractMGO.pp > consumptionDaysRealMGO.pp)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealMGO.pp,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.pp,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealMGO.pp,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.pp,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="
                         {
-                          'color-max': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) > 0),
-                          'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,2)}}
+                          'color-max': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,cantDecimal) > 0),
+                          'color-min': (consumptionDaysRealMGO.pp != 0 && consumptionDaysByContractMGO.pp !==0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.pp,cantDecimal)}}
                       </td>
                     </tr>
                   </ng-template>
@@ -336,19 +336,19 @@
                     <tr>
                       <th class="p-1 color-title-table border">OTHER</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.other,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalMGO.other,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                         'color-max': (consumptionDaysByContractMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && consumptionDaysByContractMGO.other < consumptionDaysRealMGO.other),
                         'color-min': (consumptionDaysByContractMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && consumptionDaysByContractMGO.other > consumptionDaysRealMGO.other)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealMGO.other,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.other,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealMGO.other,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractMGO.other,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="
                         {
-                          'color-max': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) > 0),
-                          'color-min': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.other,2)}}</td>
+                          'color-max': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,cantDecimal) > 0),
+                          'color-min': (consumptionDaysRealMGO.other != 0 && consumptionDaysByContractMGO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceMGO.other,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceMGO.other,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -360,13 +360,13 @@
                       {{MathRoundOneDecimal(
                       consumptionTotalMGO.mpal +consumptionTotalMGO.aux+ consumptionTotalMGO.boiler+
                       consumptionTotalMGO.pp + consumptionTotalMGO.gi + consumptionTotalMGO.other
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
                       consumptionDaysRealMGO.mpal +consumptionDaysRealMGO.aux+ consumptionDaysRealMGO.boiler+
                       consumptionDaysRealMGO.pp + consumptionDaysRealMGO.gi + consumptionDaysRealMGO.other
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1"></th>
                     <th class="p-1"></th>
@@ -438,18 +438,18 @@
                     <tr>
                       <th class="p-1 color-title-table border">M.E</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.mpal,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.mpal,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                         'color-max': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0  && consumptionDaysByContractIFO.mpal < consumptionDaysRealIFO.mpal),
                         'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && consumptionDaysByContractIFO.mpal > consumptionDaysRealIFO.mpal)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealIFO.mpal,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.mpal,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealIFO.mpal,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.mpal,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
-                        'color-max': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) > 0),
-                        'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,2)}}</td>
+                        'color-max': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,cantDecimal) > 0),
+                        'color-min': (consumptionDaysRealIFO.mpal != 0 && consumptionDaysByContractIFO.mpal !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.mpal,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -458,18 +458,18 @@
                     <tr>
                       <th class="p-1 color-title-table border">A.E</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.aux,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.aux,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                       'color-max': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && consumptionDaysByContractIFO.aux < consumptionDaysRealIFO.aux),
                       'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && consumptionDaysByContractIFO.aux > consumptionDaysRealIFO.aux)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealIFO.aux,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.aux,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealIFO.aux,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.aux,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
-                        'color-max': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) > 0),
-                        'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,2)}}</td>
+                        'color-max': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,cantDecimal) > 0),
+                        'color-min': (consumptionDaysRealIFO.aux != 0 && consumptionDaysByContractIFO.aux !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.aux,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -477,18 +477,18 @@
                     <tr>
                       <th class="p-1 color-title-table border">Boiler</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.boiler,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.boiler,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                       'color-max': (consumptionDaysRealIFO.boiler != 0  && consumptionDaysByContractIFO.boiler !== 0 && consumptionDaysByContractIFO.boiler < consumptionDaysRealIFO.boiler),
                       'color-min': (consumptionDaysRealIFO.boiler != 0  && consumptionDaysByContractIFO.boiler !== 0 && consumptionDaysByContractIFO.boiler > consumptionDaysRealIFO.boiler)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealIFO.boiler,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.boiler,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealIFO.boiler,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.boiler,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
-                        'color-max': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) > 0),
-                        'color-min': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,2)}}</td>
+                        'color-max': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,cantDecimal) > 0),
+                        'color-min': (consumptionDaysRealIFO.boiler != 0 && consumptionDaysByContractIFO.boiler !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.boiler,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
 
@@ -496,18 +496,18 @@
                     <tr>
                       <th class="p-1 color-title-table border">OTHER</th>
 
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.other,2)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionTotalIFO.other,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
                       'color-max': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && consumptionDaysByContractIFO.other < consumptionDaysRealIFO.other),
                       'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && consumptionDaysByContractIFO.other > consumptionDaysRealIFO.other)}">
-                        {{MathRoundOneDecimal(consumptionDaysRealIFO.other,2)}}</td>
-                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.other,2)}}</td>
+                        {{MathRoundOneDecimal(consumptionDaysRealIFO.other,cantDecimal)}}</td>
+                      <td class="p-1 border">{{MathRoundOneDecimal(consumptionDaysByContractIFO.other,cantDecimal)}}</td>
                       <td class="p-1 border"
                         [ngClass]="{
-                        'color-max': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) > 0),
-                        'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2) < 0)}">
-                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.other,2)}}</td>
+                        'color-max': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,cantDecimal) > 0),
+                        'color-min': (consumptionDaysRealIFO.other != 0 && consumptionDaysByContractIFO.other !== 0 && MathRoundOneDecimal(consumptionDailyBalanceIFO.other,cantDecimal) < 0)}">
+                        {{MathRoundOneDecimal(consumptionDailyBalanceIFO.other,cantDecimal)}}</td>
                     </tr>
                   </ng-template>
                 </tbody>
@@ -518,13 +518,13 @@
                       {{MathRoundOneDecimal(
                       consumptionTotalIFO.mpal +consumptionTotalIFO.aux+ consumptionTotalIFO.boiler+
                       consumptionTotalIFO.other
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
                       consumptionDaysRealIFO.mpal +consumptionDaysRealIFO.aux+ consumptionDaysRealIFO.boiler+
                       consumptionDaysRealIFO.other
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1"></th>
                     <th class="p-1"></th>
@@ -538,7 +538,7 @@
 
         <div id="PintureROB"
           [className]="!selectUser.isDisplayDataLSFO ? 'd-none' : 'col-12 col-lg-6 pt-0 pl-0 pr-0 pb-2 pr-ms-0 pr-md-2 pr-lg-2' ">
-          <app-dashboard-bunkering [listInfoFuel]="listInfoFuel"></app-dashboard-bunkering>
+          <app-dashboard-bunkering [listInfoFuel]="listInfoFuel" [cantDecimal]="cantDecimal"></app-dashboard-bunkering>
         </div><!-- col-3 -->
 
 
@@ -801,75 +801,75 @@
                 <tbody>
                   <tr>
                     <th class="p-1 color-title-table border">{{'LOADING' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.loading,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.loading,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.loading,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.loading,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.loading,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': voyageConsumptionByActivityPerformedIFO.loading != 0 && voyageConsumptionCharterByActivityPerformedIFO.loading != 0  && voyageConsumptionByActivityPerformedIFO.loading > voyageConsumptionCharterByActivityPerformedIFO.loading,
                       'color-min':  voyageConsumptionByActivityPerformedIFO.loading != 0 && voyageConsumptionCharterByActivityPerformedIFO.loading != 0  && voyageConsumptionByActivityPerformedIFO.loading < voyageConsumptionCharterByActivityPerformedIFO.loading }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.loading,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedIFO.loading != 0 && dayliConsumptionCharterByActivityPerformedIFO.loading != 0  && dayliConsumptionByActivityPerformedIFO.loading > dayliConsumptionCharterByActivityPerformedIFO.loading,
                       'color-min':  dayliConsumptionByActivityPerformedIFO.loading != 0 && dayliConsumptionCharterByActivityPerformedIFO.loading != 0  && dayliConsumptionByActivityPerformedIFO.loading < dayliConsumptionCharterByActivityPerformedIFO.loading }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.loading,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.loading,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.loading,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.loading,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.loading,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceConsumptionByActivityPerformedIFO.loading > 0),
                         'color-min':  (balanceConsumptionByActivityPerformedIFO.loading < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.loading,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'DOWNLOADING' | translateMessage:translateCategory}}
                     </th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.discharge,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.discharge,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.discharge,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.discharge,2)}}
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.discharge,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': voyageConsumptionByActivityPerformedIFO.discharge != 0 && voyageConsumptionCharterByActivityPerformedIFO.discharge != 0  && voyageConsumptionByActivityPerformedIFO.discharge > voyageConsumptionCharterByActivityPerformedIFO.discharge,
                       'color-min':  voyageConsumptionByActivityPerformedIFO.discharge != 0 && voyageConsumptionCharterByActivityPerformedIFO.discharge != 0  && voyageConsumptionByActivityPerformedIFO.discharge < voyageConsumptionCharterByActivityPerformedIFO.discharge }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.discharge,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': dayliConsumptionByActivityPerformedIFO.discharge != 0 && dayliConsumptionCharterByActivityPerformedIFO.discharge != 0  && dayliConsumptionByActivityPerformedIFO.discharge > dayliConsumptionCharterByActivityPerformedIFO.discharge,
                     'color-min':  dayliConsumptionByActivityPerformedIFO.discharge != 0 && dayliConsumptionCharterByActivityPerformedIFO.discharge != 0  && dayliConsumptionByActivityPerformedIFO.discharge < dayliConsumptionCharterByActivityPerformedIFO.discharge }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.discharge,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.discharge,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.discharge,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.discharge,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceConsumptionByActivityPerformedIFO.discharge > 0),
                         'color-min':  (balanceConsumptionByActivityPerformedIFO.discharge < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.discharge,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
@@ -881,47 +881,47 @@
                       [ngClass]="{
                     'color-max': totalTimePerActivityIFO.ballast != 0 && timePerNavigationCharterByActivityPerformedIFO.ballast != 0  && totalTimePerActivityIFO.ballast > timePerNavigationCharterByActivityPerformedIFO.ballast,
                     'color-min':  totalTimePerActivityIFO.ballast != 0 && timePerNavigationCharterByActivityPerformedIFO.ballast != 0  && totalTimePerActivityIFO.ballast < timePerNavigationCharterByActivityPerformedIFO.ballast }">
-                      {{MathRoundOneDecimal(totalTimePerActivityIFO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(totalTimePerActivityIFO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.ballast,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': averageSpeedByActivityPerformedIFO.ballast != 0 && averageSpeedCharterByActivityPerformedIFO.ballast != 0  && averageSpeedByActivityPerformedIFO.ballast < averageSpeedCharterByActivityPerformedIFO.ballast,
                       'color-min': averageSpeedByActivityPerformedIFO.ballast != 0 && averageSpeedCharterByActivityPerformedIFO.ballast != 0  && averageSpeedByActivityPerformedIFO.ballast > averageSpeedCharterByActivityPerformedIFO.ballast }">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.ballast,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': voyageConsumptionByActivityPerformedIFO.ballast != 0 && voyageConsumptionCharterByActivityPerformedIFO.ballast != 0  && voyageConsumptionByActivityPerformedIFO.ballast > voyageConsumptionCharterByActivityPerformedIFO.ballast,
                       'color-min':  voyageConsumptionByActivityPerformedIFO.ballast != 0 && voyageConsumptionCharterByActivityPerformedIFO.ballast != 0  && voyageConsumptionByActivityPerformedIFO.ballast < voyageConsumptionCharterByActivityPerformedIFO.ballast }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.ballast,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': dayliConsumptionByActivityPerformedIFO.ballast != 0 && dayliConsumptionCharterByActivityPerformedIFO.ballast != 0  && dayliConsumptionByActivityPerformedIFO.ballast > dayliConsumptionCharterByActivityPerformedIFO.ballast,
                     'color-min':  dayliConsumptionByActivityPerformedIFO.ballast != 0 && dayliConsumptionCharterByActivityPerformedIFO.ballast != 0  && dayliConsumptionByActivityPerformedIFO.ballast < dayliConsumptionCharterByActivityPerformedIFO.ballast }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.ballast,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceConsumptionByActivityPerformedIFO.ballast > 0),
                         'color-min':  (balanceConsumptionByActivityPerformedIFO.ballast < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.ballast,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceTimeByActivityPerformedIFO.ballast > 0),
                         'color-min':  (balanceTimeByActivityPerformedIFO.ballast < 0)}">
-                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.ballast,cantDecimal)}}</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">
@@ -931,47 +931,47 @@
                       [ngClass]="{
                   'color-max': totalTimePerActivityIFO.laden != 0 && timePerNavigationCharterByActivityPerformedIFO.laden != 0  && totalTimePerActivityIFO.laden > timePerNavigationCharterByActivityPerformedIFO.laden,
                   'color-min':  totalTimePerActivityIFO.laden != 0 && timePerNavigationCharterByActivityPerformedIFO.laden != 0  && totalTimePerActivityIFO.laden < timePerNavigationCharterByActivityPerformedIFO.laden }">
-                      {{MathRoundOneDecimal(totalTimePerActivityIFO.laden,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.laden,2)}}
+                      {{MathRoundOneDecimal(totalTimePerActivityIFO.laden,cantDecimal)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': averageSpeedByActivityPerformedIFO.laden != 0 && averageSpeedCharterByActivityPerformedIFO.laden != 0  && averageSpeedByActivityPerformedIFO.laden < averageSpeedCharterByActivityPerformedIFO.laden,
                       'color-min':  averageSpeedByActivityPerformedIFO.laden != 0 && averageSpeedCharterByActivityPerformedIFO.laden != 0  && averageSpeedByActivityPerformedIFO.laden > averageSpeedCharterByActivityPerformedIFO.laden }">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.laden,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.laden,2)}}
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.laden,cantDecimal)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': voyageConsumptionByActivityPerformedIFO.laden != 0 && voyageConsumptionCharterByActivityPerformedIFO.laden != 0  && voyageConsumptionByActivityPerformedIFO.laden > voyageConsumptionCharterByActivityPerformedIFO.laden,
                     'color-min':  voyageConsumptionByActivityPerformedIFO.laden != 0 && voyageConsumptionCharterByActivityPerformedIFO.laden != 0  && voyageConsumptionByActivityPerformedIFO.laden < voyageConsumptionCharterByActivityPerformedIFO.laden }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.laden,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedIFO.laden != 0 && dayliConsumptionCharterByActivityPerformedIFO.laden != 0  && dayliConsumptionByActivityPerformedIFO.laden > dayliConsumptionCharterByActivityPerformedIFO.laden,
                       'color-min':  dayliConsumptionByActivityPerformedIFO.laden != 0 && dayliConsumptionCharterByActivityPerformedIFO.laden != 0  && dayliConsumptionByActivityPerformedIFO.laden < dayliConsumptionCharterByActivityPerformedIFO.laden }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.laden,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.laden,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.laden,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.laden,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.laden,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceConsumptionByActivityPerformedIFO.laden > 0),
                       'color-min':  (balanceConsumptionByActivityPerformedIFO.laden < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.laden,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceTimeByActivityPerformedIFO.laden > 0),
                       'color-min':  (balanceTimeByActivityPerformedIFO.laden < 0)}">
-                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.laden,2)}}</td>
+                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.laden,cantDecimal)}}</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">
@@ -981,157 +981,157 @@
                       [ngClass]="{
                         'color-max': totalTimePerActivityIFO.economical != 0 && timePerNavigationCharterByActivityPerformedIFO.economical != 0  && totalTimePerActivityIFO.economical > timePerNavigationCharterByActivityPerformedIFO.economical,
                         'color-min':  totalTimePerActivityIFO.economical != 0 && timePerNavigationCharterByActivityPerformedIFO.economical != 0  && totalTimePerActivityIFO.economical < timePerNavigationCharterByActivityPerformedIFO.economical }">
-                      {{MathRoundOneDecimal(totalTimePerActivityIFO.economical,2)}}</td>
+                      {{MathRoundOneDecimal(totalTimePerActivityIFO.economical,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': averageSpeedByActivityPerformedIFO.economical != 0 && averageSpeedCharterByActivityPerformedIFO.economical != 0 && averageSpeedByActivityPerformedIFO.economical < averageSpeedCharterByActivityPerformedIFO.economical,
                       'color-min':  averageSpeedByActivityPerformedIFO.economical != 0 && averageSpeedCharterByActivityPerformedIFO.economical != 0 && averageSpeedByActivityPerformedIFO.economical > averageSpeedCharterByActivityPerformedIFO.economical }">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.economical,2)}}</td>
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.economical,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': voyageConsumptionByActivityPerformedIFO.economical != 0 && voyageConsumptionCharterByActivityPerformedIFO.economical != 0  && voyageConsumptionByActivityPerformedIFO.economical > voyageConsumptionCharterByActivityPerformedIFO.economical,
                       'color-min':  voyageConsumptionByActivityPerformedIFO.economical != 0 && voyageConsumptionCharterByActivityPerformedIFO.economical != 0  && voyageConsumptionByActivityPerformedIFO.economical < voyageConsumptionCharterByActivityPerformedIFO.economical }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': dayliConsumptionByActivityPerformedIFO.economical != 0 && dayliConsumptionCharterByActivityPerformedIFO.economical != 0  && dayliConsumptionByActivityPerformedIFO.economical > dayliConsumptionCharterByActivityPerformedIFO.economical,
                     'color-min':  dayliConsumptionByActivityPerformedIFO.economical != 0 && dayliConsumptionCharterByActivityPerformedIFO.economical != 0  && dayliConsumptionByActivityPerformedIFO.economical < dayliConsumptionCharterByActivityPerformedIFO.economical }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.economical,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.economical,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceConsumptionByActivityPerformedIFO.economical > 0),
                       'color-min':  (balanceConsumptionByActivityPerformedIFO.economical < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceTimeByActivityPerformedIFO.economical > 0),
                       'color-min':  (balanceTimeByActivityPerformedIFO.economical < 0)}">
-                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.economical,2)}}
+                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedIFO.economical,cantDecimal)}}
                     </td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'ANCHORED' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.anchor,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.anchor,2)}}
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.anchor,cantDecimal)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.anchor,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.anchor,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.anchor,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.anchor,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': voyageConsumptionByActivityPerformedIFO.anchor != 0 && voyageConsumptionCharterByActivityPerformedIFO.anchor != 0  && voyageConsumptionByActivityPerformedIFO.anchor > voyageConsumptionCharterByActivityPerformedIFO.anchor,
                     'color-min':  voyageConsumptionByActivityPerformedIFO.anchor != 0 && voyageConsumptionCharterByActivityPerformedIFO.anchor != 0  && voyageConsumptionByActivityPerformedIFO.anchor < voyageConsumptionCharterByActivityPerformedIFO.anchor }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.anchor,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedIFO.anchor != 0 && dayliConsumptionCharterByActivityPerformedIFO.anchor != 0  && dayliConsumptionByActivityPerformedIFO.anchor > dayliConsumptionCharterByActivityPerformedIFO.anchor,
                       'color-min':  dayliConsumptionByActivityPerformedIFO.anchor != 0 && dayliConsumptionCharterByActivityPerformedIFO.anchor != 0  && dayliConsumptionByActivityPerformedIFO.anchor < dayliConsumptionCharterByActivityPerformedIFO.anchor }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.anchor,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.anchor,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.anchor,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.anchor,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.anchor,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.anchor,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceConsumptionByActivityPerformedIFO.anchor > 0),
                       'color-min':  (balanceConsumptionByActivityPerformedIFO.anchor < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.anchor,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'MANEUVER' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.maneuver,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.maneuver,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.maneuver,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.maneuver,2)}}
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.maneuver,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                   'color-max': voyageConsumptionByActivityPerformedIFO.maneuver != 0 && voyageConsumptionCharterByActivityPerformedIFO.maneuver != 0  && voyageConsumptionByActivityPerformedIFO.maneuver > voyageConsumptionCharterByActivityPerformedIFO.maneuver,
                   'color-min':  voyageConsumptionByActivityPerformedIFO.maneuver != 0 && voyageConsumptionCharterByActivityPerformedIFO.maneuver != 0  && voyageConsumptionByActivityPerformedIFO.maneuver < voyageConsumptionCharterByActivityPerformedIFO.maneuver }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.maneuver,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedIFO.maneuver != 0 && dayliConsumptionCharterByActivityPerformedIFO.maneuver != 0  && dayliConsumptionByActivityPerformedIFO.maneuver > dayliConsumptionCharterByActivityPerformedIFO.maneuver,
                       'color-min':  dayliConsumptionByActivityPerformedIFO.maneuver != 0 && dayliConsumptionCharterByActivityPerformedIFO.maneuver != 0  && dayliConsumptionByActivityPerformedIFO.maneuver < dayliConsumptionCharterByActivityPerformedIFO.maneuver }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.maneuver,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.maneuver,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.maneuver,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.maneuver,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.maneuver,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceConsumptionByActivityPerformedIFO.maneuver > 0),
                       'color-min':  (balanceConsumptionByActivityPerformedIFO.maneuver < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.maneuver,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'OTHER_ACT' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.otherActivity,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.otherActivity,2)}}
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedIFO.otherActivity,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                   'color-max': voyageConsumptionByActivityPerformedIFO.otherActivity != 0 && voyageConsumptionCharterByActivityPerformedIFO.otherActivity != 0  && voyageConsumptionByActivityPerformedIFO.otherActivity > voyageConsumptionCharterByActivityPerformedIFO.otherActivity,
                   'color-min':  voyageConsumptionByActivityPerformedIFO.otherActivity != 0 && voyageConsumptionCharterByActivityPerformedIFO.otherActivity != 0  && voyageConsumptionByActivityPerformedIFO.otherActivity < voyageConsumptionCharterByActivityPerformedIFO.otherActivity }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedIFO.otherActivity != 0 && dayliConsumptionCharterByActivityPerformedIFO.otherActivity != 0  && dayliConsumptionByActivityPerformedIFO.otherActivity > dayliConsumptionCharterByActivityPerformedIFO.otherActivity,
                       'color-min':  dayliConsumptionByActivityPerformedIFO.otherActivity != 0 && dayliConsumptionCharterByActivityPerformedIFO.otherActivity != 0  && dayliConsumptionByActivityPerformedIFO.otherActivity < dayliConsumptionCharterByActivityPerformedIFO.otherActivity }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceConsumptionByActivityPerformedIFO.otherActivity > 0),
                         'color-min':  (balanceConsumptionByActivityPerformedIFO.otherActivity < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedIFO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">0</td>
                   </tr>
                 </tbody>
@@ -1145,7 +1145,7 @@
                       totalTimePerActivityIFO.laden + totalTimePerActivityIFO.economical +
                       totalTimePerActivityIFO.anchor
                       + totalTimePerActivityIFO.maneuver + totalTimePerActivityIFO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
@@ -1156,7 +1156,7 @@
                       totalDistanceMilesByActivityPerformedIFO.anchor +
                       totalDistanceMilesByActivityPerformedIFO.maneuver
                       + totalDistanceMilesByActivityPerformedIFO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1"></th>
                     <th class="p-1"></th>
@@ -1169,7 +1169,7 @@
                       voyageConsumptionByActivityPerformedIFO.anchor
                       + voyageConsumptionByActivityPerformedIFO.maneuver +
                       voyageConsumptionByActivityPerformedIFO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1"></th>
                     <th class="p-1"></th>
@@ -1184,7 +1184,7 @@
                       voyageConsumptionCharterByActivityPerformedIFO.anchor +
                       voyageConsumptionCharterByActivityPerformedIFO.maneuver +
                       voyageConsumptionCharterByActivityPerformedIFO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
@@ -1196,7 +1196,7 @@
                       balanceConsumptionByActivityPerformedIFO.anchor +
                       balanceConsumptionByActivityPerformedIFO.maneuver
                       + balanceConsumptionByActivityPerformedIFO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <td class="p-1"></td>
                   </tr>
@@ -1318,75 +1318,75 @@
                 <tbody>
                   <tr>
                     <th class="p-1 color-title-table border">{{'LOADING' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.loading,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.loading,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.loading,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.loading,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.loading,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                 'color-max': voyageConsumptionByActivityPerformedMGO.loading != 0 && voyageConsumptionCharterByActivityPerformedMGO.loading != 0  && voyageConsumptionByActivityPerformedMGO.loading > voyageConsumptionCharterByActivityPerformedMGO.loading,
                 'color-min':  voyageConsumptionByActivityPerformedMGO.loading != 0 && voyageConsumptionCharterByActivityPerformedMGO.loading != 0  && voyageConsumptionByActivityPerformedMGO.loading < voyageConsumptionCharterByActivityPerformedMGO.loading }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.loading,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': dayliConsumptionByActivityPerformedMGO.loading != 0 && dayliConsumptionCharterByActivityPerformedMGO.loading != 0  && dayliConsumptionByActivityPerformedMGO.loading > dayliConsumptionCharterByActivityPerformedMGO.loading,
                     'color-min':  dayliConsumptionByActivityPerformedMGO.loading != 0 && dayliConsumptionCharterByActivityPerformedMGO.loading != 0  && dayliConsumptionByActivityPerformedMGO.loading < dayliConsumptionCharterByActivityPerformedMGO.loading }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.loading,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.loading,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.loading,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.loading,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.loading,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.loading,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceConsumptionByActivityPerformedMGO.loading > 0),
                         'color-min':  (balanceConsumptionByActivityPerformedMGO.loading < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.loading,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.loading,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'DOWNLOADING' | translateMessage:translateCategory}}
                     </th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.discharge,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.discharge,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.discharge,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.discharge,2)}}
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.discharge,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
               'color-max': voyageConsumptionByActivityPerformedMGO.discharge != 0 && voyageConsumptionCharterByActivityPerformedMGO.discharge != 0  && voyageConsumptionByActivityPerformedMGO.discharge > voyageConsumptionCharterByActivityPerformedMGO.discharge,
               'color-min':  voyageConsumptionByActivityPerformedMGO.discharge != 0 && voyageConsumptionCharterByActivityPerformedMGO.discharge != 0  && voyageConsumptionByActivityPerformedMGO.discharge < voyageConsumptionCharterByActivityPerformedMGO.discharge }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.discharge,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedMGO.discharge != 0 && dayliConsumptionCharterByActivityPerformedMGO.discharge != 0  && dayliConsumptionByActivityPerformedMGO.discharge > dayliConsumptionCharterByActivityPerformedMGO.discharge,
                       'color-min':  dayliConsumptionByActivityPerformedMGO.discharge != 0 && dayliConsumptionCharterByActivityPerformedMGO.discharge != 0  && dayliConsumptionByActivityPerformedMGO.discharge < dayliConsumptionCharterByActivityPerformedMGO.discharge }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.discharge,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.discharge,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.discharge,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.discharge,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.discharge,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceConsumptionByActivityPerformedMGO.discharge > 0),
                         'color-min':  (balanceConsumptionByActivityPerformedMGO.discharge < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.discharge,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.discharge,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
@@ -1398,256 +1398,256 @@
                       [ngClass]="{
                       'color-max': totalTimePerActivityMGO.ballast != 0 && timePerNavigationCharterByActivityPerformedMGO.ballast != 0  && totalTimePerActivityMGO.ballast > timePerNavigationCharterByActivityPerformedMGO.ballast,
                       'color-min':  totalTimePerActivityMGO.ballast != 0 && timePerNavigationCharterByActivityPerformedMGO.ballast != 0  && totalTimePerActivityMGO.ballast < timePerNavigationCharterByActivityPerformedMGO.ballast }">
-                      {{MathRoundOneDecimal(totalTimePerActivityMGO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(totalTimePerActivityMGO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.ballast,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': averageSpeedByActivityPerformedMGO.ballast != 0 && averageSpeedCharterByActivityPerformedMGO.ballast != 0  && averageSpeedByActivityPerformedMGO.ballast < averageSpeedCharterByActivityPerformedMGO.ballast,
                       'color-min': averageSpeedByActivityPerformedMGO.ballast != 0 && averageSpeedCharterByActivityPerformedMGO.ballast != 0  && averageSpeedByActivityPerformedMGO.ballast > averageSpeedCharterByActivityPerformedMGO.ballast }">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.ballast,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': voyageConsumptionByActivityPerformedMGO.ballast != 0 && voyageConsumptionCharterByActivityPerformedMGO.ballast != 0  && voyageConsumptionByActivityPerformedMGO.ballast > voyageConsumptionCharterByActivityPerformedMGO.ballast,
                       'color-min':  voyageConsumptionByActivityPerformedMGO.ballast != 0 && voyageConsumptionCharterByActivityPerformedMGO.ballast != 0  && voyageConsumptionByActivityPerformedMGO.ballast < voyageConsumptionCharterByActivityPerformedMGO.ballast }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.ballast,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': dayliConsumptionByActivityPerformedMGO.ballast != 0 && dayliConsumptionCharterByActivityPerformedMGO.ballast != 0  && dayliConsumptionByActivityPerformedMGO.ballast > dayliConsumptionCharterByActivityPerformedMGO.ballast,
                     'color-min':  dayliConsumptionByActivityPerformedMGO.ballast != 0 && dayliConsumptionCharterByActivityPerformedMGO.ballast != 0  && dayliConsumptionByActivityPerformedMGO.ballast < dayliConsumptionCharterByActivityPerformedMGO.ballast }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.ballast,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.ballast,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                         'color-max': (balanceConsumptionByActivityPerformedMGO.ballast > 0),
                         'color-min':  (balanceConsumptionByActivityPerformedMGO.ballast < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.ballast,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.ballast,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceTimeByActivityPerformedMGO.ballast > 0),
                       'color-min':  (balanceTimeByActivityPerformedMGO.ballast < 0)}">
-                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.ballast,2)}}</td>
+                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.ballast,cantDecimal)}}</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">
                       {{'SAILING_WITH_LADEN' | translateMessage:translateCategory}}
                     </th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.laden,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.laden,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': totalTimePerActivityMGO.laden != 0 && timePerNavigationCharterByActivityPerformedMGO.laden != 0  && totalTimePerActivityMGO.laden > timePerNavigationCharterByActivityPerformedMGO.laden,
                     'color-min':  totalTimePerActivityMGO.laden != 0 && timePerNavigationCharterByActivityPerformedMGO.laden != 0  && totalTimePerActivityMGO.laden < timePerNavigationCharterByActivityPerformedMGO.laden }">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.laden,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': averageSpeedByActivityPerformedMGO.laden != 0 && averageSpeedCharterByActivityPerformedMGO.laden != 0 && averageSpeedByActivityPerformedMGO.laden < averageSpeedCharterByActivityPerformedMGO.laden,
                       'color-min':  averageSpeedByActivityPerformedMGO.laden != 0 && averageSpeedCharterByActivityPerformedMGO.laden != 0 && averageSpeedByActivityPerformedMGO.laden > averageSpeedCharterByActivityPerformedMGO.laden }">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.laden,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.laden,2)}}
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.laden,cantDecimal)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': voyageConsumptionByActivityPerformedMGO.laden != 0 && voyageConsumptionCharterByActivityPerformedMGO.laden != 0  && voyageConsumptionByActivityPerformedMGO.laden > voyageConsumptionCharterByActivityPerformedMGO.laden,
                     'color-min':  voyageConsumptionByActivityPerformedMGO.laden != 0 && voyageConsumptionCharterByActivityPerformedMGO.laden != 0  && voyageConsumptionByActivityPerformedMGO.laden < voyageConsumptionCharterByActivityPerformedMGO.laden }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.laden,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                   'color-max': dayliConsumptionByActivityPerformedMGO.laden != 0 && dayliConsumptionCharterByActivityPerformedMGO.laden != 0  && dayliConsumptionByActivityPerformedMGO.laden > dayliConsumptionCharterByActivityPerformedMGO.laden,
                   'color-min':  dayliConsumptionByActivityPerformedMGO.laden != 0 && dayliConsumptionCharterByActivityPerformedMGO.laden != 0  && dayliConsumptionByActivityPerformedMGO.laden < dayliConsumptionCharterByActivityPerformedMGO.laden }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.laden,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.laden,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.laden,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.laden,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.laden,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                       {
                       'color-max': (balanceConsumptionByActivityPerformedMGO.laden > 0),
                       'color-min':  (balanceConsumptionByActivityPerformedMGO.laden < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.laden,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.laden,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceTimeByActivityPerformedMGO.laden > 0),
                       'color-min':  (balanceTimeByActivityPerformedMGO.laden < 0)}">
-                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.laden,2)}}</td>
+                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.laden,cantDecimal)}}</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">
                       {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}
                     </th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.economical,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.economical,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                   'color-max': totalTimePerActivityMGO.economical != 0 && timePerNavigationCharterByActivityPerformedMGO.economical != 0  && totalTimePerActivityMGO.economical > timePerNavigationCharterByActivityPerformedMGO.economical,
                   'color-min':  totalTimePerActivityMGO.economical != 0 && timePerNavigationCharterByActivityPerformedMGO.economical != 0  && totalTimePerActivityMGO.economical < timePerNavigationCharterByActivityPerformedMGO.economical }">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': averageSpeedByActivityPerformedMGO.economical != 0 && averageSpeedCharterByActivityPerformedMGO.economical != 0 && averageSpeedByActivityPerformedMGO.economical < averageSpeedCharterByActivityPerformedMGO.economical,
                       'color-min':  averageSpeedByActivityPerformedMGO.economical != 0 && averageSpeedCharterByActivityPerformedMGO.economical != 0 && averageSpeedByActivityPerformedMGO.economical > averageSpeedCharterByActivityPerformedMGO.economical }">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.economical,2)}}</td>
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.economical,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': voyageConsumptionByActivityPerformedMGO.economical != 0 && voyageConsumptionCharterByActivityPerformedMGO.economical != 0  && voyageConsumptionByActivityPerformedMGO.economical > voyageConsumptionCharterByActivityPerformedMGO.economical,
                       'color-min':  voyageConsumptionByActivityPerformedMGO.economical != 0 && voyageConsumptionCharterByActivityPerformedMGO.economical != 0  && voyageConsumptionByActivityPerformedMGO.economical < voyageConsumptionCharterByActivityPerformedMGO.economical }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                                                     'color-max': dayliConsumptionByActivityPerformedMGO.economical != 0 && dayliConsumptionCharterByActivityPerformedMGO.economical != 0  && dayliConsumptionByActivityPerformedMGO.economical > dayliConsumptionCharterByActivityPerformedMGO.economical,
                                                     'color-min':  dayliConsumptionByActivityPerformedMGO.economical != 0 && dayliConsumptionCharterByActivityPerformedMGO.economical != 0  && dayliConsumptionByActivityPerformedMGO.economical < dayliConsumptionCharterByActivityPerformedMGO.economical }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.economical,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.economical,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                       {
                       'color-max': (balanceConsumptionByActivityPerformedMGO.economical > 0),
                       'color-min':  (balanceConsumptionByActivityPerformedMGO.economical < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                       'color-max': (balanceTimeByActivityPerformedMGO.economical > 0),
                       'color-min':  (balanceTimeByActivityPerformedMGO.economical < 0)}">
-                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.economical,2)}}
+                      {{MathRoundOneDecimal(balanceTimeByActivityPerformedMGO.economical,cantDecimal)}}
                     </td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'ANCHORED' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.anchor,2)}}</td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,2)}}
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.anchor,cantDecimal)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.anchor,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.anchor,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.anchor,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.anchor,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': voyageConsumptionByActivityPerformedMGO.anchor != 0 && voyageConsumptionCharterByActivityPerformedMGO.anchor != 0  && voyageConsumptionByActivityPerformedMGO.anchor > voyageConsumptionCharterByActivityPerformedMGO.anchor,
                     'color-min':  voyageConsumptionByActivityPerformedMGO.anchor != 0 && voyageConsumptionCharterByActivityPerformedMGO.anchor != 0  && voyageConsumptionByActivityPerformedMGO.anchor < voyageConsumptionCharterByActivityPerformedMGO.anchor }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.anchor,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                         'color-max': dayliConsumptionByActivityPerformedMGO.anchor != 0 && dayliConsumptionCharterByActivityPerformedMGO.anchor != 0  && dayliConsumptionByActivityPerformedMGO.anchor > dayliConsumptionCharterByActivityPerformedMGO.anchor,
                         'color-min':  dayliConsumptionByActivityPerformedMGO.anchor != 0 && dayliConsumptionCharterByActivityPerformedMGO.anchor != 0  && dayliConsumptionByActivityPerformedMGO.anchor < dayliConsumptionCharterByActivityPerformedMGO.anchor }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.anchor,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.anchor,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.anchor,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.anchor,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.anchor,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.anchor,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                     'color-max': (balanceConsumptionByActivityPerformedMGO.anchor > 0),
                     'color-min':  (balanceConsumptionByActivityPerformedMGO.anchor < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.anchor,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.anchor,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'MANEUVER' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.maneuver,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.maneuver,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.maneuver,2)}}
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
-                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.maneuver,2)}}
+                    <td class="p-1 border">{{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.maneuver,2)}}
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': voyageConsumptionByActivityPerformedMGO.maneuver != 0 && voyageConsumptionCharterByActivityPerformedMGO.maneuver != 0  && voyageConsumptionByActivityPerformedMGO.maneuver > voyageConsumptionCharterByActivityPerformedMGO.maneuver,
                     'color-min':  voyageConsumptionByActivityPerformedMGO.maneuver != 0 && voyageConsumptionCharterByActivityPerformedMGO.maneuver != 0  && voyageConsumptionByActivityPerformedMGO.maneuver < voyageConsumptionCharterByActivityPerformedMGO.maneuver }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.maneuver,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedMGO.maneuver != 0 && dayliConsumptionCharterByActivityPerformedMGO.maneuver != 0  && dayliConsumptionByActivityPerformedMGO.maneuver > dayliConsumptionCharterByActivityPerformedMGO.maneuver,
                       'color-min':  dayliConsumptionByActivityPerformedMGO.maneuver != 0 && dayliConsumptionCharterByActivityPerformedMGO.maneuver != 0  && dayliConsumptionByActivityPerformedMGO.maneuver < dayliConsumptionCharterByActivityPerformedMGO.maneuver }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.maneuver,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.maneuver,2)}}
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.maneuver,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.maneuver,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.maneuver,2)}}
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border" [ngClass]="
                     {
                     'color-max': (balanceConsumptionByActivityPerformedMGO.maneuver > 0),
                     'color-min':  (balanceConsumptionByActivityPerformedMGO.maneuver < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.maneuver,2)}}
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.maneuver,cantDecimal)}}
                     </td>
                     <td class="p-1 border">0</td>
                   </tr>
                   <tr>
                     <th class="p-1 color-title-table border">{{'OTHER_ACT' | translateMessage:translateCategory}}</th>
-                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.otherActivity,2)}}</td>
+                    <td class="p-1 border">{{MathRoundOneDecimal(totalTimePerActivityMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(totalDistanceMilesByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.otherActivity,2)}}
+                      {{MathRoundOneDecimal(averageSpeedByActivityPerformedMGO.otherActivity,cantDecimal)}}
                     </td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(averageSpeedCharterByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                     'color-max': voyageConsumptionByActivityPerformedMGO.otherActivity != 0 && voyageConsumptionCharterByActivityPerformedMGO.otherActivity != 0  && voyageConsumptionByActivityPerformedMGO.otherActivity > voyageConsumptionCharterByActivityPerformedMGO.otherActivity,
                     'color-min':  voyageConsumptionByActivityPerformedMGO.otherActivity != 0 && voyageConsumptionCharterByActivityPerformedMGO.otherActivity != 0  && voyageConsumptionByActivityPerformedMGO.otherActivity < voyageConsumptionCharterByActivityPerformedMGO.otherActivity }">
-                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border"
                       [ngClass]="{
                       'color-max': dayliConsumptionByActivityPerformedMGO.otherActivity != 0 && dayliConsumptionCharterByActivityPerformedMGO.otherActivity != 0  && dayliConsumptionByActivityPerformedMGO.otherActivity > dayliConsumptionCharterByActivityPerformedMGO.otherActivity,
                       'color-min':  dayliConsumptionByActivityPerformedMGO.otherActivity != 0 && dayliConsumptionCharterByActivityPerformedMGO.otherActivity != 0  && dayliConsumptionByActivityPerformedMGO.otherActivity < dayliConsumptionCharterByActivityPerformedMGO.otherActivity }">
-                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(dayliConsumptionCharterByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(timePerNavigationCharterByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">
-                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(voyageConsumptionCharterByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border" [ngClass]="
                       {
                       'color-max': (balanceConsumptionByActivityPerformedMGO.otherActivity > 0),
                       'color-min':  (balanceConsumptionByActivityPerformedMGO.otherActivity < 0)}">
-                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.otherActivity,2)}}</td>
+                      {{MathRoundOneDecimal(balanceConsumptionByActivityPerformedMGO.otherActivity,cantDecimal)}}</td>
                     <td class="p-1 border">0</td>
                   </tr>
                 </tbody>
@@ -1661,7 +1661,7 @@
                       totalTimePerActivityMGO.laden + totalTimePerActivityMGO.economical +
                       totalTimePerActivityMGO.anchor
                       + totalTimePerActivityMGO.maneuver + totalTimePerActivityMGO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
@@ -1672,7 +1672,7 @@
                       totalDistanceMilesByActivityPerformedMGO.anchor +
                       totalDistanceMilesByActivityPerformedMGO.maneuver
                       + totalDistanceMilesByActivityPerformedMGO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1"></th>
                     <th class="p-1"></th>
@@ -1685,7 +1685,7 @@
                       voyageConsumptionByActivityPerformedMGO.anchor
                       + voyageConsumptionByActivityPerformedMGO.maneuver +
                       voyageConsumptionByActivityPerformedMGO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1"></th>
                     <th class="p-1"></th>
@@ -1700,7 +1700,7 @@
                       voyageConsumptionCharterByActivityPerformedMGO.anchor +
                       voyageConsumptionCharterByActivityPerformedMGO.maneuver +
                       voyageConsumptionCharterByActivityPerformedMGO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <th class="p-1 color-title-table border">
                       {{MathRoundOneDecimal(
@@ -1712,7 +1712,7 @@
                       balanceConsumptionByActivityPerformedMGO.anchor +
                       balanceConsumptionByActivityPerformedMGO.maneuver
                       + balanceConsumptionByActivityPerformedMGO.otherActivity
-                      ,2)}}
+                      ,cantDecimal)}}
                     </th>
                     <td class="p-1"></td>
                   </tr>
