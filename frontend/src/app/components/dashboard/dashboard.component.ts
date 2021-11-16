@@ -145,7 +145,7 @@ export class DashboardComponent implements OnInit {
   public chartLineSPEED: Chart; // LINEA
   public dataSPEED: Chart.ChartPoint[] = []; // Data
 
-  public cantDecimal: number = 3;
+  public cantDecimal: number = 1;
 
   // Consumo IFO POR ACTIVIDAD
   public totalTimePerActivityIFO: ActivityPerformed = new ActivityPerformed();
@@ -470,8 +470,8 @@ export class DashboardComponent implements OnInit {
         fuelIfo.startRob = startDataROB.total_bunkering_ifo - startDataROB.total_ifo;
         fuelIfo.startDate = FormatDateUTCToDateHour(this.startDate)
         // Revisar por que aqui se esta usando la variable que se recorre
-        fuelIfo.comsumption = this.consumptionAndBunkering.ifoConsumption;
-        fuelIfo.bunkering = this.consumptionAndBunkering.ifoBunkering;
+        fuelIfo.comsumption = consumptionDataROB.total_ifo;
+        fuelIfo.bunkering = consumptionDataROB.total_bunkering_ifo;
 
         fuelIfo.endRob = fuelIfo.startRob + (consumptionDataROB.total_bunkering_ifo - consumptionDataROB.total_ifo);
         fuelIfo.endDate = FormatDateUTCToDateHour(this.endDate);
@@ -482,8 +482,8 @@ export class DashboardComponent implements OnInit {
         fuelMgo.typeFuel = 'MGO';
         fuelMgo.startRob = startDataROB.total_bunkering_mgo - startDataROB.total_mgo;
         fuelMgo.startDate = FormatDateUTCToDateHour(this.startDate);
-        fuelMgo.comsumption = this.consumptionAndBunkering.mgoConsumption;
-        fuelMgo.bunkering = this.consumptionAndBunkering.mgoBunkering;
+        fuelMgo.comsumption = consumptionDataROB.total_mgo;
+        fuelMgo.bunkering = consumptionDataROB.total_bunkering_mgo;
         fuelMgo.endRob = fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo);
         fuelMgo.endDate = FormatDateUTCToDateHour(this.endDate);
 
@@ -2133,7 +2133,7 @@ export class DashboardComponent implements OnInit {
           }
 
           // El total de velocidad debe de ser mayor para poder pintarlo.
-          let speed = mathRound(voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1), 2);
+          let speed =  voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1);
           // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
           if (speed > 0) {
             this.dataSPEED.push(
@@ -2208,7 +2208,7 @@ export class DashboardComponent implements OnInit {
                 }
 
                 // El total de velocidad debe de ser mayor para poder pintarlo.
-                let speed = mathRound(port.speed.distance / (port.speed.steamingTime || 1), 2);
+                let speed = port.speed.distance / (port.speed.steamingTime || 1) ;
                 if (speed > 0) {
                   this.dataSPEED.push(
                     { x: txtLabelChart, y: speed, ubication: [iV, iP] }
@@ -2262,7 +2262,7 @@ export class DashboardComponent implements OnInit {
                               // Agregamos la distancia y velocidad.
                               speedI.add(report.distance, report.steamingTime);
                               // calculamos la velocidad.
-                              let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
+                              let ySpeed = speedI.distance / speedI.steamingTime ;
                               // Actualizamos el calculo de la velocidad.
                               this.dataSPEED[iL].y = ySpeed;
                               // Linea maxima SPEED
@@ -2380,7 +2380,7 @@ export class DashboardComponent implements OnInit {
                         if (report.distance > 0) {
                           newSpeed.add(report.distance, report.steamingTime);
                           // Agregamos los datos de velocidad.
-                          ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+                          ySpeed =  newSpeed.distance / newSpeed.steamingTime ;
                           if (ySpeed > this.configLineaSPEED.lineaMax) {
                             this.configLineaSPEED.lineaMax = ySpeed;
                           }
@@ -2460,7 +2460,7 @@ export class DashboardComponent implements OnInit {
                               // Agregamos la distancia y velocidad.
                               speedI.add(report.distance, report.steamingTime);
                               // Actualizamos el valor por la posicion.
-                              let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
+                              let ySpeed = speedI.distance / speedI.steamingTime;
                               this.dataSPEED[iL].y = ySpeed;
                               // Linea maxima SPEED
                               if (ySpeed > this.configLineaSPEED.lineaMax) {
@@ -2602,7 +2602,7 @@ export class DashboardComponent implements OnInit {
                         if (report.distance > 0) {
                           newSpeed.add(report.distance, report.steamingTime);
                           // Agregamos los datos de velocidad.
-                          ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
+                          ySpeed = newSpeed.distance / newSpeed.steamingTime ;
                           if (ySpeed > this.configLineaSPEED.lineaMax) {
                             this.configLineaSPEED.lineaMax = ySpeed;
                           }
@@ -3596,7 +3596,7 @@ export class DashboardComponent implements OnInit {
             result = 'AVERAGE SPEED :    ';
           }
           // Le agrgamos el vlaor.
-          result = result + mathRound(Number(tooltipItem.value), 2)
+          result = result + this.MathRoundOneDecimal(Number(tooltipItem.value), this.cantDecimal)
 
           if (configIFOorMGOorSPEED === 'IFO' || configIFOorMGOorSPEED === 'MGO') {
             result += ' MT';
@@ -3640,7 +3640,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(voyage.totalBunkeringIFO, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + this.MathRoundOneDecimal(voyage.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3648,7 +3648,7 @@ export class DashboardComponent implements OnInit {
               && voyage.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Bunkering MGO :    ' + mathRound(voyage.totalBunkeringMGO, 2) + ' mt');
+              result.push('T. Bunkering MGO :    ' +  this.MathRoundOneDecimal(voyage.totalBunkeringMGO, this.cantDecimal) + ' mt');
 
             }
 
@@ -3659,7 +3659,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(voyage.totalIFO, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' +  this.MathRoundOneDecimal(voyage.totalIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3667,7 +3667,7 @@ export class DashboardComponent implements OnInit {
             if (this.selectUser.isConsumptionMGO
               && voyage.totalMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-              result.push('T. Consumption MGO :    ' + mathRound(voyage.totalMGO, 2) + ' mt');
+              result.push('T. Consumption MGO :    ' +   this.MathRoundOneDecimal(voyage.totalMGO, this.cantDecimal) + ' mt');
             }
 
 
@@ -3676,30 +3676,30 @@ export class DashboardComponent implements OnInit {
             if (configIFOorMGOorSPEED === 'IFO') {
 
               if (voyage.totalSpeed.timeOperationIFO > 0) {
-                result.push('T. Time :    ' + mathRound(voyage.totalSpeed.timeOperationIFO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(voyage.totalSpeed.timeOperationIFO, this.cantDecimal) + ' hrs');
               }
               if (voyage.totalSpeed.distanceIFO > 0) {
-                result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distanceIFO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(voyage.totalSpeed.distanceIFO, this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (voyage.totalSpeed.timeOperationMGO > 0) {
-                result.push('T. Time :    ' + mathRound(voyage.totalSpeed.timeOperationMGO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(voyage.totalSpeed.timeOperationMGO, this.cantDecimal) + ' hrs');
               }
               if (voyage.totalSpeed.distanceMGO > 0) {
-                result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distanceMGO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(voyage.totalSpeed.distanceMGO, this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'SPEED') {
 
               if (voyage.totalSpeed.steamingTime > 0) {
-                result.push('T. Time :    ' + mathRound(voyage.totalSpeed.steamingTime, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(voyage.totalSpeed.steamingTime, this.cantDecimal) + ' hrs');
               }
               if (voyage.totalSpeed.distance > 0) {
-                result.push('T. Distance :    ' + mathRound(voyage.totalSpeed.distance, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(voyage.totalSpeed.distance, this.cantDecimal) + ' mi');
               }
-              let calSpeed = mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2);
+              let calSpeed =   this.MathRoundOneDecimal(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, this.cantDecimal);
               if (calSpeed && calSpeed > 0) {
                 result.push('Speed :    ' + calSpeed + ' kn');
               }
@@ -3729,13 +3729,13 @@ export class DashboardComponent implements OnInit {
               && port.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(port.totalBunkeringIFO, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' +  this.MathRoundOneDecimal(port.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
               && port.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-              result.push('T. Bunkering MGO :    ' + mathRound(port.totalBunkeringMGO, 2) + ' mt');
+              result.push('T. Bunkering MGO :    ' +   this.MathRoundOneDecimal(port.totalBunkeringMGO, this.cantDecimal) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
@@ -3746,7 +3746,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(port.robIfo, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' +   this.MathRoundOneDecimal(port.robIfo, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
 
@@ -3756,7 +3756,7 @@ export class DashboardComponent implements OnInit {
               && port.robMgo > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Consumption MGO:    ' + mathRound(port.robMgo, 2) + ' mt');
+              result.push('T. Consumption MGO:    ' +   this.MathRoundOneDecimal(port.robMgo, this.cantDecimal) + ' mt');
 
             }
 
@@ -3764,30 +3764,30 @@ export class DashboardComponent implements OnInit {
             if (configIFOorMGOorSPEED === 'IFO') {
 
               if (port.speed.timeOperationIFO > 0) {
-                result.push('T. Time :    ' + mathRound(port.speed.timeOperationIFO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(port.speed.timeOperationIFO,this.cantDecimal) + ' hrs');
               }
               if (port.speed.distanceIFO > 0) {
-                result.push('T. Distance :    ' + mathRound(port.speed.distanceIFO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(port.speed.distanceIFO, this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (port.speed.timeOperationMGO > 0) {
-                result.push('T. Time :    ' + mathRound(port.speed.timeOperationMGO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(port.speed.timeOperationMGO, this.cantDecimal) + ' hrs');
               }
               if (port.speed.distanceMGO > 0) {
-                result.push('T. Distance :    ' + mathRound(port.speed.distanceMGO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(port.speed.distanceMGO, this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'SPEED') {
 
               if (port.speed.steamingTime > 0) {
-                result.push('T. Time :    ' + mathRound(port.speed.steamingTime, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(port.speed.steamingTime, this.cantDecimal) + ' hrs');
               }
               if (port.speed.distance > 0) {
-                result.push('T. Distance :    ' + mathRound(port.speed.distance, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(port.speed.distance, this.cantDecimal) + ' mi');
               }
-              let calSpeed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
+              let calSpeed =   this.MathRoundOneDecimal(port.speed.distance / port.speed.steamingTime, this.cantDecimal);
               if (calSpeed && calSpeed > 0) {
                 result.push('Speed :    ' + calSpeed + ' kn');
               }
@@ -3812,13 +3812,13 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + +   this.MathRoundOneDecimal(chartPoint.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
               && chartPoint.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-              result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2) + ' mt');
+              result.push('T. Bunkering MGO :    ' +   this.MathRoundOneDecimal(chartPoint.totalBunkeringMGO,this.cantDecimal) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
@@ -3828,7 +3828,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(chartPoint.totalConsumptionIFO, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' +   this.MathRoundOneDecimal(chartPoint.totalConsumptionIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3836,7 +3836,7 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalConsumptionMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2) + ' mt');
+              result.push('T. Consumption MGO:    ' +   this.MathRoundOneDecimal(chartPoint.totalConsumptionMGO,this.cantDecimal) + ' mt');
 
             }
 
@@ -3847,30 +3847,30 @@ export class DashboardComponent implements OnInit {
             if (configIFOorMGOorSPEED === 'IFO') {
 
               if (chartPoint.speed.timeOperationIFO > 0) {
-                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationIFO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(chartPoint.speed.timeOperationIFO, this.cantDecimal) + ' hrs');
               }
               if (chartPoint.speed.distanceIFO > 0) {
-                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceIFO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(chartPoint.speed.distanceIFO, this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (chartPoint.speed.timeOperationMGO > 0) {
-                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationMGO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(chartPoint.speed.timeOperationMGO, this.cantDecimal) + ' hrs');
               }
               if (chartPoint.speed.distanceMGO > 0) {
-                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceMGO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(chartPoint.speed.distanceMGO, this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'SPEED') {
 
               if (chartPoint.speed.steamingTime > 0) {
-                result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(chartPoint.speed.steamingTime, this.cantDecimal) + ' hrs');
               }
               if (chartPoint.speed.distance > 0) {
-                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(chartPoint.speed.distance, this.cantDecimal) + ' mi');
               }
-              let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
+              let calSpeed =   this.MathRoundOneDecimal(chartPoint.speed.distance / chartPoint.speed.steamingTime, this.cantDecimal);
               if (calSpeed && calSpeed > 0) {
                 result.push('Speed :    ' + calSpeed + ' kn');
               }
@@ -3917,13 +3917,13 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + + mathRound(chartPoint.totalBunkeringIFO, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' + +   this.MathRoundOneDecimal(chartPoint.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
               && chartPoint.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-              result.push('T. Bunkering MGO :    ' + mathRound(chartPoint.totalBunkeringMGO, 2) + ' mt');
+              result.push('T. Bunkering MGO :    ' +   this.MathRoundOneDecimal(chartPoint.totalBunkeringMGO, this.cantDecimal) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
@@ -3933,7 +3933,7 @@ export class DashboardComponent implements OnInit {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' :    ' + mathRound(chartPoint.totalConsumptionIFO, 2) + ' mt';
+              textIFOorVLSFOorLSFO += ' :    ' +   this.MathRoundOneDecimal(chartPoint.totalConsumptionIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
@@ -3941,38 +3941,38 @@ export class DashboardComponent implements OnInit {
               && chartPoint.totalConsumptionMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Consumption MGO:    ' + mathRound(chartPoint.totalConsumptionMGO, 2) + ' mt');
+              result.push('T. Consumption MGO:    ' +   this.MathRoundOneDecimal(chartPoint.totalConsumptionMGO, this.cantDecimal) + ' mt');
 
             }
 
             if (configIFOorMGOorSPEED === 'IFO') {
 
               if (chartPoint.speed.timeOperationIFO > 0) {
-                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationIFO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(chartPoint.speed.timeOperationIFO, this.cantDecimal) + ' hrs');
               }
               if (chartPoint.speed.distanceIFO > 0) {
-                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceIFO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(chartPoint.speed.distanceIFO, this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'MGO') {
 
               if (chartPoint.speed.timeOperationMGO > 0) {
-                result.push('T. Time :    ' + mathRound(chartPoint.speed.timeOperationMGO, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(chartPoint.speed.timeOperationMGO, this.cantDecimal) + ' hrs');
               }
               if (chartPoint.speed.distanceMGO > 0) {
-                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distanceMGO, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(chartPoint.speed.distanceMGO,this.cantDecimal) + ' mi');
               }
 
             } else if (configIFOorMGOorSPEED === 'SPEED') {
               result.push('Befourt :    ' + beaufour);
 
               if (chartPoint.speed.steamingTime > 0) {
-                result.push('T. Time :    ' + mathRound(chartPoint.speed.steamingTime, 2) + ' hrs');
+                result.push('T. Time :    ' +   this.MathRoundOneDecimal(chartPoint.speed.steamingTime, this.cantDecimal) + ' hrs');
               }
               if (chartPoint.speed.distance > 0) {
-                result.push('T. Distance :    ' + mathRound(chartPoint.speed.distance, 2) + ' mi');
+                result.push('T. Distance :    ' +   this.MathRoundOneDecimal(chartPoint.speed.distance, this.cantDecimal) + ' mi');
               }
-              let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
+              let calSpeed =   this.MathRoundOneDecimal(chartPoint.speed.distance / chartPoint.speed.steamingTime, this.cantDecimal);
               if (calSpeed && calSpeed > 0) {
                 result.push('Speed :    ' + calSpeed + ' kn');
               }

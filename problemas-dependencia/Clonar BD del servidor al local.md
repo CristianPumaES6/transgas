@@ -1,5 +1,0 @@
-# Clonar BD del servidor al escritorio local.
-
-```javascript
-// Tenemos que saber cual es la ubicacion del directorio y donde esta la BD, Local.
-scp root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/dbTransgas.sqlite3 ./
