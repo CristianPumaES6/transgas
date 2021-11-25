@@ -60,7 +60,7 @@ export class AppController {
 
   // Guards(jwt)  valida que el token no halla caducado y exista, caso contrario invoca un error.
   @UseGuards(AuthGuard('jwt'))
-  @Get()
+  @Get('hello')
   getHello(): any {
 
     let version = URL_Server.version;
