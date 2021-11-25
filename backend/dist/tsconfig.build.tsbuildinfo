@@ -1627,7 +1627,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "42bf4e7d5eb188783ca4fc2090b682ccdede7dfc83151963d268fe7258645da0",
+        "version": "c1fdfab8a66e31cd9e38228f3de28bf311b431d232d1e0ed44991e5792bfaa15",
         "signature": "763cd44130b781bae958d22ac07c6711029f8fac6cc718bd60e1bf6a056ec919",
         "affectsGlobalScope": false
       },
@@ -3072,13 +3072,13 @@
         "affectsGlobalScope": false
       },
       "../src/app.controller.ts": {
-        "version": "a1e980fb9f9a4054038aaf989103f4c2afc86cd485291d54b4a8a4322b4e4d89",
+        "version": "673c5e08d7d06eb833e6d1b8d73f1359adef76dd4068977d968049bafe33d67e",
         "signature": "90aa58c011c376a7d1bd6fb44139d66f7b21099bb004a131323ec97f14ef3af2",
         "affectsGlobalScope": false
       },
       "../src/config/path.config.ts": {
-        "version": "e4023b693abf7d40518b2ff248117024429ccfcf4fb22a07949a24a01debe3bb",
-        "signature": "17d1d27c53494ec5ad74f4c0727f246ee29d9c338c102266dce6d10c4c5ba0ee",
+        "version": "90a6887ca03b1eb97abb21d8ed2b03dc5714abb5f21fe3dba694ed64db7826e3",
+        "signature": "3a0667761943a987173e813f423559de255a8fa5a9887bf0f3e7d2a56ef89f68",
         "affectsGlobalScope": false
       },
       "../node_modules/jwt-decode/index.d.ts": {
@@ -3467,12 +3467,12 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "116abf8ceeabab673f60c1beb18fbde54cc50c2fd413d3172907aecdae88908a",
+        "version": "1a12a9d5f027fcfaf600d8b9fd0bac1a41fb84aa988aed33d87d10212c5e9a0a",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
       "../src/transgas3000.ts": {
-        "version": "116abf8ceeabab673f60c1beb18fbde54cc50c2fd413d3172907aecdae88908a",
+        "version": "1a12a9d5f027fcfaf600d8b9fd0bac1a41fb84aa988aed33d87d10212c5e9a0a",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
