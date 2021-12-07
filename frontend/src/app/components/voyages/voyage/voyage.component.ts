@@ -923,6 +923,7 @@ export class VoyageComponent implements OnInit {
     this.isBunkering = false;
   }
 
+  // Click al boton editar reporte.
   public ClickEditReport(dailyReport: DailyReport): boolean {
     console.log('ClickEditReport(dailyReport: DailyReport)');
 
