@@ -12,4 +12,8 @@ export class ExportExcelComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public ClickExportExcel(){
+    alert('SE EXPORTO.')
+  }
+
 }

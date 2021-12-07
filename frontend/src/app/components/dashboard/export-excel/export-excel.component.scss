@@ -1,0 +1,15 @@
+
+.buttom_excel {
+    font-size: 25px !important;
+    color: rgb(150, 14, 14);
+    position: absolute;
+    cursor: pointer;
+    bottom: 2%;
+    right: 100px;
+    transform: all 1s;
+  
+    &:hover {
+      font-size: 35px;
+    }
+  }
+  
