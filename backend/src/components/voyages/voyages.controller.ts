@@ -530,7 +530,8 @@ export class VoyagesController {
             newReport.userId = importVoyage.userId;
             newReport.portId = existePort.value;
 
-            newReport.date = ConvertMMDDYYYToYYYYMMDD(importVoyage.date)
+           
+            newReport.date = <any>importVoyage.date 
 
             // Verificamos si existe una hora,
             if (importVoyage.hour) {
