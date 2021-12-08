@@ -3,6 +3,7 @@
     back: 'https://transgas.codev.site/',
     version: 'v1.9M',
     puertoSocket: 4000,
+    bd: 'MSSQL', // MSSQL, MYSQL
 };
  */
 
@@ -12,6 +13,7 @@ export const URL_Server = {
     back: 'https://transgas.codev.site',
     version: 'v1.9M',
     puertoSocket: 4000,
+    bd: 'MSSQL', // MSSQL, MYSQL
 };
   */
 
@@ -20,4 +22,5 @@ export const URL_Server = {
     back: 'http://localhost:3000',
     version: 'v1.9M',
     puertoSocket: 4000,
+    bd: 'MSSQL', // MSSQL, MYSQL
 };
