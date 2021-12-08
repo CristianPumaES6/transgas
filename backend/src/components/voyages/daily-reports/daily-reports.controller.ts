@@ -653,4 +653,68 @@ export class DailyReportsController {
 
 
 
+    @Get('get-report-by-user/:userId')
+    GetReportByUser(@Headers() headers, @Param('userId') userId: number): Promise<any> {
+
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+                // Validamos que los datos sean los necesarios.
+                if (userId) {
+
+                    return true;
+
+                } else {
+                    throw new Error('MISSING_FIELS');
+                }
+
+            }
+        ).then(
+            (resultValidate: Boolean) => {
+
+                // Validamos que el userId sea el mismo que el del sailingAnality
+                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    return true;
+                } else if (Number(userId) !== Number(headerToken.id)) {
+                    throw new Error('ERROR_USERID_FAIL');
+                }
+
+            }
+        ).then(
+            (resultValidate: Boolean) => {
+
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._dailyReportsService.GetReportByUser(userId);
+            }
+        ).then(
+            (results: GetReportVoyagePortDaily[]) => {
+
+                // Retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: results
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
 }
