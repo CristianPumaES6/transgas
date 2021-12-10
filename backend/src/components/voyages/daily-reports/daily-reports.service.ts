@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
+import { URL_Server } from 'src/config/server.config';
+import { DummyPromise } from 'src/assets/promises.assets';
 
 @Injectable()
 export class DailyReportsService {
@@ -13,14 +15,62 @@ export class DailyReportsService {
     // Registra un nuevo reporte diario
     async Create(dailyReport: DailyReport): Promise<DailyReport> {
 
-        return await this._dailyReportRepository.save(dailyReport).then(
-            (resultSave: DailyReport) => {
+
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this._dailyReportRepository.query(`
+                     EXEC SP_CreateNewDailyReport 
+                    @userId = ${dailyReport.userId} 
+                    ,@portId = ${dailyReport.portId} 
+                    ,@activityPerformed = '${dailyReport.activityPerformed}' 
+                    ,@speedStraction = '${dailyReport.speedStraction}' 
+                    ,@date ='${dailyReport.date}' 
+                    ,@hour = '${dailyReport.hour}' 
+                    ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
+                    ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
+                    ,@mplaIfo  = ${dailyReport.mplaIfo} 
+                    ,@auxIfo  = ${dailyReport.auxIfo} 
+                    ,@boilerIfo  = ${dailyReport.boilerIfo} 
+                    ,@otherIfo = ${dailyReport.otherIfo} 
+                    ,@mplaMgo = ${dailyReport.mplaMgo} 
+                    ,@auxMgo   = ${dailyReport.auxMgo} 
+                    ,@boilerMgo   = ${dailyReport.boilerMgo} 
+                    ,@ppMgo = ${dailyReport.ppMgo} 
+                    ,@giMgo = ${dailyReport.giMgo} 
+                    ,@otherMgo  = ${dailyReport.otherMgo} 
+                    ,@steamingTime  = ${dailyReport.steamingTime} 
+                    ,@distance =${dailyReport.distance} 
+                    ,@beaufour = '${dailyReport.beaufour}' 
+                    ,@observation ='${dailyReport.observation}'  
+                    ,@userIdCreated = ${dailyReport.userIdCreated} 
+                    ,@dateCreated = '${dailyReport.dateCreated}' 
+                    ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} 
+                    ,@dateUpdated = '${dailyReport.dateUpdated || null}' 
+                    ,@status = ${dailyReport.status}
+                    `);
+
+                } else {
+                    return this._dailyReportRepository.save(dailyReport);
+                }
+            }
+        ).then(
+            (resultSave) => {
                 // Validamos si encontro al usuario.
                 if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
 
-                return resultSave;
+                if (URL_Server.bd === 'MSSQL') {
+                    // MSSQL
+                    if (resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
+                    return resultSave[0];
+                } else {
+                    // SLQITE
+                    return resultSave;
+                }
             }
-        );
+        )
 
     }
 
@@ -332,7 +382,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
                 .addSelect('daily_report.observation', 'observation')
-                
+
                 .addSelect('daily_report.distance', 'distance')
                 .addSelect('daily_report.beaufour', 'beaufour')
 
@@ -373,8 +423,8 @@ export class DailyReportsService {
                 );
     }
 
-      // Retorna todos los viajes segun filtro.
-      async GetReportByUser(userId: number): Promise<GetReportVoyagePortDaily[]> {
+    // Retorna todos los viajes segun filtro.
+    async GetReportByUser(userId: number): Promise<GetReportVoyagePortDaily[]> {
 
         // Hacemos where por todos los campos de la entidad
         return await
@@ -398,7 +448,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
                 .addSelect('daily_report.observation', 'observation')
-                
+
                 .addSelect('daily_report.distance', 'distance')
                 .addSelect('daily_report.beaufour', 'beaufour')
 
@@ -425,7 +475,7 @@ export class DailyReportsService {
                 .andWhere('voyage.status = :status', { status: 1 })
 
                 .andWhere('daily_report.userId = :userId', { userId: userId })
-                
+
                 .getRawMany()
                 .then(
                     (result: any) => {
