@@ -10,6 +10,8 @@ import { Not } from "typeorm";
 // Modelos.
 import { DummyPromise } from '../../assets/promises.assets';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity'; // < Suele cambiar.
+import { URL_Server } from '../../config/server.config';
+
 
 @Injectable()
 export class VoyagesService {
@@ -23,46 +25,87 @@ export class VoyagesService {
     // Registra un nuevo viaje
     async Create(voyage: Voyage): Promise<Voyage> {
 
-
         // Hacemos where por todos los campos de la entidad
-        return await this.voyageRepository.find({
-            where: [
-                // name && surname && nick && email
-                {
-                    userId: voyage.userId,
-                    year: voyage.year,
-                    status: true,
+        return DummyPromise().then(
+            result => {
+
+
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this.voyageRepository.query("SP_CheckTheLastRecordedTrip @userId='" + voyage.userId + "', @year='" + voyage.year + "'");
+                } else {
+                    return this.voyageRepository.find({
+                        where: [
+                            // name && surname && nick && email
+                            {
+                                userId: voyage.userId,
+                                year: voyage.year,
+                                status: true,
+                            }
+                        ],
+                        take: 1,
+                        order: {
+                            voyageNumber: 'DESC',
+                        }
+                    });
+
                 }
-            ],
-            take: 1,
-            order: {
-                voyageNumber: 'DESC',
+
+
+
             }
-        }).then(
+        ).then(
             (result: Voyage[]) => {
                 // result length 
                 if (result && (result.length > 0)) {
+                    // No valido o cambio el viaje, devido a que si llega aver un problema del numero de viaje se repetiria 2 veces.
+                    // y los registros registrados dentro se eliminarian.
                     voyage.voyageNumber = voyage.voyageNumber;
-                    /* 
-                    voyage.voyageNumber = Number(result[0].voyageNumber) + 1;
-                    */
+                    // voyage.voyageNumber = Number(result[0].voyageNumber) + 1;
                 }
                 else {
                     // Caso contrario el numero del viaje es el numero de viaje.
                     voyage.voyageNumber = voyage.voyageNumber;
                 };
 
-                // No lo validamos por que puede llegar vacio.
-                return this.voyageRepository.save(voyage)
+                if (URL_Server.bd === 'MSSQL') {
+                    // Ejecutamos el storeProceude creado.
+                    return this.voyageRepository.query(`
+                    SP_CreateNewVoyage @userId =  ${voyage.userId}  ,
+                    @voyageNumber =  ${voyage.voyageNumber} , 
+                    @year = ${voyage.year} ,
+                    @userIdCreated =   ${voyage.userIdCreated} ,
+                    @dateCreated = '${voyage.dateCreated}',
+                    @userIdUpdated =  ${voyage.userIdUpdated ? voyage.userIdUpdated : 0} ,
+                    @dateUpdated = '${voyage.dateUpdated || ''}' ,
+                    @status = ${voyage.status} 
+                    `);
+
+
+                } else {
+
+                    // No lo validamos por que puede llegar vacio.
+                    return this.voyageRepository.save(voyage)
+                }
+
             }
         ).then(
-            (resultSave: Voyage) => {
+            (resultSave: any) => {
                 // Validamos si encontro al usuario.
+
                 if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
 
-                return resultSave;
+                if (URL_Server.bd === 'MSSQL') {
+                    // MSSQL
+                    if (resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
+                    return resultSave[0];
+                } else {
+                    // SLQITE
+                    return resultSave;
+                }
             }
-        );
+        )
 
     }
 
@@ -216,22 +259,45 @@ export class VoyagesService {
     // Permite consultar si el numero de viaje existe
     // Retorna underfined si el viaje no existe.
     async ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number): Promise<Voyage> {
-        return await this.voyageRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                {
-                    voyageNumber: voyageNumber,
-                    year: yearVoyage
+
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd === 'MSSQL') {
+                    return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @voyageNumber='" + voyageNumber + "', @yearVoyage='" + yearVoyage + "'");
+                } else {
+
+                    return this.voyageRepository.findOne({
+                        where: [
+                            // hacemos un where donde buscamos por id.
+                            {
+                                voyageNumber: voyageNumber,
+                                year: yearVoyage
+                            }
+                        ]
+                    });
                 }
-            ]
-        }).then(resultFind => {
 
-            // No vlaidamos resultado por que tambien puede ser underfine.
 
-            // Actualizamos
-            return resultFind;
+            }
+        ).then(
+            // Puede ser un arreglo en MSSQL o un objeto en SQLITE
+            (resultFind: any) => {
 
-        });
+                // No vlaidamos resultado por que tambien puede ser underfine.
+                if (URL_Server.bd === 'MSSQL') {
+                    if (!resultFind && resultFind.length > 0) throw 'NO_REGISTER'
+                    return resultFind[0];
+                } else {
+
+                    if (!resultFind) throw 'No records found in the database';
+                    return resultFind;
+
+
+                }
+            });
+
+
     }
 
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Port } from '../../../models/port.entity';
 import { Like, Not, Repository } from 'typeorm';
+import { DummyPromise } from 'src/assets/promises.assets';
+import { URL_Server } from 'src/config/server.config';
 
 @Injectable()
 export class PortsService {
@@ -14,39 +16,82 @@ export class PortsService {
 
     // Registra un nuevo viaje
     async Create(port: Port): Promise<Port> {
-        return await this.portRepository.find({
-            where: [
-                // name && surname && nick && email
-                {
-                    userId: port.userId,
-                    voyageId: port.voyageId,
-                    status: true
+
+
+        return DummyPromise().then(
+            result => {
+                if (URL_Server.bd === 'MSSQL') {
+            
+                    return this.portRepository.query(`SP_CheckTheLastPortTrip @userId='${port.userId}', @voyageId='${port.voyageId}'`);
+           
+                } else {
+                    // Buscamos el viaje
+                    return  this.portRepository.find({
+                        where: [
+                            // name && surname && nick && email
+                            {
+                                userId: port.userId,
+                                voyageId: port.voyageId,
+                                status: true
+                            }
+                        ],
+                        take: 1,
+                        order: {
+                            portNumber: 'DESC',
+                        }
+                    })
                 }
-            ],
-            take: 1,
-            order: {
-                portNumber: 'DESC',
             }
-        }).then(
+        ).then(
             (result: Port[]) => {
                 // result length 
                 if (result && (result.length > 0)) {
-                    port.portNumber = Number(result[0].portNumber) + 1;
+
+                    // Aqui deberiamos sumar el ultimo puerto, pero no lo aremos registraremos el puerot tal cual es.
+                    port.portNumber = port.portNumber;
                 }
                 else {
                     port.portNumber = 1;
                 };
 
-                return this.portRepository.save(port)
+
+                if (URL_Server.bd === 'MSSQL') {
+           
+                          // Ejecutamos el storeProceude creado.
+                    return this.portRepository.query(`
+                        EXEC SP_CreateNewPort
+                        @userId = ${port.userId},
+                        @voyageId = ${port.voyageId},
+                        @portNumber = ${port.portNumber},
+                        @departurePort = '${port.departurePort}',
+                        @arrivalPort = '${port.arrivalPort}',
+                        @userIdCreated = ${port.userId},
+                        @dateCreated = '${port.dateCreated}',
+                        @userIdUpdated = ${port.userIdUpdated || 0},
+                        @dateUpdated ='${port.dateUpdated || null}',
+                        @status =${port.status? 1 : 0}
+                    `); 
+    
+                } else {
+                    return this.portRepository.save(port)
+                }
             }
         ).then(
-            (resultSave: Port) => {
+            (resultSave ) => {
                 // Validamos si encontro al usuario.
                 if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
 
+                if (URL_Server.bd === 'MSSQL') {
+                    // MSSQL
+                    if ( resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
+                    return resultSave[0];
+                } else {   
+                    // SLQITE
+                    return resultSave;
+                }
                 return resultSave;
             }
-        );
+        ) 
 
 
 
@@ -169,23 +214,46 @@ export class PortsService {
 
     // Permite consultar si el puerto existe en el viaje,
     // Retorna underfined si el puerto no existe.
-    async ThereIsThisPortInTheVoyage(numeroPuerto: number, voyageId: number): Promise<Port> {
+    async ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number): Promise<Port> {
 
-        return await this.portRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                {
-                    voyageId: voyageId,
-                    portNumber: numeroPuerto,
+        return DummyPromise().then(
+            result => {
+                
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this.portRepository.query(`
+                        SP_ThereIsThisPortInTheVoyage 
+                            @voyageId='${voyageId}',
+                            @portNumber='${portNumber}'
+                    `);
+
+                } else {
+
+                    return this.portRepository.find({
+                        where: [
+                            // hacemos un where donde buscamos por id.
+                            {
+                                voyageId: voyageId,
+                                portNumber: portNumber,
+                            }
+                        ],
+                        take: 1,
+                    });
                 }
-            ]
-        }).then(resultFind => {
+                
+            }
+        ).then( resultFind  => {
 
-            // No vlaidamos resultado por que tambien puede ser underfine.
+            if(resultFind && resultFind.length) { 
+                let prueba = resultFind[0]
+                return resultFind[0];
+            }
+            else {
+                return null
+            }
 
-            // Enviamos el puerto encontrado.
-            return resultFind;
-
+        }).catch(err => {
+              throw '';
         });
     }
 }

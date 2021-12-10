@@ -226,19 +226,31 @@ export class UsersService {
 
         return await DummyPromise().then(
             result => {
+
+
+                if (URL_Server.bd === 'MSSQL') {
+                
+                    return this.userRepository.query(`
+                        EXEC SP_GetUserByNick
+                            @nick = ${nick}
+                    `)
                 //
-                return this.userRepository.findOne({
-                    where: [
-                        // hacemos un where donde buscamos por email.
-                        { nick: nick }
-                    ]
-                });
+
+                }
+                else {
+                    return this.userRepository.find({
+                        where: [
+                            // hacemos un where donde buscamos por email.
+                            { nick: nick }
+                        ]
+                    });
+                }
             }
-        ).then((resultUser: UserEntity) => {
+        ).then((resultUser: any) => {
 
-            if (!resultUser) throw new Error('user_was_not_found');
+            if (!resultUser || (resultUser && !resultUser.length)) throw new Error('user_was_not_found');
 
-            return resultUser;
+            return resultUser [0];
         });
     }
 
