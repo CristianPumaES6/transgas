@@ -567,10 +567,6 @@ export class UsersService {
 
                 return user;
             }
-        ).catch(
-            error => {
-                throw 'ERROR MIGRACION SQLSERVER.'
-            }
         )
     }
 
@@ -603,11 +599,7 @@ export class UsersService {
             if (!resultUser || (resultUser && !resultUser.length)) throw new Error('user_was_not_found');
 
             return resultUser[0];
-        }).catch(
-            error => {
-                throw 'ERROR MIGRACION SQLSERVER.'
-            }
-        );
+        });
     }
 
     // Actualiza el filename del usuario ademas retorna el newfilename.
@@ -637,11 +629,7 @@ export class UsersService {
 
             // Envio respuesta con el resultado recibido del ultimo paso
             return urlImage;
-        }).catch(
-            error => {
-                throw 'ERROR MIGRACION SQLSERVER.'
-            }
-        );
+        });
     }
 
 }
