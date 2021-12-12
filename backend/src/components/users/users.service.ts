@@ -161,7 +161,7 @@ export class UsersService {
                     ,@password ='${user.password || ''}'
                     ,@language ='${user.language || ''}'
                     ,@role ='${user.role || ''}'
-                    ,@years  ='[]'
+                    ,@years  ='${user.years || '[]' }'
                     ,@minSpeed  = ${user.minSpeed || 0}
                     ,@maxSpeed  = ${user.maxSpeed || 0}
                     ,@isConsumptionIFO  = ${user.isConsumptionIFO || 0}
@@ -342,7 +342,7 @@ export class UsersService {
                     ,@password ='${user.password || ''}'
                     ,@language ='${user.language || ''}'
                     ,@role ='${user.role || ''}'
-                    ,@years  ='[]'
+                    ,@years  ='${user.years || '[]'}'
                     ,@minSpeed  = ${user.minSpeed || 0}
                     ,@maxSpeed  = ${user.maxSpeed || 0}
                     ,@isConsumptionIFO  = ${user.isConsumptionIFO || 0}
