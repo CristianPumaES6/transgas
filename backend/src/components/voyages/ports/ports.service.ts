@@ -104,7 +104,7 @@ export class PortsService {
                 if (URL_Server.bd === 'MSSQL') {
                     // Ejecutamos el storeProceude creado.
                     return this.portRepository.query(`
-                  EXEC SP_BuscarPuertoPorId  @portId = ${ id}
+                  EXEC SP_BuscarPuertoPorId  @portId = ${id}
               `)
                 } else {
                     return this.portRepository.findOne({
@@ -114,19 +114,19 @@ export class PortsService {
                         }
                     })
                 }
-            
-            }) .then(
-            (resultFind ) => {
-                // Validamos si encontro al usuario.
-                if (!resultFind) throw 'port_does_not_exist';
-                if (URL_Server.bd === 'MSSQL') {
-                if(resultFind && resultFind.length == 0){ throw 'port_does_not_exist'}
-                resultFind = resultFind[0];
+
+            }).then(
+                (resultFind) => {
+                    // Validamos si encontro al usuario.
+                    if (!resultFind) throw 'port_does_not_exist';
+                    if (URL_Server.bd === 'MSSQL') {
+                        if (resultFind && resultFind.length == 0) { throw 'port_does_not_exist' }
+                        resultFind = resultFind[0];
+                    }
+                    // retornamos el objeto.
+                    return resultFind;
                 }
-                // retornamos el objeto.
-                return resultFind;
-            }
-        );
+            );
     }
 
     // Retorna todos los viajes segun filtro.
