@@ -11,6 +11,7 @@ import { Not } from "typeorm";
 import { DummyPromise } from '../../assets/promises.assets';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity'; // < Suele cambiar.
 import { URL_Server } from '../../config/server.config';
+import { Port } from 'src/models/port.entity';
 
 
 @Injectable()
@@ -111,19 +112,36 @@ export class VoyagesService {
 
     // Retorna a un objeto por id.
     async Get(id: Number): Promise<Voyage> {
-        // Hacemos una busqueda por id
-        return await this.voyageRepository.findOne({
-            where: {
-                id: id,
-                status: Not(false)
+
+
+        // Hacemos where por todos los campos de la entidad
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this.voyageRepository.query(`EXEC SP_ObtenerViajePorId @voyageId=${id || 0}`);
+                } else {
+
+                    return this.voyageRepository.find({
+                        where: {
+                            id: id,
+                            status: Not(false)
+                        }
+                    });
+
+                }
+
             }
-        }).then(
-            (resultFind: Voyage) => {
+        ).then(
+            (resultFind: Voyage[]) => {
                 // Validamos si encontro al usuario.
                 if (!resultFind) throw new Error('voyage_does_not_exist');
+                if (resultFind && resultFind.length == 0) throw new Error('voyage_does_not_exist');
 
                 // retornamos el objeto.
-                return resultFind;
+                let voyageReturn = resultFind[0];
+                return voyageReturn;
             }
         );
     }
@@ -160,30 +178,75 @@ export class VoyagesService {
     // Retorna todos los viajes segun filtro.
     async GetsDetails(voyage: Voyage, page: number = 1): Promise<Voyage[]> {
 
-        // Hacemos where por todos los campos de la entidad
-        return await this.voyageRepository.find({
-            relations: ["ports"],
-            where: [
-                // name && surname && nick && email
-                {
-                    userId: Like('%' + (voyage.userId || '') + '%'),
-                    voyageNumber: Like('%' + (voyage.voyageNumber || '') + '%'),
-                    year: Like('%' + (voyage.year || '') + '%'),
-                    status: Not(false)
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd == 'MSSQL') {
+                    return this.InfoVoyage(voyage.userId)
+                } else {
+                    return this.voyageRepository.find({
+                        relations: ["ports"],
+                        where: [
+                            // name && surname && nick && email
+                            {
+                                userId: Like('%' + (voyage.userId || '') + '%'),
+                                voyageNumber: Like('%' + (voyage.voyageNumber || '') + '%'),
+                                year: Like('%' + (voyage.year || '') + '%'),
+                                status: Not(false)
+                            }
+                        ],
+                        take: 5,
+                        skip: 5 * (page - 5),
+                        order: {
+                            voyageNumber: 'DESC',
+                        }
+                    })
                 }
-            ],
-            take: 5,
-            skip: 5 * (page - 5),
-            order: {
-                voyageNumber: 'DESC',
             }
-        }).then(
+        ).then(
             (result: Voyage[]) => {
 
                 // No lo validamos por que puede llegar vacio.
                 return result;
             }
+        ).catch(
+            result => {
+                throw result;
+            }
         );
+
+    }
+
+    private async InfoVoyage(userId: number): Promise<Voyage[]> {
+
+        let voyages: Voyage[] = [];
+
+        if (URL_Server.bd === 'MSSQL') {
+            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}`);
+        }
+
+        let viajesConPuerto: Voyage[] = [];
+        for await (let voyage of voyages) {
+
+
+
+            let puertos: Port[] = await this.voyageRepository.query(`EXEC SP_ObtenerLosPuertoDeUnViaje @userId=${userId || 0}, @voyageId=${voyage.id || 0}`);
+            let puertosConReportes: Port[] = [];
+            for await (let puerto of puertos) {
+                let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @portId=${puerto.id || 0}`);
+                puerto.dailyReports = reportes;
+
+                puertosConReportes.push(puerto)
+            }
+
+
+
+            voyage.ports = puertosConReportes;
+            viajesConPuerto.push(voyage)
+
+        }
+
+        return viajesConPuerto;
 
     }
 
@@ -243,16 +306,33 @@ export class VoyagesService {
 
     // Elimina a un voyage por id
     async Delete(voyage: Voyage): Promise<Voyage> {
-        // Eliminamos de la base de dato al usuario.
-        return await this.voyageRepository.update(voyage.id, voyage).then(
-            resultSave => {
+
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd == 'MSSQL') {
+
+                    return this.voyageRepository.query(`EXEC SP_DeleteVoyageById @voyageId=${voyage.id || 0} `);
+                } else {
+
+                    // Eliminamos de la base de dato al usuario.
+                    return this.voyageRepository.update(voyage.id, voyage)
+                }
+            }
+        ).then(
+            (resultSave: any) => {
 
                 // Validamos si encontro al usuario.
                 if (!resultSave) throw new Error('error_update_delete_voyage');
+                if (URL_Server.bd == 'MSSQL') {
+                    if (resultSave && resultSave.length == 0) throw new Error('error_update_delete_voyage');
+                } else {
 
+                }
                 return voyage;
             }
         );
+
     }
 
 
