@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
+import * as bodyParser from 'body-parser';
 // Express
 import * as express from 'express';
 import { FOLDER_UPLOADS,FOLDER_STATIC, FOLDER_FRONTEND } from './config/path.config';
@@ -16,6 +17,10 @@ async function bootstrap() {
     'optionsSuccessStatus': 204,
     'credentials': true,
   };
+
+  // the next two lines did the trick
+  // app.use(bodyParser.json({limit: '50mb'}));
+  // pp.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
   
   // Habilitamos el CORS
   // app.use(cors(options))
