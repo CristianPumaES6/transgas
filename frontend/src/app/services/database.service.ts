@@ -849,8 +849,8 @@ export class DatabaseService {
             }
         ).then(
             (results: DailyReport[]) => { 
-                return results[0];
-
+                
+                return results.find(report=> report.status)
             }
         );
     }
