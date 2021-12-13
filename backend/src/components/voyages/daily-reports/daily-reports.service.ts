@@ -4,7 +4,7 @@ import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoya
 import { Like, Not, Repository } from 'typeorm';
 import { URL_Server } from 'src/config/server.config';
 import { DummyPromise } from 'src/assets/promises.assets';
-import { FormatDateUTCToDateHour } from 'src/assets/moment.assets';
+import { FormatDateUTCToDateHour, GetDate } from 'src/assets/moment.assets';
 
 @Injectable()
 export class DailyReportsService {
@@ -151,7 +151,34 @@ export class DailyReportsService {
             if (!resultFind) throw new Error('does_not_exist');
             if (URL_Server.bd === 'MSSQL') {
                 // Buscamos el viaje
-                return this._dailyReportRepository.query(`EXEC SP_UpdateDailyReport  @id = ${dailyReport.userId} ,@userId = ${dailyReport.userId} ,@portId = ${dailyReport.portId} ,@activityPerformed = '${dailyReport.activityPerformed}' ,@speedStraction = '${dailyReport.speedStraction}' ,@date ='${dailyReport.date?FormatDateUTCToDateHour(dailyReport.date):''}' ,@hour = '${dailyReport.hour}' ,@bunkeringIfo = ${dailyReport.bunkeringIfo} ,@bunkeringMgo = ${dailyReport.bunkeringMgo} ,@mplaIfo  = ${dailyReport.mplaIfo} ,@auxIfo  = ${dailyReport.auxIfo} ,@boilerIfo  = ${dailyReport.boilerIfo} ,@otherIfo = ${dailyReport.otherIfo} ,@mplaMgo = ${dailyReport.mplaMgo} ,@auxMgo   = ${dailyReport.auxMgo} ,@boilerMgo   = ${dailyReport.boilerMgo} ,@ppMgo = ${dailyReport.ppMgo} ,@giMgo = ${dailyReport.giMgo} ,@otherMgo  = ${dailyReport.otherMgo} ,@steamingTime  = ${dailyReport.steamingTime} ,@distance =${dailyReport.distance} ,@beaufour = '${dailyReport.beaufour}' ,@observation ='${dailyReport.observation}'  ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} ,@dateUpdated = '${dailyReport.dateUpdated || ''}' ,@status = ${dailyReport.status}
+                return this._dailyReportRepository.query(`
+                EXEC SP_UpdateDailyReport  
+                @id = ${dailyReport.userId} 
+                ,@userId = ${dailyReport.userId} 
+                ,@portId = ${dailyReport.portId} 
+                ,@activityPerformed = '${dailyReport.activityPerformed}' 
+                ,@speedStraction = '${dailyReport.speedStraction}' 
+                ,@date ='${dailyReport.date?FormatDateUTCToDateHour(dailyReport.date):''}' 
+                ,@hour = '${dailyReport.hour}' 
+                ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
+                ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
+                ,@mplaIfo  = ${dailyReport.mplaIfo} 
+                ,@auxIfo  = ${dailyReport.auxIfo}
+                 ,@boilerIfo  = ${dailyReport.boilerIfo} 
+                 ,@otherIfo = ${dailyReport.otherIfo}
+                  ,@mplaMgo = ${dailyReport.mplaMgo}
+                   ,@auxMgo   = ${dailyReport.auxMgo}
+                    ,@boilerMgo   = ${dailyReport.boilerMgo} 
+                    ,@ppMgo = ${dailyReport.ppMgo} 
+                    ,@giMgo = ${dailyReport.giMgo} 
+                    ,@otherMgo  = ${dailyReport.otherMgo} 
+                    ,@steamingTime  = ${dailyReport.steamingTime}
+                     ,@distance =${dailyReport.distance}
+                      ,@beaufour = '${dailyReport.beaufour}'
+                      ,@observation ='${dailyReport.observation}' 
+                       ,@userIdUpdated = ${dailyReport.userIdUpdated || 0}
+                        ,@dateUpdated = '${dailyReport.dateUpdated || ''}'
+                         ,@status = ${dailyReport.status}
                 `);
 
             } else {
@@ -173,7 +200,7 @@ export class DailyReportsService {
     }
 
     // Elimina a un voyage por id
-    async Delete(dailyReport: DailyReport): Promise<DailyReport> {
+    async Delete(dailyReport: DailyReport,usuarioDelete:number): Promise<DailyReport> {
         return   DummyPromise().then(
             result => { 
                 return this.Get(dailyReport.id);
@@ -182,9 +209,12 @@ export class DailyReportsService {
             // Validamos si encontro al usuario.
             if (!resultFind) throw new Error('does_not_exist');
 
+
+            resultFind.userIdUpdated = usuarioDelete;
+            resultFind.dateUpdated = GetDate();
             resultFind.status = false;
             // verificamos que el email no este en uso, recordemos que el email es unico.
-            return this.Update(dailyReport);
+            return this.Update(resultFind);
         }).then(
             resultSave => {
 

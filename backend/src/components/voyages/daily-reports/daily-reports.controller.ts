@@ -313,13 +313,14 @@ export class DailyReportsController {
             (result: DailyReport) => {
 
                 result.status = false;
+                /* 
                 delete result.userIdCreated;
                 delete result.dateCreated;
                 result.userIdUpdated = headerToken.id;
-                result.dateUpdated = FormatDateUTCToDateHour(GetDate());
-
+                result.dateUpdated =  GetDate();
+ */
                 // 
-                return this._dailyReportsService.Delete(result);
+                return this._dailyReportsService.Delete(result, headerToken.id);
             }
         ).then(
             (resultDelete: DailyReport) => {
