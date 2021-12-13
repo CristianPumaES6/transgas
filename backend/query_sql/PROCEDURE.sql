@@ -299,196 +299,6 @@ GO
 
 
 
- /*
- 
--- USUARIO : 
--- Create by: Cristian Puma Villalva
--- Date     :  2021/12/10
--- Update by: 
--- Date     :
-
-
- EXEC SP_CreateNewPort
-	@userId =1,
-	@voyageId =1,
-	@portNumber =1,
-	@departurePort ='',
-	@arrivalPort = '',
-	@userIdCreated =1,
-	@dateCreated ='',
-	@userIdUpdated =1,
-	@dateUpdated ='',
-	@status =1
-
-	*/
-CREATE OR ALTER PROCEDURE SP_CreateNewPort
-	@userId int,
-	@voyageId int,
-	@portNumber int,
-	@departurePort nvarchar(255),
-	@arrivalPort nvarchar(255),
-	@userIdCreated int,
-	@dateCreated nvarchar(255),
-	@userIdUpdated int,
-	@dateUpdated nvarchar(255),
-	@status bit
-AS
-BEGIN
-
-
-
-	DECLARE @OutputTable TABLE ("id" int);
-	
-	
-	INSERT INTO "port"("userId", "voyageId", "portNumber", "departurePort", "arrivalPort", "userIdCreated", "dateCreated", "userIdUpdated", "dateUpdated", "status")
-	OUTPUT INSERTED."id" INTO @OutputTable VALUES (@userId, @voyageId, @portNumber, @departurePort, @arrivalPort, @userIdCreated, @dateCreated, @userIdUpdated, @dateUpdated, @status);
-	
-	 SELECT TOP 1 * FROM PORT WHERE PORT.id = (SELECT TOP 1 id FROM  @OutputTable);
-
-
-END
-
-GO 
-
-
-
- /*
- 
--- USUARIO : 
--- Create by: Cristian Puma Villalva
--- Date     :  2021/12/10
--- Update by: 
--- Date     :
-
-
- EXEC SP_CreateNewDailyReport
-			@userId = 1
-           ,@portId = 2
-           ,@activityPerformed = ''
-           ,@speedStraction = 'asd'
-           ,@date =''
-           ,@hour = ''
-           ,@bunkeringIfo = 0
-           ,@bunkeringMgo = 0
-           ,@mplaIfo  = 0
-           ,@auxIfo  = 0
-           ,@boilerIfo  = 0
-           ,@otherIfo = 0
-           ,@mplaMgo = 0
-           ,@auxMgo   = 0
-           ,@boilerMgo   = 0
-           ,@ppMgo = 0
-           ,@giMgo = 0
-           ,@otherMgo  = 0
-           ,@steamingTime  = 0
-           ,@distance =0
-           ,@beaufour = ''
-           ,@observation ='' 
-			,@userIdCreated = 0
-			,@dateCreated = ''
-			,@userIdUpdated = 0
-			,@dateUpdated = ''
-			,@status = 0
-
-	*/
-CREATE OR ALTER PROCEDURE SP_CreateNewDailyReport
-			@userId int 
-           ,@portId int 
-           ,@activityPerformed nvarchar(255) 
-           ,@speedStraction nvarchar(255) 
-           ,@date datetime 
-           ,@hour nvarchar(255) 
-           ,@bunkeringIfo  int  
-           ,@bunkeringMgo   int 
-           ,@mplaIfo   int 
-           ,@auxIfo  int 
-           ,@boilerIfo   int 
-           ,@otherIfo  int 
-           ,@mplaMgo  int 
-           ,@auxMgo  int 
-           ,@boilerMgo  int 
-           ,@ppMgo int 
-           ,@giMgo int 
-           ,@otherMgo int 
-           ,@steamingTime  int 
-           ,@distance int 
-           ,@beaufour nvarchar(255) 
-           ,@observation nvarchar(255),
-			@userIdCreated int,
-			@dateCreated nvarchar(255),
-			@userIdUpdated int,
-			@dateUpdated nvarchar(255),
-			@status bit
-AS
-BEGIN
-
-
-
-	DECLARE @OutputTable TABLE ("id" int);
- 
-
- 
-INSERT INTO [dbo].[daily_report]
-           ([userId]
-           ,[portId]
-           ,[activityPerformed]
-           ,[speedStraction]
-           ,[date]
-           ,[hour]
-           ,[bunkeringIfo]
-           ,[bunkeringMgo]
-           ,[mplaIfo]
-           ,[auxIfo]
-           ,[boilerIfo]
-           ,[otherIfo]
-           ,[mplaMgo]
-           ,[auxMgo]
-           ,[boilerMgo]
-           ,[ppMgo]
-           ,[giMgo]
-           ,[otherMgo]
-           ,[steamingTime]
-           ,[distance]
-           ,[beaufour]
-           ,[observation]
-           ,[userIdCreated]
-           ,[dateCreated]
-           ,[userIdUpdated]
-           ,[dateUpdated]
-           ,[status])
-    OUTPUT INSERTED."id" INTO @OutputTable VALUES 
-           (@userId   
-           ,@portId   
-           ,@activityPerformed  
-           ,@speedStraction 
-           ,@date 
-           ,@hour 
-           ,@bunkeringIfo  
-           ,@bunkeringMgo  
-           ,@mplaIfo  
-           ,@auxIfo  
-           ,@boilerIfo    
-           ,@otherIfo  
-           ,@mplaMgo  
-           ,@auxMgo  
-           ,@boilerMgo 
-           ,@ppMgo 
-           ,@giMgo 
-           ,@otherMgo 
-           ,@steamingTime  
-           ,@distance  
-           ,@beaufour 
-           ,@observation 
-           ,@userIdCreated, @dateCreated, @userIdUpdated, @dateUpdated, @status);
-	
- SELECT TOP 1 * FROM daily_report WHERE daily_report.id = (SELECT TOP 1 id FROM  @OutputTable);
-
-
-END
-
-GO 
-
-
 
 
 							
@@ -1026,9 +836,7 @@ GO
            ,@consumptionEquipmentME_IFO   = 0
            ,@consumptionEquipmentAE_IFO   = 0
            ,@consumptionEquipmentBOILER_IFO   = 0
-           ,@consumptionEquipmentOther_IFO   = 0
-           ,@userIdCreated   = 0
-           ,@dateCreated   = ''
+           ,@consumptionEquipmentOther_IFO   = 0 
            ,@userIdUpdated   = 0
            ,@dateUpdated   = ''
            ,@status   = 1
@@ -1102,8 +910,6 @@ CREATE OR ALTER PROCEDURE SP_UpdateUser
            ,@consumptionEquipmentAE_IFO  int
            ,@consumptionEquipmentBOILER_IFO  int
            ,@consumptionEquipmentOther_IFO  int
-           ,@userIdCreated  int
-           ,@dateCreated  nvarchar(255)
            ,@userIdUpdated  int
            ,@dateUpdated  nvarchar(255)
            ,@status  bit
@@ -1181,8 +987,6 @@ BEGIN
 			,consumptionEquipmentAE_IFO =@consumptionEquipmentAE_IFO 
 			,consumptionEquipmentBOILER_IFO=@consumptionEquipmentBOILER_IFO
 			,consumptionEquipmentOther_IFO=@consumptionEquipmentOther_IFO
-			,userIdCreated=@userIdCreated
-            ,dateCreated=@dateCreated
             ,userIdUpdated=@userIdUpdated
             ,dateUpdated=@dateUpdated
             ,status=@status

@@ -79,3 +79,28 @@ BEGIN
 END
 
 GO 
+
+
+
+
+
+/*
+
+EXEC SP_ObtenerLosReportesDelPuerto @portId
+
+*/
+CREATE OR ALTER PROCEDURE  SP_ObtenerLosReportesDelPuerto
+ 	 @portId int
+AS
+BEGIN
+
+	SELECT * FROM daily_report
+
+	WHERE daily_report.portId = @portId
+	AND daily_report.status = 1
+
+END
+
+GO 
+
+
