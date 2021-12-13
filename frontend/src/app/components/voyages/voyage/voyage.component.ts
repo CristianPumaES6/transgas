@@ -118,20 +118,20 @@ export class VoyageComponent implements OnInit {
     // Si se recibe algun cambio de conexion, se resetea el formulario.
     this.onlineOfflineService.emitterReloadData.subscribe(
       (isOnline: boolean) => {
-        this.loadDataIndexedDB(this.selectUser);
+   //    this.loadDataIndexedDB(this.selectUser);
 
-        this.List_Voyages_Ports_DailyReports = 'Voyages';
-        this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
-        this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
-        this.SettingAzList.isNew = true;
-        this.SettingAzList.isBack = false;
-        this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
-        this.SettingAzList.toolTipBack = ''
-        this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
-        this.SettingAzList.activateSelectItemEmit2 = true;
-        this.selectPort = new Port();
-        this.title_header_media = '';
-        this.sub_title_header_media = '';
+   //    this.List_Voyages_Ports_DailyReports = 'Voyages';
+   //    this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
+   //    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
+   //    this.SettingAzList.isNew = true;
+   //    this.SettingAzList.isBack = false;
+   //    this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+   //    this.SettingAzList.toolTipBack = ''
+   //    this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
+   //    this.SettingAzList.activateSelectItemEmit2 = true;
+   //    this.selectPort = new Port();
+   //    this.title_header_media = '';
+   //    this.sub_title_header_media = '';
 
       }
     );
@@ -1229,7 +1229,7 @@ export class VoyageComponent implements OnInit {
   private CreateVoyageOnlineOffline(newVoyage: Voyage) {
 
     // Verificamos si estamos en linea
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
 
       this.voyageService.Create(newVoyage).subscribe(
         (resultCreate: Voyage) => {
@@ -1323,7 +1323,7 @@ export class VoyageComponent implements OnInit {
 
   private DeleteVoyageOnlineOffline(voyageDelete: Voyage) {
 
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
 
       // Guardo el objeto obtenido
       this.voyageService.Delete(voyageDelete).subscribe(
@@ -1453,7 +1453,7 @@ export class VoyageComponent implements OnInit {
     if (error) throw 'OK';
 
     // Verificamos si estamos en linea
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
 
       this.portService.Create(newPort).subscribe(
         (resultCreate: Port) => {
@@ -1594,7 +1594,7 @@ export class VoyageComponent implements OnInit {
     if (error) throw 'OK';
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
       // ENcapsulamos el valor antes qie se elimine en el lservicio.
       let totalReport = portToSave.totalReport;
       // Guardo el objeto obtenido
@@ -1730,7 +1730,7 @@ export class VoyageComponent implements OnInit {
 
   private DeletePortOnlineOffline(portDelete: Port) {
 
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
       // Guardo el objeto obtenido
       this.portService.Delete(portDelete).subscribe(
         (result: Port) => {
@@ -1908,7 +1908,7 @@ export class VoyageComponent implements OnInit {
     if (error) throw 'OK';
 
     // Verificamos si estamos en linea
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
 
       this.dailyReportService.Create(newDailyReport).subscribe(
         (resultCreate: DailyReport) => {
@@ -2109,7 +2109,7 @@ export class VoyageComponent implements OnInit {
 
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
 
       // Guardo el objeto obtenido
       this.dailyReportService.Save(dailyReportToSave).subscribe(
@@ -2216,7 +2216,7 @@ export class VoyageComponent implements OnInit {
 
   private DeleteDailyReportOnlineOffline(dailyReportDelete: DailyReport) {
 
-    if (this.onlineOfflineService.GetStatusOnline()) {
+    if (false) {
       // Guardo el objeto obtenido
       this.dailyReportService.Delete(dailyReportDelete).subscribe(
         (result: DailyReport) => {
@@ -2436,7 +2436,6 @@ export class VoyageComponent implements OnInit {
 
         this.databaseService.GetLastReportDailys().then(
           result => {
-
 
             this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
 
