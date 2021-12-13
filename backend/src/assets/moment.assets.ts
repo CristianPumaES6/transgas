@@ -21,3 +21,15 @@ export function ConvertMMDDYYYToYYYYMMDD(dateMMDDYYY: any): Date {
     return new Date(date.format("YYYY/MM/DD"));
 
 }
+
+
+export function FormatDateUTCToDateHour(dateUTC:any): string{
+    // Con el formato YYYY MM DD
+    let momentDate = moment.utc(dateUTC);
+
+    let local = momentDate.local();
+
+    let format = local.format('MM/DD/YYYY HH:mm');
+    
+    return format;
+}

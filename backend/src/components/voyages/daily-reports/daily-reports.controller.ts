@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { JwtDecode } from '../../../assets/jwtDecode.assets';
-import { GetDate } from '../../../assets/moment.assets';
+import { FormatDateUTCToDateHour, GetDate } from '../../../assets/moment.assets';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
 import { UserEntity } from '../../../models/user.entity';
@@ -316,7 +316,7 @@ export class DailyReportsController {
                 delete result.userIdCreated;
                 delete result.dateCreated;
                 result.userIdUpdated = headerToken.id;
-                result.dateUpdated = GetDate();
+                result.dateUpdated = FormatDateUTCToDateHour(GetDate());
 
                 // 
                 return this._dailyReportsService.Delete(result);

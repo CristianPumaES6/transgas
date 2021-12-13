@@ -15,6 +15,7 @@ import { URL_Server } from '../../config/server.config'
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
+import { ConvertMMDDYYYToYYYYMMDD, GetDate } from 'src/assets/moment.assets';
 
 
 @Injectable()
@@ -125,7 +126,8 @@ export class UsersService {
                         where: [
                             // hacemos un where donde buscamos por nick o email.
                             {
-                                nick: user.nick
+                                nick: user.nick,
+                                status: Not(false)
                             }
                         ]
                     })
@@ -300,7 +302,8 @@ export class UsersService {
                         // hacemos un where donde buscamos por email y no sea del mismo id.
                         {
                             id: Not(user.id),
-                            nick: userfind.nick
+                            nick: user.nick,
+                            status: Not(false)
                         }
                     ]
                 });
@@ -308,7 +311,8 @@ export class UsersService {
 
         }).then(result => {
 
-            if (!result && result.length > 0) throw 'REPEAT_NICK'
+            if (!result) throw 'REPEAT NICK ERROR:22323'
+            if ( result && result.length > 0) throw 'REPEAT_NICK'
 
             // Si existe el password lo encriptamos.
             if (user.password) {
@@ -402,8 +406,6 @@ export class UsersService {
                     ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
                     ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
                     ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
-                    ,@userIdCreated   = ${user.userIdCreated || 0}
-                    ,@dateCreated   = '${user.dateCreated || ''}'
                     ,@userIdUpdated   = ${user.userIdUpdated || 0}
                     ,@dateUpdated   = '${user.dateUpdated || ''}'
                     ,@status   = ${user.status || 0}
@@ -434,7 +436,7 @@ export class UsersService {
     }
 
     // Elimina a un usuario por id
-    async Delete(userId: number): Promise<UserEntity> {
+    async Delete(userId: number,deleteUserId:number): Promise<UserEntity> {
 
 
         let user: UserEntity = new UserEntity();
@@ -468,13 +470,15 @@ export class UsersService {
             user = resultFind[0];
             // Desactivamos el estado.
             user.status = false;
+            user.userIdUpdated = deleteUserId;
+            user.dateUpdated =  GetDate() ;
 
 
             if (URL_Server.bd === 'MSSQL') {
 
                 return this.userRepository.query(
-                    `
-                                    
+                `
+
                 EXEC SP_UpdateUser
                 @id = '${user.id}'
                 ,@nick ='${user.nick || ''}'
@@ -543,13 +547,11 @@ export class UsersService {
                 ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
                 ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
                 ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
-                ,@userIdCreated   = ${user.userIdCreated || 0}
-                ,@dateCreated   = '${user.dateCreated || ''}'
                 ,@userIdUpdated   = ${user.userIdUpdated || 0}
                 ,@dateUpdated   = '${user.dateUpdated || ''}'
                 ,@status   = ${user.status || 0}
 
-`
+                `
                 );
 
             } else {
@@ -589,7 +591,9 @@ export class UsersService {
                     return this.userRepository.find({
                         where: [
                             // hacemos un where donde buscamos por email.
-                            { nick: nick }
+                            { nick: nick ,
+                                status: Not(false)
+                            }
                         ]
                     });
                 }
@@ -620,7 +624,7 @@ export class UsersService {
 
                 }
                 else {
-                    this.userRepository.update(id, { filename: urlImage })
+                    return this.userRepository.update(id, { filename: urlImage })
                 }
             }
         ).then(resultUpdate => {

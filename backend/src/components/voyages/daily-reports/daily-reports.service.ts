@@ -4,6 +4,7 @@ import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoya
 import { Like, Not, Repository } from 'typeorm';
 import { URL_Server } from 'src/config/server.config';
 import { DummyPromise } from 'src/assets/promises.assets';
+import { FormatDateUTCToDateHour } from 'src/assets/moment.assets';
 
 @Injectable()
 export class DailyReportsService {
@@ -76,19 +77,37 @@ export class DailyReportsService {
 
     // Retorna a un objeto por id.
     async Get(id: Number): Promise<DailyReport> {
-        // Hacemos una busqueda por id
-        return await this._dailyReportRepository.findOne({
-            where: {
-                id: id,
-                status: Not(false)
+        
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this._dailyReportRepository.query(`
+                     EXEC SP_BuscarReportePorId 
+                    @dailyReportId = ${id} 
+                    `);
+
+                } else {
+                    return this._dailyReportRepository.find({
+                        where: {
+                            id: id,
+                            status: Not(false)
+                        }
+                    });
+                }
+
             }
-        }).then(
-            (resultFind: DailyReport) => {
+        ).then(
+            (resultFind: DailyReport[]) => {
                 // Validamos si encontro al usuario.
                 if (!resultFind) throw new Error('does_not_exist');
+                if (resultFind && resultFind.length == 0) throw new Error('does_not_exist');
 
+
+                let returnDailyReport = resultFind[0];
                 // retornamos el objeto.
-                return resultFind;
+                return returnDailyReport;
             }
         );
     }
@@ -123,24 +142,31 @@ export class DailyReportsService {
     // Actualiza un voyage
     async Update(dailyReport: DailyReport): Promise<DailyReport> {
 
-        // Hacemos una busqueda por id
-        return await this._dailyReportRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                { id: dailyReport.id }
-            ]
+        return DummyPromise().then
+        (result => {
+            return this.Get(dailyReport.id);
         }).then(resultFind => {
 
             // Validamos si encontro al SailingAnality.
             if (!resultFind) throw new Error('does_not_exist');
+            if (URL_Server.bd === 'MSSQL') {
+                // Buscamos el viaje
+                return this._dailyReportRepository.query(`EXEC SP_UpdateDailyReport  @id = ${dailyReport.userId} ,@userId = ${dailyReport.userId} ,@portId = ${dailyReport.portId} ,@activityPerformed = '${dailyReport.activityPerformed}' ,@speedStraction = '${dailyReport.speedStraction}' ,@date ='${dailyReport.date?FormatDateUTCToDateHour(dailyReport.date):''}' ,@hour = '${dailyReport.hour}' ,@bunkeringIfo = ${dailyReport.bunkeringIfo} ,@bunkeringMgo = ${dailyReport.bunkeringMgo} ,@mplaIfo  = ${dailyReport.mplaIfo} ,@auxIfo  = ${dailyReport.auxIfo} ,@boilerIfo  = ${dailyReport.boilerIfo} ,@otherIfo = ${dailyReport.otherIfo} ,@mplaMgo = ${dailyReport.mplaMgo} ,@auxMgo   = ${dailyReport.auxMgo} ,@boilerMgo   = ${dailyReport.boilerMgo} ,@ppMgo = ${dailyReport.ppMgo} ,@giMgo = ${dailyReport.giMgo} ,@otherMgo  = ${dailyReport.otherMgo} ,@steamingTime  = ${dailyReport.steamingTime} ,@distance =${dailyReport.distance} ,@beaufour = '${dailyReport.beaufour}' ,@observation ='${dailyReport.observation}'  ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} ,@dateUpdated = '${dailyReport.dateUpdated || ''}' ,@status = ${dailyReport.status}
+                `);
 
+            } else {
+                return this._dailyReportRepository.update(dailyReport.id, dailyReport);
+
+            }
             // Actualizamos
-            return this._dailyReportRepository.update(dailyReport.id, dailyReport);
-
+          
         }).then(resultUpdate => {
 
             if (!resultUpdate) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
-
+            if (URL_Server.bd === 'MSSQL') {
+                
+            // if ( resultUpdate && resultUpdate.length == 0) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+            }
             // Envio respuesta con el resultado recibido del ultimo paso
             return dailyReport;
         });
@@ -148,19 +174,17 @@ export class DailyReportsService {
 
     // Elimina a un voyage por id
     async Delete(dailyReport: DailyReport): Promise<DailyReport> {
-        // Eliminamos de la base de dato al usuario.
-        return await this._dailyReportRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                { id: dailyReport.id }
-            ]
-        }).then(resultFind => {
+        return   DummyPromise().then(
+            result => { 
+                return this.Get(dailyReport.id);
+            }
+        ).then(resultFind => {
             // Validamos si encontro al usuario.
             if (!resultFind) throw new Error('does_not_exist');
 
             resultFind.status = false;
             // verificamos que el email no este en uso, recordemos que el email es unico.
-            return this._dailyReportRepository.update(dailyReport.id, resultFind);
+            return this.Update(dailyReport);
         }).then(
             resultSave => {
 
@@ -169,7 +193,7 @@ export class DailyReportsService {
 
                 return dailyReport;
             }
-        );
+        ) 
     }
 
     // QUERY PERSONALIZATE
