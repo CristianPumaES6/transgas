@@ -260,7 +260,7 @@ export class DailyReportService {
                     }
                 }
             ), catchError((err) => {
-                debugger
+                
                 return this.authGuardService.HandleError(err);
             })
         );
