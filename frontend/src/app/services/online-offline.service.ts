@@ -57,7 +57,8 @@ export class OnlineOfflineService {
         if (!this.isOnline) {
           this.isOnline = true;
 
-          // Sincronizamos la bd.
+          // Luego de la sincronizacion, cambiamos el estado.
+    /* 
           this.databaseService.Sync().then(
             result => {
 
@@ -71,8 +72,16 @@ export class OnlineOfflineService {
               // Emitimos una notificacion.
               this.notificationsService.warn('Online', '');
 
-            });
+          });
+    */
 
+            // Solo cmabiamos el estado.
+              this.UpdateOnlineStatus();
+              // Emitir reloadData, esto sirve para saber si debemos de volver a cargar la data.
+              this.emitterReloadData.emit();
+
+              // Emitimos una notificacion.
+              this.notificationsService.warn('Online', '');
         }
       }
     );
