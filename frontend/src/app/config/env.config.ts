@@ -30,6 +30,6 @@ export const EnvConfig: EnvConfig = {
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
-    VERSION: 'v1.9M',
+    VERSION: 'v1.9P',
     SOCKET:'ws://localhost:4000'
 };
