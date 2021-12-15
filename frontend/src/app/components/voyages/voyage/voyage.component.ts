@@ -24,7 +24,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { ConvertMMDDYYYYHHmmToMomment, ConvertMoment, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { ConvertirDateHourToMoment2, ConvertMMDDYYYYHHmmToMomment, ConvertMoment, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -702,19 +702,15 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
 
-      // Verificamos que la fehca este bien       
-      if (this.selectDailyReport.hour.length > 0 && validateDate(this.selectDailyReport.date)) {
-        this.GenerateTimeOperation();
-      }
-
 
       if (!this.selectDailyReport.id) {
 
         let newDailyReport = this.selectDailyReport;
         newDailyReport.userId = this.selectUser.id;
         newDailyReport.portId = this.selectPort.id;
+
+        
         // Le agregamos la hora a la fecha.
-        newDailyReport.date = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
         newDailyReport.status = true;
 
         this.CreateDailyReportOnlineOffline(newDailyReport);
@@ -722,7 +718,6 @@ export class VoyageComponent implements OnInit {
       } else {
         let dailyReportToSave = this.selectDailyReport;
         // Le agregamos la hora a la fecha.
-        dailyReportToSave.date = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour).toDate();
 
         this.UpdateDailyReportOnelineOffline(dailyReportToSave);
 
@@ -936,6 +931,7 @@ export class VoyageComponent implements OnInit {
     // Le asignamos la hora lastRecort
     let convertMomentUTC = ConvertMomentUTC(dailyReportFind.date);
     let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime,'hours');
+    
     this.lastRecordedHour = FormatDateUTCToDateHour(restarStemintime)
 
     this.Initialize();
@@ -1904,7 +1900,10 @@ export class VoyageComponent implements OnInit {
     }
 
     if (error) throw 'OK';
-
+    
+    newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour) ;
+    newDailyReport.steamingTime= this.GenerateTimeOperation();
+      
     // Verificamos si estamos en linea
     if (false) {
 
@@ -2105,6 +2104,9 @@ export class VoyageComponent implements OnInit {
 
     if (error) throw 'OK';
 
+
+    dailyReportToSave.date = ConvertirDateHourToMoment2(dailyReportToSave.date, dailyReportToSave.hour) ;
+    dailyReportToSave.steamingTime= this.GenerateTimeOperation();
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (false) {
@@ -2444,7 +2446,7 @@ export class VoyageComponent implements OnInit {
             // ya que se inicia un nuevo reporte, verificamos los cambios de la actividad.
             this.ChangeActivityPerformed();
 
-            this.GenerateTimeOperation();
+            this.selectDailyReport.steamingTime=  this.GenerateTimeOperation();
           }
         )
       }
@@ -2459,12 +2461,12 @@ export class VoyageComponent implements OnInit {
   public onKeyUpEvent(event?: any): void {
 
     if (this.selectDailyReport.hour.length > 0 && validateDate(this.selectDailyReport.date)) {
-      this.GenerateTimeOperation();
+      this.selectDailyReport.steamingTime= this.GenerateTimeOperation();
     }
 
   }
 
-  private GenerateTimeOperation(): void {
+  private GenerateTimeOperation(): number {
 
     let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
     let momendate = ConvertMMDDYYYYHHmmToMomment(this.lastRecordedHour);
@@ -2472,8 +2474,7 @@ export class VoyageComponent implements OnInit {
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
 
 
-    // El tiempo de operacion se genera por la diferencia de fecha
-    this.selectDailyReport.steamingTime = this.MathRoundOneDecimal(diferentHour, 2);
+   return this.MathRoundOneDecimal(diferentHour, 2);
 
   }
 
