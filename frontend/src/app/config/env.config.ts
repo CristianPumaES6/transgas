@@ -17,14 +17,14 @@ export const EnvConfig: EnvConfig = {
 */
 
 
-/*
+/* 
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
-    VERSION: 'v1.9M',
+    VERSION: 'v1.9P',
     SOCKET: 'https://socket-transgas.codev.site'
-};
-*/
+}; */
+
 
 
 export const EnvConfig: EnvConfig = {

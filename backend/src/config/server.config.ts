@@ -11,11 +11,11 @@
 export const URL_Server = {
     front: 'https://transgas.web.app',
     back: 'https://transgas.codev.site',
-    version: 'v1.9M',
+    version: 'v1.9P',
     puertoSocket: 4000,
-    bd: 'MSSQL', // MSSQL, MYSQL
-};
-  */
+    bd: 'SQLITE', // MSSQL, MYSQL
+}; */
+ 
 
 export const URL_Server = {
     front: 'http://localhost:3001',
