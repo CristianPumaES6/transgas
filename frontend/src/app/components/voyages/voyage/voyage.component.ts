@@ -1901,8 +1901,9 @@ export class VoyageComponent implements OnInit {
 
     if (error) throw 'OK';
     
-    newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour) ;
     newDailyReport.steamingTime= this.GenerateTimeOperation();
+    newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour) ;
+
       
     // Verificamos si estamos en linea
     if (false) {
@@ -2104,9 +2105,9 @@ export class VoyageComponent implements OnInit {
 
     if (error) throw 'OK';
 
+    dailyReportToSave.steamingTime= this.GenerateTimeOperation();
 
     dailyReportToSave.date = ConvertirDateHourToMoment2(dailyReportToSave.date, dailyReportToSave.hour) ;
-    dailyReportToSave.steamingTime= this.GenerateTimeOperation();
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (false) {
