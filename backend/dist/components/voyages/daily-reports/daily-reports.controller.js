@@ -200,11 +200,7 @@ let DailyReportsController = class DailyReportsController {
             }
         }).then((result) => {
             result.status = false;
-            delete result.userIdCreated;
-            delete result.dateCreated;
-            result.userIdUpdated = headerToken.id;
-            result.dateUpdated = moment_assets_1.GetDate();
-            return this._dailyReportsService.Delete(result);
+            return this._dailyReportsService.Delete(result, headerToken.id);
         }).then((resultDelete) => {
             return {
                 status: common_1.HttpStatus.OK,
@@ -381,6 +377,40 @@ let DailyReportsController = class DailyReportsController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    GetReportByUser(headers, userId) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (userId) {
+                return true;
+            }
+            else {
+                throw new Error('MISSING_FIELS');
+            }
+        }).then((resultValidate) => {
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                return true;
+            }
+            else if (Number(userId) !== Number(headerToken.id)) {
+                throw new Error('ERROR_USERID_FAIL');
+            }
+        }).then((resultValidate) => {
+            return this._dailyReportsService.GetReportByUser(userId);
+        }).then((results) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: results
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
 };
 __decorate([
     common_1.Get(':id'),
@@ -452,6 +482,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Number, Date, Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetReportVoyagePortDaily", null);
+__decorate([
+    common_1.Get('get-report-by-user/:userId'),
+    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], DailyReportsController.prototype, "GetReportByUser", null);
 DailyReportsController = __decorate([
     common_1.Controller('daily-reports'),
     __metadata("design:paramtypes", [daily_reports_service_1.DailyReportsService])

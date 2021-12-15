@@ -7,11 +7,12 @@ export declare class DailyReportsService {
     Get(id: Number): Promise<DailyReport>;
     Gets(dailyReport: DailyReport): Promise<DailyReport[]>;
     Update(dailyReport: DailyReport): Promise<DailyReport>;
-    Delete(dailyReport: DailyReport): Promise<DailyReport>;
+    Delete(dailyReport: DailyReport, usuarioDelete: number): Promise<DailyReport>;
     GetROBByUser(userId: number): Promise<GetROBByUser>;
     GetStartEndROByFilterDate(startDate: Date, endDate: Date, userId: number): Promise<GetROBByUser[]>;
     GetBunkeringByUserIFO(userId: number): Promise<GetROBByUser>;
     GetBunkeringByUserMGO(userId: number): Promise<GetROBByUser>;
     GetReportVoyagePortDaily(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
+    GetReportByUser(userId: number): Promise<GetReportVoyagePortDaily[]>;
     GetInfoVoyageROBAndBunkeringByBuqueAndDate(startDate: Date, endDate: Date, userId: number): Promise<GetInfoVoyageROBBunkering[]>;
 }

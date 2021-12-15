@@ -13,4 +13,5 @@ export declare class DailyReportsController {
     GetBunkeringByBuque(headers: any, userId: number): Promise<any>;
     GetInfoVoyageROBAndBunkeringByBuqueAndDate(headers: any, userId: number, startDate: Date, endDate: Date): Promise<any>;
     GetReportVoyagePortDaily(headers: any, userId: number, startDate: Date, endDate: Date): Promise<any>;
+    GetReportByUser(headers: any, userId: number): Promise<any>;
 }

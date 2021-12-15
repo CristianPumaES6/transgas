@@ -36,7 +36,7 @@ __decorate([
 ], DailyReport.prototype, "activityPerformed", void 0);
 __decorate([
     typeorm_1.Column({ default: '', nullable: false }),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], DailyReport.prototype, "speedStraction", void 0);
 __decorate([
     typeorm_1.Column(),

@@ -375,7 +375,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "status", void 0);
 UserEntity = __decorate([
-    typeorm_1.Entity('User'),
+    typeorm_1.Entity('user'),
     __metadata("design:paramtypes", [Number, String, String, String, String, String, String, String, Number, Number, Boolean, Boolean, Boolean, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, String, Number, String, Boolean])
 ], UserEntity);
 exports.UserEntity = UserEntity;

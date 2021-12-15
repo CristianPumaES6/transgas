@@ -7,6 +7,7 @@ export declare class VoyagesService {
     Get(id: Number): Promise<Voyage>;
     Gets(voyage: Voyage, page?: number): Promise<Voyage[]>;
     GetsDetails(voyage: Voyage, page?: number): Promise<Voyage[]>;
+    private InfoVoyage;
     GetsByYears(voyageFilterByYears: VoyageFilterByYears): Promise<Voyage[]>;
     Update(voyage: Voyage): Promise<Voyage>;
     Delete(voyage: Voyage): Promise<Voyage>;

@@ -7,7 +7,7 @@ export declare class UsersService {
     Gets(user: UserEntity): Promise<UserEntity[]>;
     CreateUserNickUnique(user: UserEntity): Promise<UserEntity>;
     UpdateUserNickUnique(user: UserEntity): Promise<UserEntity>;
-    Delete(userId: number): Promise<UserEntity>;
+    Delete(userId: number, deleteUserId: number): Promise<UserEntity>;
     GetUserByNick(nick: string): Promise<UserEntity>;
     UpdateImageUser(id: number, newFilename: string): Promise<string>;
 }

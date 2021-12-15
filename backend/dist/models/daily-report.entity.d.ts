@@ -5,7 +5,7 @@ export declare class DailyReport {
     portId: number;
     port: Port;
     activityPerformed: string;
-    speedStraction: number;
+    speedStraction: string;
     date: Date;
     hour: string;
     bunkeringIfo: number;

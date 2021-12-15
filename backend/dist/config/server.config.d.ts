@@ -3,4 +3,5 @@ export declare const URL_Server: {
     back: string;
     version: string;
     puertoSocket: number;
+    bd: string;
 };

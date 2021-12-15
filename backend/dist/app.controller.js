@@ -156,7 +156,7 @@ __decorate([
 ], AppController.prototype, "GetVersionPlataform", null);
 __decorate([
     common_1.UseGuards(passport_1.AuthGuard('jwt')),
-    common_1.Get(),
+    common_1.Get('hello'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Object)

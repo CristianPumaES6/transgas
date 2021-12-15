@@ -284,157 +284,163 @@ let VoyagesController = class VoyagesController {
     }
     async ImportJSONVoyages(headers, ImportVoyages) {
         var e_1, _a;
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        if (!(headerToken.role === 'SUPPORT')) {
-            return 'HOLA QUE HACES? Escribeme WSP => +51976873362';
-        }
-        let MappingVoyage = [];
-        let MappingPort = [];
         try {
-            for (var ImportVoyages_1 = __asyncValues(ImportVoyages), ImportVoyages_1_1; ImportVoyages_1_1 = await ImportVoyages_1.next(), !ImportVoyages_1_1.done;) {
-                const importVoyage = ImportVoyages_1_1.value;
-                let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-                if (!existeViaje) {
-                    let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year);
-                    if (!voyageExistente) {
-                        let newVoyage = new voyage_entity_1.Voyage();
-                        delete newVoyage.id;
-                        newVoyage.userId = importVoyage.userId;
-                        newVoyage.voyageNumber = importVoyage.voyageNumber;
-                        newVoyage.year = importVoyage.year;
-                        newVoyage.userIdCreated = headerToken.id;
-                        newVoyage.dateCreated = moment_assets_1.GetDate();
-                        delete newVoyage.userIdUpdated;
-                        delete newVoyage.dateUpdated;
-                        newVoyage.status = true;
-                        let voyageRegister = await this._voyagesService.Create(newVoyage);
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
-                        MappingPort = [];
-                    }
-                    else {
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id));
-                    }
-                }
-                existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-                let existePort = searchKey(MappingPort, importVoyage.portNumber);
-                if (!existePort) {
-                    let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value);
-                    if (!portExiste) {
-                        let newPort = new port_entity_1.Port();
-                        delete newPort.id;
-                        newPort.userId = importVoyage.userId;
-                        newPort.voyageId = existeViaje.value;
-                        newPort.departurePort = importVoyage.departurePort;
-                        newPort.arrivalPort = importVoyage.arrivalPort;
-                        newPort.userIdCreated = headerToken.id;
-                        newPort.dateCreated = moment_assets_1.GetDate();
-                        delete newPort.userIdUpdated;
-                        delete newPort.dateUpdated;
-                        newPort.status = true;
-                        let portRegister = await this._portsService.Create(newPort);
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
-                    }
-                    else {
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id));
-                    }
-                }
-                existePort = searchKey(MappingPort, importVoyage.portNumber);
-                let newReport = new daily_report_entity_1.DailyReport();
-                delete newReport.id;
-                newReport.userId = importVoyage.userId;
-                newReport.portId = existePort.value;
-                newReport.date = moment_assets_1.ConvertMMDDYYYToYYYYMMDD(importVoyage.date);
-                if (importVoyage.hour) {
-                    if (importVoyage.hour.length === 4) {
-                        newReport.hour = '0' + importVoyage.hour;
-                    }
-                    else {
-                        newReport.hour = importVoyage.hour;
-                    }
-                }
-                newReport.bunkeringIfo = 0;
-                newReport.bunkeringMgo = 0;
-                newReport.mplaIfo = importVoyage.mplaIfo || 0;
-                newReport.auxIfo = importVoyage.auxIfo || 0;
-                newReport.boilerIfo = importVoyage.boilerIfo || 0;
-                newReport.otherIfo = importVoyage.otherIfo || 0;
-                newReport.mplaMgo = importVoyage.mplaMgo || 0;
-                newReport.auxMgo = importVoyage.auxMgo || 0;
-                newReport.boilerMgo = importVoyage.boilerMgo || 0;
-                newReport.ppMgo = importVoyage.ppMgo || 0;
-                newReport.giMgo = importVoyage.giMgo || 0;
-                newReport.otherMgo = importVoyage.otherMgo || 0;
-                newReport.steamingTime = importVoyage.steamingTime || 0;
-                newReport.distance = importVoyage.distance || 0;
-                if (!importVoyage.beaufour) {
-                    newReport.beaufour = '';
-                }
-                else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
-                    newReport.beaufour = 'S1';
-                }
-                else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
-                    newReport.beaufour = 'S2';
-                }
-                else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
-                    newReport.beaufour = 'S3';
-                }
-                else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
-                    newReport.beaufour = 'S4';
-                }
-                else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
-                    newReport.beaufour = 'S5';
-                }
-                else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
-                    newReport.beaufour = 'S6';
-                }
-                else {
-                    newReport.beaufour = importVoyage.beaufour;
-                }
-                newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
-                newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
-                newReport.observation = importVoyage.observation;
-                newReport.activityPerformed = importVoyage.activityPerformed;
-                if (newReport.activityPerformed == 'CARGANDO') {
-                    newReport.activityPerformed = 'LOADING';
-                }
-                else if (newReport.activityPerformed == 'DESCARGANDO') {
-                    newReport.activityPerformed = 'DOWNLOADING';
-                }
-                else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
-                    newReport.activityPerformed = 'SAILING_IN_BALLAST';
-                }
-                else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
-                    newReport.activityPerformed = 'SAILING_WITH_LADEN';
-                }
-                else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
-                    newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
-                }
-                else if (newReport.activityPerformed == 'FONDEADO') {
-                    newReport.activityPerformed = 'ANCHORED';
-                }
-                else if (newReport.activityPerformed == 'MANIOBRA') {
-                    newReport.activityPerformed = 'MANEUVER';
-                }
-                else if (newReport.activityPerformed == 'OTRAS ACT.') {
-                    newReport.activityPerformed = 'OTHER_ACT';
-                }
-                newReport.speedStraction = importVoyage.speedStraction;
-                newReport.userIdCreated = headerToken.id;
-                newReport.dateCreated = moment_assets_1.GetDate();
-                delete newReport.userIdUpdated;
-                delete newReport.dateUpdated;
-                newReport.status = true;
-                await this._dailyReportsService.Create(newReport);
+            let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+            if (!(headerToken.role === 'SUPPORT')) {
+                return 'HOLA QUE HACES? Escribeme WSP => +51976873362';
             }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
+            let MappingVoyage = [];
+            let MappingPort = [];
             try {
-                if (ImportVoyages_1_1 && !ImportVoyages_1_1.done && (_a = ImportVoyages_1.return)) await _a.call(ImportVoyages_1);
+                for (var ImportVoyages_1 = __asyncValues(ImportVoyages), ImportVoyages_1_1; ImportVoyages_1_1 = await ImportVoyages_1.next(), !ImportVoyages_1_1.done;) {
+                    const importVoyage = ImportVoyages_1_1.value;
+                    let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    if (!existeViaje) {
+                        let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year);
+                        if (!voyageExistente) {
+                            let newVoyage = new voyage_entity_1.Voyage();
+                            delete newVoyage.id;
+                            newVoyage.userId = importVoyage.userId;
+                            newVoyage.voyageNumber = importVoyage.voyageNumber;
+                            newVoyage.year = importVoyage.year;
+                            newVoyage.userIdCreated = headerToken.id;
+                            newVoyage.dateCreated = moment_assets_1.GetDate();
+                            delete newVoyage.userIdUpdated;
+                            delete newVoyage.dateUpdated;
+                            newVoyage.status = true;
+                            let voyageRegister = await this._voyagesService.Create(newVoyage);
+                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
+                            MappingPort = [];
+                        }
+                        else {
+                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id));
+                        }
+                    }
+                    existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    if (!existePort) {
+                        let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value);
+                        if (!portExiste) {
+                            let newPort = new port_entity_1.Port();
+                            delete newPort.id;
+                            newPort.userId = importVoyage.userId;
+                            newPort.voyageId = existeViaje.value;
+                            newPort.departurePort = importVoyage.departurePort;
+                            newPort.arrivalPort = importVoyage.arrivalPort;
+                            newPort.portNumber = importVoyage.portNumber;
+                            newPort.userIdCreated = headerToken.id;
+                            newPort.dateCreated = moment_assets_1.GetDate();
+                            delete newPort.userIdUpdated;
+                            delete newPort.dateUpdated;
+                            newPort.status = true;
+                            let portRegister = await this._portsService.Create(newPort);
+                            MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
+                        }
+                        else {
+                            MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id));
+                        }
+                    }
+                    existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    let newReport = new daily_report_entity_1.DailyReport();
+                    delete newReport.id;
+                    newReport.userId = importVoyage.userId;
+                    newReport.portId = existePort.value;
+                    newReport.date = importVoyage.date;
+                    if (importVoyage.hour) {
+                        if (importVoyage.hour.length === 4) {
+                            newReport.hour = '0' + importVoyage.hour;
+                        }
+                        else {
+                            newReport.hour = importVoyage.hour;
+                        }
+                    }
+                    newReport.bunkeringIfo = 0;
+                    newReport.bunkeringMgo = 0;
+                    newReport.mplaIfo = importVoyage.mplaIfo || 0;
+                    newReport.auxIfo = importVoyage.auxIfo || 0;
+                    newReport.boilerIfo = importVoyage.boilerIfo || 0;
+                    newReport.otherIfo = importVoyage.otherIfo || 0;
+                    newReport.mplaMgo = importVoyage.mplaMgo || 0;
+                    newReport.auxMgo = importVoyage.auxMgo || 0;
+                    newReport.boilerMgo = importVoyage.boilerMgo || 0;
+                    newReport.ppMgo = importVoyage.ppMgo || 0;
+                    newReport.giMgo = importVoyage.giMgo || 0;
+                    newReport.otherMgo = importVoyage.otherMgo || 0;
+                    newReport.steamingTime = importVoyage.steamingTime || 0;
+                    newReport.distance = importVoyage.distance || 0;
+                    if (!importVoyage.beaufour) {
+                        newReport.beaufour = '';
+                    }
+                    else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
+                        newReport.beaufour = 'S1';
+                    }
+                    else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
+                        newReport.beaufour = 'S2';
+                    }
+                    else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
+                        newReport.beaufour = 'S3';
+                    }
+                    else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
+                        newReport.beaufour = 'S4';
+                    }
+                    else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
+                        newReport.beaufour = 'S5';
+                    }
+                    else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
+                        newReport.beaufour = 'S6';
+                    }
+                    else {
+                        newReport.beaufour = importVoyage.beaufour;
+                    }
+                    newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
+                    newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
+                    newReport.observation = importVoyage.observation;
+                    newReport.activityPerformed = importVoyage.activityPerformed;
+                    if (newReport.activityPerformed == 'CARGANDO') {
+                        newReport.activityPerformed = 'LOADING';
+                    }
+                    else if (newReport.activityPerformed == 'DESCARGANDO') {
+                        newReport.activityPerformed = 'DOWNLOADING';
+                    }
+                    else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+                        newReport.activityPerformed = 'SAILING_IN_BALLAST';
+                    }
+                    else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+                        newReport.activityPerformed = 'SAILING_WITH_LADEN';
+                    }
+                    else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+                        newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+                    }
+                    else if (newReport.activityPerformed == 'FONDEADO') {
+                        newReport.activityPerformed = 'ANCHORED';
+                    }
+                    else if (newReport.activityPerformed == 'MANIOBRA') {
+                        newReport.activityPerformed = 'MANEUVER';
+                    }
+                    else if (newReport.activityPerformed == 'OTRAS ACT.') {
+                        newReport.activityPerformed = 'OTHER_ACT';
+                    }
+                    newReport.speedStraction = importVoyage.speedStraction;
+                    newReport.userIdCreated = headerToken.id;
+                    newReport.dateCreated = moment_assets_1.GetDate();
+                    delete newReport.userIdUpdated;
+                    delete newReport.dateUpdated;
+                    newReport.status = true;
+                    await this._dailyReportsService.Create(newReport);
+                }
             }
-            finally { if (e_1) throw e_1.error; }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (ImportVoyages_1_1 && !ImportVoyages_1_1.done && (_a = ImportVoyages_1.return)) await _a.call(ImportVoyages_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            return 'Se registraron los datos correctamente.';
         }
-        return 'Se registraron los datos correctamente.';
+        catch (error) {
+            return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! ';
+        }
     }
 };
 __decorate([

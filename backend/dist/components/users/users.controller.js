@@ -281,7 +281,7 @@ let UsersController = class UsersController {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
             if (Number(id)) {
-                return this._usersService.Delete(id);
+                return this._usersService.Delete(id, headerToken.id);
             }
             else {
                 throw new Error('MISSING_FIELS');

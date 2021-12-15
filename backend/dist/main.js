@@ -17,6 +17,7 @@ async function bootstrap() {
     app.enableCors(options);
     app.use(express.static(path_1.join(path_config_1.FOLDER_UPLOADS)));
     app.use(express.static(path_1.join(path_config_1.FOLDER_STATIC)));
+    app.use(express.static(path_1.join(path_config_1.FOLDER_FRONTEND)));
     await app.listen(3000);
 }
 bootstrap();
