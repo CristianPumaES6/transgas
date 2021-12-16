@@ -9,6 +9,7 @@ export interface EnvConfig {
 }
 
 /*
+// CONFIGURACION PARA AMBIENTES DE WINDOWS
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas-test.codev.site',
     ENV: '',
@@ -17,19 +18,21 @@ export const EnvConfig: EnvConfig = {
 */
 
 
-/* 
+
+// SERVIDOR LINUX
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
-    VERSION: 'v1.9P',
+    VERSION: 'v1.9N',
     SOCKET: 'https://socket-transgas.codev.site'
-}; */
+};
 
-
-
+/* 
+// CONFIGURACION PARA DESARROLLO
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
-    VERSION: 'v1.9P',
+    VERSION: 'v1.9N',
     SOCKET:'ws://localhost:4000'
 };
+ */
