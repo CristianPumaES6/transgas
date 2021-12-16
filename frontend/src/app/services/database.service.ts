@@ -64,7 +64,13 @@ export class DatabaseService {
     }
 
     public async Sync(): Promise<boolean> {
+        console.log('-------------------------');
+        console.log('-------------------------');
+        console.log('-------------------------');
         console.log('Sync Inicio');
+        console.log('-------------------------');
+        console.log('-------------------------');
+        console.log('-------------------------');
         this.loadingService.Open();
 
         // Usuarios agregados en local mapeados.
@@ -848,10 +854,9 @@ export class DatabaseService {
 
             }
         ).then(
-            (results: DailyReport[]) => {
-
-                return results[0];
-
+            (results: DailyReport[]) => { 
+                
+                return results.find(report=> report.status)
             }
         );
     }

@@ -169,7 +169,7 @@ export class AuthService {
     return this.httpClient.get(url, options).pipe(
       map(
         (response: any) => {
-          debugger
+          
           if (response.status && response.status === 200) {
             return response.data;
           } else {

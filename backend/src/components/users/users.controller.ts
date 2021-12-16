@@ -417,7 +417,7 @@ export class UsersController {
                 // Validamos que esten los campos necesarios.
                 if (Number(id)) {
                     // retornamos la respuesta del servicio.
-                    return this._usersService.Delete(id);
+                    return this._usersService.Delete(id,headerToken.id);
                 } else {
                     // aso contrario retornamos un error
                     throw new Error('MISSING_FIELS');

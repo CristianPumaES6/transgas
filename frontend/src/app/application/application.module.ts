@@ -26,6 +26,8 @@ import { DialogExportPdfComponent } from '../shared/dialog/dialog-export-pdf/dia
 import { HelpsComponent } from '../components/helps/helps.component';
 import { DashboardBunkeringComponent } from '../components/dashboard/dashboard-bunkering/dashboard-bunkering.component';
 import { DialogExportExcelComponent } from '../shared/dialog/dialog-export-excel/dialog-export-excel.component';
+import { ExportExcelComponent } from '../components/dashboard/export-excel/export-excel.component';
+import { DialogUpdateServerComponent } from '../shared/dialog/dialog-update-server/dialog-update-server.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,8 @@ import { DialogExportExcelComponent } from '../shared/dialog/dialog-export-excel
     HelpsComponent,
     DashboardBunkeringComponent,
     DialogExportExcelComponent,
+    ExportExcelComponent,
+    DialogUpdateServerComponent,
   ],
   imports: [
     GlobalModule,

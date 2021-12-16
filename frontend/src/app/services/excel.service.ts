@@ -3890,6 +3890,8 @@ export class ExcelService {
 
 
   }
+
+
   public MathRoundDecimal(valor, cantDecimales: number) {
 
     if (!valor) { return 0; }
@@ -3901,7 +3903,155 @@ export class ExcelService {
 
 
 
+  // Opcion que exporta el excel.
+  public async ExportReporteEntryForUser(selectUser: User): Promise<boolean> {
 
+
+    // Creamos una nueva hoja de trabajo
+    let workbook = new Workbook();
+    workbook.creator = 'codev.site';
+
+
+    let listGetReport: GetReportVoyagePortDaily[] = [];
+    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
+
+    return await Promise.resolve(true)
+      .then(
+        result => {
+          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+          return this.GetReporteEntryForUser(selectUser.id).pipe().toPromise();
+        }).then(
+          result => {
+            if (!result) throw 'ERROR GER REPORT';
+            listGetReport = result;
+
+            // aGREGAMOS LA HOJA DE TRABAJO
+            let worksheet = workbook.addWorksheet(selectUser.name);
+
+
+            worksheet.columns = [
+              { header: 'userId', key: 'userId' },
+              { header: 'year', key: 'year' },
+
+
+              { header: 'voyageId', key: 'voyageId' },
+              { header: 'voyageNumber', key: 'voyageNumber' },
+              { header: 'portId', key: 'portId' },
+              { header: 'portNumber', key: 'portNumber' },
+              { header: 'dailyReportId', key: 'dailyReportId' },
+              { header: 'departurePort', key: 'departurePort' },
+              { header: 'arrivalPort', key: 'arrivalPort' },
+
+              { header: 'activityPerformed', key: 'activityPerformed' },
+              { header: 'date', key: 'date' },
+              { header: 'hour', key: 'hour' },
+
+              { header: 'bunkeringIfo', key: 'bunkeringIfo' },
+              { header: 'bunkeringMgo', key: 'bunkeringMgo' },
+
+              { header: 'mplaIfo', key: 'mplaIfo' },
+              { header: 'auxIfo', key: 'auxIfo' },
+              { header: 'boilerIfo', key: 'boilerIfo' },
+              { header: 'otherIfo', key: 'otherIfo' },
+              
+              { header: 'mplaMgo', key: 'MplaMgo' },
+              { header: 'auxMgo', key: 'auxMgo' },
+              { header: 'boilerMgo', key: 'boilerMgo' },
+              { header: 'ppMgo', key: 'ppMgo' },
+              { header: 'giMgo', key: 'giMgo' },
+              { header: 'otherMgo', key: 'otherMgo' },
+
+
+              
+              { header: 'steamingTime', key: 'steamingTime' },
+              { header: 'speedStraction', key: 'speedStraction' },
+              { header: 'distance', key: 'distance' },
+              { header: 'beaufour', key: 'beaufour' },
+              { header: 'observation', key: 'observation' },
+
+              { header: 'status', key: 'status' },
+            ];
+
+
+            let positionRow = 0;
+            listGetReport.forEach(
+              (report) => {
+
+
+                positionRow += 1; 
+                worksheet.addRow({
+                  userId: report.userId,
+                  year: report.year,
+
+                  voyageId: report.voyageId,
+                  voyageNumber: report.voyageNumber,
+                  portId: report.portId,
+                  portNumber: report.portNumber,
+                  dailyReportId: report.dailyReportId,
+
+                  departurePort: report.departurePort,
+                  arrivalPort: report.arrivalPort,
+                  
+                  activityPerformed : report.activityPerformed,
+                  date:report.date,
+                  hour:report.hour,
+
+                  bunkeringIfo:report.bunkeringIfo,
+                  bunkeringMgo: report.bunkeringMgo,
+
+                  mplaIfo: report.mplaIfo,
+                  auxIfo:report.auxIfo,
+                  boilerIfo: report.boilerIfo,
+                  otherIfo: report.otherIfo,
+
+                  mplaMgo:report.mplaMgo,
+                  auxMgo:report.auxMgo,
+                  boilerMgo: report.boilerMgo,
+                  ppMgo: report.ppMgo,
+                  giMgo:report.giMgo,
+                  otherMgo: report.otherMgo,
+
+
+                  steamingTime :report.steamingTime,
+                  distance: report.distance,
+                  speedStraction: report.speedStraction,
+                  beaufour: report.beaufour,
+                  observation: report.observation,
+
+                  status: 1
+                });
+
+              }
+            );
+
+
+            // Escribimos el excel
+            workbook.xlsx.writeBuffer().then((data) => {
+              let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+              fs.saveAs(blob, 'Report.xlsx');
+            });
+
+            return true;
+          }
+        );
+  }
+
+
+  // Obtenemos la info de todos los viajes agregado.
+  private GetReporteEntryForUser(userId: number): Observable<GetReportVoyagePortDaily[]> {
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetReportVoyagePortDailyByUserId(userId).pipe(map(
+      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+
+
+        return resultGetROBByUser;
+      }
+    ));
+
+  }
 }
 
 export class InfoVessel {

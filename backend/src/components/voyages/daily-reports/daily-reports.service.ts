@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
+import { URL_Server } from 'src/config/server.config';
+import { DummyPromise } from 'src/assets/promises.assets';
+import { FormatDateUTCToDateHour, GetDate } from 'src/assets/moment.assets';
 
 @Injectable()
 export class DailyReportsService {
@@ -13,32 +16,98 @@ export class DailyReportsService {
     // Registra un nuevo reporte diario
     async Create(dailyReport: DailyReport): Promise<DailyReport> {
 
-        return await this._dailyReportRepository.save(dailyReport).then(
-            (resultSave: DailyReport) => {
+
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this._dailyReportRepository.query(`
+                     EXEC SP_CreateNewDailyReport 
+                    @userId = ${dailyReport.userId} 
+                    ,@portId = ${dailyReport.portId} 
+                    ,@activityPerformed = '${dailyReport.activityPerformed}' 
+                    ,@speedStraction = '${dailyReport.speedStraction}' 
+                    ,@date ='${dailyReport.date}' 
+                    ,@hour = '${dailyReport.hour}' 
+                    ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
+                    ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
+                    ,@mplaIfo  = ${dailyReport.mplaIfo} 
+                    ,@auxIfo  = ${dailyReport.auxIfo} 
+                    ,@boilerIfo  = ${dailyReport.boilerIfo} 
+                    ,@otherIfo = ${dailyReport.otherIfo} 
+                    ,@mplaMgo = ${dailyReport.mplaMgo} 
+                    ,@auxMgo   = ${dailyReport.auxMgo} 
+                    ,@boilerMgo   = ${dailyReport.boilerMgo} 
+                    ,@ppMgo = ${dailyReport.ppMgo} 
+                    ,@giMgo = ${dailyReport.giMgo} 
+                    ,@otherMgo  = ${dailyReport.otherMgo} 
+                    ,@steamingTime  = ${dailyReport.steamingTime} 
+                    ,@distance =${dailyReport.distance} 
+                    ,@beaufour = '${dailyReport.beaufour}' 
+                    ,@observation ='${dailyReport.observation}'  
+                    ,@userIdCreated = ${dailyReport.userIdCreated} 
+                    ,@dateCreated = '${dailyReport.dateCreated}' 
+                    ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} 
+                    ,@dateUpdated = '${dailyReport.dateUpdated || null}' 
+                    ,@status = ${dailyReport.status}
+                    `);
+
+                } else {
+                    return this._dailyReportRepository.save(dailyReport);
+                }
+            }
+        ).then(
+            (resultSave) => {
                 // Validamos si encontro al usuario.
                 if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
 
-                return resultSave;
+                if (URL_Server.bd === 'MSSQL') {
+                    // MSSQL
+                    if (resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
+                    return resultSave[0];
+                } else {
+                    // SLQITE
+                    return resultSave;
+                }
             }
-        );
+        )
 
     }
 
     // Retorna a un objeto por id.
     async Get(id: Number): Promise<DailyReport> {
-        // Hacemos una busqueda por id
-        return await this._dailyReportRepository.findOne({
-            where: {
-                id: id,
-                status: Not(false)
+        
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this._dailyReportRepository.query(`
+                     EXEC SP_BuscarReportePorId 
+                    @dailyReportId = ${id} 
+                    `);
+
+                } else {
+                    return this._dailyReportRepository.find({
+                        where: {
+                            id: id,
+                            status: Not(false)
+                        }
+                    });
+                }
+
             }
-        }).then(
-            (resultFind: DailyReport) => {
+        ).then(
+            (resultFind: DailyReport[]) => {
                 // Validamos si encontro al usuario.
                 if (!resultFind) throw new Error('does_not_exist');
+                if (resultFind && resultFind.length == 0) throw new Error('does_not_exist');
 
+
+                let returnDailyReport = resultFind[0];
                 // retornamos el objeto.
-                return resultFind;
+                return returnDailyReport;
             }
         );
     }
@@ -73,44 +142,79 @@ export class DailyReportsService {
     // Actualiza un voyage
     async Update(dailyReport: DailyReport): Promise<DailyReport> {
 
-        // Hacemos una busqueda por id
-        return await this._dailyReportRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                { id: dailyReport.id }
-            ]
+        return DummyPromise().then
+        (result => {
+            return this.Get(dailyReport.id);
         }).then(resultFind => {
 
             // Validamos si encontro al SailingAnality.
             if (!resultFind) throw new Error('does_not_exist');
+            if (URL_Server.bd === 'MSSQL') {
+                // Buscamos el viaje
+                return this._dailyReportRepository.query(`
+                EXEC SP_UpdateDailyReport  
+                @id = ${dailyReport.userId} 
+                ,@userId = ${dailyReport.userId} 
+                ,@portId = ${dailyReport.portId} 
+                ,@activityPerformed = '${dailyReport.activityPerformed}' 
+                ,@speedStraction = '${dailyReport.speedStraction}' 
+                ,@date ='${dailyReport.date?FormatDateUTCToDateHour(dailyReport.date):''}' 
+                ,@hour = '${dailyReport.hour}' 
+                ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
+                ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
+                ,@mplaIfo  = ${dailyReport.mplaIfo} 
+                ,@auxIfo  = ${dailyReport.auxIfo}
+                 ,@boilerIfo  = ${dailyReport.boilerIfo} 
+                 ,@otherIfo = ${dailyReport.otherIfo}
+                  ,@mplaMgo = ${dailyReport.mplaMgo}
+                   ,@auxMgo   = ${dailyReport.auxMgo}
+                    ,@boilerMgo   = ${dailyReport.boilerMgo} 
+                    ,@ppMgo = ${dailyReport.ppMgo} 
+                    ,@giMgo = ${dailyReport.giMgo} 
+                    ,@otherMgo  = ${dailyReport.otherMgo} 
+                    ,@steamingTime  = ${dailyReport.steamingTime}
+                     ,@distance =${dailyReport.distance}
+                      ,@beaufour = '${dailyReport.beaufour}'
+                      ,@observation ='${dailyReport.observation}' 
+                       ,@userIdUpdated = ${dailyReport.userIdUpdated || 0}
+                        ,@dateUpdated = '${dailyReport.dateUpdated || ''}'
+                         ,@status = ${dailyReport.status}
+                `);
 
+            } else {
+                return this._dailyReportRepository.update(dailyReport.id, dailyReport);
+
+            }
             // Actualizamos
-            return this._dailyReportRepository.update(dailyReport.id, dailyReport);
-
+          
         }).then(resultUpdate => {
 
             if (!resultUpdate) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
-
+            if (URL_Server.bd === 'MSSQL') {
+                
+            // if ( resultUpdate && resultUpdate.length == 0) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+            }
             // Envio respuesta con el resultado recibido del ultimo paso
             return dailyReport;
         });
     }
 
     // Elimina a un voyage por id
-    async Delete(dailyReport: DailyReport): Promise<DailyReport> {
-        // Eliminamos de la base de dato al usuario.
-        return await this._dailyReportRepository.findOne({
-            where: [
-                // hacemos un where donde buscamos por id.
-                { id: dailyReport.id }
-            ]
-        }).then(resultFind => {
+    async Delete(dailyReport: DailyReport,usuarioDelete:number): Promise<DailyReport> {
+        return   DummyPromise().then(
+            result => { 
+                return this.Get(dailyReport.id);
+            }
+        ).then(resultFind => {
             // Validamos si encontro al usuario.
             if (!resultFind) throw new Error('does_not_exist');
 
+
+            resultFind.userIdUpdated = usuarioDelete;
+            resultFind.dateUpdated = GetDate();
             resultFind.status = false;
             // verificamos que el email no este en uso, recordemos que el email es unico.
-            return this._dailyReportRepository.update(dailyReport.id, resultFind);
+            return this.Update(resultFind);
         }).then(
             resultSave => {
 
@@ -119,7 +223,7 @@ export class DailyReportsService {
 
                 return dailyReport;
             }
-        );
+        ) 
     }
 
     // QUERY PERSONALIZATE
@@ -332,7 +436,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
                 .addSelect('daily_report.observation', 'observation')
-                
+
                 .addSelect('daily_report.distance', 'distance')
                 .addSelect('daily_report.beaufour', 'beaufour')
 
@@ -362,6 +466,70 @@ export class DailyReportsService {
 
                 .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
                 .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                .getRawMany()
+                .then(
+                    (result: any) => {
+                        // Verificamos que el resultado no este vacio.
+                        if (!result) throw 'ERROR GetReportVoyagePortDaily';
+
+                        return result;
+                    }
+                );
+    }
+
+    // Retorna todos los viajes segun filtro.
+    async GetReportByUser(userId: number): Promise<GetReportVoyagePortDaily[]> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+
+                .select('voyage.userId', 'userId')
+                .addSelect('voyage.year', 'year')
+                .addSelect('voyage.id', 'voyageId')
+                .addSelect('voyage.voyageNumber', 'voyageNumber')
+
+                .addSelect('port.id', 'portId')
+                .addSelect('port.portNumber', 'portNumber')
+                .addSelect('port.departurePort', 'departurePort')
+                .addSelect('port.arrivalPort', 'arrivalPort')
+
+
+                .addSelect('daily_report.id', 'dailyReportId')
+                .addSelect('daily_report.date', 'date')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.steamingTime', 'steamingTime')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.speedStraction', 'speedStraction')
+                .addSelect('daily_report.observation', 'observation')
+
+                .addSelect('daily_report.distance', 'distance')
+                .addSelect('daily_report.beaufour', 'beaufour')
+
+                .addSelect('daily_report.mplaIfo', 'mplaIfo')
+                .addSelect('daily_report.auxIfo', 'auxIfo')
+                .addSelect('daily_report.boilerIfo', 'boilerIfo')
+                .addSelect('daily_report.otherIfo', 'otherIfo')
+                .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+
+                .addSelect('daily_report.mplaMgo', 'mplaMgo')
+                .addSelect('daily_report.auxMgo', 'auxMgo')
+                .addSelect('daily_report.boilerMgo', 'boilerMgo')
+                .addSelect('daily_report.ppMgo', 'ppMgo')
+                .addSelect('daily_report.giMgo', 'giMgo')
+                .addSelect('daily_report.otherMgo', 'otherMgo')
+                .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
+
+
+                .innerJoin('daily_report.port', 'port')
+                .innerJoin('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+
                 .getRawMany()
                 .then(
                     (result: any) => {

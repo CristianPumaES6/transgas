@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user';
+import { mathRound } from 'src/assets/math/math.assets';
 
 
 export class DashboardBunkering {
@@ -35,10 +36,21 @@ export class DashboardBunkeringComponent implements OnInit {
 
   @Input()
   public listInfoFuel: DashboardBunkering[] = [];
+  @Input()
+  public cantDecimal:number = 2;
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
+  }
+
+  public MathRoundOneDecimal(valor, cantDecimales: number) {
+
+    if (!valor) { return 0; }
+
+    let result = mathRound(valor, cantDecimales)
+
+    return result;
   }
 
 

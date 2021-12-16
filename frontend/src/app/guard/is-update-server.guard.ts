@@ -7,6 +7,8 @@ import { AuthService } from '../services/auth.service';
 import { LanguageService } from '../services/language.service';
 import { UserService } from '../services/user.service';
 import { OnlineOfflineService } from '../services/online-offline.service';
+import { DialogUpdateServerComponent, IDialogUpdateServer } from '../shared/dialog/dialog-update-server/dialog-update-server.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +27,7 @@ export class IsUpdateServerGuard implements CanActivate {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private onlineOfflineService: OnlineOfflineService,
+    public dialog: MatDialog,
   ) {
     console.log('Constructor()')
   }
@@ -33,7 +36,7 @@ export class IsUpdateServerGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-      console.log('canActivate()')
+    console.log('canActivate()')
 
     // Solo si esta estamos en linea actualizamos consultamos la version del servidor.
     if (true) {
@@ -50,8 +53,9 @@ export class IsUpdateServerGuard implements CanActivate {
           // SI lo son tenemos que hacerle redload.
           if (version !== EnvConfig.VERSION) {
 
-            // alert(version +"  !==  "+EnvConfig.VERSION);
-            location.reload();
+            // Si la version del server no es la misma entonces 
+            // abrimos el popup del reload.
+            this.OpenDialogUpdateServer(version, EnvConfig.VERSION);
           }
 
           return true;
@@ -71,6 +75,30 @@ export class IsUpdateServerGuard implements CanActivate {
       );
 
     }
+
+  }
+
+  // Abre el popup del update servidor
+  private OpenDialogUpdateServer(versionServer: string, versionWebActual: string) {
+
+    let dialogUpdateServer: IDialogUpdateServer = {
+      versionActual: versionWebActual,
+      versionServer: versionServer
+    };
+
+
+    const dialogRef = this.dialog.open(DialogUpdateServerComponent, {
+      data: dialogUpdateServer
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        location.reload();
+
+      });
+
 
   }
 
