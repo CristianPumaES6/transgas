@@ -18,7 +18,7 @@ export const EnvConfig: EnvConfig = {
 */
 
 
-
+/* 
 // SERVIDOR LINUX
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
@@ -26,8 +26,8 @@ export const EnvConfig: EnvConfig = {
     VERSION: 'v1.9N',
     SOCKET: 'https://socket-transgas.codev.site'
 };
+ */
 
-/* 
 // CONFIGURACION PARA DESARROLLO
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
@@ -35,4 +35,3 @@ export const EnvConfig: EnvConfig = {
     VERSION: 'v1.9N',
     SOCKET:'ws://localhost:4000'
 };
- */
