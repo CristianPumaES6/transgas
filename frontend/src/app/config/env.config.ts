@@ -18,20 +18,44 @@ export const EnvConfig: EnvConfig = {
 */
 
 
+//FRONT DEL LINUX SERVER
+/*
+ export const EnvConfig: EnvConfig = {
+    API: 'http://165.232.153.20:3000',
+    ENV: '',
+    VERSION: 'v1.9M',
+    SOCKET: 'http://165.232.153.20:4000'
+};  
+*/
+
+
 /* 
 // SERVIDOR LINUX
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
-    VERSION: 'v1.9N',
+    VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.codev.site'
 };
- */
+*/
 
+/*
 // CONFIGURACION PARA DESARROLLO
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
-    VERSION: 'v1.9N',
+    VERSION: 'v1.9M',
+    SOCKET: 'https://socket-transgas.codev.site'
+}; */
+
+
+ 
+export const EnvConfig: EnvConfig = {
+    API: 'http://localhost:3000',
+    ENV: '',
+    VERSION: 'v1.9M',
     SOCKET:'ws://localhost:4000'
-};
+}; 
+
+
+
