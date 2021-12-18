@@ -15,3 +15,20 @@
    background: white;
    z-index: 2;
  }
+
+
+ .css-version-plataform {
+  animation: changeColor 4s infinite;
+ }
+ 
+@keyframes changeColor {
+  0% {
+    color: #001F3F;
+  }
+  50% {
+    color: #FF4136;
+  }
+  100% {
+    color: #001F3F;
+  }
+}

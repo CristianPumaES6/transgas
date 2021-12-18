@@ -83,7 +83,7 @@ CREATE OR ALTER PROCEDURE SP_CreateNewDailyReport
            ,@portId int 
            ,@activityPerformed nvarchar(255) 
            ,@speedStraction nvarchar(255) 
-           ,@date datetime 
+           ,@date  nvarchar(255)  
            ,@hour nvarchar(255) 
            ,@bunkeringIfo  int  
            ,@bunkeringMgo   int 
@@ -148,7 +148,7 @@ INSERT INTO [dbo].[daily_report]
            ,@portId   
            ,@activityPerformed  
            ,@speedStraction 
-           ,@date 
+           , TRY_CONVERT(datetime2, @date , 103)
            ,@hour 
            ,@bunkeringIfo  
            ,@bunkeringMgo  
