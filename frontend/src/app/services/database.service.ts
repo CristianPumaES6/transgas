@@ -179,6 +179,23 @@ export class DatabaseService {
             // Actualizamos el syncStatus a none.
             await this.db.voyages.update(iVoyage.id, { id: resultCreate.id, voyageNumber: resultCreate.voyageNumber, syncStatus: 'none' });
 
+            
+            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos QUE pertenecen al viaje
+            let portsIndexedDB: Port[];
+            portsIndexedDB = await this.db.ports.toArray()
+            // Filtramos los reportes que tienen ese puertoId
+            portsIndexedDB = portsIndexedDB.filter((report:DailyReport) => report.portId == iVoyage.id );
+            // recorremos y actualizamos uno por uno
+            for await (let iPortIndexedDB of portsIndexedDB) {
+                // Actualizamos el syncStatus a none.
+                // Actualizo el numero de puerto por que puede cambiar.
+                // Actualizo el id del viaje por que puede cambiar.
+                await this.db.ports.update(iPortIndexedDB.id, 
+                    { voyageId: resultCreate.id  }
+                );
+
+            }
+
             // Mapping user
             saveVoyageMappings.push(
                 new Mapping(iVoyage.id, resultCreate.id)
@@ -219,7 +236,7 @@ export class DatabaseService {
         // data del IndexedDB
         let portsIndexedDB: Port[];
         portsIndexedDB = await this.db.ports.toArray();
-
+        
         // FIltramos los datos que faltan aggregar y actualizar.
         const addPorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'added');
         const updatePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'updated');
@@ -243,6 +260,23 @@ export class DatabaseService {
             // Actualizo el numero de puerto por que puede cambiar.
             // Actualizo el id del viaje por que puede cambiar.
             await this.db.ports.update(iPort.id, { id: resultCreate.id, voyageId: resultCreate.voyageId, portNumber: resultCreate.portNumber, syncStatus: 'none' });
+
+            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS REPORTES QUE TIENEN ESE PUERTO ID
+            let reportesIndexedDB: DailyReport[];
+            reportesIndexedDB = await this.db.dailyReports.toArray()
+            // FIltramos los reportes que tienen ese puertoId
+            reportesIndexedDB = reportesIndexedDB.filter((report:DailyReport) => report.portId == iPort.id );
+            // recorremos y actualizamos uno por uno
+            for await (let iReportesIndexedDB of reportesIndexedDB) {
+                // Actualizamos el syncStatus a none.
+                // Actualizo el numero de puerto por que puede cambiar.
+                // Actualizo el id del viaje por que puede cambiar.
+                await this.db.dailyReports.update(iReportesIndexedDB.id, 
+                    { portId: resultCreate.id  }
+                );
+
+            }
+            
 
             // Mapping Port por el nuevo ID
             savePortsMappings.push(
