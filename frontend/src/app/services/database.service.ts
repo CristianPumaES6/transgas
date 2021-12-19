@@ -1012,6 +1012,8 @@ export class DatabaseService {
 
         let cantidadQueFaltaEnviar: CantidadRestante = new CantidadRestante();
 
+        try { await this.Sync() } catch (error) { }
+
         return Promise.resolve(true).then(
             result => {
                 return this.db.voyages.toArray();
@@ -1048,19 +1050,12 @@ export class DatabaseService {
         ).then(
             (dailyReportsIndexedDB: DailyReport[]) => {
 
-
-
                 // data del IndexedDB 
-
                 // FIltramos los datos que faltan aggregar y actualizar.
                 const addDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'added');
                 const updateDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'updated');
                 const deleteDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'deleted');
-                try {
-                    this.Sync();
-                } catch (error) {
 
-                }
                 // Sumamos lo que falta en el 
                 cantidadQueFaltaEnviar.report = addDailyReports.length + updateDailyReports.length + deleteDailyReports.length;
 
