@@ -28,5 +28,5 @@ export const URL_Server = {
     back: 'http://localhost:3000',
     version: 'v1.9M',
     puertoSocket: 4000,
-    bd: 'MSSQL', // MSSQL,   SQLITE,   MYSQL
+    bd: 'SQLITE', // MSSQL,   SQLITE,   MYSQL
 };  
