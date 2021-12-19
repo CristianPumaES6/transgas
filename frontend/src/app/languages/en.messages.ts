@@ -28,6 +28,7 @@ export const application: any = {
     ERROR_CLEAR_INDEXEDDB: 'Failed to clear User indexBD',
     // Errores personalizados
     ERROR_GET_USERS: 'Could not get user data.',
+    CANNOT_CLOSE_PENDING_REPORTS:'There are files stored locally, contact Cristian for help.'
 };
 
 // Cateogría para autenticacion
