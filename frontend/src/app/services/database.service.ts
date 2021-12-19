@@ -79,13 +79,24 @@ export class DatabaseService {
         let portsMappings: Mapping[] = []
         let dailyReportsMappings: Mapping[] = []
 
-        usersMappings = await this.SyncUsers();
+        try {
 
-        voyagesMappings = await this.SyncVoyages(usersMappings);
-
-        portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
-
-        dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
+            usersMappings = await this.SyncUsers();
+            voyagesMappings = await this.SyncVoyages(usersMappings);
+            portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
+            dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
+            
+        } catch (error) {
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            console.log('[      SE PERDIO LA CONEXION   EN LA SYNC()        ]');
+            console.log(error);
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            throw 'Offline'
+        }
 
         console.log('Sync Fin');
         this.loadingService.Close();
@@ -184,7 +195,7 @@ export class DatabaseService {
             let portsIndexedDB: Port[];
             portsIndexedDB = await this.db.ports.toArray()
             // Filtramos los reportes que tienen ese puertoId
-            portsIndexedDB = portsIndexedDB.filter((report:DailyReport) => report.portId == iVoyage.id );
+            portsIndexedDB = portsIndexedDB.filter((report:Port) => report.voyageId == iVoyage.id );
             // recorremos y actualizamos uno por uno
             for await (let iPortIndexedDB of portsIndexedDB) {
                 // Actualizamos el syncStatus a none.
