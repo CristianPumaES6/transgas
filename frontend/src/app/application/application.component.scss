@@ -18,15 +18,16 @@
 
 
  .css-version-plataform {
+   font-weight: 900;
   animation: changeColor 4s infinite;
  }
  
 @keyframes changeColor {
   0% {
-    color: #001F3F;
+    color: #06003f;
   }
   50% {
-    color: #FF4136;
+    color: #2eb502;
   }
   100% {
     color: #001F3F;

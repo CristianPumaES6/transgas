@@ -1296,7 +1296,7 @@ export class VoyageComponent implements OnInit {
           this.loadingService.Close();
 
           // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE_LOCAL'));
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_CREATE_LOCAL'));
 
         }
       ).catch(
@@ -1412,7 +1412,7 @@ export class VoyageComponent implements OnInit {
           this.loadingService.Close();
 
           // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_DELETE_LOCAL'));
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_VOYAGE_DELETE_LOCAL'));
 
         }
       ).catch(
@@ -1554,7 +1554,7 @@ export class VoyageComponent implements OnInit {
           this.loadingService.Close();
 
           // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_CREATE_LOCAL'));
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_CREATE_LOCAL'));
 
         }
       ).catch(
@@ -1703,7 +1703,7 @@ export class VoyageComponent implements OnInit {
           // Deshabilito el spinner de loading
           this.loadingService.Close();
           // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
 
         }
       ).catch(
@@ -1854,7 +1854,7 @@ export class VoyageComponent implements OnInit {
           this.loadingService.Close();
 
           // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_DELETE_LOCAL'));
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_DELETE_LOCAL'));
 
         }
       ).catch(
@@ -2060,7 +2060,7 @@ export class VoyageComponent implements OnInit {
           this.loadingService.Close();
 
           // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE_LOCAL'));
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE_LOCAL'));
           this.List_Voyages_Ports_DailyReports = 'Ports';
 
         }
@@ -2195,7 +2195,7 @@ export class VoyageComponent implements OnInit {
           // Deshabilito el spinner de loading
           this.loadingService.Close();
           // Muestro notificación
-          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
 
           this.List_Voyages_Ports_DailyReports = 'Ports';
         }
@@ -2399,7 +2399,7 @@ export class VoyageComponent implements OnInit {
         this.loadingService.Close();
 
         // Muestro notificación
-        this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_DELETE_LOCAL'));
+        this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_DELETE_LOCAL'));
 
       }
     ).catch(

@@ -29,15 +29,15 @@ export const EnvConfig: EnvConfig = {
 */
 
 
-/* 
-// SERVIDOR LINUX
+ /* 
+// SERVIDOR LINUX Firebase
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.codev.site'
 };
-*/
+ */
 
 /*
 // CONFIGURACION PARA DESARROLLO

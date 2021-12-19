@@ -16,6 +16,7 @@ import { PortService } from './port.service';
 import { LoadingService } from './loading.service';
 import { DailyReport } from '../models/daily-report';
 import { DailyReportService } from './daily-report.service';
+import { CantidadRestante } from '../models/loggedUser';
 
 
 @Injectable()
@@ -52,12 +53,12 @@ export class DatabaseService {
 
     }
 
-    public DeleteDataBase(){ 
+    public DeleteDataBase() {
         this.db.delete();
     }
 
     // Obtener DataBase
-    public getDatabase():Dexie {
+    public getDatabase(): Dexie {
         console.log('getDatabase()');
 
         return this.db;
@@ -79,13 +80,25 @@ export class DatabaseService {
         let portsMappings: Mapping[] = []
         let dailyReportsMappings: Mapping[] = []
 
-        usersMappings = await this.SyncUsers();
+        try {
 
-        voyagesMappings = await this.SyncVoyages(usersMappings);
+            usersMappings = await this.SyncUsers();
+            voyagesMappings = await this.SyncVoyages(usersMappings);
+            portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
+            dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
 
-        portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
-
-        dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
+        } catch (error) {
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            console.log('[      SE PERDIO LA CONEXION   EN LA SYNC()        ]');
+            console.log(error);
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            this.loadingService.Close();
+            throw 'Offline'
+        }
 
         console.log('Sync Fin');
         this.loadingService.Close();
@@ -107,7 +120,7 @@ export class DatabaseService {
 
         // FIltramos los datos que faltan aggregar y actualizar.
         const addUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'added');
-        
+
         const updateUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'updated');
         const deleteUsers = usersIndexedDB.filter((user: User) => user.syncStatus == 'deleted');
 
@@ -179,6 +192,23 @@ export class DatabaseService {
             // Actualizamos el syncStatus a none.
             await this.db.voyages.update(iVoyage.id, { id: resultCreate.id, voyageNumber: resultCreate.voyageNumber, syncStatus: 'none' });
 
+
+            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos QUE pertenecen al viaje
+            let portsIndexedDB: Port[];
+            portsIndexedDB = await this.db.ports.toArray()
+            // Filtramos los reportes que tienen ese puertoId
+            portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == iVoyage.id);
+            // recorremos y actualizamos uno por uno
+            for await (let iPortIndexedDB of portsIndexedDB) {
+                // Actualizamos el syncStatus a none.
+                // Actualizo el numero de puerto por que puede cambiar.
+                // Actualizo el id del viaje por que puede cambiar.
+                await this.db.ports.update(iPortIndexedDB.id,
+                    { voyageId: resultCreate.id }
+                );
+
+            }
+
             // Mapping user
             saveVoyageMappings.push(
                 new Mapping(iVoyage.id, resultCreate.id)
@@ -243,6 +273,23 @@ export class DatabaseService {
             // Actualizo el numero de puerto por que puede cambiar.
             // Actualizo el id del viaje por que puede cambiar.
             await this.db.ports.update(iPort.id, { id: resultCreate.id, voyageId: resultCreate.voyageId, portNumber: resultCreate.portNumber, syncStatus: 'none' });
+
+            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS REPORTES QUE TIENEN ESE PUERTO ID
+            let reportesIndexedDB: DailyReport[];
+            reportesIndexedDB = await this.db.dailyReports.toArray()
+            // FIltramos los reportes que tienen ese puertoId
+            reportesIndexedDB = reportesIndexedDB.filter((report: DailyReport) => report.portId == iPort.id);
+            // recorremos y actualizamos uno por uno
+            for await (let iReportesIndexedDB of reportesIndexedDB) {
+                // Actualizamos el syncStatus a none.
+                // Actualizo el numero de puerto por que puede cambiar.
+                // Actualizo el id del viaje por que puede cambiar.
+                await this.db.dailyReports.update(iReportesIndexedDB.id,
+                    { portId: resultCreate.id }
+                );
+
+            }
+
 
             // Mapping Port por el nuevo ID
             savePortsMappings.push(
@@ -854,9 +901,9 @@ export class DatabaseService {
 
             }
         ).then(
-            (results: DailyReport[]) => { 
-                
-                return results.find(report=> report.status)
+            (results: DailyReport[]) => {
+
+                return results.find(report => report.status)
             }
         );
     }
@@ -959,5 +1006,66 @@ export class DatabaseService {
             }
         );
 
+    }
+
+    public async ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor(): Promise<CantidadRestante> {
+
+        let cantidadQueFaltaEnviar: CantidadRestante = new CantidadRestante();
+
+        try { await this.Sync() } catch (error) { }
+
+        return Promise.resolve(true).then(
+            result => {
+                return this.db.voyages.toArray();
+            }
+        ).then(
+            dbVoyages => {
+                // data del IndexedDB
+                let voyagesIndexedDB: Voyage[];
+                voyagesIndexedDB = dbVoyages
+                // FIltramos los datos que faltan aggregar y actualizar.
+                const addVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'added');
+                const updateVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'updated');
+                const deleteVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'deleted');
+
+                // Sumamos lo que falta en el 
+                cantidadQueFaltaEnviar.voyage = addVoyages.length + updateVoyages.length + deleteVoyages.length;
+
+                return this.db.ports.toArray();
+            }
+        ).then(
+            dbPorts => {
+
+
+                // FIltramos los datos que faltan aggregar y actualizar.
+                const addPorts = dbPorts.filter((port: Port) => port.syncStatus == 'added');
+                const updatePorts = dbPorts.filter((port: Port) => port.syncStatus == 'updated');
+                const deletePorts = dbPorts.filter((port: Port) => port.syncStatus == 'deleted');
+
+                // Sumamos lo que falta en el 
+                cantidadQueFaltaEnviar.port = addPorts.length + updatePorts.length + deletePorts.length;
+
+                return this.db.dailyReports.toArray();
+            }
+        ).then(
+            (dailyReportsIndexedDB: DailyReport[]) => {
+
+                // data del IndexedDB 
+                // FIltramos los datos que faltan aggregar y actualizar.
+                const addDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'added');
+                const updateDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'updated');
+                const deleteDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'deleted');
+
+                // Sumamos lo que falta en el 
+                cantidadQueFaltaEnviar.report = addDailyReports.length + updateDailyReports.length + deleteDailyReports.length;
+
+                return cantidadQueFaltaEnviar;
+            }
+        ).catch(
+            err => {
+                let cantidadRestante = new CantidadRestante(99, 99, 99);
+                return cantidadRestante;
+            }
+        )
     }
 }

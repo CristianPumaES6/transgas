@@ -29,6 +29,7 @@ import { DatabaseService } from '../services/database.service';
 // Models
 import { User } from '../models/user';
 import { EnvConfig } from '../config/env.config';
+import { CantidadRestante } from '../models/loggedUser';
 
 @Component({
   selector: 'app-application',
@@ -57,6 +58,8 @@ export class ApplicationComponent implements OnInit {
     private languageService: LanguageService,
     private authService: AuthService,
     readonly onlineOfflineService: OnlineOfflineService,
+    private databaseService: DatabaseService,
+    private notificationsService: NotificationsService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -108,11 +111,24 @@ export class ApplicationComponent implements OnInit {
 
   // Funcion para cerrar la session de usuario.
   public logout() {
-    console.log('logout()');
+    Promise.resolve(true).then(
+       result => {
+        return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+       }
+    ).then(
+      (datosFaltantas:CantidadRestante) => {
 
-    this.authService.Logout();
-    this.loggedUser = this.authService.GetLoggedUser();
-    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+        if(datosFaltantas.voyage || datosFaltantas.port || datosFaltantas.report ){
+          
+         this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS') + '\n  V:'+datosFaltantas.voyage+'   P:'+datosFaltantas.port+'  R:'+datosFaltantas.report);
+
+        } else {
+          this.authService.Logout();
+          this.loggedUser = this.authService.GetLoggedUser();
+          this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+        }
+      }
+    )
   }
 
   public GetRoutelNavLink() {

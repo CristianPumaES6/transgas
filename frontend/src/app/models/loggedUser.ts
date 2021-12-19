@@ -20,3 +20,16 @@ export class LoggedUser {
     }
 
 }
+export class CantidadRestante {
+
+    constructor(
+        public voyage?:number,
+        public port?:number,
+        public report?: number,
+    ){ 
+        this.voyage = voyage || 0;
+        this.port = port || 0; 
+        this.report = report || 0; 
+    }
+
+}
