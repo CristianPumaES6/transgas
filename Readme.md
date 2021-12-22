@@ -1,21 +1,29 @@
-# Transgas
+# Production Huntergas
 
-El siguiente proyecto es desarrollado con las siguientes tegnologia.
+Este branch es exclusivo para el buque Huntergas, debido a que este buque no puede entrar desde el navegador al servidor.
 ___________
-## Front
-* Angular por Google
 
-## Nest
-* NestJS 
+## Que hace el Proyecto ?
 
-## Patron de arquitectura
-* MVC
-______________
+```sql
+
+-- Este proyecto sirve como cliente localhost, permitiendo que el usuario se conecte con el servidor.
+-- Los datos se guardan en local, y cuando se vuelve abrir se sube al server.
+
+```
+ 
 
 
-## Deploy Front Production
-Para deployar el front en firebase se hace desde el comando.
+## Como hacerle Update
 ```javascript
+// Desde el branch master configuramos el config para que apunte al server.
+// Generamos el build
 ng build --prod
-firebase deploy
+// Copiamos el directorio dist
+
+
+// desde la maquina del cliente
+// Clonamos el repositorio y el branc, instalamos dependencias 
+// creamos una tarea para que la ejecute,
+// instalamos la aplicacion.
 ```
