@@ -33,7 +33,7 @@ export class AppComponent {
 
   // Configuracion para las notificaciones
   public notificationOpts = {
-    timeOut: 5000,
+    timeOut: 8000,
     lastOnBottom: true,
     clickToClose: true,
     maxLength: 0,
