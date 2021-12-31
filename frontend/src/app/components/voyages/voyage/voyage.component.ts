@@ -1010,7 +1010,7 @@ export class VoyageComponent implements OnInit {
     ).then(
       (users: User[]) => {
         if (users.length > 0) {
-debugger
+
           // En la carga de data indexedDB cargo solo los buque.
           this.getUsers = users.filter(
             (user: User) => {
