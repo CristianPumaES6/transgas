@@ -118,21 +118,21 @@ export class VoyageComponent implements OnInit {
     // Si se recibe algun cambio de conexion, se resetea el formulario.
     this.onlineOfflineService.emitterReloadData.subscribe(
       (isOnline: boolean) => {
-   //  this.loadDataIndexedDB(this.selectUser);
+        //  this.loadDataIndexedDB(this.selectUser);
 
 
-   //    this.List_Voyages_Ports_DailyReports = 'Voyages';
-   //    this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
-   //    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
-   //    this.SettingAzList.isNew = true;
-   //    this.SettingAzList.isBack = false;
-   //    this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
-   //    this.SettingAzList.toolTipBack = ''
-   //    this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
-   //    this.SettingAzList.activateSelectItemEmit2 = true;
-   //    this.selectPort = new Port();
-   //    this.title_header_media = '';
-   //    this.sub_title_header_media = '';
+        //    this.List_Voyages_Ports_DailyReports = 'Voyages';
+        //    this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
+        //    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
+        //    this.SettingAzList.isNew = true;
+        //    this.SettingAzList.isBack = false;
+        //    this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+        //    this.SettingAzList.toolTipBack = ''
+        //    this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
+        //    this.SettingAzList.activateSelectItemEmit2 = true;
+        //    this.selectPort = new Port();
+        //    this.title_header_media = '';
+        //    this.sub_title_header_media = '';
 
       }
     );
@@ -181,134 +181,134 @@ export class VoyageComponent implements OnInit {
 
 
 
-      let user: User = new User();
+    let user: User = new User();
 
-      // Si el usuario es un buque lo filtramos.
-      if (this.selectUser.role === 'BUQUE') {
+    // Si el usuario es un buque lo filtramos.
+    if (this.selectUser.role === 'BUQUE') {
 
-        user.id = this.selectUser.id;
+      user.id = this.selectUser.id;
+    }
+
+    Promise.resolve(true).then(
+      result => {
+
+        // Traigo a todos los User y lo instancio en el obj.
+        return this.GetUsers(user).pipe().toPromise();
       }
+    ).then(
+      resultGetUser => {
 
-      Promise.resolve(true).then(
-        result => {
+        if (!resultGetUser) throw 'ERROR_GET_USERS';
+        // Traigo a todos los User y lo instancio en el obj.
+        return this.databaseService.Sync();
+      }
+    ).then(
+      resultSync => {
 
-          // Traigo a todos los User y lo instancio en el obj.
-          return this.GetUsers(user).pipe().toPromise();
-        }
-      ).then(
-        resultGetUser => {
+        // Revisamos si el result es el esperado.
+        if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
 
-          if (!resultGetUser) throw 'ERROR_GET_USERS';
-          // Traigo a todos los User y lo instancio en el obj.
-          return this.databaseService.Sync();
-        }
-      ).then(
-        resultSync => {
+        // Seleccionaremos el primer buque del arreglo.
+        let voyage: Voyage = new Voyage();
+        let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
+        if (firstUser) {
+          this.selectUser = firstUser;
+          this.selectUserDropdown = firstUser.id;
+          voyage.userId = this.selectUserDropdown;
 
-          // Revisamos si el result es el esperado.
-          if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
+          this.SettingAzList.isNew = true;
+          this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
 
-          // Seleccionaremos el primer buque del arreglo.
-          let voyage: Voyage = new Voyage();
-          let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
-          if (firstUser) {
-            this.selectUser = firstUser;
-            this.selectUserDropdown = firstUser.id;
-            voyage.userId = this.selectUserDropdown;
+          if (firstUser.years && firstUser.years.length) {
+            this.year = firstUser.years[(firstUser.years.length || 1) - 1];
+            this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
 
-            this.SettingAzList.isNew = true;
-            this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
-
-            if (firstUser.years && firstUser.years.length) {
-              this.year = firstUser.years[(firstUser.years.length || 1) - 1];
-              this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
-
-            } else {
-              this.year = 0;
-            }
-
-            voyage.year = this.year;
           } else {
-            throw 'NO_BUQUE_REGISTER';
+            this.year = 0;
           }
 
-          this.loadingService.Open()
-          // Traigo a todos los User y lo instancio en el obj.
-          // GeyVoyage obtiene todos los puertos.
-          return this.GetVoyagesDetail(voyage).pipe().toPromise();
+          voyage.year = this.year;
+        } else {
+          throw 'NO_BUQUE_REGISTER';
         }
-      ).then(
-        resulGetVoyages => {
-          // Revisamos si el result es el esperado.
-          if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
 
-          // Hacemos Clear a la Tabla Users
-          return this.databaseService.ClearUsersIndexedDB();
-        }
-      ).then(
-        resultClear => {
-          // Revisamos si el result es el esperado.
-          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+        this.loadingService.Open()
+        // Traigo a todos los User y lo instancio en el obj.
+        // GeyVoyage obtiene todos los puertos.
+        return this.GetVoyagesDetail(voyage).pipe().toPromise();
+      }
+    ).then(
+      resulGetVoyages => {
+        // Revisamos si el result es el esperado.
+        if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
 
-          // Hacemos Clear a la Tabla Users
-          return this.databaseService.ClearVoyagesIndexedDB();
-        }
-      ).then(
-        resultClear => {
-          // Revisamos si el result es el esperado.
-          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+        // Hacemos Clear a la Tabla Users
+        return this.databaseService.ClearUsersIndexedDB();
+      }
+    ).then(
+      resultClear => {
+        // Revisamos si el result es el esperado.
+        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
 
-          // Hacemos Clear a la Tabla Users
-          return this.databaseService.ClearPortsIndexedDB();
-        }
-      ).then(
-        resultClear => {
-          // Revisamos si el result es el esperado.
-          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+        // Hacemos Clear a la Tabla Users
+        return this.databaseService.ClearVoyagesIndexedDB();
+      }
+    ).then(
+      resultClear => {
+        // Revisamos si el result es el esperado.
+        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
 
-          // Hacemos Clear a la Tabla Users
-          return this.databaseService.ClearDailyReportsIndexedDB();
-        }
-      ).then(
-        resultClear => {
-          // Revisamos si el result es el esperado.
-          if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+        // Hacemos Clear a la Tabla Users
+        return this.databaseService.ClearPortsIndexedDB();
+      }
+    ).then(
+      resultClear => {
+        // Revisamos si el result es el esperado.
+        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
 
-          // Agregamos los usuarios al indexedDB
-          return this.databaseService.addUsersIndexedDB(this.getUsers);
-        }
-      ).then(
-        resultAddUser => {
-          // Revisamos si el result es el esperado.
-          if (!resultAddUser) throw 'ERROR_ADD_USER_INDEXEDDB';
+        // Hacemos Clear a la Tabla Users
+        return this.databaseService.ClearDailyReportsIndexedDB();
+      }
+    ).then(
+      resultClear => {
+        // Revisamos si el result es el esperado.
+        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
 
-          // Agregamos los usuarios al indexedDB
-          return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
-        }
-      ).then(
-        resultAddVoyages => {
-          // Revisamos si el result es el esperado.
-          if (!resultAddVoyages) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
+        // Agregamos los usuarios al indexedDB
+        return this.databaseService.addUsersIndexedDB(this.getUsers);
+      }
+    ).then(
+      resultAddUser => {
+        // Revisamos si el result es el esperado.
+        if (!resultAddUser) throw 'ERROR_ADD_USER_INDEXEDDB';
 
-          this.loadDataIndexedDB(this.selectUser);
-        }
-      ).catch(
-        err => { 
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+        // Agregamos los usuarios al indexedDB
+        return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
+      }
+    ).then(
+      resultAddVoyages => {
+        // Revisamos si el result es el esperado.
+        if (!resultAddVoyages) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
 
-          
-          this.loadDataIndexedDB();
+        this.loadDataIndexedDB(this.selectUser);
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-          console.error(msg);
-          console.dir(err);
 
-         // this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        });
+        this.loadDataIndexedDB();
 
-    
+        console.error(msg);
+        console.dir(err);
+
+        // this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      });
+
+
   }
 
   // ==============  Funciones  AZLIST ====================
@@ -709,7 +709,7 @@ export class VoyageComponent implements OnInit {
         newDailyReport.userId = this.selectUser.id;
         newDailyReport.portId = this.selectPort.id;
 
-        
+
         // Le agregamos la hora a la fecha.
         newDailyReport.status = true;
 
@@ -930,8 +930,8 @@ export class VoyageComponent implements OnInit {
 
     // Le asignamos la hora lastRecort
     let convertMomentUTC = ConvertMomentUTC(dailyReportFind.date);
-    let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime,'hours');
-    
+    let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime, 'hours');
+
     this.lastRecordedHour = FormatDateUTCToDateHour(restarStemintime)
 
     this.Initialize();
@@ -1900,11 +1900,11 @@ export class VoyageComponent implements OnInit {
     }
 
     if (error) throw 'OK';
-    
-    newDailyReport.steamingTime= this.GenerateTimeOperation();
-    newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour) ;
 
-      
+    newDailyReport.steamingTime = this.GenerateTimeOperation();
+    newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour);
+
+
     // Verificamos si estamos en linea
     if (false) {
 
@@ -2105,9 +2105,9 @@ export class VoyageComponent implements OnInit {
 
     if (error) throw 'OK';
 
-    dailyReportToSave.steamingTime= this.GenerateTimeOperation();
+    dailyReportToSave.steamingTime = this.GenerateTimeOperation();
 
-    dailyReportToSave.date = ConvertirDateHourToMoment2(dailyReportToSave.date, dailyReportToSave.hour) ;
+    dailyReportToSave.date = ConvertirDateHourToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (false) {
@@ -2308,8 +2308,8 @@ export class VoyageComponent implements OnInit {
 
   }
 
-  private DeleteDailyReportOFFLINE(dailyReportDelete:DailyReport) {
-    
+  private DeleteDailyReportOFFLINE(dailyReportDelete: DailyReport) {
+
     Promise.resolve(true).then(
       () => {
         // Consultamos al userIndexDB para saber el estado del sync.
@@ -2447,7 +2447,7 @@ export class VoyageComponent implements OnInit {
             // ya que se inicia un nuevo reporte, verificamos los cambios de la actividad.
             this.ChangeActivityPerformed();
 
-            this.selectDailyReport.steamingTime=  this.GenerateTimeOperation();
+            this.selectDailyReport.steamingTime = this.GenerateTimeOperation();
           }
         )
       }
@@ -2462,7 +2462,7 @@ export class VoyageComponent implements OnInit {
   public onKeyUpEvent(event?: any): void {
 
     if (this.selectDailyReport.hour.length > 0 && validateDate(this.selectDailyReport.date)) {
-      this.selectDailyReport.steamingTime= this.GenerateTimeOperation();
+      this.selectDailyReport.steamingTime = this.GenerateTimeOperation();
     }
 
   }
@@ -2475,7 +2475,7 @@ export class VoyageComponent implements OnInit {
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
 
 
-   return this.MathRoundOneDecimal(diferentHour, 2);
+    return this.MathRoundOneDecimal(diferentHour, 2);
 
   }
 
