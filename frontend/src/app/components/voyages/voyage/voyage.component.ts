@@ -183,130 +183,38 @@ export class VoyageComponent implements OnInit {
 
     let user: User = new User();
 
-    // Si el usuario es un buque lo filtramos.
+    // Solo si es un usuario buque cargaran sus datos en local
     if (this.selectUser.role === 'BUQUE') {
 
       user.id = this.selectUser.id;
-    }
 
-    Promise.resolve(true).then(
-      result => {
-
-        // Traigo a todos los User y lo instancio en el obj.
-        return this.GetUsers(user).pipe().toPromise();
-      }
-    ).then(
-      resultGetUser => {
-
-        if (!resultGetUser) throw 'ERROR_GET_USERS';
-        // Traigo a todos los User y lo instancio en el obj.
-        return this.databaseService.Sync();
-      }
-    ).then(
-      resultSync => {
-
-        // Revisamos si el result es el esperado.
-        if (!resultSync) throw 'ERROR_SYNC_INDEXEDDB_IN_ONLINE';
-
-        // Seleccionaremos el primer buque del arreglo.
-        let voyage: Voyage = new Voyage();
-        let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
-        if (firstUser) {
-          this.selectUser = firstUser;
-          this.selectUserDropdown = firstUser.id;
-          voyage.userId = this.selectUserDropdown;
-
-          this.SettingAzList.isNew = true;
-          this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
-
-          if (firstUser.years && firstUser.years.length) {
-            this.year = firstUser.years[(firstUser.years.length || 1) - 1];
-            this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
-
-          } else {
-            this.year = 0;
-          }
-
-          voyage.year = this.year;
-        } else {
-          throw 'NO_BUQUE_REGISTER';
+      Promise.resolve(true).then(
+        result =>{
+          
+          this.loadDataIndexedDB();
         }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-        this.loadingService.Open()
-        // Traigo a todos los User y lo instancio en el obj.
-        // GeyVoyage obtiene todos los puertos.
-        return this.GetVoyagesDetail(voyage).pipe().toPromise();
-      }
-    ).then(
-      resulGetVoyages => {
-        // Revisamos si el result es el esperado.
-        if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
+          console.error(msg);
+          console.dir(err);
 
-        // Hacemos Clear a la Tabla Users
-        return this.databaseService.ClearUsersIndexedDB();
-      }
-    ).then(
-      resultClear => {
-        // Revisamos si el result es el esperado.
-        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+          // this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
 
-        // Hacemos Clear a la Tabla Users
-        return this.databaseService.ClearVoyagesIndexedDB();
-      }
-    ).then(
-      resultClear => {
-        // Revisamos si el result es el esperado.
-        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
-
-        // Hacemos Clear a la Tabla Users
-        return this.databaseService.ClearPortsIndexedDB();
-      }
-    ).then(
-      resultClear => {
-        // Revisamos si el result es el esperado.
-        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
-
-        // Hacemos Clear a la Tabla Users
-        return this.databaseService.ClearDailyReportsIndexedDB();
-      }
-    ).then(
-      resultClear => {
-        // Revisamos si el result es el esperado.
-        if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
-
-        // Agregamos los usuarios al indexedDB
-        return this.databaseService.addUsersIndexedDB(this.getUsers);
-      }
-    ).then(
-      resultAddUser => {
-        // Revisamos si el result es el esperado.
-        if (!resultAddUser) throw 'ERROR_ADD_USER_INDEXEDDB';
-
-        // Agregamos los usuarios al indexedDB
-        return this.databaseService.addVoyagesIndexedDB(this.getVoyages);
-      }
-    ).then(
-      resultAddVoyages => {
-        // Revisamos si el result es el esperado.
-        if (!resultAddVoyages) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
-
-        this.loadDataIndexedDB(this.selectUser);
-      }
-    ).catch(
-      err => {
-        // Manejo el error
-        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
-
-
-        this.loadDataIndexedDB();
-
-        console.error(msg);
-        console.dir(err);
-
-        // this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-        // Deshabilito el spinner de loading
-        this.loadingService.Close();
-      });
+    } 
+    // SI ES UN ADMINISTRADOR o SUPPORT Caragara los datos del servidor
+    else{
+ 
+  
+          this.loadDataIndexedDB();
+   
+  
+    }
 
 
   }
@@ -1102,7 +1010,7 @@ export class VoyageComponent implements OnInit {
     ).then(
       (users: User[]) => {
         if (users.length > 0) {
-
+debugger
           // En la carga de data indexedDB cargo solo los buque.
           this.getUsers = users.filter(
             (user: User) => {
@@ -1120,7 +1028,7 @@ export class VoyageComponent implements OnInit {
           } else {
             this.year = 0;
           }
-
+          
           if (!selectUser) {
             this.selectUser = firstUser;
             this.selectUserDropdown = firstUser.id;
