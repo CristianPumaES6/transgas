@@ -135,7 +135,8 @@ export class ApplicationComponent implements OnInit {
       }
     ).then(
        result => {
-         if(result) throw 'ERROR SYNC SERVER'
+         if(!result) throw 'ERROR SYNC SERVER';
+         
         return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
        }
     ).then(
