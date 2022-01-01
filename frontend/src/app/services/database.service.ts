@@ -62,8 +62,11 @@ export class DatabaseService {
 
     }
 
-    public DeleteDataBase() {
-        this.db.delete();
+     public async DeleteDataBase() {
+        console.log('INICIO DELETE DATA bASE')
+       await this.db.delete();
+       console.log('FIN DELETE DATA bASE')
+
     }
 
     // Obtener DataBase
@@ -81,7 +84,6 @@ export class DatabaseService {
         console.log('-------------------------');
         console.log('-------------------------');
         console.log('-------------------------');
-        this.loadingService.Open();
 
         // Usuarios agregados en local mapeados.
         let usersMappings: Mapping[] = []
@@ -108,7 +110,6 @@ export class DatabaseService {
             console.log('-----------------------------------------');
             console.log('-----------------------------------------');
             console.log('-----------------------------------------');
-            this.loadingService.Close();
             throw 'Offline'
         }
 
@@ -1214,7 +1215,8 @@ export class DatabaseService {
         ).catch(
             err => {
                 let cantidadRestante = new CantidadRestante(99, 99, 99);
-                return cantidadRestante;
+                //return cantidadRestante;
+                throw 'Contact cristian, there is a problem updating the records to the server';
             }
         )
     }

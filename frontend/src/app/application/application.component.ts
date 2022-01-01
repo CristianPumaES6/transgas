@@ -60,6 +60,7 @@ export class ApplicationComponent implements OnInit {
     readonly onlineOfflineService: OnlineOfflineService,
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
+    private _loadingService: LoadingService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -110,25 +111,54 @@ export class ApplicationComponent implements OnInit {
   }
 
   // Funcion para cerrar la session de usuario.
-  public logout() {
-    Promise.resolve(true).then(
+  public async ClickLogout() {
+    
+    this._loadingService.Open();
+
+    let datosRestanteSync:CantidadRestante = {};
+    await Promise.resolve(true).then(
        result => {
         return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
        }
     ).then(
       (datosFaltantas:CantidadRestante) => {
 
-        if(datosFaltantas.voyage || datosFaltantas.port || datosFaltantas.report ){
+        // deben de ser 0 todos para que entre esta funcion
+        if(!datosFaltantas.voyage && !datosFaltantas.port && !datosFaltantas.report ){
           
-         this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS') + '\n  V:'+datosFaltantas.voyage+'   P:'+datosFaltantas.port+'  R:'+datosFaltantas.report);
-
-        } else {
-          this.authService.Logout();
-          this.loggedUser = this.authService.GetLoggedUser();
-          this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+          datosRestanteSync = datosFaltantas;
+          return this.authService.Logout();
+        }
+        else {
+          
+          return false
         }
       }
-    )
+    ).then(
+      result => {
+        if(result){ 
+
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+      
+      } else { 
+        this.loggedUser = this.authService.GetLoggedUser(); 
+        this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS'));
+      }
+      this._loadingService.Close();
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this._loadingService.Close();
+      }
+    );
   }
 
   public GetRoutelNavLink() {

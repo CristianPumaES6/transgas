@@ -47,17 +47,6 @@ export class AppComponent {
   
     this.loggedUser = this.authService.GetLoggedUser();
   }
-/* 
-  ngDoCheck() {console.log('ngDoCheck()');
-  
-    this.loggedUser = this.authService.GetLoggedUser();
-  }
- */
-  logout() {console.log('logout()');
-  
-    this.authService.Logout();
-    this.loggedUser = this.authService.GetLoggedUser();
-  }
 
   // OnLoadingLoaded => Funcion que inicia el loading.service.
   public OnLoadingLoaded(loading: LoadingComponent): void {
