@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
 import { Dexie } from 'dexie';
 
@@ -25,6 +25,8 @@ import { LanguageService } from './language.service';
 @Injectable()
 export class DatabaseService {
 
+    emitterCantOffline = new EventEmitter<CantidadRestante>();
+    
     // 
     private db: any;
 
@@ -1163,8 +1165,6 @@ export class DatabaseService {
 
         let cantidadQueFaltaEnviar: CantidadRestante = new CantidadRestante();
 
-        try { await this.Sync() } catch (error) { }
-
         return Promise.resolve(true).then(
             result => {
                 return this.db.voyages.toArray();
@@ -1215,6 +1215,32 @@ export class DatabaseService {
         ).catch(
             err => {
                 let cantidadRestante = new CantidadRestante(99, 99, 99);
+                //return cantidadRestante;
+                throw 'Contact cristian, there is a problem updating the records to the server';
+            }
+        )
+    }
+
+    // emita la cantidad que falta que esta registrado en local.
+    public async EmitterCantOffline(): Promise<boolean>{
+
+        return await Promise.resolve(true).then(
+            result => {
+                return  this.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+            }
+        
+        ).then(
+            resultCantidadRestante => {
+
+                this.emitterCantOffline.emit(resultCantidadRestante);
+
+            }
+        ).then(
+            result=>{
+                return true
+            }
+        ).catch(
+            err=>{
                 //return cantidadRestante;
                 throw 'Contact cristian, there is a problem updating the records to the server';
             }

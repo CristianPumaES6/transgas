@@ -50,6 +50,8 @@ export class ApplicationComponent implements OnInit {
   public getUsers: User[] = [];
   public version: string = '';
 
+  // estas variables nos permite saber cuantos registros tenemos en offline
+  public cantidadRestanteOffline : CantidadRestante= new CantidadRestante();
 
   constructor(
     private router: Router,
@@ -73,6 +75,17 @@ export class ApplicationComponent implements OnInit {
 
       }
     );
+
+
+    this.databaseService.emitterCantOffline.subscribe(
+      (cantidadRestanteOffline:CantidadRestante) => {
+        console.log('this.databaseService.emitterCantOffline.subscribe()');
+        
+        this.cantidadRestanteOffline = cantidadRestanteOffline;
+      }
+    )
+
+    
 
   }
 
@@ -117,7 +130,12 @@ export class ApplicationComponent implements OnInit {
 
     let datosRestanteSync:CantidadRestante = {};
     await Promise.resolve(true).then(
+      result => {
+        return this.databaseService.Sync();
+      }
+    ).then(
        result => {
+         if(result) throw 'ERROR SYNC SERVER'
         return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
        }
     ).then(
@@ -125,7 +143,6 @@ export class ApplicationComponent implements OnInit {
 
         // deben de ser 0 todos para que entre esta funcion
         if(!datosFaltantas.voyage && !datosFaltantas.port && !datosFaltantas.report ){
-          
           datosRestanteSync = datosFaltantas;
           return this.authService.Logout();
         }

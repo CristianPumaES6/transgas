@@ -6,6 +6,7 @@ import { NotificationsService } from 'angular2-notifications';
 
 // Importamos los servicio del webSocket
 import { WebSocketService } from './../services/web-socket.service';
+import { CantidadRestante } from '../models/loggedUser';
 
 
 declare const window: any;
