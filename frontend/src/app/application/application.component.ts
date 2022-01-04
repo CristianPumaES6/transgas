@@ -106,6 +106,8 @@ export class ApplicationComponent implements OnInit {
 
     // Configuracion de stylos por jqery
     this.ConfigStyleFromJquery();
+    
+    this.databaseService.EmitterCantOffline();
   }
 
   // OnAsideLoaded => Funcion que inicializa la funcion aside

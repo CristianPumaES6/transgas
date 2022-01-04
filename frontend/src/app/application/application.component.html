@@ -75,8 +75,7 @@
  
 
       <span class="float-righ"  id="clickSyncDataLocal" (click)="ClickSyncDataLocal()"
-      
-      matTooltip="Data Local ( V{{cantidadRestanteOffline.voyage}}  P{{cantidadRestanteOffline.port}}  R{{cantidadRestanteOffline.report}})">
+        matTooltip="Update Data Local ( V{{cantidadRestanteOffline.voyage}}  P{{cantidadRestanteOffline.port}}  R{{cantidadRestanteOffline.report}})">
          {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
         <span [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline |
           translateMessage:translateCategory}}
@@ -87,10 +86,9 @@
           <!-- <span>Designed by: ThemePixels</span> -->
           <span class="icon-refresh" [ngClass]="{
             'refreshing': isRefreshingData
-            }"></span>  
+            }"></span>
 
             <span class="pl-1">
-
               T: {{ cantidadRestanteOffline.voyage + cantidadRestanteOffline.port + cantidadRestanteOffline.report}}
             </span>
         </span>
