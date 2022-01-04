@@ -141,13 +141,13 @@ export class ApplicationComponent implements OnInit {
       }
     ).then(
        result => {
+        
          if(!result) throw 'ERROR SYNC SERVER';
          
         return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
        }
     ).then(
       (datosFaltantas:CantidadRestante) => {
-
         // deben de ser 0 todos para que entre esta funcion
         if(!datosFaltantas.voyage && !datosFaltantas.port && !datosFaltantas.report ){
           datosRestanteSync = datosFaltantas;

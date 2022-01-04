@@ -1165,7 +1165,7 @@ export class DatabaseService {
 
         let cantidadQueFaltaEnviar: CantidadRestante = new CantidadRestante();
 
-        return Promise.resolve(true).then(
+        return await Promise.resolve(true).then(
             result => {
                 return this.db.voyages.toArray();
             }
