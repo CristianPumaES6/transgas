@@ -53,6 +53,10 @@ export class ApplicationComponent implements OnInit {
   // estas variables nos permite saber cuantos registros tenemos en offline
   public cantidadRestanteOffline : CantidadRestante= new CantidadRestante();
 
+  // Refresh
+  public isRefreshingData : boolean = false;
+
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -182,7 +186,8 @@ export class ApplicationComponent implements OnInit {
   // Cuando le damos click a este boton intenta refrescarse la cpnexion
   public async ClickSyncDataLocal(){
     if(this.isOnline){
-
+      
+      this.isRefreshingData = true;
       this._loadingService.Open();
       await Promise.resolve(true).then(
         result => {
@@ -192,6 +197,7 @@ export class ApplicationComponent implements OnInit {
       ).then(
         result => {
           this._loadingService.Close();
+          this.isRefreshingData = false;
           return this.databaseService.EmitterCantOffline();
 
         }
@@ -204,6 +210,8 @@ export class ApplicationComponent implements OnInit {
           console.dir(err);
   
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), msg);
+            
+          this.isRefreshingData = false;
           // Deshabilito el spinner de loading
           this._loadingService.Close();
         }

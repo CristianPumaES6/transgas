@@ -27,3 +27,16 @@ WHERE port.userId = @userId
         AND port.voyageId NOT IN(
                                         select id from voyage where voyage.userId = @userId   
                                         )
+
+
+
+-- solucion para los rpeortes registrados en otro puerto.
+UPDATE daily_report
+SET status = 0
+where id in(991,992,993,994,995,996,997,998,999,1000) 
+
+
+-- SOLUCION
+UPDATE daily_report
+SET bunkeringIfo = '1095.13'
+WHERE id = 1048
