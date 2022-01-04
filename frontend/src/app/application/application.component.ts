@@ -179,6 +179,42 @@ export class ApplicationComponent implements OnInit {
     );
   }
 
+  // Cuando le damos click a este boton intenta refrescarse la cpnexion
+  public async ClickSyncDataLocal(){
+    if(this.isOnline){
+
+      this._loadingService.Open();
+      await Promise.resolve(true).then(
+        result => {
+          return this.databaseService.Sync();
+          
+        }
+      ).then(
+        result => {
+          this._loadingService.Close();
+          return this.databaseService.EmitterCantOffline();
+
+        }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+  
+          console.error(msg);
+          console.dir(err);
+  
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), msg);
+          // Deshabilito el spinner de loading
+          this._loadingService.Close();
+        }
+      );
+    } else {
+      
+      this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), '');
+       
+    }
+  }
+
   public GetRoutelNavLink() {
     console.log('GetRoutelNavLink()');
 
