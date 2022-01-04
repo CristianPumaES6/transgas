@@ -79,6 +79,7 @@ export class OnlineOfflineService {
             // Solo cmabiamos el estado.
               this.UpdateOnlineStatus();
               // Emitir reloadData, esto sirve para saber si debemos de volver a cargar la data.
+             
               this.emitterReloadData.emit();
 
               // Emitimos una notificacion.

@@ -27,6 +27,9 @@ export class DatabaseService {
 
     emitterCantOffline = new EventEmitter<CantidadRestante>();
     
+  // Este emit sirve para avisar si se debe volver a cargar la data hacer reload. refresh etc.
+  emitterReloadData = new EventEmitter();
+  
     // 
     private db: any;
 
@@ -1233,7 +1236,8 @@ export class DatabaseService {
             resultCantidadRestante => {
 
                 this.emitterCantOffline.emit(resultCantidadRestante);
-
+                this.emitterReloadData.emit();
+                
             }
         ).then(
             result=>{

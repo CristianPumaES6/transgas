@@ -115,27 +115,29 @@ export class VoyageComponent implements OnInit {
     public dialog: MatDialog,
   ) {
 
+    
     // Si se recibe algun cambio de conexion, se resetea el formulario.
-    this.onlineOfflineService.emitterReloadData.subscribe(
+    this.databaseService.emitterReloadData.subscribe(
       (isOnline: boolean) => {
-        //  this.loadDataIndexedDB(this.selectUser);
+        this.loadDataIndexedDB(this.selectUser);
 
 
-        //    this.List_Voyages_Ports_DailyReports = 'Voyages';
-        //    this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
-        //    this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
-        //    this.SettingAzList.isNew = true;
-        //    this.SettingAzList.isBack = false;
-        //    this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
-        //    this.SettingAzList.toolTipBack = ''
-        //    this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
-        //    this.SettingAzList.activateSelectItemEmit2 = true;
-        //    this.selectPort = new Port();
-        //    this.title_header_media = '';
-        //    this.sub_title_header_media = '';
+        this.List_Voyages_Ports_DailyReports = 'Voyages';
+        this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
+        this.SettingAzList.titleAzLists = this.languageService.GetMessage(this.translateCategory, 'VOYAGES_LIST');
+        this.SettingAzList.isNew = true;
+        this.SettingAzList.isBack = false;
+        this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
+        this.SettingAzList.toolTipBack = ''
+        this.SettingAzList.toolTipOptionDelete = this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_VOYAGE');
+        this.SettingAzList.activateSelectItemEmit2 = true;
+        this.selectPort = new Port();
+        this.title_header_media = '';
+        this.sub_title_header_media = '';
 
       }
     );
+
 
   }
 
