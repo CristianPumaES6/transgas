@@ -54,8 +54,8 @@ export class UserComponent implements OnInit {
 
   //======== Datos para el componente azList ===========
   public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false,
-  this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
-  this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
+    this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
+    this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
   public azLists: AzList[] = [];
 
   // ===================================================

@@ -183,52 +183,52 @@ export class VoyageComponent implements OnInit {
 
 
 
- 
-      Promise.resolve(true).then(
-        result => {
-          // Obtenemos todos los usuarios que estan en la bd.
-          return this.databaseService.getUsersIndexDB();
-        }
-      ).then(
-        resultUsers => {
 
-          // En la carga de data indexedDB cargo solo los buque.
-          this.getUsers = resultUsers.filter(
-            (user: User) => {
-              return user.role === 'BUQUE';
-            }
-          );
+    Promise.resolve(true).then(
+      result => {
+        // Obtenemos todos los usuarios que estan en la bd.
+        return this.databaseService.getUsersIndexDB();
+      }
+    ).then(
+      resultUsers => {
 
-          // Seleccionamos al usuario que esta logeado.
-          let userLoggin = this.userService.GetIdentity();
-
-          // Si el usuario logeado no es un buque
-          if(userLoggin.role === 'BUQUE') {
-            return userLoggin.id;
-          } else {
-            return this.databaseService.CheckWhatUserWeHaveInLocal();
+        // En la carga de data indexedDB cargo solo los buque.
+        this.getUsers = resultUsers.filter(
+          (user: User) => {
+            return user.role === 'BUQUE';
           }
+        );
+
+        // Seleccionamos al usuario que esta logeado.
+        let userLoggin = this.userService.GetIdentity();
+
+        // Si el usuario logeado no es un buque
+        if (userLoggin.role === 'BUQUE') {
+          return userLoggin.id;
+        } else {
+          return this.databaseService.CheckWhatUserWeHaveInLocal();
         }
-        ).then(
-          resultUserId => {
-            // Si retorna un id lo buscamos en local
-            if(resultUserId){
-              // Cargamos los datos del userId
-              this.loadDataIndexedDBByUserId(resultUserId);
-            } else {
-              // si no buscamos el primer userId con rol buque y lo buscamos.
-              let firstUser = this.getUsers.find(user => user.role === 'BUQUE');
-              return this.ClickSelectUser(firstUser.id);
-            }
-            
+      }
+    ).then(
+      resultUserId => {
+        // Si retorna un id lo buscamos en local
+        if (resultUserId) {
+          // Cargamos los datos del userId
+          this.loadDataIndexedDBByUserId(resultUserId);
+        } else {
+          // si no buscamos el primer userId con rol buque y lo buscamos.
+          let firstUser = this.getUsers.find(user => user.role === 'BUQUE');
+          return this.ClickSelectUser(firstUser.id);
         }
-      ).then(
-        resultLoad => {
 
-          return true;
+      }
+    ).then(
+      resultLoad => {
+
+        return true;
 
 
-        }).catch(
+      }).catch(
         err => {
           // Manejo el error
           let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
@@ -241,8 +241,8 @@ export class VoyageComponent implements OnInit {
           this.loadingService.Close();
         });
 
-    
-    
+
+
 
 
   }
