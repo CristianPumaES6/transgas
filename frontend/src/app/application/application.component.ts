@@ -142,15 +142,24 @@ export class ApplicationComponent implements OnInit {
     ).then(
        result => {
         
-         if(!result) throw 'ERROR SYNC SERVER';
+         if(!result) throw 'ERROR SYNC SERVER'; 
          
-        return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+         return this.databaseService.EmitterReloadData();
+        }
+      ).then(
+         result => {
+
+          if(!result){
+            throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+          }
+
+          return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
        }
     ).then(
-      (datosFaltantas:CantidadRestante) => {
+      (datosFaltantes:CantidadRestante) => {
         // deben de ser 0 todos para que entre esta funcion
-        if(!datosFaltantas.voyage && !datosFaltantas.port && !datosFaltantas.report ){
-          datosRestanteSync = datosFaltantas;
+        if(!datosFaltantes.voyage && !datosFaltantes.port && !datosFaltantes.report ){
+          datosRestanteSync = datosFaltantes;
           return this.authService.Logout();
         }
         else {
@@ -199,6 +208,15 @@ export class ApplicationComponent implements OnInit {
       ).then(
         result => {
           this._loadingService.Close();
+          return this.databaseService.EmitterReloadData();
+         }
+       ).then(
+          result => {
+ 
+           if(!result){
+             throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+           }
+ 
           this.isRefreshingData = false;
           return this.databaseService.EmitterCantOffline();
 
