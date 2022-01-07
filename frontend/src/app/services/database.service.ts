@@ -25,12 +25,13 @@ import { LanguageService } from './language.service';
 @Injectable()
 export class DatabaseService {
 
-    emitterCantOffline = new EventEmitter<CantidadRestante>();
+    // Este emiter envia la cantidad de viajes puerto y reportes que faltan enviar
+    public emitterCantOffline = new EventEmitter<CantidadRestante>();
     
-  // Este emit sirve para avisar si se debe volver a cargar la data hacer reload. refresh etc.
-  emitterReloadData = new EventEmitter();
+    // Este emit sirve para avisar si se debe volver a cargar la data hacer reload. refresh etc.
+    public emitterReloadData = new EventEmitter();
   
-    // 
+    // database
     private db: any;
 
     //======== VARIABLES DE TRADUCCION=============
@@ -117,9 +118,13 @@ export class DatabaseService {
             console.log('-----------------------------------------');
             throw 'Offline'
         }
+    }
 
-        console.log('Sync Fin');
+    // Si queremos emitir un reload a la base datos, un refresh de lista.
+    public async EmitterReloadData():Promise<boolean>{
 
+        this.emitterReloadData.emit();
+        return true;
     }
 
     // =================== Sync IndexedDB ====================================
@@ -1236,8 +1241,7 @@ export class DatabaseService {
             resultCantidadRestante => {
 
                 this.emitterCantOffline.emit(resultCantidadRestante);
-                this.emitterReloadData.emit();
-                
+     
             }
         ).then(
             result=>{
