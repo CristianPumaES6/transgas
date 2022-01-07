@@ -1046,7 +1046,7 @@ export class VoyageComponent implements OnInit {
           // Seleccionamos el año
           if (yearFromUser && yearFromUser.length) {
             this.year = yearFromUser[(yearFromUser.length || 1) - 1];
-            this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage222 ' + this.year];
+            this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
           }
 
           this.SettingAzList.isNew = true;
