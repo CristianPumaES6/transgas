@@ -79,14 +79,6 @@ export class UserComponent implements OnInit {
     public dialog: MatDialog,
   ) {
     console.log('User Constructor()');
-
-    // subscribe receives the value. sirve para recibir algun emit
-    this.onlineOfflineService.emitterReloadData.subscribe(
-      (isOnline: boolean) => {
-        
-        this.loadDataIndexedDB();
-      }
-    );
   }
 
   ngOnInit(): void {
