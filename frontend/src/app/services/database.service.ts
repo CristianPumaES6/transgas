@@ -1254,4 +1254,34 @@ export class DatabaseService {
             }
         )
     }
+
+    // esta funcion retornara la data del usuario que se tiene en local, no se tiene ninguna usuario en local retorna 0.
+    public async CheckWhatUserWeHaveInLocal() : Promise<number>{
+
+        let userIdOld =0;
+
+        return await Promise.resolve(true).then(
+            result => {
+                // Obtenemos todos los viajes.
+                return this.db.voyages.toArray()
+            }
+        ).then(
+            voyages => {
+                if(voyages && voyages.length){
+                    userIdOld = voyages[0].userId;
+                    
+                    return userIdOld;
+                } else {
+                    return 0;
+                }
+
+            }
+        ).catch(
+            err=>{
+                //return cantidadRestante;
+                throw 'Contact cristian, could not get the users local record.';
+            }
+        );
+
+    }
 }

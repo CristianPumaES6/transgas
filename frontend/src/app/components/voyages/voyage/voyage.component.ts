@@ -115,11 +115,13 @@ export class VoyageComponent implements OnInit {
     public dialog: MatDialog,
   ) {
 
-    
+
     // Si se recibe algun cambio de conexion, se resetea el formulario.
     this.databaseService.emitterReloadData.subscribe(
       (isOnline: boolean) => {
-        this.loadDataIndexedDB(this.selectUser);
+
+        // Cargamos los datos locales.
+        this.loadDataIndexedDBByUserId(this.selectUser.id);
 
 
         this.List_Voyages_Ports_DailyReports = 'Voyages';
@@ -149,8 +151,6 @@ export class VoyageComponent implements OnInit {
     // si el aSide esta abierto lo cerramos.
     this.aSideService.Close();
 
-    // Seleccionalos al usuario logeado.
-    this.selectUser = this.userService.GetIdentity();
     // Obtenemos el rol del usuario.
     this.roleUser = this.userService.GetIdentity().role;
 
@@ -183,19 +183,52 @@ export class VoyageComponent implements OnInit {
 
 
 
-    let user: User = new User();
-
-    // Solo si es un usuario buque cargaran sus datos en local
-    if (this.selectUser.role === 'BUQUE') {
-
-      user.id = this.selectUser.id;
-
+ 
       Promise.resolve(true).then(
-        result =>{
-          
-          this.loadDataIndexedDB();
+        result => {
+          // Obtenemos todos los usuarios que estan en la bd.
+          return this.databaseService.getUsersIndexDB();
         }
-      ).catch(
+      ).then(
+        resultUsers => {
+
+          // En la carga de data indexedDB cargo solo los buque.
+          this.getUsers = resultUsers.filter(
+            (user: User) => {
+              return user.role === 'BUQUE';
+            }
+          );
+
+          // Seleccionamos al usuario que esta logeado.
+          let userLoggin = this.userService.GetIdentity();
+
+          // Si el usuario logeado no es un buque
+          if(userLoggin.role === 'BUQUE') {
+            return userLoggin.id;
+          } else {
+            return this.databaseService.CheckWhatUserWeHaveInLocal();
+          }
+        }
+        ).then(
+          resultUserId => {
+            // Si retorna un id lo buscamos en local
+            if(resultUserId){
+              // Cargamos los datos del userId
+              this.loadDataIndexedDBByUserId(resultUserId);
+            } else {
+              // si no buscamos el primer userId con rol buque y lo buscamos.
+              let firstUser = this.getUsers.find(user => user.role === 'BUQUE');
+              return this.ClickSelectUser(firstUser.id);
+            }
+            
+        }
+      ).then(
+        resultLoad => {
+
+          return true;
+
+
+        }).catch(
         err => {
           // Manejo el error
           let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
@@ -208,15 +241,8 @@ export class VoyageComponent implements OnInit {
           this.loadingService.Close();
         });
 
-    } 
-    // SI ES UN ADMINISTRADOR o SUPPORT Caragara los datos del servidor
-    else{
- 
-  
-          this.loadDataIndexedDB();
-   
-  
-    }
+    
+    
 
 
   }
@@ -458,7 +484,7 @@ export class VoyageComponent implements OnInit {
       ).then(
         () => {
           // Cargo la data en locla
-          this.loadDataIndexedDB(this.selectUser);
+          this.loadDataIndexedDBByUserId(this.selectUser.id);
           this.loadingService.Close();
         }
       ).catch(
@@ -1001,7 +1027,7 @@ export class VoyageComponent implements OnInit {
   }
 
   // Local Data // Seleccionar usuario
-  private loadDataIndexedDB(selectUser?: User) {
+  private loadDataIndexedDBByUserId(selectUserId: Number) {
     console.log('loadDataIndexedDB()');
 
     Promise.resolve(true).then(
@@ -1013,34 +1039,18 @@ export class VoyageComponent implements OnInit {
       (users: User[]) => {
         if (users.length > 0) {
 
-          // En la carga de data indexedDB cargo solo los buque.
-          this.getUsers = users.filter(
-            (user: User) => {
-              return user.role === 'BUQUE';
-            }
-          );
-
-          let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
-          if (!firstUser) throw 'NO_BUQUE_REGISTER';
-
-          if (firstUser.years && firstUser.years.length) {
-            this.year = firstUser.years[(firstUser.years.length || 1) - 1];
-            this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage ' + this.year];
-
-          } else {
-            this.year = 0;
-          }
-          
-          if (!selectUser) {
-            this.selectUser = firstUser;
-            this.selectUserDropdown = firstUser.id;
-
-            this.SettingAzList.isNew = true;
-            this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
-
-
+          // Seleccionamos el usuario por Id
+          this.selectUser = this.getUsers.find(user => user.id === selectUserId);
+          this.selectUserDropdown = this.selectUser.id;
+          let yearFromUser = this.selectUser.years;
+          // Seleccionamos el año
+          if (yearFromUser && yearFromUser.length) {
+            this.year = yearFromUser[(yearFromUser.length || 1) - 1];
+            this.SettingAzList.azListBreadcrumbs = ['Application', 'Voyage222 ' + this.year];
           }
 
+          this.SettingAzList.isNew = true;
+          this.SettingAzList.toolTipNew = this.languageService.GetMessage(this.translateCategory, 'NEW_VOYAGE');
           // Generar lista por usuarios.
           this.generateAzListDropdownsByUsers(this.getUsers);
 
@@ -1465,12 +1475,12 @@ export class VoyageComponent implements OnInit {
           // Deshabilito el spinner de loading
           this.loadingService.Close();
 
-          
+
           // Muestro notificación
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_CREATE_LOCAL'));
 
           this.databaseService.EmitterCantOffline();
-          
+
         }
       ).catch(
         error => {
@@ -2116,8 +2126,8 @@ export class VoyageComponent implements OnInit {
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
 
           this.List_Voyages_Ports_DailyReports = 'Ports';
-          
-    this.databaseService.EmitterCantOffline();
+
+          this.databaseService.EmitterCantOffline();
         }
       ).catch(
         error => {
