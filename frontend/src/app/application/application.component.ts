@@ -194,6 +194,28 @@ export class ApplicationComponent implements OnInit {
     );
   }
 
+  public async ClickOpenListOfConnectedUsers(){
+    await Promise.resolve(true).then(
+      result => {
+        this.OnSelectNavLink("list-of-connected-users");
+
+      this._loadingService.Close();
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this._loadingService.Close();
+      }
+    );
+  }
+
   // Cuando le damos click a este boton intenta refrescarse la cpnexion
   public async ClickSyncDataLocal(){
     if(this.isOnline){
@@ -298,6 +320,10 @@ export class ApplicationComponent implements OnInit {
       case 'helps':
         this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
         break;
+
+      case 'list-of-connected-users':
+          this.router.navigate(['../application/users/who-are-connected'], { relativeTo: this.activatedRoute });
+          break;
 
       default:
         break;

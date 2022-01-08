@@ -13,6 +13,7 @@ export const aSide: any = {
 //
 export const application: any = {
     EDIT_PERFIL: 'Edit profile',
+    LIST_OF_CONNECTED_USERS: 'List of connected users',
     EXIT_PERFIL: 'Logout',
     CURRENT_STATUS: 'current status',
     STATUS_TRUE: 'Online',
@@ -29,6 +30,7 @@ export const application: any = {
     // Errores personalizados
     ERROR_GET_USERS: 'Could not get user data.',
     CANNOT_CLOSE_PENDING_REPORTS:'There are files stored locally, contact Cristian for help.'
+
 };
 
 // Cateogría para autenticacion
