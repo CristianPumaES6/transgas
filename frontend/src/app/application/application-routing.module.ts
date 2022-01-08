@@ -23,6 +23,7 @@ const routes: Routes = [
       { path: 'voyages', component: VoyageComponent },
       { path: 'users', component: UserComponent },
       { path: 'helps', component: HelpsComponent },
+      { path: 'users/who-are-connected', component: ListOfConnectedUsersComponent }
     ]
   }
 ];
