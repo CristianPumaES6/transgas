@@ -37,7 +37,7 @@ import { ExcelService } from '../../services/excel.service';
 
 // Assets
 import { mathRound } from '../../../assets/math/math.assets';
-import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
+import { FormatDate, GetMonthYearFromDate, ComparePreviousDates, CompareAfterDates, TextMonthYearFormatYYYYMMDD, DiffDates, IsPrevious1Date, IsAfter1Date, FisrtOldDayFromDate, validateDate, GetDate, FormatYYYYMMDD, TextMonthDayYearFormatYYYYMMDD, FormatYYYYMMDDToSTRING, AddOneDayAndConvertYYYYMMDDToSTRING, FormatDateUTCToDateHour, ConvertMoment, ConvertMomentUTC } from '../../../assets/moment/moment.assets';
 
 
 // Componentes
@@ -54,6 +54,9 @@ import 'jspdf-autotable';
 import * as Html2canvas from 'html2canvas';
 
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
+import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
+import { OnlineOfflineService } from '../../services/online-offline.service';
+import { DialogExportExcelComponent, IDialogExportExcel } from 'src/app/shared/dialog/dialog-export-excel/dialog-export-excel.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -61,6 +64,9 @@ import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+
+  // Esta variable nos ayudara a saber si nos encontramos con conexion al servidor.
+  public isOnline: boolean = true;
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
@@ -139,6 +145,7 @@ export class DashboardComponent implements OnInit {
   public chartLineSPEED: Chart; // LINEA
   public dataSPEED: Chart.ChartPoint[] = []; // Data
 
+  public cantDecimal: number = 1;
 
   // Consumo IFO POR ACTIVIDAD
   public totalTimePerActivityIFO: ActivityPerformed = new ActivityPerformed();
@@ -177,18 +184,22 @@ export class DashboardComponent implements OnInit {
 
   // CONSUMER MGO POR MAQUINA
   public consumptionTotalMGO = new ConsumptionMachineMGO();
+  public totalTimePerMachineMGO: ConsumptionMachineMGO = new ConsumptionMachineMGO();
   public consumptionDaysRealMGO = new ConsumptionMachineMGO();
   public consumptionDaysByContractMGO = new ConsumptionMachineMGO();
   public consumptionDailyBalanceMGO = new ConsumptionMachineMGO();
 
   // CONSUMER MGO POR MAQUINA
   public consumptionTotalIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
+  public totalTimePerMachineIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDaysRealIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDaysByContractIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
   public consumptionDailyBalanceIFO: ConsumptionMachineIFO = new ConsumptionMachineIFO();
 
   // Cuadro Consumption and bunkering
   public consumptionAndBunkering: ConsumptionAndBunkering = new ConsumptionAndBunkering();
+
+  public listInfoFuel: DashboardBunkering[] = [];
 
   // Constructor
   constructor(
@@ -202,16 +213,23 @@ export class DashboardComponent implements OnInit {
     private notificationsService: NotificationsService,
     private aSideService: ASideService,
     public dialog: MatDialog,
-    private excelService: ExcelService
-  ) { }
+    private excelService: ExcelService,
+    private onlineOfflineService: OnlineOfflineService,
+  ) {
+
+    // Si se recibe algun cambio de conexion, se resetea el formulario.
+    this.onlineOfflineService.emitterIsOnline.subscribe(
+      (isOnline: boolean) => {
+        this.isOnline = isOnline;
+      }
+    );
+
+  }
 
   // Esta funcion se inicializa primero, es parte de angular.
   ngOnInit(): void {
     // ngOnInit()
     console.log('ngOnInit()');
-
-    // Activamos el loading.
-    this.loadingService.Open();
 
     // Revisar <= esto cada cuadro se deberia de agregar el Scrool solo si ese user permite visualizar
     // hacer pruebas que pasa si no tiene el componente display.
@@ -252,6 +270,9 @@ export class DashboardComponent implements OnInit {
     // Inicializamos la promesa.
     // El modulo de dashboard funciona solo con internet.
 
+    // Activamos el loading.
+    this.loadingService.Open();
+
     // Si tenemos internet se ejecuta lo siguiente.
     Promise.resolve(true).then(
       result => {
@@ -285,6 +306,8 @@ export class DashboardComponent implements OnInit {
         // Seleccionaremos el primer buque del arreglo.
         let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
 
+        if (!firstUser) throw 'NO_BUQUE_REGISTER';
+
         return this.SelectUser(firstUser.id);
       }
     ).then(
@@ -292,6 +315,19 @@ export class DashboardComponent implements OnInit {
 
         if (!result) throw 'ERROR_SELECT_USER';
 
+
+        // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, String(startDate), String(endDate)).pipe().toPromise();
+      }
+    ).then(
+      result => {
+
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
 
         // Activamos el loading.
         this.loadingService.Close();
@@ -310,7 +346,7 @@ export class DashboardComponent implements OnInit {
         this.loadingService.Close();
       });
 
-
+    this.isOnline = this.onlineOfflineService.GetStatusOnline();
   }
 
   // GetUsers: Cargo todos los Users para el listado de Users.
@@ -392,7 +428,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  // GetUsers: Cargo todos los Users para el listado de Users.
+  // GetROBByUser: Obtine el rob del usurio.
   private GetROBByUser(userId: number): Observable<boolean> {
     // Test
     console.log('GetROB(userId: number)');
@@ -407,6 +443,62 @@ export class DashboardComponent implements OnInit {
 
         // Segun el resultado retornamos la respuesta.
         return (resultUser !== null);
+      }
+    ));
+
+  }
+
+  // GetStartEndROByFilterDate: Cargamos la fecha de inicio y la fecha fin.
+  private GetStartEndROByFilterDate(userId: number, startDate: string, endDate: string): Observable<boolean> {
+    this.listInfoFuel = [];
+
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetStartEndROByFilterDate(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetROBByUser[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+
+        // Trabajaremos con las siguientes variables.
+        let startDataROB = resultGetROBByUser[0];
+        let consumptionDataROB = resultGetROBByUser[1];
+
+        // IFO
+        let fuelIfo: DashboardBunkering = new DashboardBunkering();
+        fuelIfo.rob = this.getROBByUser.total_bunkering_ifo - this.getROBByUser.total_ifo;
+        fuelIfo.typeFuel = this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'VLSFO';
+        fuelIfo.startRob = startDataROB.total_bunkering_ifo - startDataROB.total_ifo;
+        fuelIfo.startDate = FormatDateUTCToDateHour(this.startDate)
+        // Revisar por que aqui se esta usando la variable que se recorre
+        fuelIfo.comsumption = consumptionDataROB.total_ifo;
+        fuelIfo.bunkering = consumptionDataROB.total_bunkering_ifo;
+
+        fuelIfo.endRob = fuelIfo.startRob + (consumptionDataROB.total_bunkering_ifo - consumptionDataROB.total_ifo);
+        fuelIfo.endDate = FormatDateUTCToDateHour(this.endDate);
+
+        // MGO
+        let fuelMgo: DashboardBunkering = new DashboardBunkering();
+        fuelMgo.rob = this.getROBByUser.total_bunkering_mgo - this.getROBByUser.total_mgo;
+        fuelMgo.typeFuel = 'MGO';
+        fuelMgo.startRob = startDataROB.total_bunkering_mgo - startDataROB.total_mgo;
+        fuelMgo.startDate = FormatDateUTCToDateHour(this.startDate);
+        fuelMgo.comsumption = consumptionDataROB.total_mgo;
+        fuelMgo.bunkering = consumptionDataROB.total_bunkering_mgo;
+        fuelMgo.endRob = fuelMgo.startRob + (consumptionDataROB.total_bunkering_mgo - consumptionDataROB.total_mgo);
+        fuelMgo.endDate = FormatDateUTCToDateHour(this.endDate);
+
+        if (this.selectUser.isConsumptionVLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO) {
+
+          this.listInfoFuel.push(fuelIfo)
+        }
+        if (this.selectUser.isConsumptionMGO) {
+
+          this.listInfoFuel.push(fuelMgo)
+        }
+
+
+        // Segun el resultado retornamos la respuesta.
+        return true;
       }
     ));
 
@@ -508,12 +600,26 @@ export class DashboardComponent implements OnInit {
 
         // Invocamos nuestra funcion SelectUser.
         return this.SelectUser(this.selectUserId);
+
       }).then(
         result => {
 
           // Verificamos que todo este OK.
           if (!result) throw 'ERROR_COMBO_BUQUE';
+
+
+          let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+          let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+          // Buscamos la info
+          return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+        }
+      ).then(
+        result => {
           // Cerramos el loading.
+
+          if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
           this.loadingService.Close();
         }
       ).catch(
@@ -713,8 +819,21 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+            // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+            let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+            let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+            // Buscamos la info
+            return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+          }
+        ).then(
+          result => {
+
+            if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
             // Loading cerrar.
             this.loadingService.Close();
+
           }
         ).catch(
           err => {
@@ -753,11 +872,44 @@ export class DashboardComponent implements OnInit {
         // Verificamos que la fecha inicio sea antes que la fecha fin.
         if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
 
+        // Setenemos el inicio de la hora que tendria la fecha.
+        let startDate = ConvertMoment(this.startDate);
+        startDate.hour(0)
+        startDate.minute(0)
+        this.startDate = startDate.toDate();
+
+        // Seteamos la ultima hora que tendria el dia
+        let endDate = ConvertMoment(this.endDate);
+        endDate.hour(23)
+        endDate.minute(59)
+        this.endDate = endDate.toDate();
+
         // avisamos, se esta seteando una fecha.
         this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
         // Invocamos la funcion para generar reporte por fecha.
         this.GenerateReporteByDate();
+      }
+    ).then(
+      result => {
+        let startDate = '';
+        let endDate = '';
+
+
+        // Ya que es un filtro por fecha, se obtiene mediante la fecha local del navegador.
+        startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
+        return true;
+
       }
     ).catch(
       err => {
@@ -935,9 +1087,21 @@ export class DashboardComponent implements OnInit {
             // Validamos el resultado del generate Dashboard.
             if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+            let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+            let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+            // Buscamos la info
+            return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+          }
+        ).then(
+          result => {
+
+            if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
             // Loading cerrar.
             this.loadingService.Close();
           }
+
         ).catch(
           err => {
 
@@ -1006,22 +1170,37 @@ export class DashboardComponent implements OnInit {
         // Validamos el resultado del generate Dashboard.
         if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
+
+
+        let startDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+        let endDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+        // Buscamos la info
+        return this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+
+        if (!result) throw 'ERROR_GET_START_END_ROB_BY_FILTER';
+
         // Loading cerrar.
         this.loadingService.Close();
-      }).catch(
-        err => {
+      }
 
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+    ).catch(
+      err => {
 
-          console.error(msg);
-          console.dir(err);
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
 
   }
 
@@ -1044,7 +1223,7 @@ export class DashboardComponent implements OnInit {
 
 
         // Generatamos el report daily.
-        return this.excelService.ExportReportDaily(this.generateVoyages);
+        return this.OpenDialogExportExcel(this.selectUser, this.startDate, this.endDate);
 
       }
     ).then(
@@ -1075,7 +1254,7 @@ export class DashboardComponent implements OnInit {
 
   // ClickExportPDF() : Funcion que se ejecuta al dar click a exportar pdf, esto invoca a la funcion que genera el pdf.
   public ClickExportPDF() {
-
+    console.log('ClickExportPDF()')
     // Iniciamos las promesas.
     Promise.resolve(true).then(
       result => {
@@ -1200,12 +1379,14 @@ export class DashboardComponent implements OnInit {
 
           // CONSUMER MGO POR MAUQINA
           this.consumptionTotalMGO = new ConsumptionMachineMGO();
+          this.totalTimePerMachineMGO = new ConsumptionMachineMGO();
           this.consumptionDaysRealMGO = new ConsumptionMachineMGO();
           this.consumptionDaysByContractMGO = new ConsumptionMachineMGO();
           this.consumptionDailyBalanceMGO = new ConsumptionMachineMGO();
 
           // CONSUMER MGO POR MAQUINA
           this.consumptionTotalIFO = new ConsumptionMachineIFO();
+          this.totalTimePerMachineIFO = new ConsumptionMachineIFO();
           this.consumptionDaysRealIFO = new ConsumptionMachineIFO();
           this.consumptionDaysByContractIFO = new ConsumptionMachineIFO(0, 0, 0, 0, 0);
           this.consumptionDailyBalanceIFO = new ConsumptionMachineIFO();
@@ -1245,9 +1426,9 @@ export class DashboardComponent implements OnInit {
               let totalSpeedByVoyage: Speed = new Speed();
 
               // Fecha donde se inicio el registro.
-              let dayStartByVoyage: String;
+              let dayStartByVoyage: string;
               // fecha donde termino el registro.
-              let dayEndByVoyage: String;
+              let dayEndByVoyage: string;
 
               // Total de abastecimiento.
               let totalBunkeringIFOByVoyage: number = 0;
@@ -1265,8 +1446,8 @@ export class DashboardComponent implements OnInit {
                   // Total de distancia y tiempo del puerto.
                   let totalSpeedByPort: Speed = new Speed();
                   // Fecha donde se inicio y finaliza el puerto.
-                  let dayStartByPort: String;
-                  let dayEndByPort: String;
+                  let dayStartByPort: string;
+                  let dayEndByPort: string;
 
                   // Total de abastecimiento.
                   let totalBunkeringIFOByPort: number = 0;
@@ -1307,89 +1488,108 @@ export class DashboardComponent implements OnInit {
                           // DAILY CONSUMPTION - this.voyageConsumptionByActivityPerformedIFO
                           if (report.activityPerformed === 'LOADING') {
 
-                            this.totalTimePerActivityIFO.loading += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.loading += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.loading += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.loading += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.loading += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.loading += totalConsumptionByReportMGO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.loading += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.loading += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.loading += totalConsumptionByReportIFO;
+                            }
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.loading += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.loading += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.loading += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'DOWNLOADING') {
 
-                            this.totalTimePerActivityIFO.discharge += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.discharge += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.discharge += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.discharge += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.discharge += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.discharge += totalConsumptionByReportMGO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.discharge += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedIFO.discharge += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.discharge += totalConsumptionByReportIFO;
+                            }
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.discharge += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedMGO.discharge += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.discharge += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'SAILING_IN_BALLAST') {
 
-                            this.totalTimePerActivityIFO.ballast += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.ballast += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.ballast += totalConsumptionByReportIFO;
-
-                            this.totalTimePerActivityMGO.ballast += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.ballast += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.ballast += totalConsumptionByReportMGO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.ballast += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedIFO.ballast += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.ballast += totalConsumptionByReportIFO;
+                            }
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.ballast += report.steamingTime;
+                              this.totalDistanceMilesByActivityPerformedMGO.ballast += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.ballast += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'SAILING_WITH_LADEN') {
 
-                            this.totalTimePerActivityIFO.laden += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.laden += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.laden += totalConsumptionByReportIFO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.laden += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.laden += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.laden += totalConsumptionByReportIFO;
+                            }
 
-
-                            this.totalTimePerActivityMGO.laden += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.laden += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.laden += totalConsumptionByReportMGO;
-
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.laden += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.laden += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.laden += totalConsumptionByReportMGO;
+                            }
                           } else if (report.activityPerformed === 'ECONOMICAL_NAVIGATION') {
 
-                            this.totalTimePerActivityIFO.economical += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.economical += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.economical += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.economical += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.economical += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.economical += totalConsumptionByReportMGO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.economical += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.economical += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.economical += totalConsumptionByReportIFO;
+                            }
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.economical += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.economical += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.economical += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'ANCHORED') {
 
-                            this.totalTimePerActivityIFO.anchor += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.anchor += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.anchor += totalConsumptionByReportIFO;
 
-
-                            this.totalTimePerActivityMGO.anchor += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.anchor += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.anchor += totalConsumptionByReportMGO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.anchor += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.anchor += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.anchor += totalConsumptionByReportIFO;
+                            }
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.anchor += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.anchor += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.anchor += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'MANEUVER') {
 
-                            this.totalTimePerActivityIFO.maneuver += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.maneuver += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.maneuver += totalConsumptionByReportIFO;
-
-
-                            this.totalTimePerActivityMGO.maneuver += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.maneuver += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.maneuver += totalConsumptionByReportMGO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.maneuver += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.maneuver += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.maneuver += totalConsumptionByReportIFO;
+                            }
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.maneuver += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.maneuver += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.maneuver += totalConsumptionByReportMGO;
+                            }
 
                           } else if (report.activityPerformed === 'OTHER_ACT') {
 
-                            this.totalTimePerActivityIFO.otherActivity += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedIFO.otherActivity += report.distance;
-                            this.voyageConsumptionByActivityPerformedIFO.otherActivity += totalConsumptionByReportIFO;
-
-                            this.totalTimePerActivityMGO.otherActivity += report.steamingTime; // revisar
-                            this.totalDistanceMilesByActivityPerformedMGO.otherActivity += report.distance;
-                            this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalConsumptionByReportMGO;
+                            if (totalConsumptionByReportIFO > 0) {
+                              this.totalTimePerActivityIFO.otherActivity += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedIFO.otherActivity += report.distance;
+                              this.voyageConsumptionByActivityPerformedIFO.otherActivity += totalConsumptionByReportIFO;
+                            }
+                            if (totalConsumptionByReportMGO > 0) {
+                              this.totalTimePerActivityMGO.otherActivity += report.steamingTime; // revisar
+                              this.totalDistanceMilesByActivityPerformedMGO.otherActivity += report.distance;
+                              this.voyageConsumptionByActivityPerformedMGO.otherActivity += totalConsumptionByReportMGO;
+                            }
 
                           }
 
@@ -1409,7 +1609,7 @@ export class DashboardComponent implements OnInit {
                             totalConsumptionByPortIFO += + totalConsumptionByReportIFO;
                             totalConsumptionByPortMGO += totalConsumptionByReportMGO;
                             // Agregamos los datos de distancia y tiempo 
-                            totalSpeedByPort.add(report.distance, report.steamingTime);
+
 
                             // Sumamos el consumo MGO
                             this.consumptionTotalMGO.mpal += report.mplaMgo;
@@ -1420,6 +1620,28 @@ export class DashboardComponent implements OnInit {
                             this.consumptionTotalMGO.other += report.otherMgo;
                             // FIN Consumo MGO
 
+
+                            // Verificamos que exista un consumo para agregar el tiempo de consumo.
+                            if (report.mplaMgo > 0) {
+                              this.totalTimePerMachineMGO.mpal += report.steamingTime;
+                            }
+                            if (report.auxMgo > 0) {
+                              this.totalTimePerMachineMGO.aux += report.steamingTime;
+                            }
+                            if (report.boilerMgo > 0) {
+                              this.totalTimePerMachineMGO.boiler += report.steamingTime;
+                            }
+                            if (report.ppMgo > 0) {
+                              this.totalTimePerMachineMGO.pp += report.steamingTime;
+                            }
+                            if (report.giMgo > 0) {
+                              this.totalTimePerMachineMGO.gi += report.steamingTime;
+                            }
+                            if (report.otherMgo > 0) {
+                              this.totalTimePerMachineMGO.other += report.steamingTime;
+                            }
+
+
                             // Sumamos el consumo IFO
                             this.consumptionTotalIFO.mpal += report.mplaIfo;
                             this.consumptionTotalIFO.aux += report.auxIfo;
@@ -1427,9 +1649,39 @@ export class DashboardComponent implements OnInit {
                             this.consumptionTotalIFO.other += report.otherIfo;
                             // FIN Consumo IFO
 
+
+                            // Verificamos que exista un consumo para agregar el tiempo de consumo.
+                            if (report.mplaIfo > 0) {
+                              this.totalTimePerMachineIFO.mpal += report.steamingTime;
+                            }
+                            if (report.auxIfo > 0) {
+                              this.totalTimePerMachineIFO.aux += report.steamingTime;
+                            }
+                            if (report.boilerIfo > 0) {
+                              this.totalTimePerMachineIFO.boiler += report.steamingTime;
+                            }
+                            if (report.otherIfo > 0) {
+                              this.totalTimePerMachineIFO.other += report.steamingTime;
+                            }
+
+
                             let sumIFO = this.SumaIfo(report);
                             let sumMGO = this.SumaMgo(report);
 
+                            // Solo si hay distancia agregaremos la info de la velocidad.
+                            if (report.distance > 0) {
+                              totalSpeedByPort.add(report.distance, report.steamingTime);
+                            }
+                            // Solo si hay consumo de IFO agregaremos la informacion
+                            if (sumIFO > 0) {
+                              // Agregamos los datos de distancia y tiempo 
+                              totalSpeedByPort.addInfoIFO(report.distance, report.steamingTime);
+                            }
+                            // Solo si hay consumo de MGO agregaremos la informacion
+                            if (sumMGO > 0) {
+                              // Agregamos los datos de distancia y tiempo 
+                              totalSpeedByPort.addInfoMGO(report.distance, report.steamingTime);
+                            }
                             // Agregamos el consumo total y bunkering.
                             this.consumptionAndBunkering.ifoConsumption += sumIFO;
                             this.consumptionAndBunkering.mgoConsumption += sumMGO;
@@ -1493,6 +1745,11 @@ export class DashboardComponent implements OnInit {
                     totalConsumptionByVoyageIFO = totalConsumptionByVoyageIFO + totalConsumptionByPortIFO;
                     totalConsumptionByVoyageMGO = totalConsumptionByVoyageMGO + totalConsumptionByPortMGO;
                     totalSpeedByVoyage.add(totalSpeedByPort.distance, totalSpeedByPort.steamingTime);
+                    // Agregamos la informacion IFO Y MGO
+                    totalSpeedByVoyage.addInfoIFO(totalSpeedByPort.distanceIFO, totalSpeedByPort.timeOperationIFO);
+                    totalSpeedByVoyage.addInfoMGO(totalSpeedByPort.distanceMGO, totalSpeedByPort.timeOperationMGO);
+
+
 
                     // Total bunkering IFO
                     totalBunkeringIFOByVoyage += totalBunkeringIFOByPort;
@@ -1543,29 +1800,29 @@ export class DashboardComponent implements OnInit {
 
           // FORMULA CONSUMO POR EQUIPO IFO
           // Consumo Diario por  maquina.
-          this.consumptionDaysRealIFO.mpal = this.consumptionTotalIFO.mpal * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
-          this.consumptionDaysRealIFO.aux = this.consumptionTotalIFO.aux * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
-          this.consumptionDaysRealIFO.boiler = this.consumptionTotalIFO.boiler * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
-          this.consumptionDaysRealIFO.other = this.consumptionTotalIFO.other * 24 / ((this.totalTimePerActivityIFO.discharge + this.totalTimePerActivityIFO.otherActivity) || 1);
+          this.consumptionDaysRealIFO.mpal = this.totalTimePerMachineIFO.mpal ? (this.consumptionTotalIFO.mpal * 24 / this.totalTimePerMachineIFO.mpal) : 0;
+          this.consumptionDaysRealIFO.aux = this.totalTimePerMachineIFO.aux ? (this.consumptionTotalIFO.aux * 24 / this.totalTimePerMachineIFO.aux) : 0;
+          this.consumptionDaysRealIFO.boiler = this.totalTimePerMachineIFO.boiler ? (this.consumptionTotalIFO.boiler * 24 / this.totalTimePerMachineIFO.boiler) : 0;
+          this.consumptionDaysRealIFO.other = this.totalTimePerMachineIFO.other ? (this.consumptionTotalIFO.other * 24 / this.totalTimePerMachineIFO.other) : 0;
           // Asignamos el contrato.
           this.consumptionDaysByContractIFO.mpal = this.selectUser.consumptionEquipmentME_IFO;
           this.consumptionDaysByContractIFO.aux = this.selectUser.consumptionEquipmentAE_IFO;
           this.consumptionDaysByContractIFO.boiler = this.selectUser.consumptionEquipmentBOILER_IFO;
           this.consumptionDaysByContractIFO.other = this.selectUser.consumptionEquipmentOther_IFO;
           // hacemos un balance.
-          this.consumptionDailyBalanceIFO.mpal = this.consumptionDaysByContractIFO.mpal ? this.consumptionDaysRealIFO.mpal - this.consumptionDaysByContractIFO.mpal : 0;
-          this.consumptionDailyBalanceIFO.aux = this.consumptionDaysByContractIFO.aux ? this.consumptionDaysRealIFO.aux - this.consumptionDaysByContractIFO.aux : 0;
-          this.consumptionDailyBalanceIFO.boiler = this.consumptionDaysByContractIFO.boiler ? this.consumptionDaysRealIFO.boiler - this.consumptionDaysByContractIFO.boiler : 0;
-          this.consumptionDailyBalanceIFO.other = this.consumptionDaysByContractIFO.other ? this.consumptionDaysRealIFO.other - this.consumptionDaysByContractIFO.other : 0;
+          this.consumptionDailyBalanceIFO.mpal = this.consumptionDaysRealIFO.mpal ? this.consumptionDaysRealIFO.mpal - this.consumptionDaysByContractIFO.mpal : 0;
+          this.consumptionDailyBalanceIFO.aux = this.consumptionDaysRealIFO.aux ? this.consumptionDaysRealIFO.aux - this.consumptionDaysByContractIFO.aux : 0;
+          this.consumptionDailyBalanceIFO.boiler = this.consumptionDaysRealIFO.boiler ? this.consumptionDaysRealIFO.boiler - this.consumptionDaysByContractIFO.boiler : 0;
+          this.consumptionDailyBalanceIFO.other = this.consumptionDaysRealIFO.other ? this.consumptionDaysRealIFO.other - this.consumptionDaysByContractIFO.other : 0;
 
           // FORMULA CONSUMO POR EQUIPO MGO
           // Consumo Diario por  maquina.
-          this.consumptionDaysRealMGO.mpal = this.consumptionTotalMGO.mpal * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.aux = this.consumptionTotalMGO.aux * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.boiler = this.consumptionTotalMGO.boiler * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.pp = this.consumptionTotalMGO.pp * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.gi = this.consumptionTotalMGO.gi * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
-          this.consumptionDaysRealMGO.other = this.consumptionTotalMGO.other * 24 / ((this.totalTimePerActivityMGO.discharge + this.totalTimePerActivityMGO.otherActivity) || 1);
+          this.consumptionDaysRealMGO.mpal = this.totalTimePerMachineMGO.mpal ? (this.consumptionTotalMGO.mpal * 24 / this.totalTimePerMachineMGO.mpal) : 0;
+          this.consumptionDaysRealMGO.aux = this.totalTimePerMachineMGO.aux ? (this.consumptionTotalMGO.aux * 24 / this.totalTimePerMachineMGO.aux) : 0;
+          this.consumptionDaysRealMGO.boiler = this.totalTimePerMachineMGO.boiler ? (this.consumptionTotalMGO.boiler * 24 / this.totalTimePerMachineMGO.boiler) : 0;
+          this.consumptionDaysRealMGO.pp = this.totalTimePerMachineMGO.pp ? (this.consumptionTotalMGO.pp * 24 / this.totalTimePerMachineMGO.pp) : 0;
+          this.consumptionDaysRealMGO.gi = this.totalTimePerMachineMGO.gi ? (this.consumptionTotalMGO.gi * 24 / this.totalTimePerMachineMGO.gi) : 0;
+          this.consumptionDaysRealMGO.other = this.totalTimePerMachineMGO.other ? (this.consumptionTotalMGO.other * 24 / this.totalTimePerMachineMGO.other) : 0;
           // Asignamos el contrato.
           this.consumptionDaysByContractMGO.mpal = this.selectUser.consumptionEquipmentME_MGO;
           this.consumptionDaysByContractMGO.aux = this.selectUser.consumptionEquipmentAE_MGO;
@@ -1574,12 +1831,12 @@ export class DashboardComponent implements OnInit {
           this.consumptionDaysByContractMGO.gi = this.selectUser.consumptionEquipmentIG_MGO;
           this.consumptionDaysByContractMGO.other = this.selectUser.consumptionEquipmentOther_MGO;
           // hacemos un balance.
-          this.consumptionDailyBalanceMGO.mpal = this.consumptionDaysByContractMGO.mpal ? this.consumptionDaysRealMGO.mpal - this.consumptionDaysByContractMGO.mpal : 0;
-          this.consumptionDailyBalanceMGO.aux = this.consumptionDaysByContractMGO.aux ? this.consumptionDaysRealMGO.aux - this.consumptionDaysByContractMGO.aux : 0;
-          this.consumptionDailyBalanceMGO.boiler = this.consumptionDaysByContractMGO.boiler ? this.consumptionDaysRealMGO.boiler - this.consumptionDaysByContractMGO.boiler : 0;
-          this.consumptionDailyBalanceMGO.pp = this.consumptionDaysByContractMGO.pp ? this.consumptionDaysRealMGO.pp - this.consumptionDaysByContractMGO.pp : 0;
-          this.consumptionDailyBalanceMGO.gi = this.consumptionDaysByContractMGO.gi ? this.consumptionDaysRealMGO.gi - this.consumptionDaysByContractMGO.gi : 0;
-          this.consumptionDailyBalanceMGO.other = this.consumptionDaysByContractMGO.other ? this.consumptionDaysRealMGO.other - this.consumptionDaysByContractMGO.other : 0;
+          this.consumptionDailyBalanceMGO.mpal = this.consumptionDaysRealMGO.mpal ? this.consumptionDaysRealMGO.mpal - this.consumptionDaysByContractMGO.mpal : 0;
+          this.consumptionDailyBalanceMGO.aux = this.consumptionDaysRealMGO.aux ? this.consumptionDaysRealMGO.aux - this.consumptionDaysByContractMGO.aux : 0;
+          this.consumptionDailyBalanceMGO.boiler = this.consumptionDaysRealMGO.boiler ? this.consumptionDaysRealMGO.boiler - this.consumptionDaysByContractMGO.boiler : 0;
+          this.consumptionDailyBalanceMGO.pp = this.consumptionDaysRealMGO.pp ? this.consumptionDaysRealMGO.pp - this.consumptionDaysByContractMGO.pp : 0;
+          this.consumptionDailyBalanceMGO.gi = this.consumptionDaysRealMGO.gi ? this.consumptionDaysRealMGO.gi - this.consumptionDaysByContractMGO.gi : 0;
+          this.consumptionDailyBalanceMGO.other = this.consumptionDaysRealMGO.other ? this.consumptionDaysRealMGO.other - this.consumptionDaysByContractMGO.other : 0;
 
 
           // FORMULA CONSUMO POR ACTIVIDAD IFO
@@ -1762,6 +2019,668 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  // Genera los datos del Dashboard por Summary
+  private async GenerateDashboardBySumary(setDate: boolean): Promise<boolean> {
+    console.log('GenerateDashboardBySumary()');
+
+    // retornamoremos el resultado de la promesa.
+    return await Promise.resolve(true).then(
+      result => {
+
+        this.GenerateDataForChart(setDate);
+
+        // return true.
+        return true;
+      }
+    ).then(
+      result => {
+        // Validamos el resultado.
+        if (!result) throw 'NOT_OK';
+
+        // UPDATE CHART.
+        this.UpdateLineIFO();
+        this.UpdateLineMGO();
+        this.UpdateLineSPEED();
+
+        // Console logear.
+        console.log('GenerateDashboardBySumary() FIN');
+        return true;
+      }
+    )
+  }
+
+  // GenerateDataForChart(): genera data para los chart.
+  // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
+  private GenerateDataForChart(setDate: boolean) {
+    console.log('GenerateDataForChart(setDate: boolean)' + setDate)
+    // Texto x de los reportes.
+    this.xLabelReport = [];
+
+    // Data de los chart.
+    this.dataIFO = [];
+    // Configuracion de la linea maxima.
+    this.configLineaIFO.lineaMax = 0;
+
+    // Data de los chart.
+    this.dataMGO = [];
+    // Configuracion de la linea maxima.
+    this.configLineaMGO.lineaMax = 0;
+
+    // Data de los chart.
+    this.dataSPEED = [];
+    // Configuracion de la linea maxima.
+    this.configLineaSPEED.lineaMax = 0;
+
+    // Fecha inicio y fin de la data.
+    let startDate;
+    let endDate;
+
+
+    // Creamos esta variable para que nos avise cuando hay un nuevo registro
+    // Esta variable solo se usa en los filtro Sumary por mes y dia
+    let isAddNewVoyage: boolean = false;
+
+    // Generar Viajes.
+    this.generateVoyages.forEach(
+      (voyage, iV) => {
+
+        // Generamos el texto para los labels del Chart
+        let txtLabelChart: string = '';
+
+        // Verificamos si el resumen que deseamos es por Viaje
+        if (this.selectSummaryBy === 'VOYAGES') {
+
+          // Armamos el texto de label para viajes.
+          txtLabelChart = 'V' + voyage.voyageNumber + ' Y' + ('' + voyage.year).slice(-2);
+
+          // Lo agregamos al arreglo.
+          this.xLabelReport.push(txtLabelChart);
+
+          // El total de consumo debe de ser mayor para poder pintarlo.
+          if (voyage.totalIFO > 0) {
+
+            // Formular para el consumo diario.
+            let consumptionDailyIFO = voyage.totalSpeed.timeOperationIFO ? (voyage.totalIFO * 24) / voyage.totalSpeed.timeOperationIFO : 0;
+
+            // Se lo agregaoms a la data IFO
+            this.dataIFO.push(
+              { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV] }
+            );
+
+            // Verificamos si la linea maxima es menor para actualizarlo.
+            if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
+              this.configLineaIFO.lineaMax = consumptionDailyIFO;
+            }
+
+          }
+
+          // El total de consumo debe de ser mayor para poder pintarlo.
+          if (voyage.totalMGO > 0) {
+
+            // Formular para el consumo diario.
+            let consumptionDailyMGO = voyage.totalSpeed.timeOperationMGO ? (voyage.totalMGO * 24) / voyage.totalSpeed.timeOperationMGO : 0;
+
+            // Se lo agregaoms a la data MGO
+            this.dataMGO.push(
+              { x: txtLabelChart, y: consumptionDailyMGO, ubication: [iV] }
+            );
+
+            // Verificamos si la linea maxima es menor para actualizarlo.
+            if (consumptionDailyMGO > this.configLineaMGO.lineaMax) {
+              this.configLineaMGO.lineaMax = consumptionDailyMGO;
+            }
+
+          }
+
+          // El total de velocidad debe de ser mayor para poder pintarlo.
+          let speed = voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1);
+          // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
+          if (speed > 0) {
+            this.dataSPEED.push(
+              { x: txtLabelChart, y: speed, ubication: [iV] }
+            );
+          };
+
+          if (speed > this.configLineaSPEED.lineaMax) {
+            this.configLineaSPEED.lineaMax = speed;
+          };
+
+          // deseamos setear la fecha de inicio y fin?
+          if (setDate) {
+            // Comparamos si la data actual es la de inicio o fin.
+            startDate = ComparePreviousDates(startDate, voyage.dayStart)
+            endDate = CompareAfterDates(endDate, voyage.dayEnd)
+          };
+        }
+        // Verificamos si el sumary es por Puerto Mes o dias
+        else if (this.selectSummaryBy === 'PORTS' || this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
+
+          // Activamos, para saber que es nuevo viaje.
+          isAddNewVoyage = true;
+
+          // Creamos esta variable para que nos avise cuando hay un nuevo registro
+          let isAddNewPort: boolean = false;
+
+          // Recorremos los puertos.
+          voyage.ports.forEach(
+            (port, iP) => {
+
+              if (this.selectSummaryBy === 'PORTS') {
+
+                // Armamos el texto de label para lista de puertos.
+                txtLabelChart = 'V' + voyage.voyageNumber + ' ' + 'P' + port.portNumber + ' Y' + ('' + voyage.year).slice(-2);
+
+                // Lo agregamos al arreglo.
+                this.xLabelReport.push(txtLabelChart);
+
+                // El total de consumo debe de ser mayor para poder pintarlo.
+                if (port.robIfo > 0) {
+
+                  // Formular para el consumo diario.
+                  let consumptionDailyIFO = port.speed.timeOperationIFO ? (port.robIfo * 24) / port.speed.timeOperationIFO : 0;
+
+                  // Informacion para la dataIFO
+                  this.dataIFO.push(
+                    { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV, iP] }
+                  );
+
+                  // Verificamos si la linea maxima es menor para actualizarlo.
+                  if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
+                    this.configLineaIFO.lineaMax = consumptionDailyIFO;
+                  }
+
+                }
+                // El total de consumo debe de ser mayor para poder pintarlo.
+                if (port.robMgo > 0) {
+
+                  // Formular para el consumo diario.
+                  let consumptionDailyMGO = port.speed.timeOperationMGO ? (port.robMgo * 24) / port.speed.timeOperationMGO : 0;
+
+                  // Informacion para la dataIFO
+                  this.dataMGO.push(
+                    { x: txtLabelChart, y: consumptionDailyMGO, ubication: [iV, iP] }
+                  );
+
+                  // Verificamos si la linea maxima es menor para actualizarlo.
+                  if (consumptionDailyMGO > this.configLineaMGO.lineaMax) {
+                    this.configLineaMGO.lineaMax = consumptionDailyMGO;
+                  }
+                }
+
+                // El total de velocidad debe de ser mayor para poder pintarlo.
+                let speed = port.speed.distance / (port.speed.steamingTime || 1);
+                if (speed > 0) {
+                  this.dataSPEED.push(
+                    { x: txtLabelChart, y: speed, ubication: [iV, iP] }
+                  );
+                }
+
+                if (speed > this.configLineaSPEED.lineaMax) {
+                  this.configLineaSPEED.lineaMax = speed;
+                }
+
+                // deseamos setear la fecha de inicio y fin?
+                if (setDate) {
+                  // Comparamos si la data actual es la de inicio o fin.
+                  startDate = ComparePreviousDates(startDate, port.dayStart)
+                  endDate = CompareAfterDates(endDate, port.dayEnd)
+                }
+              } else if (this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
+
+                // Activamos, para saber que es nuevo puerto.
+                isAddNewPort = true;
+                // Recorremos todos los reportes
+                port.dailyReports.forEach(
+                  (report, iR) => {
+
+                    // obtenemos la fecha del reporte.
+                    let day = report.date;
+
+                    // Si el resumen del filtro es por mes.
+                    if (this.selectSummaryBy === 'MONTHS') {
+
+                      // deseamos setear la fecha de inicio y fin?
+                      if (setDate) {
+                        // Comparamos si la data actual es la de inicio o fin.
+                        startDate = ComparePreviousDates(startDate, report.date)
+                        endDate = CompareAfterDates(endDate, report.date)
+                      }
+
+
+                      // Buscamos si el mes ya se encuantra registrado.
+                      let resultSearch = this.xLabelReport.find(
+                        (xDay, iL) => {
+
+                          // Verificamos el mes ya se encuentra registrado.
+                          if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
+
+                            // Obtenemos los datos de velocidad.
+                            let speedI: Speed = this.dataSPEED[iL].speed;
+
+                            // Si la distancia es mayor a 0
+                            if (report.distance > 0) {
+                              // Agregamos la distancia y velocidad.
+                              speedI.add(report.distance, report.steamingTime);
+                              // calculamos la velocidad.
+                              let ySpeed = speedI.distance / speedI.steamingTime;
+                              // Actualizamos el calculo de la velocidad.
+                              this.dataSPEED[iL].y = ySpeed;
+                              // Linea maxima SPEED
+                              if (ySpeed > this.configLineaSPEED.lineaMax) {
+                                this.configLineaSPEED.lineaMax = ySpeed;
+                              }
+                            }
+
+                            // IFO
+                            let totalIFO = this.SumaIfo(report);
+                            // Sumamos el consumo
+                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + totalIFO;
+                            if (totalIFO > 0) {
+                              // Agregamos la distancia y velocidad como info IFO
+                              speedI.addInfoIFO(report.distance, report.steamingTime);
+                              // Formula DayliConsumption
+                              let dayliConsumptionIFO = speedI.timeOperationIFO ? (totalConsumptionIFO * 24) / speedI.timeOperationIFO : 0;
+                              this.dataIFO[iL].y = dayliConsumptionIFO;
+                              // Linea maxima IFO
+                              if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                                this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                              }
+                            }
+
+
+                            // MGO
+                            let totalMGO = this.SumaMgo(report);
+                            // Sumamos el consumo
+                            let totalConsumptionMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
+                            if (totalMGO > 0) {
+                              // Agregamos la distancia y velocidad como info MGO
+                              speedI.addInfoMGO(report.distance, report.steamingTime);
+                              // Formula DayliConsumption
+                              let dayliConsumptionMGO = speedI.timeOperationMGO ? (totalConsumptionMGO * 24) / speedI.timeOperationMGO : 0;
+                              // Daily consumptionMGO
+                              this.dataMGO[iL].y = dayliConsumptionMGO;
+                              // Linea maxima MGO
+                              if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                                this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                              }
+                            }
+
+
+                            this.dataSPEED[iL].speed = speedI;
+                            // ACTUALIZMAOS EL VALOR POR POSICION.
+                            // Actualizamos los datos de la velocidad
+                            this.dataIFO[iL].speed = speedI;
+                            this.dataMGO[iL].speed = speedI;
+
+                            // Es para agregar un nuevo viaje?
+                            if (isAddNewVoyage) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewVoyage = false;
+                              this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                              this.dataMGO[iL].totalVoyage = this.dataMGO[iL].totalVoyage + 1;
+                              this.dataSPEED[iL].totalVoyage = this.dataSPEED[iL].totalVoyage + 1;
+                            }
+                            // Es para agregar un nuevo puerto
+                            if (isAddNewPort) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewPort = false;
+                              this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
+                              this.dataMGO[iL].totalPort = this.dataMGO[iL].totalPort + 1;
+                              this.dataSPEED[iL].totalPort = this.dataSPEED[iL].totalPort + 1;
+                            }
+
+                            // Le sumamos el total de reporte
+                            this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
+                            this.dataMGO[iL].totalReport = this.dataMGO[iL].totalReport + 1;
+                            this.dataSPEED[iL].totalReport = this.dataSPEED[iL].totalReport + 1;
+
+
+
+
+                            // Actualizamos los datos al dataIfo Chart.
+                            this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
+                            this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataIFO[iL].totalBunkeringIFO += report.bunkeringIfo;
+                            this.dataIFO[iL].totalBunkeringMGO += report.bunkeringMgo;
+
+                            // Actualizamos los datos al dataMGO Chart.
+                            this.dataMGO[iL].totalConsumptionIFO = totalConsumptionIFO;
+                            this.dataMGO[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataMGO[iL].totalBunkeringIFO += report.bunkeringIfo;
+                            this.dataMGO[iL].totalBunkeringMGO += report.bunkeringMgo;
+
+                            this.dataSPEED[iL].totalConsumptionIFO = totalConsumptionIFO;
+                            this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataSPEED[iL].totalBunkeringIFO += report.bunkeringIfo;
+                            this.dataSPEED[iL].totalBunkeringMGO += report.bunkeringMgo;
+
+                            // retornamos tru para agregarlo al filtro
+                            return true;
+                          }
+                          // Caso contrario retornamos false, para que no lo agrege al filtro.
+                          return false;
+                        }
+
+                      );
+
+                      // Verificamos si se encontro un resultado ese mes.
+                      if (!resultSearch) {
+
+                        // todos los meses almenos tendran un viaje
+                        // asi que si o si lo agregams.
+                        isAddNewVoyage = false;
+                        isAddNewPort = false;
+
+                        // agregamos la fecha a nuestro arreglo.
+                        this.xLabelReport.push(day);
+
+                        // Le agregamos los datos de velocidad.
+                        let newSpeed = new Speed();
+                        let ySpeed = 0;
+                        if (report.distance > 0) {
+                          newSpeed.add(report.distance, report.steamingTime);
+                          // Agregamos los datos de velocidad.
+                          ySpeed = newSpeed.distance / newSpeed.steamingTime;
+                          if (ySpeed > this.configLineaSPEED.lineaMax) {
+                            this.configLineaSPEED.lineaMax = ySpeed;
+                          }
+                        }
+
+                        // DATOS IFO
+                        // Calculamos el total de consumo ifo
+                        let totalConsumptionIFO = this.SumaIfo(report);
+                        let dayliConsumptionIFO = 0;
+                        if (totalConsumptionIFO > 0) {
+                          newSpeed.addInfoIFO(report.distance, report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionIFO = newSpeed.timeOperationIFO ? (totalConsumptionIFO * 24) / newSpeed.timeOperationIFO : 0;
+                          // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+                          if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                            this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                          }
+                        }
+
+
+                        // DATOS MGO
+                        // Calculamos el total de consumo ifo
+                        let totalConsumptionMGO = this.SumaMgo(report);
+                        // Formula DayliConsumption
+                        let dayliConsumptionMGO = 0;
+                        if (totalConsumptionMGO > 0) {
+                          // AGregamos la informacion mgo
+                          newSpeed.addInfoMGO(report.distance, report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionMGO = newSpeed.timeOperationMGO ? (totalConsumptionMGO * 24) / newSpeed.timeOperationMGO : 0;
+                          // Verificamos que el consumo sea mayor a la linea maxima
+                          if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                            this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                          }
+                        }
+
+
+                        // ROB total.
+                        let totalBunkeringIFO = report.bunkeringIfo;
+                        let totalBunkeringMGO = report.bunkeringMgo;
+                        // Agregamos los datos IFO
+                        this.dataIFO.push(
+                          { x: day, y: dayliConsumptionIFO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                        );
+                        // Agregamos los datos MGO
+                        this.dataMGO.push(
+                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                        );
+                        this.dataSPEED.push(
+                          { x: day, y: ySpeed, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
+                        );
+
+                      }
+                    }
+                    // Si el resumen del filtro es por dias.
+                    else if (this.selectSummaryBy === 'DAYS') {
+
+                      // deseamos setear la fecha de inicio y fin?
+                      if (setDate) {
+                        // Comparamos si la data actual es la de inicio o fin.
+                        startDate = ComparePreviousDates(startDate, report.date)
+                        endDate = CompareAfterDates(endDate, report.date)
+                      }
+
+
+                      // Buscamos si el dia ya se encuantra registrado.
+                      let resultSearch = this.xLabelReport.find(
+                        (xDay, iL) => {
+
+                          // Verificamos si el dia ya se encuentra registrado.
+                          if (FormatDate(day) === FormatDate(xDay)) {
+
+                            // Obtenemos los datos de velocidad.
+                            let speedI: Speed = this.dataSPEED[iL].speed;
+                            // Si la distancia es mayor a 0
+                            if (report.distance > 0) {
+                              // Agregamos la distancia y velocidad.
+                              speedI.add(report.distance, report.steamingTime);
+                              // Actualizamos el valor por la posicion.
+                              let ySpeed = speedI.distance / speedI.steamingTime;
+                              this.dataSPEED[iL].y = ySpeed;
+                              // Linea maxima SPEED
+                              if (ySpeed > this.configLineaSPEED.lineaMax) {
+                                this.configLineaSPEED.lineaMax = ySpeed;
+                              }
+                            }
+
+
+                            // IFO
+                            let totalIFO = this.SumaIfo(report);
+                            // Sumamos el consumo
+                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + totalIFO;
+                            if (totalIFO > 0) {
+                              // Agregamos la distancia y velocidad como info IFO
+                              speedI.addInfoIFO(report.distance, report.steamingTime);
+                              // Formula DayliConsumption
+                              let dayliConsumptionIFO = speedI.timeOperationIFO ? (totalConsumptionIFO * 24) / speedI.timeOperationIFO : 0;
+                              // Actualizamos los datos al dataIfo Chart.
+                              this.dataIFO[iL].y = dayliConsumptionIFO;
+                              // Verificamos que la linea maxima sea mayor al valor del chart-
+                              if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                                this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                              }
+                            }
+
+                            // MGO
+                            let totalMGO = this.SumaMgo(report);
+                            let totalConsumptionMGO = this.dataMGO[iL].totalConsumptionMGO + totalMGO;
+                            if (totalMGO > 0) {
+                              // Agregamos la distancia y velocidad como info MGO
+                              speedI.addInfoMGO(report.distance, report.steamingTime);
+                              // Formula DayliConsumption
+                              let dayliConsumptionMGO = speedI.timeOperationMGO ? (totalConsumptionMGO * 24) / speedI.timeOperationMGO : 0;
+                              // Actualizamos los datos al dataMGO Chart.
+                              this.dataMGO[iL].y = dayliConsumptionMGO;
+                              // Linea maxima MGO
+                              if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                                this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                              }
+                            }
+
+
+                            // ACTUALIZMAOS EL VALOR POR POSICION
+                            // Actualizamos los datos de la velocidad
+                            this.dataSPEED[iL].speed = speedI;
+                            this.dataIFO[iL].speed = speedI;
+                            this.dataMGO[iL].speed = speedI;
+
+
+                            // consultamos
+                            // Es para agregar un nuevo viaje?
+                            if (isAddNewVoyage) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewVoyage = false;
+                              this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
+                              this.dataMGO[iL].totalVoyage = this.dataMGO[iL].totalVoyage + 1;
+                              this.dataSPEED[iL].totalVoyage = this.dataSPEED[iL].totalVoyage + 1;
+                            }
+                            // Es para agregar un nuevo puerto
+                            if (isAddNewPort) {
+                              // Lo desactivamos para que vuelva a entrar.
+                              isAddNewPort = false;
+                              this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
+                              this.dataMGO[iL].totalPort = this.dataMGO[iL].totalPort + 1;
+                              this.dataSPEED[iL].totalPort = this.dataSPEED[iL].totalPort + 1;
+                            }
+
+                            // Le sumamos el total de reporte
+                            this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
+                            this.dataMGO[iL].totalReport = this.dataMGO[iL].totalReport + 1;
+                            this.dataSPEED[iL].totalReport = this.dataSPEED[iL].totalReport + 1;
+
+
+                            // Sumamos el Bunkering
+                            let totalBunkeringIFO = this.dataIFO[iL].totalBunkeringIFO + report.bunkeringIfo;
+                            let totalBunkeringMGO = this.dataIFO[iL].totalBunkeringMGO + report.bunkeringMgo;
+
+
+                            // Actualizamos el total de consumo.
+                            this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
+                            this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataIFO[iL].totalBunkeringIFO = totalBunkeringIFO;
+                            this.dataIFO[iL].totalBunkeringMGO = totalBunkeringMGO;
+
+
+                            this.dataMGO[iL].totalConsumptionIFO = totalConsumptionIFO;
+                            this.dataMGO[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataMGO[iL].totalBunkeringIFO = totalBunkeringIFO;
+                            this.dataMGO[iL].totalBunkeringMGO = totalBunkeringMGO;
+
+
+                            this.dataSPEED[iL].totalConsumptionIFO = totalConsumptionIFO;
+                            this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
+                            this.dataSPEED[iL].totalBunkeringIFO = totalBunkeringIFO;
+                            this.dataSPEED[iL].totalBunkeringMGO = totalBunkeringMGO;
+
+
+
+                            // REVISAR ESTO ; DATA EXTRA CREO QUE DEBERIA MOS ELIMINARLO.
+                            // Creamos la data extra.
+                            // La data extra es la misma para los 3 chart.
+                            let dataExtra = this.dataIFO[iL].dataExtra;
+                            // le hacemos push a la data extra.
+                            dataExtra.push(report);
+                            // Agregamos la data extra a la data del chart.
+                            this.dataIFO[iL].dataExtra = dataExtra;
+                            this.dataMGO[iL].dataExtra = dataExtra;
+                            this.dataSPEED[iL].dataExtra = dataExtra;
+
+
+
+
+                            // retornamos tru para agregarlo al filtro
+                            return true;
+                          }
+                          // Caso contrario retornamos false, para que no lo agrege al filtro.
+                          return false;
+                        }
+                      );
+
+
+                      if (!resultSearch) {
+
+                        // todos los meses almenos tenfras un viaje
+                        // asi que si o si lo agregams.
+                        isAddNewVoyage = false;
+                        isAddNewPort = false;
+
+                        // agregamos la fecha a nuestro arreglo.
+                        this.xLabelReport.push(day);
+
+                        let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
+                        // y los ocmentarios registrados.
+                        dataExtra.push(report)
+
+                        // Le agregamos los datos de velocidad.
+                        let newSpeed = new Speed();
+                        let ySpeed = 0;
+                        if (report.distance > 0) {
+                          newSpeed.add(report.distance, report.steamingTime);
+                          // Agregamos los datos de velocidad.
+                          ySpeed = newSpeed.distance / newSpeed.steamingTime;
+                          if (ySpeed > this.configLineaSPEED.lineaMax) {
+                            this.configLineaSPEED.lineaMax = ySpeed;
+                          }
+                        }
+
+                        // DATOS IFO
+                        // Calculamos el total de consumo ifo
+                        let totalConsumptionIFO = this.SumaIfo(report);
+                        // Formula DayliConsumption
+                        let dayliConsumptionIFO = 0;
+                        if (totalConsumptionIFO > 0) {
+                          newSpeed.addInfoIFO(report.distance, report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionIFO = newSpeed.timeOperationIFO ? (totalConsumptionIFO * 24) / newSpeed.timeOperationIFO : 0;
+                          // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
+                          if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
+                            this.configLineaIFO.lineaMax = dayliConsumptionIFO;
+                          }
+                        }
+
+
+                        // DATOS MGO
+                        // Calculamos el total de consumo ifo
+                        let totalConsumptionMGO = this.SumaMgo(report);
+                        // Formula DayliConsumption
+                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
+                        if (totalConsumptionMGO > 0) {
+                          // AGregamos la informacion mgo
+                          newSpeed.addInfoMGO(report.distance, report.steamingTime);
+                          // Formula DayliConsumption
+                          dayliConsumptionMGO = newSpeed.timeOperationMGO ? (totalConsumptionMGO * 24) / newSpeed.timeOperationMGO : 0;
+                          // Verificamos que el consumo sea mayor a la linea maxima
+                          if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
+                            this.configLineaMGO.lineaMax = dayliConsumptionMGO;
+                          }
+                        }
+                        let totalBunkeringIFO = report.bunkeringIfo;
+                        let totalBunkeringMGO = report.bunkeringMgo;
+
+
+                        this.dataSPEED.push(
+                          { x: day, y: ySpeed, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
+                        );
+                        // Agregamos los datos IFO
+                        this.dataIFO.push(
+                          { x: day, y: dayliConsumptionIFO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
+                        );
+                        // Agregamos los datos MGO
+                        this.dataMGO.push(
+                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
+                        );
+
+                      }
+
+
+                    }
+
+                  }
+                );
+
+              }
+
+            })
+
+        }
+
+      }
+    );
+
+
+    // Si la configuracion es para setar fecha lo seteamos.
+    if (setDate) {
+      this.startDate = startDate;
+      this.endDate = endDate;
+    }
+
+  }
+
   // Configuracaion Axes si son menos de 60 registro que muestre los dias caso contrario que muestre los meses
   // esta configuracion depente del selectSummary
   private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
@@ -1829,613 +2748,6 @@ export class DashboardComponent implements OnInit {
     return config;
   }
 
-  // Genera los datos del Dashboard por Summary
-  private async GenerateDashboardBySumary(setDate: boolean): Promise<boolean> {
-    console.log('GenerateDashboardBySumary()');
-
-    // retornamoremos el resultado de la promesa.
-    return await Promise.resolve(true).then(
-      result => {
-
-        this.GenerateDataForChart(setDate);
-
-        // return true.
-        return true;
-      }
-    ).then(
-      result => {
-        // Validamos el resultado.
-        if (!result) throw 'NOT_OK';
-
-        // UPDATE CHART.
-        this.UpdateLineIFO();
-        this.UpdateLineMGO();
-        this.UpdateLineSPEED();
-
-        // Console logear.
-        console.log('GenerateDashboardBySumary() FIN');
-        return true;
-      }
-    )
-  }
-
-  // GenerateDataForChart(): genera data para los chart.
-  // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
-  private GenerateDataForChart(setDate: boolean) {
-    // Texto x de los reportes.
-    this.xLabelReport = [];
-
-    // Data de los chart.
-    this.dataIFO = [];
-    // Configuracion de la linea maxima.
-    this.configLineaIFO.lineaMax = 0;
-
-    // Data de los chart.
-    this.dataMGO = [];
-    // Configuracion de la linea maxima.
-    this.configLineaMGO.lineaMax = 0;
-
-    // Data de los chart.
-    this.dataSPEED = [];
-    // Configuracion de la linea maxima.
-    this.configLineaSPEED.lineaMax = 0;
-
-    // Fecha inicio y fin de la data.
-    let startDate;
-    let endDate;
-
-
-    // Creamos esta variable para que nos avise cuando hay un nuevo registro
-    // esta variable solo se usa en los filtro Sumary por mes y dia.
-    let isAddNewVoyage: boolean = false;
-
-    // Generar Viajes.
-    this.generateVoyages.forEach(
-      (voyage, iV) => {
-
-        // Generamos el texto para los labels del Chart
-        let txtLabelChart: string = '';
-
-        // Verificamos si el sumary es por años
-        if (this.selectSummaryBy === 'VOYAGES') {
-
-          // Armamos el texto de label para viajes.
-          txtLabelChart = 'V' + voyage.voyageNumber + ' Y' + ('' + voyage.year).slice(-2);
-
-          // Lo agregamos al arreglo.
-          this.xLabelReport.push(txtLabelChart);
-
-          // El total de consumo debe de ser mayor para poder pintarlo.
-          if (voyage.totalIFO > 0) {
-
-            // Formular para el consumo diario.
-            let consumptionDailyIFO = voyage.totalSpeed.steamingTime ? (voyage.totalIFO * 24) / voyage.totalSpeed.steamingTime : 0;
-
-            // Se lo agregaoms a la data IFO
-            this.dataIFO.push(
-              { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV] }
-            );
-
-            // Verificamos si la linea maxima es menor para actualizarlo.
-            if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
-              this.configLineaIFO.lineaMax = consumptionDailyIFO;
-            }
-
-          }
-
-          // El total de consumo debe de ser mayor para poder pintarlo.
-          if (voyage.totalMGO > 0) {
-
-            // Formular para el consumo diario.
-            let consumptionDailyMGO = voyage.totalSpeed.steamingTime ? (voyage.totalMGO * 24) / voyage.totalSpeed.steamingTime : 0;
-
-            // Se lo agregaoms a la data MGO
-            this.dataMGO.push(
-              { x: txtLabelChart, y: consumptionDailyMGO, ubication: [iV] }
-            );
-
-            // Verificamos si la linea maxima es menor para actualizarlo.
-            if (consumptionDailyMGO > this.configLineaMGO.lineaMax) {
-              this.configLineaMGO.lineaMax = consumptionDailyMGO;
-            }
-
-          }
-
-          // El total de velocidad debe de ser mayor para poder pintarlo.
-          let speed = mathRound(voyage.totalSpeed.distance / (voyage.totalSpeed.steamingTime || 1), 2);
-          // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
-          if (speed > 0) {
-            this.dataSPEED.push(
-              { x: txtLabelChart, y: speed, ubication: [iV] }
-            );
-          };
-
-          if (speed > this.configLineaSPEED.lineaMax) {
-            this.configLineaSPEED.lineaMax = speed;
-          };
-
-          // deseamos setear la fecha de inicio y fin?
-          if (setDate) {
-            // Comparamos si la data actual es la de inicio o fin.
-            startDate = ComparePreviousDates(startDate, voyage.dayStart)
-            endDate = CompareAfterDates(endDate, voyage.dayEnd)
-          };
-        }
-        // Verificamos si el sumary es por Puerto Mes o dias
-        else if (this.selectSummaryBy === 'PORTS' || this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
-
-          // Activamos, para saber que es nuevo viaje.
-          isAddNewVoyage = true;
-
-          // Creamos esta variable para que nos avise cuando hay un nuevo registro
-          let isAddNewPort: boolean = false;
-
-          // Recorremos los puertos.
-          voyage.ports.forEach(
-            (port, iP) => {
-
-              if (this.selectSummaryBy === 'PORTS') {
-
-                // Armamos el texto de label para lista de puertos.
-                txtLabelChart = 'V' + voyage.voyageNumber + ' ' + 'P' + port.portNumber + ' Y' + ('' + voyage.year).slice(-2);
-
-                // Lo agregamos al arreglo.
-                this.xLabelReport.push(txtLabelChart);
-
-                // El total de consumo debe de ser mayor para poder pintarlo.
-                if (port.robIfo > 0) {
-
-                  // Formular para el consumo diario.
-                  let consumptionDailyIFO = port.speed.steamingTime ? (port.robIfo * 24) / port.speed.steamingTime : 0;
-
-                  // Informacion para la dataIFO
-                  this.dataIFO.push(
-                    { x: txtLabelChart, y: consumptionDailyIFO, ubication: [iV, iP] }
-                  );
-
-                  // Verificamos si la linea maxima es menor para actualizarlo.
-                  if (consumptionDailyIFO > this.configLineaIFO.lineaMax) {
-                    this.configLineaIFO.lineaMax = consumptionDailyIFO;
-                  }
-
-                }
-                // El total de consumo debe de ser mayor para poder pintarlo.
-                if (port.robMgo > 0) {
-
-                  // Formular para el consumo diario.
-                  let consumptionDailyMGO = port.speed.steamingTime ? (port.robMgo * 24) / port.speed.steamingTime : 0;
-
-                  // Informacion para la dataIFO
-                  this.dataMGO.push(
-                    { x: txtLabelChart, y: consumptionDailyMGO, ubication: [iV, iP] }
-                  );
-
-                  // Verificamos si la linea maxima es menor para actualizarlo.
-                  if (consumptionDailyMGO > this.configLineaMGO.lineaMax) {
-                    this.configLineaMGO.lineaMax = consumptionDailyMGO;
-                  }
-                }
-
-                // El total de velocidad debe de ser mayor para poder pintarlo.
-                let speed = mathRound(port.speed.distance / (port.speed.steamingTime || 1), 2);
-                if (speed > 0) {
-                  this.dataSPEED.push(
-                    { x: txtLabelChart, y: speed, ubication: [iV, iP] }
-                  );
-                }
-
-                if (speed > this.configLineaSPEED.lineaMax) {
-                  this.configLineaSPEED.lineaMax = speed;
-                }
-
-                // deseamos setear la fecha de inicio y fin?
-                if (setDate) {
-                  // Comparamos si la data actual es la de inicio o fin.
-                  startDate = ComparePreviousDates(startDate, port.dayStart)
-                  endDate = CompareAfterDates(endDate, port.dayEnd)
-                }
-              } else if (this.selectSummaryBy === 'MONTHS' || this.selectSummaryBy === 'DAYS') {
-
-                // Activamos, para saber que es nuevo puerto.
-                isAddNewPort = true;
-                // Recorremos todos los reportes
-                port.dailyReports.forEach(
-                  (report, iR) => {
-
-                    // obtenemos la fecha del reporte.
-                    let day = report.date;
-
-                    // Si el resumen del filtro es por mes.
-                    if (this.selectSummaryBy === 'MONTHS') {
-
-                      // deseamos setear la fecha de inicio y fin?
-                      if (setDate) {
-                        // Comparamos si la data actual es la de inicio o fin.
-                        startDate = ComparePreviousDates(startDate, report.date)
-                        endDate = CompareAfterDates(endDate, report.date)
-                      }
-
-
-                      // Buscamos si el mes ya se encuantra registrado.
-                      let resultSearch = this.xLabelReport.find(
-                        (xDay, iL) => {
-
-                          // Verificamos el mes ya se encuentra registrado.
-                          if (GetMonthYearFromDate(day) === GetMonthYearFromDate(xDay)) {
-
-                            // Obtenemos los datos de velocidad.
-                            let speedI: Speed = this.dataSPEED[iL].speed;
-
-                            // Agregamos la distancia y velocidad.
-                            speedI.add(report.distance, report.steamingTime);
-                            // calculamos la velocidad.
-                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2);
-                            // Actualizamos el calculo de la velocidad.
-                            this.dataSPEED[iL].y = ySpeed;
-
-                            // ACTUALIZMAOS EL VALOR POR POSICION.
-                            // Actualizamos los datos de la velocidad
-                            this.dataSPEED[iL].speed = speedI;
-                            this.dataIFO[iL].speed = speedI;
-                            this.dataMGO[iL].speed = speedI;
-
-                            // Es para agregar un nuevo viaje?
-                            if (isAddNewVoyage) {
-                              // Lo desactivamos para que vuelva a entrar.
-                              isAddNewVoyage = false;
-                              this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
-                              this.dataMGO[iL].totalVoyage = this.dataMGO[iL].totalVoyage + 1;
-                              this.dataSPEED[iL].totalVoyage = this.dataSPEED[iL].totalVoyage + 1;
-                            }
-                            // Es para agregar un nuevo puerto
-                            if (isAddNewPort) {
-                              // Lo desactivamos para que vuelva a entrar.
-                              isAddNewPort = false;
-                              this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
-                              this.dataMGO[iL].totalPort = this.dataMGO[iL].totalPort + 1;
-                              this.dataSPEED[iL].totalPort = this.dataSPEED[iL].totalPort + 1;
-                            }
-
-                            // Le sumamos el total de reporte
-                            this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
-                            this.dataMGO[iL].totalReport = this.dataMGO[iL].totalReport + 1;
-                            this.dataSPEED[iL].totalReport = this.dataSPEED[iL].totalReport + 1;
-
-
-                            // IFO
-                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + this.SumaIfo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
-                            this.dataIFO[iL].y = dayliConsumptionIFO;
-
-                            // MGO
-                            let totalConsumptionMGO = this.dataIFO[iL].totalConsumptionMGO + this.SumaMgo(report);
-
-                            // Formula DayliConsumption
-                            let dayliConsumptionMGO = speedI.steamingTime ? (totalConsumptionMGO * 24) / speedI.steamingTime : 0;
-                            // Daily consumptionMGO
-                            this.dataMGO[iL].y = dayliConsumptionMGO;
-
-
-
-                            // Actualizamos los datos al dataIfo Chart.
-                            this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
-                            this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataIFO[iL].totalBunkeringIFO += report.bunkeringIfo;
-                            this.dataIFO[iL].totalBunkeringMGO += report.bunkeringMgo;
-
-                            // Actualizamos los datos al dataMGO Chart.
-                            this.dataMGO[iL].totalConsumptionIFO = totalConsumptionIFO;
-                            this.dataMGO[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataMGO[iL].totalBunkeringIFO += report.bunkeringIfo;
-                            this.dataMGO[iL].totalBunkeringMGO += report.bunkeringMgo;
-
-                            this.dataSPEED[iL].totalConsumptionIFO = totalConsumptionIFO;
-                            this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataSPEED[iL].totalBunkeringIFO += report.bunkeringIfo;
-                            this.dataSPEED[iL].totalBunkeringMGO += report.bunkeringMgo;
-
-
-                            // Verificamos que la linea maxima sea mayor al valor del chart-
-                            if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                              this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                            }
-                            if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                              this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                            }
-                            if (ySpeed > this.configLineaSPEED.lineaMax) {
-                              this.configLineaSPEED.lineaMax = ySpeed;
-                            }
-
-                            // retornamos tru para agregarlo al filtro
-                            return true;
-                          }
-                          // Caso contrario retornamos false, para que no lo agrege al filtro.
-                          return false;
-                        }
-
-                      );
-
-                      // Verificamos si se encontro un resultado ese mes.
-                      if (!resultSearch) {
-
-                        // todos los meses almenos tendran un viaje
-                        // asi que si o si lo agregams.
-                        isAddNewVoyage = false;
-                        isAddNewPort = false;
-
-                        // agregamos la fecha a nuestro arreglo.
-                        this.xLabelReport.push(day);
-
-                        // Le agregamos los datos de velocidad.
-                        let newSpeed = new Speed(report.distance, report.steamingTime);
-                        // Agregamos los datos de velocidad.
-                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
-
-
-                        // DATOS IFO
-                        // Calculamos el total de consumo ifo
-                        let totalConsumptionIFO = this.SumaIfo(report);
-                        // Formula DayliConsumption
-                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptionIFO * 24) / newSpeed.steamingTime : 0;
-
-
-
-                        // DATOS MGO
-                        // Calculamos el total de consumo ifo
-                        let totalConsumptionMGO = this.SumaMgo(report);
-                        // Formula DayliConsumption
-                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
-
-                        // ROB total.
-                        let totalBunkeringIFO = report.bunkeringIfo;
-                        let totalBunkeringMGO = report.bunkeringMgo;
-                        // Agregamos los datos IFO
-                        this.dataIFO.push(
-                          { x: day, y: dayliConsumptionIFO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
-                        );
-                        // Agregamos los datos MGO
-                        this.dataMGO.push(
-                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
-                        );
-                        this.dataSPEED.push(
-                          { x: day, y: ySpeed, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR] }
-                        );
-
-
-                        // Verificamos que la ocnfiguracion de la linea maxima se  mayor al valor del chart.
-                        if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                          this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                        }
-                        if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                          this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                        }
-                        if (ySpeed > this.configLineaSPEED.lineaMax) {
-                          this.configLineaSPEED.lineaMax = ySpeed;
-                        }
-
-                      }
-                    }
-                    // Si el resumen del filtro es por dias.
-                    else if (this.selectSummaryBy === 'DAYS') {
-
-                      // deseamos setear la fecha de inicio y fin?
-                      if (setDate) {
-                        // Comparamos si la data actual es la de inicio o fin.
-                        startDate = ComparePreviousDates(startDate, report.date)
-                        endDate = CompareAfterDates(endDate, report.date)
-                      }
-
-
-                      // Buscamos si el dia ya se encuantra registrado.
-                      let resultSearch = this.xLabelReport.find(
-                        (xDay, iL) => {
-
-                          // Verificamos si el dia ya se encuentra registrado.
-                          if (FormatDate(day) === FormatDate(xDay)) {
-
-                            // Obtenemos los datos de velocidad.
-                            let speedI: Speed = this.dataSPEED[iL].speed;
-
-                            // Agregamos la distancia y velocidad.
-                            speedI.add(report.distance, report.steamingTime);
-
-                            // Actualizamos el vlaor por la posicion.
-                            let ySpeed = mathRound(speedI.distance / speedI.steamingTime, 2)
-                            this.dataSPEED[iL].y = ySpeed;
-
-                            // ACTUALIZMAOS EL VALOR POR POSICION
-                            // Actualizamos los datos de la velocidad
-                            this.dataSPEED[iL].speed = speedI;
-                            this.dataIFO[iL].speed = speedI;
-                            this.dataMGO[iL].speed = speedI;
-
-
-                            // consultamos
-                            // Es para agregar un nuevo viaje?
-                            if (isAddNewVoyage) {
-                              // Lo desactivamos para que vuelva a entrar.
-                              isAddNewVoyage = false;
-                              this.dataIFO[iL].totalVoyage = this.dataIFO[iL].totalVoyage + 1;
-                              this.dataMGO[iL].totalVoyage = this.dataMGO[iL].totalVoyage + 1;
-                              this.dataSPEED[iL].totalVoyage = this.dataSPEED[iL].totalVoyage + 1;
-                            }
-                            // Es para agregar un nuevo puerto
-                            if (isAddNewPort) {
-                              // Lo desactivamos para que vuelva a entrar.
-                              isAddNewPort = false;
-                              this.dataIFO[iL].totalPort = this.dataIFO[iL].totalPort + 1;
-                              this.dataMGO[iL].totalPort = this.dataMGO[iL].totalPort + 1;
-                              this.dataSPEED[iL].totalPort = this.dataSPEED[iL].totalPort + 1;
-                            }
-
-                            // Le sumamos el total de reporte
-                            this.dataIFO[iL].totalReport = this.dataIFO[iL].totalReport + 1;
-                            this.dataMGO[iL].totalReport = this.dataMGO[iL].totalReport + 1;
-                            this.dataSPEED[iL].totalReport = this.dataSPEED[iL].totalReport + 1;
-
-
-                            // IFO
-                            let totalConsumptionIFO = this.dataIFO[iL].totalConsumptionIFO + this.SumaIfo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionIFO = speedI.steamingTime ? (totalConsumptionIFO * 24) / speedI.steamingTime : 0;
-
-                            // Sumamos el Bunkering
-                            let totalBunkeringIFO = this.dataIFO[iL].totalBunkeringIFO + report.bunkeringIfo;
-                            let totalBunkeringMGO = this.dataIFO[iL].totalBunkeringMGO + report.bunkeringMgo;
-
-                            // Actualizamos los datos al dataIfo Chart.
-                            this.dataIFO[iL].y = dayliConsumptionIFO;
-
-                            // MGO
-                            let totalConsumptionMGO = this.dataMGO[iL].totalConsumptionMGO + this.SumaMgo(report);
-                            // Formula DayliConsumption
-                            let dayliConsumptionMGO = speedI.steamingTime ? (totalConsumptionMGO * 24) / speedI.steamingTime : 0;
-                            // Actualizamos los datos al dataMGO Chart.
-                            this.dataMGO[iL].y = dayliConsumptionMGO;
-
-                            // Actualizamos el total de consumo.
-                            this.dataIFO[iL].totalConsumptionIFO = totalConsumptionIFO;
-                            this.dataIFO[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataIFO[iL].totalBunkeringIFO = totalBunkeringIFO;
-                            this.dataIFO[iL].totalBunkeringMGO = totalBunkeringMGO;
-
-
-                            this.dataMGO[iL].totalConsumptionIFO = totalConsumptionIFO;
-                            this.dataMGO[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataMGO[iL].totalBunkeringIFO = totalBunkeringIFO;
-                            this.dataMGO[iL].totalBunkeringMGO = totalBunkeringMGO;
-
-
-                            this.dataSPEED[iL].totalConsumptionIFO = totalConsumptionIFO;
-                            this.dataSPEED[iL].totalConsumptionMGO = totalConsumptionMGO;
-                            this.dataSPEED[iL].totalBunkeringIFO = totalBunkeringIFO;
-                            this.dataSPEED[iL].totalBunkeringMGO = totalBunkeringMGO;
-
-
-
-                            // REVISAR ESTO ; DATA EXTRA CREO QUE DEBERIA MOS ELIMINARLO.
-                            // Creamos la data extra.
-                            // La data extra es la misma para los 3 chart.
-                            let dataExtra = this.dataIFO[iL].dataExtra;
-                            // le hacemos push a la data extra.
-                            dataExtra.push(report);
-                            // Agregamos la data extra a la data del chart.
-                            this.dataIFO[iL].dataExtra = dataExtra;
-                            this.dataMGO[iL].dataExtra = dataExtra;
-                            this.dataSPEED[iL].dataExtra = dataExtra;
-
-
-                            // Verificamos que la linea maxima sea mayor al valor del chart-
-                            if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                              this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                            }
-                            if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                              this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                            }
-                            if (ySpeed > this.configLineaSPEED.lineaMax) {
-                              this.configLineaSPEED.lineaMax = ySpeed;
-                            }
-
-
-                            // retornamos tru para agregarlo al filtro
-                            return true;
-                          }
-                          // Caso contrario retornamos false, para que no lo agrege al filtro.
-                          return false;
-                        }
-                      );
-
-                      // Verificamos si se encontro un resultado ese mes.
-                      if (!resultSearch) {
-
-                        // todos los meses almenos tenfras un viaje
-                        // asi que si o si lo agregams.
-                        isAddNewVoyage = false;
-                        isAddNewPort = false;
-
-                        // agregamos la fecha a nuestro arreglo.
-                        this.xLabelReport.push(day);
-
-                        let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
-                        // y los ocmentarios registrados.
-                        dataExtra.push(report)
-
-                        // Le agregamos los datos de velocidad.
-                        let newSpeed = new Speed(report.distance, report.steamingTime);
-                        // Agregamos los datos de velocidad.
-                        let ySpeed = mathRound(newSpeed.distance / newSpeed.steamingTime, 2);
-
-
-                        // DATOS IFO
-                        // Calculamos el total de consumo ifo
-                        let totalConsumptionIFO = this.SumaIfo(report);
-                        // Formula DayliConsumption
-                        let dayliConsumptionIFO = newSpeed.steamingTime ? (totalConsumptionIFO * 24) / newSpeed.steamingTime : 0;
-
-
-
-                        // DATOS MGO
-                        // Calculamos el total de consumo ifo
-                        let totalConsumptionMGO = this.SumaMgo(report);
-                        // Formula DayliConsumption
-                        let dayliConsumptionMGO = newSpeed.steamingTime ? (totalConsumptionMGO * 24) / newSpeed.steamingTime : 0;
-
-                        let totalBunkeringIFO = report.bunkeringIfo;
-                        let totalBunkeringMGO = report.bunkeringMgo;
-
-
-                        this.dataSPEED.push(
-                          { x: day, y: ySpeed, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
-                        );
-                        // Agregamos los datos IFO
-                        this.dataIFO.push(
-                          { x: day, y: dayliConsumptionIFO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
-                        );
-                        // Agregamos los datos MGO
-                        this.dataMGO.push(
-                          { x: day, y: dayliConsumptionMGO, totalConsumptionMGO: totalConsumptionMGO, totalConsumptionIFO: totalConsumptionIFO, totalBunkeringIFO: totalBunkeringIFO, totalBunkeringMGO: totalBunkeringMGO, totalVoyage: 1, totalPort: 1, totalReport: 1, speed: newSpeed, ubication: [iV, iP, iR], dataExtra: dataExtra, identified: [voyage.id, port.id, report.id] }
-                        );
-
-
-                        // Verificamos que la configuracion de la linea maxima se  mayor al valor del chart.
-                        if (dayliConsumptionIFO > this.configLineaIFO.lineaMax) {
-                          this.configLineaIFO.lineaMax = dayliConsumptionIFO;
-                        }
-                        if (dayliConsumptionMGO > this.configLineaMGO.lineaMax) {
-                          this.configLineaMGO.lineaMax = dayliConsumptionMGO;
-                        }
-                        if (ySpeed > this.configLineaSPEED.lineaMax) {
-                          this.configLineaSPEED.lineaMax = ySpeed;
-                        }
-
-                      }
-
-
-                    }
-
-                  }
-                );
-
-              }
-
-            })
-
-        }
-
-      }
-    );
-
-
-    // Si la configuracion es para setar fecha lo seteamos.
-    if (setDate) {
-      this.startDate = startDate;
-      this.endDate = endDate;
-    }
-
-  }
-
-
   // GenetareLineIFO(): Generar linea en los canvas.
   private GenetareLineIFO(): boolean {
     console.log('GenetareLineIFO()');
@@ -2492,6 +2804,12 @@ export class DashboardComponent implements OnInit {
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
 
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
+
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2516,6 +2834,13 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
+
+
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
@@ -2525,8 +2850,10 @@ export class DashboardComponent implements OnInit {
               let result = FisrtOldDayFromDate(ubication);
 
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = new Date(result.start);
-              this.endDate = new Date(result.end);
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
+              this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
               this.selectSummaryBy = 'DAYS';
@@ -2534,10 +2861,17 @@ export class DashboardComponent implements OnInit {
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
 
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
+
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
-              let identified = this.dataMGO[index].identified;
+              let identified = this.dataIFO[index].identified;
 
               // Buscamos el viaje id
               let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
@@ -2651,6 +2985,14 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true);
+
+
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
+
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
@@ -2672,21 +3014,43 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+
+
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
+
             } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
               let date = this.dataMGO[index].x;
 
+              // Encapsulamos las ubicaciones.
+              let ubication = this.dataMGO[index].x;
+
               // retorna el primero y ultimo dia del mes de la fecha enviada.
-              let result = FisrtOldDayFromDate(date);
+              let result = FisrtOldDayFromDate(ubication);
+
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = new Date(result.start);
-              this.endDate = new Date(result.end);
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
+              this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
               this.selectSummaryBy = 'DAYS';
+
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
+
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
 
             } else if (this.selectSummaryBy === 'DAYS') {
 
@@ -2804,10 +3168,18 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
+
+
+              let startDate = voyage.dayStart;
+              let endDate = voyage.dayEnd;
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
+
             } else if (this.selectSummaryBy === 'PORTS') {
 
               // Encapsulamos las ubicaciones.
-              let ubication = this.dataMGO[index].ubication;
+              let ubication = this.dataSPEED[index].ubication;
               let voyage = this.generateVoyages[ubication[0]]
               let port = this.generateVoyages[ubication[0]].ports[ubication[1]]
 
@@ -2819,7 +3191,7 @@ export class DashboardComponent implements OnInit {
               // Generamos un nuevo viaje.
               this.generateVoyages = newVoyage;
               // seleccionamos el filtro por puertos.
-              this.selectSummaryBy = 'PORTS'
+              this.selectSummaryBy = 'DAYS'
 
               // Generamos la data segun el filtro.
               this.GenerateDataByFilter(newVoyage);
@@ -2827,8 +3199,15 @@ export class DashboardComponent implements OnInit {
               // Generamos el dashboard segun el tipo de resument.
               // Ademas le decimos que es para setear la fecha.
               this.GenerateDashboardBySumary(true)
-            } else if (this.selectSummaryBy === 'MONTHS') {
 
+
+              let startDate = port.dayStart;
+              let endDate = port.dayEnd;
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
+
+            } else if (this.selectSummaryBy === 'MONTHS') {
 
               // Encapsulamos las ubicaciones.
               let ubication = this.dataSPEED[index].x;
@@ -2837,18 +3216,28 @@ export class DashboardComponent implements OnInit {
               let result = FisrtOldDayFromDate(ubication);
 
               // Seteamos el inicio y fin de la fecha.
-              this.startDate = new Date(result.start);
-              this.endDate = new Date(result.end);
+              this.startDate = ConvertMoment(result.start).toDate();
+              this.endDate = ConvertMoment(result.end).toDate();
+
+              this.isSetDateFilter = new FilterWithDate(true, this.startDate, this.endDate);
 
               // Tipo de resumen por dia.
               this.selectSummaryBy = 'DAYS';
+
               // Generar reporte por fecha.
               this.GenerateReporteByDate();
+
+              let startDate = ConvertMoment(this.startDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+              let endDate = ConvertMoment(this.endDate).utc().format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+              // Buscamos la info
+              this.GetStartEndROByFilterDate(this.selectUserId, startDate, endDate).pipe().toPromise();
+
 
             } else if (this.selectSummaryBy === 'DAYS') {
 
               // Obtenemos los id de los datos.
-              let identified = this.dataMGO[index].identified;
+              let identified = this.dataSPEED[index].identified;
 
               // Buscamos el viaje id
               let voyage = this.getVoyages.find(voyage => voyage.id === identified[0]);
@@ -2926,23 +3315,74 @@ export class DashboardComponent implements OnInit {
     // Verificamos que exista una confifuracion para LSFO
     if (this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionVLSFO) {
 
-      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-      if (this.selectUser.maxIFOConsumption > 0) {
-        this.configLineaIFO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxIFOConsumption,
-          color: 'red',
-          label: ''
-        });
-      };
 
-      if (this.selectUser.minIFOConsumption > 0) {
-        this.configLineaIFO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.minIFOConsumption,
-          color: '#39FF14',
-          label: ''
+      // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
+      if (
+        (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
+
+        // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+        if (this.selectUser.maxIFOConsumption > 0) {
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxIFOConsumption,
+            color: 'red',
+            label: ''
+          });
+        };
+
+        if (this.selectUser.minIFOConsumption > 0) {
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minIFOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaIFO.lineaMax < this.selectUser.maxIFOConsumption) {
+          this.configLineaIFO.lineaMax = this.selectUser.maxIFOConsumption;
+        }
+
+      } else {
+        // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE ENCONSTRAR LA MAYOR LINEA MAXIMA.
+
+        let lineaMaxByActivity = 0;
+        this.frmCActivityPerformed.value.forEach(activity => {
+
+          let lineMax = 0;
+          if (activity === 'LOADING') { lineMax = this.selectUser.loadingConsumptionIFO; }
+          else if (activity === 'DOWNLOADING') { lineMax = this.selectUser.dischargeConsumptionIFO; }
+          else if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.sailingBallastConsumptionIFO; }
+          else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.sailingLoadConsumptionIFO; }
+          else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.sailingEconomicConsumptionIFO; }
+          else if (activity === 'ANCHORED') { lineMax = this.selectUser.anchoredConsumptionIFO; }
+          else if (activity === 'MANEUVER') { lineMax = this.selectUser.maneuverConsumptionIFO; }
+          else if (activity === 'OTHER_ACT') { lineMax = this.selectUser.otherConsumptionIFO; }
+
+          if (lineMax > lineaMaxByActivity) {
+            lineaMaxByActivity = lineMax;
+          }
+
         });
+
+        // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+        if (lineaMaxByActivity > 0) {
+
+          this.configLineaIFO.options.lines.push({
+            type: 'horizontal',
+            y: lineaMaxByActivity,
+            color: 'red',
+            label: ''
+          });
+        }
+
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaIFO.lineaMax < lineaMaxByActivity) {
+          this.configLineaIFO.lineaMax = lineaMaxByActivity;
+        }
+
       }
 
       // Configuracion Tooltips
@@ -2950,9 +3390,6 @@ export class DashboardComponent implements OnInit {
 
     }
 
-    if (this.configLineaIFO.lineaMax < this.selectUser.maxIFOConsumption) {
-      this.configLineaIFO.lineaMax = this.selectUser.maxIFOConsumption;
-    }
 
     // Agregamos la configuracion de las escalas.
     this.configLineaIFO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaIFO.lineaMax, 0) + 2);
@@ -2982,24 +3419,77 @@ export class DashboardComponent implements OnInit {
     // Verificamos que exista una confifuracion para LSFO
     if (this.selectUser.isConsumptionMGO) {
 
-      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-      if (this.selectUser.maxMGOConsumption > 0) {
-        this.configLineaMGO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxMGOConsumption,
-          color: 'red',
-          label: ''
-        });
-      };
 
-      if (this.selectUser.minMGOConsumption > 0) {
-        this.configLineaMGO.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.minMGOConsumption,
-          color: '#39FF14',
-          label: ''
+
+      // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
+      if (
+        (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
+
+        // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+        if (this.selectUser.maxMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.maxMGOConsumption,
+            color: 'red',
+            label: ''
+          });
+        };
+
+        if (this.selectUser.minMGOConsumption > 0) {
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: this.selectUser.minMGOConsumption,
+            color: '#39FF14',
+            label: ''
+          });
+        }
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaMGO.lineaMax < this.selectUser.maxMGOConsumption) {
+          this.configLineaMGO.lineaMax = this.selectUser.maxMGOConsumption;
+        }
+
+      } else {
+        // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
+
+        let lineaMaxByActivity = 0;
+        this.frmCActivityPerformed.value.forEach(activity => {
+
+          let lineMax = 0;
+          if (activity === 'LOADING') { lineMax = this.selectUser.loadingConsumptionMGO; }
+          else if (activity === 'DOWNLOADING') { lineMax = this.selectUser.dischargeConsumptionMGO; }
+          else if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.sailingBallastConsumptionMGO; }
+          else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.sailingLoadConsumptionMGO; }
+          else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.sailingEconomicConsumptionMGO; }
+          else if (activity === 'ANCHORED') { lineMax = this.selectUser.anchoredConsumptionMGO; }
+          else if (activity === 'MANEUVER') { lineMax = this.selectUser.maneuverConsumptionMGO; }
+          else if (activity === 'OTHER_ACT') { lineMax = this.selectUser.otherConsumptionMGO; }
+
+          if (lineMax > lineaMaxByActivity) {
+            lineaMaxByActivity = lineMax;
+          }
+
         });
+
+        // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+        if (lineaMaxByActivity > 0) {
+
+          this.configLineaMGO.options.lines.push({
+            type: 'horizontal',
+            y: lineaMaxByActivity,
+            color: 'red',
+            label: ''
+          });
+        }
+
+
+        // Esta linea maxima es para la scala del cuadro.
+        if (this.configLineaMGO.lineaMax < lineaMaxByActivity) {
+          this.configLineaMGO.lineaMax = lineaMaxByActivity;
+        }
+
       }
+
 
       // Configuracion Tooltips
       this.configLineaMGO.options.tooltips = this.GetToolTipConfig('MGO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
@@ -3019,6 +3509,7 @@ export class DashboardComponent implements OnInit {
     return false;
   }
 
+  // GetToolTipConfig() Genera toolTipo p
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
 
     // resultado de tooltip
@@ -3098,15 +3589,20 @@ export class DashboardComponent implements OnInit {
           let result = '';
           if (configIFOorMGOorSPEED === 'IFO') {
             result = this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-            result = result + ' Daily consumption : ';
+            result = result + ' DAILY CONSUMPTION :    ';
           } else if (configIFOorMGOorSPEED === 'MGO') {
-            result = 'MGO Daily consumption : ';
+            result = 'MGO DAILY CONSUMPTION :    ';
           } else if (configIFOorMGOorSPEED === 'SPEED') {
-            result = 'Average Speed : ';
+            result = 'AVERAGE SPEED :    ';
           }
           // Le agrgamos el vlaor.
-          result = result + mathRound(Number(tooltipItem.value), 2)
+          result = result + this.MathRoundOneDecimal(Number(tooltipItem.value), this.cantDecimal)
 
+          if (configIFOorMGOorSPEED === 'IFO' || configIFOorMGOorSPEED === 'MGO') {
+            result += ' MT';
+          } else if (configIFOorMGOorSPEED === 'SPEED') {
+            result += ' KN';
+          }
           return result;
 
         },
@@ -3131,61 +3627,84 @@ export class DashboardComponent implements OnInit {
             // para mostrar los datos deben de ser mayor a 1,
             // recordemos que todos los reportes estan en un puerto y un viaje.
             if (voyage.totalPort > 1) {
-              result.push('T. Ports : ' + voyage.totalPort);
+              result.push('T. Ports :    ' + voyage.totalPort);
             }
             if (voyage.totalReport > 1) {
-              result.push('T. Reports : ' + voyage.totalReport);
+              result.push('T. Reports :    ' + voyage.totalReport);
             }
 
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && voyage.totalBunkeringIFO > 0) {
+              && voyage.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + + mathRound(voyage.totalBunkeringIFO, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + this.MathRoundOneDecimal(voyage.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
             if (this.selectUser.isConsumptionMGO
-              && voyage.totalBunkeringMGO > 0
+              && voyage.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Bunkering MGO : ' + mathRound(voyage.totalBunkeringMGO, 2));
+              result.push('T. Bunkering MGO :    ' + this.MathRoundOneDecimal(voyage.totalBunkeringMGO, this.cantDecimal) + ' mt');
 
             }
 
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && voyage.totalIFO > 0) {
+              && voyage.totalIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + mathRound(voyage.totalIFO, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + this.MathRoundOneDecimal(voyage.totalIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
+
             if (this.selectUser.isConsumptionMGO
-              && voyage.totalMGO > 0
+              && voyage.totalMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-
-              result.push('T. Consumption MGO: ' + mathRound(voyage.totalMGO, 2));
-
+              result.push('T. Consumption MGO :    ' + this.MathRoundOneDecimal(voyage.totalMGO, this.cantDecimal) + ' mt');
             }
 
-            if (voyage.totalSpeed.steamingTime > 0) {
-              result.push('T. Time : ' + mathRound(voyage.totalSpeed.steamingTime, 2));
-            }
-            if (voyage.totalSpeed.distance > 0) {
-              result.push('T. Distance : ' + mathRound(voyage.totalSpeed.distance, 2));
+
+
+
+            if (configIFOorMGOorSPEED === 'IFO') {
+
+              if (voyage.totalSpeed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(voyage.totalSpeed.timeOperationIFO, this.cantDecimal) + ' hrs');
+              }
+              if (voyage.totalSpeed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(voyage.totalSpeed.distanceIFO, this.cantDecimal) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'MGO') {
+
+              if (voyage.totalSpeed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(voyage.totalSpeed.timeOperationMGO, this.cantDecimal) + ' hrs');
+              }
+              if (voyage.totalSpeed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(voyage.totalSpeed.distanceMGO, this.cantDecimal) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+
+              if (voyage.totalSpeed.steamingTime > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(voyage.totalSpeed.steamingTime, this.cantDecimal) + ' hrs');
+              }
+              if (voyage.totalSpeed.distance > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(voyage.totalSpeed.distance, this.cantDecimal) + ' mi');
+              }
+              let calSpeed = this.MathRoundOneDecimal(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, this.cantDecimal);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
 
-            let calSpeed = mathRound(voyage.totalSpeed.distance / voyage.totalSpeed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed : ' + calSpeed);
-            }
 
           } else if (this.selectSummaryBy === 'PORTS') {
 
@@ -3194,63 +3713,86 @@ export class DashboardComponent implements OnInit {
             let port = voyage.ports[ubication[1]];
 
             if (port.departurePort.trim().length > 0) {
-              result.push('Departure : ' + port.departurePort.trim())
+              result.push('Departure :    ' + port.departurePort.trim())
             }
             if (port.arrivalPort.trim().length > 0) {
-              result.push('Arrival : ' + port.arrivalPort.trim())
+              result.push('Arrival :    ' + port.arrivalPort.trim())
             }
             if (port.totalReport > 1) {
-              result.push('T. Reports : ' + port.totalReport);
+              result.push('T. Reports    : ' + port.totalReport);
             }
 
 
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && port.totalBunkeringIFO > 0) {
+              && port.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + + mathRound(port.totalBunkeringIFO, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + this.MathRoundOneDecimal(port.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
-              && port.totalBunkeringMGO > 0
+              && port.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-              result.push('T. Bunkering MGO : ' + mathRound(port.totalBunkeringMGO, 2));
+              result.push('T. Bunkering MGO :    ' + this.MathRoundOneDecimal(port.totalBunkeringMGO, this.cantDecimal) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && port.robIfo > 0) {
+              && port.robIfo > 0 && configIFOorMGOorSPEED === 'IFO') {
 
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + mathRound(port.robIfo, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + this.MathRoundOneDecimal(port.robIfo, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
 
 
             }
             if (this.selectUser.isConsumptionMGO
-              && port.robMgo > 0
+              && port.robMgo > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Consumption MGO: ' + mathRound(port.robMgo, 2));
+              result.push('T. Consumption MGO:    ' + this.MathRoundOneDecimal(port.robMgo, this.cantDecimal) + ' mt');
 
             }
 
-            if (port.speed.steamingTime > 0) {
-              result.push('T. Time : ' + mathRound(port.speed.steamingTime, 2));
+
+            if (configIFOorMGOorSPEED === 'IFO') {
+
+              if (port.speed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(port.speed.timeOperationIFO, this.cantDecimal) + ' hrs');
+              }
+              if (port.speed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(port.speed.distanceIFO, this.cantDecimal) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'MGO') {
+
+              if (port.speed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(port.speed.timeOperationMGO, this.cantDecimal) + ' hrs');
+              }
+              if (port.speed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(port.speed.distanceMGO, this.cantDecimal) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+
+              if (port.speed.steamingTime > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(port.speed.steamingTime, this.cantDecimal) + ' hrs');
+              }
+              if (port.speed.distance > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(port.speed.distance, this.cantDecimal) + ' mi');
+              }
+              let calSpeed = this.MathRoundOneDecimal(port.speed.distance / port.speed.steamingTime, this.cantDecimal);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
-            if (port.speed.distance > 0) {
-              result.push('T. Distance : ' + mathRound(port.speed.distance, 2));
-            }
-            let calSpeed = mathRound(port.speed.distance / port.speed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed : ' + calSpeed);
-            }
+
 
           } else if (this.selectSummaryBy === 'MONTHS') {
 
@@ -3258,43 +3800,43 @@ export class DashboardComponent implements OnInit {
             // para mostrar los datos deben de ser mayor a 1,
             // recordemos que todos los reportes estan en un puerto y un viaje.
             if (chartPoint.totalPort > 1) {
-              result.push('T. Ports : ' + chartPoint.totalPort);
+              result.push('T. Ports :    ' + chartPoint.totalPort);
             }
             if (chartPoint.totalReport > 1) {
-              result.push('T. Reports : ' + chartPoint.totalReport);
+              result.push('T. Reports :    ' + chartPoint.totalReport);
             }
 
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalBunkeringIFO > 0) {
+              && chartPoint.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + + mathRound(chartPoint.totalBunkeringIFO, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + +   this.MathRoundOneDecimal(chartPoint.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalBunkeringMGO > 0
+              && chartPoint.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-              result.push('T. Bunkering MGO : ' + mathRound(chartPoint.totalBunkeringMGO, 2));
+              result.push('T. Bunkering MGO :    ' + this.MathRoundOneDecimal(chartPoint.totalBunkeringMGO, this.cantDecimal) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalConsumptionIFO > 0) {
+              && chartPoint.totalConsumptionIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + mathRound(chartPoint.totalConsumptionIFO, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + this.MathRoundOneDecimal(chartPoint.totalConsumptionIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalConsumptionMGO > 0
+              && chartPoint.totalConsumptionMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Consumption MGO: ' + mathRound(chartPoint.totalConsumptionMGO, 2));
+              result.push('T. Consumption MGO:    ' + this.MathRoundOneDecimal(chartPoint.totalConsumptionMGO, this.cantDecimal) + ' mt');
 
             }
 
@@ -3302,17 +3844,36 @@ export class DashboardComponent implements OnInit {
 
 
 
-            if (chartPoint.speed.steamingTime > 0) {
-              result.push('T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2));
-            }
-            if (chartPoint.speed.distance > 0) {
-              result.push('T. Distance : ' + mathRound(chartPoint.speed.distance, 2));
-            }
+            if (configIFOorMGOorSPEED === 'IFO') {
 
+              if (chartPoint.speed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.timeOperationIFO, this.cantDecimal) + ' hrs');
+              }
+              if (chartPoint.speed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(chartPoint.speed.distanceIFO, this.cantDecimal) + ' mi');
+              }
 
-            let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed : ' + calSpeed);
+            } else if (configIFOorMGOorSPEED === 'MGO') {
+
+              if (chartPoint.speed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.timeOperationMGO, this.cantDecimal) + ' hrs');
+              }
+              if (chartPoint.speed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(chartPoint.speed.distanceMGO, this.cantDecimal) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+
+              if (chartPoint.speed.steamingTime > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.steamingTime, this.cantDecimal) + ' hrs');
+              }
+              if (chartPoint.speed.distance > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(chartPoint.speed.distance, this.cantDecimal) + ' mi');
+              }
+              let calSpeed = this.MathRoundOneDecimal(chartPoint.speed.distance / chartPoint.speed.steamingTime, this.cantDecimal);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
 
           } else if (this.selectSummaryBy === 'DAYS') {
@@ -3325,13 +3886,16 @@ export class DashboardComponent implements OnInit {
             let activities = '';
             let observations = '';
             let totalReport = 0;
-
+            let beaufour = '';
 
             dataExtra.forEach((report: DailyReport) => {
-              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed);
+              activities = activities + ', ' + this.languageService.GetMessage(this.translateCategory, report.activityPerformed) + (report.speedStraction ? '/' + this.languageService.GetMessage(this.translateCategory, report.speedStraction) : '');
               observations = observations + ', ' + report.observation;
               speed.add(report.distance, report.steamingTime);
               totalReport = totalReport + 1;
+              if (report.beaufour) {
+                beaufour = report.beaufour;
+              }
             });
 
 
@@ -3340,66 +3904,86 @@ export class DashboardComponent implements OnInit {
             // para mostrar los datos deben de ser mayor a 1,
             // recordemos que todos los reportes estan en un puerto y un viaje.
             if (chartPoint.totalPort > 1) {
-              result.push('T. Ports : ' + chartPoint.totalPort);
+              result.push('T. Ports :    ' + chartPoint.totalPort);
             }
             if (chartPoint.totalReport > 1) {
-              result.push('T. Reports : ' + chartPoint.totalReport);
+              result.push('T. Reports :    ' + chartPoint.totalReport);
             }
 
 
             // TOTAL BUNKERING
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalBunkeringIFO > 0) {
+              && chartPoint.totalBunkeringIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
               let textIFOorVLSFOorLSFO = 'T. Bunkering ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + + mathRound(chartPoint.totalBunkeringIFO, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + +   this.MathRoundOneDecimal(chartPoint.totalBunkeringIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalBunkeringMGO > 0
+              && chartPoint.totalBunkeringMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
-              result.push('T. Bunkering MGO : ' + mathRound(chartPoint.totalBunkeringMGO, 2));
+              result.push('T. Bunkering MGO :    ' + this.MathRoundOneDecimal(chartPoint.totalBunkeringMGO, this.cantDecimal) + ' mt');
             }
 
             // Mostraremos los 2 tipos de combustible.
             if (
               (this.selectUser.isConsumptionLSFO || this.selectUser.isConsumptionIFO || this.selectUser.isConsumptionVLSFO)
-              && chartPoint.totalConsumptionIFO > 0) {
+              && chartPoint.totalConsumptionIFO > 0 && configIFOorMGOorSPEED === 'IFO') {
 
               let textIFOorVLSFOorLSFO = 'T. Consumption ';
               textIFOorVLSFOorLSFO += this.selectUser.isConsumptionIFO ? 'IFO' : this.selectUser.isConsumptionLSFO ? 'LSFO' : this.selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-              textIFOorVLSFOorLSFO += ' : ' + mathRound(chartPoint.totalConsumptionIFO, 2);
+              textIFOorVLSFOorLSFO += ' :    ' + this.MathRoundOneDecimal(chartPoint.totalConsumptionIFO, this.cantDecimal) + ' mt';
               result.push(textIFOorVLSFOorLSFO);
 
             }
             if (this.selectUser.isConsumptionMGO
-              && chartPoint.totalConsumptionMGO > 0
+              && chartPoint.totalConsumptionMGO > 0 && configIFOorMGOorSPEED === 'MGO'
             ) {
 
-              result.push('T. Consumption MGO: ' + mathRound(chartPoint.totalConsumptionMGO, 2));
+              result.push('T. Consumption MGO:    ' + this.MathRoundOneDecimal(chartPoint.totalConsumptionMGO, this.cantDecimal) + ' mt');
 
             }
 
-            if (chartPoint.speed.steamingTime > 0) {
-              result.push('T. Time : ' + mathRound(chartPoint.speed.steamingTime, 2));
-            }
-            if (chartPoint.speed.distance > 0) {
-              result.push('T. Distance : ' + mathRound(chartPoint.speed.distance, 2));
-            }
+            if (configIFOorMGOorSPEED === 'IFO') {
 
+              if (chartPoint.speed.timeOperationIFO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.timeOperationIFO, this.cantDecimal) + ' hrs');
+              }
+              if (chartPoint.speed.distanceIFO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(chartPoint.speed.distanceIFO, this.cantDecimal) + ' mi');
+              }
 
-            let calSpeed = mathRound(chartPoint.speed.distance / chartPoint.speed.steamingTime, 2);
-            if (calSpeed && calSpeed > 0) {
-              result.push('Speed : ' + calSpeed);
+            } else if (configIFOorMGOorSPEED === 'MGO') {
+
+              if (chartPoint.speed.timeOperationMGO > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.timeOperationMGO, this.cantDecimal) + ' hrs');
+              }
+              if (chartPoint.speed.distanceMGO > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(chartPoint.speed.distanceMGO, this.cantDecimal) + ' mi');
+              }
+
+            } else if (configIFOorMGOorSPEED === 'SPEED') {
+              result.push('Befourt :    ' + beaufour);
+
+              if (chartPoint.speed.steamingTime > 0) {
+                result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.steamingTime, this.cantDecimal) + ' hrs');
+              }
+              if (chartPoint.speed.distance > 0) {
+                result.push('T. Distance :    ' + this.MathRoundOneDecimal(chartPoint.speed.distance, this.cantDecimal) + ' mi');
+              }
+              let calSpeed = this.MathRoundOneDecimal(chartPoint.speed.distance / chartPoint.speed.steamingTime, this.cantDecimal);
+              if (calSpeed && calSpeed > 0) {
+                result.push('Speed :    ' + calSpeed + ' kn');
+              }
             }
 
             if (activities.length > 4) {
-              result.push('Activities : ' + activities);
+              result.push('Activities :    ' + activities);
             }
 
             if (observations.length > 4) {
-              result.push('Observations : ' + observations);
+              result.push('Observations :    ' + observations);
             }
           }
 
@@ -3426,7 +4010,17 @@ export class DashboardComponent implements OnInit {
     // La linea es el campo que agregamos en el plugin.
     this.configLineaSPEED.options.lines = [];
 
-    
+
+
+
+
+    // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
+    if (
+      (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
+
+
+
+
       // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
       if (this.selectUser.maxSpeed > 0) {
         this.configLineaSPEED.options.lines.push({
@@ -3446,12 +4040,57 @@ export class DashboardComponent implements OnInit {
         });
       }
 
-      // Configuracion Tooltips
-      this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
-  
-    
 
-    
+      // Esta linea maxima es para la scala del cuadro.
+      if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
+        this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
+      }
+
+    } else {
+      // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
+
+      let lineaMaxByActivity = 0;
+      this.frmCActivityPerformed.value.forEach(activity => {
+
+        let lineMax = 0;
+
+        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
+        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
+        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
+
+        if (lineMax > lineaMaxByActivity) {
+          lineaMaxByActivity = lineMax;
+        }
+
+      });
+
+      // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+      if (lineaMaxByActivity > 0) {
+
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: lineaMaxByActivity,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+
+
+      // Esta linea maxima es para la scala del cuadro.
+      if (this.configLineaSPEED.lineaMax < lineaMaxByActivity) {
+        this.configLineaSPEED.lineaMax = lineaMaxByActivity;
+      }
+
+    }
+
+
+
+    // Configuracion Tooltips
+    this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
+
+
+
+
 
     if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
       this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
@@ -3484,7 +4123,7 @@ export class DashboardComponent implements OnInit {
 
     if (!valor) { return 0; }
 
-    let result = mathRound(valor, 2)
+    let result = mathRound(valor, cantDecimales)
 
     return result;
   }
@@ -3497,6 +4136,7 @@ export class DashboardComponent implements OnInit {
     // Agregamos un plugin para saver los niveles.
     const chartPluginLineaHorizontal = {
       afterDraw: (chartobj: any) => {
+
         if (chartobj.options.lines) {
           let ctx = chartobj.chart.ctx;
 
@@ -3510,20 +4150,46 @@ export class DashboardComponent implements OnInit {
             line.label = line.label ? line.label : '';
 
             if (line.type === 'horizontal' && line.y) {
-              line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
-              line.endCoord[0] = chartobj.chart.width;
+              // Verificamos si existe un yAxesID
+              let yAxesID = line.yAxesID;
+              if (yAxesID) {
+                // Si es asi agregamos la linea hacia ese yAxesId
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales[yAxesID].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+                // Solo si enviamos un tamaño especifico, 
+                if (line.fontSize) { ctx.font = line.fontSize; }
+                if (line.lineWidth) { ctx.lineWidth = line.lineWidth; }
+                ctx.fillStyle = line.color;
+                if (yAxesID == 'A') {
+                  ctx.textAlign = "start";
+                  ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 10);
+                } else if (yAxesID == 'B') {
+                  ctx.textAlign = "end";
+                  ctx.fillText(line.label, chartobj.chart.width - 3, line.iniCoord[1] - 10);
+                }
+
+              } else {
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+
+                ctx.fillStyle = line.color;
+                ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+
+              }
             } else if (line.type === 'vertical' && line.x) {
               line.iniCoord[0] = line.endCoord[0] = chartobj.scales['x-axis-0'].getPixelForValue(line.x);
               line.endCoord[1] = chartobj.chart.height;
+              ctx.fillStyle = line.color;
+              ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
             }
 
             ctx.beginPath();
-            ctx.moveTo(line.iniCoord[0], line.iniCoord[1]);
-            ctx.lineTo(line.endCoord[0], line.endCoord[1]);
+
+            // Le sumamos y restamos 18 para que no tape la leyenda.
+            ctx.moveTo(line.iniCoord[0] + 18, line.iniCoord[1]);
+            ctx.lineTo(line.endCoord[0] - 18, line.endCoord[1]);
             ctx.strokeStyle = line.color;
             ctx.stroke();
-            ctx.fillStyle = line.color;
-            ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
           }
         }
       }
@@ -3570,6 +4236,8 @@ export class DashboardComponent implements OnInit {
       voyages: voyages,
       selectUser: selectUser,
       selectVoyageId: this.selectVoyageId,
+      dateStart: this.startDate,
+      dateEnd: this.endDate,
     };
 
 
@@ -3583,12 +4251,44 @@ export class DashboardComponent implements OnInit {
 
         if (result) {
 
-         // alert('OKK');
+          // alert('OKK');
         }
       });
 
 
   }
 
+
+  private OpenDialogExportExcel(selectUser: User, startDate: Date, endDate: Date): boolean {
+
+    // Le pongo UTC porque en automatico al seleccionar un viaje, se toma el valor de la fecha que se tiene al uinicio y fin del viaje.
+    let mommentStartDate = ConvertMomentUTC(this.startDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+    let mommentEndDate = ConvertMomentUTC(this.endDate).format('YYYY-MM-DD\THH:mm:ss') + 'Z';
+
+
+    let dialogReport: IDialogExportExcel = {
+      selectUser: selectUser,
+      dateStartUTC: mommentStartDate,
+      dateEndUTC: mommentEndDate
+    };
+
+
+    const dialogRef = this.dialog.open(DialogExportExcelComponent, {
+      data: dialogReport
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+
+          // alert('OKK');
+        }
+      });
+
+    return true;
+
+  }
 
 }

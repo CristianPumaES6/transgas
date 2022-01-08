@@ -23,3 +23,14 @@ sh UploadFrontEnd.sh
 ng build --prod
 firebase deploy
 ```
+
+
+## PARA DEV
+
+extensiones:
+GitLens — Git supercharged eamodio.gitlens
+
+# Migrar de chart 2.9 a 3.5
+npm install --save chart.js@2.9.4
+
+npm install --save chart.js@3.5

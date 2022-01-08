@@ -79,17 +79,10 @@ export class UserComponent implements OnInit {
     public dialog: MatDialog,
   ) {
     console.log('User Constructor()');
-    // subscribe receives the value. sirve para recibir algun emit
-    this.onlineOfflineService.emitterReloadData.subscribe(
-      (isOnline: boolean) => {
-        this.loadDataIndexedDB();
-        console.log('Hacer reloadd______________');
-      }
-    );
   }
 
   ngOnInit(): void {
-    console.log('ngOnInit()');
+    console.log('user ngOnInit()');
 
     // Activamos el loading.
     this.loadingService.Open();
@@ -104,7 +97,7 @@ export class UserComponent implements OnInit {
     this.ReactiveForm(true, false, true);
 
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
-    if (!!window.navigator.onLine) {
+    if (this.onlineOfflineService.GetStatusOnline()) {
 
       // Instanciamos el obj que usaremos.
       let user: User = new User();
@@ -156,11 +149,7 @@ export class UserComponent implements OnInit {
           // Revisamos si el result es el esperado.
           if (!result) throw 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE';
 
-
-          new PerfectScrollbar('.az-contact-info-body', {
-            suppressScrollX: true
-          })
-
+          // Cargamos la data desde IndexedDB
           this.loadDataIndexedDB();
 
         },
@@ -178,16 +167,20 @@ export class UserComponent implements OnInit {
         });
 
     } else {
+
+      // Cargamos la data desde IndexedDB
       this.loadDataIndexedDB();
 
-      setTimeout(() => {
-
-        new PerfectScrollbar('.az-contact-info-body', {
-          suppressScrollX: true
-        })
-
-      }, 500);
     }
+
+    // PerfectScrool
+    setTimeout(() => {
+
+      new PerfectScrollbar('.az-contact-info-body', {
+        suppressScrollX: true
+      })
+
+    }, 500);
 
   }
 
@@ -196,7 +189,6 @@ export class UserComponent implements OnInit {
 
     Promise.resolve(true).then(
       () => {
-
         // Obtenemos los datos del usuario.
         return this.databaseService.getUsersIndexDB();
       }
@@ -269,7 +261,9 @@ export class UserComponent implements OnInit {
     // Armo un obj azList.
     users.forEach((user: User) => {
       this.azLists.push(
-        new AzList(user.id, user.name, user.role, user.filename)
+        new AzList(user.id, user.name,
+          this.languageService.GetMessage(this.translateCategory, user.role),
+          user.filename)
       );
     });
 
@@ -646,7 +640,9 @@ export class UserComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === result.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(result.id, result.name, result.role, result.filename)
+                azList = new AzList(result.id, result.name,
+                  this.languageService.GetMessage(this.translateCategory, result.role),
+                  result.filename)
               }
 
               return azList;
@@ -713,7 +709,9 @@ export class UserComponent implements OnInit {
               // Buscamos el id para cambiar el valor de result.
               if (azList.id === resultUpdate.id) {
                 // Actualizamos el valor con el resultado
-                azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, resultUpdate.filename)
+                azList = new AzList(resultUpdate.id, resultUpdate.name,
+                  this.languageService.GetMessage(this.translateCategory, resultUpdate.role),
+                  resultUpdate.filename)
               }
               return azList;
 
@@ -760,7 +758,9 @@ export class UserComponent implements OnInit {
           // Lo agrego al arreglo.
           this.getUsers.unshift(result);
 
-          this.azLists.unshift(new AzList(result.id, result.name, result.role, result.filename));
+          this.azLists.unshift(new AzList(result.id, result.name,
+            this.languageService.GetMessage(this.translateCategory, result.role),
+            result.filename));
 
           this.databaseService.addUserIndexedDB(result);
 
@@ -798,7 +798,9 @@ export class UserComponent implements OnInit {
           // Lo agrego al arreglo.
           this.getUsers.unshift(resultUserIndexedDB);
 
-          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name, resultUserIndexedDB.role, resultUserIndexedDB.filename));
+          this.azLists.unshift(new AzList(resultUserIndexedDB.id, resultUserIndexedDB.name,
+            this.languageService.GetMessage(this.translateCategory, resultUserIndexedDB.role),
+            resultUserIndexedDB.filename));
 
           // vuelvo a cargar los datos de incio del token.
           this.InitializeUser();
@@ -977,7 +979,9 @@ export class UserComponent implements OnInit {
             // Buscamos el id para cambiar el valor de result.
             if (azList.id === resultUpdate.id) {
               // Actualizamos el valor con el resultado
-              azList = new AzList(resultUpdate.id, resultUpdate.name, resultUpdate.role, resultUpdate.filename)
+              azList = new AzList(resultUpdate.id, resultUpdate.name,
+                this.languageService.GetMessage(this.translateCategory, resultUpdate.role),
+                resultUpdate.filename)
             }
             return azList;
 
@@ -1011,7 +1015,7 @@ export class UserComponent implements OnInit {
 
     years.forEach(
       year => {
-        
+
         if (!result) { result = result + year; }
         else { result = result + ', ' + year; }
       }
@@ -1022,7 +1026,7 @@ export class UserComponent implements OnInit {
   // Agrega el año actual al user.
   public ClickAddYear(): boolean {
     console.log('ClickAddYear()');
-    
+
     this.user.years.push(parseInt(getYear()));
 
     return true;

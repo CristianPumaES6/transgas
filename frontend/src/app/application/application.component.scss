@@ -6,6 +6,21 @@
   display: flex;
   }
 }
+
+#clickSyncDataLocal {
+  &:hover{
+    color:green;
+    cursor: pointer;
+  }
+  transition:  color 0.5;
+
+}
+.icon-refresh{
+  display: inline-block;
+}
+.refreshing{
+  animation: animateRefresh 2s infinite;
+}
 /* 
 .menu-hidden-big {
   display: flex;
@@ -15,3 +30,35 @@
    background: white;
    z-index: 2;
  }
+
+
+ .css-version-plataform {
+   font-weight: 900;
+  animation: changeColor 4s infinite;
+ }
+ 
+@keyframes changeColor {
+  0% {
+    color: #06003f;
+  }
+  50% {
+    color: #2eb502;
+  }
+  100% {
+    color: #001F3F;
+  }
+}
+
+
+@keyframes animateRefresh {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);  
+  }
+  100% {
+    -webkit-transform: rotate(356.4deg);
+    -moz-transform: rotate(356.4deg);
+    transform: rotate(356.4deg);  
+  }
+}

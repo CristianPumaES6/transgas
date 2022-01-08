@@ -2,10 +2,21 @@
 .PerfectScrollbar-reportTable{
   overflow: scroll;
 }
+
+.cont-speed-straction {
+  label {   
+    color: rgba(0,0,0,.54);
+    padding-bottom: 0;
+    margin-bottom: 0;
+    line-height: 1;
+    font-size: 10px;
+  }
+}
+
 .modi {
   &.table {
     overflow: hidden hidden;
-
+    font-size: 7pt !important;
     // Clase de bootstrap estoy modificando solo el color del borde-
     .border {
       border-color: $blue-light-2 !important;
@@ -15,6 +26,7 @@
       tr {
         .color-title-table {
           color: #ffffff;
+          font-size: 7pt !important;
 
           &.blue-1 {
             background: $blue-light-1;

@@ -7,16 +7,8 @@ import { LoggedUser } from './models/loggedUser';
 export class AppService {
 
   constructor(
-   // private gateway: AppGateway, // Por mientras que este desactivado.
+   private gateway: AppGateway, // Por mientras que este desactivado.
   ) {
-    
-    // Creamos un escucha para registrar un nuevo usuario.
-    /*
-    this.gateway.wss.on('disconect', function(msg) {
-
-      console.log("User Disconect");
-      console.log(msg);
-    }); */
   }
 
   public loggedUsers : LoggedUser[] = [];
@@ -50,6 +42,7 @@ export class AppService {
     }
   }
 
+  // Agregamos a los usuarios logeados.
   private AddUserLogeated(loggedUser:LoggedUser):boolean{
 
     loggedUser.firstConnection = GetDate();
@@ -61,6 +54,7 @@ export class AppService {
 
   }
 
+  // Actualizamos los usuarios logeados.
   private UpdateUserLogeated(loggedUser:LoggedUser):boolean{
 
     
@@ -87,7 +81,7 @@ export class AppService {
     return true;
   }
 
-
+  // Obtenemos los usuarios que estan logeados.
   public GetLoggedUsers(): LoggedUser[]{
     return this.loggedUsers;
   }

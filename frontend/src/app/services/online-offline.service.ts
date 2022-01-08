@@ -4,57 +4,95 @@ import { DatabaseService } from './database.service'
 // Componentes Dependencias
 import { NotificationsService } from 'angular2-notifications';
 
+// Importamos los servicio del webSocket
+import { WebSocketService } from './../services/web-socket.service';
+import { CantidadRestante } from '../models/loggedUser';
+
+
 declare const window: any;
 
 @Injectable({ providedIn: 'root' })
 export class OnlineOfflineService {
 
-  public isOnline: boolean = false;
+  private isOnline: boolean = false;
 
-  emitterIsOnline = new EventEmitter<boolean>();
-  emitterReloadData = new EventEmitter();
-  // Creamos un observable de tipo boolean.
-  // private internalConnectionChanged = new Subject<boolean>();
+  // Este emit servira para saver si se cambio el estado de la conexion.
+  public emitterIsOnline = new EventEmitter<boolean>();
 
   // Agregamos al servidor un evento de escucha
   constructor(
     private databaseService: DatabaseService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private webSocketService: WebSocketService,
   ) {
-    console.log('constructor()');
+    console.log('constructor() Online Offlinea Service');
 
-    this.isOnline = !!window.navigator.onLine;
-
-    // Caso sea online o Offline cambiara el estado de la coneccion interna.
-    window.addEventListener('online', () => {
-
-      this.updateOnlineStatus();
-      this.databaseService.Sync().then(
-        result => {
-          console.log('ReloadData Emit()');
-
-          // Emitir reloadData.
-          this.emitterReloadData.emit();
-
-          this.notificationsService.warn('Online','');
-
-        });
-
-    });
-    window.addEventListener('offline', () => {
-      this.updateOnlineStatus();
-      this.notificationsService.warn('Offline');
-    });
+    // Agregamos la configuracion al constructor.
+    this.ConfigWebSocketListening();
   }
 
   // Actualiza el estado de la coneccion
-  private async updateOnlineStatus(): Promise<boolean> {
+  private async UpdateOnlineStatus() {
+
     console.log('updateOnlineStatus()');
 
-    this.isOnline = !!window.navigator.onLine;
-
+    // Emitimos a nuestra aplicacion angular el estado de la conexion.
     this.emitterIsOnline.emit(this.isOnline)
 
+  }
+
+  // Configuracion de escucha de websocket.
+  private ConfigWebSocketListening() {
+
+    // La aplicacion estara a la escucha de alguna connection.
+    // Si escucha una nueva conexion enviara un update de su estado.
+    this.webSocketService.listen('connection').subscribe(
+      (data) => {
+        console.log('connection incio');
+
+
+        // Solo si la conexion estaba en false, se emitira un update de la reconexion
+        if (!this.isOnline) {
+          this.isOnline = true;
+
+          // Solo cmabiamos el estado.
+          this.UpdateOnlineStatus();
+
+          // Emitimos una notificacion.
+          this.notificationsService.warn('Online', '');
+        }
+      }
+    );
+
+    this.webSocketService.listen('connection2').subscribe(
+      (data) => {
+        // alert('connection2')
+
+        console.log('registrar el usuario de ocneccion.')
+
+      }
+    );
+
+    // Si el webSocket se desconecta
+    this.webSocketService.listen('disconnect').subscribe(
+      (data) => {
+
+        // Si la conexion estuvo en true, se actualiza a false.
+        if (this.isOnline) {
+          this.isOnline = false;
+          // Luego de que cambie la conexion debemos avisar este cabio lo hacemos gracias al emit.
+          this.UpdateOnlineStatus();
+          this.notificationsService.warn('Offline');
+
+        }
+
+      }
+    );
+
+  }
+
+  // Retorna el estado de la conexion con el servidor.
+  public GetStatusOnline(): boolean {
     return this.isOnline;
   }
 

@@ -1,79 +1,169 @@
 <div class="az-content-breadcrumb lh-1 mg-b-2 pl-0">
   <span>dashboard</span>
   <span>export Pdf</span>
-
+  <span>{{this.data.dateStart}}</span>
+  <span>{{this.data.dateEnd}}</span>
 </div>
-<h2 class="az-content-title tx-24 mg-b-0 pl-0">
 
-  <mat-form-field class="w-100">
-    <mat-label>Generate PDF</mat-label>
-    <mat-select [(ngModel)]="selectTypeExport">
 
-      <mat-option value='VESSEL_PERFORMANCE' (click)="ClickSelectPort()">
-        Vessel Performance Report
-      </mat-option>
+<mat-horizontal-stepper linear #stepper>
 
-    </mat-select>
-  </mat-form-field>
+  <mat-step [completed]="isFirstCompleted" label="PDF options" state="pdfOption">
+    <!-- Icon overrides. -->
 
-</h2>
-<div class="row">
-  <div class="col-6 col-sm-12 col-md-6 col-lg-6">
+    <div class="tx-24 mg-b-0 pl-0">
 
-    <mat-form-field class="w-100">
-      <mat-label>Voyage</mat-label>
-      <mat-select [(ngModel)]="selectVoyageId">
+      <mat-form-field class="w-100">
+        <mat-label>Generate PDF</mat-label>
+        <mat-select [(ngModel)]="selectTypeExport">
 
-        <ng-template ngFor let-iVoyage [ngForOf]="voyages" let-i="index">
-          <mat-option [value]="iVoyage.id" (click)="ClickSelectVoyage()">
-            Voyage {{ iVoyage.voyageNumber}}
+          <mat-option value='VESSEL_PERFORMANCE_REPORT'>
+            Vessel Performance Report
           </mat-option>
-        </ng-template>
 
-      </mat-select>
-    </mat-form-field>
+        </mat-select>
+      </mat-form-field>
 
-  </div>
-  <div class="col-6 col-sm-12 col-md-6 col-lg-6">
+    </div>
 
-    <mat-form-field class="w-100">
-      <mat-label>Port</mat-label>
-      <mat-select [(ngModel)]="selectPortId">
+    <div class="az-content p-0">
 
-        <ng-template ngFor let-iPort [ngForOf]="ports" let-i="index">
-          <mat-option [value]="iPort.id" (click)="ClickSelectPort()">
-            Port N° {{ iPort.portNumber}} ( {{ iPort.departurePort }} - {{ iPort.arrivalPort }} )
-          </mat-option>
-        </ng-template>
+      <h5>
+        {{'REPORT_INFORMATION' | translateMessage:translateCategory}}
+      </h5>
 
-      </mat-select>
-    </mat-form-field>
+      <div class="row lh-1 mg-b-4 pl-0">
 
-  </div>
-</div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addOverallPerformance" class="pl-2">
+            {{ 'OVERALL_PERFORMANCE' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
 
-<div class="row">
-  <div class="col-6 ">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addChartVoyageSummary" class="pl-2">
+            {{ 'CHART_VOYAGE_SUMMARY' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
 
-    <button mat-raised-button color="primary" (click)="ClickExportPDF()">Descargar
-      <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
-    </button>
-
-  </div>
-</div>
-
-<div style="opacity: 0; height: 0px; width: 0px; overflow: hidden;">
-
-  <div id="dash-linea-speed" style="width: 570px; height: 287px;background:  #121c3c; padding: 10px 20px 10px 15px;">
-    <canvas id="lineaSpeed" class="w-100"></canvas>
-  </div>
-
-</div>
-<div style="opacity: 0; height: 0px; width: 0px; overflow: hidden;">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addVoyageSummary" class="pl-2">
+            {{ 'VOYAGE_SUMMARY' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <mat-checkbox [(ngModel)]="addBunkeringInformation" class="pl-2">
+            {{ 'BUNKERING_INFORMATION' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
 
 
-  <div id="dash-linea-ifo" style="width: 570px; height: 287px;background:  #121c3c; padding: 10px 20px 10px 15px;">
-    <canvas id="lineaIfo" class="w-100"></canvas>
-  </div>
+      </div>
 
-</div>
+
+      <h5>
+        {{'ADD_INFORMATION_FUEL' | translateMessage:translateCategory}}
+      </h5>
+
+      <div class="row lh-1 mg-b-4 pl-0">
+
+        <div class="col-6 col-sm-6 col-md-6 col-lg-6"
+          *ngIf="selectUser.isConsumptionIFO || selectUser.isConsumptionVLSFO || selectUser.isConsumptionLSFO">
+          <mat-checkbox [(ngModel)]="addInformationIFO" class="pl-2">
+            {{ (selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionVLSFO ?
+            'VLSFO' : 'LSFO') | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
+        <div class="col-6 col-sm-6 col-md-6 col-lg-6" *ngIf="selectUser.isConsumptionMGO">
+          <mat-checkbox [(ngModel)]="addInformationMGO" class="pl-2">
+            {{'MGO' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
+      </div>
+
+
+      <h5>
+        {{'ADD_SAILING_NAVIGATION' | translateMessage:translateCategory}}
+      </h5>
+
+      <div class="row lh-1 mg-b-4 pl-0">
+
+        <div class="col-4 col-sm-12 col-md-6 col-lg-4">
+          <mat-checkbox [(ngModel)]="addSailingInBallast" class="pl-2">
+            {{'IN_BALLAST' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+
+        <div class="col-4 col-sm-12 col-md-6 col-lg-4">
+          <mat-checkbox [(ngModel)]="addSailingWithLaden" class="pl-2">
+            {{'WITH_LADEN' | translateMessage:translateCategory}}
+          </mat-checkbox>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 ">
+
+          <button mat-raised-button color="primary" matStepperNext
+            [disabled]="!(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary) || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)"
+            (click)="ClickNext()">
+            Next
+            <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
+          </button>
+
+        </div>
+      </div>
+
+
+    </div>
+
+  </mat-step>
+
+  <mat-step label="PDF preview" state="pdfView">
+
+    <div class="row">
+      <div class="col-12">
+
+        <div class="content-PDF" style="width: 100%; height: 100%">
+
+          <ng2-pdfjs-viewer #pdfViewerOnDemand></ng2-pdfjs-viewer>
+
+        </div>
+      </div>
+    </div>
+    <!--     
+      <div class="row">
+        <div class="col-6 pb-2">
+
+          <button mat-raised-button color="primary" [disabled]=" !(addOverallPerformance || addVoyageSummary || addBunkeringInformation || addChartVoyageSummary)
+            || !(addInformationIFO || addInformationMGO) || !(addSailingInBallast || addSailingWithLaden)">Descargar
+            <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
+          </button>
+
+        </div>
+      </div> 
+    -->
+<br><br><br><br><br>
+
+    <div id="dash-line-Overall-Performance-Laden"
+      style="min-width:800px; min-height: 440px;background:  #121c3c; padding: 10px 20px 10px 15px;">
+      <canvas id="lineOverallPerformanceLaden" style="width:100%; height: 100%"></canvas>
+    </div>
+
+    <div id="dash-line-Overall-Performance-Ballast"
+      style="min-width:800px; min-height: 440px;background:  #121c3c; padding: 10px 20px 10px 15px;">
+      <canvas id="lineOverallPerformanceBallast" style="width:100%; height: 100%"></canvas>
+    </div>
+
+  </mat-step>
+
+  <!--  -->
+  <ng-template matStepperIcon="pdfOption">
+    <mat-icon>settings</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="pdfView">
+    <mat-icon class="icon-archivo-pdf"></mat-icon>
+  </ng-template>
+</mat-horizontal-stepper>

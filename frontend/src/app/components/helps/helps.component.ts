@@ -66,12 +66,32 @@ public roleUser: string= '';
 
   ];
 
+
+  // 
+  public onlineAndOffline = {
+    text : 'Allows you to work online and offline.',
+    listIMG : [
+      {
+        title:'ss',
+        description:'ss s s s s s s ss s'
+      },
+      {
+        title:'ss',
+        description:'ss s s s s s s ss s'
+      }
+    ]
+  }
+
+
+
+
   
   // Titulo de la lista de videos
   public title_list_videos: string ='Demo videos';
   public h1_title_videos: string = 'Choose a module';
   public description_title_videos:string = 'The following videos explain the application modules.';
 
+  // Lista de videos.
   public list_video:any[] = [
     {
       iframe_video :'Dashboard',

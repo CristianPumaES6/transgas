@@ -15,25 +15,46 @@ import { AuthModule } from './components/auth/auth.module';
 import { Moment } from 'moment';
 import { VoyagesModule } from './components/voyages/voyages.module';
 
-
 import { AppGateway } from './app.gateway';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: join(SQLITE_PATH, 'dbTransgas.sqlite3'),
-      entities: [join(__dirname, '**/**.entity{.ts,.js}')],
-      synchronize: true,
-    }),
+ 
+   imports: [
+     TypeOrmModule.forRoot({
+       type: 'sqlite',
+       database: join(SQLITE_PATH, 'dbTransgas.sqlite3'),
+       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
+       synchronize: true,
+     }),  
+
+
+// imports: [
+//   TypeOrmModule.forRoot({
+//     type: 'mssql',
+//     host: 'localhost',
+//     port: 1433,
+//     username: 'sa',
+//     password: 'Lab2021Code.',
+//     database: 'prueba',
+//     entities: [join(__dirname, '**/**.entity{.ts,.js}')],
+//     synchronize: true,
+//     options: {
+//       encrypt: false,
+//       enableArithAbort: true,
+//     },
+//     extra:{
+//       trustServerCertificate: true,
+//     }
+//   }),
     UsersModule,
     AuthModule,
     VoyagesModule,
-    // AppGateway,// por mientras queeste desactivado
+    AppGateway,// por mientras queeste desactivado
   ],
+
   controllers: [AppController],
   providers: [AppService, 
-    // AppGateway // por mientras queeste desactivado
+    AppGateway // por mientras queeste desactivado
   ],
 })
 export class AppModule { }

@@ -28,6 +28,8 @@ import * as TimeZone from 'moment-timezone';
 // Config
 import { AuthGuardService } from './auth-guard.service';
 import { LoggedUser } from '../models/loggedUser';
+import { UserService } from './user.service';
+import { DatabaseService } from './database.service';
 
 
 @Injectable({
@@ -45,6 +47,8 @@ export class AuthService {
     private httpClient: HttpClient,
     private languageService: LanguageService,
     private authGuardService: AuthGuardService,
+    private userService: UserService,
+    private _databaseService: DatabaseService,
   ) {
     console.log('Constructor');
 
@@ -109,7 +113,7 @@ export class AuthService {
 
   InitializeTimezone(): void {
     // Obtengo el nombre del timezone
-    this.timeZone =  TimeZone.tz.guess();
+    this.timeZone = TimeZone.tz.guess();
     // Obtengo objeto zona de moment, a partir del nombre del timezonetz.zone(this.timeZone)
     let zone: TimeZone.MomentZone = TimeZone.tz.zone(this.timeZone);
     // Obtengo diferencia en minutos de utc al timezone, para la fecha actual
@@ -126,14 +130,96 @@ export class AuthService {
     return this.loggedUser;
   }
 
-  Logout(): boolean {
+  // Al deslogearnos tenemos que borrar los datos.
+  public async Logout(): Promise<boolean> {
 
-    localStorage.clear();
     this.session = null;
     this.loggedUser = null;
 
-    return false;
+    localStorage.clear();
+    return Promise.resolve(true).then(
+      result => {
+        return this._databaseService.DeleteDataBase();
+      }
+    ).then(
+      result => {
 
+
+        console.log('ISUIENTE THJEN')
+        // REVISAR=> Esta es una solucion rapida.
+        // No me gusta que se tenga que recargar el sitio luego de cerar session.
+        // Tampoco se si es sincrono, si se hace el reload luego eliminar la bd.
+        // esto podria generar un error.
+        // Revisar vien alfondo si el DeleteDataBase(); esta esperando caso contrario colocar then que es lo mas seguro para saber que es sincrono.
+        location.reload();
+        return true;
+      }
+    );
+
+  }
+
+
+  // Verifica el token.
+  // Solo obtiene la version si se tiene un token registrado.
+  GetVerifyToken(): Observable<string> {
+    console.log('GetVerifyToken(userId: Number)');
+
+    // Armo el request
+    let url: string = EnvConfig.API;
+    let headers: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.userService.GetToken(),
+      });
+    let options: any = { headers: headers, responseType: 'json' };
+
+    // Mando consulta al API
+    return this.httpClient.get(url, options).pipe(
+      map(
+        (response: any) => {
+
+          if (response.status && response.status === 200) {
+            return response.data;
+          } else {
+            throw response.description || response.error || '';
+          }
+        }
+      ), catchError((err) => {
+        return this.authGuardService.HandleError(err);
+      })
+    );
+  }
+
+
+  // COnsulta al servidor la version del proyecto.
+  // Retorna la version del proyecto.
+  GetVersionPlataform(): Observable<string> {
+    console.log('GetVerifyToken(userId: Number)');
+
+    // Armo el request
+    let url: string = EnvConfig.API + '/platform-version';
+    let headers: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.userService.GetToken(),
+      });
+    let options: any = { headers: headers, responseType: 'json' };
+
+    // Mando consulta al API
+    return this.httpClient.get(url, options).pipe(
+      map(
+        (response: any) => {
+
+          if (response.status && response.status === 200) {
+            return response.data;
+          } else {
+            throw response.description || response.error || '';
+          }
+        }
+      ), catchError((err) => {
+        return this.authGuardService.HandleError(err);
+      })
+    );
   }
 
   // Este servicio registra el logeo de un usuario.
@@ -156,9 +242,9 @@ export class AuthService {
 
           // Verificamos que la respuesta.
           if (response.status && response.status === 200) {
-              return response.data;
+            return response.data;
           } else {
-              throw response.description || response.error || '';
+            throw response.description || response.error || '';
           }
 
         }
@@ -167,7 +253,7 @@ export class AuthService {
   }
 
   // Este servicio registra el logeo de un usuario.
-  RegisterUserConnection(loggedUser:LoggedUser): Observable<boolean> {
+  RegisterUserConnection(loggedUser: LoggedUser): Observable<boolean> {
 
     // Armo el request
     let url: string = EnvConfig.API + '/loggedUsers';
@@ -186,9 +272,9 @@ export class AuthService {
 
           // Verificamos que la respuesta.
           if (response.status && response.status === 200) {
-              return response.data;
+            return response.data;
           } else {
-              throw response.description || response.error || '';
+            throw response.description || response.error || '';
           }
 
         }
@@ -198,29 +284,29 @@ export class AuthService {
 
   // Obtiene todos los objetos segun el filtro enviado.
   GetUserConnection(): Observable<LoggedUser[]> {
-      // Armo el request
-      let url: string = EnvConfig.API + '/loggedUsers';
-      let headers: HttpHeaders = new HttpHeaders(
-          {
-              'Content-Type': 'application/json',
-              //'Authorization': 'Bearer ' + this.userService.GetToken(),
-          });
-      let options: any = { headers: headers, responseType: 'json' };
+    // Armo el request
+    let url: string = EnvConfig.API + '/loggedUsers';
+    let headers: HttpHeaders = new HttpHeaders(
+      {
+        'Content-Type': 'application/json',
+        //'Authorization': 'Bearer ' + this.userService.GetToken(),
+      });
+    let options: any = { headers: headers, responseType: 'json' };
 
-      // Mando consulta al API
-      return this.httpClient.get(url, options).pipe(
-          map(
-              (response: any) => {
-                  if (response.status && response.status === 200) {
-                      return response.data;
-                  } else {
-                      throw response.description || response.error || '';
-                  }
-              }
-          ), catchError((err) => {
-              return this.authGuardService.HandleError(err);
-          })
-      );
+    // Mando consulta al API
+    return this.httpClient.get(url, options).pipe(
+      map(
+        (response: any) => {
+          if (response.status && response.status === 200) {
+            return response.data;
+          } else {
+            throw response.description || response.error || '';
+          }
+        }
+      ), catchError((err) => {
+        return this.authGuardService.HandleError(err);
+      })
+    );
   }
 
 }

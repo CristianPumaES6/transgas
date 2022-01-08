@@ -46,8 +46,8 @@ export class Voyage {
     totalBunkeringMGO: number;
     // Numero total de puertos
     totalPort: number = 0;
-    dayStart: String;
-    dayEnd: String;
+    dayStart: string;
+    dayEnd: string;
 }
 
 // Modelo para la consulta de viajes por años.

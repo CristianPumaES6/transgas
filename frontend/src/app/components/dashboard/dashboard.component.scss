@@ -1,12 +1,6 @@
-body {
-  background-color: red;
-}
 
-.color-red {
-  // color: red !important;
-  background: rgb(255, 123, 123);
-}
-
+@import "../../variable";
+   
 .background-content-linea {
   background: #121c3c;
   height: 290px;
@@ -179,12 +173,8 @@ canvas {
         td {
           background: rgba(184, 209, 255, 0.2);
 
-          &.color-red {
-            // color: red !important;
-            background: rgb(253, 103, 103);
-          }
           &.color-max {
-            background: rgb(253, 103, 103);
+            background: lighten($warning-table, 1%);
           }
           &.color-min {
             background-color: rgb(42, 235, 67);
@@ -224,7 +214,7 @@ canvas {
   display: inline-block;
   width: 13px;
   height: 13px;
-  background: red;
+  background: $warning-table;
   margin-right: 5px;
 }
 
@@ -296,8 +286,9 @@ canvas {
 }
 
 .color-max {
-  background: rgb(255, 123, 123);
+  background: lighten($warning-table, 13%);
 }
+
 .color-min {
   background-color: rgb(133, 252, 97);
 }

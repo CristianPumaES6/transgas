@@ -25,12 +25,12 @@ import { UserService } from '../services/user.service';
 
 import { DatabaseService } from '../services/database.service';
 
-// Importamos los servicio del webSocket
-import { WebSocketService } from './../services/web-socket.service';
-
 
 // Models
 import { User } from '../models/user';
+import { EnvConfig } from '../config/env.config';
+import { CantidadRestante } from '../models/loggedUser';
+
 @Component({
   selector: 'app-application',
   templateUrl: './application.component.html',
@@ -46,11 +46,17 @@ export class ApplicationComponent implements OnInit {
   public translateCategory: string = 'application';
 
   // esta variable ayuda a saber si la aplicacion se encuantra en linea.
-  public isOnline: boolean = !!window.navigator.onLine;
+  public isOnline: boolean = false;
   public getUsers: User[] = [];
+  public version: string = '';
+
+  // estas variables nos permite saber cuantos registros tenemos en offline
+  public cantidadRestanteOffline : CantidadRestante= new CantidadRestante();
+
+  // Refresh
+  public isRefreshingData : boolean = false;
 
 
-   
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -58,189 +64,64 @@ export class ApplicationComponent implements OnInit {
     private languageService: LanguageService,
     private authService: AuthService,
     readonly onlineOfflineService: OnlineOfflineService,
-    //private webSocketService: WebSocketService,
+    private databaseService: DatabaseService,
+    private notificationsService: NotificationsService,
+    private _loadingService: LoadingService,
   ) {
     console.log('ApplicationComponent constructor()');
 
-    // subscribe receives the value. sirve para recibir algun emit
+    // Subscribe receives the value. sirve para recibir algun emit
     this.onlineOfflineService.emitterIsOnline.subscribe(
       (isOnline: boolean) => {
         console.log('this.onlineOfflineService.changeOnline.subscribe()');
 
         this.isOnline = isOnline;
+
       }
     );
+
+
+    this.databaseService.emitterCantOffline.subscribe(
+      (cantidadRestanteOffline:CantidadRestante) => {
+        console.log('this.databaseService.emitterCantOffline.subscribe()');
+        
+        this.cantidadRestanteOffline = cantidadRestanteOffline;
+      }
+    )
+
+    
 
   }
 
 
-  // al iniciar este componente se ejecuta lo siguiente.
+  // Al iniciar este componente se ejecuta lo siguiente.
   ngOnInit(): void {
-    console.log('ngOnInit()');
+    console.log('ngOnInit() application');
 
+    this.version = EnvConfig.VERSION;
     // Obtenemos los datos de la session.
     this.loggedUser = this.authService.GetLoggedUser();
+    // Obtenemos el estado en linea
+    this.isOnline = this.onlineOfflineService.GetStatusOnline();
 
-    // La aplicacion estara a la escucha de alguna connectio.
-    // Si escucha una nueva conexion enviara un update de su estado.
-  /*  this.webSocketService.listen('connection').subscribe(
-      (data)=>{
-
-        let lat = 0;
-        let lng = 0;
-        if(data == 'connected') {
-
-          if ("geolocation" in navigator) {
-            // la geolocalización está disponible 
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-
-                // Guardamos la ubicacion del navegador
-                lat = position.coords.latitude;
-                lng = position.coords.longitude;
-
-                // Registramos la conectividad del usuario.
-                this.authService.RegisterUserConnection(
-                  {
-                    token:localStorage.getItem('Session'),
-                    userName:this.loggedUser.name,
-                    lat:lat,
-                    lng:lng,
-                    isActive:true
-                  }
-                ).pipe().toPromise();
-
-              }
-            )
-          } else {
-            // la geolocalización NO está disponible /
-            // Registramos la conectividad del usuario.
-            this.authService.RegisterUserConnection(
-              {
-                token:localStorage.getItem('Session'),
-                userName:this.loggedUser.name,
-                lat:lat,
-                lng:lng,
-                isActive:true
-              }
-            ).pipe().toPromise();
-
-          }
-        }
-
-      }
-    );
-
-    this.webSocketService.listen('connection2').subscribe(
-      (data)=>{
-
-        let lat = 0;
-        let lng = 0;
-
-        console.log('connection 2 incio');
-
-          if ("geolocation" in navigator) {
-
-            // la geolocalización está disponible 
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-
-                console.log('respuesta getCurrentPosition');
-                // Guardamos la ubicacion del navegador
-                lat = position.coords.latitude;
-                lng = position.coords.longitude;
-
-
-                // Registramos la conectividad del usuario.
-                this.authService.RegisterUserConnection(
-                  {
-                    token: localStorage.getItem('Session'),
-                    userName: this.loggedUser.name,
-                    lat: lat,
-                    lng: lng,
-                    isActive: true
-                  }
-                ).pipe().toPromise();
-              }
-            )
-
-          } else {
-
-            / la geolocalización NO está disponible
-            console.log(' no estro al getCurrentPosition');
-            
-            // Registramos la conectividad del usuario.
-            this.authService.RegisterUserConnection(
-              {
-                token: localStorage.getItem('Session'),
-                userName: this.loggedUser.name,
-                lat: lat,
-                lng: lng,
-                isActive: true
-              }
-            ).pipe().toPromise();
-
-          }
-
-          console.log('registrar el usuario de ocneccion.')
-          
-
-      }
-    );
-
-    */
-
-    // This template is mobile first so active menu in navbar
-    // has submenu displayed by default but not in desktop
-    // so the code below will hide the active menu if it's in desktop
-    if (window.matchMedia('(min-width: 992px)').matches) {
-      $('.az-navbar .active').removeClass('show');
-    }
-
-    // Shows header dropdown while hiding others
-    $('.az-header .dropdown > a').on('click', function (e) {
-      e.preventDefault();
-      $(this).parent().toggleClass('show');
-      $(this).parent().siblings().removeClass('show');
-    });
-
-    // this will hide dropdown menu from open in mobile
-    $('.dropdown-menu .az-header-arrow').on('click', function (e) {
-      e.preventDefault();
-      $(this).closest('.dropdown').removeClass('show');
-    });
-
-    // Close dropdown menu of header menu
-    $(document).on('click touchstart', function (e) {
-      e.stopPropagation();
-
-      // closing of dropdown menu in header when clicking outside of it
-      var dropTarg = $(e.target).closest('.az-header .dropdown').length;
-      if (!dropTarg) {
-        $('.az-header .dropdown').removeClass('show');
-      }
-
-      // closing nav sub menu of header when clicking outside of it
-      if (window.matchMedia('(min-width: 992px)').matches) {
-        var navTarg = $(e.target).closest('.az-navbar .nav-item').length;
-        if (!navTarg) {
-          $('.az-navbar .nav-item').removeClass('show');
-        }
-      }
-    });
-
+    // Configuracion de stylos por jqery
+    this.ConfigStyleFromJquery();
+    
+    this.databaseService.EmitterCantOffline();
   }
 
-  // OnLoadingLoaded => Funcion que inicia el loading.service.
+  // OnAsideLoaded => Funcion que inicializa la funcion aside
   public OnAsideLoaded(aside: ASideComponent): void {
     console.log('OnAsideLoaded(aside: ASideComponent):');
 
     // Cuando se carga el formulario modal, capturo la referencia y se la envio al servicio
     this.aSideService.Initialize(aside);
 
+    // Obtenemos el router.
     this.GetRoutelNavLink();
   }
 
+  // OnNavLinkOpenClose => Abrimos o cerramos el componente NAV
   public OnNavLinkOpenClose(type: string): boolean {
     console.log('OnNavLinkOpenClose(type: string)');
 
@@ -249,12 +130,117 @@ export class ApplicationComponent implements OnInit {
   }
 
   // Funcion para cerrar la session de usuario.
-  public logout() {
-    console.log('logout()');
+  public async ClickLogout() {
+    
+    this._loadingService.Open();
 
-    this.authService.Logout();
-    this.loggedUser = this.authService.GetLoggedUser();
-    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+    let datosRestanteSync:CantidadRestante = {};
+    await Promise.resolve(true).then(
+      result => {
+        return this.databaseService.Sync();
+      }
+    ).then(
+       result => {
+        
+         if(!result) throw 'ERROR SYNC SERVER'; 
+         
+         return this.databaseService.EmitterReloadData();
+        }
+      ).then(
+         result => {
+
+          if(!result){
+            throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+          }
+
+          return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+       }
+    ).then(
+      (datosFaltantes:CantidadRestante) => {
+        // deben de ser 0 todos para que entre esta funcion
+        if(!datosFaltantes.voyage && !datosFaltantes.port && !datosFaltantes.report ){
+          datosRestanteSync = datosFaltantes;
+          return this.authService.Logout();
+        }
+        else {
+          
+          return false
+        }
+      }
+    ).then(
+      result => {
+        if(result){ 
+
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+      
+      } else { 
+        this.loggedUser = this.authService.GetLoggedUser(); 
+        this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS'));
+      }
+      this._loadingService.Close();
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this._loadingService.Close();
+      }
+    );
+  }
+
+  // Cuando le damos click a este boton intenta refrescarse la cpnexion
+  public async ClickSyncDataLocal(){
+    if(this.isOnline){
+      
+      this.isRefreshingData = true;
+      this._loadingService.Open();
+      await Promise.resolve(true).then(
+        result => {
+          return this.databaseService.Sync();
+          
+        }
+      ).then(
+        result => {
+          this._loadingService.Close();
+          return this.databaseService.EmitterReloadData();
+         }
+       ).then(
+          result => {
+ 
+           if(!result){
+             throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+           }
+ 
+          this.isRefreshingData = false;
+          return this.databaseService.EmitterCantOffline();
+
+        }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+  
+          console.error(msg);
+          console.dir(err);
+  
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), msg);
+            
+          this.isRefreshingData = false;
+          // Deshabilito el spinner de loading
+          this._loadingService.Close();
+        }
+      );
+    } else {
+      
+      this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), '');
+       
+    }
   }
 
   public GetRoutelNavLink() {
@@ -318,6 +304,49 @@ export class ApplicationComponent implements OnInit {
     }
   }
 
+  // ConfigStyleFromJquery() => Configuracion de estilos mediante JQUERY.
+  private ConfigStyleFromJquery() {
+
+    // This template is mobile first so active menu in navbar
+    // has submenu displayed by default but not in desktop
+    // so the code below will hide the active menu if it's in desktop
+    if (window.matchMedia('(min-width: 992px)').matches) {
+      $('.az-navbar .active').removeClass('show');
+    }
+
+    // Shows header dropdown while hiding others
+    $('.az-header .dropdown > a').on('click', function (e) {
+      e.preventDefault();
+      $(this).parent().toggleClass('show');
+      $(this).parent().siblings().removeClass('show');
+    });
+
+    // this will hide dropdown menu from open in mobile
+    $('.dropdown-menu .az-header-arrow').on('click', function (e) {
+      e.preventDefault();
+      $(this).closest('.dropdown').removeClass('show');
+    });
+
+    // Close dropdown menu of header menu
+    $(document).on('click touchstart', function (e) {
+      e.stopPropagation();
+
+      // closing of dropdown menu in header when clicking outside of it
+      var dropTarg = $(e.target).closest('.az-header .dropdown').length;
+      if (!dropTarg) {
+        $('.az-header .dropdown').removeClass('show');
+      }
+
+      // closing nav sub menu of header when clicking outside of it
+      if (window.matchMedia('(min-width: 992px)').matches) {
+        var navTarg = $(e.target).closest('.az-navbar .nav-item').length;
+        if (!navTarg) {
+          $('.az-navbar .nav-item').removeClass('show');
+        }
+      }
+    });
+
+  }
 
   // Funciones para cargar combos //
   //////////////////////////////////

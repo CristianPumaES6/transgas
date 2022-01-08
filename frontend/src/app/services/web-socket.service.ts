@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as io from 'socket.io-client'; 
 
+import { EnvConfig } from '../config/env.config';
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
   // url del ws
-  readonly url:string = 'ws://localhost:4000';
+  readonly url:string = EnvConfig.SOCKET;
 
   // socket
   public socket:any;

@@ -33,7 +33,7 @@ export class AppComponent {
 
   // Configuracion para las notificaciones
   public notificationOpts = {
-    timeOut: 5000,
+    timeOut: 8000,
     lastOnBottom: true,
     clickToClose: true,
     maxLength: 0,
@@ -45,17 +45,6 @@ export class AppComponent {
 
   ngOnInit() {console.log('ngOnInit()');
   
-    this.loggedUser = this.authService.GetLoggedUser();
-  }
-/* 
-  ngDoCheck() {console.log('ngDoCheck()');
-  
-    this.loggedUser = this.authService.GetLoggedUser();
-  }
- */
-  logout() {console.log('logout()');
-  
-    this.authService.Logout();
     this.loggedUser = this.authService.GetLoggedUser();
   }
 
