@@ -1,3 +1,6 @@
+
+@import "../../../variable";
+
 // Deshabilita el cursor
 .az-contact-item {
   position: relative;
@@ -10,7 +13,7 @@
         font-size: 0.8rem;
       }
       &:hover {
-        color: red;
+        color: $t-blue;
       }
     }
   }
@@ -23,13 +26,13 @@
         font-size: 0.8rem;
       }
       &:hover {
-        color: red;
+        color: $t-blue
       }
     }
     
     &:hover {
       h6 {
-        color: red;
+        color: $t-blue
       }
     }
   }

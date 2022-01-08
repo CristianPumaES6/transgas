@@ -16,11 +16,12 @@ import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 // =====================================
 // Models
-import { Login } from '../../models/user'
+import { Login, User } from '../../models/user'
 
 //Service
 import { AuthService } from '../../services/auth.service';
 import { EnvConfig } from 'src/app/config/env.config';
+import { DatabaseService } from 'src/app/services/database.service';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class LogInComponent implements OnInit {
     private loadingService: LoadingService,
     private languageService: LanguageService,
     private authService: AuthService,
+    private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
   ) {
     console.log("constructor()");
@@ -71,51 +73,75 @@ export class LogInComponent implements OnInit {
 
   }
 
-  public Login(): boolean {
+  public async Login() {
     console.log('Login()');
 
+    let resultUser: User = {};
     this.loadingService.Open();
+    await Promise.resolve(true).then(
+      result => {
 
-    // Mando a hacer el login
-    this.authService.Login(this.login)
-      .subscribe(
-        result => {
-          // Verifico si el login fue exitoso
-          if (result) {
-            // Muestro notificación
-            this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_LOGIN').replace('{{NAME}}', result.name));
-            // Al logearse un buque te redirecciona al modulo de voyages
-            if (result.role === 'BUQUE') {
-              this.router.navigate(['./application/voyages'], { relativeTo: this.activatedRoute });
-            } else {
+        // Hacemos la consulta del login
+        return this.authService.Login(this.login).toPromise();
+      }
+    ).then(
+      (resultLoginGetUser) => {
 
-              // Todo OK, navego al home
-              this.router.navigate(['./application'], { relativeTo: this.activatedRoute });
-            }
-          } else {
-            // Algo fallo, muestro mensaje de error
-            throw 'LOGIN_FAILED';
-          }
-
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        },
-        error => {
-          // Mensaje de error generico
-          let errMsg: string = this.languageService.GetMessage(this.translateCategory, 'ERROR_CONNECTION');
-          // Verifico si hubo error de conexion HTTP y muestro mensaje
-          if (error.status === 0)
-            this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), errMsg);
-          else if (error.status > 0)
-            this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), errMsg); // Quite estas opciones error.error && error.error.error ||  =>
-          // Deshabilito flag de processing
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
+        // Verifico si el login fue exitoso 
+        if (!resultLoginGetUser) {
+          // CASO QUE NO SE EL LOGIN CORRECTO ENVIO UN ERROR
+          throw 'LOGIN_FAILED'
         }
-      );
+        resultUser = resultLoginGetUser;
+        // Muestro notificación
+        this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_LOGIN').replace('{{NAME}}', resultUser.name));
 
-    // Devuelvo false para anular la acción del botón
-    return false;
+        // SINCRONIZAMOS LOS DATOS.
+        return this.databaseService.Sync();
+
+      }
+    ).then(
+      result => {
+
+        if (!result) {
+          throw 'ERROR SYNC SALTO RAPIDO'
+        }
+
+        // SINCRONIZAMOS LOS DATOS.
+        return this.databaseService.UpdateDataLocal();
+      }
+    ).then(
+      result => {
+
+        if (!result) {
+          throw 'ERROR UpdateDataLocal'
+        }
+
+        // Al logearse un buque te redirecciona al modulo de voyages
+        if (resultUser.role === 'BUQUE') {
+          this.router.navigate(['./application/voyages'], { relativeTo: this.activatedRoute });
+        } else {
+          // Si no es un buque redirecciona a application
+          // Todo OK, navego al home
+          this.router.navigate(['./application'], { relativeTo: this.activatedRoute });
+        }
+
+      }
+    ).catch(
+      error => {
+        // Mensaje de error generico
+        let errMsg: string = this.languageService.GetMessage(this.translateCategory, 'ERROR_CONNECTION');
+        // Verifico si hubo error de conexion HTTP y muestro mensaje
+        if (error.status === 0)
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), errMsg);
+        else if (error.status > 0)
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), errMsg); // Quite estas opciones error.error && error.error.error ||  =>
+        // Deshabilito flag de processing
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    )
+
   }
 
 }

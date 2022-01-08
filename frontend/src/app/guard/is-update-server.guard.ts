@@ -44,11 +44,13 @@ export class IsUpdateServerGuard implements CanActivate {
       // Retornaremos true solo si la la plataforma esta actualizada.
       return Promise.resolve(true).then(
         result => {
+
           // Consultamos la version de la plataforma
           return this._authService.GetVersionPlataform().pipe().toPromise();
         }
       ).then(
         version => {
+          
           // Verificamos si las versiones son diferentes,
           // SI lo son tenemos que hacerle redload.
           if (version !== EnvConfig.VERSION) {

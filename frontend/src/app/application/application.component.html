@@ -49,7 +49,7 @@
               <i class="icon-edit-1"></i>
               {{'EDIT_PERFIL' | translateMessage:translateCategory}}
             </a> -->
-            <a (click)="logout()" class="dropdown-item" style="cursor: pointer;">
+            <a (click)="ClickLogout()" class="dropdown-item" style="cursor: pointer;">
               <i class="icon-logout-1"></i>
               {{'EXIT_PERFIL' | translateMessage:translateCategory}}
             </a>
@@ -67,19 +67,35 @@
 
     <router-outlet></router-outlet>
   </div>
-
-
   <div class="az-footer">
     <div class="container-fluid">
-      <span>&copy; 2021 Transgas <span class="css-version-plataform">{{version}}2</span> - Sailing Anality</span>
+      <span>&copy; 2021 Transgas <span class="css-version-plataform">{{version}}4</span> - Sailing Anality</span>
+
       <!-- <span>Designed by: ThemePixels</span> -->
-      <span class="float-righ"> {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
+ 
+
+      <span class="float-righ"  id="clickSyncDataLocal" (click)="ClickSyncDataLocal()"
+        matTooltip="Update Data Local ( V{{cantidadRestanteOffline.voyage}}  P{{cantidadRestanteOffline.port}}  R{{cantidadRestanteOffline.report}})">
+         {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
         <span [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline |
           translateMessage:translateCategory}}
-          <span class="icon-punto-circulo"></span> </span>
+          <span class="icon-punto-circulo"></span>
+        </span>
+
+        <span class="pl-1">
+          <!-- <span>Designed by: ThemePixels</span> -->
+          <span class="icon-refresh" [ngClass]="{
+            'refreshing': isRefreshingData
+            }"></span>
+
+            <span class="pl-1">
+              T: {{ cantidadRestanteOffline.voyage + cantidadRestanteOffline.port + cantidadRestanteOffline.report}}
+            </span>
+        </span>
       </span>
 
     </div><!-- container -->
-  </div><!-- az-footer -->
+  </div>
+  <!-- az-footer -->
 
 </div>

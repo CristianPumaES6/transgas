@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
 import { Dexie } from 'dexie';
 
@@ -17,13 +17,26 @@ import { LoadingService } from './loading.service';
 import { DailyReport } from '../models/daily-report';
 import { DailyReportService } from './daily-report.service';
 import { CantidadRestante } from '../models/loggedUser';
+import { map } from 'rxjs/operators';
+import { NotificationsService } from 'angular2-notifications';
+import { LanguageService } from './language.service';
 
 
 @Injectable()
 export class DatabaseService {
 
-    // 
+    // Este emiter envia la cantidad de viajes puerto y reportes que faltan enviar
+    public emitterCantOffline = new EventEmitter<CantidadRestante>();
+    
+    // Este emit sirve para avisar si se debe volver a cargar la data hacer reload. refresh etc.
+    public emitterReloadData = new EventEmitter();
+  
+    // database
     private db: any;
+
+    //======== VARIABLES DE TRADUCCION=============
+    public userLanguage: string = this.languageService.GetCurrentLanguage();
+    public translateCategory: string = 'voyage';
 
     constructor(
         private userService: UserService,
@@ -31,6 +44,8 @@ export class DatabaseService {
         private portService: PortService,
         private dailyReportService: DailyReportService,
         private loadingService: LoadingService,
+        private notificationsService: NotificationsService,
+        private languageService: LanguageService,
     ) {
         console.log('DatabaseService constructor()');
 
@@ -53,8 +68,11 @@ export class DatabaseService {
 
     }
 
-    public DeleteDataBase() {
-        this.db.delete();
+     public async DeleteDataBase() {
+        console.log('INICIO DELETE DATA bASE')
+       await this.db.delete();
+       console.log('FIN DELETE DATA bASE')
+
     }
 
     // Obtener DataBase
@@ -72,7 +90,6 @@ export class DatabaseService {
         console.log('-------------------------');
         console.log('-------------------------');
         console.log('-------------------------');
-        this.loadingService.Open();
 
         // Usuarios agregados en local mapeados.
         let usersMappings: Mapping[] = []
@@ -80,12 +97,15 @@ export class DatabaseService {
         let portsMappings: Mapping[] = []
         let dailyReportsMappings: Mapping[] = []
 
+
         try {
 
             usersMappings = await this.SyncUsers();
             voyagesMappings = await this.SyncVoyages(usersMappings);
             portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
             dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
+
+            return true;
 
         } catch (error) {
             console.log('-----------------------------------------');
@@ -96,14 +116,15 @@ export class DatabaseService {
             console.log('-----------------------------------------');
             console.log('-----------------------------------------');
             console.log('-----------------------------------------');
-            this.loadingService.Close();
             throw 'Offline'
         }
+    }
 
-        console.log('Sync Fin');
-        this.loadingService.Close();
+    // Si queremos emitir un reload a la base datos, un refresh de lista.
+    public async EmitterReloadData():Promise<boolean>{
+
+        this.emitterReloadData.emit();
         return true;
-
     }
 
     // =================== Sync IndexedDB ====================================
@@ -380,6 +401,146 @@ export class DatabaseService {
 
     }
     // ========================= FIN SYNC ========================
+
+
+    // UPDATE DATA LOCAL
+    public async UpdateDataLocal():Promise<boolean>{
+        
+        let selectUser = this.userService.GetIdentity();
+
+        // DATOS DE LAS PETICIONES HACIA EL SERVER
+        let getUsers: User[] = [];
+        let getVoyages: Voyage[] = [];
+        return await Promise.resolve(true).then(
+            result => {
+
+                let objUserGet: User = new User();
+                // Solo si es un usuario buque cargaran sus datos en local
+                if (selectUser.role === 'BUQUE') {
+                    objUserGet.id = selectUser.id;
+                }
+                // Traigo a todos los User y lo instancio en el obj.
+                return this.userService.GetUsers(objUserGet).pipe(map(
+                    (resultUser: User[]) => {
+
+                        if (!resultUser || resultUser.length == 0) {
+                            throw 'ERROR GETTING DATA FROM THE SERVER'
+                        }
+                        getUsers = resultUser;
+
+                        // Segun el resultado retornamos la respuesta.
+                        return getUsers;
+                    }
+                )).toPromise();
+            }
+        ).then(
+            // Consultaremos los viajes.
+            resultGetUser => {
+
+                if (!resultGetUser || resultGetUser.length == 0) {
+                    throw 'I DO NOT EXPECT THAT THE SERVER RESPONDEDED'
+                }
+
+                // Seleccionaremos el primer buque del arreglo.
+                let objVoyageGET: Voyage = new Voyage();
+                let firstUser: User = getUsers.reverse().find(user => user.role === 'BUQUE');
+                
+                if (firstUser) {
+                    selectUser = firstUser;
+                    objVoyageGET.userId = selectUser.id;
+                    objVoyageGET.year = selectUser.years[(firstUser.years.length || 1) - 1];
+                    
+                } else {
+                    throw 'NO_BUQUE_REGISTER';
+                }
+
+                // Traigo a todos los User y lo instancio en el obj.
+                // GeyVoyage obtiene todos los puertos.
+                return this.voyageService.GetsDetail(objVoyageGET).pipe(map(
+                    (resultVoyages: Voyage[]) => {
+                        if (!resultVoyages) {
+                            throw 'ERROR GETTING DATA FROM THE SERVER'
+                        }
+                        // Guardamos el valor en nuestra variable global.
+                        getVoyages = resultVoyages.reverse() || getVoyages;
+
+                        // Segun el resultado retornamos la respuesta.
+                        return getVoyages;
+                    }
+                )).toPromise();
+
+            }
+        ).then(
+            resulGetVoyages => {
+                // Revisamos si el result es el esperado.
+                if (!resulGetVoyages) throw 'ERROR_GET_VOYAGES';
+
+                // Hacemos Clear a la Tabla Users
+                return this.ClearUsersIndexedDB();
+            }
+        ).then(
+            resultClear => {
+                // Revisamos si el result es el esperado.
+                if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
+                // Hacemos Clear a la Tabla Users
+                return this.ClearVoyagesIndexedDB();
+            }
+        ).then(
+            resultClear => {
+                // Revisamos si el result es el esperado.
+                if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
+                // Hacemos Clear a la Tabla Users
+                return this.ClearPortsIndexedDB();
+            }
+        ).then(
+            resultClear => {
+                // Revisamos si el result es el esperado.
+                if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
+                // Hacemos Clear a la Tabla Users
+                return this.ClearDailyReportsIndexedDB();
+            }
+        ).then(
+            resultClear => {
+                // Revisamos si el result es el esperado.
+                if (!resultClear) throw 'ERROR_CLEAR_INDEXEDDB';
+
+                // Agregamos los usuarios al indexedDB
+                return this.addUsersIndexedDB(getUsers);
+            }
+        ).then(
+            resultAddUser => {
+                // Revisamos si el result es el esperado.
+                if (!resultAddUser) throw 'ERROR_ADD_USER_INDEXEDDB';
+
+                // Agregamos los usuarios al indexedDB
+                return this.addVoyagesIndexedDB(getVoyages);
+            }
+        ).then(
+            result => {
+                return true;
+            }
+        ).catch(
+            err => {
+                // Manejo el error
+                let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+
+                // Muestro notificación
+                this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+
+                console.error(msg);
+                console.dir(err);
+
+                // this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+                // Deshabilito el spinner de loading
+                this.loadingService.Close();
+                return false;
+            });
+    }
 
 
     // =================== USERS IndexedDB ====================================
@@ -1012,9 +1173,7 @@ export class DatabaseService {
 
         let cantidadQueFaltaEnviar: CantidadRestante = new CantidadRestante();
 
-        try { await this.Sync() } catch (error) { }
-
-        return Promise.resolve(true).then(
+        return await Promise.resolve(true).then(
             result => {
                 return this.db.voyages.toArray();
             }
@@ -1064,8 +1223,65 @@ export class DatabaseService {
         ).catch(
             err => {
                 let cantidadRestante = new CantidadRestante(99, 99, 99);
-                return cantidadRestante;
+                //return cantidadRestante;
+                throw 'Contact cristian, there is a problem updating the records to the server';
             }
         )
+    }
+
+    // emita la cantidad que falta que esta registrado en local.
+    public async EmitterCantOffline(): Promise<boolean>{
+
+        return await Promise.resolve(true).then(
+            result => {
+                return  this.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+            }
+        
+        ).then(
+            resultCantidadRestante => {
+
+                this.emitterCantOffline.emit(resultCantidadRestante);
+     
+            }
+        ).then(
+            result=>{
+                return true
+            }
+        ).catch(
+            err=>{
+                //return cantidadRestante;
+                throw 'Contact cristian, there is a problem updating the records to the server';
+            }
+        )
+    }
+
+    // esta funcion retornara la data del usuario que se tiene en local, no se tiene ninguna usuario en local retorna 0.
+    public async CheckWhatUserWeHaveInLocal() : Promise<number>{
+
+        let userIdOld =0;
+
+        return await Promise.resolve(true).then(
+            result => {
+                // Obtenemos todos los viajes.
+                return this.db.voyages.toArray()
+            }
+        ).then(
+            voyages => {
+                if(voyages && voyages.length){
+                    userIdOld = voyages[0].userId;
+                    
+                    return userIdOld;
+                } else {
+                    return 0;
+                }
+
+            }
+        ).catch(
+            err=>{
+                //return cantidadRestante;
+                throw 'Contact cristian, could not get the users local record.';
+            }
+        );
+
     }
 }

@@ -6,6 +6,21 @@
   display: flex;
   }
 }
+
+#clickSyncDataLocal {
+  &:hover{
+    color:green;
+    cursor: pointer;
+  }
+  transition:  color 0.5;
+
+}
+.icon-refresh{
+  display: inline-block;
+}
+.refreshing{
+  animation: animateRefresh 2s infinite;
+}
 /* 
 .menu-hidden-big {
   display: flex;
@@ -31,5 +46,19 @@
   }
   100% {
     color: #001F3F;
+  }
+}
+
+
+@keyframes animateRefresh {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);  
+  }
+  100% {
+    -webkit-transform: rotate(356.4deg);
+    -moz-transform: rotate(356.4deg);
+    transform: rotate(356.4deg);  
   }
 }

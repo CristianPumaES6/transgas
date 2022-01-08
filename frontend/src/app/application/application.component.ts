@@ -50,6 +50,12 @@ export class ApplicationComponent implements OnInit {
   public getUsers: User[] = [];
   public version: string = '';
 
+  // estas variables nos permite saber cuantos registros tenemos en offline
+  public cantidadRestanteOffline : CantidadRestante= new CantidadRestante();
+
+  // Refresh
+  public isRefreshingData : boolean = false;
+
 
   constructor(
     private router: Router,
@@ -60,6 +66,7 @@ export class ApplicationComponent implements OnInit {
     readonly onlineOfflineService: OnlineOfflineService,
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
+    private _loadingService: LoadingService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -72,6 +79,17 @@ export class ApplicationComponent implements OnInit {
 
       }
     );
+
+
+    this.databaseService.emitterCantOffline.subscribe(
+      (cantidadRestanteOffline:CantidadRestante) => {
+        console.log('this.databaseService.emitterCantOffline.subscribe()');
+        
+        this.cantidadRestanteOffline = cantidadRestanteOffline;
+      }
+    )
+
+    
 
   }
 
@@ -88,6 +106,8 @@ export class ApplicationComponent implements OnInit {
 
     // Configuracion de stylos por jqery
     this.ConfigStyleFromJquery();
+    
+    this.databaseService.EmitterCantOffline();
   }
 
   // OnAsideLoaded => Funcion que inicializa la funcion aside
@@ -110,25 +130,117 @@ export class ApplicationComponent implements OnInit {
   }
 
   // Funcion para cerrar la session de usuario.
-  public logout() {
-    Promise.resolve(true).then(
+  public async ClickLogout() {
+    
+    this._loadingService.Open();
+
+    let datosRestanteSync:CantidadRestante = {};
+    await Promise.resolve(true).then(
+      result => {
+        return this.databaseService.Sync();
+      }
+    ).then(
        result => {
-        return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+        
+         if(!result) throw 'ERROR SYNC SERVER'; 
+         
+         return this.databaseService.EmitterReloadData();
+        }
+      ).then(
+         result => {
+
+          if(!result){
+            throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+          }
+
+          return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
        }
     ).then(
-      (datosFaltantas:CantidadRestante) => {
-
-        if(datosFaltantas.voyage || datosFaltantas.port || datosFaltantas.report ){
+      (datosFaltantes:CantidadRestante) => {
+        // deben de ser 0 todos para que entre esta funcion
+        if(!datosFaltantes.voyage && !datosFaltantes.port && !datosFaltantes.report ){
+          datosRestanteSync = datosFaltantes;
+          return this.authService.Logout();
+        }
+        else {
           
-         this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS') + '\n  V:'+datosFaltantas.voyage+'   P:'+datosFaltantas.port+'  R:'+datosFaltantas.report);
-
-        } else {
-          this.authService.Logout();
-          this.loggedUser = this.authService.GetLoggedUser();
-          this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+          return false
         }
       }
-    )
+    ).then(
+      result => {
+        if(result){ 
+
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+      
+      } else { 
+        this.loggedUser = this.authService.GetLoggedUser(); 
+        this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS'));
+      }
+      this._loadingService.Close();
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this._loadingService.Close();
+      }
+    );
+  }
+
+  // Cuando le damos click a este boton intenta refrescarse la cpnexion
+  public async ClickSyncDataLocal(){
+    if(this.isOnline){
+      
+      this.isRefreshingData = true;
+      this._loadingService.Open();
+      await Promise.resolve(true).then(
+        result => {
+          return this.databaseService.Sync();
+          
+        }
+      ).then(
+        result => {
+          this._loadingService.Close();
+          return this.databaseService.EmitterReloadData();
+         }
+       ).then(
+          result => {
+ 
+           if(!result){
+             throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+           }
+ 
+          this.isRefreshingData = false;
+          return this.databaseService.EmitterCantOffline();
+
+        }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+  
+          console.error(msg);
+          console.dir(err);
+  
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), msg);
+            
+          this.isRefreshingData = false;
+          // Deshabilito el spinner de loading
+          this._loadingService.Close();
+        }
+      );
+    } else {
+      
+      this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), '');
+       
+    }
   }
 
   public GetRoutelNavLink() {

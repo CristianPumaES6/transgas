@@ -6,6 +6,7 @@ import { NotificationsService } from 'angular2-notifications';
 
 // Importamos los servicio del webSocket
 import { WebSocketService } from './../services/web-socket.service';
+import { CantidadRestante } from '../models/loggedUser';
 
 
 declare const window: any;
@@ -16,10 +17,7 @@ export class OnlineOfflineService {
   private isOnline: boolean = false;
 
   // Este emit servira para saver si se cambio el estado de la conexion.
-  emitterIsOnline = new EventEmitter<boolean>();
-
-  // Este emit sirve para avisar si se debe volver a cargar la data hacer reload. refresh etc.
-  emitterReloadData = new EventEmitter();
+  public emitterIsOnline = new EventEmitter<boolean>();
 
   // Agregamos al servidor un evento de escucha
   constructor(
@@ -57,38 +55,18 @@ export class OnlineOfflineService {
         if (!this.isOnline) {
           this.isOnline = true;
 
-          // Luego de la sincronizacion, cambiamos el estado.
-    /* 
-          this.databaseService.Sync().then(
-            result => {
+          // Solo cmabiamos el estado.
+          this.UpdateOnlineStatus();
 
-              // Luego de sincronizar la bd hacemos un update al estado de la conexion
-              this.UpdateOnlineStatus();
-
-
-              // Emitir reloadData, esto sirve para saber si debemos de volver a cargar la data.
-              this.emitterReloadData.emit();
-
-              // Emitimos una notificacion.
-              this.notificationsService.warn('Online', '');
-
-          });
-    */
-
-            // Solo cmabiamos el estado.
-              this.UpdateOnlineStatus();
-              // Emitir reloadData, esto sirve para saber si debemos de volver a cargar la data.
-              this.emitterReloadData.emit();
-
-              // Emitimos una notificacion.
-              this.notificationsService.warn('Online', '');
+          // Emitimos una notificacion.
+          this.notificationsService.warn('Online', '');
         }
       }
     );
 
     this.webSocketService.listen('connection2').subscribe(
       (data) => {
-       // alert('connection2')
+        // alert('connection2')
 
         console.log('registrar el usuario de ocneccion.')
 
