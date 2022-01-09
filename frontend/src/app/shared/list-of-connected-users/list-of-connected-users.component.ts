@@ -171,9 +171,74 @@ export class ListOfConnectedUsersComponent implements OnInit {
   public zoomOut() {
     if (this.zoom > this.options.minZoom) this.zoom--
   }
+  public ClickEmitConection() {
+    if (this.onlineOfflineService.GetStatusOnline()) {
 
+      this.loadingService.Open();
+      Promise.resolve(true).then(
+        result => {
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.EmitConnect().pipe().toPromise();
+        }
+      ).then(
+        result => {
+
+          this.loadingService.Close();
+
+
+        }
+      ).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+        });
+
+    }
+  }
+
+  public ClickRefreshLoad() {
+    if (this.onlineOfflineService.GetStatusOnline()) {
+
+      this.loadingService.Open();
+      Promise.resolve(true).then(
+        result => {
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.GetLoggedUsers().pipe().toPromise();
+
+        }
+      ).then(
+        result => {
+
+          this.loadingService.Close();
+
+        }
+      ).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+        });
+    }
+  }
   // Cuando queremos emitir una conexion lo emitimos desde aqui.
-  public ClickEmitConecion() {
+  public ClickEmitAndRefreshConecion() {
     if (this.onlineOfflineService.GetStatusOnline()) {
 
       this.loadingService.Open();
@@ -197,7 +262,7 @@ export class ListOfConnectedUsersComponent implements OnInit {
         }
       ).catch(
         err => {
-          
+
           // Manejo el error
           let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
