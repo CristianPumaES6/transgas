@@ -136,11 +136,9 @@ export class ListOfConnectedUsersComponent implements OnInit {
   // GetUsers: Cargo todos los Users para el listado de Users.
   private EmitConnect(): Observable<boolean> {
     console.log('EmitConnect()');
-
     // Consulto la lista de paises para cargar combo
     return this.authService.EmitConnect().pipe(map(
       (resultEmitConnect: boolean) => {
-
 
         // Segun el resultado retornamos la respuesta.
         return resultEmitConnect;
@@ -178,6 +176,7 @@ export class ListOfConnectedUsersComponent implements OnInit {
   public ClickEmitConecion() {
     if (this.onlineOfflineService.GetStatusOnline()) {
 
+      this.loadingService.Open();
       Promise.resolve(true).then(
         result => {
           // Traigo a todos los User y lo instancio en el obj.
@@ -198,7 +197,7 @@ export class ListOfConnectedUsersComponent implements OnInit {
         }
       ).catch(
         err => {
-
+          
           // Manejo el error
           let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
