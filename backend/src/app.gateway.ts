@@ -1,16 +1,16 @@
 // Importamos la libreria Logger, sirve para imprimir log en consola.
 import { Logger } from '@nestjs/common';
 import {
-  WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect,
+  WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody,
 } from '@nestjs/websockets';
+import { GetDate } from './assets/moment.assets';
 
 
 import { URL_Server } from './config/server.config';
-
+import { LoggedUser } from './models/loggedUser';
 // Agregamos una decorator a la class para saber que sera una clase de WebSocket.
 @WebSocketGateway(URL_Server.puertoSocket, { transport: ['websocket'] })
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
-
 
 
   // Instanciamos el webSocket
@@ -25,15 +25,105 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   public handleConnection(client) {
 
     // Lo mostramos en consola que un usuario se a conectado.
-    this.logger.log('New client connected');
+    this.logger.log('New client connected' + client.id);
 
     // Emitimos al cliente un mensaje.
-    client.emit('connection', 'connected');
+    client.emit('isOnlineConection');
   }
 
   // Detectamos si un usuario se a desconectado.
   public handleDisconnect(client) {
     // Mostramos en consola que un usuario se a desconectado.
-    this.logger.log('Client disconnected');
+    this.logger.log('Client disconnected' + client.id);
+
+
+  }
+
+
+  @SubscribeMessage('EmitConnect')
+  handleEvent(@MessageBody() data: string): LoggedUser[] {
+    
+    this.logger.log('Socket updateConectionUser');
+    this.logger.log(JSON.stringify(data));
+
+    let IsUserLogeatedExit: LoggedUser = new LoggedUser();
+    this.IsUserLogeatedExit(IsUserLogeatedExit);
+
+    return this.GetLoggedUsers();
+  }
+
+
+
+
+  public loggedUsers: LoggedUser[] = [];
+
+
+
+  // Verifica si el usuario logeado existe,
+  // Si exite lo actualiza
+  // Si no exite lo registra
+  public IsUserLogeatedExit(loggedUser: LoggedUser): boolean {
+    // Verificamos si existe el usuario
+    let isUserExit = this.loggedUsers.find(
+      (logeate) => {
+        return logeate.token === loggedUser.token
+      });
+
+    // Este usuario existe?
+    if (isUserExit) {
+      this.UpdateUserLogeated(loggedUser);
+
+      return false;
+    } else {
+
+      // Si no existe 
+      this.AddUserLogeated(loggedUser);
+
+      return true;
+    }
+  }
+
+  // Agregamos a los usuarios logeados.
+  private AddUserLogeated(loggedUser: LoggedUser): boolean {
+
+    loggedUser.firstConnection = GetDate();
+    loggedUser.lastConnection = GetDate();
+    loggedUser.isActive = true;
+    this.loggedUsers.push(loggedUser);
+
+    return true;
+
+  }
+
+  // Actualizamos los usuarios logeados.
+  private UpdateUserLogeated(loggedUser: LoggedUser): boolean {
+
+
+    this.loggedUsers.forEach(logged => {
+      // Verificamos que el token sea el mismo para actualizar su longitud y latitud.
+      if (logged.token === loggedUser.token) {
+
+        // Actualizamos la ultima hora de conexion.
+        logged.lastConnection = GetDate();
+
+        // si la latitud y la longitud es la misma no actualizo.
+        if (loggedUser.lat == 0 && loggedUser.lng == 0) {
+        } else {
+          // actualizamos la latiud y la longitud.
+          logged.lat = loggedUser.lat;
+          logged.lat = loggedUser.lng;
+        }
+
+        logged.isActive = true;
+      }
+    });
+
+    // Tenemos que actualizare 
+    return true;
+  }
+
+  // Obtenemos los usuarios que estan logeados.
+  public GetLoggedUsers(): LoggedUser[] {
+    return this.loggedUsers;
   }
 }
