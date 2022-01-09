@@ -231,7 +231,7 @@ export class AuthService {
     let headers: HttpHeaders = new HttpHeaders(
       {
         'Content-Type': 'application/json',
-        //'Authorization': 'Bearer ' + this.userService.GetToken(),
+        'Authorization': 'Bearer ' + this.userService.GetToken(),
       });
     let body: string = '';
     let options: any = { headers: headers, responseType: 'json' };
@@ -253,7 +253,7 @@ export class AuthService {
   }
 
   // Este servicio registra el logeo de un usuario.
-  RegisterUserConnection(loggedUser: LoggedUser): Observable<boolean> {
+  public RegisterUserConnection(loggedUser: LoggedUser): Observable<boolean> {
 
     // Armo el request
     let url: string = EnvConfig.API + '/loggedUsers';
