@@ -1,5 +1,6 @@
-export class LoggedUser {
 
+export class LoggedUser {
+    public clientId:string; // id Socket
     public token:string;
     public userName:string;
     public firstConnection: string;
@@ -9,6 +10,7 @@ export class LoggedUser {
     public isActive:boolean;
 
     constructor(
+        clientId?:string,
         token?:string,
         userName?:string,
         firstConnection?:string,
@@ -17,6 +19,7 @@ export class LoggedUser {
         lng?:number,
         isActive?:boolean
     ){
+        this.clientId = clientId || '';
         this.token = token || '';
         this.userName = userName || '';
         this.firstConnection = firstConnection || '';

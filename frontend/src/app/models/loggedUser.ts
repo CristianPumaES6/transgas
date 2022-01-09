@@ -2,6 +2,7 @@
 export class LoggedUser {
 
     constructor(
+        public clientId?:string,// id del socket
         public token?:string,
         public userName?:string,
         public firstConnection?: string,
@@ -10,6 +11,7 @@ export class LoggedUser {
         public lng?:number,
         public isActive?:boolean,
     ){
+        this.clientId = clientId || '';
         this.token = token || '';
         this.userName = userName || '';
         this.firstConnection = firstConnection || '';
