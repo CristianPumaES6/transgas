@@ -191,7 +191,7 @@ export class AppController {
   // Emitimos una solicitud de que usuarios estan conectados
   @Post('emitConnect')
   async EmitConnect(): Promise<any> {
-    console.log("@Post('emitConnect')");
+    console.log("EmitConnect()");
     
     return await DummyPromise().then(
       (resultDummy: Boolean) => {
