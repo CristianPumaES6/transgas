@@ -1,13 +1,17 @@
 // Importamos la libreria Logger, sirve para imprimir log en consola.
 import { Logger } from '@nestjs/common';
 import {
-  WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody,
+  WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody, ConnectedSocket,
 } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
 import { GetDate } from './assets/moment.assets';
 
 
 import { URL_Server } from './config/server.config';
 import { LoggedUser } from './models/loggedUser';
+import { SocketEmitModel } from './models/socketEmit';
+
+
 // Agregamos una decorator a la class para saber que sera una clase de WebSocket.
 @WebSocketGateway(URL_Server.puertoSocket, { transport: ['websocket'] })
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -21,12 +25,21 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private logger = new Logger('AppGateway');
 
 
-  // Detectamos una conexion.
+  // Detectamos una conexion
+  // si detectamos una conexion lo reistramos
   public handleConnection(client) {
 
     // Lo mostramos en consola que un usuario se a conectado.
     this.logger.log('New client connected' + client.id);
+    if (client && client.id) {
 
+      
+      let IsUserLogeatedExit: LoggedUser = new LoggedUser();
+      IsUserLogeatedExit.clientId = client.id;
+
+      this.IsUserLogeatedExit(IsUserLogeatedExit);
+
+    }
     // Emitimos al cliente un mensaje.
     client.emit('isOnlineConection');
   }
@@ -36,19 +49,44 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Mostramos en consola que un usuario se a desconectado.
     this.logger.log('Client disconnected' + client.id);
 
-
+    // Si existe el id lo buscamos.
+    if(client && client.id ){
+      // Busmos el id socket
+      let userDisconnect = this.loggedUsers.find(
+        (logeate) => {
+          return( logeate.clientId === client.id && logeate.isActive == true)
+        });
+      
+        // Si existe actualizamos la ultima hora conectado.
+        if (userDisconnect) {
+          userDisconnect.lastConnection = GetDate();
+          userDisconnect.isActive = false;
+          this.UpdateUserLogeated(userDisconnect);
+        } 
+    }
   }
 
 
   @SubscribeMessage('EmitConnect')
-  handleEvent(@MessageBody() data: string): LoggedUser[] {
-    
-    this.logger.log('Socket updateConectionUser');
-    this.logger.log(JSON.stringify(data));
+  handleEvent(
+    @MessageBody() socketEmitModel: SocketEmitModel,
+    @ConnectedSocket() client: Socket
+  ): LoggedUser[] {
 
-    let IsUserLogeatedExit: LoggedUser = new LoggedUser();
-    this.IsUserLogeatedExit(IsUserLogeatedExit);
+    if (socketEmitModel && socketEmitModel.action == 'REGISTER_CONECTION_USER') {
 
+      let IsUserLogeatedExit: LoggedUser = socketEmitModel.data;
+      IsUserLogeatedExit.clientId = client.id;
+
+      this.IsUserLogeatedExit(IsUserLogeatedExit);
+
+    } else {
+      this.logger.log('No entro revisar.');
+      this.logger.log('Socket updateConectionUser');
+      this.logger.log(JSON.stringify(socketEmitModel));
+    }
+
+    // enviamos a todos los usuarios logeados.
     return this.GetLoggedUsers();
   }
 
@@ -63,24 +101,28 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Si exite lo actualiza
   // Si no exite lo registra
   public IsUserLogeatedExit(loggedUser: LoggedUser): boolean {
-    // Verificamos si existe el usuario
-    let isUserExit = this.loggedUsers.find(
-      (logeate) => {
-        return logeate.token === loggedUser.token
-      });
-
-    // Este usuario existe?
+ 
+   // Busmos el id socket
+   let isUserExit = this.loggedUsers.find(
+    (logeate) => {
+      return( logeate.clientId === loggedUser.clientId)
+    });
+  
+    // Si existe actualizamos la ultima hora conectado.
     if (isUserExit) {
-      this.UpdateUserLogeated(loggedUser);
+      isUserExit.userName = loggedUser.userName  || isUserExit.userName;
+      isUserExit.lastConnection = GetDate();
+      isUserExit.isActive = true;
+      
+      
+      this.UpdateUserLogeated(isUserExit);
 
-      return false;
     } else {
-
       // Si no existe 
       this.AddUserLogeated(loggedUser);
-
-      return true;
     }
+
+    return true;
   }
 
   // Agregamos a los usuarios logeados.
@@ -101,10 +143,12 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.loggedUsers.forEach(logged => {
       // Verificamos que el token sea el mismo para actualizar su longitud y latitud.
-      if (logged.token === loggedUser.token) {
+      if (logged.clientId === loggedUser.clientId) {
 
+        logged.userName = loggedUser.userName;
         // Actualizamos la ultima hora de conexion.
-        logged.lastConnection = GetDate();
+        logged.lastConnection = loggedUser.lastConnection;
+        logged.isActive = loggedUser.isActive;
 
         // si la latitud y la longitud es la misma no actualizo.
         if (loggedUser.lat == 0 && loggedUser.lng == 0) {
@@ -113,8 +157,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
           logged.lat = loggedUser.lat;
           logged.lat = loggedUser.lng;
         }
-
-        logged.isActive = true;
       }
     });
 
