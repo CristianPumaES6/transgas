@@ -209,14 +209,15 @@ export class DatabaseService {
             let resultCreate: Voyage;
             resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
 
-
             // Actualizamos el syncStatus a none.
             await this.db.voyages.update(iVoyage.id, { id: resultCreate.id, voyageNumber: resultCreate.voyageNumber, syncStatus: 'none' });
 
 
             // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos QUE pertenecen al viaje
             let portsIndexedDB: Port[];
+            
             portsIndexedDB = await this.db.ports.toArray()
+
             // Filtramos los reportes que tienen ese puertoId
             portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == iVoyage.id);
             // recorremos y actualizamos uno por uno
@@ -262,7 +263,7 @@ export class DatabaseService {
 
     public async SyncPorts(usersMappings: Mapping[], voyagesMappings: Mapping[]): Promise<Mapping[]> {
 
-        console.log('SyncVoyages()');
+        console.log('SyncPorts()');
 
         // POrt Mappings
         let savePortsMappings: Mapping[] = [];
@@ -341,7 +342,7 @@ export class DatabaseService {
     }
     public async SyncDailyReports(usersMappings: Mapping[], portsMappings: Mapping[]): Promise<Mapping[]> {
 
-        console.log('SyncVoyages()');
+        console.log('SyncDailyReports()');
 
         // DailyReports Mappings
         let saveDailyReportsMappings: Mapping[] = [];
