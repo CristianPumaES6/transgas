@@ -238,7 +238,7 @@ export class ListOfConnectedUsersComponent implements OnInit {
     }
   }
   // Cuando queremos emitir una conexion lo emitimos desde aqui.
-  public ClickEmitAndRefreshConecion() {
+  public ClickEmitAndRefreshConection() {
     if (this.onlineOfflineService.GetStatusOnline()) {
 
       this.loadingService.Open();
