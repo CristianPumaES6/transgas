@@ -10,6 +10,7 @@ import { CantidadRestante, LoggedUser } from '../models/loggedUser';
 import { AuthService } from './auth.service';
 import { User } from '../models/user';
 import { SocketEmitModel } from '../models/socketEmit';
+import { LoadingService } from './loading.service';
 
 
 declare const window: any;
@@ -28,6 +29,7 @@ export class OnlineOfflineService {
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
     private webSocketService: WebSocketService,
+    private _LoadingService: LoadingService
   ) {
     console.log('constructor() Online Offlinea Service');
 
@@ -62,11 +64,11 @@ export class OnlineOfflineService {
           // Solo cmabiamos el estado.
           this.UpdateOnlineStatus();
 
-          // Verificamos si ya se registro.
+          // Verificamos si ya se registro, solo una vez se registra
           if (!isOnlyOneRegister) {
             this.RegisterLoggerBySocket();
             // Lo ponemos para que no se vuelva a registrar.
-            isOnlyOneRegister =true;
+            isOnlyOneRegister = true;
           }
 
           // Emitimos una notificacion.
@@ -75,6 +77,7 @@ export class OnlineOfflineService {
       }
     );
 
+    let isSyncing:boolean=false;
     // Si escucha algun emitConecction desde el server
     this.webSocketService.listen('EmitConnect').subscribe(
       (dataSocketEmitModel: SocketEmitModel) => {
@@ -86,6 +89,38 @@ export class OnlineOfflineService {
         if (dataSocketEmitModel && dataSocketEmitModel.action == 'WHO_ARE_CONNECTED') {
 
           this.RegisterLoggerBySocket()
+
+        } else if (dataSocketEmitModel && dataSocketEmitModel.action == 'SYNC_DATA_BY_USER') {
+          
+          // Verificamos que no este cargando
+          if(!isSyncing){
+
+            // Haiblitamos e indicamos que estamos sincronizando
+            isSyncing= true;
+
+            Promise.resolve(true).then(
+              result => {
+                // Sincronizamos la data desde un emit
+                return this.SyncDataForEmit();
+              }
+            ).then(
+              isSyncSucces => {
+                if(!isSyncSucces) throw 'ERROR_SYNC_DATA_FOR_EMIT'
+                
+                isSyncing = false;
+              }
+            ).catch(
+              err => {
+                isSyncing = false;
+        
+                console.dir(err);
+        
+                this.notificationsService.error('ERROR', '');
+                // Deshabilito el spinner de loading
+                this._LoadingService.Close();
+              }
+            );
+          }
 
         } else {
 
@@ -137,9 +172,75 @@ export class OnlineOfflineService {
   }
 
 
+  // Cuando que remos que un usuario sincronice su data local seleccionamos esto.
+  public SyncDataByUser(loggedUser: LoggedUser) {
+    // Enviamos nuestra conexion.
+    let newConection: LoggedUser = new LoggedUser();
+    let useRLogger: User = this._AuthService.GetLoggedUser();
+
+    if (!useRLogger) throw 'Welcome to login'
+    newConection.clientId = loggedUser.clientId;
+    newConection.userName = useRLogger.name;
+    newConection.isActive = true;
+
+    // emitimos un REGISTER_CONECTION_USER
+    this.webSocketService.emit('EmitConnect', {
+      action: 'SYNC_DATA_BY_USER',
+      data: newConection
+    });
+
+  }
   // Retorna el estado de la conexion con el servidor.
   public GetStatusOnline(): boolean {
     return this.isOnline;
   }
 
+
+  // Sincronizar la data desde un emit.
+  public async SyncDataForEmit():Promise<boolean> {
+
+    this._LoadingService.Open();
+    let datosRestanteSync: CantidadRestante = {};
+
+    return await Promise.resolve(true).then(
+      result => {
+        // Sincronizamos la data del servidor.
+        return this.databaseService.Sync();
+      }
+    ).then(
+      result => {
+
+        if (!result) throw 'ERROR SYNC SERVER';
+        // Emitimos el reload
+        return this.databaseService.EmitterReloadData();
+      }
+    ).then(
+      result => {
+
+        if (!result) {
+          throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+        }
+        // Verificamos que cantidad hay
+        return this.databaseService.EmitterCantOffline();
+      }
+    ).then(
+      (result: boolean) => {
+
+        this._LoadingService.Close();
+
+        return true;
+      }
+    ).catch(
+      err => {
+
+        console.dir(err);
+
+        this.notificationsService.error('ERROR', '');
+        // Deshabilito el spinner de loading
+        this._LoadingService.Close();
+        return false;
+      }
+    );
+
+  }
 }

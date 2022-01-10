@@ -1,3 +1,4 @@
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
@@ -237,6 +238,17 @@ export class ListOfConnectedUsersComponent implements OnInit {
         });
     }
   }
+
+  public ClickSyncDataByUser(loggedUser:LoggedUser) {
+    
+    if (this.onlineOfflineService.GetStatusOnline()) {
+      this.onlineOfflineService.SyncDataByUser(loggedUser);
+    }
+
+  }
+
+
+
   // Cuando queremos emitir una conexion lo emitimos desde aqui.
   public ClickEmitAndRefreshConection() {
     if (this.onlineOfflineService.GetStatusOnline()) {
