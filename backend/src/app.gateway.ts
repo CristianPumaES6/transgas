@@ -87,7 +87,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     // enviamos a todos los usuarios logeados.
-    return this.GetLoggedUsers();
+    return [];
   }
 
 
