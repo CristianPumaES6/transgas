@@ -80,7 +80,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       this.IsUserLogeatedExit(IsUserLogeatedExit);
 
-    } else {
+    } else if(socketEmitModel && socketEmitModel.action == 'SYNC_DATA_BY_USER' ){
+
+      let userLogeate: LoggedUser = socketEmitModel.data;
+      // LA action sera la misma SYNC_DATA_BY_USER
+      this.wss.to(userLogeate.clientId).emit('EmitConnect', socketEmitModel); // Que este desactivado.
+   
+      
+    }else {
       this.logger.log('No entro revisar.');
       this.logger.log('Socket updateConectionUser');
       this.logger.log(JSON.stringify(socketEmitModel));
