@@ -48,6 +48,7 @@ export class OnlineOfflineService {
   // Configuracion de escucha de websocket.
   private ConfigWebSocketListening() {
 
+    let isOnlyOneRegister = false;
     // La aplicacion estara a la escucha de alguna connection.
     // Si escucha una nueva conexion enviara un update de su estado.
     this.webSocketService.listen('isOnlineConection').subscribe(
@@ -61,6 +62,13 @@ export class OnlineOfflineService {
           // Solo cmabiamos el estado.
           this.UpdateOnlineStatus();
 
+          // Verificamos si ya se registro.
+          if (!isOnlyOneRegister) {
+            this.RegisterLoggerBySocket();
+            // Lo ponemos para que no se vuelva a registrar.
+            isOnlyOneRegister =true;
+          }
+
           // Emitimos una notificacion.
           this.notificationsService.warn('Online', '');
         }
@@ -72,24 +80,12 @@ export class OnlineOfflineService {
       (dataSocketEmitModel: SocketEmitModel) => {
 
         // Revisamos que se desea
-        
-        
+
+
         //aqui pide una solicitud de quienes estan ocnectados.
         if (dataSocketEmitModel && dataSocketEmitModel.action == 'WHO_ARE_CONNECTED') {
 
-          // Enviamos nuestra conexion.
-          let newConection: LoggedUser = new LoggedUser();
-          let useRLogger: User = this._AuthService.GetLoggedUser();
-
-          newConection.userName = useRLogger.name;
-          newConection.isActive = true;
-
-          // emitimos un REGISTER_CONECTION_USER
-          this.webSocketService.emit('EmitConnect', {
-            action: 'REGISTER_CONECTION_USER',
-            data: newConection
-          });
-
+          this.RegisterLoggerBySocket()
 
         } else {
 
@@ -120,6 +116,26 @@ export class OnlineOfflineService {
     );
 
   }
+
+  public RegisterLoggerBySocket() {
+
+    // Enviamos nuestra conexion.
+    let newConection: LoggedUser = new LoggedUser();
+    let useRLogger: User = this._AuthService.GetLoggedUser();
+
+    if (!useRLogger) throw 'Welcome to login'
+
+    newConection.userName = useRLogger.name;
+    newConection.isActive = true;
+
+    // emitimos un REGISTER_CONECTION_USER
+    this.webSocketService.emit('EmitConnect', {
+      action: 'REGISTER_CONECTION_USER',
+      data: newConection
+    });
+
+  }
+
 
   // Retorna el estado de la conexion con el servidor.
   public GetStatusOnline(): boolean {
