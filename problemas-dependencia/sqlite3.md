@@ -1,10 +1,10 @@
 ### SQLITE
 
 -- Primero probemos con sqlite3@5.0.0
-npm install --save -g node-pre-gyp install
+npm install --save -g node-pre-gyp  --force
 
 -- Install sqlite3 version 5
-npm install sqlite3@5.0.0
+npm install sqlite3@5.0.0 --force
 
 
 
