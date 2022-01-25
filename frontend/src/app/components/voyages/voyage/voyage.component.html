@@ -246,7 +246,8 @@
                 <div class="col row no-gutters">
                   <mat-form-field>
                     <input matInput type="number"
-                      placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}} (MT)"
+                      placeholder="{{(selectUser.isConsumptionIFO?'BUNKERING_IFO': selectUser.isConsumptionVLSFO ? 'BUNKERING_VLSFO'
+                      : 'BUNKERING_LSFO') | translateMessage:translateCategory}} (MT)"
                       [(ngModel)]="selectDailyReport.bunkeringIfo">
                   </mat-form-field>
                 </div>
