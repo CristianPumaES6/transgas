@@ -216,20 +216,20 @@ export class DatabaseService {
             let resultCreate: Voyage;
             resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
 
-             // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos que pertenecen al viaje
-             let portsIndexedDB: Port[];
-             portsIndexedDB = await this.db.ports.toArray()
-             // Filtramos los reportes que tienen ese puertoId
-             portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == iVoyage.id);
-             // recorremos y actualizamos uno por uno
-             for await (let iPortIndexedDB of portsIndexedDB) {
-                 // Actualizamos el syncStatus a none.
-                 // Actualizo el numero de puerto por que puede cambiar.
-                 // Actualizo el id del viaje por que puede cambiar.
-                 await this.db.ports.update(iPortIndexedDB.id,
-                     { voyageId: resultCreate.id }
-                 );
-             }
+            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos que pertenecen al viaje
+            let portsIndexedDB: Port[];
+            portsIndexedDB = await this.db.ports.toArray()
+            // Filtramos los reportes que tienen ese puertoId
+            portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == iVoyage.id);
+            // recorremos y actualizamos uno por uno
+            for await (let iPortIndexedDB of portsIndexedDB) {
+                // Actualizamos el syncStatus a none.
+                // Actualizo el numero de puerto por que puede cambiar.
+                // Actualizo el id del viaje por que puede cambiar.
+                await this.db.ports.update(iPortIndexedDB.id,
+                    { voyageId: resultCreate.id }
+                );
+            }
 
             // Mapping user
             saveVoyageMappings.push(
