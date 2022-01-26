@@ -323,7 +323,9 @@ export const voyage: any = {
     TOTAL_MGO: 'Total MGO',
     NO_BUNKERING: 'No bunkering',
     DELETE_REPORT: 'Delete Report',
-    EDIT_REPORT: 'Edit Report'
+    EDIT_REPORT: 'Edit Report',
+    PLACEHOLDER_BEFOURT :'Type or select the wind befourt.',
+    CHECK_BEFOURT: 'Check befourt',
 }
 
 export const dashboard: any = {
