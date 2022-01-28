@@ -30,6 +30,7 @@ import { DatabaseService } from '../services/database.service';
 import { User } from '../models/user';
 import { EnvConfig } from '../config/env.config';
 import { CantidadRestante } from '../models/loggedUser';
+import { initDetecteInactive } from 'src/assets/detect-inactive/detecte-inactive.assets';
 
 @Component({
   selector: 'app-application',
@@ -94,8 +95,11 @@ export class ApplicationComponent implements OnInit {
   }
 
 
+  // Este componente solo se ejecuta 1 vez ya que es un compoenente padre.
   // Al iniciar este componente se ejecuta lo siguiente.
   ngOnInit(): void {
+    
+
     console.log('ngOnInit() application');
 
     this.version = EnvConfig.VERSION;
@@ -108,6 +112,9 @@ export class ApplicationComponent implements OnInit {
     this.ConfigStyleFromJquery();
     
     this.databaseService.EmitterCantOffline();
+
+    // INICIAMOS EL DETECTOR DE INACTIVIDAD.
+    initDetecteInactive();
   }
 
   // OnAsideLoaded => Funcion que inicializa la funcion aside
