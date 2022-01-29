@@ -30,7 +30,7 @@ import { DatabaseService } from '../services/database.service';
 import { User } from '../models/user';
 import { EnvConfig } from '../config/env.config';
 import { CantidadRestante } from '../models/loggedUser';
-import { initDetecteInactive } from 'src/assets/detect-inactive/detecte-inactive.assets';
+import { DetecteInactiveUserService } from '../services/detecte-inactive-user.service';
 
 @Component({
   selector: 'app-application',
@@ -68,6 +68,7 @@ export class ApplicationComponent implements OnInit {
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
     private _loadingService: LoadingService,
+    private _DetecteInactiveUserService:DetecteInactiveUserService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -114,7 +115,7 @@ export class ApplicationComponent implements OnInit {
     this.databaseService.EmitterCantOffline();
 
     // INICIAMOS EL DETECTOR DE INACTIVIDAD.
-    initDetecteInactive();
+   // this._DetecteInactiveUserService.Initialize();
   }
 
   // OnAsideLoaded => Funcion que inicializa la funcion aside
