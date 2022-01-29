@@ -243,4 +243,47 @@ export class OnlineOfflineService {
     );
 
   }
+
+   // Sincronizar la data para la funcion de timer
+   public async SyncDataForTimeOut():Promise<boolean> {
+  
+    return await Promise.resolve(true).then(
+      result => {
+        // Sincronizamos la data del servidor.
+        return this.databaseService.Sync();
+      }
+    ).then(
+      result => {
+
+        if (!result) throw 'ERROR SYNC SERVER';
+        // Emitimos el reload
+        return this.databaseService.EmitterReloadData();
+      }
+    ).then(
+      result => {
+
+        if (!result) {
+          throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+        }
+        // Verificamos que cantidad hay
+        return this.databaseService.EmitterCantOffline();
+      }
+    ).then(
+      (result: boolean) => {
+
+
+        return true;
+      }
+    ).catch(
+      err => {
+
+        console.dir(err);
+
+        this.notificationsService.error('ERROR', '');
+
+        return false;
+      }
+    );
+
+  }
 }
