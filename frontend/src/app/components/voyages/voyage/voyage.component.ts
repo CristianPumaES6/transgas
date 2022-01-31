@@ -103,6 +103,7 @@ export class VoyageComponent implements OnInit {
 
   myControlFormSelectBefourt = new FormControl();
   optionsBefourt: string[] = [
+    '1','2','3','4','5','6',
     'N1', 'N2', 'N3', 'N4', 'N5', 'N6',
     'NE1', 'NE2', 'NE3', 'NE4', 'NE5', 'NE6',
     'E1', 'E2', 'E3', 'E4', 'E5', 'E6',
