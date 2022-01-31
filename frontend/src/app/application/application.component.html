@@ -49,11 +49,18 @@
               <i class="icon-edit-1"></i>
               {{'EDIT_PERFIL' | translateMessage:translateCategory}}
             </a> -->
+
+            
+            <ng-template [ngIf]="loggedUser.role === 'SUPPORT'">
+            <a (click)="ClickOpenListOfConnectedUsers()" class="dropdown-item" style="cursor: pointer;">
+              <i class="icon-punto-circulo"></i>
+              {{'LIST_OF_CONNECTED_USERS' | translateMessage:translateCategory}}
+            </a>
+            </ng-template>
             <a (click)="ClickLogout()" class="dropdown-item" style="cursor: pointer;">
               <i class="icon-logout-1"></i>
               {{'EXIT_PERFIL' | translateMessage:translateCategory}}
             </a>
-
           </div>
         </div>
       </div>

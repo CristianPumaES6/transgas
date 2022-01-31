@@ -30,6 +30,7 @@ import { DatabaseService } from '../services/database.service';
 import { User } from '../models/user';
 import { EnvConfig } from '../config/env.config';
 import { CantidadRestante } from '../models/loggedUser';
+import { DetecteInactiveUserService } from '../services/detecte-inactive-user.service';
 
 @Component({
   selector: 'app-application',
@@ -67,6 +68,7 @@ export class ApplicationComponent implements OnInit {
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
     private _loadingService: LoadingService,
+    private _DetecteInactiveUserService:DetecteInactiveUserService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -94,8 +96,11 @@ export class ApplicationComponent implements OnInit {
   }
 
 
+  // Este componente solo se ejecuta 1 vez ya que es un compoenente padre.
   // Al iniciar este componente se ejecuta lo siguiente.
   ngOnInit(): void {
+    
+
     console.log('ngOnInit() application');
 
     this.version = EnvConfig.VERSION;
@@ -108,6 +113,9 @@ export class ApplicationComponent implements OnInit {
     this.ConfigStyleFromJquery();
     
     this.databaseService.EmitterCantOffline();
+
+    // INICIAMOS EL DETECTOR DE INACTIVIDAD.
+   // this._DetecteInactiveUserService.Initialize();
   }
 
   // OnAsideLoaded => Funcion que inicializa la funcion aside
@@ -177,6 +185,28 @@ export class ApplicationComponent implements OnInit {
         this.loggedUser = this.authService.GetLoggedUser(); 
         this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS'));
       }
+      this._loadingService.Close();
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this._loadingService.Close();
+      }
+    );
+  }
+
+  public async ClickOpenListOfConnectedUsers(){
+    await Promise.resolve(true).then(
+      result => {
+        this.OnSelectNavLink("list-of-connected-users");
+
       this._loadingService.Close();
       }
     ).catch(
@@ -298,6 +328,10 @@ export class ApplicationComponent implements OnInit {
       case 'helps':
         this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
         break;
+
+      case 'list-of-connected-users':
+          this.router.navigate(['../application/users/who-are-connected'], { relativeTo: this.activatedRoute });
+          break;
 
       default:
         break;

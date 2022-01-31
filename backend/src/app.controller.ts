@@ -13,12 +13,14 @@ import { UsersService } from './components/users/users.service';
 import { DummyPromise } from './assets/promises.assets';
 import { LoggedUser } from './models/loggedUser';
 import { URL_Server } from './config/server.config';
+import { AppGateway } from './app.gateway';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly _AppGateway: AppGateway
   ) { }
 
   @Get('pruebas')
@@ -121,7 +123,7 @@ export class AppController {
       (resultDummy: Boolean) => {
 
 
-        return this.appService.IsUserLogeatedExit(loggedUser);
+        return this._AppGateway.IsUserLogeatedExit(loggedUser);
       }
     ).then(
       (results: boolean) => {
@@ -157,7 +159,7 @@ export class AppController {
 
     return await DummyPromise().then(
       result => {
-        return this.appService.GetLoggedUsers();
+        return this._AppGateway.GetLoggedUsers();
       }
     ).then(
       (resultLoggedUsers: LoggedUser[]) => {
@@ -189,7 +191,7 @@ export class AppController {
   // Emitimos una solicitud de que usuarios estan conectados
   @Post('emitConnect')
   async EmitConnect(): Promise<any> {
-    console.log("@Post('emitConnect')");
+    console.log("EmitConnect()");
     
     return await DummyPromise().then(
       (resultDummy: Boolean) => {

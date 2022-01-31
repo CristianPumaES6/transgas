@@ -1,27 +1,39 @@
 
+<button (click)="ClickEmitAndRefreshConection()">
+    Emit and Refresh
+</button>
+<button (click)="ClickRefreshLoad()">
+    Refrehs List
+</button>
+<button (click)="ClickEmitConection()">
+    Emitir Señal de conexion
+</button>
 <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
     <thead>
-      <tr>
+        <tr>
 
-        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-            index
-        </th>
-        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-            userName
-        </th>
-        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-            firstConnection
-        </th>
-        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-            lastConnection
-        </th>
-        <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-            Is Active
-        </th>
-       <th>
-           ubication
-       </th>
-      </tr>
+            <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                index
+            </th>
+            <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                userName
+            </th>
+            <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                firstConnection
+            </th>
+            <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                lastConnection
+            </th>
+            <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                Is Active
+            </th>
+            <th>
+                ubication
+            </th>
+            <th>
+                Sync Data
+            </th>
+        </tr>
     </thead>
     <tbody>
 
@@ -48,6 +60,12 @@
                         <mat-icon>?</mat-icon>
                     </button>
                 </td>
+                
+                <td class="p-1 color-title-table border text-center">
+                    <button mat-icon-button (click)="ClickSyncDataByUser(iLoggedUser)">
+                        <mat-icon class="icon-refresh"></mat-icon>
+                    </button>
+                </td>
 
             </tr>
         </ng-template>
@@ -59,14 +77,10 @@
 
 <ng-template [ngIf]="false">
 
-    <google-map width="750px"
-                height="450px"
-                [zoom]="zoom"
-                [center]="center"
-                [options]="options">
+    <google-map width="750px" height="450px" [zoom]="zoom" [center]="center" [options]="options">
 
         <map-marker [position]="marker.position"></map-marker>
-    
+
     </google-map>
 
 </ng-template>

@@ -13,6 +13,7 @@ export const aSide: any = {
 //
 export const application: any = {
     EDIT_PERFIL: 'Edit profile',
+    LIST_OF_CONNECTED_USERS: 'List of connected users',
     EXIT_PERFIL: 'Logout',
     CURRENT_STATUS: 'current status',
     STATUS_TRUE: 'Online',
@@ -29,6 +30,7 @@ export const application: any = {
     // Errores personalizados
     ERROR_GET_USERS: 'Could not get user data.',
     CANNOT_CLOSE_PENDING_REPORTS:'There are files stored locally, contact Cristian for help.'
+
 };
 
 // Cateogría para autenticacion
@@ -275,7 +277,8 @@ export const voyage: any = {
     MANEUVER: 'Maneuver',
     OTHER_ACT: 'Other act.',
     BUNKERING_IFO: 'Bunkering IFO',
-    BUNKERING_LSF: 'Bunkering LSFO',
+    BUNKERING_LSFO: 'Bunkering LSFO',
+    BUNKERING_VLSFO:'Bunkering VLSFO',
     BUNKERING_MGO: 'Bunkering MGO',
     BUNKERING: 'Bunkering',
     CONSUMPTION_MGO: 'Consumption MGO',
@@ -320,7 +323,9 @@ export const voyage: any = {
     TOTAL_MGO: 'Total MGO',
     NO_BUNKERING: 'No bunkering',
     DELETE_REPORT: 'Delete Report',
-    EDIT_REPORT: 'Edit Report'
+    EDIT_REPORT: 'Edit Report',
+    PLACEHOLDER_BEFOURT :'Type or select the wind befourt.',
+    CHECK_BEFOURT: 'Check befourt',
 }
 
 export const dashboard: any = {

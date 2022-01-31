@@ -245,8 +245,8 @@
                 [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
                 <div class="col row no-gutters">
                   <mat-form-field>
-                    <input matInput type="number"
-                      placeholder="{{'BUNKERING_IFO' | translateMessage:translateCategory}} (MT)"
+                    <input matInput type="number" placeholder="{{(selectUser.isConsumptionIFO?'BUNKERING_IFO': selectUser.isConsumptionVLSFO ? 'BUNKERING_VLSFO'
+                      : 'BUNKERING_LSFO') | translateMessage:translateCategory}} (MT)"
                       [(ngModel)]="selectDailyReport.bunkeringIfo">
                   </mat-form-field>
                 </div>
@@ -413,17 +413,31 @@
           <div class="row pl-2 pb-2">
 
             <div class="col">
+
+
+
+
+
               <mat-form-field>
                 <mat-label>{{'BEFOURT' | translateMessage:translateCategory}}</mat-label>
-                <mat-select [(ngModel)]="selectDailyReport.beaufour" name="beaufour">
-                  <mat-option value="S1">{{'S1' | translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="S2">{{'S2' | translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="S3">{{'S3' | translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="S4">{{'S4' | translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="S5">{{'S5' | translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="S6">{{'S6' | translateMessage:translateCategory}}</mat-option>
-                </mat-select>
+                <input type="text" placeholder="{{'PLACEHOLDER_BEFOURT' | translateMessage:translateCategory}}"
+                  aria-label="text" matInput [formControl]="myControlFormSelectBefourt" [matAutocomplete]="auto"
+                  [value]="selectDailyReport.beaufour">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of filteredOptionsSelectBefourt | async" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-autocomplete>
               </mat-form-field>
+
+
+
+
+
+
+
+
+
             </div>
             <div class="col">
               <mat-form-field class="example-full-width">

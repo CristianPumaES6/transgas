@@ -37,6 +37,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer'; // <-- Import PdfJsViewerModule module
 import {MatRadioModule} from '@angular/material/radio';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
 // Services
 import { LoadingService } from './services/loading.service';
 
@@ -68,7 +70,7 @@ import { TranslateMessagePipe } from './pipes/language.pipe';
         MatButtonToggleModule, MatSlideToggleModule, MatCheckboxModule,
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatDialogModule, MatProgressBarModule, MatStepperModule,
-        PdfJsViewerModule,MatRadioModule
+        PdfJsViewerModule,MatRadioModule, MatAutocompleteModule
     ],
     exports: [
         HttpClientModule,
@@ -88,7 +90,7 @@ import { TranslateMessagePipe } from './pipes/language.pipe';
         MatButtonToggleModule, MatSlideToggleModule, MatCheckboxModule,
         MatButtonModule, FormsModule, ReactiveFormsModule,
         MatDialogModule, MatProgressBarModule, MatStepperModule,
-        PdfJsViewerModule,MatRadioModule
+        PdfJsViewerModule,MatRadioModule, MatAutocompleteModule
     ],
     providers: [LoadingService]
 })

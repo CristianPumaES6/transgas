@@ -27,10 +27,10 @@ export class DatabaseService {
 
     // Este emiter envia la cantidad de viajes puerto y reportes que faltan enviar
     public emitterCantOffline = new EventEmitter<CantidadRestante>();
-    
+
     // Este emit sirve para avisar si se debe volver a cargar la data hacer reload. refresh etc.
     public emitterReloadData = new EventEmitter();
-  
+
     // database
     private db: any;
 
@@ -68,10 +68,10 @@ export class DatabaseService {
 
     }
 
-     public async DeleteDataBase() {
+    public async DeleteDataBase() {
         console.log('INICIO DELETE DATA bASE')
-       await this.db.delete();
-       console.log('FIN DELETE DATA bASE')
+        await this.db.delete();
+        console.log('FIN DELETE DATA bASE')
 
     }
 
@@ -105,9 +105,16 @@ export class DatabaseService {
             portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
             dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
 
+            // Al finalizar el update actualizamos los registros locales.
+            await this.UpdateStatusIdRegisterInServer(voyagesMappings, portsMappings, dailyReportsMappings);
+
             return true;
 
         } catch (error) {
+            // si hay un error los registros mapeados lo editamos.
+            await this.UpdateStatusIdRegisterInServer(voyagesMappings, portsMappings, dailyReportsMappings);
+
+            await this.EmitterCantOffline();
             console.log('-----------------------------------------');
             console.log('-----------------------------------------');
             console.log('-----------------------------------------');
@@ -121,7 +128,7 @@ export class DatabaseService {
     }
 
     // Si queremos emitir un reload a la base datos, un refresh de lista.
-    public async EmitterReloadData():Promise<boolean>{
+    public async EmitterReloadData(): Promise<boolean> {
 
         this.emitterReloadData.emit();
         return true;
@@ -209,12 +216,7 @@ export class DatabaseService {
             let resultCreate: Voyage;
             resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
 
-
-            // Actualizamos el syncStatus a none.
-            await this.db.voyages.update(iVoyage.id, { id: resultCreate.id, voyageNumber: resultCreate.voyageNumber, syncStatus: 'none' });
-
-
-            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos QUE pertenecen al viaje
+            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos que pertenecen al viaje
             let portsIndexedDB: Port[];
             portsIndexedDB = await this.db.ports.toArray()
             // Filtramos los reportes que tienen ese puertoId
@@ -227,7 +229,6 @@ export class DatabaseService {
                 await this.db.ports.update(iPortIndexedDB.id,
                     { voyageId: resultCreate.id }
                 );
-
             }
 
             // Mapping user
@@ -262,7 +263,7 @@ export class DatabaseService {
 
     public async SyncPorts(usersMappings: Mapping[], voyagesMappings: Mapping[]): Promise<Mapping[]> {
 
-        console.log('SyncVoyages()');
+        console.log('SyncPorts()');
 
         // POrt Mappings
         let savePortsMappings: Mapping[] = [];
@@ -281,19 +282,15 @@ export class DatabaseService {
             // Resultado del create
             let resultCreate: Port;
 
-
+            // Buscamos el id del viaje para ver si lo tenemos mapeado para cambiarlo.
             let searchMappingVoyage = searchKey(voyagesMappings, iPort.voyageId);
             let searchMappingUser = searchKey(usersMappings, iPort.userId);
 
             if (searchMappingVoyage) { iPort.voyageId = searchMappingVoyage.value }
             if (searchMappingUser) { iPort.userId = searchMappingUser.value }
 
+            // Creamos el puerto con el id del viaje.
             resultCreate = await this.portService.Create(iPort).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            // Actualizo el numero de puerto por que puede cambiar.
-            // Actualizo el id del viaje por que puede cambiar.
-            await this.db.ports.update(iPort.id, { id: resultCreate.id, voyageId: resultCreate.voyageId, portNumber: resultCreate.portNumber, syncStatus: 'none' });
 
             // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS REPORTES QUE TIENEN ESE PUERTO ID
             let reportesIndexedDB: DailyReport[];
@@ -310,8 +307,6 @@ export class DatabaseService {
                 );
 
             }
-
-
             // Mapping Port por el nuevo ID
             savePortsMappings.push(
                 new Mapping(iPort.id, resultCreate.id)
@@ -341,7 +336,7 @@ export class DatabaseService {
     }
     public async SyncDailyReports(usersMappings: Mapping[], portsMappings: Mapping[]): Promise<Mapping[]> {
 
-        console.log('SyncVoyages()');
+        console.log('SyncDailyReports()');
 
         // DailyReports Mappings
         let saveDailyReportsMappings: Mapping[] = [];
@@ -368,10 +363,6 @@ export class DatabaseService {
             if (searchMappingPort) { iDailyReport.portId = searchMappingPort.value }
 
             resultCreate = await this.dailyReportService.Create(iDailyReport).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            // Actualizo el numero de puerto por que puede cambiar.
-            await this.db.dailyReports.update(iDailyReport.id, { id: resultCreate.id, portId: resultCreate.portId, syncStatus: 'none' });
 
             // Mapping Port por el nuevo ID
             saveDailyReportsMappings.push(
@@ -404,8 +395,8 @@ export class DatabaseService {
 
 
     // UPDATE DATA LOCAL
-    public async UpdateDataLocal():Promise<boolean>{
-        
+    public async UpdateDataLocal(): Promise<boolean> {
+
         let selectUser = this.userService.GetIdentity();
 
         // DATOS DE LAS PETICIONES HACIA EL SERVER
@@ -444,12 +435,12 @@ export class DatabaseService {
                 // Seleccionaremos el primer buque del arreglo.
                 let objVoyageGET: Voyage = new Voyage();
                 let firstUser: User = getUsers.reverse().find(user => user.role === 'BUQUE');
-                
+
                 if (firstUser) {
                     selectUser = firstUser;
                     objVoyageGET.userId = selectUser.id;
                     objVoyageGET.year = selectUser.years[(firstUser.years.length || 1) - 1];
-                    
+
                 } else {
                     throw 'NO_BUQUE_REGISTER';
                 }
@@ -1230,25 +1221,25 @@ export class DatabaseService {
     }
 
     // emita la cantidad que falta que esta registrado en local.
-    public async EmitterCantOffline(): Promise<boolean>{
+    public async EmitterCantOffline(): Promise<boolean> {
 
         return await Promise.resolve(true).then(
             result => {
-                return  this.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+                return this.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
             }
-        
+
         ).then(
             resultCantidadRestante => {
 
                 this.emitterCantOffline.emit(resultCantidadRestante);
-     
+
             }
         ).then(
-            result=>{
+            result => {
                 return true
             }
         ).catch(
-            err=>{
+            err => {
                 //return cantidadRestante;
                 throw 'Contact cristian, there is a problem updating the records to the server';
             }
@@ -1256,9 +1247,9 @@ export class DatabaseService {
     }
 
     // esta funcion retornara la data del usuario que se tiene en local, no se tiene ninguna usuario en local retorna 0.
-    public async CheckWhatUserWeHaveInLocal() : Promise<number>{
+    public async CheckWhatUserWeHaveInLocal(): Promise<number> {
 
-        let userIdOld =0;
+        let userIdOld = 0;
 
         return await Promise.resolve(true).then(
             result => {
@@ -1267,9 +1258,9 @@ export class DatabaseService {
             }
         ).then(
             voyages => {
-                if(voyages && voyages.length){
+                if (voyages && voyages.length) {
                     userIdOld = voyages[0].userId;
-                    
+
                     return userIdOld;
                 } else {
                     return 0;
@@ -1277,11 +1268,47 @@ export class DatabaseService {
 
             }
         ).catch(
-            err=>{
+            err => {
                 //return cantidadRestante;
                 throw 'Contact cristian, could not get the users local record.';
             }
         );
+
+    }
+
+
+    // Actualizar los id nuevos creados.
+    public async UpdateStatusIdRegisterInServer(voyagesMappings: Mapping[], portsMappings: Mapping[], dailyReportsMappings: Mapping[]): Promise<boolean> {
+
+
+        let voyagesMappingsReverse = voyagesMappings.reverse();
+        let portsMappingsMappingsReverse = portsMappings.reverse();
+        let dailyReportsMappingsReverse = dailyReportsMappings.reverse();
+
+
+
+        // recorremos y actualizamos uno por uno
+        for await (let idVoyageRegister of voyagesMappingsReverse) {
+            // Actualizamos el viaje 
+            // Ya que esto se a registrado syncStatus a none.
+            await this.db.voyages.update(idVoyageRegister.key, { id: idVoyageRegister.value, syncStatus: 'none' });
+        }
+
+        for await (let idPortRegister of portsMappingsMappingsReverse) {
+
+            // Actualizamos el syncStatus a none.
+            await this.db.ports.update(idPortRegister.key, { id: idPortRegister.value, syncStatus: 'none' });
+        }
+
+
+        for await (let idDailyReport of dailyReportsMappingsReverse) {
+
+            // Actualizamos el syncStatus a none.
+            // Actualizo el numero de puerto por que puede cambiar.
+            await this.db.dailyReports.update(idDailyReport.key, { id: idDailyReport.value, syncStatus: 'none' });
+        }
+
+        return true;
 
     }
 }

@@ -1,8 +1,10 @@
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { OnlineOfflineService } from 'src/app/services/online-offline.service';
 import { LoggedUser } from '../../../app/models/loggedUser';
 import { AuthService } from '../../../app/services/auth.service';
 import { LanguageService } from '../../../app/services/language.service';
@@ -13,17 +15,17 @@ import { LoadingService } from '../../../app/services/loading.service';
   templateUrl: './list-of-connected-users.component.html',
   styleUrls: ['./list-of-connected-users.component.scss']
 })
-export class ListOfConnectedUsersComponent implements OnInit{
+export class ListOfConnectedUsersComponent implements OnInit {
 
   @ViewChild('myDivContent') htmlMyDivContent: ElementRef;
-  
+
   //======== VARIABLES DE TRADUCCION=============
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'users';
   //=================[ FIN ]=====================
 
   // Usuarios logeados
-  public getLoggedUsers:LoggedUser[]=[];
+  public getLoggedUsers: LoggedUser[] = [];
 
   // zomm actual
   public zoom = 12;
@@ -56,11 +58,12 @@ export class ListOfConnectedUsersComponent implements OnInit{
     private loadingService: LoadingService,
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
-    private _renderer2: Renderer2, 
-    ) { }
+    private _renderer2: Renderer2,
+    private onlineOfflineService: OnlineOfflineService,
+  ) { }
 
   ngOnInit(): void {
-  
+
     console.log('ngOnInit()');
 
     let script = this._renderer2.createElement('script');
@@ -73,46 +76,35 @@ export class ListOfConnectedUsersComponent implements OnInit{
     // Activamos el loading.
     this.loadingService.Open();
 
-    // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
-    if (!!window.navigator.onLine) {
 
-      Promise.resolve(true).then(
-        result => {
-          // Traigo a todos los User y lo instancio en el obj.
-          return this.EmitConnect().pipe().toPromise();
-        }
-      ).then(
-        result => {
-          
-          setTimeout( () => {
+    Promise.resolve(true).then(
+      result => {
 
-              // Traigo a todos los User y lo instancio en el obj.
-              this.GetLoggedUsers().pipe().toPromise();
-              // Activamos el loading.
-              this.loadingService.Close();
+        return this.GetLoggedUsers().pipe().toPromise();
+      }
+    ).then(
+      result => {
 
-            }, 5000 );
+        // Activamos el loading.
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
 
-        }
-      ).catch(
-        err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+        console.error(msg);
+        console.dir(err);
 
-          console.error(msg);
-          console.dir(err);
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
 
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-
-        });
-    }
-
+      });
   }
 
-  public SelectUser(index){
+  public SelectUser(index) {
 
     console.log('SelectUser(index)');
     console.log(this.getLoggedUsers);
@@ -136,7 +128,7 @@ export class ListOfConnectedUsersComponent implements OnInit{
       },
       title: 'Marker title ',
       options: {
-         animation: google.maps.Animation.BOUNCE 
+        animation: google.maps.Animation.BOUNCE
       },
     };
 
@@ -145,11 +137,9 @@ export class ListOfConnectedUsersComponent implements OnInit{
   // GetUsers: Cargo todos los Users para el listado de Users.
   private EmitConnect(): Observable<boolean> {
     console.log('EmitConnect()');
-
     // Consulto la lista de paises para cargar combo
     return this.authService.EmitConnect().pipe(map(
       (resultEmitConnect: boolean) => {
-
 
         // Segun el resultado retornamos la respuesta.
         return resultEmitConnect;
@@ -182,5 +172,120 @@ export class ListOfConnectedUsersComponent implements OnInit{
   public zoomOut() {
     if (this.zoom > this.options.minZoom) this.zoom--
   }
+  public ClickEmitConection() {
+    if (this.onlineOfflineService.GetStatusOnline()) {
 
+      this.loadingService.Open();
+      Promise.resolve(true).then(
+        result => {
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.EmitConnect().pipe().toPromise();
+        }
+      ).then(
+        result => {
+
+          this.loadingService.Close();
+
+
+        }
+      ).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+        });
+
+    }
+  }
+
+  public ClickRefreshLoad() {
+    if (this.onlineOfflineService.GetStatusOnline()) {
+
+      this.loadingService.Open();
+      Promise.resolve(true).then(
+        result => {
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.GetLoggedUsers().pipe().toPromise();
+
+        }
+      ).then(
+        result => {
+
+          this.loadingService.Close();
+
+        }
+      ).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+        });
+    }
+  }
+
+  public ClickSyncDataByUser(loggedUser:LoggedUser) {
+    
+    if (this.onlineOfflineService.GetStatusOnline()) {
+      this.onlineOfflineService.SyncDataByUser(loggedUser);
+    }
+
+  }
+
+
+
+  // Cuando queremos emitir una conexion lo emitimos desde aqui.
+  public ClickEmitAndRefreshConection() {
+    if (this.onlineOfflineService.GetStatusOnline()) {
+
+      this.loadingService.Open();
+      Promise.resolve(true).then(
+        result => {
+          // Traigo a todos los User y lo instancio en el obj.
+          return this.EmitConnect().pipe().toPromise();
+        }
+      ).then(
+        result => {
+
+          setTimeout(() => {
+
+            // Traigo a todos los User y lo instancio en el obj.
+            this.GetLoggedUsers().pipe().toPromise();
+            // Activamos el loading.
+            this.loadingService.Close();
+
+          }, 5000);
+
+        }
+      ).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+
+        });
+    }
+  }
 }

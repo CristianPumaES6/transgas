@@ -20,7 +20,7 @@ import { NotificationsService } from 'angular2-notifications';
 
 // Librerias
 import { Observable, Subscription, forkJoin, of } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, startWith } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
@@ -34,6 +34,7 @@ import { DailyReport } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
 import { ConvertirDateHourToMoment, DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -99,6 +100,20 @@ export class VoyageComponent implements OnInit {
 
   public lastRecordedHour: any;
 
+
+  myControlFormSelectBefourt = new FormControl();
+  optionsBefourt: string[] = [
+    '1','2','3','4','5','6',
+    'N1', 'N2', 'N3', 'N4', 'N5', 'N6',
+    'NE1', 'NE2', 'NE3', 'NE4', 'NE5', 'NE6',
+    'E1', 'E2', 'E3', 'E4', 'E5', 'E6',
+    'SE1', 'SE2', 'SE3', 'SE4', 'SE5', 'SE6',
+    'S1', 'S2', 'S3', 'S4', 'S5', 'S6',
+    'SW1', 'SW2', 'SW3', 'SW4', 'SW5', 'SW6',
+    'W1', 'W2', 'W3', 'W4', 'W5', 'W6',
+    'N1', 'N2', 'N3', 'N4', 'N5', 'N6'];
+  filteredOptionsSelectBefourt: Observable<string[]>;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -144,6 +159,13 @@ export class VoyageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+
+    this.filteredOptionsSelectBefourt = this.myControlFormSelectBefourt.valueChanges.pipe(
+      startWith(''),
+      map(value => this.FilterInputBefourt(value)),
+    );
+
     console.log('ngOnInit()');
 
     // Activamos el loading.
@@ -638,6 +660,7 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
 
+this.selectDailyReport.beaufour = this.myControlFormSelectBefourt.value;
 
       if (!this.selectDailyReport.id) {
 
@@ -2022,8 +2045,12 @@ export class VoyageComponent implements OnInit {
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR ACTIVITY'));
       error = true;
     }
-
+    
     if (dailyReportToSave.activityPerformed == 'SAILING_IN_BALLAST' || dailyReportToSave.activityPerformed == 'SAILING_WITH_LADEN' || dailyReportToSave.activityPerformed == 'ECONOMICAL_NAVIGATION') {
+      if (!dailyReportToSave.beaufour) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DISTANCE'));
+        error = true;
+      }
 
       if (!dailyReportToSave.distance) {
         this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DISTANCE'));
@@ -2426,7 +2453,8 @@ export class VoyageComponent implements OnInit {
 
       // El objeto user lo seteamos.
       let dailyReport: DailyReport = this.selectDailyReport;
-
+      // Se obtine el valor segun se esta iniciando.
+      this.myControlFormSelectBefourt.setValue(dailyReport.beaufour); 
       // Retorno el objeto
       return JSON.parse(JSON.stringify(dailyReport));
     }
@@ -2529,6 +2557,12 @@ export class VoyageComponent implements OnInit {
     ) {
       this.selectDailyReport.speedStraction = 'ECO_SPEED';
     }
+  }
+  // filtro befourt
+  private FilterInputBefourt(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.optionsBefourt.filter(option => option.toLowerCase().includes(filterValue));
   }
 
 }
