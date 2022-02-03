@@ -30,6 +30,14 @@ WHERE port.userId = @userId
 
 
 
+-- Que viaje se registro en unusuario que no correspomde
+select * from voyage  
+WHERE voyage.userId = @userId
+        AND voyage.id NOT IN(
+                            select id from voyage  
+                            WHERE voyage.userId = @userId
+                                        )
+                                        
 -- solucion para los rpeortes registrados en otro puerto.
 UPDATE daily_report
 SET status = 0
