@@ -15,7 +15,7 @@ export class DetecteInactiveUserService {
   lastInteraction: Date = new Date();
 
   // Tiempo de inactividad de 10 minutos.
-  definedInactivityPeriod = 60000 * 10;
+  definedInactivityPeriod = 15000 * 1;
 
   constructor(
     private _LoadingService:LoadingService,
@@ -102,9 +102,9 @@ export class DetecteInactiveUserService {
       }
     ).then(
       result => {
-        if(!result) throw 'ERROR SYNC DATA'
+        if(!result) throw 'ERROR SYNC DATA';
         this._LoadingService.Close();
-        console.log('FIN EjectSync():')
+        console.log('FIN EjectSync():');
         return true;
       }
     ).catch(
@@ -114,6 +114,7 @@ export class DetecteInactiveUserService {
 
         this._NotificationsService.error('ERROR', err);
         
+        this._LoadingService.Close();
         console.log('ERR EjectSync():')
         return false;
       }
