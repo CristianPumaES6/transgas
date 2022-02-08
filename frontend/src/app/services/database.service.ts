@@ -103,9 +103,13 @@ export class DatabaseService {
             }
         ).then(
             resultSync => {
-
-                // No valido el resultado debido que pueden haber problemas ocn el server.
-                return this.UpdateStatusIdRegisterInServer(false, voyagesMappings, portsMappings, dailyReportsMappings);
+                // Si en la sincronizacion ubo un error 
+                if (!resultSync) {
+                    // Si hay un error en la sincronizacion se lo hacemos saber al server.
+                    return this.UpdateStatusIdRegisterInServer(true, voyagesMappings, portsMappings, dailyReportsMappings);
+                } else {
+                    return this.UpdateStatusIdRegisterInServer(false, voyagesMappings, portsMappings, dailyReportsMappings);
+                }
             }
         ).then(
             resultUpdateStatusIdRegisterInServer => {
@@ -200,7 +204,7 @@ export class DatabaseService {
 
     // Sincroniza el modulo voyage.
     public async SyncVoyages(saveVoyageMappings: Mapping[], usersMappings: Mapping[]): Promise<boolean> {
-        console.log('SyncVoyages()',saveVoyageMappings);
+        console.log('SyncVoyages()', saveVoyageMappings);
 
         try {
 
@@ -229,7 +233,7 @@ export class DatabaseService {
                 // Resultado del create
                 let resultCreate: Voyage;
                 resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
-              
+
                 console.log('Fin invocar el servicio create');
 
 
@@ -240,8 +244,8 @@ export class DatabaseService {
                 saveVoyageMappings.push(
                     new Mapping(iVoyage.id, resultCreate.id)
                 );
-                
-                console.log('Fin reccorrer viajes',saveVoyageMappings);
+
+                console.log('Fin reccorrer viajes', saveVoyageMappings);
 
             }
             console.log('Fin for add');
@@ -1301,107 +1305,18 @@ export class DatabaseService {
         // eso significa que 1, 2  => serian 3, 4, pero los siguientes se repiten por id.
         // entonces esta validacion valida eso. y actualiza mas 1 los del server.
         if (updateForError) {
-            console.log('Entra al if');
-
-            // Capturamos los ultimo id registrados desde la bd, para poder asignarlos a los nuevos.
-            let ultimoVoyageId, ultimoPortId, ultimoDailyReportId;
-            // Verificamos si se registro algun viaje,
-            if (voyagesMappingsReverse.length > 0) {
-
-                // Capturamos el ultimo id registrado.
-                ultimoVoyageId = voyagesMappingsReverse[0].value;
-
-                // Si el key es diferente.
-                if (voyagesMappingsReverse[0].value != voyagesMappingsReverse[0].key) {
-
-                    // Verificamos si existe viajes superiores a este 
-                    let voyages = await this.db.voyages.toArray();
-                    // fILTRAMOS los viajes mayor o igual al ultimo id.
-                    let listFilterVoyageMayoresQueElId = voyages.filter(voyage => voyage.id >= ultimoVoyageId).reverse();
-                    // Recorremos la lista.
-                    for await (let voyage of listFilterVoyageMayoresQueElId) {
-                        // Y le sumamos un digito.
-                        await this.db.voyages.update(voyage.id, { id: voyage.id + 1 });
-                        console.log('Actualiza puertos que estan en el viaje');
-
-                        debugger
-                        await this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(voyage.id, voyage.id + 1);
-                        console.log('FIN puertos que estan en el viaje');
-                    }
-
-                }
-            }
-
-
-            // Verificamos si se ha registra algun puerto
-            if (portsMappingsMappingsReverse.length > 0) {
-
-                // Capturamos el ultimo id registrado.
-                ultimoPortId = portsMappingsMappingsReverse[0].value;
-
-                // Si el key es diferente.
-                if (portsMappingsMappingsReverse[0].value != portsMappingsMappingsReverse[0].key) {
-
-                    // Verificamos si existe viajes superiores a este 
-                    let dbPorts = await this.db.ports.toArray();
-                    // fILTRAMOS los viajes mayor o igual al ultimo id.
-                    let listFilterMayorAUltimoPortId = dbPorts.filter(port => port.id >= ultimoPortId).reverse();
-                    // Recorremos la lista.
-                    for await (let iPort of listFilterMayorAUltimoPortId) {
-                        let antiguoId, newId;
-                        antiguoId = iPort.id;
-                        newId = antiguoId + 1;
-
-
-                        // Y le sumamos un digito.
-                        await this.db.ports.update(antiguoId, { id: newId });
-                        console.log('Actualizmaos los reportes dentro del puerto');
-                        await this.EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto(antiguoId, newId);
-                        console.log('FIN puertos que estan en el viaje');
-                    }
-
-                }
-            }
-
-
-            // Verificamos si se ha registra algun puerto
-            if (dailyReportsMappingsReverse.length > 0) {
-                // Capturamos el ultimo id registrado.
-                ultimoDailyReportId = dailyReportsMappingsReverse[0].value;
-
-                // Si el key es diferente.
-                if (dailyReportsMappingsReverse[0].value != dailyReportsMappingsReverse[0].key) {
-
-                    // Verificamos si existe viajes superiores a este 
-                    let dbDailyReport = await this.db.dailyReports.toArray();
-                    // Filtramos los viajes mayor o igual al ultimo id.
-                    let listFilterMayorAUltimoReportId = dbDailyReport.filter(report => report.id >= ultimoDailyReportId).reverse();
-                    // Recorremos la lista.
-                    for await (let iReport of listFilterMayorAUltimoReportId) {
-                        let antiguoId, newId;
-                        antiguoId = iReport.id;
-                        newId = antiguoId + 1;
-
-
-                        // Y le sumamos un digito.
-                        await this.db.dailyReports.update(antiguoId, { id: newId });
-                        console.log('FIN puertos que estan en el viaje');
-                    }
-
-                }
-            }
-
-            console.log('Sale del  if');
-
+            console.log('ESTE UPDATE ES POR UN ERROR');
+            
+            let resultUpdateIdMayoresAlUltimo = await this.VerificaSiElUltimoIdEsDiferenteAlDelServer(voyagesMappings, portsMappings, dailyReportsMappings);
+            if (!resultUpdateIdMayoresAlUltimo) throw 'Error al Actualizar el ultimoID segun el server.'
         }
 
 
-
         console.log('Inicio For voyagesMappingsReverse');
-        
+
         // Actualizamos el arrglo de maping.
         let resultDelUpdaTe = await this.ActualizamosAlArregloMappingVoyage(voyagesMappingsReverse);
-        if(!resultDelUpdaTe) {
+        if (!resultDelUpdaTe) {
             console.error('ERRROR ADDMAPPING VOYAGES');
             throw 'ERROR ADD MAPPING VOYAGES'
         }
@@ -1432,21 +1347,20 @@ export class DatabaseService {
     }
 
     // Esta funcion iserve para actualizar los puertos a un nuevo viajeId
-    public async estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(oldVoyageId = 3, newVoyageId = 5): Promise<boolean> {
+    public async ActualizaPuertosDeUnViajeIdDistintoAlServer(oldVoyageIdLocal:number, newVoyageIdServer:number): Promise<boolean> {
 
         // obtenemos todos los puertos
-        let portsIndexedDB = await this.db.ports.toArray()
-
+        let portsIndexedDB = await this.db.ports.toArray();
         console.log('Filta los puertos dentro del viaje.');
 
         // Filtramos los puertos con el mismo id del key
-        portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == oldVoyageId);
+        portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == oldVoyageIdLocal);
 
         // recorremos y actualizamos los puertos con el nuevo id del viaje.
         for await (let iPortIndexedDB of portsIndexedDB) {
             // Actualizo el id del viaje por que puede cambiar.
             await this.db.ports.update(iPortIndexedDB.id,
-                { voyageId: newVoyageId }
+                { voyageId: newVoyageIdServer }
             );
         }
         console.log('Fin del Filtro los puertos dentro del viaje.');
@@ -1516,7 +1430,7 @@ export class DatabaseService {
     }
 
     public async ActualizamosAlArregloMappingVoyage(voyagesMappingsReverse: Mapping[]): Promise<boolean> {
- 
+
         let voyagesArray = await this.db.voyages.toArray();
         let portsArray = await this.db.ports.toArray();
         let dailyReportsArray = await this.db.dailyReports.toArray();
@@ -1533,7 +1447,7 @@ export class DatabaseService {
                 voyagesMappingsReverse.forEach(mapping => {
                     console.log('actualizaviajeypuertodentro    : ' + mapping.key + '  - ' + mapping.value);
                     // Agregamos al arreglo
-                    arrdeUpdate.push(this.actualizaviajeypuertodentro(mapping))
+                    arrdeUpdate.push(this.ActualizaViajeIdLocalConElDelServer(mapping.key,mapping.value));
                 });
 
                 // EJecutamos las promesas
@@ -1542,7 +1456,7 @@ export class DatabaseService {
         ).then(
             result => {
                 result.forEach(element => {
-                    if(!element) throw 'ERROR No se actualizo un elemento del arreglo.'
+                    if (!element) throw 'ERROR No se actualizo un elemento del arreglo.'
                 });
                 // Revisamos el resultado
                 console.log('Primer then');
@@ -1553,7 +1467,7 @@ export class DatabaseService {
             }
         ).then(
             result => {
-                
+
                 return true;
             }
         ).catch(
@@ -1567,25 +1481,130 @@ export class DatabaseService {
     }
 
     // Actualizamos el viaje junto cpon el puerto.
-    public async actualizaviajeypuertodentro(idVoyageRegister: Mapping): Promise<boolean> {
+    public async ActualizaViajeIdLocalConElDelServer(oldVoyageIdLocal:number, newVoyageIdServer:number): Promise<boolean> {
 
         return await Promise.resolve(true)
             .then(result => {
-                return this.db.voyages.update(idVoyageRegister.key, { id: idVoyageRegister.value, syncStatus: 'none' });
+                return this.db.voyages.update(oldVoyageIdLocal, { id: newVoyageIdServer, syncStatus: 'none' });
             })
             .then(result => {
-                return this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(idVoyageRegister.key, idVoyageRegister.value);
+                return this.ActualizaPuertosDeUnViajeIdDistintoAlServer(oldVoyageIdLocal, newVoyageIdServer);
             })
             .then(result => {
                 return true;
             })
             .catch(
                 error => {
-                    console.error('ERROR actualizaviajeypuertodentro',error)
+                    console.error('ERROR actualizaviajeypuertodentro', error)
                     return false;
                 }
             );
 
+
+    }
+
+
+    public async VerificaSiElUltimoIdEsDiferenteAlDelServer(voyagesMappingsReverse: Mapping[], portsMappingsMappingsReverse: Mapping[], dailyReportsMappingsReverse: Mapping[]): Promise<boolean> {
+
+
+        console.log('VerificaSiElUltimoIdEsDiferenteAlDelServer');
+        console.log(voyagesMappingsReverse);
+        console.log(portsMappingsMappingsReverse);
+        console.log(dailyReportsMappingsReverse);
+        
+
+        // Capturamos los ultimo id registrados desde la bd, para poder asignarlos a los nuevos.
+        let ultimoVoyageId, ultimoPortId, ultimoDailyReportId;
+        // Verificamos si se registro algun viaje,
+        if (voyagesMappingsReverse.length > 0) {
+
+            // Capturamos el ultimo id registrado.
+            ultimoVoyageId = voyagesMappingsReverse[0].value;
+
+            // Si el key es diferente.
+            if (voyagesMappingsReverse[0].value != voyagesMappingsReverse[0].key) {
+
+                // Verificamos si existe viajes superiores a este 
+                let voyages = await this.db.voyages.toArray();
+                // fILTRAMOS los viajes mayor o igual al ultimo id.
+                let listFilterVoyageMayoresQueElId:Voyage[] = voyages.filter(voyage => voyage.id >= ultimoVoyageId).reverse();
+                // Recorremos la lista.
+                for await (let voyage of listFilterVoyageMayoresQueElId) {
+
+                    let voyageIdLocal = voyage.id;
+                    let newVoyageId = voyageIdLocal + 1;
+
+                    let resultUpdate = await this.ActualizaViajeIdLocalConElDelServer(voyageIdLocal,newVoyageId);
+                    if(!resultUpdate) {
+                        console.error('ERROR AL ACTUALIZAR LOS VIAJES LOCALES');
+                    }
+
+                }
+
+            }
+        }
+
+
+        // Verificamos si se ha registra algun puerto
+        if (portsMappingsMappingsReverse.length > 0) {
+
+            // Capturamos el ultimo id registrado.
+            ultimoPortId = portsMappingsMappingsReverse[0].value;
+
+            // Si el key es diferente.
+            if (portsMappingsMappingsReverse[0].value != portsMappingsMappingsReverse[0].key) {
+
+                // Verificamos si existe viajes superiores a este 
+                let dbPorts = await this.db.ports.toArray();
+                // fILTRAMOS los viajes mayor o igual al ultimo id.
+                let listFilterMayorAUltimoPortId = dbPorts.filter(port => port.id >= ultimoPortId).reverse();
+                // Recorremos la lista.
+                for await (let iPort of listFilterMayorAUltimoPortId) {
+                    let antiguoId, newId;
+                    antiguoId = iPort.id;
+                    newId = antiguoId + 1;
+
+
+                    // Y le sumamos un digito.
+                    await this.db.ports.update(antiguoId, { id: newId });
+                    console.log('Actualizmaos los reportes dentro del puerto');
+                    await this.EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto(antiguoId, newId);
+                    console.log('FIN puertos que estan en el viaje');
+                }
+
+            }
+        }
+
+
+        // Verificamos si se ha registra algun puerto
+        if (dailyReportsMappingsReverse.length > 0) {
+            // Capturamos el ultimo id registrado.
+            ultimoDailyReportId = dailyReportsMappingsReverse[0].value;
+
+            // Si el key es diferente.
+            if (dailyReportsMappingsReverse[0].value != dailyReportsMappingsReverse[0].key) {
+
+                // Verificamos si existe viajes superiores a este 
+                let dbDailyReport = await this.db.dailyReports.toArray();
+                // Filtramos los viajes mayor o igual al ultimo id.
+                let listFilterMayorAUltimoReportId = dbDailyReport.filter(report => report.id >= ultimoDailyReportId).reverse();
+                // Recorremos la lista.
+                for await (let iReport of listFilterMayorAUltimoReportId) {
+                    let antiguoId, newId;
+                    antiguoId = iReport.id;
+                    newId = antiguoId + 1;
+
+
+                    // Y le sumamos un digito.
+                    await this.db.dailyReports.update(antiguoId, { id: newId });
+                    console.log('FIN puertos que estan en el viaje');
+                }
+
+            }
+        }
+
+        console.log('Sale del  if');
+        return true;
 
     }
 }
