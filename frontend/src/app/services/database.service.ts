@@ -97,50 +97,44 @@ export class DatabaseService {
         let portsMappings: Mapping[] = []
         let dailyReportsMappings: Mapping[] = []
 
+        return await Promise.resolve(true).then(
+            result => {
+                return this.SincronizaTodasLasTablaYmodificaLosMapping(usersMappings,voyagesMappings,portsMappings,dailyReportsMappings)
+            }
+        ).then(
+            resultSync =>{
+                
+                if(!resultSync) throw 'ERROR EN LA SINCRONZACION, COMUNIQUESE CON CRISTIAN.';
+                return this.UpdateStatusIdRegisterInServer(false, voyagesMappings, portsMappings, dailyReportsMappings);
+            }
+        ).catch(
+           err => {
+               console.log('Errr Sync')
+                console.log(err);
+                console.log('-----------------------------------------');
+                console.log('-----------------------------------------');
+                console.log('--------------------VOYAGE---------------------');
+                console.log(voyagesMappings);
+                console.log('--------------------PORT---------------------');
+                console.log(portsMappings);
+                console.log('--------------------DAILY---------------------');
+                console.log(dailyReportsMappings);    console.log('-----------------------------------------');
+                console.log('-----------------------------------------');
+                console.log('-----------------------------------------');
+                
+                // si hay un error los registros mapeados lo editamos.
+                return  this.UpdateStatusIdRegisterInServer(true, voyagesMappings, portsMappings, dailyReportsMappings).then(
+                    result => {
+                       if( result) console.log('UpdateStatusIdRegisterInServer');
+                       console.error('ERROR OFFLINEs');
+                       throw 'Offline'
+                    }
+                );
+            
+            }
+        )
 
-        try {
-            console.log('Inci User')
-            usersMappings = await this.SyncUsers();
-            console.log('Inci Voyage')
-            let resultSyncVoyages = await this.SyncVoyages(voyagesMappings, usersMappings);
-            if (!resultSyncVoyages) throw 'ERROR SyncVoyages';
-            console.log('Inci Port')
-
-            let resultSyncPorts = await this.SyncPorts(portsMappings, usersMappings, voyagesMappings);
-            if (!resultSyncPorts) throw 'ERROR SyncPorts';
-
-            console.log('Inci Daily')
-            let resultSyncDailyReports = await this.SyncDailyReports(dailyReportsMappings, usersMappings, portsMappings);
-            if (!resultSyncDailyReports) throw 'ERROR SyncDailyReports';
-
-
-            console.log('Inci UpdateStatusRegister')
-            // Al finalizar el update actualizamos los registros locales.
-            await this.UpdateStatusIdRegisterInServer(false, voyagesMappings, portsMappings, dailyReportsMappings);
-
-            return true;
-
-        } catch (error) {
-
-            console.log('-----------------------------------------');
-            console.log('-----------------------------------------');
-            console.log('--------------------VOYAGE---------------------');
-            console.log(voyagesMappings);
-            console.log('--------------------PORT---------------------');
-            console.log(portsMappings);
-            console.log('--------------------DAILY---------------------');
-            console.log(dailyReportsMappings);
-            // si hay un error los registros mapeados lo editamos.
-            await this.UpdateStatusIdRegisterInServer(true, voyagesMappings, portsMappings, dailyReportsMappings);
-
-            await this.EmitterCantOffline();
-            console.log('[      SE PERDIO LA CONEXION   EN LA SYNC()        ]');
-            console.log(error);
-            console.log('-----------------------------------------');
-            console.log('-----------------------------------------');
-            console.log('-----------------------------------------');
-            throw 'Offline'
-        }
+        
     }
 
     // Si queremos emitir un reload a la base datos, un refresh de lista.
@@ -1408,6 +1402,7 @@ export class DatabaseService {
             await this.db.voyages.update(idVoyageRegister.key, { id: idVoyageRegister.value, syncStatus: 'none' });
 
             debugger
+            console.log('estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId    : ' + idVoyageRegister.key +'  - ' + idVoyageRegister.value );
             await this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(idVoyageRegister.key, idVoyageRegister.value);
         }
 
@@ -1417,6 +1412,7 @@ export class DatabaseService {
 
             // Actualizamos el syncStatus a none.
             await this.db.ports.update(idPortRegister.key, { id: idPortRegister.value, syncStatus: 'none' });
+            console.log('EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto    : ' + idPortRegister.key +'  - ' + idPortRegister.value );
             await this.EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto(idPortRegister.key, idPortRegister.value);
 
         }
@@ -1439,18 +1435,24 @@ export class DatabaseService {
 
     // Esta funcion iserve para actualizar los puertos a un nuevo viajeId
     public async estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(oldVoyageId = 3, newVoyageId = 5): Promise<boolean> {
+        
         // obtenemos todos los puertos
         let portsIndexedDB = await this.db.ports.toArray()
+        
+        console.log('Filta los puertos dentro del viaje.');
+        
         // Filtramos los puertos con el mismo id del key
         portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == oldVoyageId);
+        
         // recorremos y actualizamos los puertos con el nuevo id del viaje.
-
         for await (let iPortIndexedDB of portsIndexedDB) {
             // Actualizo el id del viaje por que puede cambiar.
             await this.db.ports.update(iPortIndexedDB.id,
                 { voyageId: newVoyageId }
             );
         }
+        console.log('Fin del Filtro los puertos dentro del viaje.');
+
         return true;
     }
 
@@ -1473,5 +1475,45 @@ export class DatabaseService {
         }
 
         return true;
+    }
+
+    public async SincronizaTodasLasTablaYmodificaLosMapping(usersMappings:Mapping[],voyagesMappings:Mapping[],portsMappings:Mapping[],dailyReportsMappings:Mapping[]):Promise<boolean>{
+
+        return await Promise.resolve(true).then(
+            result=> {
+                return this.SyncUsers();
+            }
+        ).then(
+            Usermapping => {
+                if (!Usermapping) throw 'ERROR Sync Users';
+                usersMappings = Usermapping; 
+                return this.SyncVoyages(voyagesMappings, usersMappings);
+            }
+        ).then(
+            resultSyncVoyages => {
+                if (!resultSyncVoyages) throw 'ERROR Sync Voyages';
+                return this.SyncPorts(portsMappings, usersMappings, voyagesMappings);
+            }
+        ).then(
+            resultSyncPorts => {
+                if (!resultSyncPorts) throw 'ERROR Sync Ports';
+    
+                return this.SyncDailyReports(dailyReportsMappings, usersMappings, portsMappings);
+            }
+        ).then(
+            resultSyncDailyReports => {
+                if (!resultSyncDailyReports) throw 'ERROR Sync DailyReports';
+
+                return true;
+            }
+        ).catch(
+            result => {
+                console.error(result);
+                console.log(result);
+
+                return false;
+            }
+        );
+
     }
 }
