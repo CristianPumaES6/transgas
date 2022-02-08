@@ -1306,7 +1306,7 @@ export class DatabaseService {
         // entonces esta validacion valida eso. y actualiza mas 1 los del server.
         if (updateForError) {
             console.log('ESTE UPDATE ES POR UN ERROR');
-            
+
             let resultUpdateIdMayoresAlUltimo = await this.VerificaSiElUltimoIdEsDiferenteAlDelServer(voyagesMappings, portsMappings, dailyReportsMappings);
             if (!resultUpdateIdMayoresAlUltimo) throw 'Error al Actualizar el ultimoID segun el server.'
         }
@@ -1347,7 +1347,7 @@ export class DatabaseService {
     }
 
     // Esta funcion iserve para actualizar los puertos a un nuevo viajeId
-    public async ActualizaPuertosDeUnViajeIdDistintoAlServer(oldVoyageIdLocal:number, newVoyageIdServer:number): Promise<boolean> {
+    public async ActualizaPuertosDeUnViajeIdDistintoAlServer(oldVoyageIdLocal: number, newVoyageIdServer: number): Promise<boolean> {
 
         // obtenemos todos los puertos
         let portsIndexedDB = await this.db.ports.toArray();
@@ -1447,7 +1447,7 @@ export class DatabaseService {
                 voyagesMappingsReverse.forEach(mapping => {
                     console.log('actualizaviajeypuertodentro    : ' + mapping.key + '  - ' + mapping.value);
                     // Agregamos al arreglo
-                    arrdeUpdate.push(this.ActualizaViajeIdLocalConElDelServer(mapping.key,mapping.value));
+                    arrdeUpdate.push(this.ActualizaViajeIdLocalConElDelServer(mapping.key, mapping.value));
                 });
 
                 // EJecutamos las promesas
@@ -1481,7 +1481,7 @@ export class DatabaseService {
     }
 
     // Actualizamos el viaje junto cpon el puerto.
-    public async ActualizaViajeIdLocalConElDelServer(oldVoyageIdLocal:number, newVoyageIdServer:number): Promise<boolean> {
+    public async ActualizaViajeIdLocalConElDelServer(oldVoyageIdLocal: number, newVoyageIdServer: number): Promise<boolean> {
 
         return await Promise.resolve(true)
             .then(result => {
@@ -1511,7 +1511,7 @@ export class DatabaseService {
         console.log(voyagesMappingsReverse);
         console.log(portsMappingsMappingsReverse);
         console.log(dailyReportsMappingsReverse);
-        
+
 
         // Capturamos los ultimo id registrados desde la bd, para poder asignarlos a los nuevos.
         let ultimoVoyageId, ultimoPortId, ultimoDailyReportId;
@@ -1527,15 +1527,15 @@ export class DatabaseService {
                 // Verificamos si existe viajes superiores a este 
                 let voyages = await this.db.voyages.toArray();
                 // fILTRAMOS los viajes mayor o igual al ultimo id.
-                let listFilterVoyageMayoresQueElId:Voyage[] = voyages.filter(voyage => voyage.id >= ultimoVoyageId).reverse();
+                let listFilterVoyageMayoresQueElId: Voyage[] = voyages.filter(voyage => voyage.id >= ultimoVoyageId).reverse();
                 // Recorremos la lista.
                 for await (let voyage of listFilterVoyageMayoresQueElId) {
 
                     let voyageIdLocal = voyage.id;
                     let newVoyageId = voyageIdLocal + 1;
 
-                    let resultUpdate = await this.ActualizaViajeIdLocalConElDelServer(voyageIdLocal,newVoyageId);
-                    if(!resultUpdate) {
+                    let resultUpdate = await this.ActualizaViajeIdLocalConElDelServer(voyageIdLocal, newVoyageId);
+                    if (!resultUpdate) {
                         console.error('ERROR AL ACTUALIZAR LOS VIAJES LOCALES');
                     }
 
