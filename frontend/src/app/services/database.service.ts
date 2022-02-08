@@ -99,17 +99,23 @@ export class DatabaseService {
 
         return await Promise.resolve(true).then(
             result => {
-                return this.SincronizaTodasLasTablaYmodificaLosMapping(usersMappings,voyagesMappings,portsMappings,dailyReportsMappings)
+                return this.SincronizaTodasLasTablaYmodificaLosMapping(usersMappings, voyagesMappings, portsMappings, dailyReportsMappings)
             }
         ).then(
-            resultSync =>{
-                
-                if(!resultSync) throw 'ERROR EN LA SINCRONZACION, COMUNIQUESE CON CRISTIAN.';
+            resultSync => {
+
+                // No valido el resultado debido que pueden haber problemas ocn el server.
                 return this.UpdateStatusIdRegisterInServer(false, voyagesMappings, portsMappings, dailyReportsMappings);
             }
+        ).then(
+            resultUpdateStatusIdRegisterInServer => {
+
+                if (!resultUpdateStatusIdRegisterInServer) throw 'ERROR EN LA SINCRONZACION, COMUNIQUESE CON CRISTIAN.';
+                return true;
+            }
         ).catch(
-           err => {
-               console.log('Errr Sync')
+            err => {
+                console.log('Errr Sync')
                 console.log(err);
                 console.log('-----------------------------------------');
                 console.log('-----------------------------------------');
@@ -118,23 +124,16 @@ export class DatabaseService {
                 console.log('--------------------PORT---------------------');
                 console.log(portsMappings);
                 console.log('--------------------DAILY---------------------');
-                console.log(dailyReportsMappings);    console.log('-----------------------------------------');
+                console.log(dailyReportsMappings); console.log('-----------------------------------------');
                 console.log('-----------------------------------------');
                 console.log('-----------------------------------------');
-                
-                // si hay un error los registros mapeados lo editamos.
-                return  this.UpdateStatusIdRegisterInServer(true, voyagesMappings, portsMappings, dailyReportsMappings).then(
-                    result => {
-                       if( result) console.log('UpdateStatusIdRegisterInServer');
-                       console.error('ERROR OFFLINEs');
-                       throw 'Offline'
-                    }
-                );
-            
+                console.error('ERROR OFFLINEs');
+                throw 'Offline'
+
             }
         )
 
-        
+
     }
 
     // Si queremos emitir un reload a la base datos, un refresh de lista.
@@ -201,7 +200,7 @@ export class DatabaseService {
 
     // Sincroniza el modulo voyage.
     public async SyncVoyages(saveVoyageMappings: Mapping[], usersMappings: Mapping[]): Promise<boolean> {
-        console.log('SyncVoyages()');
+        console.log('SyncVoyages()',saveVoyageMappings);
 
         try {
 
@@ -230,7 +229,8 @@ export class DatabaseService {
                 // Resultado del create
                 let resultCreate: Voyage;
                 resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
-                console.log('Fin reccorrer viajes');
+              
+                console.log('Fin invocar el servicio create');
 
 
                 // Este nuevo Create se registra al final;
@@ -239,7 +239,9 @@ export class DatabaseService {
                 // Mapping voyage
                 saveVoyageMappings.push(
                     new Mapping(iVoyage.id, resultCreate.id)
-                )
+                );
+                
+                console.log('Fin reccorrer viajes',saveVoyageMappings);
 
             }
             console.log('Fin for add');
@@ -1394,16 +1396,14 @@ export class DatabaseService {
         }
 
 
-        console.log('Inicio For voyagesMappingsReverse');
-        // recorremos y actualizamos uno por uno
-        for await (let idVoyageRegister of voyagesMappingsReverse) {
-            // Actualizamos el viaje 
-            // Ya que esto se a registrado syncStatus a none.
-            await this.db.voyages.update(idVoyageRegister.key, { id: idVoyageRegister.value, syncStatus: 'none' });
 
-            debugger
-            console.log('estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId    : ' + idVoyageRegister.key +'  - ' + idVoyageRegister.value );
-            await this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(idVoyageRegister.key, idVoyageRegister.value);
+        console.log('Inicio For voyagesMappingsReverse');
+        
+        // Actualizamos el arrglo de maping.
+        let resultDelUpdaTe = await this.ActualizamosAlArregloMappingVoyage(voyagesMappingsReverse);
+        if(!resultDelUpdaTe) {
+            console.error('ERRROR ADDMAPPING VOYAGES');
+            throw 'ERROR ADD MAPPING VOYAGES'
         }
 
 
@@ -1412,12 +1412,10 @@ export class DatabaseService {
 
             // Actualizamos el syncStatus a none.
             await this.db.ports.update(idPortRegister.key, { id: idPortRegister.value, syncStatus: 'none' });
-            console.log('EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto    : ' + idPortRegister.key +'  - ' + idPortRegister.value );
+            console.log('EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto    : ' + idPortRegister.key + '  - ' + idPortRegister.value);
             await this.EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto(idPortRegister.key, idPortRegister.value);
 
         }
-
-
 
         console.log('Inicio For dailyReportsMappingsReverse');
         for await (let idDailyReport of dailyReportsMappingsReverse) {
@@ -1435,15 +1433,15 @@ export class DatabaseService {
 
     // Esta funcion iserve para actualizar los puertos a un nuevo viajeId
     public async estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(oldVoyageId = 3, newVoyageId = 5): Promise<boolean> {
-        
+
         // obtenemos todos los puertos
         let portsIndexedDB = await this.db.ports.toArray()
-        
+
         console.log('Filta los puertos dentro del viaje.');
-        
+
         // Filtramos los puertos con el mismo id del key
         portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == oldVoyageId);
-        
+
         // recorremos y actualizamos los puertos con el nuevo id del viaje.
         for await (let iPortIndexedDB of portsIndexedDB) {
             // Actualizo el id del viaje por que puede cambiar.
@@ -1477,16 +1475,16 @@ export class DatabaseService {
         return true;
     }
 
-    public async SincronizaTodasLasTablaYmodificaLosMapping(usersMappings:Mapping[],voyagesMappings:Mapping[],portsMappings:Mapping[],dailyReportsMappings:Mapping[]):Promise<boolean>{
+    public async SincronizaTodasLasTablaYmodificaLosMapping(usersMappings: Mapping[], voyagesMappings: Mapping[], portsMappings: Mapping[], dailyReportsMappings: Mapping[]): Promise<boolean> {
 
         return await Promise.resolve(true).then(
-            result=> {
+            result => {
                 return this.SyncUsers();
             }
         ).then(
             Usermapping => {
                 if (!Usermapping) throw 'ERROR Sync Users';
-                usersMappings = Usermapping; 
+                usersMappings = Usermapping;
                 return this.SyncVoyages(voyagesMappings, usersMappings);
             }
         ).then(
@@ -1497,7 +1495,7 @@ export class DatabaseService {
         ).then(
             resultSyncPorts => {
                 if (!resultSyncPorts) throw 'ERROR Sync Ports';
-    
+
                 return this.SyncDailyReports(dailyReportsMappings, usersMappings, portsMappings);
             }
         ).then(
@@ -1514,6 +1512,80 @@ export class DatabaseService {
                 return false;
             }
         );
+
+    }
+
+    public async ActualizamosAlArregloMappingVoyage(voyagesMappingsReverse: Mapping[]): Promise<boolean> {
+ 
+        let voyagesArray = await this.db.voyages.toArray();
+        let portsArray = await this.db.ports.toArray();
+        let dailyReportsArray = await this.db.dailyReports.toArray();
+
+        console.log(voyagesArray);
+        console.log(portsArray);
+        console.log(dailyReportsArray);
+
+        return await Promise.resolve(true).then(
+            result => {
+                // Arreglo con los update
+                let arrdeUpdate = [];
+                // Recorreoms todo el mapping
+                voyagesMappingsReverse.forEach(mapping => {
+                    console.log('actualizaviajeypuertodentro    : ' + mapping.key + '  - ' + mapping.value);
+                    // Agregamos al arreglo
+                    arrdeUpdate.push(this.actualizaviajeypuertodentro(mapping))
+                });
+
+                // EJecutamos las promesas
+                return Promise.all(arrdeUpdate);
+            }
+        ).then(
+            result => {
+                result.forEach(element => {
+                    if(!element) throw 'ERROR No se actualizo un elemento del arreglo.'
+                });
+                // Revisamos el resultado
+                console.log('Primer then');
+                console.log(result)
+
+                //Continumos
+                return true;
+            }
+        ).then(
+            result => {
+                
+                return true;
+            }
+        ).catch(
+            err => {
+                console.error(err);
+                console.log('ActualizamosAlArregloMappingVoyage', voyagesMappingsReverse)
+                return false;
+            }
+        );
+
+    }
+
+    // Actualizamos el viaje junto cpon el puerto.
+    public async actualizaviajeypuertodentro(idVoyageRegister: Mapping): Promise<boolean> {
+
+        return await Promise.resolve(true)
+            .then(result => {
+                return this.db.voyages.update(idVoyageRegister.key, { id: idVoyageRegister.value, syncStatus: 'none' });
+            })
+            .then(result => {
+                return this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(idVoyageRegister.key, idVoyageRegister.value);
+            })
+            .then(result => {
+                return true;
+            })
+            .catch(
+                error => {
+                    console.error('ERROR actualizaviajeypuertodentro',error)
+                    return false;
+                }
+            );
+
 
     }
 }
