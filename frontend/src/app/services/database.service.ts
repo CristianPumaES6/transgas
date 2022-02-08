@@ -99,25 +99,41 @@ export class DatabaseService {
 
 
         try {
-
+console.log('Inci User')
             usersMappings = await this.SyncUsers();
-            voyagesMappings = await this.SyncVoyages(usersMappings);
-            portsMappings = await this.SyncPorts(usersMappings, voyagesMappings);
-            dailyReportsMappings = await this.SyncDailyReports(usersMappings, portsMappings);
+            console.log('Inci Voyage')
+            let resultSyncVoyages = await this.SyncVoyages(voyagesMappings, usersMappings);
+            if (!resultSyncVoyages) throw 'ERROR SyncVoyages';
+            console.log('Inci Port')
 
+            let resultSyncPorts = await this.SyncPorts(portsMappings, usersMappings, voyagesMappings);
+            if (!resultSyncPorts) throw 'ERROR SyncPorts';
+
+            console.log('Inci Daily')
+            let resultSyncDailyReports = await this.SyncDailyReports(dailyReportsMappings, usersMappings, portsMappings);
+            if (!resultSyncDailyReports) throw 'ERROR SyncDailyReports';
+
+
+            console.log('Inci UpdateStatusRegister')
             // Al finalizar el update actualizamos los registros locales.
-            await this.UpdateStatusIdRegisterInServer(voyagesMappings, portsMappings, dailyReportsMappings);
+            await this.UpdateStatusIdRegisterInServer(false, voyagesMappings, portsMappings, dailyReportsMappings);
 
             return true;
 
         } catch (error) {
+
+            console.log('-----------------------------------------');
+            console.log('-----------------------------------------');
+            console.log('--------------------VOYAGE---------------------');
+            console.log(voyagesMappings);
+            console.log('--------------------PORT---------------------');
+            console.log(portsMappings);
+            console.log('--------------------DAILY---------------------');
+            console.log(dailyReportsMappings);
             // si hay un error los registros mapeados lo editamos.
-            await this.UpdateStatusIdRegisterInServer(voyagesMappings, portsMappings, dailyReportsMappings);
+            await this.UpdateStatusIdRegisterInServer(true, voyagesMappings, portsMappings, dailyReportsMappings);
 
             await this.EmitterCantOffline();
-            console.log('-----------------------------------------');
-            console.log('-----------------------------------------');
-            console.log('-----------------------------------------');
             console.log('[      SE PERDIO LA CONEXION   EN LA SYNC()        ]');
             console.log(error);
             console.log('-----------------------------------------');
@@ -190,205 +206,201 @@ export class DatabaseService {
     }
 
     // Sincroniza el modulo voyage.
-    public async SyncVoyages(usersMappings: Mapping[]): Promise<Mapping[]> {
+    public async SyncVoyages(saveVoyageMappings: Mapping[], usersMappings: Mapping[]): Promise<boolean> {
         console.log('SyncVoyages()');
 
-        // Voyage Mappings
-        let saveVoyageMappings: Mapping[] = [];
+        try {
 
-        // data del IndexedDB
-        let voyagesIndexedDB: Voyage[];
-        voyagesIndexedDB = await this.db.voyages.toArray();
+            // Voyage Mappings
 
-        // FIltramos los datos que faltan aggregar y actualizar.
-        const addVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'added');
-        const updateVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'updated');
-        const deleteVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'deleted');
+            // data del IndexedDB
+            let voyagesIndexedDB: Voyage[];
+            voyagesIndexedDB = await this.db.voyages.toArray();
 
-        // Recorremos todos los viajes que falta por agregar.
-        for await (const iVoyage of addVoyages) {
+            // FIltramos los datos que faltan aggregar y actualizar.
+            const addVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'added');
+            const updateVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'updated');
+            const deleteVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'deleted');
 
-            let searchUserMapping = searchKey(usersMappings, iVoyage.userId);
+            console.log('Inicio reccorrer viajes add');
+            
+            // Recorremos todos los viajes que falta por agregar.
+            for await (const iVoyage of addVoyages) {
 
-            if (searchUserMapping) { iVoyage.userId = searchUserMapping.value }
+                // Buscamos si el userId del buque esta mapeado.
+                let searchUserMapping = searchKey(usersMappings, iVoyage.userId);
+                // Si se encontro algo actualizamos el nuevo UserId.
+                if (searchUserMapping) { iVoyage.userId = searchUserMapping.value }
+                console.log('Va invocar el servicio create');
+            
+                // Resultado del create
+                let resultCreate: Voyage;
+                resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
+                console.log('Fin reccorrer viajes');
+            
 
-            // Resultado del create
-            let resultCreate: Voyage;
-            resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
+                // Este nuevo Create se registra al final;
 
-            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS puertos que pertenecen al viaje
-            let portsIndexedDB: Port[];
-            portsIndexedDB = await this.db.ports.toArray()
-            // Filtramos los reportes que tienen ese puertoId
-            portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == iVoyage.id);
-            // recorremos y actualizamos uno por uno
-            for await (let iPortIndexedDB of portsIndexedDB) {
+
+                // Mapping voyage
+                saveVoyageMappings.push(
+                    new Mapping(iVoyage.id, resultCreate.id)
+                )
+
+            }
+            console.log('Fin for add');
+            
+            console.log('Inicio FOr Update');
+            
+            // Recorremos todos los voyages que falta por actualizar.
+            for await (const iVoyage of updateVoyages) {
+                let resultUpdate: Voyage;
+                resultUpdate = await this.voyageService.Save(iVoyage).pipe().toPromise();
+
                 // Actualizamos el syncStatus a none.
-                // Actualizo el numero de puerto por que puede cambiar.
-                // Actualizo el id del viaje por que puede cambiar.
-                await this.db.ports.update(iPortIndexedDB.id,
-                    { voyageId: resultCreate.id }
-                );
+                await this.db.voyages.update(iVoyage.id, { syncStatus: 'none' });
+            }
+            console.log('Fin for update');
+
+
+            console.log('Inicio FOr Delete');
+            for await (const iVoyage of deleteVoyages) {
+                let resultDelete: Voyage;
+
+                resultDelete = await this.voyageService.Delete(iVoyage).pipe().toPromise();
+
+                // Actualizamos el syncStatus a none.
+                await this.db.voyages.update(iVoyage.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
             }
 
-            // Mapping user
-            saveVoyageMappings.push(
-                new Mapping(iVoyage.id, resultCreate.id)
-            )
+            console.log('Fin for delete');
+
+            return true;
+        } catch (error) {
+            return false
         }
-
-        // Recorremos todos los voyages que falta por actualizar.
-        for await (const iVoyage of updateVoyages) {
-            let resultUpdate: Voyage;
-            resultUpdate = await this.voyageService.Save(iVoyage).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            await this.db.voyages.update(iVoyage.id, { syncStatus: 'none' });
-        }
-
-
-        for await (const iVoyage of deleteVoyages) {
-            let resultDelete: Voyage;
-
-            resultDelete = await this.voyageService.Delete(iVoyage).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            await this.db.voyages.update(iVoyage.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
-        }
-
-
-        return saveVoyageMappings;
 
     }
 
-    public async SyncPorts(usersMappings: Mapping[], voyagesMappings: Mapping[]): Promise<Mapping[]> {
+    public async SyncPorts(savePortsMappings: Mapping[], usersMappings: Mapping[], voyagesMappings: Mapping[]): Promise<boolean> {
 
         console.log('SyncPorts()');
 
-        // POrt Mappings
-        let savePortsMappings: Mapping[] = [];
+        try {
 
-        // data del IndexedDB
-        let portsIndexedDB: Port[];
-        portsIndexedDB = await this.db.ports.toArray();
+            // data del IndexedDB
+            let portsIndexedDB: Port[];
+            portsIndexedDB = await this.db.ports.toArray();
 
-        // FIltramos los datos que faltan aggregar y actualizar.
-        const addPorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'added');
-        const updatePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'updated');
-        const deletePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'deleted');
+            // FIltramos los datos que faltan aggregar y actualizar.
+            const addPorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'added');
+            const updatePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'updated');
+            const deletePorts = portsIndexedDB.filter((port: Port) => port.syncStatus == 'deleted');
 
-        // Recorremos todos los puertos que falta por agregar.
-        for await (let iPort of addPorts) {
-            // Resultado del create
-            let resultCreate: Port;
+            // Recorremos todos los puertos que falta por agregar.
+            for await (let iPort of addPorts) {
+                // Resultado del create
+                let resultCreate: Port;
 
-            // Buscamos el id del viaje para ver si lo tenemos mapeado para cambiarlo.
-            let searchMappingVoyage = searchKey(voyagesMappings, iPort.voyageId);
-            let searchMappingUser = searchKey(usersMappings, iPort.userId);
+                // Buscamos el id del viaje para ver si lo tenemos mapeado para cambiarlo.
+                let searchMappingVoyage = searchKey(voyagesMappings, iPort.voyageId);
+                let searchMappingUser = searchKey(usersMappings, iPort.userId);
 
-            if (searchMappingVoyage) { iPort.voyageId = searchMappingVoyage.value }
-            if (searchMappingUser) { iPort.userId = searchMappingUser.value }
+                if (searchMappingVoyage) { iPort.voyageId = searchMappingVoyage.value }
+                if (searchMappingUser) { iPort.userId = searchMappingUser.value }
 
-            // Creamos el puerto con el id del viaje.
-            resultCreate = await this.portService.Create(iPort).pipe().toPromise();
+                // Creamos el puerto con el id del viaje.
+                resultCreate = await this.portService.Create(iPort).pipe().toPromise();
+                // Mapping Port por el nuevo ID
+                savePortsMappings.push(
+                    new Mapping(iPort.id, resultCreate.id)
+                )
 
-            // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS REPORTES QUE TIENEN ESE PUERTO ID
-            let reportesIndexedDB: DailyReport[];
-            reportesIndexedDB = await this.db.dailyReports.toArray()
-            // FIltramos los reportes que tienen ese puertoId
-            reportesIndexedDB = reportesIndexedDB.filter((report: DailyReport) => report.portId == iPort.id);
-            // recorremos y actualizamos uno por uno
-            for await (let iReportesIndexedDB of reportesIndexedDB) {
-                // Actualizamos el syncStatus a none.
-                // Actualizo el numero de puerto por que puede cambiar.
-                // Actualizo el id del viaje por que puede cambiar.
-                await this.db.dailyReports.update(iReportesIndexedDB.id,
-                    { portId: resultCreate.id }
-                );
+                // Este nuevo Create se registra al final;
+
 
             }
-            // Mapping Port por el nuevo ID
-            savePortsMappings.push(
-                new Mapping(iPort.id, resultCreate.id)
-            )
+
+            // Recorremos todos los voyages que falta por actualizar.
+            for await (let iPort of updatePorts) {
+                let resultUpdate: Port;
+                resultUpdate = await this.portService.Save(iPort).pipe().toPromise();
+
+                // Actualizamos el syncStatus a none.
+                await this.db.ports.update(iPort.id, { syncStatus: 'none' });
+            }
+
+            for await (let iPort of deletePorts) {
+                let resultDelete: Port;
+
+                resultDelete = await this.portService.Delete(iPort).pipe().toPromise();
+
+                // Actualizamos el syncStatus a none.
+                await this.db.ports.update(iPort.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
+            }
+
+            return true;
+        } catch (error) {
+            return false;
         }
-
-        // Recorremos todos los voyages que falta por actualizar.
-        for await (let iPort of updatePorts) {
-            let resultUpdate: Port;
-            resultUpdate = await this.portService.Save(iPort).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            await this.db.ports.update(iPort.id, { syncStatus: 'none' });
-        }
-
-        for await (let iPort of deletePorts) {
-            let resultDelete: Port;
-
-            resultDelete = await this.portService.Delete(iPort).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            await this.db.ports.update(iPort.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
-        }
-
-        return savePortsMappings;
 
     }
-    public async SyncDailyReports(usersMappings: Mapping[], portsMappings: Mapping[]): Promise<Mapping[]> {
+    public async SyncDailyReports(saveDailyReportsMappings: Mapping[], usersMappings: Mapping[], portsMappings: Mapping[]): Promise<boolean> {
 
         console.log('SyncDailyReports()');
+        try {
 
-        // DailyReports Mappings
-        let saveDailyReportsMappings: Mapping[] = [];
+            // data del IndexedDB
+            let dailyReportsIndexedDB: DailyReport[];
+            dailyReportsIndexedDB = await this.db.dailyReports.toArray();
 
-        // data del IndexedDB
-        let dailyReportsIndexedDB: DailyReport[];
-        dailyReportsIndexedDB = await this.db.dailyReports.toArray();
+            // FIltramos los datos que faltan aggregar y actualizar.
+            const addDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'added');
+            const updateDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'updated');
+            const deleteDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'deleted');
 
-        // FIltramos los datos que faltan aggregar y actualizar.
-        const addDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'added');
-        const updateDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'updated');
-        const deleteDailyReports = dailyReportsIndexedDB.filter((dailyReport: DailyReport) => dailyReport.syncStatus == 'deleted');
-
-        // Recorremos todos los puertos que falta por agregar.
-        for await (let iDailyReport of addDailyReports) {
-            // Resultado del create
-            let resultCreate: DailyReport;
+            // Recorremos todos los puertos que falta por agregar.
+            for await (let iDailyReport of addDailyReports) {
+                // Resultado del create
+                let resultCreate: DailyReport;
 
 
-            let searchMappingUser = searchKey(usersMappings, iDailyReport.userId);
-            let searchMappingPort = searchKey(portsMappings, iDailyReport.portId);
+                let searchMappingUser = searchKey(usersMappings, iDailyReport.userId);
+                let searchMappingPort = searchKey(portsMappings, iDailyReport.portId);
 
-            if (searchMappingUser) { iDailyReport.userId = searchMappingUser.value }
-            if (searchMappingPort) { iDailyReport.portId = searchMappingPort.value }
+                if (searchMappingUser) { iDailyReport.userId = searchMappingUser.value }
+                if (searchMappingPort) { iDailyReport.portId = searchMappingPort.value }
 
-            resultCreate = await this.dailyReportService.Create(iDailyReport).pipe().toPromise();
+                resultCreate = await this.dailyReportService.Create(iDailyReport).pipe().toPromise();
 
-            // Mapping Port por el nuevo ID
-            saveDailyReportsMappings.push(
-                new Mapping(iDailyReport.id, resultCreate.id)
-            )
+                // Mapping Port por el nuevo ID
+                saveDailyReportsMappings.push(
+                    new Mapping(iDailyReport.id, resultCreate.id)
+                )
+            }
+
+            // Recorremos todos los voyages que falta por actualizar.
+            for await (let iDailyReport of updateDailyReports) {
+                let resultUpdate: DailyReport;
+                resultUpdate = await this.dailyReportService.Save(iDailyReport).pipe().toPromise();
+
+                // Actualizamos el syncStatus a none.
+                await this.db.dailyReports.update(iDailyReport.id, { syncStatus: 'none' });
+            }
+
+            for await (let iDailyReport of deleteDailyReports) {
+                let resultDelete: DailyReport;
+
+                resultDelete = await this.dailyReportService.Delete(iDailyReport).pipe().toPromise();
+
+                // Actualizamos el syncStatus a none.
+                await this.db.dailyReports.update(iDailyReport.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
+            }
+
+            return true;
+        } catch (error) {
+            return false;
         }
-
-        // Recorremos todos los voyages que falta por actualizar.
-        for await (let iDailyReport of updateDailyReports) {
-            let resultUpdate: DailyReport;
-            resultUpdate = await this.dailyReportService.Save(iDailyReport).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            await this.db.dailyReports.update(iDailyReport.id, { syncStatus: 'none' });
-        }
-
-        for await (let iDailyReport of deleteDailyReports) {
-            let resultDelete: DailyReport;
-
-            resultDelete = await this.dailyReportService.Delete(iDailyReport).pipe().toPromise();
-
-            // Actualizamos el syncStatus a none.
-            await this.db.dailyReports.update(iDailyReport.id, { status: false, syncStatus: 'none' });// REVISAR COMO SE ACTUALIZA EL STATUS
-        }
-
-        return saveDailyReportsMappings;
 
     }
     // ========================= FIN SYNC ========================
@@ -1278,29 +1290,140 @@ export class DatabaseService {
 
 
     // Actualizar los id nuevos creados.
-    public async UpdateStatusIdRegisterInServer(voyagesMappings: Mapping[], portsMappings: Mapping[], dailyReportsMappings: Mapping[]): Promise<boolean> {
+    public async UpdateStatusIdRegisterInServer(updateForError: boolean, voyagesMappings: Mapping[], portsMappings: Mapping[], dailyReportsMappings: Mapping[]): Promise<boolean> {
+        console.log('ENtro UpdateStatusIdRegisterInServer()');
 
-
+        // Empezamos desde el ultimo que se registro.
         let voyagesMappingsReverse = voyagesMappings.reverse();
         let portsMappingsMappingsReverse = portsMappings.reverse();
         let dailyReportsMappingsReverse = dailyReportsMappings.reverse();
 
+        // si este update es provocado por un error, debemos verificar que no exista un viaje con el mismo id
+        // imaginate que los id locales son 1, 2, 3, 4, 5
+        // Ahora solo se actualizan los 2 primero y en el server esta el id 2
+        // si se ubiran registrado correcto seria 3, 4, 5, 6, 7
+        // eso significa que 1, 2  => serian 3, 4, pero los siguientes se repiten por id.
+        // entonces esta validacion valida eso. y actualiza mas 1 los del server.
+        if (updateForError) {
+            console.log('Entra al if');
+
+            // Capturamos los ultimo id registrados desde la bd, para poder asignarlos a los nuevos.
+            let ultimoVoyageId, ultimoPortId, ultimoDailyReportId;
+            // Verificamos si se registro algun viaje,
+            if (voyagesMappingsReverse.length > 0) {
+
+                // Capturamos el ultimo id registrado.
+                ultimoVoyageId = voyagesMappingsReverse[0].value;
+
+                // Si el key es diferente.
+                if (voyagesMappingsReverse[0].value != voyagesMappingsReverse[0].key) {
+
+                    // Verificamos si existe viajes superiores a este 
+                    let voyages = await this.db.voyages.toArray();
+                    // fILTRAMOS los viajes mayor o igual al ultimo id.
+                    let listFilterVoyageMayoresQueElId = voyages.filter(voyage => voyage.id >= ultimoVoyageId).reverse();
+                    // Recorremos la lista.
+                    for await (let voyage of listFilterVoyageMayoresQueElId) {
+                        // Y le sumamos un digito.
+                        await this.db.voyages.update(voyage.id, { id: voyage.id + 1 });
+                        console.log('Actualiza puertos que estan en el viaje');
+
+                        debugger
+                        await this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(voyage.id, voyage.id + 1);
+                        console.log('FIN puertos que estan en el viaje');
+                    }
+
+                }
+            }
 
 
+            // Verificamos si se ha registra algun puerto
+            if (portsMappingsMappingsReverse.length > 0) {
+
+                // Capturamos el ultimo id registrado.
+                ultimoPortId = portsMappingsMappingsReverse[0].value;
+
+                // Si el key es diferente.
+                if (portsMappingsMappingsReverse[0].value != portsMappingsMappingsReverse[0].key) {
+
+                    // Verificamos si existe viajes superiores a este 
+                    let dbPorts = await this.db.ports.toArray();
+                    // fILTRAMOS los viajes mayor o igual al ultimo id.
+                    let listFilterMayorAUltimoPortId = dbPorts.filter(port => port.id >= ultimoPortId).reverse();
+                    // Recorremos la lista.
+                    for await (let iPort of listFilterMayorAUltimoPortId) {
+                        let antiguoId, newId;
+                        antiguoId = iPort.id;
+                        newId = antiguoId + 1;
+
+
+                        // Y le sumamos un digito.
+                        await this.db.ports.update(antiguoId, { id: newId });
+                        console.log('Actualizmaos los reportes dentro del puerto');
+                        await this.EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto(antiguoId, newId);
+                        console.log('FIN puertos que estan en el viaje');
+                    }
+
+                }
+            }
+
+
+            // Verificamos si se ha registra algun puerto
+            if (dailyReportsMappingsReverse.length > 0) {
+                // Capturamos el ultimo id registrado.
+                ultimoDailyReportId = dailyReportsMappingsReverse[0].value;
+
+                // Si el key es diferente.
+                if (dailyReportsMappingsReverse[0].value != dailyReportsMappingsReverse[0].key) {
+
+                    // Verificamos si existe viajes superiores a este 
+                    let dbDailyReport = await this.db.dailyReports.toArray();
+                    // Filtramos los viajes mayor o igual al ultimo id.
+                    let listFilterMayorAUltimoReportId = dbDailyReport.filter(report => report.id >= ultimoDailyReportId).reverse();
+                    // Recorremos la lista.
+                    for await (let iReport of listFilterMayorAUltimoReportId) {
+                        let antiguoId, newId;
+                        antiguoId = iReport.id;
+                        newId = antiguoId + 1;
+
+
+                        // Y le sumamos un digito.
+                        await this.db.dailyReports.update(antiguoId, { id: newId });
+                        console.log('FIN puertos que estan en el viaje');
+                    }
+
+                }
+            }
+
+            console.log('Sale del  if');
+
+        }
+
+        
+        console.log('Inicio For voyagesMappingsReverse');
         // recorremos y actualizamos uno por uno
         for await (let idVoyageRegister of voyagesMappingsReverse) {
             // Actualizamos el viaje 
             // Ya que esto se a registrado syncStatus a none.
             await this.db.voyages.update(idVoyageRegister.key, { id: idVoyageRegister.value, syncStatus: 'none' });
+
+            debugger
+            await this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(idVoyageRegister.key, idVoyageRegister.value);
         }
 
+        
+        console.log('Inicio For portsMappingsMappingsReverse');
         for await (let idPortRegister of portsMappingsMappingsReverse) {
 
             // Actualizamos el syncStatus a none.
             await this.db.ports.update(idPortRegister.key, { id: idPortRegister.value, syncStatus: 'none' });
+            await this.EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto(idPortRegister.key, idPortRegister.value);
+
         }
 
 
+        
+        console.log('Inicio For dailyReportsMappingsReverse');
         for await (let idDailyReport of dailyReportsMappingsReverse) {
 
             // Actualizamos el syncStatus a none.
@@ -1308,7 +1431,47 @@ export class DatabaseService {
             await this.db.dailyReports.update(idDailyReport.key, { id: idDailyReport.value, syncStatus: 'none' });
         }
 
+        console.log('FIN UpdateStatusIdRegisterInServer()');
+
         return true;
 
+    }
+
+    // Esta funcion iserve para actualizar los puertos a un nuevo viajeId
+    public async estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(oldVoyageId=3, newVoyageId=5): Promise<boolean> {
+        // obtenemos todos los puertos
+        let portsIndexedDB = await this.db.ports.toArray()
+        // Filtramos los puertos con el mismo id del key
+        portsIndexedDB = portsIndexedDB.filter((report: Port) => report.voyageId == oldVoyageId);
+        // recorremos y actualizamos los puertos con el nuevo id del viaje.
+
+        for await (let iPortIndexedDB of portsIndexedDB) {
+            // Actualizo el id del viaje por que puede cambiar.
+            await this.db.ports.update(iPortIndexedDB.id,
+                { voyageId: newVoyageId }
+            );
+        }
+        return true;
+    }
+
+    public async EstaFuncionSirveParaActualizarALosReportesConElNUevoIdDelPuerto(oldPortId: number, newPortId: number): Promise<boolean> {
+
+
+        // AQUI TENEMOS QUE ACTUALIZAR TODOS LOS REPORTES QUE TIENEN ESE PUERTO ID
+        let reportesIndexedDB: DailyReport[];
+        reportesIndexedDB = await this.db.dailyReports.toArray()
+        // FIltramos los reportes que tienen ese puertoId
+        reportesIndexedDB = reportesIndexedDB.filter((report: DailyReport) => report.portId == oldPortId);
+        // recorremos y actualizamos uno por uno
+        for await (let iReportesIndexedDB of reportesIndexedDB) {
+            // Actualizamos el syncStatus a none.
+            // Actualizo el numero de puerto por que puede cambiar.
+            // Actualizo el id del viaje por que puede cambiar.
+            await this.db.dailyReports.update(iReportesIndexedDB.id,
+                { portId: newPortId }
+            );
+        }
+
+        return true;
     }
 }
