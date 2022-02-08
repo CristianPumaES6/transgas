@@ -99,7 +99,7 @@ export class DatabaseService {
 
 
         try {
-console.log('Inci User')
+            console.log('Inci User')
             usersMappings = await this.SyncUsers();
             console.log('Inci Voyage')
             let resultSyncVoyages = await this.SyncVoyages(voyagesMappings, usersMappings);
@@ -223,7 +223,7 @@ console.log('Inci User')
             const deleteVoyages = voyagesIndexedDB.filter((voyage: Voyage) => voyage.syncStatus == 'deleted');
 
             console.log('Inicio reccorrer viajes add');
-            
+
             // Recorremos todos los viajes que falta por agregar.
             for await (const iVoyage of addVoyages) {
 
@@ -232,12 +232,12 @@ console.log('Inci User')
                 // Si se encontro algo actualizamos el nuevo UserId.
                 if (searchUserMapping) { iVoyage.userId = searchUserMapping.value }
                 console.log('Va invocar el servicio create');
-            
+
                 // Resultado del create
                 let resultCreate: Voyage;
                 resultCreate = await this.voyageService.Create(iVoyage).pipe().toPromise();
                 console.log('Fin reccorrer viajes');
-            
+
 
                 // Este nuevo Create se registra al final;
 
@@ -249,9 +249,9 @@ console.log('Inci User')
 
             }
             console.log('Fin for add');
-            
+
             console.log('Inicio FOr Update');
-            
+
             // Recorremos todos los voyages que falta por actualizar.
             for await (const iVoyage of updateVoyages) {
                 let resultUpdate: Voyage;
@@ -1399,7 +1399,7 @@ console.log('Inci User')
 
         }
 
-        
+
         console.log('Inicio For voyagesMappingsReverse');
         // recorremos y actualizamos uno por uno
         for await (let idVoyageRegister of voyagesMappingsReverse) {
@@ -1411,7 +1411,7 @@ console.log('Inci User')
             await this.estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(idVoyageRegister.key, idVoyageRegister.value);
         }
 
-        
+
         console.log('Inicio For portsMappingsMappingsReverse');
         for await (let idPortRegister of portsMappingsMappingsReverse) {
 
@@ -1422,7 +1422,7 @@ console.log('Inci User')
         }
 
 
-        
+
         console.log('Inicio For dailyReportsMappingsReverse');
         for await (let idDailyReport of dailyReportsMappingsReverse) {
 
@@ -1438,7 +1438,7 @@ console.log('Inci User')
     }
 
     // Esta funcion iserve para actualizar los puertos a un nuevo viajeId
-    public async estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(oldVoyageId=3, newVoyageId=5): Promise<boolean> {
+    public async estaFuncionSirveparaActualizarLosPuertosConUnNuevoVoyageId(oldVoyageId = 3, newVoyageId = 5): Promise<boolean> {
         // obtenemos todos los puertos
         let portsIndexedDB = await this.db.ports.toArray()
         // Filtramos los puertos con el mismo id del key
