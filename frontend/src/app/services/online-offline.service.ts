@@ -156,11 +156,12 @@ export class OnlineOfflineService {
 
     // Enviamos nuestra conexion.
     let newConection: LoggedUser = new LoggedUser();
-    let useRLogger: User = this._AuthService.GetLoggedUser();
+    let userLogger: User = this._AuthService.GetLoggedUser();
+    
+    if (!userLogger) throw 'No user logger, userLogger'
+   
 
-    if (!useRLogger) throw 'Welcome to login'
-
-    newConection.userName = useRLogger.name;
+    newConection.userName = userLogger.name;
     newConection.isActive = true;
 
     // emitimos un REGISTER_CONECTION_USER
@@ -176,11 +177,11 @@ export class OnlineOfflineService {
   public SyncDataByUser(loggedUser: LoggedUser) {
     // Enviamos nuestra conexion.
     let newConection: LoggedUser = new LoggedUser();
-    let useRLogger: User = this._AuthService.GetLoggedUser();
+    let userLogger: User = this._AuthService.GetLoggedUser();
 
-    if (!useRLogger) throw 'Welcome to login'
+    if (!userLogger) throw 'No user logger, userLogger'
     newConection.clientId = loggedUser.clientId;
-    newConection.userName = useRLogger.name;
+    newConection.userName = userLogger.name;
     newConection.isActive = true;
 
     // emitimos un REGISTER_CONECTION_USER
