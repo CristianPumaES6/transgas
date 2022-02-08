@@ -1447,7 +1447,7 @@ export class DatabaseService {
                 voyagesMappingsReverse.forEach(mapping => {
                     console.log('actualizaviajeypuertodentro    : ' + mapping.key + '  - ' + mapping.value);
                     // Agregamos al arreglo
-                    arrdeUpdate.push(this.ActualizaViajeIdLocalConElDelServer(mapping.key, mapping.value));
+                    arrdeUpdate.push(this.ActualizaViajeIdLocalConElDelServer(mapping.key, mapping.value,true));
                 });
 
                 // EJecutamos las promesas
@@ -1481,11 +1481,16 @@ export class DatabaseService {
     }
 
     // Actualizamos el viaje junto cpon el puerto.
-    public async ActualizaViajeIdLocalConElDelServer(oldVoyageIdLocal: number, newVoyageIdServer: number): Promise<boolean> {
+    public async ActualizaViajeIdLocalConElDelServer(oldVoyageIdLocal: number, newVoyageIdServer: number, isUpdateSyncStatus:boolean): Promise<boolean> {
 
         return await Promise.resolve(true)
             .then(result => {
-                return this.db.voyages.update(oldVoyageIdLocal, { id: newVoyageIdServer, syncStatus: 'none' });
+                // Se desea actualizar el synxStatus
+                if(isUpdateSyncStatus){
+                    return this.db.voyages.update(oldVoyageIdLocal, { id: newVoyageIdServer, syncStatus: 'none' });
+                }else{
+                    return this.db.voyages.update(oldVoyageIdLocal, { id: newVoyageIdServer});
+                }
             })
             .then(result => {
                 return this.ActualizaPuertosDeUnViajeIdDistintoAlServer(oldVoyageIdLocal, newVoyageIdServer);
@@ -1514,12 +1519,13 @@ export class DatabaseService {
 
 
         // Capturamos los ultimo id registrados desde la bd, para poder asignarlos a los nuevos.
-        let ultimoVoyageId, ultimoPortId, ultimoDailyReportId;
+        let ultimoVoyageIdLocal: number, ultimoPortIdLocal: number, ultimoDailyReportIdLocal: number;
         // Verificamos si se registro algun viaje,
         if (voyagesMappingsReverse.length > 0) {
 
             // Capturamos el ultimo id registrado.
-            ultimoVoyageId = voyagesMappingsReverse[0].value;
+            ultimoVoyageIdLocal = voyagesMappingsReverse[0].key;
+            let ultimoVoyageIdServer = voyagesMappingsReverse[0].value;
 
             // Si el key es diferente.
             if (voyagesMappingsReverse[0].value != voyagesMappingsReverse[0].key) {
@@ -1527,14 +1533,26 @@ export class DatabaseService {
                 // Verificamos si existe viajes superiores a este 
                 let voyages = await this.db.voyages.toArray();
                 // fILTRAMOS los viajes mayor o igual al ultimo id.
-                let listFilterVoyageMayoresQueElId: Voyage[] = voyages.filter(voyage => voyage.id >= ultimoVoyageId).reverse();
+                let listFilterVoyageMayoresQueElId: Voyage[] = voyages.filter(voyage => voyage.id > ultimoVoyageIdLocal);
+               
+                console.log('Cantidad de viajes superiores al key' + ultimoVoyageIdLocal);
+                console.log(listFilterVoyageMayoresQueElId);
+                
                 // Recorremos la lista.
                 for await (let voyage of listFilterVoyageMayoresQueElId) {
 
-                    let voyageIdLocal = voyage.id;
-                    let newVoyageId = voyageIdLocal + 1;
+                    // Le sumamos mas 1 al server.
+                    ultimoVoyageIdServer = ultimoVoyageIdServer + 1;
+                    
+                    console.log('VAije local que se actualizara' + voyage.id);
+                    console.log('VAije local que se actualizara con el nuevo' + ultimoVoyageIdServer);
+                    
 
-                    let resultUpdate = await this.ActualizaViajeIdLocalConElDelServer(voyageIdLocal, newVoyageId);
+
+                    let voyageIdLocal = voyage.id;
+                    let newVoyageId = ultimoVoyageIdServer;
+
+                    let resultUpdate = await this.ActualizaViajeIdLocalConElDelServer(voyageIdLocal, newVoyageId,false);
                     if (!resultUpdate) {
                         console.error('ERROR AL ACTUALIZAR LOS VIAJES LOCALES');
                     }
@@ -1549,7 +1567,9 @@ export class DatabaseService {
         if (portsMappingsMappingsReverse.length > 0) {
 
             // Capturamos el ultimo id registrado.
-            ultimoPortId = portsMappingsMappingsReverse[0].value;
+            ultimoPortIdLocal = portsMappingsMappingsReverse[0].key;
+            let ultimoPortIdServer = portsMappingsMappingsReverse[0].value;
+
 
             // Si el key es diferente.
             if (portsMappingsMappingsReverse[0].value != portsMappingsMappingsReverse[0].key) {
@@ -1557,12 +1577,15 @@ export class DatabaseService {
                 // Verificamos si existe viajes superiores a este 
                 let dbPorts = await this.db.ports.toArray();
                 // fILTRAMOS los viajes mayor o igual al ultimo id.
-                let listFilterMayorAUltimoPortId = dbPorts.filter(port => port.id >= ultimoPortId).reverse();
+                let listFilterMayorAUltimoPortId = dbPorts.filter(port => port.id > ultimoPortIdLocal);
                 // Recorremos la lista.
                 for await (let iPort of listFilterMayorAUltimoPortId) {
-                    let antiguoId, newId;
-                    antiguoId = iPort.id;
-                    newId = antiguoId + 1;
+
+                    // Le sumamos mas 1 al server.
+                    ultimoPortIdServer = ultimoPortIdServer + 1;
+
+                    let antiguoId = iPort.id;
+                    let newId = ultimoPortIdServer;
 
 
                     // Y le sumamos un digito.
@@ -1579,7 +1602,8 @@ export class DatabaseService {
         // Verificamos si se ha registra algun puerto
         if (dailyReportsMappingsReverse.length > 0) {
             // Capturamos el ultimo id registrado.
-            ultimoDailyReportId = dailyReportsMappingsReverse[0].value;
+            ultimoDailyReportIdLocal = dailyReportsMappingsReverse[0].key;
+            let ultimoDailyReportIdServer = dailyReportsMappingsReverse[0].value;
 
             // Si el key es diferente.
             if (dailyReportsMappingsReverse[0].value != dailyReportsMappingsReverse[0].key) {
@@ -1587,12 +1611,17 @@ export class DatabaseService {
                 // Verificamos si existe viajes superiores a este 
                 let dbDailyReport = await this.db.dailyReports.toArray();
                 // Filtramos los viajes mayor o igual al ultimo id.
-                let listFilterMayorAUltimoReportId = dbDailyReport.filter(report => report.id >= ultimoDailyReportId).reverse();
+                let listFilterMayorAUltimoReportId = dbDailyReport.filter(report => report.id > ultimoDailyReportIdLocal);
                 // Recorremos la lista.
                 for await (let iReport of listFilterMayorAUltimoReportId) {
-                    let antiguoId, newId;
-                    antiguoId = iReport.id;
-                    newId = antiguoId + 1;
+
+
+                    // Le sumamos mas 1 al server.
+                    ultimoDailyReportIdServer = ultimoDailyReportIdServer + 1;
+
+                    let antiguoId = iReport.id;
+                    let newId = ultimoDailyReportIdServer;
+
 
 
                     // Y le sumamos un digito.
