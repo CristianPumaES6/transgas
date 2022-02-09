@@ -26,7 +26,7 @@ export class ExportExcelComponent implements OnInit {
   }
 
   public ClickExportExcel(){
-    alert('SE EXPORTO.')
+    // alert('SE EXPORTO.')
     this.ClickDownloading();
   }
 

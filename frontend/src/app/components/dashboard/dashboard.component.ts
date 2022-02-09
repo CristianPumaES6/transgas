@@ -4222,7 +4222,7 @@ export class DashboardComponent implements OnInit {
 
         if (result) {
 
-          alert('OKK');
+         // alert('OKK');
         }
       });
 
