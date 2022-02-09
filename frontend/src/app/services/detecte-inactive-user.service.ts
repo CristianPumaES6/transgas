@@ -15,7 +15,7 @@ export class DetecteInactiveUserService {
   lastInteraction: Date = new Date();
 
   // Tiempo de inactividad de 10 minutos.
-  definedInactivityPeriod = 15000 * 1;
+  definedInactivityPeriod = 60000 * 5;
 
   constructor(
     private _LoadingService:LoadingService,
