@@ -10,6 +10,6 @@ Anexo B - Daily Consumption Report
 
 y se creo el 
 
-Transgas - Sailing Analysis Format Upload v2
+Transgas - Analysis of consumption Format Upload v2
 
 

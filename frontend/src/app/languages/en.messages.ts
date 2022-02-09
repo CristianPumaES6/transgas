@@ -55,7 +55,7 @@ export const auth: any = {
 export const logIn: any = {
     LOG_IN: 'Log In',
     TITLE_PRINCIPAL: 'Transgas',
-    SUB_TITLE_PRINCIPAL: 'SAILING ANALYSIS',
+    SUB_TITLE_PRINCIPAL: 'ANALYSIS OF CONSUMPTION',
     WELCOME_LOGIN: 'Welcome back!',
     PLEASE_SING_LOGIN: 'Please sign in to continue.',
     // Formulario
