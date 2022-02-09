@@ -1626,14 +1626,19 @@
         "signature": "4bc4c7612f5cc6298b01f76f7a21674181ae6e199a0b07c518107c15bde32344",
         "affectsGlobalScope": false
       },
-      "../src/config/server.config.ts": {
-        "version": "17ec91ba6ff7e0ddce32c340dda8ca66a0d5aeaa563c01b1e0658b74d098d3b4",
-        "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
+      "../node_modules/@types/engine.io/index.d.ts": {
+        "version": "854089953b8bdf60437d229c41544eb8fd374206b49f99647298ff7824f4932e",
+        "signature": "854089953b8bdf60437d229c41544eb8fd374206b49f99647298ff7824f4932e",
         "affectsGlobalScope": false
       },
-      "../src/app.gateway.ts": {
-        "version": "fa55c405bec10d74967570b16c613d1811e0022da1dfd8314f185151c6c55f29",
-        "signature": "dacf8872f1782159e3d084efd8f4b1a2b89f8b11617c9214bcb98c0187a6f4b1",
+      "../node_modules/@types/socket.io-parser/index.d.ts": {
+        "version": "8487571622eefb9421499874014fa1cc0898bd15724565002a27b67d8e285072",
+        "signature": "8487571622eefb9421499874014fa1cc0898bd15724565002a27b67d8e285072",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/socket.io/index.d.ts": {
+        "version": "bed35c3ddd0ffc1a8e0fe9dcf83c7b2e0e2900de26405012aaf3724e8fd1a42d",
+        "signature": "bed35c3ddd0ffc1a8e0fe9dcf83c7b2e0e2900de26405012aaf3724e8fd1a42d",
         "affectsGlobalScope": false
       },
       "../node_modules/moment/ts3.1-typings/moment.d.ts": {
@@ -1651,14 +1656,29 @@
         "signature": "5fc7d54c755159a28f867a6f9f06b2fd2ebaedef1695d4da1987cfe86a2f7f22",
         "affectsGlobalScope": false
       },
+      "../src/config/server.config.ts": {
+        "version": "18fab4c2f6e3eb930b76a3c34f7eebeb7675097c155723633933eb33b8ba1747",
+        "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
+        "affectsGlobalScope": false
+      },
       "../src/models/loggeduser.ts": {
-        "version": "74be974299ef9bba47873c368098918589ede9bd74c7ffbd3caedbcb0cc8209d",
-        "signature": "f36ea718433a8a8416947460f743d41cb2cf170b1cedc26a64c016be26c901f3",
+        "version": "4d41b1c7c9fdebfb79bfc71dd3264e401110af6ddfdf08a184f1661fb55971fc",
+        "signature": "0bdb0421e6bb04f07136e17b740d07e26c05f3bfd32fb40ce72398e1c3ec925d",
+        "affectsGlobalScope": false
+      },
+      "../src/models/socketemit.ts": {
+        "version": "ce4a02b91b7fa697366c3584d0491abb1bde6f491cd969705b44b94d81cb6880",
+        "signature": "0e41fcc8e3071ccd21aaf53f3be2253c48ef3e0f90dcfd94c2c3dfe934366ae9",
+        "affectsGlobalScope": false
+      },
+      "../src/app.gateway.ts": {
+        "version": "f2646f6af5bd0038adfe36e128b9d3d3e353f491ae1d4c8888eac22e62a1d43c",
+        "signature": "07031e6f723003f3e6958a88b6cdc83101433a9916775767150e5ee59cf32e27",
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "7ad3bc049b1408846cf614cc7aadce2d50963b859092535e44d70db6106d5a62",
-        "signature": "fb78e853c68d2e0415ddcb019775d2140683666ddc2c64289517ac4a8895ca44",
+        "version": "6d73a4e38b223c1e574bbd28a3ac5ed950ed4dccec92ec72de5640d761b73eee",
+        "signature": "8edfd94a3227e0fe7c0444f1476eb0e2004ce0ee6b426914f40a848d0687e1d5",
         "affectsGlobalScope": false
       },
       "../node_modules/typeorm/schema-builder/options/tablecolumnoptions.d.ts": {
@@ -3072,8 +3092,8 @@
         "affectsGlobalScope": false
       },
       "../src/app.controller.ts": {
-        "version": "673c5e08d7d06eb833e6d1b8d73f1359adef76dd4068977d968049bafe33d67e",
-        "signature": "90aa58c011c376a7d1bd6fb44139d66f7b21099bb004a131323ec97f14ef3af2",
+        "version": "540b290834fea204f2670587b80f55c12ce822fd7702d0aaef950dc9b2445095",
+        "signature": "5aa12b25508f9e9870d01078c7f8b0b62c834cc271b2b97ff8bda1572344eb19",
         "affectsGlobalScope": false
       },
       "../src/config/path.config.ts": {
@@ -3257,7 +3277,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "39f0361e30cf96fa9af3955a50f64b02a35e88f53330eccae918c0234af72a53",
+        "version": "1bc0e363e97f23fededbf10198ba01954c83652c8bd593ccfa369b55e7f03004",
         "signature": "7b96ffb6f08f0740caf060816f1d404a23bae456ea20625051a069553fb8550d",
         "affectsGlobalScope": false
       },
@@ -3292,7 +3312,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "41657560119bdaa519474a84702b3bf5b122fdfe64c3b043465bbbfa2c517dbf",
+        "version": "18e75e2babfbc435ceee17208a8ac27f4cd00aae6d14fccbedcfba9b94fd0e0e",
         "signature": "9fc7f7b6ad854404973b8cba8e6d883f758237991968e9a3965d716d46f1da88",
         "affectsGlobalScope": false
       },
@@ -3516,11 +3536,6 @@
         "signature": "8d48b8f8a377ade8dd1f000625bc276eea067f2529cc9cafdf082d17142107d6",
         "affectsGlobalScope": false
       },
-      "../node_modules/@types/engine.io/index.d.ts": {
-        "version": "854089953b8bdf60437d229c41544eb8fd374206b49f99647298ff7824f4932e",
-        "signature": "854089953b8bdf60437d229c41544eb8fd374206b49f99647298ff7824f4932e",
-        "affectsGlobalScope": false
-      },
       "../node_modules/@types/eslint/helpers.d.ts": {
         "version": "f345b0888d003fd69cb32bad3a0aa04c615ccafc572019e4bd86a52bd5e49e46",
         "signature": "f345b0888d003fd69cb32bad3a0aa04c615ccafc572019e4bd86a52bd5e49e46",
@@ -3649,16 +3664,6 @@
       "../node_modules/@types/prettier/index.d.ts": {
         "version": "c4efa4df1372e991aa44b70b8d87b48865d94ecd26e76025854f2273df155253",
         "signature": "c4efa4df1372e991aa44b70b8d87b48865d94ecd26e76025854f2273df155253",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/socket.io-parser/index.d.ts": {
-        "version": "8487571622eefb9421499874014fa1cc0898bd15724565002a27b67d8e285072",
-        "signature": "8487571622eefb9421499874014fa1cc0898bd15724565002a27b67d8e285072",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/socket.io/index.d.ts": {
-        "version": "bed35c3ddd0ffc1a8e0fe9dcf83c7b2e0e2900de26405012aaf3724e8fd1a42d",
-        "signature": "bed35c3ddd0ffc1a8e0fe9dcf83c7b2e0e2900de26405012aaf3724e8fd1a42d",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/source-list-map/index.d.ts": {
@@ -6462,6 +6467,7 @@
       "../src/app.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/passport/index.d.ts",
+        "../src/app.gateway.ts",
         "../src/app.service.ts",
         "../src/assets/promises.assets.ts",
         "../src/components/auth/auth.service.ts",
@@ -6473,7 +6479,11 @@
       "../src/app.gateway.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/websockets/index.d.ts",
-        "../src/config/server.config.ts"
+        "../node_modules/@types/socket.io/index.d.ts",
+        "../src/assets/moment.assets.ts",
+        "../src/config/server.config.ts",
+        "../src/models/loggeduser.ts",
+        "../src/models/socketemit.ts"
       ],
       "../src/app.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -6492,7 +6502,8 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/app.gateway.ts",
         "../src/assets/moment.assets.ts",
-        "../src/models/loggeduser.ts"
+        "../src/models/loggeduser.ts",
+        "../src/models/socketemit.ts"
       ],
       "../src/assets/jwtdecode.assets.ts": [
         "../node_modules/jwt-decode/index.d.ts"
@@ -6674,6 +6685,9 @@
         "../node_modules/typeorm/index.d.ts",
         "../src/models/daily-report.entity.ts",
         "../src/models/voyage.entity.ts"
+      ],
+      "../src/models/socketemit.ts": [
+        "../src/models/loggeduser.ts"
       ],
       "../src/models/user.entity.ts": [
         "../node_modules/typeorm/index.d.ts"
@@ -9340,17 +9354,20 @@
       ],
       "../src/app.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
+        "../src/app.gateway.ts",
         "../src/app.service.ts",
         "../src/components/auth/auth.service.ts",
         "../src/models/loggeduser.ts",
         "../src/models/user.entity.ts"
       ],
       "../src/app.gateway.ts": [
-        "../node_modules/@nestjs/websockets/index.d.ts"
+        "../node_modules/@nestjs/websockets/index.d.ts",
+        "../node_modules/@types/socket.io/index.d.ts",
+        "../src/models/loggeduser.ts",
+        "../src/models/socketemit.ts"
       ],
       "../src/app.service.ts": [
-        "../src/app.gateway.ts",
-        "../src/models/loggeduser.ts"
+        "../src/app.gateway.ts"
       ],
       "../src/components/auth/auth.service.ts": [
         "../node_modules/@nestjs/jwt/index.d.ts",
@@ -9404,6 +9421,9 @@
       "../src/models/port.entity.ts": [
         "../src/models/daily-report.entity.ts",
         "../src/models/voyage.entity.ts"
+      ],
+      "../src/models/socketemit.ts": [
+        "../src/models/loggeduser.ts"
       ],
       "../src/models/voyage.entity.ts": [
         "../src/models/port.entity.ts"

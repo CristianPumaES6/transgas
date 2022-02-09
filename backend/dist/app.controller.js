@@ -20,10 +20,12 @@ const auth_service_1 = require("./components/auth/auth.service");
 const promises_assets_1 = require("./assets/promises.assets");
 const loggedUser_1 = require("./models/loggedUser");
 const server_config_1 = require("./config/server.config");
+const app_gateway_1 = require("./app.gateway");
 let AppController = class AppController {
-    constructor(appService, authService) {
+    constructor(appService, authService, _AppGateway) {
         this.appService = appService;
         this.authService = authService;
+        this._AppGateway = _AppGateway;
     }
     Pruebas(body) {
         return promises_assets_1.DummyPromise().then((result) => {
@@ -83,7 +85,7 @@ let AppController = class AppController {
     async loggedUsers(headers, loggedUser) {
         console.log("@Post('loggedUsers')");
         return await promises_assets_1.DummyPromise().then((resultDummy) => {
-            return this.appService.IsUserLogeatedExit(loggedUser);
+            return this._AppGateway.IsUserLogeatedExit(loggedUser);
         }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
@@ -103,7 +105,7 @@ let AppController = class AppController {
     async GetLoggedUsers(headers, loggedUser) {
         console.log("@Get('loggedUsers')");
         return await promises_assets_1.DummyPromise().then(result => {
-            return this.appService.GetLoggedUsers();
+            return this._AppGateway.GetLoggedUsers();
         }).then((resultLoggedUsers) => {
             return {
                 status: common_1.HttpStatus.OK,
@@ -121,7 +123,7 @@ let AppController = class AppController {
         });
     }
     async EmitConnect() {
-        console.log("@Post('emitConnect')");
+        console.log("EmitConnect()");
         return await promises_assets_1.DummyPromise().then((resultDummy) => {
             return this.appService.EmitConnect();
         }).then((resultEmitConnect) => {
@@ -192,7 +194,8 @@ __decorate([
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,
-        auth_service_1.AuthService])
+        auth_service_1.AuthService,
+        app_gateway_1.AppGateway])
 ], AppController);
 exports.AppController = AppController;
 //# sourceMappingURL=app.controller.js.map

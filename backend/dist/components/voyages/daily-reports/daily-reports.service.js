@@ -27,35 +27,7 @@ let DailyReportsService = class DailyReportsService {
     async Create(dailyReport) {
         return promises_assets_1.DummyPromise().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._dailyReportRepository.query(`
-                     EXEC SP_CreateNewDailyReport 
-                    @userId = ${dailyReport.userId} 
-                    ,@portId = ${dailyReport.portId} 
-                    ,@activityPerformed = '${dailyReport.activityPerformed}' 
-                    ,@speedStraction = '${dailyReport.speedStraction}' 
-                    ,@date ='${dailyReport.date}' 
-                    ,@hour = '${dailyReport.hour}' 
-                    ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
-                    ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
-                    ,@mplaIfo  = ${dailyReport.mplaIfo} 
-                    ,@auxIfo  = ${dailyReport.auxIfo} 
-                    ,@boilerIfo  = ${dailyReport.boilerIfo} 
-                    ,@otherIfo = ${dailyReport.otherIfo} 
-                    ,@mplaMgo = ${dailyReport.mplaMgo} 
-                    ,@auxMgo   = ${dailyReport.auxMgo} 
-                    ,@boilerMgo   = ${dailyReport.boilerMgo} 
-                    ,@ppMgo = ${dailyReport.ppMgo} 
-                    ,@giMgo = ${dailyReport.giMgo} 
-                    ,@otherMgo  = ${dailyReport.otherMgo} 
-                    ,@steamingTime  = ${dailyReport.steamingTime} 
-                    ,@distance =${dailyReport.distance} 
-                    ,@beaufour = '${dailyReport.beaufour}' 
-                    ,@observation ='${dailyReport.observation}'  
-                    ,@userIdCreated = ${dailyReport.userIdCreated} 
-                    ,@dateCreated = '${dailyReport.dateCreated}' 
-                    ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} 
-                    ,@dateUpdated = '${dailyReport.dateUpdated || null}' 
-                    ,@status = ${dailyReport.status}
+                return this._dailyReportRepository.query(` EXEC SP_CreateNewDailyReport @userId = ${dailyReport.userId} ,@portId = ${dailyReport.portId} ,@activityPerformed = '${dailyReport.activityPerformed}' ,@speedStraction = '${dailyReport.speedStraction}' ,@date ='${dailyReport.date}' ,@hour = '${dailyReport.hour}' ,@bunkeringIfo = ${dailyReport.bunkeringIfo} ,@bunkeringMgo = ${dailyReport.bunkeringMgo} ,@mplaIfo  = ${dailyReport.mplaIfo} ,@auxIfo  = ${dailyReport.auxIfo} ,@boilerIfo  = ${dailyReport.boilerIfo} ,@otherIfo = ${dailyReport.otherIfo} ,@mplaMgo = ${dailyReport.mplaMgo} ,@auxMgo   = ${dailyReport.auxMgo} ,@boilerMgo   = ${dailyReport.boilerMgo} ,@ppMgo = ${dailyReport.ppMgo} ,@giMgo = ${dailyReport.giMgo} ,@otherMgo  = ${dailyReport.otherMgo} ,@steamingTime  = ${dailyReport.steamingTime} ,@distance =${dailyReport.distance} ,@beaufour = '${dailyReport.beaufour}' ,@observation ='${dailyReport.observation}'  ,@userIdCreated = ${dailyReport.userIdCreated} ,@dateCreated = '${dailyReport.dateCreated}' ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} ,@dateUpdated = '${dailyReport.dateUpdated || null}' ,@status = ${dailyReport.status}
                     `);
             }
             else {
@@ -72,6 +44,8 @@ let DailyReportsService = class DailyReportsService {
             else {
                 return resultSave;
             }
+        }).catch(err => {
+            throw err;
         });
     }
     async Get(id) {
@@ -124,33 +98,33 @@ let DailyReportsService = class DailyReportsService {
                 throw new Error('does_not_exist');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._dailyReportRepository.query(`
-                EXEC SP_UpdateDailyReport  
-                @id = ${dailyReport.userId} 
-                ,@userId = ${dailyReport.userId} 
-                ,@portId = ${dailyReport.portId} 
-                ,@activityPerformed = '${dailyReport.activityPerformed}' 
-                ,@speedStraction = '${dailyReport.speedStraction}' 
-                ,@date ='${dailyReport.date ? moment_assets_1.FormatDateUTCToDateHour(dailyReport.date) : ''}' 
-                ,@hour = '${dailyReport.hour}' 
-                ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
-                ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
-                ,@mplaIfo  = ${dailyReport.mplaIfo} 
-                ,@auxIfo  = ${dailyReport.auxIfo}
-                 ,@boilerIfo  = ${dailyReport.boilerIfo} 
-                 ,@otherIfo = ${dailyReport.otherIfo}
-                  ,@mplaMgo = ${dailyReport.mplaMgo}
-                   ,@auxMgo   = ${dailyReport.auxMgo}
-                    ,@boilerMgo   = ${dailyReport.boilerMgo} 
-                    ,@ppMgo = ${dailyReport.ppMgo} 
-                    ,@giMgo = ${dailyReport.giMgo} 
-                    ,@otherMgo  = ${dailyReport.otherMgo} 
-                    ,@steamingTime  = ${dailyReport.steamingTime}
-                     ,@distance =${dailyReport.distance}
-                      ,@beaufour = '${dailyReport.beaufour}'
-                      ,@observation ='${dailyReport.observation}' 
-                       ,@userIdUpdated = ${dailyReport.userIdUpdated || 0}
+                    EXEC SP_UpdateDailyReport  
+                        @id = ${dailyReport.userId} 
+                        ,@userId = ${dailyReport.userId} 
+                        ,@portId = ${dailyReport.portId} 
+                        ,@activityPerformed = '${dailyReport.activityPerformed}' 
+                        ,@speedStraction = '${dailyReport.speedStraction}' 
+                        ,@date ='${dailyReport.date ? moment_assets_1.FormatDateUTCToDateHour(dailyReport.date) : ''}' 
+                        ,@hour = '${dailyReport.hour}' 
+                        ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
+                        ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
+                        ,@mplaIfo  = ${dailyReport.mplaIfo} 
+                        ,@auxIfo  = ${dailyReport.auxIfo}
+                        ,@boilerIfo  = ${dailyReport.boilerIfo} 
+                        ,@otherIfo = ${dailyReport.otherIfo}
+                        ,@mplaMgo = ${dailyReport.mplaMgo}
+                        ,@auxMgo   = ${dailyReport.auxMgo}
+                        ,@boilerMgo   = ${dailyReport.boilerMgo} 
+                        ,@ppMgo = ${dailyReport.ppMgo} 
+                        ,@giMgo = ${dailyReport.giMgo} 
+                        ,@otherMgo  = ${dailyReport.otherMgo} 
+                        ,@steamingTime  = ${dailyReport.steamingTime}
+                        ,@distance =${dailyReport.distance}
+                        ,@beaufour = '${dailyReport.beaufour}'
+                        ,@observation ='${dailyReport.observation}' 
+                        ,@userIdUpdated = ${dailyReport.userIdUpdated || 0}
                         ,@dateUpdated = '${dailyReport.dateUpdated || ''}'
-                         ,@status = ${dailyReport.status}
+                        ,@status = ${dailyReport.status}
                 `);
             }
             else {

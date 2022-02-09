@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoggedUser = void 0;
 class LoggedUser {
-    constructor(token, userName, firstConnection, lastConnection, lat, lng, isActive) {
+    constructor(clientId, token, userName, firstConnection, lastConnection, lat, lng, isActive) {
+        this.clientId = clientId || '';
         this.token = token || '';
         this.userName = userName || '';
         this.firstConnection = firstConnection || '';

@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1640149803026,
+  "timestamp": 1644374458685,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -16,7 +16,7 @@
         "/6.0e3ec119777d34748f6e.js",
         "/favicon.ico",
         "/index.html",
-        "/main.962a1b49db4e8538e1a6.js",
+        "/main.3736c424d8cfb5d1adb3.js",
         "/manifest.webmanifest",
         "/polyfills.ac27f9db7182d098bf2e.js",
         "/runtime.dbf7a3d362817d53ac80.js",
@@ -36,6 +36,7 @@
         "/ADRIAN2.d21af11d11f94c0c4d87.jpg",
         "/assets/500x500.png",
         "/assets/ADRIAN2.jpg",
+        "/assets/detect-inactive/detecte-inactive.assets.ts",
         "/assets/icomoon/Read Me.txt",
         "/assets/icomoon/demo-files/demo.css",
         "/assets/icomoon/demo-files/demo.js",
@@ -475,6 +476,7 @@
     "/ADRIAN2.d21af11d11f94c0c4d87.jpg": "fd2bb44cd4cefea75db71891cb751f4d580bf5e4",
     "/assets/500x500.png": "9dcb9bb1b32805305dedaf9f0a2161930f585190",
     "/assets/ADRIAN2.jpg": "fd2bb44cd4cefea75db71891cb751f4d580bf5e4",
+    "/assets/detect-inactive/detecte-inactive.assets.ts": "62fc4c7ff5501ea62d70dc01b29e709ea1d94289",
     "/assets/icomoon/Read Me.txt": "7cb4baf9bd429bcd3833d2a96f3fbe29a7dd4ce9",
     "/assets/icomoon/demo-files/demo.css": "d29758cc52cbd161331efe3052bd8d882494114e",
     "/assets/icomoon/demo-files/demo.js": "e264ca246dbc4c632b053c19f7ca746b95b3f0b3",
@@ -903,8 +905,8 @@
     "/assets/pdfjs/web/viewer.js.map": "41e997d79a92df6ff827284d189a3fba68e9b733",
     "/assets/pdfjs/web/viewer.min.js": "57bc7a4418271bef7cb38e989cdd6de64a1dc7c2",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/index.html": "569df18c3adaa7e87d64db716297cb5f92674643",
-    "/main.962a1b49db4e8538e1a6.js": "793942b6abc2a916e013e8005b81e2d64276e8e4",
+    "/index.html": "2221cf769e70b7e5f0c606ceed11c80b82e26718",
+    "/main.3736c424d8cfb5d1adb3.js": "8039114a1ec05e7a8650fccb49610450092c4693",
     "/manifest.webmanifest": "f7ac9a144214abe24041f42ade7195230b1247a5",
     "/polyfills.ac27f9db7182d098bf2e.js": "72ad4ccc0a3916ae4598199447cdeadd6d380570",
     "/runtime.dbf7a3d362817d53ac80.js": "8456a10e783b5b6be723e779e24d53016c2a8a20",

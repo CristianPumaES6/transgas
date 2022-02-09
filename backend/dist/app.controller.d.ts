@@ -3,10 +3,12 @@ import { AppService } from './app.service';
 import { UserEntity } from './models/user.entity';
 import { AuthService } from './components/auth/auth.service';
 import { LoggedUser } from './models/loggedUser';
+import { AppGateway } from './app.gateway';
 export declare class AppController {
     private readonly appService;
     private readonly authService;
-    constructor(appService: AppService, authService: AuthService);
+    private readonly _AppGateway;
+    constructor(appService: AppService, authService: AuthService, _AppGateway: AppGateway);
     Pruebas(body: any): Promise<any>;
     GetVersionPlataform(): any;
     getHello(): any;

@@ -12,57 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 const app_gateway_1 = require("./app.gateway");
-const moment_assets_1 = require("./assets/moment.assets");
+const socketEmit_1 = require("./models/socketEmit");
 let AppService = class AppService {
     constructor(gateway) {
         this.gateway = gateway;
-        this.loggedUsers = [];
-    }
-    getHello() {
-        return 'Hello World!';
-    }
-    IsUserLogeatedExit(loggedUser) {
-        let isUserExit = this.loggedUsers.find((logeate) => {
-            return logeate.token === loggedUser.token;
-        });
-        if (isUserExit) {
-            this.UpdateUserLogeated(loggedUser);
-            return false;
-        }
-        else {
-            this.AddUserLogeated(loggedUser);
-            return true;
-        }
-    }
-    AddUserLogeated(loggedUser) {
-        loggedUser.firstConnection = moment_assets_1.GetDate();
-        loggedUser.lastConnection = moment_assets_1.GetDate();
-        loggedUser.isActive = true;
-        this.loggedUsers.push(loggedUser);
-        return true;
-    }
-    UpdateUserLogeated(loggedUser) {
-        this.loggedUsers.forEach(logged => {
-            if (logged.token === loggedUser.token) {
-                logged.lastConnection = moment_assets_1.GetDate();
-                if (loggedUser.lat == 0 && loggedUser.lng == 0) {
-                }
-                else {
-                    logged.lat = loggedUser.lat;
-                    logged.lat = loggedUser.lng;
-                }
-                logged.isActive = true;
-            }
-        });
-        return true;
-    }
-    GetLoggedUsers() {
-        return this.loggedUsers;
     }
     EmitConnect() {
-        this.loggedUsers.forEach(loggedUser => {
-            loggedUser.isActive = false;
-        });
+        let socketEmitModel = new socketEmit_1.SocketEmitModel();
+        socketEmitModel.action = 'WHO_ARE_CONNECTED';
+        this.gateway.wss.emit('EmitConnect', socketEmitModel);
         return true;
     }
 };
