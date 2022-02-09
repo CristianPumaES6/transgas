@@ -31,7 +31,7 @@ public roleUser: string= '';
   public title_home = "Transgas";
   public sub_title_home = "ANALYSIS OF CONSUMPTION";
   public description_home = "Get Voyage Analysis In Just One Click!"
-  public description_home_ext = "The voyage analysis platform allows to obtain the performance of the machine, speed, consumption. Thanks to the daily report sent by the captain."
+  public description_home_ext = "The consumption analysis platform allows to obtain the performance of the machine, speed, consumption. Thanks to the daily report sent by the captain."
 
 
   // Segundo cuadro manual de usuario
