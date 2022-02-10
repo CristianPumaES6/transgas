@@ -7,7 +7,8 @@ export const azList: any = {
 export const aSide: any = {
     DASHBOARD: 'Dashboard',
     VOYAGE: 'Voyage',
-    USER: 'User'
+    USER: 'User',
+    DESCRIPTION_DASHBOARD: 'Data analysis tool that monitors, analyzes and visually displays key indicators.'
 };
 
 //
