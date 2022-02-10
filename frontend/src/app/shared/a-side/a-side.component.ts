@@ -158,7 +158,7 @@ export class ASideComponent implements OnInit {
       this.isOpenSubMenu = false;
       $('.az-iconbar-aside').removeClass('show');
 
-    } 
+    }
     // Si esta cerrado y ademas se a seleccioado el dashboard
     // Abrimos el subMenu
     else if (this.navLink == 'dashboard') {

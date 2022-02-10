@@ -285,6 +285,12 @@ export class ApplicationComponent implements OnInit {
       case '/application/dashboard':
         navLink = 'dashboard';
         break;
+      case '/application/dashboard/consumer_analysis':
+        navLink = 'consumer_analysis';
+        break;
+      case '/application/dashboard/speed_analysis':
+        navLink = 'speed_analysis';
+        break;
 
       case '/application/voyages':
         navLink = 'voyages';
