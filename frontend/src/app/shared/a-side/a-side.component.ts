@@ -8,6 +8,7 @@ import { User } from '../../models/user';
 
 // Libreria Jquery.
 import * as $ from 'jquery';
+import { EnvConfig } from 'src/app/config/env.config';
 
 @Component({
   selector: 'app-a-side',
@@ -34,6 +35,8 @@ export class ASideComponent implements OnInit {
 
   // Esta variable servira para saber si el menu esta abierto.
   public openedNavBarMovil: string = '';
+
+  public URL_EMPRESA: string = '';
 
   constructor(
     private languageService: LanguageService,
@@ -66,6 +69,8 @@ export class ASideComponent implements OnInit {
       $('body').removeClass('az-navbar-show');
       $('body').removeClass('az-iconbar-show');
     });
+
+    this.URL_EMPRESA = EnvConfig.URL_EMPRESA;
   }
 
 
@@ -82,7 +87,7 @@ export class ASideComponent implements OnInit {
         $('body').addClass(' az-iconbar-show');
         break;
       case 'close-menu':
-      //  alert('close')
+        //  alert('close')
         break;
       case 'open-formulario':
         $('body').addClass('az-content-body-show');
