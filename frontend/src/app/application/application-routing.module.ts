@@ -15,15 +15,21 @@ import { IsUpdateServerGuard } from '../guard/is-update-server.guard';
 
 const routes: Routes = [
   {
-    path: 'application', component: ApplicationComponent, canActivate: [IsUpdateServerGuard,LoginGuard],
+    path: 'application', component: ApplicationComponent, canActivate: [IsUpdateServerGuard, LoginGuard],
     children: [
       // se esta agregando el canActive para saber si es un buque y redireccione a voyages.
       { path: '', component: DashboardComponent, canActivate: [IsBuqueGuard] },
       // Dashboard de la pagina
-      { path: 'dashboard', component: DashboardComponent },
+      { path: 'dashboard/consumer_analysis', component: DashboardComponent },
+      { path: 'dashboard/speed_analysis', component: DashboardComponent },
+      // Modulo de viaje
       { path: 'voyages', component: VoyageComponent },
+      // Modulo de Usuario
       { path: 'users', component: UserComponent },
+      // Modulo de ayuda
       { path: 'helps', component: HelpsComponent },
+
+      // Modulo para detectar los usuarios conectados.
       { path: 'users/who-are-connected', component: ListOfConnectedUsersComponent }
     ]
   }
