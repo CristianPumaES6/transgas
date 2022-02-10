@@ -52,10 +52,10 @@ export class ApplicationComponent implements OnInit {
   public version: string = '';
 
   // estas variables nos permite saber cuantos registros tenemos en offline
-  public cantidadRestanteOffline : CantidadRestante= new CantidadRestante();
+  public cantidadRestanteOffline: CantidadRestante = new CantidadRestante();
 
   // Refresh
-  public isRefreshingData : boolean = false;
+  public isRefreshingData: boolean = false;
 
 
   constructor(
@@ -68,7 +68,7 @@ export class ApplicationComponent implements OnInit {
     private databaseService: DatabaseService,
     private notificationsService: NotificationsService,
     private _loadingService: LoadingService,
-    private _DetecteInactiveUserService:DetecteInactiveUserService,
+    private _DetecteInactiveUserService: DetecteInactiveUserService,
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -84,14 +84,14 @@ export class ApplicationComponent implements OnInit {
 
 
     this.databaseService.emitterCantOffline.subscribe(
-      (cantidadRestanteOffline:CantidadRestante) => {
+      (cantidadRestanteOffline: CantidadRestante) => {
         console.log('this.databaseService.emitterCantOffline.subscribe()');
-        
+
         this.cantidadRestanteOffline = cantidadRestanteOffline;
       }
     )
 
-    
+
 
   }
 
@@ -99,7 +99,7 @@ export class ApplicationComponent implements OnInit {
   // Este componente solo se ejecuta 1 vez ya que es un compoenente padre.
   // Al iniciar este componente se ejecuta lo siguiente.
   ngOnInit(): void {
-    
+
 
     console.log('ngOnInit() application');
 
@@ -111,11 +111,11 @@ export class ApplicationComponent implements OnInit {
 
     // Configuracion de stylos por jqery
     this.ConfigStyleFromJquery();
-    
+
     this.databaseService.EmitterCantOffline();
 
     // INICIAMOS EL DETECTOR DE INACTIVIDAD.
-   // this._DetecteInactiveUserService.Initialize();
+    // this._DetecteInactiveUserService.Initialize();
   }
 
   // OnAsideLoaded => Funcion que inicializa la funcion aside
@@ -139,53 +139,53 @@ export class ApplicationComponent implements OnInit {
 
   // Funcion para cerrar la session de usuario.
   public async ClickLogout() {
-    
+
     this._loadingService.Open();
 
-    let datosRestanteSync:CantidadRestante = {};
+    let datosRestanteSync: CantidadRestante = {};
     await Promise.resolve(true).then(
       result => {
         return this.databaseService.Sync();
       }
     ).then(
-       result => {
-        
-         if(!result) throw 'ERROR SYNC SERVER'; 
-         
-         return this.databaseService.EmitterReloadData();
-        }
-      ).then(
-         result => {
+      result => {
 
-          if(!result){
-            throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
-          }
+        if (!result) throw 'ERROR SYNC SERVER';
 
-          return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
-       }
+        return this.databaseService.EmitterReloadData();
+      }
     ).then(
-      (datosFaltantes:CantidadRestante) => {
+      result => {
+
+        if (!result) {
+          throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+        }
+
+        return this.databaseService.ConsultarCuantosInsertFaltanAgregaroActualizaroEliminarEnElServidor();
+      }
+    ).then(
+      (datosFaltantes: CantidadRestante) => {
         // deben de ser 0 todos para que entre esta funcion
-        if(!datosFaltantes.voyage && !datosFaltantes.port && !datosFaltantes.report ){
+        if (!datosFaltantes.voyage && !datosFaltantes.port && !datosFaltantes.report) {
           datosRestanteSync = datosFaltantes;
           return this.authService.Logout();
         }
         else {
-          
+
           return false
         }
       }
     ).then(
       result => {
-        if(result){ 
+        if (result) {
 
-        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
-      
-      } else { 
-        this.loggedUser = this.authService.GetLoggedUser(); 
-        this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS'));
-      }
-      this._loadingService.Close();
+          this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+
+        } else {
+          this.loggedUser = this.authService.GetLoggedUser();
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARNING'), this.languageService.GetMessage(this.translateCategory, 'CANNOT_CLOSE_PENDING_REPORTS'));
+        }
+        this._loadingService.Close();
       }
     ).catch(
       err => {
@@ -202,12 +202,12 @@ export class ApplicationComponent implements OnInit {
     );
   }
 
-  public async ClickOpenListOfConnectedUsers(){
+  public async ClickOpenListOfConnectedUsers() {
     await Promise.resolve(true).then(
       result => {
         this.OnSelectNavLink("list-of-connected-users");
 
-      this._loadingService.Close();
+        this._loadingService.Close();
       }
     ).catch(
       err => {
@@ -225,28 +225,28 @@ export class ApplicationComponent implements OnInit {
   }
 
   // Cuando le damos click a este boton intenta refrescarse la cpnexion
-  public async ClickSyncDataLocal(){
-    if(this.isOnline){
-      
+  public async ClickSyncDataLocal() {
+    if (this.isOnline) {
+
       this.isRefreshingData = true;
       this._loadingService.Open();
       await Promise.resolve(true).then(
         result => {
           return this.databaseService.Sync();
-          
+
         }
       ).then(
         result => {
           this._loadingService.Close();
           return this.databaseService.EmitterReloadData();
-         }
-       ).then(
-          result => {
- 
-           if(!result){
-             throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
-           }
- 
+        }
+      ).then(
+        result => {
+
+          if (!result) {
+            throw 'ERROR EMITTER RELOAD DATA. (Contact support)'
+          }
+
           this.isRefreshingData = false;
           return this.databaseService.EmitterCantOffline();
 
@@ -255,21 +255,21 @@ export class ApplicationComponent implements OnInit {
         err => {
           // Manejo el error
           let msg: string = this.languageService.GetMessage(this.translateCategory, err);
-  
+
           console.error(msg);
           console.dir(err);
-  
+
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), msg);
-            
+
           this.isRefreshingData = false;
           // Deshabilito el spinner de loading
           this._loadingService.Close();
         }
       );
     } else {
-      
+
       this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR_UPDATE_INDEXEDDB_IN_ONLINE'), '');
-       
+
     }
   }
 
@@ -313,9 +313,14 @@ export class ApplicationComponent implements OnInit {
 
 
     switch (navLink) {
-      case 'dashboard':
-        this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
+      //Modulo de dashboard
+      case 'consumer_analysis':
+        this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
         break;
+      case 'speed_analysis':
+        this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
+        break;
+      // Fin dashboard
 
       case 'users':
         this.router.navigate(['../application/' + navLink], { relativeTo: this.activatedRoute });
@@ -330,8 +335,8 @@ export class ApplicationComponent implements OnInit {
         break;
 
       case 'list-of-connected-users':
-          this.router.navigate(['../application/users/who-are-connected'], { relativeTo: this.activatedRoute });
-          break;
+        this.router.navigate(['../application/users/who-are-connected'], { relativeTo: this.activatedRoute });
+        break;
 
       default:
         break;
