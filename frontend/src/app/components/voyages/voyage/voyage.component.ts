@@ -103,7 +103,7 @@ export class VoyageComponent implements OnInit {
 
   myControlFormSelectBefourt = new FormControl();
   optionsBefourt: string[] = [
-    '1','2','3','4','5','6',
+    '1', '2', '3', '4', '5', '6',
     'N1', 'N2', 'N3', 'N4', 'N5', 'N6',
     'NE1', 'NE2', 'NE3', 'NE4', 'NE5', 'NE6',
     'E1', 'E2', 'E3', 'E4', 'E5', 'E6',
@@ -660,7 +660,7 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
 
-this.selectDailyReport.beaufour = this.myControlFormSelectBefourt.value;
+      this.selectDailyReport.beaufour = this.myControlFormSelectBefourt.value;
 
       if (!this.selectDailyReport.id) {
 
@@ -2045,7 +2045,7 @@ this.selectDailyReport.beaufour = this.myControlFormSelectBefourt.value;
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR ACTIVITY'));
       error = true;
     }
-    
+
     if (dailyReportToSave.activityPerformed == 'SAILING_IN_BALLAST' || dailyReportToSave.activityPerformed == 'SAILING_WITH_LADEN' || dailyReportToSave.activityPerformed == 'ECONOMICAL_NAVIGATION') {
       if (!dailyReportToSave.beaufour) {
         this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DISTANCE'));
@@ -2454,7 +2454,7 @@ this.selectDailyReport.beaufour = this.myControlFormSelectBefourt.value;
       // El objeto user lo seteamos.
       let dailyReport: DailyReport = this.selectDailyReport;
       // Se obtine el valor segun se esta iniciando.
-      this.myControlFormSelectBefourt.setValue(dailyReport.beaufour); 
+      this.myControlFormSelectBefourt.setValue(dailyReport.beaufour);
       // Retorno el objeto
       return JSON.parse(JSON.stringify(dailyReport));
     }
