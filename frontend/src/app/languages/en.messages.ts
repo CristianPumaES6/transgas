@@ -317,6 +317,7 @@ export const voyage: any = {
     CHECK_HOUR_FIELD: 'Check hour field',
     CHECK_ACTIVITY_FIELD: 'Check activity field',
     CHECK_DISTANCE: 'Check distance',
+    CHECK_BEFOURT: 'Check befourt',
     TOTAL_LSFO: 'Total LSFO',
     TOTAL_VLSFO: 'Total VLSFO',
     TOTAL_IFO: 'Total IFO',
@@ -325,7 +326,6 @@ export const voyage: any = {
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
     PLACEHOLDER_BEFOURT :'Type or select the wind befourt.',
-    CHECK_BEFOURT: 'Check befourt',
 }
 
 export const dashboard: any = {

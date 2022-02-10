@@ -1842,6 +1842,10 @@ export class VoyageComponent implements OnInit {
     }
 
     if (newDailyReport.activityPerformed == 'SAILING_IN_BALLAST' || newDailyReport.activityPerformed == 'SAILING_WITH_LADEN' || newDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION') {
+      if (!newDailyReport.beaufour) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_BEFOURT'));
+        error = true;
+      }
 
       if (!newDailyReport.distance) {
         this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DISTANCE'));
@@ -2048,7 +2052,7 @@ export class VoyageComponent implements OnInit {
 
     if (dailyReportToSave.activityPerformed == 'SAILING_IN_BALLAST' || dailyReportToSave.activityPerformed == 'SAILING_WITH_LADEN' || dailyReportToSave.activityPerformed == 'ECONOMICAL_NAVIGATION') {
       if (!dailyReportToSave.beaufour) {
-        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_DISTANCE'));
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_BEFOURT'));
         error = true;
       }
 
