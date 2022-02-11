@@ -12,6 +12,7 @@ import { IsBuqueGuard } from '../guard/is-buque.guard';
 import { ListOfConnectedUsersComponent } from '../shared/list-of-connected-users/list-of-connected-users.component';
 import { HelpsComponent } from '../components/helps/helps.component';
 import { IsUpdateServerGuard } from '../guard/is-update-server.guard';
+import { SpeedAnalysisComponent } from '../components/dashboard/speed-analysis/speed-analysis.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
       { path: '', component: DashboardComponent, canActivate: [IsBuqueGuard] },
       // Dashboard de la pagina
       { path: 'dashboard/consumer_analysis', component: DashboardComponent },
-      { path: 'dashboard/speed_analysis', component: DashboardComponent },
+      { path: 'dashboard/speed_analysis', component: SpeedAnalysisComponent },
       // Modulo de viaje
       { path: 'voyages', component: VoyageComponent },
       // Modulo de Usuario
