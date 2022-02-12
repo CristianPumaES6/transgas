@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {  ChartData,registerables  } from 'chart.js';
 import { getRelativePosition } from 'chart.js/helpers';
 import Chart from 'chart.js/auto';
+import { DailyReportService } from 'src/app/services/daily-report.service';
+import { GetReportVoyagePortDaily } from 'src/app/models/dialog-export-excel';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -18,14 +22,34 @@ export class SpeedAnalysisComponent implements OnInit {
   
   public xLabelReport: any[] = [];
 
-  constructor() { 
+  
+  public listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+
+  constructor(
+    private _dailyReportService:DailyReportService
+  ) { 
   }
 
   ngOnInit(): void {
 
 
-    
-    // Agregamos la configuracion del ChartSpeed.
+    // Inicia la promesa.
+     Promise.resolve(true)
+      .then(
+        result => {
+          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+          return this.GetReportVoyagePortDaily(3, '2022-01-24T13:00:00Z', '2022-02-07T13:00:00Z').pipe().toPromise();
+        }).then(
+          result => {
+            if (!result) throw 'ERROR GER REPORT';
+            this.listGetReportVoyagePortDaily = result;
+
+
+            console.log(this.listGetReportVoyagePortDaily)
+          });
+
+
+    // Configuracion Chart lineal
     this.configLineaSPEED = {
       type: 'line',
       data: {
@@ -190,5 +214,20 @@ export class SpeedAnalysisComponent implements OnInit {
 
     return false;
   }
+
+   // Obtenemos la info de todos los viajes agregado.
+   private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this._dailyReportService.GetReportVoyagePortDailyByUserIdAndDate(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+
+
+        return resultGetROBByUser;
+      }
+    ));
+   }
 
 }
