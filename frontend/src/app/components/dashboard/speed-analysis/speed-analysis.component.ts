@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {  ChartData,registerables  } from 'chart.js';
+import { ChartData, registerables } from 'chart.js';
 import { getRelativePosition } from 'chart.js/helpers';
 import Chart from 'chart.js/auto';
 import { DailyReportService } from 'src/app/services/daily-report.service';
@@ -19,22 +19,22 @@ export class SpeedAnalysisComponent implements OnInit {
   public configLineaSPEED: any; // configuracion del elemento
   public chartLineSPEED: Chart; // LINEA
   public dataSPEED: Chart.ChartPoint[] = []; // Data
-  
+
   public xLabelReport: any[] = [];
 
-  
+
   public listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
 
   constructor(
-    private _dailyReportService:DailyReportService
-  ) { 
+    private _dailyReportService: DailyReportService
+  ) {
   }
 
   ngOnInit(): void {
 
 
     // Inicia la promesa.
-     Promise.resolve(true)
+    Promise.resolve(true)
       .then(
         result => {
           // Buscamos la informacion del combustible de inicio y fin segun la fecha.
@@ -63,7 +63,7 @@ export class SpeedAnalysisComponent implements OnInit {
         }]
       },
       options: { // Otras opciones dentro del Chart
-        onClick: (event, activeElement) => { 
+        onClick: (event, activeElement) => {
           // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
 
         },
@@ -100,16 +100,16 @@ export class SpeedAnalysisComponent implements OnInit {
       lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
     };
 
-    
-        // Encapculamos el elemento del dom.
-        let canvaLineSPEED: any = document.getElementById('myChart');
-        // Convertimos el canvaLineIfo en 2d
-        let ctxLineSPEED: any = canvaLineSPEED.getContext('2d');
-    
-        this.chartLineSPEED = new Chart(ctxLineSPEED, this.configLineaSPEED);
+
+    // Encapculamos el elemento del dom.
+    let canvaLineSPEED: any = document.getElementById('myChart');
+    // Convertimos el canvaLineIfo en 2d
+    let ctxLineSPEED: any = canvaLineSPEED.getContext('2d');
+
+    this.chartLineSPEED = new Chart(ctxLineSPEED, this.configLineaSPEED);
   }
 
-  
+
   private UpdateLineSPEED(): boolean {
     console.log('UpdateLineSPEED()');
 
@@ -129,70 +129,70 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
     // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
-   
-
-      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-     // if (this.selectUser.maxSpeed > 0) {
-       /*  this.configLineaSPEED.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.maxSpeed,
-          color: 'red',
-          label: ''
-        }); */
-     // };
-/* 
-      if (this.selectUser.minSpeed > 0) {
-        this.configLineaSPEED.options.lines.push({
-          type: 'horizontal',
-          y: this.selectUser.minSpeed,
-          color: '#39FF14',
-          label: ''
-        });
-         
-      }*/
 
 
-      // Esta linea maxima es para la scala del cuadro.
-     /*  if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
-        this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
-      } */
-/* 
-    } else {
-      // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
+    // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+    // if (this.selectUser.maxSpeed > 0) {
+    /*  this.configLineaSPEED.options.lines.push({
+       type: 'horizontal',
+       y: this.selectUser.maxSpeed,
+       color: 'red',
+       label: ''
+     }); */
+    // };
+    /* 
+          if (this.selectUser.minSpeed > 0) {
+            this.configLineaSPEED.options.lines.push({
+              type: 'horizontal',
+              y: this.selectUser.minSpeed,
+              color: '#39FF14',
+              label: ''
+            });
+             
+          }*/
 
-      let lineaMaxByActivity = 0;
-      this.frmCActivityPerformed.value.forEach(activity => {
 
-        let lineMax = 0;
+    // Esta linea maxima es para la scala del cuadro.
+    /*  if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
+       this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
+     } */
+    /* 
+        } else {
+          // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
+    
+          let lineaMaxByActivity = 0;
+          this.frmCActivityPerformed.value.forEach(activity => {
+    
+            let lineMax = 0;
+    
+            if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
+            else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
+            else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
+    
+            if (lineMax > lineaMaxByActivity) {
+              lineaMaxByActivity = lineMax;
+            }
+    
+          });
+    
+          // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+          if (lineaMaxByActivity > 0) {
+    
+            this.configLineaSPEED.options.lines.push({
+              type: 'horizontal',
+              y: lineaMaxByActivity,
+              color: '#39FF14',
+              label: ''
+            });
+          }
+    
+     */
+    // Esta linea maxima es para la scala del cuadro.
+    /* if (this.configLineaSPEED.lineaMax < lineaMaxByActivity) {
+      this.configLineaSPEED.lineaMax = lineaMaxByActivity;
+    } 
 
-        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
-        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
-        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
-
-        if (lineMax > lineaMaxByActivity) {
-          lineaMaxByActivity = lineMax;
-        }
-
-      });
-
-      // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
-      if (lineaMaxByActivity > 0) {
-
-        this.configLineaSPEED.options.lines.push({
-          type: 'horizontal',
-          y: lineaMaxByActivity,
-          color: '#39FF14',
-          label: ''
-        });
-      }
-
- */
-      // Esta linea maxima es para la scala del cuadro.
-      /* if (this.configLineaSPEED.lineaMax < lineaMaxByActivity) {
-        this.configLineaSPEED.lineaMax = lineaMaxByActivity;
-      } 
-
-    }
+  }
 */
 
 
@@ -201,22 +201,22 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
 
-/* 
-
-    if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
-      this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
-    } */
+    /* 
+    
+        if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
+          this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
+        } */
 
     // Agregamos la configuracion de las escalas.
-   /*  this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
- */
+    /*  this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
+  */
     this.chartLineSPEED.update();
 
     return false;
   }
 
-   // Obtenemos la info de todos los viajes agregado.
-   private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+  // Obtenemos la info de todos los viajes agregado.
+  private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
     return this._dailyReportService.GetReportVoyagePortDailyByUserIdAndDate(userId, startDate, endDate).pipe(map(
@@ -228,6 +228,6 @@ export class SpeedAnalysisComponent implements OnInit {
         return resultGetROBByUser;
       }
     ));
-   }
+  }
 
 }
