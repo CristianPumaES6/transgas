@@ -15,12 +15,13 @@ import { Observable } from 'rxjs';
 })
 export class SpeedAnalysisComponent implements OnInit {
 
+  // ------------ Chart ----------------
+  public xLabelReport: any[] = [];
   // Configuracion del SPEED
+  public chartPointDataSPEED: Chart.ChartPoint[] = []; // Data
   public configLineaSPEED: any; // configuracion del elemento
   public chartLineSPEED: Chart; // LINEA
-  public dataSPEED: Chart.ChartPoint[] = []; // Data
-
-  public xLabelReport: any[] = [];
+  // ------------ Fin Chart Speed ----------------
 
 
   public listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
@@ -38,7 +39,7 @@ export class SpeedAnalysisComponent implements OnInit {
       .then(
         result => {
           // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-          return this.GetReportVoyagePortDaily(3, '2022-01-24T13:00:00Z', '2022-02-07T13:00:00Z').pipe().toPromise();
+          return this.GetReportVoyagePortDaily(2, '2022-01-24T13:00:00Z', '2022-02-07T13:00:00Z').pipe().toPromise();
         }).then(
           result => {
             if (!result) throw 'ERROR GER REPORT';
@@ -62,12 +63,14 @@ export class SpeedAnalysisComponent implements OnInit {
           fill: false,
         }]
       },
-      options: { // Otras opciones dentro del Chart
+      options: {
+        // Otras opciones dentro del Chart
         onClick: (event, activeElement) => {
           // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
 
         },
-        legend: { // La leyenda es el texto que esta arriva del cuadro.
+        legend: { 
+          // La leyenda es el texto que esta arriva del cuadro.
           display: true,
           onClick: (event, legendItem) => {
             console.log('onClick:' + legendItem.text);
@@ -109,7 +112,9 @@ export class SpeedAnalysisComponent implements OnInit {
     this.chartLineSPEED = new Chart(ctxLineSPEED, this.configLineaSPEED);
   }
 
-
+public ClickButtonTest(){
+  this.UpdateLineSPEED()
+}
   private UpdateLineSPEED(): boolean {
     console.log('UpdateLineSPEED()');
 
@@ -118,7 +123,9 @@ export class SpeedAnalysisComponent implements OnInit {
     this.configLineaSPEED.data.labels = this.xLabelReport;
 
     // Actualizamos la dataSPEED
-    this.configLineaSPEED.data.datasets[0].data = this.dataSPEED;
+    // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
+    debugger
+    this.configLineaSPEED.data.datasets[0].data = this.chartPointDataSPEED;
 
     // Vaciamos la configuracion de las lines SPEED
     // La linea es el campo que agregamos en el plugin.
@@ -127,89 +134,77 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
 
+/*
+
 
     // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
+    if (
+      (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
 
 
-    // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-    // if (this.selectUser.maxSpeed > 0) {
-    /*  this.configLineaSPEED.options.lines.push({
-       type: 'horizontal',
-       y: this.selectUser.maxSpeed,
-       color: 'red',
-       label: ''
-     }); */
-    // };
-    /* 
-          if (this.selectUser.minSpeed > 0) {
-            this.configLineaSPEED.options.lines.push({
-              type: 'horizontal',
-              y: this.selectUser.minSpeed,
-              color: '#39FF14',
-              label: ''
-            });
-             
-          }*/
 
 
-    // Esta linea maxima es para la scala del cuadro.
-    /*  if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
-       this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
-     } */
-    /* 
-        } else {
-          // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
-    
-          let lineaMaxByActivity = 0;
-          this.frmCActivityPerformed.value.forEach(activity => {
-    
-            let lineMax = 0;
-    
-            if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
-            else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
-            else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
-    
-            if (lineMax > lineaMaxByActivity) {
-              lineaMaxByActivity = lineMax;
-            }
-    
-          });
-    
-          // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
-          if (lineaMaxByActivity > 0) {
-    
-            this.configLineaSPEED.options.lines.push({
-              type: 'horizontal',
-              y: lineaMaxByActivity,
-              color: '#39FF14',
-              label: ''
-            });
-          }
-    
-     */
-    // Esta linea maxima es para la scala del cuadro.
-    /* if (this.configLineaSPEED.lineaMax < lineaMaxByActivity) {
-      this.configLineaSPEED.lineaMax = lineaMaxByActivity;
-    } 
+      // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
+      if (this.selectUser.maxSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.maxSpeed,
+          color: 'red',
+          label: ''
+        });
+      };
 
-  }
+      if (this.selectUser.minSpeed > 0) {
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: this.selectUser.minSpeed,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+
+
+      // Esta linea maxima es para la scala del cuadro.
+      if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
+        this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
+      }
+
+    } else {
+      // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
+
+      let lineaMaxByActivity = 0;
+      this.frmCActivityPerformed.value.forEach(activity => {
+
+        let lineMax = 0;
+
+        if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
+        else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
+        else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
+
+        if (lineMax > lineaMaxByActivity) {
+          lineaMaxByActivity = lineMax;
+        }
+
+      });
+
+      // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
+      if (lineaMaxByActivity > 0) {
+
+        this.configLineaSPEED.options.lines.push({
+          type: 'horizontal',
+          y: lineaMaxByActivity,
+          color: '#39FF14',
+          label: ''
+        });
+      }
+
+
+      // Esta linea maxima es para la scala del cuadro.
+      if (this.configLineaSPEED.lineaMax < lineaMaxByActivity) {
+        this.configLineaSPEED.lineaMax = lineaMaxByActivity;
+      }
+
 */
-
-
-    // Configuracion Tooltips
-    // this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('SPEED');
-
-
-
-    /* 
-    
-        if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
-          this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
-        } */
-
-    // Agregamos la configuracion de las escalas.
-    /*  this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
-  */
     this.chartLineSPEED.update();
 
     return false;
