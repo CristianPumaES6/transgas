@@ -39,6 +39,7 @@ export class SpeedAnalysisComponent implements OnInit {
   // ------------ Fin Chart Speed ----------------
 
 
+
   // Variable del grupo de formulario.
   public formFilter: FormGroup;
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
@@ -55,74 +56,13 @@ export class SpeedAnalysisComponent implements OnInit {
     private fb: FormBuilder,
   ) {
     // Inicializamos y bloqueamos el formulario.
-     this.ReactiveForm(true, false, true);
+    this.ReactiveForm(true, false, true);
   }
 
   ngOnInit(): void {
+    this.GenetareLineSPEED();
 
 
-
-    // Configuracion Chart lineal
-    this.configLineaSPEED = {
-      type: 'line',
-      data: {
-        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
-        datasets: [{
-          label: 'AVERAGE SPEED',
-          backgroundColor: 'rgb(255,205,6)',
-          borderColor: 'rgb(255,205,6)',
-          data: [], // Lo pongo vacio por que en el update se colocara el valor.
-          fill: false,
-        }]
-      },
-      options: {
-        // Otras opciones dentro del Chart
-        onClick: (event, activeElement) => {
-          // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
-
-        },
-        legend: {
-          // La leyenda es el texto que esta arriva del cuadro.
-          display: true,
-          onClick: (event, legendItem) => {
-            console.log('onClick:' + legendItem.text);
-          },
-          labels: {
-            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
-            fontStyle: 'bold', // Tipo de texto de la leyenda.
-          }
-        },
-        // Habilitamos la opcion para que sea responsive
-        maintainAspectRatio: false,
-        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
-        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
-        hover: {
-          // @ts-ignore
-          onHover: function (e: MouseEvent) {
-            // puntos GetElementAtaEvent
-            var point = this.getElementAtEvent(e);
-
-            // event targer.
-            let eventTarget = e.target as HTMLCanvasElement;
-            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
-            if (point.length) {
-              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
-            } else {
-              eventTarget.style.cursor = 'default';
-            }
-          }
-        }
-      },
-      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
-    };
-
-
-    // Encapculamos el elemento del dom.
-    let canvaLineSPEED: any = document.getElementById('myChart');
-    // Convertimos el canvaLineIfo en 2d
-    let ctxLineSPEED: any = canvaLineSPEED.getContext('2d');
-
-    this.chartLineSPEED = new Chart(ctxLineSPEED, this.configLineaSPEED);
   }
 
   public async ClickButtonTest(): Promise<boolean> {
@@ -196,6 +136,96 @@ export class SpeedAnalysisComponent implements OnInit {
       }
     )
 
+
+  }
+
+
+  private GenetareLineSPEED(): boolean {
+
+    // Configuracion Chart lineal
+    this.configLineaSPEED = {
+      type: 'line',
+      data: {
+        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
+        datasets: [{
+          label: 'AVERAGE SPEED',
+          backgroundColor: 'rgb(255,205,6)',
+          borderColor: 'rgb(255,205,6)',
+          data: [], // Lo pongo vacio por que en el update se colocara el valor.
+          fill: false,
+        }]
+      },
+      options: {
+        onHover: (event, chartElement) => {
+          //console.log(event);
+          // console.log(chartElement);
+          let eventTarget = event.native.target as HTMLCanvasElement;
+          eventTarget.style.cursor = chartElement[0] ? 'pointer' : 'default';
+        },
+        // Otras opciones dentro del Chart
+        onClick: (event, activeElement) => {
+          // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
+          if (activeElement && activeElement.length) {
+
+            // Obtenemos la posicion 0 del activeElement
+            let actEle: any = activeElement[0];
+
+            // Obtenemos la ubicacion.
+            let index = actEle._index;
+            // Obtenemos los datos por la ubicacion.
+            let ubication = this.chartPointDataSPEED[index];
+
+            console.log('UBICACION : ---------------');
+
+            console.log(ubication)
+          }
+        },
+        legend: {
+          // La leyenda es el texto que esta arriva del cuadro.
+          display: true,
+          onClick: (event, legendItem) => {
+            console.log('onClick:' + legendItem.text);
+          },
+          labels: {
+            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
+            fontStyle: 'bold', // Tipo de texto de la leyenda.
+          }
+        },
+        // Habilitamos la opcion para que sea responsive
+        maintainAspectRatio: false,
+        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
+        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
+        hover: {
+          // @ts-ignore
+          onHover: function (e: MouseEvent) {
+
+            console.log('hoverrrrrrrrrrrrrrr')
+            // puntos GetElementAtaEvent
+            var point = this.getElementAtEvent(e);
+
+            // event targer.
+            let eventTarget = e.target as HTMLCanvasElement;
+            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
+            if (point.length) {
+              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+            } else {
+              eventTarget.style.cursor = 'default';
+            }
+          }
+        }
+      },
+      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
+    };
+
+
+    // Encapculamos el elemento del dom.
+    let canvaLineSPEED: any = document.getElementById('myChart');
+    // Convertimos el canvaLineIfo en 2d
+    let ctxLineSPEED: any = canvaLineSPEED.getContext('2d');
+
+    this.chartLineSPEED = new Chart(ctxLineSPEED, this.configLineaSPEED);
+
+    return false;
 
   }
 
@@ -324,7 +354,7 @@ export class SpeedAnalysisComponent implements OnInit {
     ));
   }
 
-  
+
   public errorHandling = (control: string, error: string) => {
     return this.formFilter.controls[control].hasError(error);
   }
