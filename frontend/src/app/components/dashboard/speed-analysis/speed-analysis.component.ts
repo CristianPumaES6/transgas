@@ -6,6 +6,12 @@ import { DailyReportService } from 'src/app/services/daily-report.service';
 import { GetReportVoyagePortDaily } from 'src/app/models/dialog-export-excel';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ChartConfiguration } from 'chart.js';
+import { LoadingService } from 'src/app/services/loading.service';
+import { LanguageService } from 'src/app/services/language.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationsService } from 'angular2-notifications';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -14,21 +20,42 @@ import { Observable } from 'rxjs';
   styleUrls: ['./speed-analysis.component.scss']
 })
 export class SpeedAnalysisComponent implements OnInit {
+  // Esta variable nos ayudara a saber si nos encontramos con conexion al servidor.
+  public isOnline: boolean = true;
+
+  // Variables de traduccion
+  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public translateCategory: string = 'dashboard';
+
+  // Rol del usuario logeado.
+  public roleUser: string = '';
 
   // ------------ Chart ----------------
   public xLabelReport: any[] = [];
   // Configuracion del SPEED
-  public chartPointDataSPEED: Chart.ChartPoint[] = []; // Data
-  public configLineaSPEED: any; // configuracion del elemento
+  public chartPointDataSPEED: any[] = []; // Data
+  public configLineaSPEED: ChartConfiguration; // configuracion del elemento
   public chartLineSPEED: Chart; // LINEA
   // ------------ Fin Chart Speed ----------------
 
 
+  // Variable del grupo de formulario.
+  public formFilter: FormGroup;
+  public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
   public listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
 
+
   constructor(
-    private _dailyReportService: DailyReportService
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private _dailyReportService: DailyReportService,
+    private loadingService: LoadingService,
+    private languageService: LanguageService,
+    private notificationsService: NotificationsService,
+    private fb: FormBuilder,
   ) {
+    // Inicializamos y bloqueamos el formulario.
+     this.ReactiveForm(true, false, true);
   }
 
   ngOnInit(): void {
@@ -70,6 +97,7 @@ export class SpeedAnalysisComponent implements OnInit {
         tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
         scales: {},// Lo pongo vacio por que en el update se colocara el valor.
         hover: {
+          // @ts-ignore
           onHover: function (e: MouseEvent) {
             // puntos GetElementAtaEvent
             var point = this.getElementAtEvent(e);
@@ -99,18 +127,23 @@ export class SpeedAnalysisComponent implements OnInit {
 
   public async ClickButtonTest(): Promise<boolean> {
 
+
+    // Filtros por fecha.
+    let userSelect = 2;
+    let dateStart = '2022-01-24T13:00:00Z';
+    let dateEnd = '2022-02-07T13:00:00Z';
+
     // Inicia la promesa.
     return await Promise.resolve(true)
       .then(
         result => {
-          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-          return this.GetReportVoyagePortDaily(2, '2022-01-24T13:00:00Z', '2022-02-07T13:00:00Z').pipe().toPromise();
+          // Obtenemos el total por actividad
+          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd).pipe().toPromise();
         }).then(
           result => {
             if (!result) throw 'ERROR GER REPORT';
 
             this.listGetReportVoyagePortDaily = result;
-
 
             return this.GenerateData(this.chartPointDataSPEED, this.listGetReportVoyagePortDaily);
           }).then(
@@ -136,7 +169,8 @@ export class SpeedAnalysisComponent implements OnInit {
 
   private async GenerateData(
     // Data del chart
-    chartPointDataSPEED: Chart.ChartPoint[],
+    // Esto me arroja error Chart.ChartPoint asi que solo le pongo any
+    chartPointDataSPEED: any[],
     // Data de los reportes
     getReportVoyagePortDaily: GetReportVoyagePortDaily[]
   ): Promise<boolean> {
@@ -275,4 +309,73 @@ export class SpeedAnalysisComponent implements OnInit {
     ));
   }
 
+  // Obtenemos la info de todos los viajes agregado.
+  private GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this._dailyReportService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
+
+
+        return resultGetROBByUser;
+      }
+    ));
+  }
+
+  
+  public errorHandling = (control: string, error: string) => {
+    return this.formFilter.controls[control].hasError(error);
+  }
+
+
+  /* Reactive form */
+  private ReactiveForm(initialize?: boolean, clearValidate?: boolean, enableForm?: boolean, getForm?: boolean, setForm?: boolean, validate?: boolean): boolean {
+    console.log('ReactiveForm()');
+
+    // Inicializamos el formFilter, si lo hacemos 2 proboca error, creao que deberia ser con un update
+    if (initialize) {
+      this.formFilter = this.fb.group({
+        typeSummaryVoyage: ['', [Validators.required]],
+      });
+    }
+
+    // reseteamos la configuracion
+    if (clearValidate) {
+      this.formFilter.reset({ onlySelf: true });
+    }
+
+
+    // Habilitamos el formulario
+    if (enableForm) {
+      this.formFilter.enable();
+    } else {
+      this.formFilter.disable();
+    }
+
+    // Obtenemos los valores del formulario
+    if (getForm) {
+      //this.user.name = this.formFilter.controls['name'].value;
+      //this.user.nick = this.formFilter.controls['nick'].value;
+      //this.user.password = this.formFilter.controls['password'].value;
+      //this.user.role = this.formFilter.controls['role'].value;
+    }
+
+    // Seteamos los valores del formulario con los datos del user.
+    if (setForm) {
+      //this.formFilter.controls['name'].setValue(this.user.name);
+      //this.formFilter.controls['nick'].setValue(this.user.nick);
+      //this.formFilter.controls['password'].setValue(this.user.password);
+      //this.formFilter.controls['role'].setValue(this.user.role);
+    }
+
+    // Validamos si el stado del formulario es VALID
+    if (validate) {
+      this.formFilter.markAllAsTouched();
+      return this.formFilter.status == 'VALID';
+    }
+
+    return true;
+  }
 }

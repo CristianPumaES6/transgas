@@ -629,4 +629,89 @@ export class DailyReportsService {
                     return listGetInfoVoyageROBBunkering;
                 });
     }
+
+
+
+    // NUEVOS QUERY CON OTRA CALIDA [o]v[o]
+
+    // Esta servicio prove el total de los parametros que tiene el viaje puerto y reporte.
+    async GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select('voyage.userId', 'userId')
+            
+                // -- Datos del viaje
+                .addSelect('voyage.year', 'year')
+                .addSelect('voyage.id', 'voyageId')
+                .addSelect('voyage.voyageNumber', 'voyageNumber')
+
+                //-- Informacion del puerto
+                .addSelect('port.id', 'portId')
+                .addSelect('port.portNumber', 'portNumber')
+                .addSelect('port.departurePort', 'departurePort')
+                .addSelect('port.arrivalPort', 'arrivalPort')
+
+                
+                // -- Informacion del reporte.
+                .addSelect('daily_report.id', 'dailyReportId')
+                .addSelect('daily_report.date', 'date')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.speedStraction', 'speedStraction')
+                .addSelect('daily_report.observation', 'observation')
+
+                // -- Cantidad de reportes
+                .addSelect('COUNT(*)', 'count')
+                // -- Suma total de tiempo
+                .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+                // -- Suma total de distancia
+                .addSelect('SUM(daily_report.distance)', 'distance')
+                // Beaufour
+                .addSelect('daily_report.beaufour', 'beaufour')
+    
+    
+
+                // Suma total de consumo por maquina
+                .addSelect('daily_report.mplaIfo', 'mplaIfo')
+                .addSelect('daily_report.auxIfo', 'auxIfo')
+                .addSelect('daily_report.boilerIfo', 'boilerIfo')
+                .addSelect('daily_report.otherIfo', 'otherIfo')
+                // Suma total de bunkering
+                .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
+ 
+                // UNION DE TABLAS
+                .innerJoin('daily_report.port', 'port')
+                .innerJoin('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+
+                .andWhere('daily_report.mplaIfo > :mplaIfo OR daily_report.auxIfo > :auxIfo OR daily_report.boilerIfo > :boilerIfo OR daily_report.otherIfo > :otherIfo OR daily_report.bunkeringIfo > :bunkeringIfo', { mplaIfo: 0,auxIfo:0 ,boilerIfo:0 ,otherIfo:0,bunkeringIfo:0  })
+
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                
+                .groupBy('activityPerformed')
+                .addGroupBy('daily_report.portId')
+                .addGroupBy('port.voyageId')
+                
+                .orderBy('voyage.year')
+                .addOrderBy('port.voyageId')
+                .addOrderBy('daily_report.portId')
+                .getRawMany()
+
+                .then(
+                    (result: any) => {
+                        // Verificamos que el resultado no este vacio.
+                        if (!result) throw 'ERROR GetReportVoyagePortDaily';
+
+                        return result;
+                    }
+                );
+    }
 }

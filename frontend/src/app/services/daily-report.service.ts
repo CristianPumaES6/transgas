@@ -323,5 +323,35 @@ export class DailyReportService {
         );
     }
 
+    // Retorna el totar por actividad
+    GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+        // Armo el request
+        let url: string = this.url + '/daily-reports/get-total-by-activity/' + userId + '/' + startDate + '/' + endDate;
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    // Verifico si la respuesta fue correcta.
+                    if (response.status && response.status === 200) {
+                        
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
+                
+                return this.authGuardService.HandleError(err);
+            })
+        );
+    }
+
 
 }
