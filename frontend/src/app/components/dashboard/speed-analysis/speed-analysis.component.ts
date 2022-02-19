@@ -33,17 +33,17 @@ export class SpeedAnalysisComponent implements OnInit {
   // ------------ Chart ----------------
   public xLabelReport: any[] = [];
   // Configuracion del SPEED
-  public chartPointDataSPEED: any[] = []; // Data
+  public dataSPEEDChartPoint: any[] = []; // Data
   public configLineaSPEED: ChartConfiguration; // configuracion del elemento
   public chartLineSPEED: Chart; // LINEA
-  // ------------ Fin Chart Speed ----------------
 
 
-
-  // Variable del grupo de formulario.
+  // ------------ Formaulario Filter -----------------
   public formFilter: FormGroup;
+  public selectSummaryBy: string = 'PORTS'
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
   public listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+
 
 
   constructor(
@@ -61,8 +61,6 @@ export class SpeedAnalysisComponent implements OnInit {
 
   ngOnInit(): void {
     this.GenetareLineSPEED();
-
-
   }
 
   public async ClickButtonTest(): Promise<boolean> {
@@ -85,7 +83,9 @@ export class SpeedAnalysisComponent implements OnInit {
 
             this.listGetReportVoyagePortDaily = result;
 
-            return this.GenerateData(this.chartPointDataSPEED, this.listGetReportVoyagePortDaily);
+            //return this.GenerateData(this.dataSPEEDChartPoint, this.listGetReportVoyagePortDaily);
+
+            return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
           }).then(
             result => {
 
@@ -110,7 +110,7 @@ export class SpeedAnalysisComponent implements OnInit {
   private async GenerateData(
     // Data del chart
     // Esto me arroja error Chart.ChartPoint asi que solo le pongo any
-    chartPointDataSPEED: any[],
+    dataSPEEDChartPoint: any[],
     // Data de los reportes
     getReportVoyagePortDaily: GetReportVoyagePortDaily[]
   ): Promise<boolean> {
@@ -122,7 +122,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
         getReportVoyagePortDaily.forEach(iGetReporteVPD => {
 
-          chartPointDataSPEED.push(
+          dataSPEEDChartPoint.push(
             { x: iGetReporteVPD.activityPerformed, y: iGetReporteVPD.distance }
           );
 
@@ -173,7 +173,7 @@ export class SpeedAnalysisComponent implements OnInit {
             // Obtenemos la ubicacion.
             let index = actEle._index;
             // Obtenemos los datos por la ubicacion.
-            let ubication = this.chartPointDataSPEED[index];
+            let ubication = this.dataSPEEDChartPoint[index];
 
             console.log('UBICACION : ---------------');
 
@@ -229,6 +229,117 @@ export class SpeedAnalysisComponent implements OnInit {
 
   }
 
+
+  private async GenerateDashboardBySumary(setDate: boolean, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): Promise<boolean> {
+
+    // retornamoremos el resultado de la promesa.
+    return await Promise.resolve(true).then(
+      result => {
+
+        this.GenerateDataForChart(setDate, listGetReportVoyagePortDaily);
+
+        // return true.
+        return true;
+      }
+    ).catch(
+      error => {
+        return false
+      }
+    )
+
+    return true;
+  }
+
+
+  // GenerateDataForChart(): genera data para los chart.
+  // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
+  private GenerateDataForChart(setDate: boolean, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]) {
+
+    console.log('GenerateDataForChart(setDate: boolean)' + setDate)
+    // Texto x de los reportes.
+    this.xLabelReport = [];
+
+    // Data de los chart.
+    this.dataSPEEDChartPoint = [];
+
+    // Configuracion de la linea maxima.
+    this.configLineaSPEED.lineaMax = 0;
+
+    // Fecha inicio y fin de la data.
+    let startDate;
+    let endDate;
+
+
+    // Creamos esta variable para que nos avise cuando hay un nuevo registro
+    // Esta variable solo se usa en los filtro Sumary por mes y dia
+    let isAddNewVoyage: boolean = false;
+
+    let ultimoViaje: number = 0;
+    let ultimoPuerto: number = 0;
+
+    // recorremos todo el arreglo
+    listGetReportVoyagePortDaily.forEach((iGetReportVoyagePortDaily: GetReportVoyagePortDaily, indexReport: number) => {
+      // Generamos el texto para los labels del Chart
+      let txtLabelChart: string = '';
+
+      if (this.selectSummaryBy === 'VOYAGES') {
+
+        // Si nuestro ultimo viaje cambia lo agregamos al texto.
+        if (ultimoViaje !== iGetReportVoyagePortDaily.voyageNumber) {
+          ultimoViaje = iGetReportVoyagePortDaily.voyageNumber;
+
+          // Armamos el texto de label para viajes.
+          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
+
+          // Lo agregamos al arreglo.
+          this.xLabelReport.push(txtLabelChart);
+
+          // El total de velocidad debe de ser mayor para poder pintarlo.
+          let speed = iGetReportVoyagePortDaily.distance / (iGetReportVoyagePortDaily.steamingTime || 1);
+          // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
+
+          this.dataSPEEDChartPoint.push(
+            { x: txtLabelChart, y: speed, ubication: [indexReport] }
+          );
+
+          if (speed > this.configLineaSPEED.lineaMax) {
+            this.configLineaSPEED.lineaMax = speed;
+          };
+
+        }
+      } else if (this.selectSummaryBy === 'PORTS') {
+
+        // Si nuestro ultimo viaje cambia lo agregamos al texto.
+
+        if (ultimoPuerto != iGetReportVoyagePortDaily.portNumber) {
+          ultimoPuerto = iGetReportVoyagePortDaily.portNumber;
+
+          // Armamos el texto de label para viajes.
+          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
+
+          // Lo agregamos al arreglo.
+          this.xLabelReport.push(txtLabelChart);
+
+          // El total de velocidad debe de ser mayor para poder pintarlo.
+          let speed = iGetReportVoyagePortDaily.distance / (iGetReportVoyagePortDaily.steamingTime || 1);
+          // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
+
+          this.dataSPEEDChartPoint.push(
+            { x: txtLabelChart, y: speed, ubication: [indexReport] }
+          );
+
+          if (speed > this.configLineaSPEED.lineaMax) {
+            this.configLineaSPEED.lineaMax = speed;
+          };
+
+        }
+      }
+
+    });
+
+  }
+
+
   private UpdateLineSPEED(): boolean {
     console.log('UpdateLineSPEED()');
 
@@ -239,7 +350,7 @@ export class SpeedAnalysisComponent implements OnInit {
     // Actualizamos la dataSPEED
     // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
     debugger
-    this.configLineaSPEED.data.datasets[0].data = this.chartPointDataSPEED;
+    this.configLineaSPEED.data.datasets[0].data = this.dataSPEEDChartPoint;
 
     // Vaciamos la configuracion de las lines SPEED
     // La linea es el campo que agregamos en el plugin.
