@@ -484,8 +484,17 @@ export class SpeedAnalysisComponent implements OnInit {
 
       }
 
-      // Agregamos el texto al arreglo del chart.
-      this.xLabelReport.push(txtLabelChart);
+      // Buscamos si el label ya se registro.
+      let existeElTextLabel = this.xLabelReport.find(
+        label => {
+          return label == txtLabelChart;
+        }
+      );
+      // Si no existe el label lo agregamos.
+      if (!existeElTextLabel) {
+        // Agregamos el texto al arreglo del chart.
+        this.xLabelReport.push(txtLabelChart);
+      }
 
       // Obtenemos la velocidad IFO
       let dataSpeed = new Speed();
@@ -507,80 +516,107 @@ export class SpeedAnalysisComponent implements OnInit {
 
     });
 
+    // Solo agregamos una linea si hay registros.
+    if (this.reorganizarDataViajes['LOADING'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'LOADING',
+          data: this.reorganizarDataViajes['LOADING'],
+          backgroundColor: 'rgb(255,205,6)',
+          borderColor: 'rgb(255,205,6)',
+          fill: false
+        }
+      )
+    }
+    if (this.reorganizarDataViajes['DOWNLOADING'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'DOWNLOADING',
+          data: this.reorganizarDataViajes['DOWNLOADING'],
+          backgroundColor: 'rgb(255,33,6)',
+          borderColor: 'rgb(255,33,6)',
+          fill: false,
+          order: 2
+        }
+      );
+    }
+    if (this.reorganizarDataViajes['SAILING_IN_BALLAST'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'SAILING_IN_BALLAST',
+          data: this.reorganizarDataViajes['SAILING_IN_BALLAST'],
+          backgroundColor: 'rgb(33,205,6)',
+          borderColor: 'rgb(33,205,6)',
+          fill: false,
+          order: 3
 
-
-    this.dataSPEEDChartPoint = [
-      {
-        type: 'line',
-        label: 'LOADING',
-        data: this.reorganizarDataViajes['LOADING'],
-        backgroundColor: 'rgb(255,205,6)',
-        borderColor: 'rgb(255,205,6)',
-        fill: false,
-        order: 1
-      }, {
-        type: 'line',
-        label: 'DOWNLOADING',
-        data: this.reorganizarDataViajes['DOWNLOADING'],
-        backgroundColor: 'rgb(255,33,6)',
-        borderColor: 'rgb(255,33,6)',
-        fill: false,
-        order: 2
-      }, {
-        type: 'line',
-        label: 'SAILING_IN_BALLAST',
-        data: this.reorganizarDataViajes['SAILING_IN_BALLAST'],
-        backgroundColor: 'rgb(33,205,6)',
-        borderColor: 'rgb(33,205,6)',
-        fill: false,
-        order: 3
-      },
-      {
-        type: 'line',
-        label: 'SAILING_WITH_LADEN',
-        data: this.reorganizarDataViajes['SAILING_WITH_LADEN'],
-        backgroundColor: 'rgb(44,44,6)',
-        borderColor: 'rgb(44,44,6)',
-        fill: false,
-        order: 4
-      },
-      {
-        type: 'line',
-        label: 'ECONOMICAL_NAVIGATION',
-        data: this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'],
-        backgroundColor: 'rgb(22,205,6)',
-        borderColor: 'rgb(22,205,6)',
-        fill: false,
-        order: 5
-      },
-      {
-        type: 'line',
-        label: 'ANCHORED',
-        data: this.reorganizarDataViajes['ANCHORED'],
-        backgroundColor: 'rgb(255,22,6)',
-        borderColor: 'rgb(255,22,6)',
-        fill: false,
-        order: 6
-      },
-      {
-        type: 'line',
-        label: 'MANEUVER',
-        data: this.reorganizarDataViajes['MANEUVER'],
-        backgroundColor: 'rgb(255,66,6)',
-        borderColor: 'rgb(255,66,6)',
-        fill: false,
-        order: 7
-      },
-      {
-        type: 'line',
-        label: 'OTHER_ACT',
-        data: this.reorganizarDataViajes['OTHER_ACT'],
-        backgroundColor: 'rgb(66,205,6)',
-        borderColor: 'rgb(66,205,6)',
-        fill: false,
-        order: 8
-      }
-    ];
+        });
+    }
+    if (this.reorganizarDataViajes['SAILING_WITH_LADEN'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'SAILING_WITH_LADEN',
+          data: this.reorganizarDataViajes['SAILING_WITH_LADEN'],
+          backgroundColor: 'rgb(44,44,6)',
+          borderColor: 'rgb(44,44,6)',
+          fill: false,
+          order: 4
+        });
+    }
+    if (this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'ECONOMICAL_NAVIGATION',
+          data: this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'],
+          backgroundColor: 'rgb(22,205,6)',
+          borderColor: 'rgb(22,205,6)',
+          fill: false,
+          order: 5
+        });
+    }
+    if (this.reorganizarDataViajes['ANCHORED'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'ANCHORED',
+          data: this.reorganizarDataViajes['ANCHORED'],
+          backgroundColor: 'rgb(255,22,6)',
+          borderColor: 'rgb(255,22,6)',
+          fill: false,
+          order: 6
+        });
+    }
+    if (this.reorganizarDataViajes['MANEUVER'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'MANEUVER',
+          data: this.reorganizarDataViajes['MANEUVER'],
+          backgroundColor: 'rgb(255,66,6)',
+          borderColor: 'rgb(255,66,6)',
+          fill: false,
+          order: 7
+        }
+      );
+    }
+    if (this.reorganizarDataViajes['OTHER_ACT'].length > 0) {
+      this.dataSPEEDChartPoint.push(
+        {
+          type: 'line',
+          label: 'OTHER_ACT',
+          data: this.reorganizarDataViajes['OTHER_ACT'],
+          backgroundColor: 'rgb(66,205,6)',
+          borderColor: 'rgb(66,205,6)',
+          fill: false,
+          order: 8
+        }
+      );
+    }
 
     return true;
   }
@@ -592,7 +628,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
     // Los label lo pongo vacio por es multi line
-    this.configLineaSPEED.data.labels = [];
+    this.configLineaSPEED.data.labels = this.xLabelReport;
 
     // Actualizamos la dataSPEED
     // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
