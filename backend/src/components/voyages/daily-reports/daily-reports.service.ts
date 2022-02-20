@@ -697,12 +697,10 @@ export class DailyReportsService {
                 .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
                 
                 .groupBy('activityPerformed')
-                .addGroupBy('daily_report.portId')
                 .addGroupBy('port.voyageId')
                 
                 .orderBy('voyage.year')
                 .addOrderBy('port.voyageId')
-                .addOrderBy('daily_report.portId')
                 .getRawMany()
 
                 .then(

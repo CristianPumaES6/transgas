@@ -62,6 +62,6 @@ AND (
 AND daily_report.userId = @userid 
 
 -- Lo agrupamos por actividad.
-GROUP BY activityPerformed,voyageId,portId
+GROUP BY activityPerformed,voyageId
 
-ORDER BY year,voyageId,portId
+ORDER BY year,voyageId

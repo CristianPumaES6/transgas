@@ -12,6 +12,9 @@ import { LanguageService } from 'src/app/services/language.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DailyReport, Speed } from 'src/app/models/daily-report';
+import { Voyage } from 'src/app/models/voyage';
+import { Port } from 'src/app/models/port';
 
 
 @Component({
@@ -38,11 +41,26 @@ export class SpeedAnalysisComponent implements OnInit {
   public chartLineSPEED: Chart; // LINEA
 
 
+
   // ------------ Formaulario Filter -----------------
   public formFilter: FormGroup;
-  public selectSummaryBy: string = 'PORTS'
+  public selectSummaryBy: string = 'VOYAGES'
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
+  public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
+
+
+  // Data
   public listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+  public reorganizarDataViajes = {
+    LOADING: [],
+    DOWNLOADING: [],
+    SAILING_IN_BALLAST: [],
+    SAILING_WITH_LADEN: [],
+    ECONOMICAL_NAVIGATION: [],
+    ANCHORED: [],
+    MANEUVER: [],
+    OTHER_ACT: []
+  };
 
 
 
@@ -82,7 +100,182 @@ export class SpeedAnalysisComponent implements OnInit {
             if (!result) throw 'ERROR GER REPORT';
 
             this.listGetReportVoyagePortDaily = result;
-
+            /* 
+                        let ultimoViajeId: number = 0;
+                        let ultimoPuertoId: number = 0;
+            
+            
+            
+                        result.forEach((iGetReportVoyagePortDaily:GetReportVoyagePortDaily)=>{
+            
+            
+            
+                          if (ultimoViajeId !== iGetReportVoyagePortDaily.voyageId) {
+            
+            
+            
+            
+            
+            
+            
+            
+                            ultimoViajeId = iGetReportVoyagePortDaily.voyageId;
+                            ultimoPuertoId = iGetReportVoyagePortDaily.portId;
+            
+                            let newVoyage = new Voyage();
+                            newVoyage.id = iGetReportVoyagePortDaily.voyageId;
+                            newVoyage.voyageNumber =  iGetReportVoyagePortDaily.voyageNumber;
+                            newVoyage.userId =userSelect;
+                            newVoyage.status = true;
+            
+                            let newPort = new Port();
+                            newPort.id = iGetReportVoyagePortDaily.portId;
+                            newPort.userId =userSelect;
+                            newPort.departurePort = iGetReportVoyagePortDaily.departurePort;
+                            newPort.arrivalPort = iGetReportVoyagePortDaily.arrivalPort;
+                            newPort.status = true;
+            
+                            let newReport = new DailyReport();
+                            newReport.id = iGetReportVoyagePortDaily.dailyReportId;
+                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
+                            // UserId que registra el dato
+                            newReport.userId = userSelect;
+                            // Puerto ID
+                            newReport.portId = iGetReportVoyagePortDaily.portId;
+                            // Actividades realizada
+                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
+                            //  SpeedStraction ECO_SPEED | FULL_SPEED
+                            newReport.speedStraction = iGetReportVoyagePortDaily.speedStraction;
+                            // Fecha de registro
+                            newReport.date = iGetReportVoyagePortDaily.date;
+                            // Hora
+                            newReport.hour = iGetReportVoyagePortDaily.hour;
+                    
+                    
+                            // Recarga de IFO
+                            newReport.bunkeringIfo = iGetReportVoyagePortDaily.bunkeringIfo;
+                            // Recarga de MGO
+                            newReport.bunkeringMgo = iGetReportVoyagePortDaily.bunkeringMgo;
+                    
+                    
+                            // Consumo mplaIfo
+                            newReport.mplaIfo = iGetReportVoyagePortDaily.mplaIfo;
+                            // Consumo auxIfo
+                            newReport.auxIfo = iGetReportVoyagePortDaily.auxIfo;
+                            // consumo boilerIfo
+                            newReport.boilerIfo = iGetReportVoyagePortDaily.boilerIfo;
+                            // Otros consumos Ifo
+                            newReport.otherIfo = iGetReportVoyagePortDaily.otherIfo;
+                    
+                            // Consumo mplaMgo
+                            newReport.mplaMgo = iGetReportVoyagePortDaily.mplaMgo;
+                            // Consumo auxMgo
+                            newReport.auxMgo = iGetReportVoyagePortDaily.auxMgo;
+                            // Consumo boilerMgo
+                            newReport.boilerMgo = iGetReportVoyagePortDaily.boilerMgo;
+                            // Consumo ppMgo
+                            newReport.ppMgo = iGetReportVoyagePortDaily.ppMgo;
+                            // Consumo giMgo
+                            newReport.giMgo = iGetReportVoyagePortDaily.giMgo;
+                            // Consumo otherMgo
+                            newReport.otherMgo = iGetReportVoyagePortDaily.otherMgo;
+                    
+                    
+                            // Tempo navegando
+                            newReport.steamingTime = iGetReportVoyagePortDaily.steamingTime;
+                            // Distancia
+                            newReport.distance = iGetReportVoyagePortDaily.distance;
+                            // beaufour
+                            newReport.beaufour = iGetReportVoyagePortDaily.beaufour;
+                            // Observaciones
+                            newReport.observation = iGetReportVoyagePortDaily.observation;
+                            newReport.status = true;
+            
+            
+                            newPort.dailyReports = [
+                              newReport
+                            ];
+            
+                            newVoyage.ports = [
+                              newPort 
+                            ]; 
+                            //this.reorganizarDataViajes.
+                          } else if(ultimoPuertoId !== iGetReportVoyagePortDaily.portId){
+                            ultimoPuertoId = iGetReportVoyagePortDaily.portId;
+            
+                            
+                            let newPort = new Port();
+                            newPort.id = iGetReportVoyagePortDaily.portId;
+                            newPort.userId =userSelect;
+                            newPort.departurePort = iGetReportVoyagePortDaily.departurePort;
+                            newPort.arrivalPort = iGetReportVoyagePortDaily.arrivalPort;
+                            newPort.status = true;
+            
+                            let newReport = new DailyReport();
+                            newReport.id = iGetReportVoyagePortDaily.dailyReportId;
+                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
+                            // UserId que registra el dato
+                            newReport.userId = userSelect;
+                            // Puerto ID
+                            newReport.portId = iGetReportVoyagePortDaily.portId;
+                            // Actividades realizada
+                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
+                            //  SpeedStraction ECO_SPEED | FULL_SPEED
+                            newReport.speedStraction = iGetReportVoyagePortDaily.speedStraction;
+                            // Fecha de registro
+                            newReport.date = iGetReportVoyagePortDaily.date;
+                            // Hora
+                            newReport.hour = iGetReportVoyagePortDaily.hour;
+                    
+                    
+                            // Recarga de IFO
+                            newReport.bunkeringIfo = iGetReportVoyagePortDaily.bunkeringIfo;
+                            // Recarga de MGO
+                            newReport.bunkeringMgo = iGetReportVoyagePortDaily.bunkeringMgo;
+                    
+                    
+                            // Consumo mplaIfo
+                            newReport.mplaIfo = iGetReportVoyagePortDaily.mplaIfo;
+                            // Consumo auxIfo
+                            newReport.auxIfo = iGetReportVoyagePortDaily.auxIfo;
+                            // consumo boilerIfo
+                            newReport.boilerIfo = iGetReportVoyagePortDaily.boilerIfo;
+                            // Otros consumos Ifo
+                            newReport.otherIfo = iGetReportVoyagePortDaily.otherIfo;
+                    
+                            // Consumo mplaMgo
+                            newReport.mplaMgo = iGetReportVoyagePortDaily.mplaMgo;
+                            // Consumo auxMgo
+                            newReport.auxMgo = iGetReportVoyagePortDaily.auxMgo;
+                            // Consumo boilerMgo
+                            newReport.boilerMgo = iGetReportVoyagePortDaily.boilerMgo;
+                            // Consumo ppMgo
+                            newReport.ppMgo = iGetReportVoyagePortDaily.ppMgo;
+                            // Consumo giMgo
+                            newReport.giMgo = iGetReportVoyagePortDaily.giMgo;
+                            // Consumo otherMgo
+                            newReport.otherMgo = iGetReportVoyagePortDaily.otherMgo;
+                    
+                    
+                            // Tempo navegando
+                            newReport.steamingTime = iGetReportVoyagePortDaily.steamingTime;
+                            // Distancia
+                            newReport.distance = iGetReportVoyagePortDaily.distance;
+                            // beaufour
+                            newReport.beaufour = iGetReportVoyagePortDaily.beaufour;
+                            // Observaciones
+                            newReport.observation = iGetReportVoyagePortDaily.observation;
+                            newReport.status = true;
+            
+            
+                            newPort.dailyReports = [
+                              newReport
+                            ];
+                          } else {
+                            
+                          }
+            
+                        }) */
             //return this.GenerateData(this.dataSPEEDChartPoint, this.listGetReportVoyagePortDaily);
 
             return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
@@ -144,16 +337,9 @@ export class SpeedAnalysisComponent implements OnInit {
 
     // Configuracion Chart lineal
     this.configLineaSPEED = {
-      type: 'line',
       data: {
         labels: [], // Lo pongo vacio por que en el update se colocara el valor.
-        datasets: [{
-          label: 'AVERAGE SPEED',
-          backgroundColor: 'rgb(255,205,6)',
-          borderColor: 'rgb(255,205,6)',
-          data: [], // Lo pongo vacio por que en el update se colocara el valor.
-          fill: false,
-        }]
+        datasets: []
       },
       options: {
         onHover: (event, chartElement) => {
@@ -277,6 +463,9 @@ export class SpeedAnalysisComponent implements OnInit {
     let ultimoViaje: number = 0;
     let ultimoPuerto: number = 0;
 
+    let speed = 0;
+
+
     // recorremos todo el arreglo
     listGetReportVoyagePortDaily.forEach((iGetReportVoyagePortDaily: GetReportVoyagePortDaily, indexReport: number) => {
       // Generamos el texto para los labels del Chart
@@ -284,59 +473,116 @@ export class SpeedAnalysisComponent implements OnInit {
 
       if (this.selectSummaryBy === 'VOYAGES') {
 
-        // Si nuestro ultimo viaje cambia lo agregamos al texto.
-        if (ultimoViaje !== iGetReportVoyagePortDaily.voyageNumber) {
-          ultimoViaje = iGetReportVoyagePortDaily.voyageNumber;
+        // Armamos el texto de label para viajes.
+        txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
 
-          // Armamos el texto de label para viajes.
-          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
 
-          // Lo agregamos al arreglo.
-          this.xLabelReport.push(txtLabelChart);
-
-          // El total de velocidad debe de ser mayor para poder pintarlo.
-          let speed = iGetReportVoyagePortDaily.distance / (iGetReportVoyagePortDaily.steamingTime || 1);
-          // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
-
-          this.dataSPEEDChartPoint.push(
-            { x: txtLabelChart, y: speed, ubication: [indexReport] }
-          );
-
-          if (speed > this.configLineaSPEED.lineaMax) {
-            this.configLineaSPEED.lineaMax = speed;
-          };
-
-        }
       } else if (this.selectSummaryBy === 'PORTS') {
 
-        // Si nuestro ultimo viaje cambia lo agregamos al texto.
+        // Armamos el texto de label para viajes.
+        txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
 
-        if (ultimoPuerto != iGetReportVoyagePortDaily.portNumber) {
-          ultimoPuerto = iGetReportVoyagePortDaily.portNumber;
-
-          // Armamos el texto de label para viajes.
-          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
-
-          // Lo agregamos al arreglo.
-          this.xLabelReport.push(txtLabelChart);
-
-          // El total de velocidad debe de ser mayor para poder pintarlo.
-          let speed = iGetReportVoyagePortDaily.distance / (iGetReportVoyagePortDaily.steamingTime || 1);
-          // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
-
-          this.dataSPEEDChartPoint.push(
-            { x: txtLabelChart, y: speed, ubication: [indexReport] }
-          );
-
-          if (speed > this.configLineaSPEED.lineaMax) {
-            this.configLineaSPEED.lineaMax = speed;
-          };
-
-        }
       }
+
+      // Agregamos el texto al arreglo del chart.
+      this.xLabelReport.push(txtLabelChart);
+
+      // Obtenemos la velocidad IFO
+      let dataSpeed = new Speed();
+      dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
+      // El total de velocidad debe de ser mayor para poder pintarlo.
+      speed = dataSpeed.distanceIFO / (dataSpeed.timeOperationIFO || 1);
+      // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
+      if (speed > 0) {
+        this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
+          { x: txtLabelChart, y: speed, ubication: [indexReport] }
+        )
+      };
+
+
+      // La linea maxima
+      if (speed > this.configLineaSPEED.lineaMax) {
+        this.configLineaSPEED.lineaMax = speed;
+      };
 
     });
 
+
+
+    this.dataSPEEDChartPoint = [
+      {
+        type: 'line',
+        label: 'LOADING',
+        data: this.reorganizarDataViajes['LOADING'],
+        backgroundColor: 'rgb(255,205,6)',
+        borderColor: 'rgb(255,205,6)',
+        fill: false,
+        order: 1
+      }, {
+        type: 'line',
+        label: 'DOWNLOADING',
+        data: this.reorganizarDataViajes['DOWNLOADING'],
+        backgroundColor: 'rgb(255,33,6)',
+        borderColor: 'rgb(255,33,6)',
+        fill: false,
+        order: 2
+      }, {
+        type: 'line',
+        label: 'SAILING_IN_BALLAST',
+        data: this.reorganizarDataViajes['SAILING_IN_BALLAST'],
+        backgroundColor: 'rgb(33,205,6)',
+        borderColor: 'rgb(33,205,6)',
+        fill: false,
+        order: 3
+      },
+      {
+        type: 'line',
+        label: 'SAILING_WITH_LADEN',
+        data: this.reorganizarDataViajes['SAILING_WITH_LADEN'],
+        backgroundColor: 'rgb(44,44,6)',
+        borderColor: 'rgb(44,44,6)',
+        fill: false,
+        order: 4
+      },
+      {
+        type: 'line',
+        label: 'ECONOMICAL_NAVIGATION',
+        data: this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'],
+        backgroundColor: 'rgb(22,205,6)',
+        borderColor: 'rgb(22,205,6)',
+        fill: false,
+        order: 5
+      },
+      {
+        type: 'line',
+        label: 'ANCHORED',
+        data: this.reorganizarDataViajes['ANCHORED'],
+        backgroundColor: 'rgb(255,22,6)',
+        borderColor: 'rgb(255,22,6)',
+        fill: false,
+        order: 6
+      },
+      {
+        type: 'line',
+        label: 'MANEUVER',
+        data: this.reorganizarDataViajes['MANEUVER'],
+        backgroundColor: 'rgb(255,66,6)',
+        borderColor: 'rgb(255,66,6)',
+        fill: false,
+        order: 7
+      },
+      {
+        type: 'line',
+        label: 'OTHER_ACT',
+        data: this.reorganizarDataViajes['OTHER_ACT'],
+        backgroundColor: 'rgb(66,205,6)',
+        borderColor: 'rgb(66,205,6)',
+        fill: false,
+        order: 8
+      }
+    ];
+
+    return true;
   }
 
 
@@ -344,13 +590,13 @@ export class SpeedAnalysisComponent implements OnInit {
     console.log('UpdateLineSPEED()');
 
 
-    // Actualizamos los labels
-    this.configLineaSPEED.data.labels = this.xLabelReport;
+
+    // Los label lo pongo vacio por es multi line
+    this.configLineaSPEED.data.labels = [];
 
     // Actualizamos la dataSPEED
     // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
-    debugger
-    this.configLineaSPEED.data.datasets[0].data = this.dataSPEEDChartPoint;
+    this.configLineaSPEED.data.datasets = this.dataSPEEDChartPoint;
 
     // Vaciamos la configuracion de las lines SPEED
     // La linea es el campo que agregamos en el plugin.
