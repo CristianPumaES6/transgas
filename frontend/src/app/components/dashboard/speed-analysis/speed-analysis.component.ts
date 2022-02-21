@@ -15,6 +15,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DailyReport, Speed } from 'src/app/models/daily-report';
 import { Voyage } from 'src/app/models/voyage';
 import { Port } from 'src/app/models/port';
+import { ActivityPerformed } from 'src/app/models/dashboard';
+import { FormuleService } from 'src/app/services/formule.service';
 
 
 @Component({
@@ -48,6 +50,8 @@ export class SpeedAnalysisComponent implements OnInit {
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
 
+  // Lista con el resumen por viaje.
+  public listTableSpeedByVoyage: any = [];
 
   // Data
   public listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
@@ -72,6 +76,7 @@ export class SpeedAnalysisComponent implements OnInit {
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private fb: FormBuilder,
+    private formuleService: FormuleService,
   ) {
     // Inicializamos y bloqueamos el formulario.
     this.ReactiveForm(true, false, true);
@@ -86,8 +91,12 @@ export class SpeedAnalysisComponent implements OnInit {
 
     // Filtros por fecha.
     let userSelect = 2;
-    let dateStart = '2022-01-24T13:00:00Z';
+
+    //
+    let dateStart = '2021-01-24T13:00:00Z';
     let dateEnd = '2022-02-07T13:00:00Z';
+    // let dateStart = '2021-12-01T13:00:00Z';
+    // let dateEnd = '2022-02-15T11:30:00';
 
     // Inicia la promesa.
     return await Promise.resolve(true)
@@ -468,33 +477,40 @@ export class SpeedAnalysisComponent implements OnInit {
 
     // recorremos todo el arreglo
     listGetReportVoyagePortDaily.forEach((iGetReportVoyagePortDaily: GetReportVoyagePortDaily, indexReport: number) => {
-      // Generamos el texto para los labels del Chart
+
+
+      // Generamos el texto para los labels segun tipo de resumen
       let txtLabelChart: string = '';
 
       if (this.selectSummaryBy === 'VOYAGES') {
-
         // Armamos el texto de label para viajes.
         txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
-
-
       } else if (this.selectSummaryBy === 'PORTS') {
-
         // Armamos el texto de label para viajes.
         txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
-
       }
 
+      // Posiciondel elemento
+      let posicionDelLabelSiExiste = 0;
       // Buscamos si el label ya se registro.
-      let existeElTextLabel = this.xLabelReport.find(
-        label => {
-          return label == txtLabelChart;
+      let existeElLabel = this.xLabelReport.find(
+        (label, index) => {
+          if (label == txtLabelChart) {
+            posicionDelLabelSiExiste = index;
+            return true
+          }
+          return false;
         }
       );
+
       // Si no existe el label lo agregamos.
-      if (!existeElTextLabel) {
+      if (!existeElLabel) {
         // Agregamos el texto al arreglo del chart.
         this.xLabelReport.push(txtLabelChart);
       }
+
+
+      this.AddOrUpdateDataTableList(existeElLabel, posicionDelLabelSiExiste, iGetReportVoyagePortDaily)
 
       // Obtenemos la velocidad IFO
       let dataSpeed = new Speed();
@@ -801,4 +817,40 @@ export class SpeedAnalysisComponent implements OnInit {
 
     return true;
   }
+
+
+  // Agrega o actuliza la data segun lo que le indiquemos desde los parametros.
+  // Estos valores son agregados al arreglo de listTable.
+  public AddOrUpdateDataTableList(tieneUnaUbicacionElLabel: boolean, ubicationEnElArreglo: number, iGetReportVoyagePortDaily: GetReportVoyagePortDaily): boolean {
+    // el objeto donde trabajaremos.
+    let dataTable = {
+      id: 0,
+      title: '',
+      activities: new ActivityPerformed()
+
+    }
+
+    // Si existe cargamos los datos que ya  hemos guardado
+    if (tieneUnaUbicacionElLabel) {
+      dataTable = this.listTableSpeedByVoyage[ubicationEnElArreglo];
+    } else {
+      // Actualizamos los datos.
+      dataTable.id = iGetReportVoyagePortDaily.voyageId;
+      dataTable.title = 'Voyage ' + iGetReportVoyagePortDaily.voyageNumber;
+    }
+
+    // Agregamos la velocidad a la actividad.
+    dataTable.activities[iGetReportVoyagePortDaily.activityPerformed] = this.formuleService.CalculateSpeed(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime);
+
+    // Si existe, actualizamos el objeto
+    if (tieneUnaUbicacionElLabel) {
+      this.listTableSpeedByVoyage[ubicationEnElArreglo] = dataTable;
+    } else {
+      // Agregamos un nuevo objeto
+      this.listTableSpeedByVoyage.push(dataTable);
+    }
+
+    return true;
+  }
 }
+
