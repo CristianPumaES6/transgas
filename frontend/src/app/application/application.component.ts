@@ -31,6 +31,11 @@ import { User } from '../models/user';
 import { EnvConfig } from '../config/env.config';
 import { CantidadRestante } from '../models/loggedUser';
 import { DetecteInactiveUserService } from '../services/detecte-inactive-user.service';
+import { SpeedAnalysisService } from '../services/speed-analysis.service';
+import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
+import { Port } from '../models/port';
+import { Voyage } from '../models/voyage';
+import { DailyReport } from '../models/daily-report';
 
 @Component({
   selector: 'app-application',
@@ -69,6 +74,7 @@ export class ApplicationComponent implements OnInit {
     private notificationsService: NotificationsService,
     private _loadingService: LoadingService,
     private _DetecteInactiveUserService: DetecteInactiveUserService,
+    private _SpeedAnalysisService: SpeedAnalysisService
   ) {
     console.log('ApplicationComponent constructor()');
 
@@ -272,6 +278,147 @@ export class ApplicationComponent implements OnInit {
 
     }
   }
+
+  public async ClickDownloadLocalData(): Promise<boolean> {
+
+    let listVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+
+
+
+    // Aqui estaran los datos solo los que falten registra.
+    let listVoyage: Voyage[] = [];
+    let listPort: Port[] = [];
+    let listDailyReport: DailyReport[] = [];
+
+    this._loadingService.Open();
+
+    // Obtenemos los viajes que faltan agregar.
+    return await Promise.resolve(true).then(
+      result => {
+        // Obtenemos los viajes locales.
+        return this.databaseService.getVoyagesIndexDB();
+      }
+    ).then(
+      resultVoyages => {
+        if (!resultVoyages) throw 'ERROR';
+        
+        // Filtramos los viajes que no estan en el server.
+        listVoyage = resultVoyages.filter(voyage => voyage.syncStatus == 'added' || voyage.syncStatus == 'updated' || voyage.syncStatus == 'deleted');
+        return this.databaseService.getPortsIndexDB();
+      }
+    ).then(
+      resultPorts => {
+        if (!resultPorts) throw 'ERROR';
+        // Filtramos los viajes que no estan en el server.
+        listPort = resultPorts.filter(port => port.syncStatus == 'added' || port.syncStatus == 'updated' || port.syncStatus == 'deleted');
+        return this.databaseService.getReportDailysIndexDB();
+      }
+    ).then(
+      resultDailyReport => {
+        if (!resultDailyReport) throw 'ERROR';
+        listDailyReport = resultDailyReport.filter(voyage => voyage.syncStatus == 'added' || voyage.syncStatus == 'updated' || voyage.syncStatus == 'deleted');
+
+
+
+        // Recorremos la lista de los reportes diarios.
+        listDailyReport.forEach(
+          (dailyReport: DailyReport) => {
+
+            let objReportVoyagePortDaily = new GetReportVoyagePortDaily();
+
+            objReportVoyagePortDaily.userId = dailyReport.userId;
+
+            // DATOS NETAMENTE DEL DAILY REPORT.
+            objReportVoyagePortDaily.dailyReportId = dailyReport.id;
+            objReportVoyagePortDaily.activityPerformed = dailyReport.activityPerformed;
+            objReportVoyagePortDaily.speedStraction = dailyReport.speedStraction;
+            objReportVoyagePortDaily.date = dailyReport.date;
+            objReportVoyagePortDaily.hour = dailyReport.hour;
+            objReportVoyagePortDaily.bunkeringIfo = dailyReport.bunkeringIfo;
+            objReportVoyagePortDaily.bunkeringMgo = dailyReport.bunkeringMgo;
+            // Consumo IFO
+            objReportVoyagePortDaily.mplaIfo = dailyReport.mplaIfo;
+            objReportVoyagePortDaily.auxIfo = dailyReport.auxIfo;
+            objReportVoyagePortDaily.boilerIfo = dailyReport.boilerIfo;
+            objReportVoyagePortDaily.otherIfo = dailyReport.otherIfo;
+            // Consumo MGO
+            objReportVoyagePortDaily.mplaMgo = dailyReport.mplaMgo;
+            objReportVoyagePortDaily.auxMgo = dailyReport.auxMgo;
+            objReportVoyagePortDaily.boilerMgo = dailyReport.boilerMgo;
+            objReportVoyagePortDaily.ppMgo = dailyReport.ppMgo;
+            objReportVoyagePortDaily.giMgo = dailyReport.giMgo;
+            objReportVoyagePortDaily.otherMgo = dailyReport.otherMgo;
+
+            // DISTANCIA Y TIEMPO Viento Observaciones
+            objReportVoyagePortDaily.steamingTime = dailyReport.steamingTime;
+            objReportVoyagePortDaily.distance = dailyReport.distance;
+            objReportVoyagePortDaily.beaufour = dailyReport.beaufour;
+            objReportVoyagePortDaily.observation = dailyReport.observation;
+
+            // Audiotoria
+            objReportVoyagePortDaily.syncStatusDaily = dailyReport.syncStatus;
+            objReportVoyagePortDaily.statusDaily = dailyReport.status;
+
+
+            // Buscamos el puerto y solo si esta en offline lo agregamos.
+            objReportVoyagePortDaily.portId = dailyReport.portId;
+            let buscarPortById = listPort.find(port => port.id == objReportVoyagePortDaily.portId);
+            if (buscarPortById) {
+              objReportVoyagePortDaily.voyageId = buscarPortById.voyageId;
+              objReportVoyagePortDaily.portNumber = buscarPortById.portNumber;
+              objReportVoyagePortDaily.departurePort = buscarPortById.departurePort;
+              objReportVoyagePortDaily.arrivalPort = buscarPortById.arrivalPort;
+              // Audiotoria
+              objReportVoyagePortDaily.statusPort = buscarPortById.status;
+              objReportVoyagePortDaily.syncStatusPort = buscarPortById.syncStatus;
+
+
+              // Buscamos el viaje y solo si esta en offline lo agregamos.
+              objReportVoyagePortDaily.voyageId = buscarPortById.voyageId;
+              let buscarVoyageById = listVoyage.find(voyage => voyage.id == objReportVoyagePortDaily.voyageId);
+              if (buscarVoyageById) {
+                // Lugar de partida,
+                objReportVoyagePortDaily.voyageNumber = buscarVoyageById.voyageNumber;
+                // Lugar de llegada.
+                objReportVoyagePortDaily.year = buscarVoyageById.year;
+                // Audiotoria
+                objReportVoyagePortDaily.statusVoyage = buscarVoyageById.status;
+                objReportVoyagePortDaily.syncStatusVoyage = buscarVoyageById.syncStatus;
+              }
+
+            }
+
+            // Agregamos a la lista del arreglo.
+            listVoyagePortDaily.push(objReportVoyagePortDaily);
+          }
+        );
+
+          // Descargamos los datos locales.
+        return this._SpeedAnalysisService.DowloadExcelDataLocal(this.loggedUser.name, listVoyagePortDaily);
+      }
+    ).then(
+      result => {
+        if (!result) throw 'ERROR';
+        this._loadingService.Close();
+
+        return true;
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, err);
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this._loadingService.Close();
+        return false;
+      }
+    );
+  }
+
 
   public GetRoutelNavLink() {
     console.log('GetRoutelNavLink()');

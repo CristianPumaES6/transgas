@@ -57,6 +57,10 @@
               {{'LIST_OF_CONNECTED_USERS' | translateMessage:translateCategory}}
             </a>
             </ng-template>
+            <a (click)="ClickDownloadLocalData()" class="dropdown-item" style="cursor: pointer;">
+              <i class="icon-punto-circulo"></i>
+              {{'DOWNLOAD_LOCAL_DATA' | translateMessage:translateCategory}}
+            </a>
             <a (click)="ClickLogout()" class="dropdown-item" style="cursor: pointer;">
               <i class="icon-logout-1"></i>
               {{'EXIT_PERFIL' | translateMessage:translateCategory}}

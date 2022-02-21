@@ -15,6 +15,7 @@ export const aSide: any = {
 export const application: any = {
     EDIT_PERFIL: 'Edit profile',
     LIST_OF_CONNECTED_USERS: 'List of connected users',
+    DOWNLOAD_LOCAL_DATA: 'Download local data',
     EXIT_PERFIL: 'Logout',
     CURRENT_STATUS: 'current status',
     STATUS_TRUE: 'Online',
@@ -515,4 +516,8 @@ export const exportExcel: any = {
 
     FULL_SPEED:'FULL',
     ECO_SPEED:'ECO',
+}
+
+export const speedAnalysisService:any = {
+    
 }
