@@ -60,6 +60,8 @@ AND (
         daily_report.bunkeringIfo > 0
         )
 AND daily_report.userId = @userid 
+AND port.userId = @userid 
+AND voyage.userId = @userid 
 
 -- Lo agrupamos por actividad.
 GROUP BY activityPerformed,voyageId

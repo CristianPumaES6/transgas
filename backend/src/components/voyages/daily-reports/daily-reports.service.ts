@@ -641,7 +641,7 @@ export class DailyReportsService {
         return await
             this._dailyReportRepository.createQueryBuilder('daily_report')
                 .select('voyage.userId', 'userId')
-            
+
                 // -- Datos del viaje
                 .addSelect('voyage.year', 'year')
                 .addSelect('voyage.id', 'voyageId')
@@ -653,7 +653,7 @@ export class DailyReportsService {
                 .addSelect('port.departurePort', 'departurePort')
                 .addSelect('port.arrivalPort', 'arrivalPort')
 
-                
+
                 // -- Informacion del reporte.
                 .addSelect('daily_report.id', 'dailyReportId')
                 .addSelect('daily_report.date', 'date')
@@ -670,17 +670,17 @@ export class DailyReportsService {
                 .addSelect('SUM(daily_report.distance)', 'distance')
                 // Beaufour
                 .addSelect('daily_report.beaufour', 'beaufour')
-    
-    
+
+
 
                 // Suma total de consumo por maquina
-                .addSelect('daily_report.mplaIfo', 'mplaIfo')
-                .addSelect('daily_report.auxIfo', 'auxIfo')
-                .addSelect('daily_report.boilerIfo', 'boilerIfo')
-                .addSelect('daily_report.otherIfo', 'otherIfo')
+                .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+                .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+                .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+                .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
                 // Suma total de bunkering
-                .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
- 
+                .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+
                 // UNION DE TABLAS
                 .innerJoin('daily_report.port', 'port')
                 .innerJoin('port.voyage', 'voyage')
@@ -690,15 +690,17 @@ export class DailyReportsService {
                 .andWhere('port.status = :status', { status: 1 })
 
                 .andWhere('daily_report.userId = :userId', { userId: userId })
+                .andWhere('port.userId = :userId', { userId: userId })
+                .andWhere('voyage.userId = :userId', { userId: userId })
 
-                .andWhere('daily_report.mplaIfo > :mplaIfo OR daily_report.auxIfo > :auxIfo OR daily_report.boilerIfo > :boilerIfo OR daily_report.otherIfo > :otherIfo OR daily_report.bunkeringIfo > :bunkeringIfo', { mplaIfo: 0,auxIfo:0 ,boilerIfo:0 ,otherIfo:0,bunkeringIfo:0  })
+                .andWhere(' (daily_report.mplaIfo > :mplaIfo OR daily_report.auxIfo > :auxIfo OR daily_report.boilerIfo > :boilerIfo OR daily_report.otherIfo > :otherIfo OR daily_report.bunkeringIfo > :bunkeringIfo )', { mplaIfo: 0, auxIfo: 0, boilerIfo: 0, otherIfo: 0, bunkeringIfo: 0 })
 
                 .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
                 .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
-                
+
                 .groupBy('activityPerformed')
                 .addGroupBy('port.voyageId')
-                
+
                 .orderBy('voyage.year')
                 .addOrderBy('port.voyageId')
                 .getRawMany()
