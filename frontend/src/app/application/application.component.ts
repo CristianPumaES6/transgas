@@ -301,7 +301,7 @@ export class ApplicationComponent implements OnInit {
     ).then(
       resultVoyages => {
         if (!resultVoyages) throw 'ERROR';
-        
+
         // Filtramos los viajes que no estan en el server.
         listVoyage = resultVoyages.filter(voyage => voyage.syncStatus == 'added' || voyage.syncStatus == 'updated' || voyage.syncStatus == 'deleted');
         return this.databaseService.getPortsIndexDB();
@@ -318,7 +318,7 @@ export class ApplicationComponent implements OnInit {
         if (!resultDailyReport) throw 'ERROR';
         listDailyReport = resultDailyReport.filter(voyage => voyage.syncStatus == 'added' || voyage.syncStatus == 'updated' || voyage.syncStatus == 'deleted');
 
-
+        if (!listDailyReport.length) throw 'All reports are on the server.';
 
         // Recorremos la lista de los reportes diarios.
         listDailyReport.forEach(
@@ -393,7 +393,7 @@ export class ApplicationComponent implements OnInit {
           }
         );
 
-          // Descargamos los datos locales.
+        // Descargamos los datos locales.
         return this._SpeedAnalysisService.DowloadExcelDataLocal(this.loggedUser.name, listVoyagePortDaily);
       }
     ).then(
