@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartData, registerables } from 'chart.js';
-import { getRelativePosition } from 'chart.js/helpers';
-import Chart from 'chart.js/auto';
+import * as Chart from 'chart.js';
+// import { ChartData, registerables } from 'chart.js'; // Para CHart 3.7
+// import { getRelativePosition } from 'chart.js/helpers';
+// import Chart from 'chart.js/auto';// Para CHart 3.7
 import { DailyReportService } from 'src/app/services/daily-report.service';
 import { GetReportVoyagePortDaily } from 'src/app/models/dialog-export-excel';
 import { map } from 'rxjs/operators';
@@ -303,6 +304,11 @@ export class SpeedAnalysisComponent implements OnInit {
             result => {
               return true;
             }
+          ).catch(
+            err => {
+              
+              return false
+            }
           );
 
 
@@ -346,15 +352,19 @@ export class SpeedAnalysisComponent implements OnInit {
 
     // Configuracion Chart lineal
     this.configLineaSPEED = {
+      // Update Char 3.7 quitar este type deberia ir en cada dataset.
+      type: 'line',
       data: {
         labels: [], // Lo pongo vacio por que en el update se colocara el valor.
         datasets: []
       },
       options: {
+        // Lineas los pongo por el public creo que es maxio y minimo corrigan.
+        lines : [],
         onHover: (event, chartElement) => {
           //console.log(event);
           // console.log(chartElement);
-          let eventTarget = event.native.target as HTMLCanvasElement;
+          let eventTarget = event.target as HTMLCanvasElement;
           eventTarget.style.cursor = chartElement[0] ? 'pointer' : 'default';
         },
         // Otras opciones dentro del Chart
@@ -380,6 +390,7 @@ export class SpeedAnalysisComponent implements OnInit {
           display: true,
           onClick: (event, legendItem) => {
             console.log('onClick:' + legendItem.text);
+            return true
           },
           labels: {
             fontColor: 'rgb(255,255,255)', // Color de la leyenda.
@@ -390,7 +401,7 @@ export class SpeedAnalysisComponent implements OnInit {
         maintainAspectRatio: false,
         tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
         scales: {},// Lo pongo vacio por que en el update se colocara el valor.
-        hover: {
+       /*  hover: {
           // @ts-ignore
           onHover: function (e: MouseEvent) {
 
@@ -407,7 +418,7 @@ export class SpeedAnalysisComponent implements OnInit {
               eventTarget.style.cursor = 'default';
             }
           }
-        }
+        } */
       },
       lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
     };
@@ -640,8 +651,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
   private UpdateLineSPEED(): boolean {
     console.log('UpdateLineSPEED()');
-
-
+    
 
     // Los label lo pongo vacio por es multi line
     this.configLineaSPEED.data.labels = this.xLabelReport;
@@ -728,7 +738,7 @@ export class SpeedAnalysisComponent implements OnInit {
           }
     
     */
-    this.chartLineSPEED.update();
+   this.chartLineSPEED.update();
 
     return false;
   }

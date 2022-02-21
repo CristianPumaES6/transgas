@@ -28,8 +28,12 @@
 </form>
 
 
-<div style="width: 100%;">
-  <canvas id="myChart"></canvas>
+<div class="card" style="width: 18rem;">
+
+  <div style="width: 100%;">
+    <canvas id="myChart"></canvas>
+  </div>
+
 </div>
 
 
@@ -57,13 +61,13 @@
               </tr>
             </thead>
             <tbody>
-            <!-- Recorremos la data del table -->
+              <!-- Recorremos la data del table -->
               <ng-template ngFor let-ilistTableSpeedByVoyage [ngForOf]="listTableSpeedByVoyage" let-i="index">
                 <tr>
                   <td scope="row">{{ilistTableSpeedByVoyage.id}}</td>
                   <td>{{ilistTableSpeedByVoyage.title}}</td>
-                  
-                <!-- Recorremos la velocidad -->
+
+                  <!-- Recorremos la velocidad -->
                   <ng-template ngFor let-iDataSPEEDChartPoint [ngForOf]="dataSPEEDChartPoint" let-i="index">
                     <td scope="col">
                       {{ilistTableSpeedByVoyage.activities[iDataSPEEDChartPoint.label]}}
