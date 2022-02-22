@@ -70,8 +70,10 @@
           <nav class="nav">
             <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'consumer_analysis'}"
               (click)="selectNavLink('consumer_analysis')">Consumer Analysis</a>
-           <!--  <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'speed_analysis'}"
-              (click)="selectNavLink('speed_analysis')">Speed Analysis</a> -->
+           
+              <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'speed_analysis'}"
+              (click)="selectNavLink('speed_analysis')">Speed Analysis</a>
+              
           </nav>
 
         </ng-template>
