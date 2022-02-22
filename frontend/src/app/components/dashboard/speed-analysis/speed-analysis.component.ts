@@ -20,6 +20,7 @@ import { ActivityPerformed } from 'src/app/models/dashboard';
 import { FormuleService } from 'src/app/services/formule.service';
 
 import PerfectScrollbar from 'perfect-scrollbar';
+import { mathRound } from 'src/assets/math/math.assets';
 
 @Component({
   selector: 'app-speed-analysis',
@@ -68,6 +69,7 @@ export class SpeedAnalysisComponent implements OnInit {
     OTHER_ACT: []
   };
 
+  public cantDecimal: number = 1;
 
 
   constructor(
@@ -534,7 +536,7 @@ export class SpeedAnalysisComponent implements OnInit {
       let dataSpeed = new Speed();
       dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
       // El total de velocidad debe de ser mayor para poder pintarlo.
-      speed = dataSpeed.distanceIFO / (dataSpeed.timeOperationIFO || 1);
+      speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
       // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
       if (speed > 0) {
         this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
@@ -856,8 +858,10 @@ export class SpeedAnalysisComponent implements OnInit {
       dataTable.title = 'Voyage ' + iGetReportVoyagePortDaily.voyageNumber;
     }
 
+
+    let speed = this.formuleService.CalculateSpeed(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime);
     // Agregamos la velocidad a la actividad.
-    dataTable.activities[iGetReportVoyagePortDaily.activityPerformed] = this.formuleService.CalculateSpeed(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime);
+    dataTable.activities[iGetReportVoyagePortDaily.activityPerformed] = this.MathRoundOneDecimal(speed, this.cantDecimal);
 
     // Si existe, actualizamos el objeto
     if (tieneUnaUbicacionElLabel) {
@@ -868,6 +872,13 @@ export class SpeedAnalysisComponent implements OnInit {
     }
 
     return true;
+  }
+
+  // Convertir DECIMAL
+  public MathRoundOneDecimal(valor, cantDecimales: number) {
+    if (!valor) { return 0; }
+    let result = mathRound(valor, cantDecimales)
+    return result;
   }
 
 }
