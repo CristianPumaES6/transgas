@@ -2,3 +2,35 @@
     height: 100%;
     position: relative;
 }
+
+// POSICION REALATIVE CON UNA ALTURA FIJA Y SI ALGO ESTA FUERA DEL CUADRO SE OCULTA.
+.card-cont-table-list {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+}
+// CSS  ====================== TABLE STCIKET HEADER
+.tableFixHead {
+    overflow-x: hidden;
+
+    overflow-y: hidden;
+    height: 100%;
+}
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Just common table stuff. Really. */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th,
+td {
+    padding: 8px 16px;
+}
+th {
+    background: #eee;
+}

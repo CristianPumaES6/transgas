@@ -90,7 +90,12 @@ export class SpeedAnalysisComponent implements OnInit {
     this.GenetareLineSPEED();
 
     setTimeout(() => {
+      // BODY FULL CONTAINER
       new PerfectScrollbar('.body-full-container', {
+        suppressScrollX: true
+      })
+      // TABLE FIX HEAD
+      new PerfectScrollbar('.tableFixHead', {
         suppressScrollX: true
       })
     });
