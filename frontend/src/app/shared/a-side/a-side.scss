@@ -1,6 +1,6 @@
 @import "../../../app/variable";
 
-.nav-link.active i {
+.nav-link.active{
   color: $t-yellow;
   transition: 0.4s;
 }
@@ -19,3 +19,11 @@
 .az-iconbar-help.active i {
   color: $t-yellow;
 }
+
+.az-iconbar-body .nav-link{
+  transition: color 0.5s;
+  &:hover{
+
+    color: $t-yellow;
+  }
+} 

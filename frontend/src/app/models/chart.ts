@@ -1,4 +1,5 @@
 import * as Chart from "chart.js";
+// import Chart from 'chart.js/auto'; // Solo para chart 3.7
 
 // Interface del conponente Chart
 export class DataChart {

@@ -6,6 +6,7 @@ export interface EnvConfig {
     ENV?: string;
     VERSION?: string;
     SOCKET?: string;
+    URL_EMPRESA?: string;
 }
 
 /*
@@ -13,7 +14,8 @@ export interface EnvConfig {
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas-test.codev.site',
     ENV: '',
-    VERSION: 'v1.9M'
+    VERSION: 'v1.9M',
+    URL_EMPRESA: 'https://www.transgas.com.pe/'ae
 };
 */
 
@@ -24,7 +26,8 @@ export const EnvConfig: EnvConfig = {
     API: 'http://165.232.153.20:3000',
     ENV: '',
     VERSION: 'v1.9M',
-    SOCKET: 'http://165.232.153.20:4000'
+    SOCKET: 'http://165.232.153.20:4000',
+    URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
  */
 
@@ -35,7 +38,8 @@ export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
     VERSION: 'v1.9M',
-    SOCKET: 'https://socket-transgas.codev.site'
+    SOCKET: 'https://socket-transgas.codev.site',
+    URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
 */
 
@@ -45,7 +49,8 @@ export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
     VERSION: 'v1.9M',
-    SOCKET: 'https://socket-transgas.codev.site'
+    SOCKET: 'https://socket-transgas.codev.site',
+    URL_EMPRESA: 'https://www.transgas.com.pe/'
 }; */
 
 
@@ -54,7 +59,8 @@ export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
     VERSION: 'v1.9M',
-    SOCKET: 'ws://localhost:4000'
+    SOCKET: 'ws://localhost:4000',
+    URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
 
 

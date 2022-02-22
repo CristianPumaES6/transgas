@@ -8,6 +8,7 @@ import { User } from '../../models/user';
 
 // Libreria Jquery.
 import * as $ from 'jquery';
+import { EnvConfig } from 'src/app/config/env.config';
 
 @Component({
   selector: 'app-a-side',
@@ -35,6 +36,11 @@ export class ASideComponent implements OnInit {
   // Esta variable servira para saber si el menu esta abierto.
   public openedNavBarMovil: string = '';
 
+  public URL_EMPRESA: string = '';
+
+  // El sub menu esta abierto o cerrado.
+  public isOpenSubMenu = false;
+
   constructor(
     private languageService: LanguageService,
   ) {
@@ -49,16 +55,6 @@ export class ASideComponent implements OnInit {
 
     this.onLoaded.emit(this);
 
-    // Boton hamburguesa
-    $('.az-iconbar-toggle-menu').on('click', function (e) {
-      e.preventDefault();
-
-      $('body').removeClass('az-iconbar-show');
-      $('body').removeClass('az-navbar-show');
-      $('body').removeClass('az-iconbar-show');
-    })
-
-
 
     // navbar backdrop for mobile only
     $('body').append('<div class="az-navbar-backdrop"></div>');
@@ -66,8 +62,23 @@ export class ASideComponent implements OnInit {
       $('body').removeClass('az-navbar-show');
       $('body').removeClass('az-iconbar-show');
     });
+
+    this.URL_EMPRESA = EnvConfig.URL_EMPRESA;
   }
 
+
+  // Al darle click cerrar SubMenu
+  public ClickCerrarMenu(): boolean {
+    console.log(' ClickCerrarMenu()');
+
+    $('body').removeClass('az-iconbar-show');
+    $('body').removeClass('az-navbar-show');
+    $('.az-iconbar .nav-link.active').removeClass('active');
+
+    this.isOpenSubMenu = false;
+    $('.az-iconbar-aside').removeClass('show');
+    return false;
+  }
 
   /*public OpenClose(): boolean { */
   public ClickFormulateOrMenuOrClose(type: string): boolean {
@@ -82,7 +93,7 @@ export class ASideComponent implements OnInit {
         $('body').addClass(' az-iconbar-show');
         break;
       case 'close-menu':
-      //  alert('close')
+        //  alert('close')
         break;
       case 'open-formulario':
         $('body').addClass('az-content-body-show');
@@ -138,13 +149,32 @@ export class ASideComponent implements OnInit {
   public selectNavLink(navLink: string): boolean {
     console.log('selectNavLink(navLink: string)');
 
+
     // Actualizamos el navLink seleccionado.
     this.navLink = navLink;
-    this.onNavLinkSelect.emit(this.navLink);
 
-    $('body').removeClass('az-iconbar-show');
-    $('body').removeClass('az-navbar-show');
-    $('body').removeClass('az-iconbar-show');
+    // solo si esta abiero el sub menu lo cerramos.
+    if (this.isOpenSubMenu) {
+      this.isOpenSubMenu = false;
+      $('.az-iconbar-aside').removeClass('show');
+
+    }
+    // Si esta cerrado y ademas se a seleccioado el dashboard
+    // Abrimos el subMenu
+    else if (this.navLink == 'dashboard') {
+
+      this.isOpenSubMenu = true;
+      $('.az-iconbar-aside').addClass('show');
+
+    }
+
+    // SI el navlick no es dashboard, deveria mandar el emit y remover lo abierto.  
+    if (this.navLink != 'dashboard') {
+      this.onNavLinkSelect.emit(this.navLink);
+      $('body').removeClass('az-iconbar-show');
+      $('body').removeClass('az-navbar-show');
+      $('body').removeClass('az-iconbar-show');
+    }
     return false;
   }
 

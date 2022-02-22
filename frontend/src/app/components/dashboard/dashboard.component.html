@@ -123,8 +123,12 @@
         </a>
 
 
-        <app-export-excel [selectUser]="selectUser"></app-export-excel>
+        <ng-template [ngIf]="roleUser == 'SUPPORT'">
 
+          <app-export-excel [selectUser]="selectUser"></app-export-excel>
+
+        </ng-template>
+        
       </div>
 
 
@@ -680,9 +684,12 @@
                   <span class="icon-archivo-pdf"></span>
                 </a>
 
+                <ng-template [ngIf]="roleUser == 'SUPPORT'">
 
-                <app-export-excel [selectUser]="selectUser"></app-export-excel>
+                  <app-export-excel [selectUser]="selectUser"></app-export-excel>
 
+                </ng-template>
+                              
               </div>
             </div>
 

@@ -27,7 +27,7 @@ export class GetReportVoyagePortDaily {
         // Observaciones
         public observation?: string,
 
-        public distance?:number,
+        public distance?: number,
         // beaufour
         public beaufour?: string,
 
@@ -56,6 +56,15 @@ export class GetReportVoyagePortDaily {
         public otherMgo?: number,
         // Recarga de MGO
         public bunkeringMgo?: number,
+
+
+        public syncStatusDaily?: string,
+        public statusDaily?: boolean,
+        public syncStatusPort?: string,
+        public statusPort?: boolean,
+        public syncStatusVoyage?: string,
+        public statusVoyage?: boolean,
+
     ) {
         this.userId = userId || 0;
         this.year = year || 0;
@@ -84,7 +93,7 @@ export class GetReportVoyagePortDaily {
         this.boilerIfo = boilerIfo || 0;
         this.otherIfo = otherIfo || 0;
         this.bunkeringIfo = bunkeringIfo || 0;
-        
+
         // Consumo MGO
         this.mplaMgo = mplaMgo || 0;
         this.auxMgo = auxMgo || 0;
@@ -94,6 +103,12 @@ export class GetReportVoyagePortDaily {
         this.otherMgo = otherMgo || 0;
         this.bunkeringMgo = bunkeringMgo || 0;
 
+        this.syncStatusDaily = syncStatusDaily || '';
+        this.statusDaily = statusDaily || false;
+        this.syncStatusPort = syncStatusPort || '';
+        this.statusPort = statusDaily || false;
+        this.syncStatusVoyage = syncStatusVoyage || '';
+        this.statusVoyage = statusVoyage || false;
     }
 
 

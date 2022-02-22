@@ -38,8 +38,9 @@ export class IsUpdateServerGuard implements CanActivate {
 
     console.log('canActivate()')
 
+    // REVISAR Este CODIO 19961492
     // Solo si esta estamos en linea actualizamos consultamos la version del servidor.
-    if (true) {
+    if (false) {
 
       // Retornaremos true solo si la la plataforma esta actualizada.
       return Promise.resolve(true).then(
@@ -50,7 +51,7 @@ export class IsUpdateServerGuard implements CanActivate {
         }
       ).then(
         version => {
-          
+
           // Verificamos si las versiones son diferentes,
           // SI lo son tenemos que hacerle redload.
           if (version !== EnvConfig.VERSION) {
@@ -76,6 +77,8 @@ export class IsUpdateServerGuard implements CanActivate {
         }
       );
 
+    } else {
+      return true;
     }
 
   }

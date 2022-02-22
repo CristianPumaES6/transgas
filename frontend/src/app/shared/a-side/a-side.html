@@ -1,11 +1,14 @@
 <div class="container-personalizate">
   <div class="az-iconbar">
-    <a href="https://www.transgas.com.pe/" target="_blank" class="az-iconbar-logo">
+
+    <!-- Logo -->
+    <a href="{{URL_EMPRESA}}" target="_blank" class="az-iconbar-logo">
       <i class="icon-transgas-icono"></i>
     </a>
     <nav class="nav">
-      <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'dashboard'}" (click)="selectNavLink('dashboard')"
-        matTooltip="Dashboard">
+      <a href="#" class="nav-link"
+        [ngClass]="{'active' : navLink === 'dashboard' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
+        (click)="selectNavLink('dashboard')" matTooltip="Dashboard">
         <i class="icon-menu-dashboard"></i>
       </a>
 
@@ -39,7 +42,7 @@
   <div class="az-iconbar-aside">
     <div class="az-iconbar-header">
       <a href="http://www.transgas.com.pe/" class="az-logo">Transgas</a>
-      <a href="" class="az-iconbar-toggle-menu">
+      <a href="" class="az-iconbar-toggle-menu" (click)="ClickCerrarMenu()">
         <i class="icon-back-1"></i>
         <i class="icon-x1"></i>
       </a>
@@ -47,36 +50,62 @@
     <div class="az-iconbar-body show">
 
 
-      <a href="#" id="asideDashboard" class="az-iconbar-pane show" [ngClass]="{'active' : navLink === 'dashboard'}"
-        (click)="selectNavLink('dashboard')">
-        <h6 class="az-iconbar-title">{{'DASHBOARD' | translateMessage:translateCategory}}</h6>
+
+
+      <ng-template [ngIf]="isOpenSubMenu || !isOpenSubMenu">
+        <a id="asideDashboard" href="#" class="az-iconbar-pane show"
+          [ngClass]="{'active' : navLink === 'dashboard' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
+          (click)="selectNavLink('dashboard')">
+          <h6 class="az-iconbar-title">{{'DASHBOARD' | translateMessage:translateCategory}}</h6>
+
+        </a><!-- az-iconbar-pane -->
         <!--<small class="az-iconbar-text">{{ 'DASHBOARD_DESCRIPTION' | translateMessage:translateCategory}}</small>-->
         <!--     <nav class="nav">
                     <a class="nav-link">Dashboard</a>
                 </nav> -->
-      </a><!-- az-iconbar-pane -->
+        <ng-template [ngIf]="isOpenSubMenu">
+
+          <small class="az-iconbar-text">{{'DESCRIPTION_DASHBOARD' | translateMessage:translateCategory}}</small>
+
+          <nav class="nav">
+            <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'consumer_analysis'}"
+              (click)="selectNavLink('consumer_analysis')">Consumer Analysis</a>
+           <!--  <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'speed_analysis'}"
+              (click)="selectNavLink('speed_analysis')">Speed Analysis</a> -->
+          </nav>
+
+        </ng-template>
+
+      </ng-template>
 
 
-      <a href="#" id="asideSailingAnality" class="az-iconbar-pane show pt-2"
-        [ngClass]="{'active' : navLink === 'voyages'}" (click)="selectNavLink('voyages')">
-        <h6 class="az-iconbar-title">{{'VOYAGE' | translateMessage:translateCategory}}</h6>
-        <!--  <small
+      <ng-template [ngIf]="!isOpenSubMenu">
+        <a href="#" id="asideSailingAnality" class="az-iconbar-pane show pt-2"
+          [ngClass]="{'active' : navLink === 'voyages'}" (click)="selectNavLink('voyages')">
+          <h6 class="az-iconbar-title">{{'VOYAGE' | translateMessage:translateCategory}}</h6>
+          <!--  <small
                     class="az-iconbar-text">{{ 'SAILING_ANALITY_DESCRIPTION' | translateMessage:translateCategory}}</small>
                 <nav class="nav">
                     <a class="nav-link">SAILING_ANALITY</a>
                 </nav> -->
-      </a><!-- az-iconbar-pane -->
+        </a><!-- az-iconbar-pane -->
+
+      </ng-template>
 
 
-      <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
-        <a href="#" id="asideDocumentacion" class="az-iconbar-pane show pt-2"
-          [ngClass]="{'active' : navLink === 'users'}" (click)="selectNavLink('users')">
-          <h6 class="az-iconbar-title">{{'USER' | translateMessage:translateCategory}}</h6>
-          <!--<small class="az-iconbar-text">{{ 'USERS_DESCRIPTION' | translateMessage:translateCategory}}</small>
+      <ng-template [ngIf]=" !isOpenSubMenu">
+
+        <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
+          <a href="#" id="asideDocumentacion" class="az-iconbar-pane show pt-2"
+            [ngClass]="{'active' : navLink === 'users'}" (click)="selectNavLink('users')">
+            <h6 class="az-iconbar-title">{{'USER' | translateMessage:translateCategory}}</h6>
+            <!--<small class="az-iconbar-text">{{ 'USERS_DESCRIPTION' | translateMessage:translateCategory}}</small>
                 <nav class="nav">
                     <a class="nav-link">USERS</a>
                 </nav> -->
-        </a><!-- az-iconbar-pane -->
+          </a><!-- az-iconbar-pane -->
+        </ng-template>
+
       </ng-template>
 
     </div><!-- az-iconbar-body -->

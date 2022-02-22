@@ -57,6 +57,10 @@
               {{'LIST_OF_CONNECTED_USERS' | translateMessage:translateCategory}}
             </a>
             </ng-template>
+            <a (click)="ClickDownloadLocalData()" class="dropdown-item" style="cursor: pointer;">
+              <i class="icon-archivo-excel"></i>
+              {{'DOWNLOAD_LOCAL_DATA' | translateMessage:translateCategory}}
+            </a>
             <a (click)="ClickLogout()" class="dropdown-item" style="cursor: pointer;">
               <i class="icon-logout-1"></i>
               {{'EXIT_PERFIL' | translateMessage:translateCategory}}
@@ -76,7 +80,7 @@
   </div>
   <div class="az-footer">
     <div class="container-fluid">
-      <span>&copy; 2021 Transgas <span class="css-version-plataform">{{version}}8</span> - Sailing Anality</span>
+      <span>&copy; 2021 Transgas <span class="css-version-plataform">{{version}} - 02/21/2022</span> - Sailing Anality</span>
 
       <!-- <span>Designed by: ThemePixels</span> -->
  
