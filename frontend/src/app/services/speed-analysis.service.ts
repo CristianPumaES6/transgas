@@ -20,7 +20,6 @@ export class SpeedAnalysisService {
 
   public async DowloadExcelDataLocal(BuqueName: string, listReportVPD: GetReportVoyagePortDaily[]): Promise<boolean> {
 
-
     // Creamos una nueva hoja de trabajo
     let workbook = new Workbook();
     workbook.creator = 'codev.site';

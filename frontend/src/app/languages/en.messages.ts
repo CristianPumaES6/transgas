@@ -31,7 +31,9 @@ export const application: any = {
     ERROR_CLEAR_INDEXEDDB: 'Failed to clear User indexBD',
     // Errores personalizados
     ERROR_GET_USERS: 'Could not get user data.',
-    CANNOT_CLOSE_PENDING_REPORTS:'There are files stored locally, contact Cristian for help.'
+    CANNOT_CLOSE_PENDING_REPORTS: 'There are files stored locally, contact Cristian for help.',
+    DATOS_SINCRONIZADOS: 'Synchronized Data',
+    NO_DATA_LOCAL_EXCEL: 'There is no local data, no local data, server synced.'
 
 };
 
@@ -280,7 +282,7 @@ export const voyage: any = {
     OTHER_ACT: 'Other act.',
     BUNKERING_IFO: 'Bunkering IFO',
     BUNKERING_LSFO: 'Bunkering LSFO',
-    BUNKERING_VLSFO:'Bunkering VLSFO',
+    BUNKERING_VLSFO: 'Bunkering VLSFO',
     BUNKERING_MGO: 'Bunkering MGO',
     BUNKERING: 'Bunkering',
     CONSUMPTION_MGO: 'Consumption MGO',
@@ -327,7 +329,7 @@ export const voyage: any = {
     NO_BUNKERING: 'No bunkering',
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
-    PLACEHOLDER_BEFOURT :'Type or select the wind befourt.',
+    PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
 }
 
 export const dashboard: any = {
@@ -514,10 +516,9 @@ export const exportExcel: any = {
     MANEUVER: 'MANEUVER',
     OTHER_ACT: 'OTHER ACT.',
 
-    FULL_SPEED:'FULL',
-    ECO_SPEED:'ECO',
+    FULL_SPEED: 'FULL',
+    ECO_SPEED: 'ECO',
 }
 
-export const speedAnalysisService:any = {
-    
+export const speedAnalysisService: any = {
 }

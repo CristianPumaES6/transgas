@@ -318,7 +318,10 @@ export class ApplicationComponent implements OnInit {
         if (!resultDailyReport) throw 'ERROR';
         listDailyReport = resultDailyReport.filter(voyage => voyage.syncStatus == 'added' || voyage.syncStatus == 'updated' || voyage.syncStatus == 'deleted');
 
-        if (!listDailyReport.length) throw 'All reports are on the server.';
+        if (!listDailyReport.length){
+          this.notificationsService.alert(this.languageService.GetMessage(this.translateCategory, 'DATOS_SINCRONIZADOS'),this.languageService.GetMessage(this.translateCategory, 'NO_DATA_LOCAL_EXCEL'));
+          return true;
+        }
 
         // Recorremos la lista de los reportes diarios.
         listDailyReport.forEach(
@@ -399,6 +402,7 @@ export class ApplicationComponent implements OnInit {
     ).then(
       result => {
         if (!result) throw 'ERROR';
+
         this._loadingService.Close();
 
         return true;
