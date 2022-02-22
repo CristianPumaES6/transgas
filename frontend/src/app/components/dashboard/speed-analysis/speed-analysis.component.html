@@ -1,5 +1,4 @@
 <div class="body-full-container">
-  <input type="button" value="Test" (click)="ClickButtonTest()">
 
 
 
@@ -8,24 +7,30 @@
     <div class="col-6 row no-gutters">
       <mat-form-field class="w-100">
         <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
-
-
         <mat-select formControlName="typeSummaryVoyage">
 
           <ng-template ngFor let-itypeSummaryVoyageList [ngForOf]="typeSummaryVoyageList" let-i="index">
-
             <mat-option value="{{itypeSummaryVoyageList}}">{{itypeSummaryVoyageList |
               translateMessage:translateCategory}}
             </mat-option>
           </ng-template>
-        </mat-select>
 
+        </mat-select>
         <mat-error *ngIf="errorHandling('typeSummaryVoyage', 'required')">
           Role is <strong>required</strong>
         </mat-error>
 
       </mat-form-field>
     </div>
+
+    <div class="col-6 row no-gutters">
+      <button mat-raised-button color="primary" (click)="ClickButtonTest()">
+        {{ 'FILTER_BY' | translateMessage:translateCategory }}
+      </button>
+    </div>
+
+
+    <input type="submit" value="Send Request" (click)="ClickButtonTest()">
 
   </form>
 

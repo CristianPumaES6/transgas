@@ -33,7 +33,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
-  public translateCategory: string = 'dashboard';
+  public translateCategory: string = 'speedAnalysis';
 
   // Rol del usuario logeado.
   public roleUser: string = '';
@@ -49,7 +49,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
   // ------------ Formaulario Filter -----------------
   public formFilter: FormGroup;
-  public selectSummaryBy: string = 'VOYAGES'
+  public selectSummaryBy: string = 'VOYAGES';
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
 
@@ -93,21 +93,20 @@ export class SpeedAnalysisComponent implements OnInit {
       // BODY FULL CONTAINER
       new PerfectScrollbar('.body-full-container', {
         suppressScrollX: true
-      })
+      });
       // TABLE FIX HEAD
       new PerfectScrollbar('.tableFixHead', {
         suppressScrollX: true
-      })
+      });
     });
+
   }
 
   public async ClickButtonTest(): Promise<boolean> {
 
-
     // Filtros por fecha.
     let userSelect = 2;
 
-    //
     let dateStart = '2021-01-24T13:00:00Z';
     let dateEnd = '2022-02-07T13:00:00Z';
     // let dateStart = '2021-12-01T13:00:00Z';
@@ -119,30 +118,21 @@ export class SpeedAnalysisComponent implements OnInit {
         result => {
           // Obtenemos el total por actividad
           return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd).pipe().toPromise();
-        }).then(
+        })
+      .then(
           result => {
             if (!result) throw 'ERROR GER REPORT';
 
             this.listGetReportVoyagePortDaily = result;
+
             /* 
                         let ultimoViajeId: number = 0;
                         let ultimoPuertoId: number = 0;
             
-            
-            
                         result.forEach((iGetReportVoyagePortDaily:GetReportVoyagePortDaily)=>{
-            
-            
-            
+
                           if (ultimoViajeId !== iGetReportVoyagePortDaily.voyageId) {
-            
-            
-            
-            
-            
-            
-            
-            
+
                             ultimoViajeId = iGetReportVoyagePortDaily.voyageId;
                             ultimoPuertoId = iGetReportVoyagePortDaily.portId;
             
@@ -325,7 +315,6 @@ export class SpeedAnalysisComponent implements OnInit {
             }
           );
 
-
   }
 
 
@@ -503,7 +492,6 @@ export class SpeedAnalysisComponent implements OnInit {
     // recorremos todo el arreglo
     listGetReportVoyagePortDaily.forEach((iGetReportVoyagePortDaily: GetReportVoyagePortDaily, indexReport: number) => {
 
-
       // Generamos el texto para los labels segun tipo de resumen
       let txtLabelChart: string = '';
 
@@ -546,7 +534,7 @@ export class SpeedAnalysisComponent implements OnInit {
       if (speed > 0) {
         this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
           { x: txtLabelChart, y: speed, ubication: [indexReport] }
-        )
+        );
       };
 
 

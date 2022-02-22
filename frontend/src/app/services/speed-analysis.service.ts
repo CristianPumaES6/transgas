@@ -11,7 +11,7 @@ import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
 export class SpeedAnalysisService {
 
   public userLanguage: string = this.languageService.GetCurrentLanguage();
-  public translateCategory: string = 'speedAnalysisService';
+  public translateCategory: string = 'speedAnalysis';
 
   constructor(
     private languageService: LanguageService
@@ -97,7 +97,7 @@ export class SpeedAnalysisService {
               worksheet.addRow({
                 userId: iReportVPD.userId,
                 year: iReportVPD.year,
-// Data Viaje.
+                // Data Viaje.
                 voyageId: iReportVPD.voyageId,
                 voyageNumber: iReportVPD.voyageNumber,
                 statusVoyage: iReportVPD.statusVoyage,
@@ -112,7 +112,7 @@ export class SpeedAnalysisService {
                 syncStatusPort: iReportVPD.syncStatusPort,
 
 
-                 
+
 
                 dailyReportId: iReportVPD.dailyReportId,
 
@@ -136,7 +136,7 @@ export class SpeedAnalysisService {
                 giMgo: iReportVPD.giMgo,
                 otherMgo: iReportVPD.otherMgo,
 
- 
+
                 steamingTime: iReportVPD.steamingTime,
                 distance: iReportVPD.distance,
                 beaufour: iReportVPD.beaufour,

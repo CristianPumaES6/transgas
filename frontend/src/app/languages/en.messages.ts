@@ -207,7 +207,7 @@ export const fileUpload: any = {
     SUCCESS: 'Success',
     ERROR_UPLOAD_IMAGE: 'Image could not be updated.',
     SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.',
-}
+};
 
 export const voyage: any = {
     // Registro de viajes
@@ -330,7 +330,7 @@ export const voyage: any = {
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
     PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
-}
+};
 
 export const dashboard: any = {
     LEGEND: 'Legend',
@@ -439,7 +439,7 @@ export const dashboard: any = {
     TOOLTIP_ROB_MGO: 'ROB',
     ECO_SPEED: 'Eco',
     FULL_SPEED: 'Full'
-}
+};
 
 export const dialog: any = {
     TYPE_CONSUMPTION: 'Type consumption',
@@ -500,7 +500,7 @@ export const dialog: any = {
     ECO_SPEED: 'Eco',
     FULL_SPEED: 'Full',
     DOWNLOAD: 'DOWNLOADING'
-}
+};
 
 export const guards: any = {
 
@@ -520,7 +520,7 @@ export const exportExcel: any = {
     ECO_SPEED: 'ECO',
 }
 
-export const speedAnalysisService: any = {
+export const speedAnalysis: any = {
     LOADING: 'LOADING',
     DOWNLOADING: 'DISCHARGE',
     SAILING_IN_BALLAST: 'BALLAST',
@@ -532,5 +532,6 @@ export const speedAnalysisService: any = {
 
     FULL_SPEED: 'FULL',
     ECO_SPEED: 'ECO',
-    ID: 'ID'
+    ID: 'ID',
+    FILTER_BY: 'Filter'
 }
