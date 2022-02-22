@@ -45,44 +45,47 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Lista de VIAJES</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-          <div class="card-text">
 
-            <table class="table table-hover table-dark">
-              <thead>
-                <tr>
-                  <th scope="col">{{ 'ID' | translateMessage:translateCategory}}</th>
-                  <th scope="col">{{ 'VOYAGE' | translateMessage:translateCategory}}</th>
-                  <!-- Mostramos recorremos las actividades que se mostraran -->
-                  <ng-template ngFor let-iDataSPEEDChartPoint [ngForOf]="dataSPEEDChartPoint" let-i="index">
-                    <th scope="col">
-                      {{iDataSPEEDChartPoint.label | translateMessage:translateCategory}}
-                    </th>
-                  </ng-template>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Recorremos la data del table -->
-                <ng-template ngFor let-ilistTableSpeedByVoyage [ngForOf]="listTableSpeedByVoyage" let-i="index">
+          <div class="card-text card-cont-table-list">
+            <div class="tableFixHead">
+
+              <table class="table table-hover table-dark">
+                <thead>
                   <tr>
-                    <td scope="row">{{ilistTableSpeedByVoyage.id}}</td>
-                    <td>{{ilistTableSpeedByVoyage.title}}</td>
-
-                    <!-- Recorremos la velocidad -->
+                    <th scope="col">{{ 'ID' | translateMessage:translateCategory}}</th>
+                    <th scope="col">{{ 'VOYAGE' | translateMessage:translateCategory}}</th>
+                    <!-- Mostramos recorremos las actividades que se mostraran -->
                     <ng-template ngFor let-iDataSPEEDChartPoint [ngForOf]="dataSPEEDChartPoint" let-i="index">
-                      <td scope="col">
-                        {{ilistTableSpeedByVoyage.activities[iDataSPEEDChartPoint.label]}}
-                      </td>
+                      <th scope="col">
+                        {{iDataSPEEDChartPoint.label | translateMessage:translateCategory}}
+                      </th>
                     </ng-template>
                   </tr>
-                </ng-template>
+                </thead>
+                <tbody>
+                  <!-- Recorremos la data del table -->
+                  <ng-template ngFor let-ilistTableSpeedByVoyage [ngForOf]="listTableSpeedByVoyage" let-i="index">
+                    <tr>
+                      <td scope="row">{{ilistTableSpeedByVoyage.id}}</td>
+                      <td>{{ilistTableSpeedByVoyage.title}}</td>
 
-              </tbody>
-            </table>
+                      <!-- Recorremos la velocidad -->
+                      <ng-template ngFor let-iDataSPEEDChartPoint [ngForOf]="dataSPEEDChartPoint" let-i="index">
+                        <td scope="col">
+                          {{ilistTableSpeedByVoyage.activities[iDataSPEEDChartPoint.label]}}
+                        </td>
+                      </ng-template>
+                    </tr>
+                  </ng-template>
+
+                </tbody>
+              </table>
+
+            </div>
+
 
           </div>
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
+
         </div>
       </div>
     </div>
