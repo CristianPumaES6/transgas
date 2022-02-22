@@ -334,7 +334,6 @@ export class DashboardComponent implements OnInit {
       }
     ).catch(
       err => {
-
         // Manejo el error
         let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
@@ -4222,7 +4221,7 @@ export class DashboardComponent implements OnInit {
 
         if (result) {
 
-         // alert('OKK');
+          // alert('OKK');
         }
       });
 

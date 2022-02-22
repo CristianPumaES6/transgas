@@ -19,6 +19,7 @@ import { Port } from 'src/app/models/port';
 import { ActivityPerformed } from 'src/app/models/dashboard';
 import { FormuleService } from 'src/app/services/formule.service';
 
+import PerfectScrollbar from 'perfect-scrollbar';
 
 @Component({
   selector: 'app-speed-analysis',
@@ -85,6 +86,12 @@ export class SpeedAnalysisComponent implements OnInit {
 
   ngOnInit(): void {
     this.GenetareLineSPEED();
+
+    setTimeout(() => {
+      new PerfectScrollbar('.body-full-container', {
+        suppressScrollX: true
+      })
+    });
   }
 
   public async ClickButtonTest(): Promise<boolean> {
@@ -306,7 +313,7 @@ export class SpeedAnalysisComponent implements OnInit {
             }
           ).catch(
             err => {
-              
+
               return false
             }
           );
@@ -360,7 +367,7 @@ export class SpeedAnalysisComponent implements OnInit {
       },
       options: {
         // Lineas los pongo por el public creo que es maxio y minimo corrigan.
-        lines : [],
+        lines: [],
         onHover: (event, chartElement) => {
           //console.log(event);
           // console.log(chartElement);
@@ -401,24 +408,24 @@ export class SpeedAnalysisComponent implements OnInit {
         maintainAspectRatio: false,
         tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
         scales: {},// Lo pongo vacio por que en el update se colocara el valor.
-       /*  hover: {
-          // @ts-ignore
-          onHover: function (e: MouseEvent) {
-
-            console.log('hoverrrrrrrrrrrrrrr')
-            // puntos GetElementAtaEvent
-            var point = this.getElementAtEvent(e);
-
-            // event targer.
-            let eventTarget = e.target as HTMLCanvasElement;
-            ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
-            if (point.length) {
-              eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
-            } else {
-              eventTarget.style.cursor = 'default';
-            }
-          }
-        } */
+        /*  hover: {
+           // @ts-ignore
+           onHover: function (e: MouseEvent) {
+ 
+             console.log('hoverrrrrrrrrrrrrrr')
+             // puntos GetElementAtaEvent
+             var point = this.getElementAtEvent(e);
+ 
+             // event targer.
+             let eventTarget = e.target as HTMLCanvasElement;
+             ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
+             if (point.length) {
+               eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+             } else {
+               eventTarget.style.cursor = 'default';
+             }
+           }
+         } */
       },
       lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
     };
@@ -651,7 +658,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
   private UpdateLineSPEED(): boolean {
     console.log('UpdateLineSPEED()');
-    
+
 
     // Los label lo pongo vacio por es multi line
     this.configLineaSPEED.data.labels = this.xLabelReport;
@@ -738,7 +745,7 @@ export class SpeedAnalysisComponent implements OnInit {
           }
     
     */
-   this.chartLineSPEED.update();
+    this.chartLineSPEED.update();
 
     return false;
   }
@@ -862,5 +869,6 @@ export class SpeedAnalysisComponent implements OnInit {
 
     return true;
   }
+
 }
 

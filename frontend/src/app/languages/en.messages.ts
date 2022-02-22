@@ -521,4 +521,16 @@ export const exportExcel: any = {
 }
 
 export const speedAnalysisService: any = {
+    LOADING: 'LOADING',
+    DOWNLOADING: 'DISCHARGE',
+    SAILING_IN_BALLAST: 'BALLAST',
+    SAILING_WITH_LADEN: 'LADEN',
+    ECONOMICAL_NAVIGATION: 'ECONOMICAL',
+    ANCHORED: 'ANCHORED',
+    MANEUVER: 'MANEUVER',
+    OTHER_ACT: 'OTHER ACT.',
+
+    FULL_SPEED: 'FULL',
+    ECO_SPEED: 'ECO',
+    ID: 'ID'
 }
