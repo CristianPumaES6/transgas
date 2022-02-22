@@ -31,8 +31,10 @@ const routes: Routes = [
       { path: 'helps', component: HelpsComponent },
 
       // Modulo para detectar los usuarios conectados.
-      { path: 'users/who-are-connected', component: ListOfConnectedUsersComponent }
-    ]
+      { path: 'users/who-are-connected', component: ListOfConnectedUsersComponent },
+      { path: '**', component: DashboardComponent, canActivate: [IsBuqueGuard] },
+    ],
+
   }
 ];
 

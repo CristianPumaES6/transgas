@@ -51,7 +51,7 @@ export class IsUpdateServerGuard implements CanActivate {
         }
       ).then(
         version => {
-          
+
           // Verificamos si las versiones son diferentes,
           // SI lo son tenemos que hacerle redload.
           if (version !== EnvConfig.VERSION) {
@@ -77,8 +77,9 @@ export class IsUpdateServerGuard implements CanActivate {
         }
       );
 
+    } else {
+      return true;
     }
-    return true;
 
   }
 
