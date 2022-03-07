@@ -83,11 +83,17 @@ export class SpeedAnalysisComponent implements OnInit {
     private formuleService: FormuleService,
   ) {
     // Inicializamos y bloqueamos el formulario.
-    this.ReactiveForm(true, false, true,false,true);
+    this.ReactiveForm(true, false, true, false, true);
   }
 
   ngOnInit(): void {
+
+    // Plugin de linea
+    this.PluginChartLine();
+
+
     this.GenetareLineSPEED();
+
 
     setTimeout(() => {
       // BODY FULL CONTAINER
@@ -120,200 +126,32 @@ export class SpeedAnalysisComponent implements OnInit {
           return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd).pipe().toPromise();
         })
       .then(
+        result => {
+          if (!result) throw 'ERROR GER REPORT';
+          this.listGetReportVoyagePortDaily = result;
+
+          return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
+        }).then(
           result => {
-            if (!result) throw 'ERROR GER REPORT';
 
-            this.listGetReportVoyagePortDaily = result;
+            this.UpdateLineSPEED()
 
-            /* 
-                        let ultimoViajeId: number = 0;
-                        let ultimoPuertoId: number = 0;
-            
-                        result.forEach((iGetReportVoyagePortDaily:GetReportVoyagePortDaily)=>{
+            return true;
+          }
+        ).then(
+          result => {
+            return true;
+          }
+        ).then(
+          result => {
+            return true;
+          }
+        ).catch(
+          err => {
 
-                          if (ultimoViajeId !== iGetReportVoyagePortDaily.voyageId) {
-
-                            ultimoViajeId = iGetReportVoyagePortDaily.voyageId;
-                            ultimoPuertoId = iGetReportVoyagePortDaily.portId;
-            
-                            let newVoyage = new Voyage();
-                            newVoyage.id = iGetReportVoyagePortDaily.voyageId;
-                            newVoyage.voyageNumber =  iGetReportVoyagePortDaily.voyageNumber;
-                            newVoyage.userId =userSelect;
-                            newVoyage.status = true;
-            
-                            let newPort = new Port();
-                            newPort.id = iGetReportVoyagePortDaily.portId;
-                            newPort.userId =userSelect;
-                            newPort.departurePort = iGetReportVoyagePortDaily.departurePort;
-                            newPort.arrivalPort = iGetReportVoyagePortDaily.arrivalPort;
-                            newPort.status = true;
-            
-                            let newReport = new DailyReport();
-                            newReport.id = iGetReportVoyagePortDaily.dailyReportId;
-                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
-                            // UserId que registra el dato
-                            newReport.userId = userSelect;
-                            // Puerto ID
-                            newReport.portId = iGetReportVoyagePortDaily.portId;
-                            // Actividades realizada
-                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
-                            //  SpeedStraction ECO_SPEED | FULL_SPEED
-                            newReport.speedStraction = iGetReportVoyagePortDaily.speedStraction;
-                            // Fecha de registro
-                            newReport.date = iGetReportVoyagePortDaily.date;
-                            // Hora
-                            newReport.hour = iGetReportVoyagePortDaily.hour;
-                    
-                    
-                            // Recarga de IFO
-                            newReport.bunkeringIfo = iGetReportVoyagePortDaily.bunkeringIfo;
-                            // Recarga de MGO
-                            newReport.bunkeringMgo = iGetReportVoyagePortDaily.bunkeringMgo;
-                    
-                    
-                            // Consumo mplaIfo
-                            newReport.mplaIfo = iGetReportVoyagePortDaily.mplaIfo;
-                            // Consumo auxIfo
-                            newReport.auxIfo = iGetReportVoyagePortDaily.auxIfo;
-                            // consumo boilerIfo
-                            newReport.boilerIfo = iGetReportVoyagePortDaily.boilerIfo;
-                            // Otros consumos Ifo
-                            newReport.otherIfo = iGetReportVoyagePortDaily.otherIfo;
-                    
-                            // Consumo mplaMgo
-                            newReport.mplaMgo = iGetReportVoyagePortDaily.mplaMgo;
-                            // Consumo auxMgo
-                            newReport.auxMgo = iGetReportVoyagePortDaily.auxMgo;
-                            // Consumo boilerMgo
-                            newReport.boilerMgo = iGetReportVoyagePortDaily.boilerMgo;
-                            // Consumo ppMgo
-                            newReport.ppMgo = iGetReportVoyagePortDaily.ppMgo;
-                            // Consumo giMgo
-                            newReport.giMgo = iGetReportVoyagePortDaily.giMgo;
-                            // Consumo otherMgo
-                            newReport.otherMgo = iGetReportVoyagePortDaily.otherMgo;
-                    
-                    
-                            // Tempo navegando
-                            newReport.steamingTime = iGetReportVoyagePortDaily.steamingTime;
-                            // Distancia
-                            newReport.distance = iGetReportVoyagePortDaily.distance;
-                            // beaufour
-                            newReport.beaufour = iGetReportVoyagePortDaily.beaufour;
-                            // Observaciones
-                            newReport.observation = iGetReportVoyagePortDaily.observation;
-                            newReport.status = true;
-            
-            
-                            newPort.dailyReports = [
-                              newReport
-                            ];
-            
-                            newVoyage.ports = [
-                              newPort 
-                            ]; 
-                            //this.reorganizarDataViajes.
-                          } else if(ultimoPuertoId !== iGetReportVoyagePortDaily.portId){
-                            ultimoPuertoId = iGetReportVoyagePortDaily.portId;
-            
-                            
-                            let newPort = new Port();
-                            newPort.id = iGetReportVoyagePortDaily.portId;
-                            newPort.userId =userSelect;
-                            newPort.departurePort = iGetReportVoyagePortDaily.departurePort;
-                            newPort.arrivalPort = iGetReportVoyagePortDaily.arrivalPort;
-                            newPort.status = true;
-            
-                            let newReport = new DailyReport();
-                            newReport.id = iGetReportVoyagePortDaily.dailyReportId;
-                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
-                            // UserId que registra el dato
-                            newReport.userId = userSelect;
-                            // Puerto ID
-                            newReport.portId = iGetReportVoyagePortDaily.portId;
-                            // Actividades realizada
-                            newReport.activityPerformed = iGetReportVoyagePortDaily.activityPerformed;
-                            //  SpeedStraction ECO_SPEED | FULL_SPEED
-                            newReport.speedStraction = iGetReportVoyagePortDaily.speedStraction;
-                            // Fecha de registro
-                            newReport.date = iGetReportVoyagePortDaily.date;
-                            // Hora
-                            newReport.hour = iGetReportVoyagePortDaily.hour;
-                    
-                    
-                            // Recarga de IFO
-                            newReport.bunkeringIfo = iGetReportVoyagePortDaily.bunkeringIfo;
-                            // Recarga de MGO
-                            newReport.bunkeringMgo = iGetReportVoyagePortDaily.bunkeringMgo;
-                    
-                    
-                            // Consumo mplaIfo
-                            newReport.mplaIfo = iGetReportVoyagePortDaily.mplaIfo;
-                            // Consumo auxIfo
-                            newReport.auxIfo = iGetReportVoyagePortDaily.auxIfo;
-                            // consumo boilerIfo
-                            newReport.boilerIfo = iGetReportVoyagePortDaily.boilerIfo;
-                            // Otros consumos Ifo
-                            newReport.otherIfo = iGetReportVoyagePortDaily.otherIfo;
-                    
-                            // Consumo mplaMgo
-                            newReport.mplaMgo = iGetReportVoyagePortDaily.mplaMgo;
-                            // Consumo auxMgo
-                            newReport.auxMgo = iGetReportVoyagePortDaily.auxMgo;
-                            // Consumo boilerMgo
-                            newReport.boilerMgo = iGetReportVoyagePortDaily.boilerMgo;
-                            // Consumo ppMgo
-                            newReport.ppMgo = iGetReportVoyagePortDaily.ppMgo;
-                            // Consumo giMgo
-                            newReport.giMgo = iGetReportVoyagePortDaily.giMgo;
-                            // Consumo otherMgo
-                            newReport.otherMgo = iGetReportVoyagePortDaily.otherMgo;
-                    
-                    
-                            // Tempo navegando
-                            newReport.steamingTime = iGetReportVoyagePortDaily.steamingTime;
-                            // Distancia
-                            newReport.distance = iGetReportVoyagePortDaily.distance;
-                            // beaufour
-                            newReport.beaufour = iGetReportVoyagePortDaily.beaufour;
-                            // Observaciones
-                            newReport.observation = iGetReportVoyagePortDaily.observation;
-                            newReport.status = true;
-            
-            
-                            newPort.dailyReports = [
-                              newReport
-                            ];
-                          } else {
-                            
-                          }
-            
-                        }) */
-            //return this.GenerateData(this.dataSPEEDChartPoint, this.listGetReportVoyagePortDaily);
-
-            return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
-          }).then(
-            result => {
-
-              this.UpdateLineSPEED()
-
-              return true;
-            }
-          ).then(
-            result => {
-              return true;
-            }
-          ).then(
-            result => {
-              return true;
-            }
-          ).catch(
-            err => {
-
-              return false
-            }
-          );
+            return false
+          }
+        );
 
   }
 
@@ -490,60 +328,61 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
     // recorremos todo el arreglo
-    listGetReportVoyagePortDaily.forEach((iGetReportVoyagePortDaily: GetReportVoyagePortDaily, indexReport: number) => {
+    listGetReportVoyagePortDaily.forEach(
+      (iGetReportVoyagePortDaily: GetReportVoyagePortDaily, indexReport: number) => {
 
-      // Generamos el texto para los labels segun tipo de resumen
-      let txtLabelChart: string = '';
+        // Generamos el texto para los labels segun tipo de resumen
+        let txtLabelChart: string = '';
 
-      if (this.selectSummaryBy === 'VOYAGES') {
-        // Armamos el texto de label para viajes.
-        txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
-      } else if (this.selectSummaryBy === 'PORTS') {
-        // Armamos el texto de label para viajes.
-        txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
-      }
-
-      // Posiciondel elemento
-      let posicionDelLabelSiExiste = 0;
-      // Buscamos si el label ya se registro.
-      let existeElLabel = this.xLabelReport.find(
-        (label, index) => {
-          if (label == txtLabelChart) {
-            posicionDelLabelSiExiste = index;
-            return true
-          }
-          return false;
+        if (this.selectSummaryBy === 'VOYAGES') {
+          // Armamos el texto de label para viajes.
+          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
+        } else if (this.selectSummaryBy === 'PORTS') {
+          // Armamos el texto de label para viajes.
+          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
         }
-      );
 
-      // Si no existe el label lo agregamos.
-      if (!existeElLabel) {
-        // Agregamos el texto al arreglo del chart.
-        this.xLabelReport.push(txtLabelChart);
-      }
-
-
-      this.AddOrUpdateDataTableList(existeElLabel, posicionDelLabelSiExiste, iGetReportVoyagePortDaily)
-
-      // Obtenemos la velocidad IFO
-      let dataSpeed = new Speed();
-      dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
-      // El total de velocidad debe de ser mayor para poder pintarlo.
-      speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
-      // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
-      if (speed > 0) {
-        this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
-          { x: txtLabelChart, y: speed, ubication: [indexReport] }
+        // Posiciondel elemento
+        let posicionDelLabelSiExiste = 0;
+        // Buscamos si el label ya se registro.
+        let existeElLabel = this.xLabelReport.find(
+          (label, index) => {
+            if (label == txtLabelChart) {
+              posicionDelLabelSiExiste = index;
+              return true
+            }
+            return false;
+          }
         );
-      };
+
+        // Si no existe el label lo agregamos.
+        if (!existeElLabel) {
+          // Agregamos el texto al arreglo del chart.
+          this.xLabelReport.push(txtLabelChart);
+        }
 
 
-      // La linea maxima
-      if (speed > this.configLineaSPEED.lineaMax) {
-        this.configLineaSPEED.lineaMax = speed;
-      };
+        this.AddOrUpdateDataTableList(existeElLabel, posicionDelLabelSiExiste, iGetReportVoyagePortDaily)
 
-    });
+        // Obtenemos la velocidad IFO
+        let dataSpeed = new Speed();
+        dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
+        // El total de velocidad debe de ser mayor para poder pintarlo.
+        speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
+        // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
+        if (speed > 0) {
+          this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
+            { x: txtLabelChart, y: speed, ubication: [indexReport] }
+          );
+        };
+
+
+        // La linea maxima
+        if (speed > this.configLineaSPEED.lineaMax) {
+          this.configLineaSPEED.lineaMax = speed;
+        };
+
+      });
 
     // Solo agregamos una linea si hay registros.
     if (this.reorganizarDataViajes['LOADING'].length > 0) {
@@ -668,6 +507,13 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
 
+
+    this.configLineaSPEED.options.lines.push({
+      type: 'horizontal',
+      y: 12,// this.selectUser.maxSpeed,
+      color: 'red',
+      label: ''
+    });
 
     /*
     
@@ -874,5 +720,74 @@ export class SpeedAnalysisComponent implements OnInit {
     return result;
   }
 
+
+  // Plugin de para la linea horizontal o vertical
+  private PluginChartLine() {
+
+    // Agregamos un plugin para saver los niveles.
+    const chartPluginLineaHorizontal = {
+      afterDraw: (chartobj: any) => {
+
+        if (chartobj.options.lines) {
+          let ctx = chartobj.chart.ctx;
+
+          // tslint:disable-next-line: prefer-for-of
+          for (let idx = 0; idx < chartobj.options.lines.length; idx++) {
+
+            let line = chartobj.options.lines[idx];
+            line.iniCoord = [0, 0];
+            line.endCoord = [0, 0];
+            line.color = line.color ? line.color : 'red';
+            line.label = line.label ? line.label : '';
+
+            if (line.type === 'horizontal' && line.y) {
+              // Verificamos si existe un yAxesID
+              let yAxesID = line.yAxesID;
+              if (yAxesID) {
+                // Si es asi agregamos la linea hacia ese yAxesId
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales[yAxesID].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+                // Solo si enviamos un tamaño especifico, 
+                if (line.fontSize) { ctx.font = line.fontSize; }
+                if (line.lineWidth) { ctx.lineWidth = line.lineWidth; }
+                ctx.fillStyle = line.color;
+                if (yAxesID == 'A') {
+                  ctx.textAlign = "start";
+                  ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 10);
+                } else if (yAxesID == 'B') {
+                  ctx.textAlign = "end";
+                  ctx.fillText(line.label, chartobj.chart.width - 3, line.iniCoord[1] - 10);
+                }
+
+              } else {
+                line.iniCoord[1] = line.endCoord[1] = chartobj.scales['y-axis-0'].getPixelForValue(line.y);
+                line.endCoord[0] = chartobj.chart.width;
+
+                ctx.fillStyle = line.color;
+                ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+
+              }
+            } else if (line.type === 'vertical' && line.x) {
+              line.iniCoord[0] = line.endCoord[0] = chartobj.scales['x-axis-0'].getPixelForValue(line.x);
+              line.endCoord[1] = chartobj.chart.height;
+              ctx.fillStyle = line.color;
+              ctx.fillText(line.label, line.iniCoord[0] + 3, line.iniCoord[1] + 3);
+            }
+
+            ctx.beginPath();
+
+            // Le sumamos y restamos 18 para que no tape la leyenda.
+            ctx.moveTo(line.iniCoord[0] + 18, line.iniCoord[1]);
+            ctx.lineTo(line.endCoord[0] - 18, line.endCoord[1]);
+            ctx.strokeStyle = line.color;
+            ctx.stroke();
+          }
+        }
+      }
+    };
+
+    Chart.pluginService.register(chartPluginLineaHorizontal);
+
+  }
 }
 
