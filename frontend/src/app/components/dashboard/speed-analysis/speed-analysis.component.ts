@@ -83,7 +83,7 @@ export class SpeedAnalysisComponent implements OnInit {
     private formuleService: FormuleService,
   ) {
     // Inicializamos y bloqueamos el formulario.
-    this.ReactiveForm(true, false, true);
+    this.ReactiveForm(true, false, true,false,true);
   }
 
   ngOnInit(): void {
@@ -807,7 +807,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
     // Obtenemos los valores del formulario
     if (getForm) {
-      //this.user.name = this.formFilter.controls['name'].value;
+      this.selectSummaryBy = this.formFilter.controls['typeSummaryVoyage'].value;
       //this.user.nick = this.formFilter.controls['nick'].value;
       //this.user.password = this.formFilter.controls['password'].value;
       //this.user.role = this.formFilter.controls['role'].value;
@@ -815,7 +815,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
     // Seteamos los valores del formulario con los datos del user.
     if (setForm) {
-      //this.formFilter.controls['name'].setValue(this.user.name);
+      this.formFilter.controls['typeSummaryVoyage'].setValue(this.selectSummaryBy);
       //this.formFilter.controls['nick'].setValue(this.user.nick);
       //this.formFilter.controls['password'].setValue(this.user.password);
       //this.formFilter.controls['role'].setValue(this.user.role);
