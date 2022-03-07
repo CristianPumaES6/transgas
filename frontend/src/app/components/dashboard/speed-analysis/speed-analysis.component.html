@@ -1,38 +1,41 @@
 <div class="body-full-container">
 
+  <!--  Card de FILTRO -->
+  <div class="col-12 bd-highlight p-2">
+    <div class="card p-1">
+      <h6 _ngcontent-ntv-c215="" class="card-title tx-14 mb-3"> {{'FILTERS' | translateMessage:translateCategory}} </h6>
+      <form [formGroup]="formFilter">
 
+        <div class="row">
+          <div class="col-6 row no-gutters">
+            <mat-form-field class="w-100">
+              <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
+              <mat-select formControlName="typeSummaryVoyage">
 
-  <form [formGroup]="formFilter">
+                <ng-template ngFor let-itypeSummaryVoyageList [ngForOf]="typeSummaryVoyageList" let-i="index">
+                  <mat-option value="{{itypeSummaryVoyageList}}">{{itypeSummaryVoyageList |
+                    translateMessage:translateCategory}}
+                  </mat-option>
+                </ng-template>
 
-    <div class="col-6 row no-gutters">
-      <mat-form-field class="w-100">
-        <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
-        <mat-select formControlName="typeSummaryVoyage">
+              </mat-select>
+              <mat-error *ngIf="errorHandling('typeSummaryVoyage', 'required')">
+                Role is <strong>required</strong>
+              </mat-error>
 
-          <ng-template ngFor let-itypeSummaryVoyageList [ngForOf]="typeSummaryVoyageList" let-i="index">
-            <mat-option value="{{itypeSummaryVoyageList}}">{{itypeSummaryVoyageList |
-              translateMessage:translateCategory}}
-            </mat-option>
-          </ng-template>
+            </mat-form-field>
+          </div>
 
-        </mat-select>
-        <mat-error *ngIf="errorHandling('typeSummaryVoyage', 'required')">
-          Role is <strong>required</strong>
-        </mat-error>
-
-      </mat-form-field>
+          <div class="col-6 row no-gutters">
+            <button mat-raised-button color="primary" (click)="ClickButtonTest()">
+              {{ 'FILTER_BY' | translateMessage:translateCategory }}
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <div class="col-6 row no-gutters">
-      <button mat-raised-button color="primary" (click)="ClickButtonTest()">
-        {{ 'FILTER_BY' | translateMessage:translateCategory }}
-      </button>
-    </div>
-
-
-    <input type="submit" value="Send Request" (click)="ClickButtonTest()">
-
-  </form>
 
 
   <div class="d-flex p-1">
