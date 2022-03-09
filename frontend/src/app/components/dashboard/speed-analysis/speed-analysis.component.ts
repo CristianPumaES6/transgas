@@ -70,7 +70,7 @@ export class SpeedAnalysisComponent implements OnInit {
   };
 
   public cantDecimal: number = 1;
-
+  public aMonthEnglishShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
 
   constructor(
     private router: Router,
@@ -110,20 +110,32 @@ export class SpeedAnalysisComponent implements OnInit {
 
   public async ClickButtonTest(): Promise<boolean> {
 
+    
     // Filtros por fecha.
     let userSelect = 2;
 
-    let dateStart = '2021-01-24T13:00:00Z';
+    let dateStart = '2020-01-24T13:00:00Z';
     let dateEnd = '2022-02-07T13:00:00Z';
     // let dateStart = '2021-12-01T13:00:00Z';
     // let dateEnd = '2022-02-15T11:30:00';
 
+    
     // Inicia la promesa.
     return await Promise.resolve(true)
       .then(
         result => {
+
+          // Obtenemos los datos escrito en el formulario.
+          return this.ReactiveForm(false, false, true, true, false);
+        })
+      .then(
+        result => {
+          if(!result) throw 'ERROR FILTER'
+          
+          // agregamos el filtro.
+          let filter = this.selectSummaryBy;
           // Obtenemos el total por actividad
-          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd).pipe().toPromise();
+          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd,filter).pipe().toPromise();
         })
       .then(
         result => {
@@ -131,27 +143,21 @@ export class SpeedAnalysisComponent implements OnInit {
           this.listGetReportVoyagePortDaily = result;
 
           return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
+        })
+      .then(
+        result => {
+            this.UpdateLineSPEED()
+            return true;
         }).then(
           result => {
-
-            this.UpdateLineSPEED()
-
             return true;
-          }
-        ).then(
+        }).then(
           result => {
             return true;
-          }
-        ).then(
-          result => {
-            return true;
-          }
-        ).catch(
+        }).catch(
           err => {
-
             return false
-          }
-        );
+        });
 
   }
 
@@ -309,6 +315,17 @@ export class SpeedAnalysisComponent implements OnInit {
     // Data de los chart.
     this.dataSPEEDChartPoint = [];
 
+    this.reorganizarDataViajes = {
+      LOADING: [],
+      DOWNLOADING: [],
+      SAILING_IN_BALLAST: [],
+      SAILING_WITH_LADEN: [],
+      ECONOMICAL_NAVIGATION: [],
+      ANCHORED: [],
+      MANEUVER: [],
+      OTHER_ACT: []
+    };
+
     // Configuracion de la linea maxima.
     this.configLineaSPEED.lineaMax = 0;
 
@@ -341,7 +358,16 @@ export class SpeedAnalysisComponent implements OnInit {
           // Armamos el texto de label para viajes.
           txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
         }
-
+        else if (this.selectSummaryBy === 'MONTHS') {
+          console.log(Number(String(iGetReportVoyagePortDaily.date).slice(-2))  )
+          // Armamos el texto de label para viajes.
+          txtLabelChart = String(iGetReportVoyagePortDaily.date).substring( 0, 4)
+                                + this.aMonthEnglishShort[Number(String(iGetReportVoyagePortDaily.date).slice(-2))-1];
+        }
+        else if (this.selectSummaryBy === 'DAYS') {
+          // Armamos el texto de label para viajes.
+          txtLabelChart =  String(iGetReportVoyagePortDaily.date);
+        }
         // Posiciondel elemento
         let posicionDelLabelSiExiste = 0;
         // Buscamos si el label ya se registro.
@@ -607,10 +633,10 @@ export class SpeedAnalysisComponent implements OnInit {
   }
 
   // Obtenemos la info de todos los viajes agregado.
-  private GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+  private GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string,filter): Observable<GetReportVoyagePortDaily[]> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
-    return this._dailyReportService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate).pipe(map(
+    return this._dailyReportService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate,filter).pipe(map(
       (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
 
         if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
