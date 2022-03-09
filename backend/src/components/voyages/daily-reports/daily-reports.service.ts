@@ -635,7 +635,35 @@ export class DailyReportsService {
     // NUEVOS QUERY CON OTRA CALIDA [o]v[o]
 
     // Esta servicio prove el total de los parametros que tiene el viaje puerto y reporte.
-    async GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
+    async GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: Date, endDate: Date, filterBy: string): Promise<GetReportVoyagePortDaily[]> {
+
+
+        let addSelectDinamic =
+            filterBy === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                filterBy === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                    'daily_report.date';
+                    
+
+
+
+        let groupByDinamic =
+            filterBy === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                filterBy === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                    filterBy === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')":
+                        filterBy === 'DAYS' ?  "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                            'activityPerformed, voyage.year, voyage.id';
+
+
+
+        let orderBy =
+            filterBy === 'VOYAGES' ? 'voyage.id' :
+                filterBy === 'PORTS' ? 'voyage.id, port.id' :
+                    filterBy === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')"  :
+                    filterBy === 'DAYS' ? "'daily_report'.'date'" :
+                        'voyage.id';
+
+
+
 
         // Hacemos where por todos los campos de la entidad
         return await
@@ -656,7 +684,7 @@ export class DailyReportsService {
 
                 // -- Informacion del reporte.
                 .addSelect('daily_report.id', 'dailyReportId')
-                .addSelect('daily_report.date', 'date')
+                .addSelect(addSelectDinamic, 'date')
                 .addSelect('daily_report.hour', 'hour')
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
@@ -698,11 +726,8 @@ export class DailyReportsService {
                 .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
                 .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
 
-                .groupBy('activityPerformed')
-                .addGroupBy('port.voyageId')
-
-                .orderBy('voyage.year')
-                .addOrderBy('port.voyageId')
+                .groupBy(groupByDinamic)
+                .orderBy(orderBy)
                 .getRawMany()
 
                 .then(

@@ -720,8 +720,8 @@ export class DailyReportsController {
 
 
     // ELGANCIA EN EL CODIGO
-    @Get('get-total-by-activity/:userId/:startDate/:endDate')
-    GetTotalByActivityFilterByUserIdAndDateAndType(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date): Promise<any> {
+    @Get('get-total-by-activity/:userId/:startDate/:endDate/:filter')
+    GetTotalByActivityFilterByUserIdAndDateAndType(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date,  @Param('filter') filter:string): Promise<any> {
 
 
         // Le asigno el valor al token desde la cabecera.
@@ -752,7 +752,7 @@ export class DailyReportsController {
             (resultValidate: Boolean) => {
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._dailyReportsService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate);
+                return this._dailyReportsService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, filter);
             }
         ).then(
             (results: GetReportVoyagePortDaily[]) => {
