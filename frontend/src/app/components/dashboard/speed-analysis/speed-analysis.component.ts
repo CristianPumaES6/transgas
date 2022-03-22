@@ -21,6 +21,8 @@ import { FormuleService } from 'src/app/services/formule.service';
 
 import PerfectScrollbar from 'perfect-scrollbar';
 import { mathRound } from 'src/assets/math/math.assets';
+import { User } from 'src/app/models/user';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-speed-analysis',
@@ -37,6 +39,13 @@ export class SpeedAnalysisComponent implements OnInit {
 
   // Rol del usuario logeado.
   public roleUser: string = '';
+
+  // Usuarios.
+  // Todos los usuarios obtenidos por el getUsers.
+  public getUsers: User[] = [];
+  // UserId seleccionado.
+  public selectUserId: number = 0; // esta variable podria desaparecer esta de mas, por que el id del usuario ya lo tenemos en la variable selectUser
+
 
   // ------------ Chart ----------------
   public xLabelReport: any[] = [];
@@ -81,6 +90,7 @@ export class SpeedAnalysisComponent implements OnInit {
     private notificationsService: NotificationsService,
     private fb: FormBuilder,
     private formuleService: FormuleService,
+    private userService: UserService,
   ) {
     // Inicializamos y bloqueamos el formulario.
     this.ReactiveForm(true, false, true, false, true);
@@ -88,12 +98,34 @@ export class SpeedAnalysisComponent implements OnInit {
 
   ngOnInit(): void {
 
+
+
+     // Si tenemos internet se ejecuta lo siguiente.
+     Promise.resolve(true).then(
+      result => {
+       
     // Plugin de linea
     this.PluginChartLine();
 
 
     this.GenetareLineSPEED();
 
+        // Instanciamos el obj que usaremos en la consulta de registro de viajes
+        let user: User = new User();
+
+        // Rol del usurio logeado.
+        this.roleUser = this.userService.GetIdentity().role;
+
+        // Si no eres un admin solo puedes registrar viajes con el userId logeado.
+        if (this.roleUser === 'BUQUE') {
+          user.id = this.userService.GetIdentity().id;
+          user.name = this.userService.GetIdentity().name;
+          user.nick = this.userService.GetIdentity().nick;
+        }
+        // Traigo a todos los User y lo instancio en el obj.
+        return this.GetUsers(user).pipe().toPromise();
+      }
+    )
 
     setTimeout(() => {
       // BODY FULL CONTAINER
@@ -659,7 +691,8 @@ export class SpeedAnalysisComponent implements OnInit {
                   Distance :  ${reportVoyagePortDaily.distance}
                   `;
           */
-          let result = 'Time : ' + reportVoyagePortDaily.steamingTime;
+          let 
+          result  = 'Time : ' + reportVoyagePortDaily.steamingTime;
           result += '\nDistance : ' + reportVoyagePortDaily.distance;
           result += `\nT.Reports : ` + reportVoyagePortDaily.countReports;
           result += `\nT.Ports : ` + reportVoyagePortDaily.countPorts;
@@ -803,6 +836,31 @@ export class SpeedAnalysisComponent implements OnInit {
     return result;
   }
 
+
+  
+  // GetUsers: Cargo todos los Users para el listado de Users.
+  private GetUsers(user: User): Observable<boolean> {
+    // Test
+    console.log('GetUsers(user: User)');
+
+    // Obtenemos todos los usuarios
+    return this.userService.GetUsers(user).pipe(map(
+      (resultUser: User[]) => {
+
+        // Filtramos para que solos los busques se visualizen
+        this.getUsers = resultUser.filter((userItem: User) => {
+          if (userItem.role === 'BUQUE') {
+            return true;
+          }
+          return false;
+        });
+
+        // Segun el resultado retornamos la respuesta.
+        return (resultUser !== null);
+      }
+    ));
+
+  }
 
   // Plugin de para la linea horizontal o vertical
   private PluginChartLine() {
