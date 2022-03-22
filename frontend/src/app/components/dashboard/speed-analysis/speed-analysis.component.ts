@@ -100,15 +100,15 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
 
-     // Si tenemos internet se ejecuta lo siguiente.
-     Promise.resolve(true).then(
+    // Si tenemos internet se ejecuta lo siguiente.
+    Promise.resolve(true).then(
       result => {
-       
-    // Plugin de linea
-    this.PluginChartLine();
+
+        // Plugin de linea
+        this.PluginChartLine();
 
 
-    this.GenetareLineSPEED();
+        this.GenetareLineSPEED();
 
         // Instanciamos el obj que usaremos en la consulta de registro de viajes
         let user: User = new User();
@@ -691,15 +691,15 @@ export class SpeedAnalysisComponent implements OnInit {
                   Distance :  ${reportVoyagePortDaily.distance}
                   `;
           */
-          let 
-          result  = 'Time : ' + reportVoyagePortDaily.steamingTime;
+          let
+            result = 'Time : ' + reportVoyagePortDaily.steamingTime;
           result += '\nDistance : ' + reportVoyagePortDaily.distance;
           result += `\nT.Reports : ` + reportVoyagePortDaily.countReports;
           result += `\nT.Ports : ` + reportVoyagePortDaily.countPorts;
-          result += `\nFrom : ${reportVoyagePortDaily.dayStart} to ${reportVoyagePortDaily.dayEnd}` ;
+          result += `\nFrom : ${reportVoyagePortDaily.dayStart} to ${reportVoyagePortDaily.dayEnd}`;
           result += `\nARRIVAL : ${reportVoyagePortDaily.arrivalPort}`;
           result += `\nDeparture : ${reportVoyagePortDaily.departurePort}`;
-          
+
           return result;
         }
       }
@@ -837,7 +837,7 @@ export class SpeedAnalysisComponent implements OnInit {
   }
 
 
-  
+
   // GetUsers: Cargo todos los Users para el listado de Users.
   private GetUsers(user: User): Observable<boolean> {
     // Test
