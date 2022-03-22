@@ -678,20 +678,25 @@ export class DailyReportsService {
                 //-- Informacion del puerto
                 .addSelect('port.id', 'portId')
                 .addSelect('port.portNumber', 'portNumber')
-                .addSelect('port.departurePort', 'departurePort')
-                .addSelect('port.arrivalPort', 'arrivalPort')
+                //.addSelect('port.departurePort', 'departurePort')
+                //.addSelect('port.arrivalPort', 'arrivalPort')
+                .addSelect('min(port.departurePort)', 'departurePort')
+                .addSelect('max(port.arrivalPort)', 'arrivalPort')
 
 
                 // -- Informacion del reporte.
                 .addSelect('daily_report.id', 'dailyReportId')
                 .addSelect(addSelectDinamic, 'date')
+                .addSelect('min(daily_report.date)', 'dayStart')
+                .addSelect('max(daily_report.date)', 'dayEnd')
                 .addSelect('daily_report.hour', 'hour')
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
                 .addSelect('daily_report.observation', 'observation')
 
                 // -- Cantidad de reportes
-                .addSelect('COUNT(*)', 'count')
+                .addSelect('COUNT(*)', 'countReports')
+                .addSelect('COUNT(DISTINCT "port"."id")', 'countPorts')
                 // -- Suma total de tiempo
                 .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
                 // -- Suma total de distancia

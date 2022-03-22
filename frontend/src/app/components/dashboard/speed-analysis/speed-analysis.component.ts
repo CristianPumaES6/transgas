@@ -70,7 +70,7 @@ export class SpeedAnalysisComponent implements OnInit {
   };
 
   public cantDecimal: number = 1;
-  public aMonthEnglishShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+  public aMonthEnglishShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   constructor(
     private router: Router,
@@ -110,7 +110,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
   public async ClickButtonTest(): Promise<boolean> {
 
-    
+
     // Filtros por fecha.
     let userSelect = 2;
 
@@ -119,7 +119,7 @@ export class SpeedAnalysisComponent implements OnInit {
     // let dateStart = '2021-12-01T13:00:00Z';
     // let dateEnd = '2022-02-15T11:30:00';
 
-    
+
     // Inicia la promesa.
     return await Promise.resolve(true)
       .then(
@@ -130,12 +130,12 @@ export class SpeedAnalysisComponent implements OnInit {
         })
       .then(
         result => {
-          if(!result) throw 'ERROR FILTER'
-          
+          if (!result) throw 'ERROR FILTER'
+
           // agregamos el filtro.
           let filter = this.selectSummaryBy;
           // Obtenemos el total por actividad
-          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd,filter).pipe().toPromise();
+          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
         })
       .then(
         result => {
@@ -146,18 +146,18 @@ export class SpeedAnalysisComponent implements OnInit {
         })
       .then(
         result => {
-            this.UpdateLineSPEED()
-            return true;
+          this.UpdateLineSPEED()
+          return true;
         }).then(
           result => {
             return true;
-        }).then(
-          result => {
-            return true;
-        }).catch(
-          err => {
-            return false
-        });
+          }).then(
+            result => {
+              return true;
+            }).catch(
+              err => {
+                return false
+              });
 
   }
 
@@ -359,14 +359,14 @@ export class SpeedAnalysisComponent implements OnInit {
           txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
         }
         else if (this.selectSummaryBy === 'MONTHS') {
-          console.log(Number(String(iGetReportVoyagePortDaily.date).slice(-2))  )
+          console.log(Number(String(iGetReportVoyagePortDaily.date).slice(-2)))
           // Armamos el texto de label para viajes.
-          txtLabelChart = String(iGetReportVoyagePortDaily.date).substring( 0, 4)
-                                + this.aMonthEnglishShort[Number(String(iGetReportVoyagePortDaily.date).slice(-2))-1];
+          txtLabelChart = String(iGetReportVoyagePortDaily.date).substring(0, 4)
+            + this.aMonthEnglishShort[Number(String(iGetReportVoyagePortDaily.date).slice(-2)) - 1];
         }
         else if (this.selectSummaryBy === 'DAYS') {
           // Armamos el texto de label para viajes.
-          txtLabelChart =  String(iGetReportVoyagePortDaily.date);
+          txtLabelChart = String(iGetReportVoyagePortDaily.date);
         }
         // Posiciondel elemento
         let posicionDelLabelSiExiste = 0;
@@ -398,7 +398,7 @@ export class SpeedAnalysisComponent implements OnInit {
         // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
         if (speed > 0) {
           this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
-            { x: txtLabelChart, y: speed, ubication: [indexReport] }
+            { x: txtLabelChart, y: speed, ubication: indexReport }
           );
         };
 
@@ -540,6 +540,8 @@ export class SpeedAnalysisComponent implements OnInit {
       color: 'red',
       label: ''
     });
+    // Configuracion Tooltips
+    this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('IFO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
 
     /*
     
@@ -617,6 +619,61 @@ export class SpeedAnalysisComponent implements OnInit {
     return false;
   }
 
+  private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
+    // resultado de tooltip
+    let tooltips: Chart.ChartTooltipOptions;
+
+    return tooltips = {
+      // Establece qué elementos aparecen en la información sobre herramientas.
+      mode: 'nearest',
+      // si es verdadero, el modo de desplazamiento solo se aplica cuando la posición del mouse se cruza con un elemento del gráfico.
+      intersect: false,
+      callbacks: {
+
+        //  label: (tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData) => {
+
+        // },
+        footer: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
+          console.log(tooltipItem)
+          console.log(data);
+
+          // Obtenemos la posicion del item.
+          let index = tooltipItem[0].index;
+          console.log(index)
+          // Obtenemos la posicion index dentro de la data de chart
+          let positionDataset = tooltipItem[0].datasetIndex;
+          console.log(positionDataset)
+          // Obtenemos la data del la linea correspondiente
+          let dataSPEEDChartPoint = this.dataSPEEDChartPoint[positionDataset].data;
+          console.log(dataSPEEDChartPoint)
+          // Obtenemos la ubicacion que no sotros guardamos.
+          let positionArrayData = dataSPEEDChartPoint[index].ubication;
+          console.log(positionArrayData)
+          // Reporte por viaje por dia.
+          let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[positionArrayData];
+          /* 
+                  
+                  let result =
+                  `
+                  Time : ${reportVoyagePortDaily.steamingTime} \n
+                  Distance :  ${reportVoyagePortDaily.distance}
+                  `;
+          */
+          let result = 'Time : ' + reportVoyagePortDaily.steamingTime;
+          result += '\nDistance : ' + reportVoyagePortDaily.distance;
+          result += `\nT.Reports : ` + reportVoyagePortDaily.countReports;
+          result += `\nT.Ports : ` + reportVoyagePortDaily.countPorts;
+          result += `\nFrom : ${reportVoyagePortDaily.dayStart} to ${reportVoyagePortDaily.dayEnd}` ;
+          result += `\nARRIVAL : ${reportVoyagePortDaily.arrivalPort}`;
+          result += `\nDeparture : ${reportVoyagePortDaily.departurePort}`;
+          
+          return result;
+        }
+      }
+    };
+  }
+
+
   // Obtenemos la info de todos los viajes agregado.
   private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
@@ -633,10 +690,10 @@ export class SpeedAnalysisComponent implements OnInit {
   }
 
   // Obtenemos la info de todos los viajes agregado.
-  private GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string,filter): Observable<GetReportVoyagePortDaily[]> {
+  private GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filter): Observable<GetReportVoyagePortDaily[]> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
-    return this._dailyReportService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate,filter).pipe(map(
+    return this._dailyReportService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, filter).pipe(map(
       (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
 
         if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
