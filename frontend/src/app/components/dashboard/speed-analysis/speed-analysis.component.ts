@@ -23,6 +23,7 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import { mathRound } from 'src/assets/math/math.assets';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
+import { ConvertMomentUTC, IsAfter1Date, validateDate } from 'src/assets/moment/moment.assets';
 
 @Component({
   selector: 'app-speed-analysis',
@@ -57,18 +58,20 @@ export class SpeedAnalysisComponent implements OnInit {
   public selectSummaryBy: string = 'VOYAGES';
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
-
-  // Usuarios.
-  // Todos los usuarios obtenidos por el getUsers.
-  public getUsers: User[] = [];
   // UserId seleccionado.
   public selectUserId: number = 0; // esta variable podria desaparecer esta de mas, por que el id del usuario ya lo tenemos en la variable selectUser
+  // Viajes seleccionados.
+  public selectedYears: number[] = [];
+  // Filtro por fecha inicio y fin
+  public startDate: string; // REVISAR SI ESTA BIEN POR QUE ES UNA FECHA:
+  public endDate: string;
+
   // Usuario seleccionado.
   public selectUser: User = new User();
 
-  public selectedYears: number[] = [];
-
-
+  // DATA consultas server.
+  // Todos los usuarios obtenidos por el getUsers.
+  public getUsers: User[] = [];
   // Lista con el resumen por viaje.
   public listTableSpeedByVoyage: any = [];
 
@@ -280,12 +283,22 @@ export class SpeedAnalysisComponent implements OnInit {
 
             // Obtenemos la ubicacion.
             let index = actEle._index;
-            // Obtenemos los datos por la ubicacion.
-            let ubication = this.dataSPEEDChartPoint[index];
+            let datasetIndex = actEle._datasetIndex;
+            let dataSPEEDChartPoint = this.dataSPEEDChartPoint[datasetIndex];
+            let label = dataSPEEDChartPoint.label;
+            // Obtenemos la lista de dataset del la actividad seleccionada.
+            let dataChartList = dataSPEEDChartPoint.data;
+            let ubication = dataChartList[index].ubication;
+            // Obtenemos el registro real con la ubicacion.
+            let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[ubication];
 
-            console.log('UBICACION : ---------------');
+            this.startDate = reportVoyagePortDaily.dayStart;
+            this.endDate = reportVoyagePortDaily.dayEnd;
 
-            console.log(ubication)
+            this.ReactiveForm(false, false, true, false, true)
+
+
+
           }
         },
         legend: {
@@ -411,17 +424,17 @@ export class SpeedAnalysisComponent implements OnInit {
           // Armamos el texto de label para viajes.
           txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
         } else if (this.selectSummaryBy === 'PORTS') {
-          // Armamos el texto de label para viajes.
+          // Armamos el texto de label para el puerto.
           txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
         }
         else if (this.selectSummaryBy === 'MONTHS') {
           console.log(Number(String(iGetReportVoyagePortDaily.date).slice(-2)))
-          // Armamos el texto de label para viajes.
+          // Armamos el texto de label para mes.
           txtLabelChart = String(iGetReportVoyagePortDaily.date).substring(0, 4)
             + this.aMonthEnglishShort[Number(String(iGetReportVoyagePortDaily.date).slice(-2)) - 1];
         }
         else if (this.selectSummaryBy === 'DAYS') {
-          // Armamos el texto de label para viajes.
+          // Armamos el texto de label para dias.
           txtLabelChart = String(iGetReportVoyagePortDaily.date);
         }
         // Posiciondel elemento
@@ -777,6 +790,8 @@ export class SpeedAnalysisComponent implements OnInit {
         typeSummaryVoyage: ['', [Validators.required]],
         selectUserId: ['', [Validators.required]],
         selectedYears: [[], [Validators.required]],
+        startDate: ['', [Validators.required]],
+        endDate: ['', [Validators.required]],
       });
     }
 
@@ -798,6 +813,9 @@ export class SpeedAnalysisComponent implements OnInit {
       this.selectSummaryBy = this.formFilter.controls['typeSummaryVoyage'].value;
       this.selectUserId = this.formFilter.controls['selectUserId'].value;
       this.selectedYears = this.formFilter.controls['selectedYears'].value;
+      this.startDate = this.formFilter.controls['startDate'].value;
+      debugger
+      this.endDate = this.formFilter.controls['endDate'].value;
       //this.user.nick = this.formFilter.controls['nick'].value;
       //this.user.password = this.formFilter.controls['password'].value;
       //this.user.role = this.formFilter.controls['role'].value;
@@ -808,6 +826,8 @@ export class SpeedAnalysisComponent implements OnInit {
       this.formFilter.controls['typeSummaryVoyage'].setValue(this.selectSummaryBy);
       this.formFilter.controls['selectUserId'].setValue(this.selectUserId);
       this.formFilter.controls['selectedYears'].setValue(this.selectedYears);
+      this.formFilter.controls['startDate'].setValue(this.startDate);
+      this.formFilter.controls['endDate'].setValue(this.endDate);
       //this.formFilter.controls['nick'].setValue(this.user.nick);
       //this.formFilter.controls['password'].setValue(this.user.password);
       //this.formFilter.controls['role'].setValue(this.user.role);
@@ -991,6 +1011,66 @@ export class SpeedAnalysisComponent implements OnInit {
         });
 
     console.log('FIN SelectComboBuque()');
+  }
+
+  // Cuando seleccionamos el año en automatico marcamos el inicio y fin de año para el filtro por fecha.
+  public SelectComboYears() {
+
+    console.log('SelectComboYears()');
+    // Promise
+    Promise.resolve(true).then(
+      result => {
+        this.ReactiveForm(false, false, true, true, false);
+      }
+    ).then(
+      result => {
+        let years = this.selectedYears;
+        // Esta fecha se pomdra en la dcondicional.
+        let dateStart = '';
+        let dateEnd = '';
+        if (years.length > 0) {
+          dateStart = years[0] + '-01-01T00:00:00Z';
+          this.startDate = dateStart;
+          dateEnd = years[years.length - 1] + '-12-30T23:59:59Z';
+          this.endDate = dateEnd;
+        };
+
+        return true;
+      }
+    ).then(
+      result => {
+        this.ReactiveForm(false, false, true, false, true)
+      }
+    ).catch(
+      err => {
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      });
+
+  }
+
+  // ClickFilterWithDate(): esta funcion se invoca al dar enter en los filtros por fecha.
+  public ClickFilterWithDate() {
+    console.log('ClickFilterWithDate()');
+
+    // Iniciamos las promesas.
+    Promise.resolve(true).then(
+      () => {
+        // Si no es valida enviamos error.
+        if (!validateDate(this.startDate)) throw 'NULL_START_DATE';
+        if (!validateDate(this.endDate)) throw 'NULL_END_DATE';
+        // Verificamos que la fecha inicio sea antes que la fecha fin.
+        if (IsAfter1Date(this.startDate, this.endDate)) throw 'ERROR_START_DATE';
+      }
+    )
+
   }
 
   // Plugin de para la linea horizontal o vertical

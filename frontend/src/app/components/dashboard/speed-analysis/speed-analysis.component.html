@@ -59,6 +59,31 @@
 
           </ng-template>
 
+          <div class="col-6 row no-glutters">
+            <div class="col-6">
+              <mat-form-field class="w-100">
+                <mat-label>{{'startDate' | translateMessage:translateCategory}}</mat-label>
+                <input matInput type="datetime" placeholder="{{'startDate' | translateMessage:translateCategory}}"
+                  formControlName="startDate">
+                <mat-error *ngIf="errorHandling('startDate', 'required')">
+                  Date is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+
+            <div class="col-6">
+              <mat-form-field class="w-100">
+                <mat-label>{{'endDate' | translateMessage:translateCategory}}</mat-label>
+                <input matInput type="datetime" placeholder="{{'endDate' | translateMessage:translateCategory}}"
+                  formControlName="endDate">
+                <mat-error *ngIf="errorHandling('endDate', 'required')">
+                  Date is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+          </div>
 
           <div class="col-6 row no-gutters">
             <button mat-raised-button color="primary" (click)="ClickButtonTest()">
