@@ -40,12 +40,6 @@ export class SpeedAnalysisComponent implements OnInit {
   // Rol del usuario logeado.
   public roleUser: string = '';
 
-  // Usuarios.
-  // Todos los usuarios obtenidos por el getUsers.
-  public getUsers: User[] = [];
-  // UserId seleccionado.
-  public selectUserId: number = 0; // esta variable podria desaparecer esta de mas, por que el id del usuario ya lo tenemos en la variable selectUser
-
 
   // ------------ Chart ----------------
   public xLabelReport: any[] = [];
@@ -54,13 +48,26 @@ export class SpeedAnalysisComponent implements OnInit {
   public configLineaSPEED: ChartConfiguration; // configuracion del elemento
   public chartLineSPEED: Chart; // LINEA
 
+  // Años que tiene el usuario.
+  public yearsOfUsers: number[] = [];
 
 
-  // ------------ Formaulario Filter -----------------
+  // ------------ Formulario Filter -----------------
   public formFilter: FormGroup;
   public selectSummaryBy: string = 'VOYAGES';
   public typeSummaryVoyageList: string[] = ['VOYAGES', 'PORTS', 'MONTHS', 'DAYS'];
   public activityPerformedList: string[] = ['LOADING', 'DOWNLOADING', 'SAILING_IN_BALLAST', 'SAILING_WITH_LADEN', 'ECONOMICAL_NAVIGATION', 'ANCHORED', 'MANEUVER', 'OTHER_ACT'];
+
+  // Usuarios.
+  // Todos los usuarios obtenidos por el getUsers.
+  public getUsers: User[] = [];
+  // UserId seleccionado.
+  public selectUserId: number = 0; // esta variable podria desaparecer esta de mas, por que el id del usuario ya lo tenemos en la variable selectUser
+  // Usuario seleccionado.
+  public selectUser: User = new User();
+
+  public selectedYears: number[] = [];
+
 
   // Lista con el resumen por viaje.
   public listTableSpeedByVoyage: any = [];
@@ -125,6 +132,17 @@ export class SpeedAnalysisComponent implements OnInit {
         // Traigo a todos los User y lo instancio en el obj.
         return this.GetUsers(user).pipe().toPromise();
       }
+    ).then(
+      (result) => {
+        if (!result) throw 'ERROR_GET_USERS';
+
+        // Seleccionaremos el primer buque del arreglo.
+        let firstUser: User = this.getUsers.find(user => user.role === 'BUQUE');
+
+        if (!firstUser) throw 'NO_BUQUE_REGISTER';
+
+        return this.SelectUser(firstUser.id);
+      }
     )
 
     setTimeout(() => {
@@ -144,10 +162,10 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
     // Filtros por fecha.
-    let userSelect = 2;
-
-    let dateStart = '2020-01-24T13:00:00Z';
-    let dateEnd = '2022-02-07T13:00:00Z';
+    let userSelect = 0;
+    let filter = '';
+    let dateStart = '';
+    let dateEnd = '';
     // let dateStart = '2021-12-01T13:00:00Z';
     // let dateEnd = '2022-02-15T11:30:00';
 
@@ -156,7 +174,6 @@ export class SpeedAnalysisComponent implements OnInit {
     return await Promise.resolve(true)
       .then(
         result => {
-
           // Obtenemos los datos escrito en el formulario.
           return this.ReactiveForm(false, false, true, true, false);
         })
@@ -164,8 +181,15 @@ export class SpeedAnalysisComponent implements OnInit {
         result => {
           if (!result) throw 'ERROR FILTER'
 
+          // Seleccionamos los del formulario.
+          // Obtenemos el usuario seleccionamos.
+          userSelect = this.selectUserId;
           // agregamos el filtro.
-          let filter = this.selectSummaryBy;
+          filter = this.selectSummaryBy;
+          dateStart = '2020-01-24T13:00:00Z';
+          dateEnd = '2022-02-07T13:00:00Z';
+
+
           // Obtenemos el total por actividad
           return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
         })
@@ -419,7 +443,7 @@ export class SpeedAnalysisComponent implements OnInit {
           this.xLabelReport.push(txtLabelChart);
         }
 
-
+        // Agrega o actualiza la lista de la tabla.
         this.AddOrUpdateDataTableList(existeElLabel, posicionDelLabelSiExiste, iGetReportVoyagePortDaily)
 
         // Obtenemos la velocidad IFO
@@ -751,6 +775,8 @@ export class SpeedAnalysisComponent implements OnInit {
     if (initialize) {
       this.formFilter = this.fb.group({
         typeSummaryVoyage: ['', [Validators.required]],
+        selectUserId: ['', [Validators.required]],
+        selectedYears: [[], [Validators.required]],
       });
     }
 
@@ -770,6 +796,8 @@ export class SpeedAnalysisComponent implements OnInit {
     // Obtenemos los valores del formulario
     if (getForm) {
       this.selectSummaryBy = this.formFilter.controls['typeSummaryVoyage'].value;
+      this.selectUserId = this.formFilter.controls['selectUserId'].value;
+      this.selectedYears = this.formFilter.controls['selectedYears'].value;
       //this.user.nick = this.formFilter.controls['nick'].value;
       //this.user.password = this.formFilter.controls['password'].value;
       //this.user.role = this.formFilter.controls['role'].value;
@@ -778,6 +806,8 @@ export class SpeedAnalysisComponent implements OnInit {
     // Seteamos los valores del formulario con los datos del user.
     if (setForm) {
       this.formFilter.controls['typeSummaryVoyage'].setValue(this.selectSummaryBy);
+      this.formFilter.controls['selectUserId'].setValue(this.selectUserId);
+      this.formFilter.controls['selectedYears'].setValue(this.selectedYears);
       //this.formFilter.controls['nick'].setValue(this.user.nick);
       //this.formFilter.controls['password'].setValue(this.user.password);
       //this.formFilter.controls['role'].setValue(this.user.role);
@@ -813,7 +843,7 @@ export class SpeedAnalysisComponent implements OnInit {
       dataTable.title = 'Voyage ' + iGetReportVoyagePortDaily.voyageNumber;
     }
 
-
+    // Calculamos la velocidad.
     let speed = this.formuleService.CalculateSpeed(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime);
     // Agregamos la velocidad a la actividad.
     dataTable.activities[iGetReportVoyagePortDaily.activityPerformed] = this.MathRoundOneDecimal(speed, this.cantDecimal);
@@ -836,7 +866,70 @@ export class SpeedAnalysisComponent implements OnInit {
     return result;
   }
 
+  // Selecciona al usuario, 
+  // Selecciona su ultimo año,
+  // Obtiene todos los datos del reporte.
+  // Y lo muestra en los cuadros.
+  private async SelectUser(userId: number): Promise<boolean> {
 
+    return await Promise.resolve(true).then(
+      result => {
+
+        // Seleccionamos al usuairo segun el selectUserId
+        return this.getUsers.find(user => user.id === userId);
+      }
+    ).then(
+      resultUser => {
+        // Verificamos que exista el usuario.
+        if (!resultUser) { throw 'NO_BUQUE_REGISTER'; }
+
+        // Seleccionamos el usuario.
+        this.selectUserId = userId;
+        this.selectUser = resultUser;
+
+        // Obtenemos todos los años del buque seleccionado.
+        let years = this.selectUser.years;
+
+        // Ultimo año del buque.
+        let OldYearUser: number;
+
+        // Verificamos que tenga almenos un registro, de año.
+        if (years && years.length > 0) {
+          // Asignamos todos los años a la variable.
+          this.yearsOfUsers = years;
+          // Seleccionamos el ultimo año.
+          OldYearUser = this.yearsOfUsers[years.length - 1];
+          this.selectedYears = [OldYearUser];
+
+
+        } else {
+          // Años del usuario esta vacio.
+          this.yearsOfUsers = [];
+          // Revisar aqui deberia notificar que este buque no tiene años, registrados.
+          // Al no tener años registrados no deberia poder permitir registrar reportes ni generar viajes.
+          // ni ingresar al modulo voyage.
+          throw 'NO_YEARS_REGISTER'; // No existen años registrados.
+        };
+
+        //if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
+
+        return true;
+      }
+    ).then(
+      resultUser => {
+        if (!resultUser) throw 'ERROR SELECT AUTO YEAR.';
+
+
+        // Obtenemos los datos escrito en el formulario.
+        return this.ReactiveForm(false, false, true, false, true);
+
+      }).then(
+        resultReactiveForm => {
+          if (!resultReactiveForm) throw 'ERROR REACTIVE FORM.';
+
+          return true;
+        })
+  }
 
   // GetUsers: Cargo todos los Users para el listado de Users.
   private GetUsers(user: User): Observable<boolean> {
@@ -860,6 +953,44 @@ export class SpeedAnalysisComponent implements OnInit {
       }
     ));
 
+  }
+
+
+  // SelectComboBuque: Selecciona un buque
+  public SelectComboBuque(userId: number) {
+    console.log('SelectComboBuque(userId)');
+
+    Promise.resolve(true
+    ).then(
+      result => {
+        // Activamos el loading.
+        this.loadingService.Open();
+
+        // Invocamos nuestra funcion SelectUser.
+        return this.SelectUser(userId);
+      }).then(
+        result => {
+
+          // Verificamos que todo este OK.
+          if (!result) throw 'ERROR_COMBO_BUQUE';
+
+          this.loadingService.Close();
+        }
+      ).catch(
+        err => {
+
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+          console.error(msg);
+          console.dir(err);
+
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
+
+    console.log('FIN SelectComboBuque()');
   }
 
   // Plugin de para la linea horizontal o vertical

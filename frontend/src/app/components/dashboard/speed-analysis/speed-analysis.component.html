@@ -7,7 +7,8 @@
       <form [formGroup]="formFilter">
 
         <div class="row">
-          <div class="col-6 row no-gutters">
+
+          <div class="col-4 row no-gutters">
             <mat-form-field class="w-100">
               <mat-label>{{'SUMMARY_BY' | translateMessage:translateCategory}}</mat-label>
               <mat-select formControlName="typeSummaryVoyage">
@@ -22,9 +23,42 @@
               <mat-error *ngIf="errorHandling('typeSummaryVoyage', 'required')">
                 Role is <strong>required</strong>
               </mat-error>
-
             </mat-form-field>
           </div>
+          <ng-template [ngIf]="roleUser == 'ADMIN' || roleUser == 'SUPPORT' || roleUser == 'OWNER' ">
+
+            <div class="col-6 row no-gutters">
+              <mat-form-field class="w-100">
+
+                <mat-label>{{'SELET_USERS' | translateMessage:translateCategory}}</mat-label>
+                <mat-select formControlName="selectUserId">
+                  <ng-template ngFor let-iUser [ngForOf]="getUsers" let-i="index">
+                    <mat-option [value]="iUser.id" (click)="SelectComboBuque(iUser.id)">
+                      {{ iUser.name}}
+                    </mat-option>
+                  </ng-template>
+                </mat-select>
+
+                <mat-error *ngIf="errorHandling('selectUserId', 'required')">
+                  Select user is <strong>required</strong>
+                </mat-error>
+
+              </mat-form-field>
+            </div>
+
+            <div class="col-2 row no-gutters">
+              <mat-form-field class="w-100">
+                <mat-label>{{'YEARS' | translateMessage:translateCategory}}</mat-label>
+                <mat-select formControlName="selectedYears" multiple>
+                  <mat-option *ngFor="let yearUser of yearsOfUsers" [value]="yearUser" (click)="SelectComboYears()">
+                    {{ yearUser }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+          </ng-template>
+
 
           <div class="col-6 row no-gutters">
             <button mat-raised-button color="primary" (click)="ClickButtonTest()">
