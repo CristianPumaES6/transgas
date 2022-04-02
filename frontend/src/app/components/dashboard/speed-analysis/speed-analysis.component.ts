@@ -938,13 +938,21 @@ export class SpeedAnalysisComponent implements OnInit {
           throw 'NO_YEARS_REGISTER'; // No existen años registrados.
         };
 
-        //if (!resultGenerateDashboard) throw 'ERROR_GENERATE_DASHBOARD';
 
         return true;
       }
     ).then(
       resultUser => {
         if (!resultUser) throw 'ERROR SELECT AUTO YEAR.';
+
+        // Que se genere en automatico.
+        this.GenerateDateByThisFishYearAndOldYear(false);
+
+        return true;
+      }
+    ).then(
+      resultUser => {
+        if (!resultUser) throw 'ERROR GENERATE DATE FOR FIRSH AND OLD YEAR';
 
 
         // Obtenemos los datos escrito en el formulario.
@@ -987,8 +995,8 @@ export class SpeedAnalysisComponent implements OnInit {
   public SelectComboBuque(userId: number) {
     console.log('SelectComboBuque(userId)');
 
-    Promise.resolve(true
-    ).then(
+    Promise.resolve(true)
+      .then(
       result => {
         // Activamos el loading.
         this.loadingService.Open();
@@ -1005,7 +1013,6 @@ export class SpeedAnalysisComponent implements OnInit {
         }
       ).catch(
         err => {
-
           // Manejo el error
           let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
@@ -1015,7 +1022,8 @@ export class SpeedAnalysisComponent implements OnInit {
           this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
           // Deshabilito el spinner de loading
           this.loadingService.Close();
-        });
+        }
+      );
 
     console.log('FIN SelectComboBuque()');
   }
