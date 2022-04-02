@@ -162,7 +162,7 @@ export class SpeedAnalysisComponent implements OnInit {
   }
 
   public async ClickButtonTest(): Promise<boolean> {
-
+    console.log('ClickButtonTest()')
 
     // Filtros por fecha.
     let userSelect = 0;
@@ -182,16 +182,24 @@ export class SpeedAnalysisComponent implements OnInit {
         })
       .then(
         result => {
-          if (!result) throw 'ERROR FILTER'
+          if (!result) throw 'ERROR FILTER';
 
           // Seleccionamos los del formulario.
           // Obtenemos el usuario seleccionamos.
           userSelect = this.selectUserId;
           // agregamos el filtro.
           filter = this.selectSummaryBy;
-          dateStart = '2020-01-24T13:00:00Z';
-          dateEnd = '2022-02-07T13:00:00Z';
+          // Seteammos una fecha solo si la fecha es null
+          this.GenerateDateByThisFishYearAndOldYear(true);
+          // Seteamos la fecha.
+          return this.ReactiveForm(false, false, true, false, true);
 
+        })
+      .then(
+        result => {
+          if (!result) throw 'ERROR_REACTIVE_FORM'
+          dateStart = this.startDate;
+          dateEnd = this.endDate;
 
           // Obtenemos el total por actividad
           return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
@@ -229,7 +237,7 @@ export class SpeedAnalysisComponent implements OnInit {
     getReportVoyagePortDaily: GetReportVoyagePortDaily[]
   ): Promise<boolean> {
 
-
+    console.log('GenerateData');
     return await Promise.resolve(true).then(
       result => {
 
@@ -814,7 +822,6 @@ export class SpeedAnalysisComponent implements OnInit {
       this.selectUserId = this.formFilter.controls['selectUserId'].value;
       this.selectedYears = this.formFilter.controls['selectedYears'].value;
       this.startDate = this.formFilter.controls['startDate'].value;
-      debugger
       this.endDate = this.formFilter.controls['endDate'].value;
       //this.user.nick = this.formFilter.controls['nick'].value;
       //this.user.password = this.formFilter.controls['password'].value;
@@ -1020,20 +1027,13 @@ export class SpeedAnalysisComponent implements OnInit {
     // Promise
     Promise.resolve(true).then(
       result => {
+        // Obtenemos los valores
         this.ReactiveForm(false, false, true, true, false);
       }
     ).then(
       result => {
-        let years = this.selectedYears;
-        // Esta fecha se pomdra en la dcondicional.
-        let dateStart = '';
-        let dateEnd = '';
-        if (years.length > 0) {
-          dateStart = years[0] + '-01-01T00:00:00Z';
-          this.startDate = dateStart;
-          dateEnd = years[years.length - 1] + '-12-30T23:59:59Z';
-          this.endDate = dateEnd;
-        };
+        // Generamos las fechas segun el año seleccionado
+        this.GenerateDateByThisFishYearAndOldYear(false);
 
         return true;
       }
@@ -1054,6 +1054,32 @@ export class SpeedAnalysisComponent implements OnInit {
         this.loadingService.Close();
       });
 
+  }
+
+  // Genera año por el priemero y ultimo seleccionado en automatico
+  private GenerateDateByThisFishYearAndOldYear(isAutoOnlyIfIsNull: boolean) {
+    console.log('GenerateDateByThisFishYearAndOldYear');
+
+    let years = this.selectedYears;
+    // Esta fecha se pomdra en la dcondicional.
+    let dateStart = '';
+    let dateEnd = '';
+
+    // Se debe de seleccionar un año para que se genere el reporte en automatico.
+    if (years.length > 0) {
+      if (!isAutoOnlyIfIsNull || (isAutoOnlyIfIsNull && !this.startDate)) {
+        dateStart = years[0] + '-01-01T00:00:00Z';
+        this.startDate = dateStart;
+      }
+      if (!isAutoOnlyIfIsNull || (isAutoOnlyIfIsNull && !this.endDate)) {
+        dateEnd = years[years.length - 1] + '-12-31T23:59:59Z';
+        this.endDate = dateEnd;
+      }
+    } else {
+      this.startDate = '';
+      this.endDate = '';
+      throw 'YOUR_SELECT_YEAR';
+    };
   }
 
   // ClickFilterWithDate(): esta funcion se invoca al dar enter en los filtros por fecha.

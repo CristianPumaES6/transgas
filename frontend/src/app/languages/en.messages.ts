@@ -534,5 +534,7 @@ export const speedAnalysis: any = {
     FULL_SPEED: 'FULL',
     ECO_SPEED: 'ECO',
     ID: 'ID',
-    FILTER_BY: 'Filter'
+    FILTER_BY: 'Filter',
+    YOUR_SELECT_YEAR:'You must select a year.',
+    ERROR_REACTIVE_FORM:'ERROR_REACTIVE_FORM, Contact support'
 }
