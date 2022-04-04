@@ -635,7 +635,6 @@ export class DailyReportsService {
 
 
     // NUEVOS QUERY CON OTRA CALIDA [o]v[o]
-
     // Esta servicio prove el total de los parametros que tiene el viaje puerto y reporte.
     async GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filterBy: string): Promise<GetReportVoyagePortDaily[]> {
 
