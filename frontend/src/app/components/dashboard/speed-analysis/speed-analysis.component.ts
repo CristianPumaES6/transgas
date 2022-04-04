@@ -741,20 +741,17 @@ export class SpeedAnalysisComponent implements OnInit {
 
       config.xAxes[0].type = 'time';
       config.xAxes[0].time = {
-
         displayFormats: {
           day: 'MM/YY'
         },
         tooltipFormat: 'MM/DD/YY',
         unit: 'month',
-
       }
 
     } else if (this.selectSummaryBy === 'DAYS') {
 
       config.xAxes[0].type = 'time';
       config.xAxes[0].time = {
-
         displayFormats: {
           day: 'MM/DD'
         },
@@ -762,7 +759,6 @@ export class SpeedAnalysisComponent implements OnInit {
         unit: 'day',
 
       }
-
     }
 
     return config;
