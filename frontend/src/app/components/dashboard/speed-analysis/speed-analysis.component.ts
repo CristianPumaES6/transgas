@@ -117,7 +117,7 @@ export class SpeedAnalysisComponent implements OnInit {
         // Plugin de linea
         this.PluginChartLine();
 
-
+        // Inicializamos la lineaChartSPEED
         this.GenetareLineSPEED();
 
         // Instanciamos el obj que usaremos en la consulta de registro de viajes
@@ -232,7 +232,7 @@ export class SpeedAnalysisComponent implements OnInit {
   }
 
   public async ClickClear(): Promise<boolean> {
-
+    console.log('ClickClear()')
     // Inicia la promesa.
     return await Promise.resolve(true)
       .then(
@@ -271,15 +271,17 @@ export class SpeedAnalysisComponent implements OnInit {
         }
       ).then(
         resutl => {
-          
-          this.startDate = String(this.listGetReportVoyagePortDaily[0].date);
-          this.endDate = String(this.listGetReportVoyagePortDaily[this.listGetReportVoyagePortDaily.length-1].date);
 
-          
+          if(this.listGetReportVoyagePortDaily.length >0){
+            this.startDate = String(this.listGetReportVoyagePortDaily[0].date);
+            this.endDate = String(this.listGetReportVoyagePortDaily[this.listGetReportVoyagePortDaily.length - 1].date);
+  
+          } else {
+            throw 'There are no reports registered.'
+          }
+
           // Seteamos el form.
           return this.ReactiveForm(false, false, true, false, true);
-      
-          return true;
         }
       )
 
@@ -989,39 +991,15 @@ export class SpeedAnalysisComponent implements OnInit {
         this.selectUserId = userId;
         this.selectUser = resultUser;
 
-        // Obtenemos todos los años del buque seleccionado.
-        let years = this.selectUser.years;
-
-        // Ultimo año del buque.
-        let OldYearUser: number;
-
-        // Verificamos que tenga almenos un registro, de año.
-        if (years && years.length > 0) {
-          // Asignamos todos los años a la variable.
-          this.yearsOfUsers = years;
-          // Seleccionamos el ultimo año.
-          OldYearUser = this.yearsOfUsers[years.length - 1];
-          this.selectedYears = [OldYearUser];
-
-
-        } else {
-          // Años del usuario esta vacio.
-          this.yearsOfUsers = [];
-          // Revisar aqui deberia notificar que este buque no tiene años, registrados.
-          // Al no tener años registrados no deberia poder permitir registrar reportes ni generar viajes.
-          // ni ingresar al modulo voyage.
-          throw 'NO_YEARS_REGISTER'; // No existen años registrados.
-        };
-
-
-        return true;
+        // seleccionamos el ulitmo año
+        return this.SelectOldYear();
       }
     ).then(
       resultUser => {
         if (!resultUser) throw 'ERROR SELECT AUTO YEAR.';
 
         // Que se genere en automatico.
-        this.GenerateDateByThisFishYearAndOldYear(false);
+        this.ClickClear();
 
         return true;
       }
@@ -1104,7 +1082,7 @@ export class SpeedAnalysisComponent implements OnInit {
   }
 
   // Cuando seleccionamos el año en automatico marcamos el inicio y fin de año para el filtro por fecha.
-  public SelectComboYears() {
+  private SelectComboYears() {
 
     console.log('SelectComboYears()');
     // Promise
@@ -1139,6 +1117,34 @@ export class SpeedAnalysisComponent implements OnInit {
 
   }
 
+  // Antiguos años
+  private SelectOldYear(): boolean {
+
+    // Obtenemos todos los años del buque seleccionado.
+    let years = this.selectUser.years;
+
+    // Ultimo año del buque.
+    let OldYearUser: number;
+
+    // Verificamos que tenga almenos un registro, de año.
+    if (years && years.length > 0) {
+      // Asignamos todos los años a la variable.
+      this.yearsOfUsers = years;
+      // Seleccionamos el ultimo año.
+      OldYearUser = this.yearsOfUsers[years.length - 1];
+      this.selectedYears = [OldYearUser];
+
+    } else {
+      // Años del usuario esta vacio.
+      this.yearsOfUsers = [];
+      // Revisar aqui deberia notificar que este buque no tiene años, registrados.
+      // Al no tener años registrados no deberia poder permitir registrar reportes ni generar viajes.
+      // ni ingresar al modulo voyage.
+      throw 'NO_YEARS_REGISTER'; // No existen años registrados.
+    };
+
+    return true;
+  }
   // Genera año por el priemero y ultimo seleccionado en automatico
   private GenerateDateByThisFishYearAndOldYear(isAutoOnlyIfIsNull: boolean) {
     console.log('GenerateDateByThisFishYearAndOldYear');
