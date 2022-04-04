@@ -303,9 +303,19 @@ export class SpeedAnalysisComponent implements OnInit {
             this.startDate = reportVoyagePortDaily.dayStart;
             this.endDate = reportVoyagePortDaily.dayEnd;
 
+            if (this.selectSummaryBy == 'VOYAGES') {
+              this.selectSummaryBy = 'PORTS';
+            } else if (this.selectSummaryBy == 'PORTS') {
+              this.selectSummaryBy = 'DAYS';
+            } else if (this.selectSummaryBy == 'MONTHS') {
+              this.selectSummaryBy = 'DAYS';
+            }
             this.ReactiveForm(false, false, true, false, true)
 
-
+            // Solo si el tipo de resumen es diferente a dias hacemos la consulta.
+            if (this.selectSummaryBy != 'DAYS') {
+              this.ClickButtonTest();
+            }
 
           }
         },
@@ -711,21 +721,19 @@ export class SpeedAnalysisComponent implements OnInit {
 
         // },
         footer: (tooltipItem: Chart.ChartTooltipItem[], data: Chart.ChartData) => {
-          console.log(tooltipItem)
-          console.log(data);
+
 
           // Obtenemos la posicion del item.
           let index = tooltipItem[0].index;
-          console.log(index)
           // Obtenemos la posicion index dentro de la data de chart
           let positionDataset = tooltipItem[0].datasetIndex;
-          console.log(positionDataset)
+
           // Obtenemos la data del la linea correspondiente
           let dataSPEEDChartPoint = this.dataSPEEDChartPoint[positionDataset].data;
-          console.log(dataSPEEDChartPoint)
+
           // Obtenemos la ubicacion que no sotros guardamos.
           let positionArrayData = dataSPEEDChartPoint[index].ubication;
-          console.log(positionArrayData)
+
           // Reporte por viaje por dia.
           let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[positionArrayData];
           /* 
@@ -997,33 +1005,33 @@ export class SpeedAnalysisComponent implements OnInit {
 
     Promise.resolve(true)
       .then(
-      result => {
-        // Activamos el loading.
-        this.loadingService.Open();
-
-        // Invocamos nuestra funcion SelectUser.
-        return this.SelectUser(userId);
-      }).then(
         result => {
+          // Activamos el loading.
+          this.loadingService.Open();
 
-          // Verificamos que todo este OK.
-          if (!result) throw 'ERROR_COMBO_BUQUE';
+          // Invocamos nuestra funcion SelectUser.
+          return this.SelectUser(userId);
+        }).then(
+          result => {
 
-          this.loadingService.Close();
-        }
-      ).catch(
-        err => {
-          // Manejo el error
-          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+            // Verificamos que todo este OK.
+            if (!result) throw 'ERROR_COMBO_BUQUE';
 
-          console.error(msg);
-          console.dir(err);
+            this.loadingService.Close();
+          }
+        ).catch(
+          err => {
+            // Manejo el error
+            let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
+            console.error(msg);
+            console.dir(err);
+
+            this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+            // Deshabilito el spinner de loading
+            this.loadingService.Close();
+          }
+        );
 
     console.log('FIN SelectComboBuque()');
   }
