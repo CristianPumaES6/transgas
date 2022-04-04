@@ -272,10 +272,10 @@ export class SpeedAnalysisComponent implements OnInit {
       ).then(
         resutl => {
 
-          if(this.listGetReportVoyagePortDaily.length >0){
+          if (this.listGetReportVoyagePortDaily.length > 0) {
             this.startDate = String(this.listGetReportVoyagePortDaily[0].date);
             this.endDate = String(this.listGetReportVoyagePortDaily[this.listGetReportVoyagePortDaily.length - 1].date);
-  
+
           } else {
             throw 'There are no reports registered.'
           }
