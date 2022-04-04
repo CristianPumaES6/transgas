@@ -288,40 +288,6 @@ export class SpeedAnalysisComponent implements OnInit {
 
   }
 
-
-  private async GenerateData(
-    // Data del chart
-    // Esto me arroja error Chart.ChartPoint asi que solo le pongo any
-    dataSPEEDChartPoint: any[],
-    // Data de los reportes
-    getReportVoyagePortDaily: GetReportVoyagePortDaily[]
-  ): Promise<boolean> {
-
-    console.log('GenerateData');
-    return await Promise.resolve(true).then(
-      result => {
-
-
-        getReportVoyagePortDaily.forEach(iGetReporteVPD => {
-
-          dataSPEEDChartPoint.push(
-            { x: iGetReporteVPD.activityPerformed, y: iGetReporteVPD.distance }
-          );
-
-        });
-
-        return true;
-      }
-    ).then(
-      result => {
-        return true;
-      }
-    )
-
-
-  }
-
-
   private GenetareLineSPEED(): boolean {
 
     // Configuracion Chart lineal
@@ -433,27 +399,6 @@ export class SpeedAnalysisComponent implements OnInit {
 
     return false;
 
-  }
-
-
-  private async GenerateDashboardBySumary(setDate: boolean, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): Promise<boolean> {
-
-    // retornamoremos el resultado de la promesa.
-    return await Promise.resolve(true).then(
-      result => {
-
-        this.GenerateDataForChart(setDate, listGetReportVoyagePortDaily);
-
-        // return true.
-        return true;
-      }
-    ).catch(
-      error => {
-        return false
-      }
-    )
-
-    return true;
   }
 
 
@@ -687,9 +632,6 @@ export class SpeedAnalysisComponent implements OnInit {
     // La linea es el campo que agregamos en el plugin.
     this.configLineaSPEED.options.lines = [];
 
-
-
-
     this.configLineaSPEED.options.lines.push({
       type: 'horizontal',
       y: 12,// this.selectUser.maxSpeed,
@@ -699,77 +641,10 @@ export class SpeedAnalysisComponent implements OnInit {
     // Configuracion Tooltips
     this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('IFO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
 
-    /*
-    
-    
-        // Si ninguna actividad a sido seleccionada, agregamos la linea maxima segun configuracion.
-        if (
-          (!this.frmCActivityPerformed.value || this.frmCActivityPerformed.value.length === 0)) {
-    
-    
-    
-    
-          // Si el consumo maximo es mayor a 0 lo pintamos si no, no hace falta.
-          if (this.selectUser.maxSpeed > 0) {
-            this.configLineaSPEED.options.lines.push({
-              type: 'horizontal',
-              y: this.selectUser.maxSpeed,
-              color: 'red',
-              label: ''
-            });
-          };
-    
-          if (this.selectUser.minSpeed > 0) {
-            this.configLineaSPEED.options.lines.push({
-              type: 'horizontal',
-              y: this.selectUser.minSpeed,
-              color: '#39FF14',
-              label: ''
-            });
-          }
-    
-    
-          // Esta linea maxima es para la scala del cuadro.
-          if (this.configLineaSPEED.lineaMax < this.selectUser.maxSpeed) {
-            this.configLineaSPEED.lineaMax = this.selectUser.maxSpeed;
-          }
-    
-        } else {
-          // AQUI RECORREMOS TODAS LAS ACTIVIDADES CON EL FIN DE EL CONSTRAR LA MAYOR LINEA MAXIMA.
-    
-          let lineaMaxByActivity = 0;
-          this.frmCActivityPerformed.value.forEach(activity => {
-    
-            let lineMax = 0;
-    
-            if (activity === 'SAILING_IN_BALLAST') { lineMax = this.selectUser.contractSpeedSailingBallastIFO; }
-            else if (activity === 'SAILING_WITH_LADEN') { lineMax = this.selectUser.contractSpeedSailingLadenIFO; }
-            else if (activity === 'ECONOMICAL_NAVIGATION') { lineMax = this.selectUser.contractSpeedSailingEconomicalIFO; }
-    
-            if (lineMax > lineaMaxByActivity) {
-              lineaMaxByActivity = lineMax;
-            }
-    
-          });
-    
-          // Verificamos que la mayor linea maxima de las actividades sea mayor a 0 para ponerlo.
-          if (lineaMaxByActivity > 0) {
-    
-            this.configLineaSPEED.options.lines.push({
-              type: 'horizontal',
-              y: lineaMaxByActivity,
-              color: '#39FF14',
-              label: ''
-            });
-          }
-    
-    
-          // Esta linea maxima es para la scala del cuadro.
-          if (this.configLineaSPEED.lineaMax < lineaMaxByActivity) {
-            this.configLineaSPEED.lineaMax = lineaMaxByActivity;
-          }
-    
-    */
+    // Agregamos la configuracion de las escalas.
+    this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
+    //
+
     this.chartLineSPEED.update();
 
     return false;
@@ -828,6 +703,70 @@ export class SpeedAnalysisComponent implements OnInit {
     };
   }
 
+  private ConfigScales(dataReport: Date[], isSpeed?: boolean, lineaMax?: number) {
+
+    // Variable que retornara la configuracion
+    let config: any = {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+          max: lineaMax,
+        },
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }],
+      xAxes: [{
+        type: '',// ES SE MODIFICA ABAJO // 'category' or 'time'
+        //  time: {} // Se modificara abajo.
+        ticks: {
+          beginAtZero: true,
+          fontColor: '#b8d1ff',
+        },
+        position: 'bottom', // NO QUE HACE ESTO
+        gridLines: {
+          display: true,
+          color: '#b8d1ff'
+        },
+      }]
+    };
+
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
+
+      config.xAxes[0].type = 'category';
+
+    } else if (this.selectSummaryBy === 'MONTHS') {
+
+      config.xAxes[0].type = 'time';
+      config.xAxes[0].time = {
+
+        displayFormats: {
+          day: 'MM/YY'
+        },
+        tooltipFormat: 'MM/DD/YY',
+        unit: 'month',
+
+      }
+
+    } else if (this.selectSummaryBy === 'DAYS') {
+
+      config.xAxes[0].type = 'time';
+      config.xAxes[0].time = {
+
+        displayFormats: {
+          day: 'MM/DD'
+        },
+        tooltipFormat: 'MM/DD/YY',
+        unit: 'day',
+
+      }
+
+    }
+
+    return config;
+  }
 
   // Obtenemos la info de todos los viajes agregado.
   private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
