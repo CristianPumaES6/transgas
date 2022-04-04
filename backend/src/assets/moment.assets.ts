@@ -23,13 +23,25 @@ export function ConvertMMDDYYYToYYYYMMDD(dateMMDDYYY: any): Date {
 }
 
 
-export function FormatDateUTCToDateHour(dateUTC:any): string{
+export function FormatDateUTCToDateHour(dateUTC: any): string {
     // Con el formato YYYY MM DD
     let momentDate = moment.utc(dateUTC);
 
     let local = momentDate.local();
 
     let format = local.format('MM/DD/YYYY HH:mm');
-    
+
     return format;
+}
+
+
+// Resta una cantidad de dias a una fecha utc.
+export function FormatDateSumDays(dateUTC: any, subtractDays: number): string {
+    // Con el formato YYYY MM DD
+    let momentDate = moment.utc(dateUTC);
+    // Restamos los dias.
+    let subtract = momentDate.subtract(subtractDays, 'days');
+
+    // damos formato a una fecha.
+    return subtract.format('YYYY-MM-DD HH:mm:ss') + 'Z';
 }

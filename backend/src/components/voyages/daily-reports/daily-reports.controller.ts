@@ -721,7 +721,7 @@ export class DailyReportsController {
 
     // ELGANCIA EN EL CODIGO
     @Get('get-total-by-activity/:userId/:startDate/:endDate/:filter')
-    GetTotalByActivityFilterByUserIdAndDateAndType(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date,  @Param('filter') filter:string): Promise<any> {
+    GetTotalByActivityFilterByUserIdAndDateAndType(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: string, @Param('endDate') endDate: string, @Param('filter') filter: string): Promise<any> {
 
 
         // Le asigno el valor al token desde la cabecera.

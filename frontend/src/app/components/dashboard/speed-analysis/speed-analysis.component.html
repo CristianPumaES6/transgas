@@ -86,9 +86,16 @@
           </div>
 
           <div class="col-6 row no-gutters">
-            <button mat-raised-button color="primary" (click)="ClickButtonTest()">
-              {{ 'FILTER_BY' | translateMessage:translateCategory }}
-            </button>
+            <div class="col-6 row no-gutters">
+              <button mat-raised-button color="primary" (click)="ClickButtonTest()">
+                {{ 'FILTER_BY' | translateMessage:translateCategory }}
+              </button>
+            </div>
+            <div class="col-6 row no-gutters">
+              <button mat-raised-button color="secondary" (click)="ClickClear()">
+                {{ 'CLEAR' | translateMessage:translateCategory }}
+              </button>
+            </div>
           </div>
         </div>
       </form>

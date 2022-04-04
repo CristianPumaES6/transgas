@@ -169,18 +169,18 @@ export class SpeedAnalysisComponent implements OnInit {
     let filter = '';
     let dateStart = '';
     let dateEnd = '';
-    // let dateStart = '2021-12-01T13:00:00Z';
-    // let dateEnd = '2022-02-15T11:30:00';
+
+
 
 
     // Inicia la promesa.
     return await Promise.resolve(true)
       .then(
         result => {
-          // Obtenemos los datos escrito en el formulario.
+          // Obtenemos los datos escrito en el formulario, nos importa 
           return this.ReactiveForm(false, false, true, true, false);
-        })
-      .then(
+        }
+      ).then(
         result => {
           if (!result) throw 'ERROR FILTER';
 
@@ -193,9 +193,8 @@ export class SpeedAnalysisComponent implements OnInit {
           this.GenerateDateByThisFishYearAndOldYear(true);
           // Seteamos la fecha.
           return this.ReactiveForm(false, false, true, false, true);
-
-        })
-      .then(
+        }
+      ).then(
         result => {
           if (!result) throw 'ERROR_REACTIVE_FORM'
           dateStart = this.startDate;
@@ -203,28 +202,87 @@ export class SpeedAnalysisComponent implements OnInit {
 
           // Obtenemos el total por actividad
           return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
-        })
-      .then(
+        }
+      ).then(
         result => {
           if (!result) throw 'ERROR GER REPORT';
           this.listGetReportVoyagePortDaily = result;
 
           return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
-        })
-      .then(
+        }
+      ).then(
         result => {
           this.UpdateLineSPEED()
           return true;
-        }).then(
-          result => {
-            return true;
-          }).then(
-            result => {
-              return true;
-            }).catch(
-              err => {
-                return false
-              });
+        }
+      ).then(
+        result => {
+          return true;
+        }
+      ).then(
+        result => {
+          return true;
+        }
+      ).catch(
+        err => {
+          return false
+        }
+      );
+
+  }
+
+  public async ClickClear(): Promise<boolean> {
+
+    // Inicia la promesa.
+    return await Promise.resolve(true)
+      .then(
+        result => {
+          this.startDate = null;
+          this.endDate = null;
+          this.selectSummaryBy = 'DAYS';
+
+
+          // Seteamos el form.
+          return this.ReactiveForm(false, false, true, false, true);
+        }
+      ).then(
+        result => {
+          if (!result) throw 'ERROR REACTIVE_FORM'
+
+          let userSelect = this.selectUserId;
+          let dateStart = this.startDate;
+          let dateEnd = this.endDate;
+          let filter = this.selectSummaryBy;
+
+          // Obtenemos el total por actividad
+          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
+        }
+      ).then(
+        result => {
+          if (!result) throw 'ERROR GER REPORT';
+          this.listGetReportVoyagePortDaily = result;
+
+          return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
+        }
+      ).then(
+        result => {
+          this.UpdateLineSPEED()
+          return true;
+        }
+      ).then(
+        resutl => {
+          
+          this.startDate = String(this.listGetReportVoyagePortDaily[0].date);
+          this.endDate = String(this.listGetReportVoyagePortDaily[this.listGetReportVoyagePortDaily.length-1].date);
+
+          
+          // Seteamos el form.
+          return this.ReactiveForm(false, false, true, false, true);
+      
+          return true;
+        }
+      )
+
 
   }
 
@@ -303,17 +361,23 @@ export class SpeedAnalysisComponent implements OnInit {
             this.startDate = reportVoyagePortDaily.dayStart;
             this.endDate = reportVoyagePortDaily.dayEnd;
 
+
+            // Este click tendra consulta al server solo si no es de tipo dia.
+            let consultarServer = true;
             if (this.selectSummaryBy == 'VOYAGES') {
               this.selectSummaryBy = 'PORTS';
             } else if (this.selectSummaryBy == 'PORTS') {
               this.selectSummaryBy = 'DAYS';
             } else if (this.selectSummaryBy == 'MONTHS') {
               this.selectSummaryBy = 'DAYS';
+            } else if (this.selectSummaryBy == 'DAYS') {
+              consultarServer = false;
             }
-            this.ReactiveForm(false, false, true, false, true)
-
             // Solo si el tipo de resumen es diferente a dias hacemos la consulta.
-            if (this.selectSummaryBy != 'DAYS') {
+            if (consultarServer) {
+              // Seteamos los valores configurados.
+              this.ReactiveForm(false, false, true, false, true)
+              // BUscamos segun los filtros.  
               this.ClickButtonTest();
             }
 
@@ -412,6 +476,9 @@ export class SpeedAnalysisComponent implements OnInit {
       MANEUVER: [],
       OTHER_ACT: []
     };
+
+    // Limpiamos la lista del viaje.
+    this.listTableSpeedByVoyage = [];
 
     // Configuracion de la linea maxima.
     this.configLineaSPEED.lineaMax = 0;
@@ -976,7 +1043,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
   // GetUsers: Cargo todos los Users para el listado de Users.
   private GetUsers(user: User): Observable<boolean> {
-    // Test
+    // Cada vez que se use getUsers la consola nos avisara.
     console.log('GetUsers(user: User)');
 
     // Obtenemos todos los usuarios
