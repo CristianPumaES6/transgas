@@ -52,7 +52,6 @@ export class SpeedAnalysisComponent implements OnInit {
   // Años que tiene el usuario.
   public yearsOfUsers: number[] = [];
 
-
   // ------------ Formulario Filter -----------------
   public formFilter: FormGroup;
   public selectSummaryBy: string = 'VOYAGES';
@@ -62,6 +61,7 @@ export class SpeedAnalysisComponent implements OnInit {
   public selectUserId: number = 0; // esta variable podria desaparecer esta de mas, por que el id del usuario ya lo tenemos en la variable selectUser
   // Viajes seleccionados.
   public selectedYears: number[] = [];
+
   // Filtro por fecha inicio y fin
   public startDate: string; // REVISAR SI ESTA BIEN POR QUE ES UNA FECHA:
   public endDate: string;
@@ -745,7 +745,7 @@ export class SpeedAnalysisComponent implements OnInit {
           day: 'MM/YY'
         },
         tooltipFormat: 'MM/DD/YY',
-        unit: 'month',
+        unit: 'month'
       }
 
     } else if (this.selectSummaryBy === 'DAYS') {
@@ -756,9 +756,10 @@ export class SpeedAnalysisComponent implements OnInit {
           day: 'MM/DD'
         },
         tooltipFormat: 'MM/DD/YY',
-        unit: 'day',
+        unit: 'day'
 
       }
+
     }
 
     return config;
@@ -835,9 +836,7 @@ export class SpeedAnalysisComponent implements OnInit {
       this.selectedYears = this.formFilter.controls['selectedYears'].value;
       this.startDate = this.formFilter.controls['startDate'].value;
       this.endDate = this.formFilter.controls['endDate'].value;
-      //this.user.nick = this.formFilter.controls['nick'].value;
-      //this.user.password = this.formFilter.controls['password'].value;
-      //this.user.role = this.formFilter.controls['role'].value;
+
     }
 
     // Seteamos los valores del formulario con los datos del user.
@@ -847,9 +846,6 @@ export class SpeedAnalysisComponent implements OnInit {
       this.formFilter.controls['selectedYears'].setValue(this.selectedYears);
       this.formFilter.controls['startDate'].setValue(this.startDate);
       this.formFilter.controls['endDate'].setValue(this.endDate);
-      //this.formFilter.controls['nick'].setValue(this.user.nick);
-      //this.formFilter.controls['password'].setValue(this.user.password);
-      //this.formFilter.controls['role'].setValue(this.user.role);
     }
 
     // Validamos si el stado del formulario es VALID
