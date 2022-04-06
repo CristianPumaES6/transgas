@@ -436,11 +436,14 @@ export class ApplicationComponent implements OnInit {
       case '/application/dashboard':
         navLink = 'dashboard';
         break;
-      case '/application/dashboard/consumer_analysis':
-        navLink = 'consumer_analysis';
+      case '/application/dashboard/general_analysis':
+        navLink = 'general_analysis';
         break;
       case '/application/dashboard/speed_analysis':
         navLink = 'speed_analysis';
+        break;
+      case '/application/dashboard/consumer_analysis':
+        navLink = 'consumer_analysis';
         break;
 
       case '/application/voyages':
@@ -469,7 +472,10 @@ export class ApplicationComponent implements OnInit {
     console.log('OnSelectNavLink(navLink: string)');
 
 
-    switch (navLink) {
+    switch (navLink) { //Modulo de dashboard
+      case 'general_analysis':
+        this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
+        break;
       //Modulo de dashboard
       case 'consumer_analysis':
         this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });

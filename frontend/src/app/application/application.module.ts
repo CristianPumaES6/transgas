@@ -29,6 +29,7 @@ import { DialogExportExcelComponent } from '../shared/dialog/dialog-export-excel
 import { ExportExcelComponent } from '../components/dashboard/export-excel/export-excel.component';
 import { DialogUpdateServerComponent } from '../shared/dialog/dialog-update-server/dialog-update-server.component';
 import { SpeedAnalysisComponent } from '../components/dashboard/speed-analysis/speed-analysis.component';
+import { ConsumptionAnalysisComponent } from '../components/dashboard/consumption-analysis/consumption-analysis.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { SpeedAnalysisComponent } from '../components/dashboard/speed-analysis/s
     ExportExcelComponent,
     DialogUpdateServerComponent,
     SpeedAnalysisComponent,
+    ConsumptionAnalysisComponent
   ],
   imports: [
     GlobalModule,
