@@ -118,7 +118,9 @@
     <div class=" col-4 bd-highlight p-1">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Lista de VIAJES</h5>
+          <h5 class="card-title">
+            {{"LIST_TABLE_SPEED_IFO" | translateMessage:translateCategory}}
+          </h5>
 
           <div class="card-text card-cont-table-list">
             <div class="tableFixHead">
@@ -126,11 +128,10 @@
               <table class="table table-hover table-dark">
                 <thead>
                   <tr>
-                    <th scope="col">{{ 'ID' | translateMessage:translateCategory}}</th>
-                    <th scope="col">{{ 'VOYAGE' | translateMessage:translateCategory}}</th>
+                   <th scope="col"  class="pt-2">{{ selectSummaryBy | translateMessage:translateCategory}}</th>
                     <!-- Mostramos recorremos las actividades que se mostraran -->
                     <ng-template ngFor let-iDataSPEEDChartPoint [ngForOf]="dataSPEEDChartPoint" let-i="index">
-                      <th scope="col">
+                      <th scope="col"  class="pt-2">
                         {{iDataSPEEDChartPoint.label | translateMessage:translateCategory}}
                       </th>
                     </ng-template>
@@ -139,8 +140,7 @@
                 <tbody>
                   <!-- Recorremos la data del table -->
                   <ng-template ngFor let-ilistTableSpeedByVoyage [ngForOf]="listTableSpeedByVoyage" let-i="index">
-                    <tr>
-                      <td scope="row">{{ilistTableSpeedByVoyage.id}}</td>
+                    <tr (click)="ClickItemTableIfo(ilistTableSpeedByVoyage.ubication)">
                       <td>{{ilistTableSpeedByVoyage.title}}</td>
 
                       <!-- Recorremos la velocidad -->

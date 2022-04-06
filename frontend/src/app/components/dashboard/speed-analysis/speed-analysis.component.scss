@@ -6,13 +6,12 @@
 // POSICION REALATIVE CON UNA ALTURA FIJA Y SI ALGO ESTA FUERA DEL CUADRO SE OCULTA.
 .card-cont-table-list {
     position: relative;
-    height: 350px;
+    height: 330px;
     overflow: hidden;
 }
 // CSS  ====================== TABLE STCIKET HEADER
 .tableFixHead {
     overflow-x: hidden;
-
     overflow-y: hidden;
     height: 100%;
 }
@@ -26,10 +25,13 @@
 table {
     border-collapse: collapse;
     width: 100%;
+    
 }
 th,
 td {
     padding: 8px 16px;
+    
+    text-align: center;
 }
 th {
     background: #eee;

@@ -239,7 +239,7 @@ export class SpeedAnalysisComponent implements OnInit {
         result => {
           this.startDate = null;
           this.endDate = null;
-          this.selectSummaryBy = 'DAYS';
+          this.selectSummaryBy = 'PORTS';
 
 
           // Seteamos el form.
@@ -286,6 +286,38 @@ export class SpeedAnalysisComponent implements OnInit {
       )
 
 
+  }
+
+  public async ClickItemTableIfo(indexData: number) {
+
+    // Ubicacion
+    let ubication = indexData;
+    // Obtenemos el registro real con la ubicacion.
+    let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[ubication];
+    // Fecha inicio fecha fin.
+    this.startDate = reportVoyagePortDaily.dayStart;
+    this.endDate = reportVoyagePortDaily.dayEnd;
+
+
+    // Este click tendra consulta al server solo si no es de tipo dia.
+    let consultarServer = true;
+    if (this.selectSummaryBy == 'VOYAGES') {
+      this.selectSummaryBy = 'PORTS';
+    } else if (this.selectSummaryBy == 'PORTS') {
+      this.selectSummaryBy = 'DAYS';
+    } else if (this.selectSummaryBy == 'MONTHS') {
+      this.selectSummaryBy = 'DAYS';
+    } else if (this.selectSummaryBy == 'DAYS') {
+      consultarServer = false;
+    }
+
+    // Solo si el tipo de resumen es diferente a dias hacemos la consulta.
+    if (consultarServer) {
+      // Seteamos los valores configurados.
+      this.ReactiveForm(false, false, true, false, true)
+      // BUscamos segun los filtros.  
+      this.ClickButtonTest();
+    }
   }
 
   private GenetareLineSPEED(): boolean {
@@ -488,9 +520,6 @@ export class SpeedAnalysisComponent implements OnInit {
           this.xLabelReport.push(txtLabelChart);
         }
 
-        // Agrega o actualiza la lista de la tabla.
-        this.AddOrUpdateDataTableList(existeElLabel, posicionDelLabelSiExiste, iGetReportVoyagePortDaily)
-
         // Obtenemos la velocidad IFO
         let dataSpeed = new Speed();
         dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
@@ -498,6 +527,9 @@ export class SpeedAnalysisComponent implements OnInit {
         speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
         // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
         if (speed > 0) {
+          // Agrega o actualiza la lista de la tabla.
+          this.AddOrUpdateDataTableList(iGetReportVoyagePortDaily, indexReport);
+
           this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
             { x: txtLabelChart, y: speed, ubication: indexReport }
           );
@@ -836,7 +868,6 @@ export class SpeedAnalysisComponent implements OnInit {
       this.selectedYears = this.formFilter.controls['selectedYears'].value;
       this.startDate = this.formFilter.controls['startDate'].value;
       this.endDate = this.formFilter.controls['endDate'].value;
-
     }
 
     // Seteamos los valores del formulario con los datos del user.
@@ -860,22 +891,49 @@ export class SpeedAnalysisComponent implements OnInit {
 
   // Agrega o actuliza la data segun lo que le indiquemos desde los parametros.
   // Estos valores son agregados al arreglo de listTable.
-  public AddOrUpdateDataTableList(tieneUnaUbicacionElLabel: boolean, ubicationEnElArreglo: number, iGetReportVoyagePortDaily: GetReportVoyagePortDaily): boolean {
+  public AddOrUpdateDataTableList(iGetReportVoyagePortDaily: GetReportVoyagePortDaily, ubication: number): boolean {
     // el objeto donde trabajaremos.
     let dataTable = {
       id: 0,
       title: '',
-      activities: new ActivityPerformed()
-
+      activities: new ActivityPerformed(),
+      ubication: 0
     }
 
+    let typeSumary = this.selectSummaryBy;
+    let indexUbication = 0;
+
+    // el identificador 
+    let itemFind = this.listTableSpeedByVoyage.find(
+      (item, index) => {
+        if (item.id == iGetReportVoyagePortDaily.voyageId) {
+
+          indexUbication = index;
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+
     // Si existe cargamos los datos que ya  hemos guardado
-    if (tieneUnaUbicacionElLabel) {
-      dataTable = this.listTableSpeedByVoyage[ubicationEnElArreglo];
+    if (itemFind) {
+      dataTable = this.listTableSpeedByVoyage[indexUbication];
     } else {
       // Actualizamos los datos.
       dataTable.id = iGetReportVoyagePortDaily.voyageId;
-      dataTable.title = 'Voyage ' + iGetReportVoyagePortDaily.voyageNumber;
+
+      if (typeSumary == 'VOYAGES') {
+        dataTable.title = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
+      } else if (typeSumary == 'PORTS') {
+        dataTable.title = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
+      } else if (typeSumary == 'MONTHS') {
+        dataTable.title = String(iGetReportVoyagePortDaily.date).substring(0, 4)
+          + this.aMonthEnglishShort[Number(String(iGetReportVoyagePortDaily.date).slice(-2)) - 1];
+      } else if (typeSumary == 'DAYS') {
+        dataTable.title = String(iGetReportVoyagePortDaily.date);
+      }
+
     }
 
     // Calculamos la velocidad.
@@ -884,8 +942,8 @@ export class SpeedAnalysisComponent implements OnInit {
     dataTable.activities[iGetReportVoyagePortDaily.activityPerformed] = this.MathRoundOneDecimal(speed, this.cantDecimal);
 
     // Si existe, actualizamos el objeto
-    if (tieneUnaUbicacionElLabel) {
-      this.listTableSpeedByVoyage[ubicationEnElArreglo] = dataTable;
+    if (itemFind) {
+      this.listTableSpeedByVoyage[indexUbication] = dataTable;
     } else {
       // Agregamos un nuevo objeto
       this.listTableSpeedByVoyage.push(dataTable);
