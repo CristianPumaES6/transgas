@@ -36,7 +36,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
-  public translateCategory: string = 'speedAnalysis';
+  public translateCategory: string = 'consumptionAnalysis';
 
   // Rol del usuario logeado.
   public roleUser: string = '';
@@ -45,9 +45,9 @@ export class ConsumptionAnalysisComponent implements OnInit {
   // ------------ Chart ----------------
   public xLabelReport: any[] = [];
   // Configuracion del SPEED
-  public dataSPEEDChartPoint: any[] = []; // Data
-  public configLineaSPEED: ChartConfiguration; // configuracion del elemento
-  public chartLineSPEED: Chart; // LINEA
+  public dataConsumptionChartPoint: any[] = []; // Data
+  public configLineaConsumption: ChartConfiguration; // configuracion del elemento
+  public chartLineConsumption: Chart; // LINEA
 
   // Años que tiene el usuario.
   public yearsOfUsers: number[] = [];
@@ -323,7 +323,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
   private GenetareLineSPEED(): boolean {
 
     // Configuracion Chart lineal
-    this.configLineaSPEED = {
+    this.configLineaConsumption = {
       // Update Char 3.7 quitar este type deberia ir en cada dataset.
       type: 'line',
       data: {
@@ -350,10 +350,10 @@ export class ConsumptionAnalysisComponent implements OnInit {
             // Obtenemos la ubicacion.
             let index = actEle._index;
             let datasetIndex = actEle._datasetIndex;
-            let dataSPEEDChartPoint = this.dataSPEEDChartPoint[datasetIndex];
-            let label = dataSPEEDChartPoint.label;
+            let dataConsumptionChartPoint = this.dataConsumptionChartPoint[datasetIndex];
+            let label = dataConsumptionChartPoint.label;
             // Obtenemos la lista de dataset del la actividad seleccionada.
-            let dataChartList = dataSPEEDChartPoint.data;
+            let dataChartList = dataConsumptionChartPoint.data;
             let ubication = dataChartList[index].ubication;
             // Obtenemos el registro real con la ubicacion.
             let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[ubication];
@@ -427,7 +427,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
     // Convertimos el canvaLineIfo en 2d
     let ctxLineSPEED: any = canvaLineSPEED.getContext('2d');
 
-    this.chartLineSPEED = new Chart(ctxLineSPEED, this.configLineaSPEED);
+    this.chartLineConsumption = new Chart(ctxLineSPEED, this.configLineaConsumption);
 
     return false;
 
@@ -443,7 +443,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
     this.xLabelReport = [];
 
     // Data de los chart.
-    this.dataSPEEDChartPoint = [];
+    this.dataConsumptionChartPoint = [];
 
     this.reorganizarDataViajes = {
       LOADING: [],
@@ -460,7 +460,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
     this.listTableSpeedByVoyage = [];
 
     // Configuracion de la linea maxima.
-    this.configLineaSPEED.lineaMax = 0;
+    this.configLineaConsumption.lineaMax = 0;
 
     // Fecha inicio y fin de la data.
     let startDate;
@@ -537,15 +537,15 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
 
         // La linea maxima
-        if (speed > this.configLineaSPEED.lineaMax) {
-          this.configLineaSPEED.lineaMax = speed;
+        if (speed > this.configLineaConsumption.lineaMax) {
+          this.configLineaConsumption.lineaMax = speed;
         };
 
       });
 
     // Solo agregamos una linea si hay registros.
     if (this.reorganizarDataViajes['LOADING'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'LOADING',
@@ -557,7 +557,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
       )
     }
     if (this.reorganizarDataViajes['DOWNLOADING'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'DOWNLOADING',
@@ -570,7 +570,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
       );
     }
     if (this.reorganizarDataViajes['SAILING_IN_BALLAST'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'SAILING_IN_BALLAST',
@@ -583,7 +583,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
         });
     }
     if (this.reorganizarDataViajes['SAILING_WITH_LADEN'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'SAILING_WITH_LADEN',
@@ -595,7 +595,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
         });
     }
     if (this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'ECONOMICAL_NAVIGATION',
@@ -607,7 +607,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
         });
     }
     if (this.reorganizarDataViajes['ANCHORED'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'ANCHORED',
@@ -619,7 +619,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
         });
     }
     if (this.reorganizarDataViajes['MANEUVER'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'MANEUVER',
@@ -632,7 +632,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
       );
     }
     if (this.reorganizarDataViajes['OTHER_ACT'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
           type: 'line',
           label: 'OTHER_ACT',
@@ -654,30 +654,30 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
 
     // Los label lo pongo vacio por es multi line
-    this.configLineaSPEED.data.labels = this.xLabelReport;
+    this.configLineaConsumption.data.labels = this.xLabelReport;
 
     // Actualizamos la dataSPEED
     // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
-    this.configLineaSPEED.data.datasets = this.dataSPEEDChartPoint;
+    this.configLineaConsumption.data.datasets = this.dataConsumptionChartPoint;
 
     // Vaciamos la configuracion de las lines SPEED
     // La linea es el campo que agregamos en el plugin.
-    this.configLineaSPEED.options.lines = [];
+    this.configLineaConsumption.options.lines = [];
 
-    this.configLineaSPEED.options.lines.push({
+    this.configLineaConsumption.options.lines.push({
       type: 'horizontal',
       y: 12,// this.selectUser.maxSpeed,
       color: 'red',
       label: ''
     });
     // Configuracion Tooltips
-    this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('IFO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
+    this.configLineaConsumption.options.tooltips = this.GetToolTipConfig('IFO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
 
     // Agregamos la configuracion de las escalas.
-    this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
+    this.configLineaConsumption.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaConsumption.lineaMax, 0) + 2);
     //
 
-    this.chartLineSPEED.update();
+    this.chartLineConsumption.update();
 
     return false;
   }
@@ -705,10 +705,10 @@ export class ConsumptionAnalysisComponent implements OnInit {
           let positionDataset = tooltipItem[0].datasetIndex;
 
           // Obtenemos la data del la linea correspondiente
-          let dataSPEEDChartPoint = this.dataSPEEDChartPoint[positionDataset].data;
+          let dataConsumptionChartPoint = this.dataConsumptionChartPoint[positionDataset].data;
 
           // Obtenemos la ubicacion que no sotros guardamos.
-          let positionArrayData = dataSPEEDChartPoint[index].ubication;
+          let positionArrayData = dataConsumptionChartPoint[index].ubication;
 
           // Reporte por viaje por dia.
           let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[positionArrayData];

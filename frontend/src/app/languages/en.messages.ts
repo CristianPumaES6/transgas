@@ -538,3 +538,22 @@ export const speedAnalysis: any = {
     YOUR_SELECT_YEAR:'You must select a year.',
     ERROR_REACTIVE_FORM:'ERROR_REACTIVE_FORM, Contact support'
 }
+
+export const consumptionAnalysis: any = {
+    FILTERS: 'Filters :',
+    LOADING: 'LOADING',
+    DOWNLOADING: 'DISCHARGE',
+    SAILING_IN_BALLAST: 'BALLAST',
+    SAILING_WITH_LADEN: 'LADEN',
+    ECONOMICAL_NAVIGATION: 'ECONOMICAL',
+    ANCHORED: 'ANCHORED',
+    MANEUVER: 'MANEUVER',
+    OTHER_ACT: 'OTHER ACT.',
+
+    FULL_SPEED: 'FULL',
+    ECO_SPEED: 'ECO',
+    ID: 'ID',
+    FILTER_BY: 'Filter',
+    YOUR_SELECT_YEAR:'You must select a year.',
+    ERROR_REACTIVE_FORM:'ERROR_REACTIVE_FORM, Contact support'
+}
