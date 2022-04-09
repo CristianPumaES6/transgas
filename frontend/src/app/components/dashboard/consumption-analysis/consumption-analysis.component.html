@@ -130,9 +130,9 @@
                   <tr>
                    <th scope="col"  class="pt-2">{{ selectSummaryBy | translateMessage:translateCategory}}</th>
                     <!-- Mostramos recorremos las actividades que se mostraran -->
-                    <ng-template ngFor let-iDataSPEEDChartPoint [ngForOf]="dataSPEEDChartPoint" let-i="index">
+                    <ng-template ngFor let-iDataConsumptionChartPoint [ngForOf]="dataConsumptionChartPoint" let-i="index">
                       <th scope="col"  class="pt-2">
-                        {{iDataSPEEDChartPoint.label | translateMessage:translateCategory}}
+                        {{iDataConsumptionChartPoint.label | translateMessage:translateCategory}}
                       </th>
                     </ng-template>
                   </tr>
@@ -144,9 +144,9 @@
                       <td>{{ilistTableSpeedByVoyage.title}}</td>
 
                       <!-- Recorremos la velocidad -->
-                      <ng-template ngFor let-iDataSPEEDChartPoint [ngForOf]="dataSPEEDChartPoint" let-i="index">
+                      <ng-template ngFor let-iDataConsumptionChartPoint [ngForOf]="dataConsumptionChartPoint" let-i="index">
                         <td scope="col">
-                          {{ilistTableSpeedByVoyage.activities[iDataSPEEDChartPoint.label]}}
+                          {{ilistTableSpeedByVoyage.activities[iDataConsumptionChartPoint.label]}}
                         </td>
                       </ng-template>
                     </tr>
