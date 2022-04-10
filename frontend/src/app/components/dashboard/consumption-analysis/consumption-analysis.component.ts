@@ -144,6 +144,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
         if (!firstUser) throw 'NO_BUQUE_REGISTER';
 
+        // Buscamos al primer usuario, si no es admin solo nos saldra el usuario logeado.
         return this.SelectUser(firstUser.id);
       }
     )
@@ -166,7 +167,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
     // Filtros por fecha.
     let userSelect = 0;
-    let filter = '';
+    let summaryBy = '';
     let dateStart = '';
     let dateEnd = '';
 
@@ -188,7 +189,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
           // Obtenemos el usuario seleccionamos.
           userSelect = this.selectUserId;
           // agregamos el filtro.
-          filter = this.selectSummaryBy;
+          summaryBy = this.selectSummaryBy;
           // Seteammos una fecha solo si la fecha es null
           this.GenerateDateByThisFishYearAndOldYear(true);
           // Seteamos la fecha.
@@ -201,7 +202,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
           dateEnd = this.endDate;
 
           // Obtenemos el total por actividad
-          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
+          return this.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, summaryBy).pipe().toPromise();
         }
       ).then(
         result => {
@@ -231,14 +232,17 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
   }
 
+  // Esta funcion hace una busqueda por defecto omite loos filtros, se preocupa en los ultimos 40 dias del reporte.
   public async ClickClear(): Promise<boolean> {
     console.log('ClickClear()')
     // Inicia la promesa.
     return await Promise.resolve(true)
       .then(
         result => {
+          // Reset valores del filtro.
           this.startDate = null;
           this.endDate = null;
+          // El resumen se hace por puerto.
           this.selectSummaryBy = 'PORTS';
 
 
@@ -249,13 +253,14 @@ export class ConsumptionAnalysisComponent implements OnInit {
         result => {
           if (!result) throw 'ERROR REACTIVE_FORM'
 
+          // armamos los valores que se enviaran a la consulta
           let userSelect = this.selectUserId;
           let dateStart = this.startDate;
           let dateEnd = this.endDate;
-          let filter = this.selectSummaryBy;
+          let typeSummary = this.selectSummaryBy;
 
           // Obtenemos el total por actividad
-          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
+          return this.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, typeSummary).pipe().toPromise();
         }
       ).then(
         result => {
@@ -526,6 +531,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
         // El total de velocidad debe de ser mayor para poder pintarlo.
         speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
         // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
+        
         if (speed > 0) {
           // Agrega o actualiza la lista de la tabla.
           this.AddOrUpdateDataTableList(iGetReportVoyagePortDaily, indexReport);
@@ -812,11 +818,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     ));
   }
 
-  // Obtenemos la info de todos los viajes agregado.
-  private GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filter): Observable<GetReportVoyagePortDaily[]> {
-    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
-    // Obtenemos todos los usuarios
-    return this._dailyReportService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, filter).pipe(map(
+  // Obtenemos el consumo total por actividades
+  private GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<GetReportVoyagePortDaily[]> {   
+
+    // Invocamos la consulta para obtener el consumo total por actividad.
+    return this._dailyReportService.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary).pipe(map(
       (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
 
         if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
@@ -825,6 +831,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
         return resultGetROBByUser;
       }
     ));
+
   }
 
 
@@ -968,7 +975,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
     return await Promise.resolve(true).then(
       result => {
 
-        // Seleccionamos al usuairo segun el selectUserId
+        // Seleccionamos al usuarios segun el selectUserId
         return this.getUsers.find(user => user.id === userId);
       }
     ).then(

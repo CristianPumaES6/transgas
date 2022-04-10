@@ -783,4 +783,155 @@ export class DailyReportsService {
                 }
             );
     }
+
+
+
+    async GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Promise<GetReportVoyagePortDaily[]> {
+
+        // Si la fecha es null en automatico enviara los ultimos 40 registros.
+        let startDateRegister = startDate == 'null' ? null : startDate;
+        let endDateRegister = endDate == 'null' ? null : endDate;
+        let cantUltimosDias = 40;
+
+        // Inicio de la promesa.
+        return await DummyPromise()
+            .then(
+                result => {
+                    // Solo si la fecha es null, obtenedremos el ultimo registro ingresado
+                    if (!startDateRegister && !endDateRegister) {
+                        // Buscamos el ultimo reporte.
+                        return this._dailyReportRepository.createQueryBuilder('daily_report')
+                            .addSelect('daily_report.date', 'date')
+
+                            // UNION DE TABLAS
+                            .innerJoin('daily_report.port', 'port')
+                            .innerJoin('port.voyage', 'voyage')
+                            // Where status
+                            .where('daily_report.status = :status', { status: 1 })
+                            .andWhere('voyage.status = :status', { status: 1 })
+                            .andWhere('port.status = :status', { status: 1 })
+                            // Filtro por el usuario seleccionado.
+                            .andWhere('daily_report.userId = :userId', { userId: userId })
+                            .andWhere('port.userId = :userId', { userId: userId })
+                            .andWhere('voyage.userId = :userId', { userId: userId })
+                            .orderBy('daily_report.date', 'DESC')
+                            .limit(1)
+                            .getRawMany()
+                    } else {
+                        return null;
+                    }
+                }
+            ).then(
+                resultFind => {
+
+                    // Si recibimos una fecha, hacemos la jugada para obtener los ultimos 40 dias
+                    if (resultFind) {
+                        // Embase al la ultima fecha mostramos los ultimos 40 dias.
+                        endDateRegister = resultFind[0].date;
+                        startDateRegister = FormatDateSumDays(endDateRegister, cantUltimosDias);
+                    }
+
+                    return true;
+                }
+            ).then(
+                result => {
+
+                    let addSelectDinamic =
+                        typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                            typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                'daily_report.date';
+
+                    let groupByDinamic =
+                        typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                            typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                                typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                                    typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                        'activityPerformed, voyage.year, voyage.id';
+
+                    let orderBy =
+                        typeSummary === 'VOYAGES' ? 'voyage.id' :
+                            typeSummary === 'PORTS' ? 'voyage.id, port.id' :
+                                typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                                    typeSummary === 'DAYS' ? "'daily_report'.'date'" :
+                                        'voyage.id';
+
+
+                    return this._dailyReportRepository.createQueryBuilder('daily_report')
+                        .select('voyage.userId', 'userId')
+
+                        // -- Datos del viaje
+                        .addSelect('voyage.year', 'year')
+                        .addSelect('voyage.id', 'voyageId')
+                        .addSelect('voyage.voyageNumber', 'voyageNumber')
+
+                        //-- Informacion del puerto
+                        .addSelect('port.id', 'portId')
+                        .addSelect('port.portNumber', 'portNumber')
+                        //.addSelect('port.departurePort', 'departurePort')
+                        //.addSelect('port.arrivalPort', 'arrivalPort')
+                        .addSelect('min(port.departurePort)', 'departurePort')
+                        .addSelect('max(port.arrivalPort)', 'arrivalPort')
+
+
+                        // -- Informacion del reporte.
+                        .addSelect('daily_report.id', 'dailyReportId')
+                        .addSelect(addSelectDinamic, 'date')
+                        .addSelect('min(daily_report.date)', 'dayStart')
+                        .addSelect('max(daily_report.date)', 'dayEnd')
+                        .addSelect('daily_report.hour', 'hour')
+                        .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                        .addSelect('daily_report.speedStraction', 'speedStraction')
+                        .addSelect('daily_report.observation', 'observation')
+
+                        // -- Cantidad de reportes
+                        .addSelect('COUNT(*)', 'countReports')
+                        .addSelect('COUNT(DISTINCT "port"."id")', 'countPorts')
+                        // -- Suma total de tiempo
+                        .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+                        // -- Suma total de distancia
+                        .addSelect('SUM(daily_report.distance)', 'distance')
+                        // Beaufour
+                        .addSelect('daily_report.beaufour', 'beaufour')
+
+
+
+                        // Suma total de consumo por maquina
+                        .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+                        .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+                        .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+                        .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+                        // Suma total de bunkering
+                        .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+
+                        // UNION DE TABLAS
+                        .innerJoin('daily_report.port', 'port')
+                        .innerJoin('port.voyage', 'voyage')
+
+                        .where('daily_report.status = :status', { status: 1 })
+                        .andWhere('voyage.status = :status', { status: 1 })
+                        .andWhere('port.status = :status', { status: 1 })
+
+                        .andWhere('daily_report.userId = :userId', { userId: userId })
+                        .andWhere('port.userId = :userId', { userId: userId })
+                        .andWhere('voyage.userId = :userId', { userId: userId })
+
+                        .andWhere('(daily_report.mplaIfo > :mplaIfo OR daily_report.auxIfo > :auxIfo OR daily_report.boilerIfo > :boilerIfo OR daily_report.otherIfo > :otherIfo OR daily_report.bunkeringIfo > :bunkeringIfo )', { mplaIfo: 0, auxIfo: 0, boilerIfo: 0, otherIfo: 0, bunkeringIfo: 0 })
+
+                        .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDateRegister })
+                        .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDateRegister })
+
+                        .groupBy(groupByDinamic)
+                        .orderBy(orderBy)
+                        .getRawMany()
+                }
+            ).then(
+                (result: any) => {
+                    console.log(result)
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetReportVoyagePortDaily';
+
+                    return result;
+                }
+            );
+    }
 }

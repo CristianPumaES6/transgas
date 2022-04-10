@@ -324,9 +324,9 @@ export class DailyReportService {
     }
 
     // Retorna el totar por actividad
-    GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filter: string): Observable<GetReportVoyagePortDaily[]> {
+    GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<GetReportVoyagePortDaily[]> {
         // Armo el request
-        let url: string = this.url + '/daily-reports/get-total-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' +filter;
+        let url: string = this.url + '/daily-reports/get-total-consumption-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' +typeSummary;
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
@@ -347,7 +347,6 @@ export class DailyReportService {
                     }
                 }
             ), catchError((err) => {
-                
                 return this.authGuardService.HandleError(err);
             })
         );
