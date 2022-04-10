@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { DailyReport } from '../models/daily-report';
+import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
 import { DailyReportService } from './daily-report.service';
 import { LanguageService } from './language.service';
 
@@ -26,4 +28,16 @@ export class FormuleService {
     return speed;
   }
 
+    // Calcula la velocidad Distancia / time
+    public CalculateIfoTotal(getReportVoyagePortDaily: GetReportVoyagePortDaily): number {
+      // Total
+      let total: number = 0;
+
+      // SUMAMOS TODOS LOS EQUIPOS
+      total =  getReportVoyagePortDaily.mplaIfo + getReportVoyagePortDaily.boilerIfo +  getReportVoyagePortDaily.otherIfo + getReportVoyagePortDaily.auxIfo;
+      
+      // RETornamos el total.
+      return total;
+    }
+  
 }

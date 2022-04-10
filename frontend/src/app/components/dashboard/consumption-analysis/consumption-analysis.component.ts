@@ -525,13 +525,17 @@ export class ConsumptionAnalysisComponent implements OnInit {
           this.xLabelReport.push(txtLabelChart);
         }
 
+        /*REVISAR ESTO DEBIDO A QUE NO SE ESTA VIENDO ANALISIS DE SPEED SI NO DE CONSUMO 
+        
         // Obtenemos la velocidad IFO
         let dataSpeed = new Speed();
         dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
+       
         // El total de velocidad debe de ser mayor para poder pintarlo.
         speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
         // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
         
+
         if (speed > 0) {
           // Agrega o actualiza la lista de la tabla.
           this.AddOrUpdateDataTableList(iGetReportVoyagePortDaily, indexReport);
@@ -546,7 +550,17 @@ export class ConsumptionAnalysisComponent implements OnInit {
         if (speed > this.configLineaConsumption.lineaMax) {
           this.configLineaConsumption.lineaMax = speed;
         };
+        */
 
+        let totalIFO = this.formuleService.CalculateIfoTotal(iGetReportVoyagePortDaily);
+        if (totalIFO > this.configLineaConsumption.lineaMax) {
+          this.configLineaConsumption.lineaMax = totalIFO;
+        };
+
+
+        this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
+          { x: txtLabelChart, y: totalIFO, ubication: indexReport }
+        );
       });
 
     // Solo agregamos una linea si hay registros.
@@ -556,8 +570,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
           type: 'line',
           label: 'LOADING',
           data: this.reorganizarDataViajes['LOADING'],
-          backgroundColor: 'rgb(255,205,6)',
-          borderColor: 'rgb(255,205,6)',
+          backgroundColor: 'rgb(255,181,0)',
+          borderColor: 'rgb(255,181,0)',
           fill: false
         }
       )
@@ -568,8 +582,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
           type: 'line',
           label: 'DOWNLOADING',
           data: this.reorganizarDataViajes['DOWNLOADING'],
-          backgroundColor: 'rgb(255,33,6)',
-          borderColor: 'rgb(255,33,6)',
+          backgroundColor: 'rgb(0,53,148)',
+          borderColor: 'rgb(0,53,148)',
           fill: false,
           order: 2
         }
@@ -581,8 +595,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
           type: 'line',
           label: 'SAILING_IN_BALLAST',
           data: this.reorganizarDataViajes['SAILING_IN_BALLAST'],
-          backgroundColor: 'rgb(33,205,6)',
-          borderColor: 'rgb(33,205,6)',
+          backgroundColor: 'rgb(140,180,190)',
+          borderColor: 'rgb(140,180,190)',
           fill: false,
           order: 3
 
