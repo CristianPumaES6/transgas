@@ -69,6 +69,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
   // Usuario seleccionado.
   public selectUser: User = new User();
 
+  // Si esta activado nos muestra con la formula de dailuconsumption.
   public isDailyFormule: boolean = false;
 
 
@@ -407,11 +408,6 @@ export class ConsumptionAnalysisComponent implements OnInit {
         legend: {
           // La leyenda es el texto que esta arriva del cuadro.
           display: true,
-          onClick: (event, legendItem) => {
-            debugger
-            console.log('onClick:' + legendItem.text);
-            return true
-          },
           labels: {
             fontColor: 'rgb(255,255,255)', // Color de la leyenda.
             fontStyle: 'normal', // Tipo de texto de la leyenda.
@@ -571,7 +567,10 @@ export class ConsumptionAnalysisComponent implements OnInit {
         };
         */
 
-        let totalIFO = this.formuleService.CalculateIfoTotal(iGetReportVoyagePortDaily);
+        // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
+        let totalIFO = this.isDailyFormule?
+                                    this.formuleService.CalculateDailyIfoTotal(iGetReportVoyagePortDaily):
+                                  this.formuleService.CalculateIfoTotal(iGetReportVoyagePortDaily);
         if (totalIFO > this.configLineaConsumption.lineaMax) {
           this.configLineaConsumption.lineaMax = totalIFO;
         };

@@ -40,4 +40,18 @@ export class FormuleService {
       return total;
     }
   
+    // Calcula la velocidad Distancia / time
+    public CalculateDailyIfoTotal(getReportVoyagePortDaily: GetReportVoyagePortDaily): number {
+      // Total
+      let total: number = 0;
+
+      // SUMAMOS TODOS LOS EQUIPOS
+      total =  getReportVoyagePortDaily.mplaIfo + getReportVoyagePortDaily.boilerIfo +  getReportVoyagePortDaily.otherIfo + getReportVoyagePortDaily.auxIfo;
+      
+      // Calculamos el dayli consumtion si no hay tiempo el valor por defecto es 0
+      let dailyConsumtion =getReportVoyagePortDaily.steamingTime ? (total * 24)/getReportVoyagePortDaily.steamingTime : 0;
+      // RETornamos el total.
+      return dailyConsumtion;
+    }
+  
 }
