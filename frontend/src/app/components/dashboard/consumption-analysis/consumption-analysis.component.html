@@ -99,6 +99,12 @@
           </div>
         </div>
       </form>
+
+      <mat-slide-toggle [color]="primary" [(ngModel)]="isDailyFormule">
+
+        {{"APPLY_DAILY_FORMULA" | translateMessage:translateCategory}}
+
+      </mat-slide-toggle>
     </div>
   </div>
 
@@ -106,10 +112,10 @@
 
   <div class="d-flex p-1">
     <div class="col-8 bd-highlight p-1">
-      <div class="card" style="height: 400px;">
-        <div style="width: 100%; height: 100%;">
-          <canvas id="myChart"></canvas>
-        </div>
+      <div class="card card-body p-2 background-content-linea" id="picture1">
+
+        <canvas id="myChart"></canvas>
+
       </div>
     </div>
 
@@ -128,10 +134,11 @@
               <table class="table table-hover table-dark">
                 <thead>
                   <tr>
-                   <th scope="col"  class="pt-2">{{ selectSummaryBy | translateMessage:translateCategory}}</th>
+                    <th scope="col" class="pt-2">{{ selectSummaryBy | translateMessage:translateCategory}}</th>
                     <!-- Mostramos recorremos las actividades que se mostraran -->
-                    <ng-template ngFor let-iDataConsumptionChartPoint [ngForOf]="dataConsumptionChartPoint" let-i="index">
-                      <th scope="col"  class="pt-2">
+                    <ng-template ngFor let-iDataConsumptionChartPoint [ngForOf]="dataConsumptionChartPoint"
+                      let-i="index">
+                      <th scope="col" class="pt-2">
                         {{iDataConsumptionChartPoint.label | translateMessage:translateCategory}}
                       </th>
                     </ng-template>
@@ -144,7 +151,8 @@
                       <td>{{ilistTableSpeedByVoyage.title}}</td>
 
                       <!-- Recorremos la velocidad -->
-                      <ng-template ngFor let-iDataConsumptionChartPoint [ngForOf]="dataConsumptionChartPoint" let-i="index">
+                      <ng-template ngFor let-iDataConsumptionChartPoint [ngForOf]="dataConsumptionChartPoint"
+                        let-i="index">
                         <td scope="col">
                           {{ilistTableSpeedByVoyage.activities[iDataConsumptionChartPoint.label]}}
                         </td>

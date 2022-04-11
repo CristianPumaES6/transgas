@@ -69,6 +69,10 @@ export class ConsumptionAnalysisComponent implements OnInit {
   // Usuario seleccionado.
   public selectUser: User = new User();
 
+  public isDailyFormule: boolean = false;
+
+
+
   // DATA consultas server.
   // Todos los usuarios obtenidos por el getUsers.
   public getUsers: User[] = [];
@@ -336,6 +340,18 @@ export class ConsumptionAnalysisComponent implements OnInit {
         datasets: []
       },
       options: {
+        title: {
+          display: true,
+          text: this.languageService.GetMessage(this.translateCategory,
+            this.isDailyFormule ?
+              (this.selectUser.isConsumptionLSFO ? 'TITLE_DAILY_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_DAILY_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_DAILY_COMSUMPTION_VLSFO' : 'TITLE_DAILY_COMSUMPTION_LSFO') :
+              (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO')
+
+          ),
+          fontColor: 'rgb(255,255,255)',
+          fontStyle: 'bold', // Tipo de texto de la leyenda.
+          padding: 1
+        },
         // Lineas los pongo por el public creo que es maxio y minimo corrigan.
         lines: [],
         onHover: (event, chartElement) => {
@@ -392,12 +408,15 @@ export class ConsumptionAnalysisComponent implements OnInit {
           // La leyenda es el texto que esta arriva del cuadro.
           display: true,
           onClick: (event, legendItem) => {
+            debugger
             console.log('onClick:' + legendItem.text);
             return true
           },
           labels: {
             fontColor: 'rgb(255,255,255)', // Color de la leyenda.
-            fontStyle: 'bold', // Tipo de texto de la leyenda.
+            fontStyle: 'normal', // Tipo de texto de la leyenda.
+            boxWidth: 7,
+            fontSize: 10,
           }
         },
         // Habilitamos la opcion para que sea responsive
@@ -567,11 +586,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['LOADING'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'LOADING',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'LOADING'),
           data: this.reorganizarDataViajes['LOADING'],
-          backgroundColor: 'rgb(255,181,0)',
-          borderColor: 'rgb(255,181,0)',
+          backgroundColor: '#b57c00',
+          borderColor: '#b57c00',
           fill: false
         }
       )
@@ -579,11 +598,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['DOWNLOADING'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'DOWNLOADING',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'DOWNLOADING'),
           data: this.reorganizarDataViajes['DOWNLOADING'],
-          backgroundColor: 'rgb(0,53,148)',
-          borderColor: 'rgb(0,53,148)',
+          backgroundColor: '#d09306',
+          borderColor: '#d09306',
           fill: false,
           order: 2
         }
@@ -592,11 +611,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['SAILING_IN_BALLAST'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'SAILING_IN_BALLAST',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'SAILING_IN_BALLAST'),
           data: this.reorganizarDataViajes['SAILING_IN_BALLAST'],
-          backgroundColor: 'rgb(140,180,190)',
-          borderColor: 'rgb(140,180,190)',
+          backgroundColor: '#ecab0f',
+          borderColor: '#ecab0f',
           fill: false,
           order: 3
 
@@ -605,11 +624,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['SAILING_WITH_LADEN'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'SAILING_WITH_LADEN',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'SAILING_WITH_LADEN'),
           data: this.reorganizarDataViajes['SAILING_WITH_LADEN'],
-          backgroundColor: 'rgb(44,44,6)',
-          borderColor: 'rgb(44,44,6)',
+          backgroundColor: 'rgb(255,192,5)',
+          borderColor: 'rgb(255,192,5)',
           fill: false,
           order: 4
         });
@@ -617,8 +636,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'ECONOMICAL_NAVIGATION',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'ECONOMICAL_NAVIGATION'),
           data: this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'],
           backgroundColor: 'rgb(22,205,6)',
           borderColor: 'rgb(22,205,6)',
@@ -629,11 +648,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['ANCHORED'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'ANCHORED',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'ANCHORED'),
           data: this.reorganizarDataViajes['ANCHORED'],
-          backgroundColor: 'rgb(255,22,6)',
-          borderColor: 'rgb(255,22,6)',
+          backgroundColor: '#f7d547',
+          borderColor: '#f7d547',
           fill: false,
           order: 6
         });
@@ -641,11 +660,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['MANEUVER'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'MANEUVER',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'MANEUVER'),
           data: this.reorganizarDataViajes['MANEUVER'],
-          backgroundColor: 'rgb(255,66,6)',
-          borderColor: 'rgb(255,66,6)',
+          backgroundColor: '#ffff72',
+          borderColor: '#ffff72',
           fill: false,
           order: 7
         }
@@ -654,11 +673,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
     if (this.reorganizarDataViajes['OTHER_ACT'].length > 0) {
       this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'OTHER_ACT',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'OTHER_ACT'),
           data: this.reorganizarDataViajes['OTHER_ACT'],
-          backgroundColor: 'rgb(66,205,6)',
-          borderColor: 'rgb(66,205,6)',
+          backgroundColor: '#fffff1',
+          borderColor: '#fffff1',
           fill: false,
           order: 8
         }
@@ -679,6 +698,13 @@ export class ConsumptionAnalysisComponent implements OnInit {
     // Actualizamos la dataSPEED
     // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
     this.configLineaConsumption.data.datasets = this.dataConsumptionChartPoint;
+
+    // UPDATE title
+    this.configLineaConsumption.options.title.text = this.languageService.GetMessage(this.translateCategory,
+      this.isDailyFormule ?
+        (this.selectUser.isConsumptionLSFO ? 'TITLE_DAILY_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_DAILY_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_DAILY_COMSUMPTION_VLSFO' : 'TITLE_DAILY_COMSUMPTION_LSFO') :
+        (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO')
+    )
 
     // Vaciamos la configuracion de las lines SPEED
     // La linea es el campo que agregamos en el plugin.
@@ -833,7 +859,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
   }
 
   // Obtenemos el consumo total por actividades
-  private GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<GetReportVoyagePortDaily[]> {   
+  private GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<GetReportVoyagePortDaily[]> {
 
     // Invocamos la consulta para obtener el consumo total por actividad.
     return this._dailyReportService.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary).pipe(map(
