@@ -32,7 +32,7 @@ import { LanguageService } from '../../services/language.service';
 import { LoadingService } from '../../services/loading.service';
 
 // Servicio para exportar la estructura de excel.
-import { ExcelService } from '../../services/excel.service';
+import { ExcelService } from '../../services/excel/excel.service';
 
 
 // Assets
