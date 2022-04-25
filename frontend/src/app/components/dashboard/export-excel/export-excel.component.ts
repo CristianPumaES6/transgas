@@ -37,11 +37,9 @@ export class ExportExcelComponent implements OnInit {
     return Promise.resolve(true)
       .then(
         result => {
-
+          // Loading service
           this.loadingService.Open();
 
-
-      
           return this.excelService.ExportReporteEntryForUser(this.selectUser);
         }
       ).then(
