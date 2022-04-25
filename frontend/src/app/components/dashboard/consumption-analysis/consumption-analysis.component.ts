@@ -16,7 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DailyReport, Speed } from 'src/app/models/daily-report';
 import { Voyage } from 'src/app/models/voyage';
 import { Port } from 'src/app/models/port';
-import { ActivityPerformed } from 'src/app/models/dashboard';
+import { ActivityPerformed, InfoReport_IFO_AND_MGO } from 'src/app/models/dashboard';
 import { FormuleService } from 'src/app/services/formule.service';
 
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -48,7 +48,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
   public dataConsumptionChartPoint: any[] = []; // Data
   public configLineaConsumption: ChartConfiguration; // configuracion del elemento
   public chartLineConsumption: Chart; // LINEA
-  
+
   public xLabelReportMGO: any[] = [];
   // Configuracion del SPEED
   public dataConsumptionChartPointMGO: any[] = []; // Data
@@ -227,13 +227,19 @@ export class ConsumptionAnalysisComponent implements OnInit {
       ).then(
         result => {
           if (!result) throw 'ERROR GER REPORT';
-          this.listGetReportVoyagePortDaily = result;
+          this.listGetReportVoyagePortDaily = result.ifo;
+          this.listGetReportVoyagePortDailyMGO = result.mgo;
 
           return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
         }
       ).then(
         result => {
           this.UpdateLineSPEED()
+          return true;
+        }
+      ).then(
+        result => {
+          this.UpdateLineSPEED_MGO()
           return true;
         }
       ).then(
@@ -285,7 +291,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
       ).then(
         result => {
           if (!result) throw 'ERROR GER REPORT';
-          this.listGetReportVoyagePortDaily = result;
+          this.listGetReportVoyagePortDaily = result.ifo;
+          this.listGetReportVoyagePortDailyMGO = result.mgo;
 
           return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
         }
@@ -483,8 +490,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
           display: true,
           text: this.languageService.GetMessage(this.translateCategory,
             this.isDailyFormule ?
-            'TITLE_DAILY_COMSUMPTION_MGO':
-            'TITLE_COMSUMPTION_MGO'
+              'TITLE_DAILY_COMSUMPTION_MGO' :
+              'TITLE_COMSUMPTION_MGO'
           ),
           fontColor: 'rgb(255,255,255)',
           fontStyle: 'bold', // Tipo de texto de la leyenda.
@@ -675,37 +682,12 @@ export class ConsumptionAnalysisComponent implements OnInit {
           this.xLabelReport.push(txtLabelChart);
         }
 
-        /*REVISAR ESTO DEBIDO A QUE NO SE ESTA VIENDO ANALISIS DE SPEED SI NO DE CONSUMO 
-        
-        // Obtenemos la velocidad IFO
-        let dataSpeed = new Speed();
-        dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
-       
-        // El total de velocidad debe de ser mayor para poder pintarlo.
-        speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
-        // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
-        
-
-        if (speed > 0) {
-          // Agrega o actualiza la lista de la tabla.
-          this.AddOrUpdateDataTableList(iGetReportVoyagePortDaily, indexReport);
-
-          this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
-            { x: txtLabelChart, y: speed, ubication: indexReport }
-          );
-        };
-
-
-        // La linea maxima
-        if (speed > this.configLineaConsumption.lineaMax) {
-          this.configLineaConsumption.lineaMax = speed;
-        };
-        */
-
         // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
-        let totalIFO = this.isDailyFormule?
-                                    this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'IFO'):
-                                  this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'IFO');
+        let totalIFO = this.isDailyFormule ?
+          this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'IFO') :
+          this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'IFO');
+
+
         if (totalIFO > this.configLineaConsumption.lineaMax) {
           this.configLineaConsumption.lineaMax = totalIFO;
         };
@@ -840,7 +822,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
       MANEUVER: [],
       OTHER_ACT: []
     };
- 
+
 
     // Configuracion de la linea maxima.
     this.configLineaConsumptionMGO.lineaMax = 0;
@@ -884,10 +866,12 @@ export class ConsumptionAnalysisComponent implements OnInit {
           // Armamos el texto de label para dias.
           txtLabelChart = String(iGetReportVoyagePortDaily.date);
         }
+
         // Posiciondel elemento
         let posicionDelLabelSiExiste = 0;
+
         // Buscamos si el label ya se registro.
-        let existeElLabel = this.xLabelReport.find(
+        let existeElLabel = this.xLabelReportMGO.find(
           (label, index) => {
             if (label == txtLabelChart) {
               posicionDelLabelSiExiste = index;
@@ -900,7 +884,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
         // Si no existe el label lo agregamos.
         if (!existeElLabel) {
           // Agregamos el texto al arreglo del chart.
-          this.xLabelReport.push(txtLabelChart);
+          this.xLabelReportMGO.push(txtLabelChart);
         }
 
         // Si no existe el label lo agregamos.
@@ -909,37 +893,10 @@ export class ConsumptionAnalysisComponent implements OnInit {
           this.xLabelReportMGO.push(txtLabelChart);
         }
 
-        /*REVISAR ESTO DEBIDO A QUE NO SE ESTA VIENDO ANALISIS DE SPEED SI NO DE CONSUMO 
-        
-        // Obtenemos la velocidad IFO
-        let dataSpeed = new Speed();
-        dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
-       
-        // El total de velocidad debe de ser mayor para poder pintarlo.
-        speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
-        // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
-        
-
-        if (speed > 0) {
-          // Agrega o actualiza la lista de la tabla.
-          this.AddOrUpdateDataTableList(iGetReportVoyagePortDaily, indexReport);
-
-          this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
-            { x: txtLabelChart, y: speed, ubication: indexReport }
-          );
-        };
-
-
-        // La linea maxima
-        if (speed > this.configLineaConsumptionMGO.lineaMax) {
-          this.configLineaConsumptionMGO.lineaMax = speed;
-        };
-        */
-
         // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
-        let totalMGO = this.isDailyFormule?
-                                    this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'MGO'):
-                                  this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'MGO');
+        let totalMGO = this.isDailyFormule ?
+          this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'MGO') :
+          this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'MGO');
         if (totalMGO > this.configLineaConsumptionMGO.lineaMax) {
           this.configLineaConsumptionMGO.lineaMax = totalMGO;
         };
@@ -1096,6 +1053,46 @@ export class ConsumptionAnalysisComponent implements OnInit {
     return false;
   }
 
+
+  private UpdateLineSPEED_MGO(): boolean {
+    console.log('UpdateLineSPEED_MGO()');
+
+
+    // Los label lo pongo vacio por es multi line
+    this.configLineaConsumptionMGO.data.labels = this.xLabelReportMGO;
+
+    // Actualizamos la dataSPEED
+    // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
+    this.configLineaConsumptionMGO.data.datasets = this.dataConsumptionChartPointMGO;
+
+    // UPDATE title
+    this.configLineaConsumptionMGO.options.title.text = this.languageService.GetMessage(this.translateCategory,
+      this.isDailyFormule ? 'TITLE_DAILY_COMSUMPTION_MGO' : 'TITLE_COMSUMPTION_MGO'
+    )
+
+    // Vaciamos la configuracion de las lines SPEED
+    // La linea es el campo que agregamos en el plugin.
+    this.configLineaConsumptionMGO.options.lines = [];
+
+    this.configLineaConsumptionMGO.options.lines.push({
+      type: 'horizontal',
+      y: 12,// this.selectUser.maxSpeed,
+      color: 'red',
+      label: ''
+    });
+    // Configuracion Tooltips
+    this.configLineaConsumptionMGO.options.tooltips = this.GetToolTipConfig('MGO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
+
+    // Agregamos la configuracion de las escalas.
+    this.configLineaConsumptionMGO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaConsumption.lineaMax, 0) + 2);
+    //
+
+    this.chartLineConsumptionMGO.update();
+
+    return false;
+  }
+
+
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
     // resultado de tooltip
     let tooltips: Chart.ChartTooltipOptions;
@@ -1211,29 +1208,14 @@ export class ConsumptionAnalysisComponent implements OnInit {
     return config;
   }
 
-  // Obtenemos la info de todos los viajes agregado.
-  private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
-    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
-    // Obtenemos todos los usuarios
-    return this._dailyReportService.GetReportVoyagePortDailyByUserIdAndDate(userId, startDate, endDate).pipe(map(
-      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
-
-        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
-
-
-        return resultGetROBByUser;
-      }
-    ));
-  }
-
   // Obtenemos el consumo total por actividades
-  private GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<GetReportVoyagePortDaily[]> {
+  private GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<InfoReport_IFO_AND_MGO> {
 
     // Invocamos la consulta para obtener el consumo total por actividad.
     return this._dailyReportService.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary).pipe(map(
-      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
+      (resultGetROBByUser: InfoReport_IFO_AND_MGO) => {
 
-        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
+        if (!resultGetROBByUser) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
 
 
         return resultGetROBByUser;
