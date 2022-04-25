@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
 import { User } from 'src/app/models/user';
-import { ExcelService } from 'src/app/services/excel.service';
+import { ExcelService } from 'src/app/services/excel/excel.service';
+import { ExcelFormatDNVService } from 'src/app/services/excel/excel-format-dnv.service';
 import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
@@ -20,12 +21,13 @@ export class ExportExcelComponent implements OnInit {
     // Loading service.
     private loadingService: LoadingService,
     private excelService: ExcelService,
+    private excelFormatDNVService: ExcelFormatDNVService,
     ) { }
 
   ngOnInit(): void {
   }
 
-  public ClickExportExcel(){
+  public ClickExportExcel() {
     // alert('SE EXPORTO.')
     this.ClickDownloading();
   }
@@ -46,9 +48,23 @@ export class ExportExcelComponent implements OnInit {
         result => {
           this.loadingService.Close();
         }
-      )
+      );
 
+  }
+
+  // Descarga el formato DNV
+  public DownloadingFormatDNV() {
     
+    return Promise.resolve(true).then(
+      result => {
+        this.loadingService.Open();
+        return this.excelService.ExportReporteEntryForUser(this.selectUser);
+      }
+    ).then(
+      result => {
+        this.loadingService.Close();
+      }
+    );
   }
 
 }
