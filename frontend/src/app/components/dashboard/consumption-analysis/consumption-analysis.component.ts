@@ -235,7 +235,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
       ).then(
         result => {
           this.UpdateLineSPEED()
-         
+
           return this.GenerateDataForChartMGO(false, this.listGetReportVoyagePortDailyMGO);
         }
       ).then(
@@ -644,6 +644,12 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
     let speed = 0;
 
+    // Esto se esta poniendo para darle un espacio a la izquierda. por que hay barras que estan despues del borde.
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
+      this.xLabelReport.push("")
+    } else {
+      //Resument por mes o dia no le inserto ese valor vacio.
+    }
 
     // recorremos todo el arreglo
     listGetReportVoyagePortDaily.forEach(
@@ -848,6 +854,12 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
     let speed = 0;
 
+    // Esto se esta poniendo para darle un espacio a la izquierda. por que hay barras que estan despues del borde.
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
+      this.xLabelReportMGO.push("")
+    } else {
+      //Resument por mes o dia no le inserto ese valor vacio.
+    }
 
     // recorremos todo el arreglo
     listGetReportVoyagePortDaily.forEach(
@@ -894,16 +906,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
           this.xLabelReportMGO.push(txtLabelChart);
         }
 
-        // Si no existe el label lo agregamos.
-        if (!existeElLabel) {
-          // Agregamos el texto al arreglo del chart.
-          this.xLabelReportMGO.push(txtLabelChart);
-        }
-
         // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
         let totalMGO = this.isDailyFormule ?
           this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'MGO') :
           this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'MGO');
+
         if (totalMGO > this.configLineaConsumptionMGO.lineaMax) {
           this.configLineaConsumptionMGO.lineaMax = totalMGO;
         };
