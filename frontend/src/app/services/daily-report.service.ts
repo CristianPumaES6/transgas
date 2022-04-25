@@ -12,6 +12,7 @@ import { AuthGuardService } from './auth-guard.service';
 // Modelos
 import { DailyReport, GetInfoVoyageROBBunkering, GetROBByUser } from '../models/daily-report';
 import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
+import { InfoReport_IFO_AND_MGO } from '../models/dashboard';
 
 @Injectable({ providedIn: 'root' })
 export class DailyReportService {
@@ -357,7 +358,7 @@ export class DailyReportService {
 
     
     // Retorna el totar por actividad
-    GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<GetReportVoyagePortDaily[]> {
+    GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<InfoReport_IFO_AND_MGO> {
         // Armo el request
         let url: string = this.url + '/daily-reports/get-total-consumption-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' +typeSummary;
         let headers: HttpHeaders = new HttpHeaders(
