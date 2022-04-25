@@ -235,7 +235,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
       ).then(
         result => {
           this.UpdateLineSPEED()
-          return true;
+         
+          return this.GenerateDataForChartMGO(false, this.listGetReportVoyagePortDailyMGO);
         }
       ).then(
         result => {
@@ -299,6 +300,11 @@ export class ConsumptionAnalysisComponent implements OnInit {
       ).then(
         result => {
           this.UpdateLineSPEED()
+          return this.GenerateDataForChartMGO(false, this.listGetReportVoyagePortDailyMGO);
+        }
+      ).then(
+        result => {
+          this.UpdateLineSPEED_MGO();
           return true;
         }
       ).then(
@@ -663,6 +669,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
           // Armamos el texto de label para dias.
           txtLabelChart = String(iGetReportVoyagePortDaily.date);
         }
+
         // Posiciondel elemento
         let posicionDelLabelSiExiste = 0;
         // Buscamos si el label ya se registro.
