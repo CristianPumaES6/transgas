@@ -34,17 +34,7 @@ export class FormuleService {
     // Total
     let total: number = 0;
 
-    if (typeIfoOrMGO == 'IFO ') {
-
-      // SUMAMOS TODOS LOS EQUIPOS
-      total = getReportVoyagePortDaily.mplaIfo + getReportVoyagePortDaily.auxIfo + getReportVoyagePortDaily.boilerIfo + getReportVoyagePortDaily.otherIfo;
-
-    } else if (typeIfoOrMGO == 'MGO') {
-
-      // SUMAMOS TODOS LOS EQUIPOS
-      total = getReportVoyagePortDaily.mplaMgo + getReportVoyagePortDaily.boilerMgo + getReportVoyagePortDaily.giMgo + getReportVoyagePortDaily.ppMgo + getReportVoyagePortDaily.auxMgo + getReportVoyagePortDaily.otherMgo;
-
-    }
+    total = this.CalculateTotal_IFO_Or_MGO(getReportVoyagePortDaily,typeIfoOrMGO);
 
     // Calculamos el dayli consumtion si no hay tiempo el valor por defecto es 0
     let dailyConsumtion = getReportVoyagePortDaily.steamingTime ? (total * 24) / getReportVoyagePortDaily.steamingTime : 0;
@@ -59,16 +49,12 @@ export class FormuleService {
     // Total
     let total: number = 0;
 
-    if (typeIfoOrMGO == 'IFO ') {
-
+    if (typeIfoOrMGO == 'IFO') {
       // SUMAMOS TODOS LOS EQUIPOS
       total = getReportVoyagePortDaily.mplaIfo + getReportVoyagePortDaily.auxIfo + getReportVoyagePortDaily.boilerIfo + getReportVoyagePortDaily.otherIfo;
-
     } else if (typeIfoOrMGO == 'MGO') {
-
       // SUMAMOS TODOS LOS EQUIPOS
       total = getReportVoyagePortDaily.mplaMgo + getReportVoyagePortDaily.boilerMgo + getReportVoyagePortDaily.giMgo + getReportVoyagePortDaily.ppMgo + getReportVoyagePortDaily.auxMgo + getReportVoyagePortDaily.otherMgo;
-
     }
     // RETornamos el total.
     return total;
