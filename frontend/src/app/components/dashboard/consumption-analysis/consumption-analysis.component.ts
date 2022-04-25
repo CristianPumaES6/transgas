@@ -704,8 +704,8 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
         // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
         let totalIFO = this.isDailyFormule?
-                                    this.formuleService.CalculateDailyIfoTotal(iGetReportVoyagePortDaily):
-                                  this.formuleService.CalculateIfoTotal(iGetReportVoyagePortDaily);
+                                    this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'IFO'):
+                                  this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'IFO');
         if (totalIFO > this.configLineaConsumption.lineaMax) {
           this.configLineaConsumption.lineaMax = totalIFO;
         };
@@ -938,7 +938,7 @@ export class ConsumptionAnalysisComponent implements OnInit {
 
         // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
         let totalMGO = this.isDailyFormule?
-                                    this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'MGO'):
+                                    this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'MGO'):
                                   this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily,'MGO');
         if (totalMGO > this.configLineaConsumptionMGO.lineaMax) {
           this.configLineaConsumptionMGO.lineaMax = totalMGO;
