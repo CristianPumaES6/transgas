@@ -293,3 +293,15 @@ export class GetReportVoyagePortDaily {
     }
 
 }
+
+
+export class InfoReport_IFO_AND_MGO{
+    constructor(
+        public ifo?: GetReportVoyagePortDaily[],
+        public mgo?: GetReportVoyagePortDaily[]
+
+    ) {
+        this.ifo = [];
+        this.mgo = [];
+    }
+}

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Para
 import { JwtDecode } from '../../../assets/jwtDecode.assets';
 import { FormatDateUTCToDateHour, GetDate } from '../../../assets/moment.assets';
 import { DummyPromise } from '../../../assets/promises.assets';
-import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
+import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
 import { UserEntity } from '../../../models/user.entity';
 import { DailyReportsService } from './daily-reports.service';
 
@@ -816,7 +816,7 @@ export class DailyReportsController {
                 return this._dailyReportsService.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary);
             }
         ).then(
-            (results: GetReportVoyagePortDaily[]) => {
+            (results: InfoReport_IFO_AND_MGO) => {
 
                 // Retornamos una Respuesta exitosa.
                 return {

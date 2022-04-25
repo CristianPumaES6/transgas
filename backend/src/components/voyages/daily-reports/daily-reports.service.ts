@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
+import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
 import { URL_Server } from 'src/config/server.config';
 import { DummyPromise } from 'src/assets/promises.assets';
@@ -786,13 +786,16 @@ export class DailyReportsService {
 
 
 
-    async GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Promise<GetReportVoyagePortDaily[]> {
+    async GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Promise<InfoReport_IFO_AND_MGO> {
 
         // Si la fecha es null en automatico enviara los ultimos 40 registros.
         let startDateRegister = startDate == 'null' ? null : startDate;
         let endDateRegister = endDate == 'null' ? null : endDate;
         let cantUltimosDias = 40;
 
+
+        let result_IFO_AND_MGO:InfoReport_IFO_AND_MGO=new InfoReport_IFO_AND_MGO();
+     
         // Inicio de la promesa.
         return await DummyPromise()
             .then(
@@ -826,7 +829,7 @@ export class DailyReportsService {
 
                     // Si recibimos una fecha, hacemos la jugada para obtener los ultimos 40 dias
                     if (resultFind) {
-                        // Embase al la ultima fecha mostramos los ultimos 40 dias.
+                        // Embase al la ultima fecha mostramos solo los ultimos 40 dias.
                         endDateRegister = resultFind[0].date;
                         startDateRegister = FormatDateSumDays(endDateRegister, cantUltimosDias);
                     }
@@ -837,23 +840,24 @@ export class DailyReportsService {
                 result => {
 
                     let addSelectDinamic =
-                        typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
-                            typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
-                                'daily_report.date';
+                    typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                        typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                            'daily_report.date';
 
-                    let groupByDinamic =
-                        typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
-                            typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
-                                typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
-                                    typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
-                                        'activityPerformed, voyage.year, voyage.id';
+                let groupByDinamic =
+                    typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                        typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                            typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                                typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                    'activityPerformed, voyage.year, voyage.id';
 
-                    let orderBy =
-                        typeSummary === 'VOYAGES' ? 'voyage.id' :
-                            typeSummary === 'PORTS' ? 'voyage.id, port.id' :
-                                typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
-                                    typeSummary === 'DAYS' ? "'daily_report'.'date'" :
-                                        'voyage.id';
+                let orderBy =
+                    typeSummary === 'VOYAGES' ? 'voyage.id' :
+                        typeSummary === 'PORTS' ? 'voyage.id, port.id' :
+                            typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                                typeSummary === 'DAYS' ? "'daily_report'.'date'" :
+                                    'voyage.id';
+                
 
 
                     return this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -915,6 +919,7 @@ export class DailyReportsService {
                         .andWhere('port.userId = :userId', { userId: userId })
                         .andWhere('voyage.userId = :userId', { userId: userId })
 
+                        // Comprobamos que halla algun consumo del tipo de combustible. 
                         .andWhere('(daily_report.mplaIfo > :mplaIfo OR daily_report.auxIfo > :auxIfo OR daily_report.boilerIfo > :boilerIfo OR daily_report.otherIfo > :otherIfo OR daily_report.bunkeringIfo > :bunkeringIfo )', { mplaIfo: 0, auxIfo: 0, boilerIfo: 0, otherIfo: 0, bunkeringIfo: 0 })
 
                         .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDateRegister })
@@ -929,9 +934,115 @@ export class DailyReportsService {
                     console.log(result)
                     // Verificamos que el resultado no este vacio.
                     if (!result) throw 'ERROR GetReportVoyagePortDaily';
+ 
+                    // LA info del ifo lo guardamos en la primera posicion.
+                    result_IFO_AND_MGO.ifo = result;
 
-                    return result;
+ 
+                    let addSelectDinamic =
+                    typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                        typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                            'daily_report.date';
+
+                let groupByDinamic =
+                    typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                        typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                            typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                                typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                    'activityPerformed, voyage.year, voyage.id';
+
+                let orderBy =
+                    typeSummary === 'VOYAGES' ? 'voyage.id' :
+                        typeSummary === 'PORTS' ? 'voyage.id, port.id' :
+                            typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                                typeSummary === 'DAYS' ? "'daily_report'.'date'" :
+                                    'voyage.id';
+
+                    return this._dailyReportRepository.createQueryBuilder('daily_report')
+                        .select('voyage.userId', 'userId')
+
+                        // -- Datos del viaje
+                        .addSelect('voyage.year', 'year')
+                        .addSelect('voyage.id', 'voyageId')
+                        .addSelect('voyage.voyageNumber', 'voyageNumber')
+
+                        //-- Informacion del puerto
+                        .addSelect('port.id', 'portId')
+                        .addSelect('port.portNumber', 'portNumber')
+                        //.addSelect('port.departurePort', 'departurePort')
+                        //.addSelect('port.arrivalPort', 'arrivalPort')
+                        .addSelect('min(port.departurePort)', 'departurePort')
+                        .addSelect('max(port.arrivalPort)', 'arrivalPort')
+
+
+                        // -- Informacion del reporte.
+                        .addSelect('daily_report.id', 'dailyReportId')
+                        .addSelect(addSelectDinamic, 'date')
+                        .addSelect('min(daily_report.date)', 'dayStart')
+                        .addSelect('max(daily_report.date)', 'dayEnd')
+                        .addSelect('daily_report.hour', 'hour')
+                        .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                        .addSelect('daily_report.speedStraction', 'speedStraction')
+                        .addSelect('daily_report.observation', 'observation')
+
+                        // -- Cantidad de reportes
+                        .addSelect('COUNT(*)', 'countReports')
+                        .addSelect('COUNT(DISTINCT "port"."id")', 'countPorts')
+                        // -- Suma total de tiempo
+                        .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+                        // -- Suma total de distancia
+                        .addSelect('SUM(daily_report.distance)', 'distance')
+                        // Beaufour
+                        .addSelect('daily_report.beaufour', 'beaufour')
+
+
+ 
+                        
+                        // Suma total de consumo por maquina
+                        .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+                        .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+                        .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+                        .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+                        .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+                        .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+
+
+                        // Suma total de bunkering
+                        .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+
+                        // UNION DE TABLAS
+                        .innerJoin('daily_report.port', 'port')
+                        .innerJoin('port.voyage', 'voyage')
+
+                        .where('daily_report.status = :status', { status: 1 })
+                        .andWhere('voyage.status = :status', { status: 1 })
+                        .andWhere('port.status = :status', { status: 1 })
+
+                        .andWhere('daily_report.userId = :userId', { userId: userId })
+                        .andWhere('port.userId = :userId', { userId: userId })
+                        .andWhere('voyage.userId = :userId', { userId: userId })
+                        
+                        // Comprobamos que halla algun consumo del tipo de combustible.         
+                        .andWhere('(daily_report.mplaMgo > :mplaMgo OR daily_report.auxMgo > :auxMgo OR daily_report.boilerMgo > :boilerMgo OR daily_report.giMgo > :giMgo OR daily_report.ppMgo > :ppMgo OR daily_report.otherMgo > :otherMgo OR daily_report.bunkeringMgo > :bunkeringMgo )', 
+                        { mplaMgo: 0, auxMgo: 0, boilerMgo: 0, giMgo: 0, ppMgo: 0, otherMgo: 0,bunkeringMgo:0 })
+
+                        .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDateRegister })
+                        .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDateRegister })
+
+                        .groupBy(groupByDinamic)
+                        .orderBy(orderBy)
+                        .getRawMany();
                 }
-            );
+            ).then(
+                (result: any) => {
+                    console.log(result)
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetReportVoyagePortDaily';
+ 
+                    // LA info del ifo lo guardamos en la primera posicion.
+                    result_IFO_AND_MGO.mgo = result;
+
+                    return result_IFO_AND_MGO;
+                });
     }
 }
