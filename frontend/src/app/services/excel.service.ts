@@ -370,7 +370,7 @@ export class ExcelService {
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
     // Creamos la hoja de trabajo.
-    let worksheet = workbook.addWorksheet('Voyage ' + 2);
+    let worksheet = workbook.addWorksheet('General Overview');
     //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
 
 
