@@ -324,44 +324,40 @@ export class ExcelFormatDNVService {
     let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
     let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
-    return await Promise.resolve(true)
-      .then(
-        result => {
-          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-          return this.GetReportVoyagePortDaily(selectUserId, startDate, endDate).pipe().toPromise();
-        }).then(
-          result => {
-            if (!result) throw 'ERROR GER REPORT';
-            listGetReportVoyagePortDaily = result;
+    return await Promise.resolve(true
+    ).then(
+      result => {
+        // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+        return this.GetReportVoyagePortDaily(selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        if (!result) throw 'ERROR GER REPORT';
+        listGetReportVoyagePortDaily = result;
 
 
-            // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-            return this.GetInfoFuelStartEndByFilterDate(selectUserId, startDate, endDate).pipe().toPromise();
+        // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+        return this.GetInfoFuelStartEndByFilterDate(selectUserId, startDate, endDate).pipe().toPromise();
 
-          }).then(
-            result => {
+      }
+    ).then(
+      result => {
 
-              if (!result) throw 'ERROR GER REPORT';
-              getInfoFuelStartEndByFilterDate = result;
+        if (!result) throw 'ERROR GER REPORT';
+        getInfoFuelStartEndByFilterDate = result;
 
-              // Armamos el reporte.
-              this.ReportVoyage(workbook, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser)
+        // Armamos el reporte.
+        this.ReportVoyage(workbook, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser)
 
+        // Escribimos el excel
+        workbook.xlsx.writeBuffer().then((data) => {
+          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          fs.saveAs(blob, 'Report.xlsx');
+        });
 
-              // Aqui seria por por viaje y pagina, cada viaje una nueva hoja.
-              for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
-
-              }
-
-              // Escribimos el excel
-              workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                fs.saveAs(blob, 'Report.xlsx');
-              });
-
-              return true;
-            }
-          );
+        return true;
+      }
+    );
   }
 
 
@@ -378,100 +374,7 @@ export class ExcelFormatDNVService {
     let totalBunkeringIfo = 0;
     // Hasta la E las columnas son invisibles para guardar algo.
     // apartir de la F todas las columnas tienen el mismo tamanio
-    worksheet.columns = [
-      { width: 0 },
-      { width: 0 },
-      { width: 0 },
-      { width: 0 },
-      { width: 0 },
-      // D
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-    ];
+
 
     // la posicion inicioa en la fila 3
     let position = 3;
@@ -3919,122 +3822,59 @@ export class ExcelFormatDNVService {
     return await Promise.resolve(true)
       .then(
         result => {
-          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-          return this.GetReporteEntryForUser(selectUser.id).pipe().toPromise();
-        }).then(
-          result => {
-            if (!result) throw 'ERROR GER REPORT';
-            listGetReport = result;
+          if (!result) throw 'ERROR GER REPORT';
 
-            // aGREGAMOS LA HOJA DE TRABAJO
-            let worksheet = workbook.addWorksheet(selectUser.name);
+          // aGREGAMOS LA HOJA DE TRABAJO
+          let worksheet = workbook.addWorksheet("Log abstract - DCS noon - min");
 
+          worksheet.columns = [
+            { width: 12.6 },
+            { width: 7.7 },
+            { width: 10 },// C
+            { width: 8.3 },
+            { width: 9.2 }, // E
+            { width: 9.2 }, //F
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 10.8 }, // I
+            { width: 9.2 },
+            { width: 19.2 }, // K
+            { width: 9.2 },
+            { width: 9.2 }, // M 
+            { width: 11.2 }, //N
+            { width: 9.2 }, // O
+            { width: 9.2 }, // P
+            { width: 9.2 }, // Q
+            { width: 9.2 }, // R
+            { width: 9.4 }, // S
+            { width: 9.2 }, // T
+            { width: 9.8 },//U
+            { width: 9.2 }, // V
+            { width: 11.4 },//W
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 9.2 },
+            { width: 29.2 },//AH E;LIMINAR BORRAR ESTO.
+          ];
 
-            worksheet.columns = [
-              { header: 'userId', key: 'userId' },
-              { header: 'year', key: 'year' },
-
-
-              { header: 'voyageId', key: 'voyageId' },
-              { header: 'voyageNumber', key: 'voyageNumber' },
-              { header: 'portId', key: 'portId' },
-              { header: 'portNumber', key: 'portNumber' },
-              { header: 'dailyReportId', key: 'dailyReportId' },
-              { header: 'departurePort', key: 'departurePort' },
-              { header: 'arrivalPort', key: 'arrivalPort' },
-
-              { header: 'activityPerformed', key: 'activityPerformed' },
-              { header: 'date', key: 'date' },
-              { header: 'hour', key: 'hour' },
-
-              { header: 'bunkeringIfo', key: 'bunkeringIfo' },
-              { header: 'bunkeringMgo', key: 'bunkeringMgo' },
-
-              { header: 'mplaIfo', key: 'mplaIfo' },
-              { header: 'auxIfo', key: 'auxIfo' },
-              { header: 'boilerIfo', key: 'boilerIfo' },
-              { header: 'otherIfo', key: 'otherIfo' },
-              
-              { header: 'mplaMgo', key: 'MplaMgo' },
-              { header: 'auxMgo', key: 'auxMgo' },
-              { header: 'boilerMgo', key: 'boilerMgo' },
-              { header: 'ppMgo', key: 'ppMgo' },
-              { header: 'giMgo', key: 'giMgo' },
-              { header: 'otherMgo', key: 'otherMgo' },
-
-
-              
-              { header: 'steamingTime', key: 'steamingTime' },
-              { header: 'speedStraction', key: 'speedStraction' },
-              { header: 'distance', key: 'distance' },
-              { header: 'beaufour', key: 'beaufour' },
-              { header: 'observation', key: 'observation' },
-
-              { header: 'status', key: 'status' },
-            ];
-
-
-            let positionRow = 0;
-            listGetReport.forEach(
-              (report) => {
-
-
-                positionRow += 1; 
-                worksheet.addRow({
-                  userId: report.userId,
-                  year: report.year,
-
-                  voyageId: report.voyageId,
-                  voyageNumber: report.voyageNumber,
-                  portId: report.portId,
-                  portNumber: report.portNumber,
-                  dailyReportId: report.dailyReportId,
-
-                  departurePort: report.departurePort,
-                  arrivalPort: report.arrivalPort,
-                  
-                  activityPerformed : report.activityPerformed,
-                  date:report.date,
-                  hour:report.hour,
-
-                  bunkeringIfo:report.bunkeringIfo,
-                  bunkeringMgo: report.bunkeringMgo,
-
-                  mplaIfo: report.mplaIfo,
-                  auxIfo:report.auxIfo,
-                  boilerIfo: report.boilerIfo,
-                  otherIfo: report.otherIfo,
-
-                  mplaMgo:report.mplaMgo,
-                  auxMgo:report.auxMgo,
-                  boilerMgo: report.boilerMgo,
-                  ppMgo: report.ppMgo,
-                  giMgo:report.giMgo,
-                  otherMgo: report.otherMgo,
-
-
-                  steamingTime :report.steamingTime,
-                  distance: report.distance,
-                  speedStraction: report.speedStraction,
-                  beaufour: report.beaufour,
-                  observation: report.observation,
-
-                  status: 1
-                });
-
-              }
-            );
-
-
-            // Escribimos el excel
-            workbook.xlsx.writeBuffer().then((data) => {
+          // Escribimos el excel
+          workbook.xlsx.writeBuffer().then(
+            (data) => {
               let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-              fs.saveAs(blob, 'Report.xlsx');
-            });
+              fs.saveAs(blob, 'FORMATO DNV-' + selectUser.name + '.xlsx');
+            }
+          );
 
-            return true;
-          }
-        );
+          return true;
+        }
+      );
   }
 
 
