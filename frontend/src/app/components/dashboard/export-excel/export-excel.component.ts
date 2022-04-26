@@ -56,7 +56,8 @@ export class ExportExcelComponent implements OnInit {
     return Promise.resolve(true).then(
       result => {
         this.loadingService.Open();
-        return this.excelService.ExportReporteEntryForUser(this.selectUser);
+
+        return this.excelFormatDNVService.ExportReporteEntryForUser(this.selectUser);
       }
     ).then(
       result => {
