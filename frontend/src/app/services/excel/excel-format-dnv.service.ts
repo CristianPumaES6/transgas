@@ -439,6 +439,131 @@ export class ExcelFormatDNVService {
 
           return row;
         }
+      ).then(
+        resultRow => {
+          // HEADER 3
+          row = resultRow + 1;
+          // UTC
+          column = positCol;
+          positionRow = [row, row];
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "UTC\nyyyy-mm-dd", 11, "", "ffffcc", true, false, "bottom", "left");
+
+
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "UTC\nhh:mm", 11, "", "ffffcc", true, false, "bottom", "left");
+
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "[°]", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "[']", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "", 11, "", "ffffcc", true, false, "bottom", "left");
+
+
+
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "[°]", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "[']", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "", 11, "", "ffffcc", true, false, "bottom", "left");
+
+
+
+
+          column = column + 2;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "h", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "h", 11, "", "ffffcc", true, false, "bottom", "left");
+
+
+
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "nm", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "(txt)", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "(nr)", 11, "", "ffffcc", true, false, "bottom", "left");
+
+
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "bottom", "left");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "(txt)", 11, "", "ffffcc", true, false, "bottom", "left");
+
+
+          let getRow = worksheet.getRow(row);
+          getRow.height = 42;
+
+
+          return row;
+        }
       )
   }
 
