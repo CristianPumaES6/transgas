@@ -44,17 +44,18 @@ export class ExcelFormatDNVService {
     let workbook = new Workbook();
     workbook.creator = 'codev.site';
 
+    // aGREGAMOS LA HOJA DE TRABAJO
+    let worksheet = workbook.addWorksheet("Log abstract - DCS noon - min");
+
 
     let listGetReport: GetReportVoyagePortDaily[] = [];
     let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
+    let rowCursor = 1;
     return await Promise.resolve(true)
       .then(
         result => {
           if (!result) throw 'ERROR GER REPORT';
-
-          // aGREGAMOS LA HOJA DE TRABAJO
-          let worksheet = workbook.addWorksheet("Log abstract - DCS noon - min");
 
           worksheet.columns = [
             { width: 12.6 },
@@ -94,12 +95,18 @@ export class ExcelFormatDNVService {
           ];
 
 
-
-          return this.AddDashInfoBuque(worksheet, workbook, this.selectUser, 1, 0)
-
+          return this.AddDashInfoBuque(worksheet, workbook, this.selectUser, rowCursor, 0)
         }
       ).then(
-        result => {
+        resultRowFinal => {
+
+          rowCursor = resultRowFinal + 2;
+
+          return this.AddHeaderTableDNV(worksheet, workbook, this.selectUser, rowCursor, 0)
+        }
+      ).then(
+        resultRowFinal => {
+
           // Escribimos el excel
           workbook.xlsx.writeBuffer().then(
             (data) => {
@@ -129,8 +136,9 @@ export class ExcelFormatDNVService {
       .then(
         result => {
           // Juntamos la columna
-          worksheet.mergeCells('A1', 'D1');
-          worksheet.mergeCells('E1', 'BE1');
+          column = column + 3;
+          worksheet.mergeCells(this.excelService.PositByCell(positCol) + row, this.excelService.PositByCell(column) + row);
+          worksheet.mergeCells(this.excelService.PositByCell(column + 1) + row, this.excelService.PositByCell(column + 40) + row);
 
           // Imagen en base a 64
           const myBase64Image = "data:image/png;base64," + logoFile.logoDNVBase64;
@@ -191,8 +199,123 @@ export class ExcelFormatDNVService {
   }
 
 
+  // Agregamos el cuadro de informacion del buque.
+  private AddHeaderTableDNV(worksheet, workbook, selectUser: User, positRow: number, positCol: number): Promise<number> {
+
+    // Reset
+    let row = positRow;
+    let column = positCol;
+
+    // Le sumo 7 celdas por que la logitud de la leyenda es 7 celdas
+    let positionRow = [row, row];
+    let positionColumn = [column, column];
+
+    return Promise.resolve(true)
+      .then(
+        result => {
+          // Header 1
+          positionColumn = [column, column + 32];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Mandatory data fields', 11, "", "d6dce4", true, true);
+
+          return row;
+        }
+      ).then(
+        resultRow => {
+          // HEADER 2
+          row = resultRow + 1;
+          positionRow = [row, row];
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Date', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Time', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column + 5];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Position', 11, "", "ffffcc", true, true, "top");
+          column = column + 6;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Event', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column + 1];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Time elapsed', 11, "", "ffffcc", true, true, "top");
+          column = column + 2;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Distance', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column + 10];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Machinery', 11, "", "ffffcc", true, true, "top");
+          column = column + 11;
+          positionColumn = [column, column + 9];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'ROB', 11, "", "ffffcc", true, true, "bottom");
+
+          // Obtenemos la fila le asignamos el tamaño
+          let getRow = worksheet.getRow(row);
+          getRow.height = 26;
+
+          return row;
+        }
+      ).then(
+        resultRow => {
+          // HEADER 2
+          row = resultRow + 1;
+          // Reset
+          column = positCol;
+          // Date y Time
+          positionRow = [row, row + 1];
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, '', 11, "", "ffffcc", true, false, "");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, '', 11, "", "ffffcc", true, false, "");
+          // Position Latitude
+          column += 1;
+          positionRow = [row, row];
+          positionColumn = [column, column + 2];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Latitude', 11, "", "ffffcc", true, false, "top");
+          // Longitude
+          column += 3;
+          positionColumn = [column, column + 2];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Longitude', 11, "", "ffffcc", true, false, "top");
+          //noon y daily
+          column += 3;
+          positionColumn = [column, column];
+          positionRow = [row, row + 2];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "-Noon\n-Daily", 11, "", "ffffcc", true, false, "top", "center");
+          // Since previous
+          column += 1;
+          positionColumn = [column, column];
+          positionRow = [row, row + 1];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Since previous event report", 11, "", "ffffcc", true, false, "top", "left");
+          // Time elapsed sailing
+          column += 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Time elapsed sailing", 11, "", "ffffcc", true, false, "top", "left");
+          // Distance
+          column +=1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Distance sailed", 11, "", "ffffcc", true, false, "top", "left");
+          // Total Fuel consumption
+          column += 1;
+          positionRow = [row, row];
+          positionColumn = [column, column + 10];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Total Fuel consumption", 11, "", "ffffcc", true, false, "top", "left");
+          column += 11;
+          positionColumn = [column, column + 9];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Remaining on board", 11, "", "ffffcc", true, false, "top", "left");
+
+
+          // Obtenemos la fila le asignamos el tamaño
+          let getRow = worksheet.getRow(row);
+          getRow.height = 29.4;
+
+          
+          return row;
+        }
+      )
+  }
+
   // Cosa que COPIAMOS Y NO DEBERIA SER ASI DEBERIA SER PERSONALIZADO
-  private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], textorFormule: string | number | any, sizeFont: number, colortText: string, colorBackgraund: string, isAddBorder: boolean, isbold: boolean) {
+  private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], textorFormule: string | number | any, sizeFont: number, colortText: string, colorBackgraund: string, isAddBorder: boolean, isbold: boolean, alignmentVertical?: string, alignmentHorizontal?: string) {
 
     // Separamos las posiciones.
     let positionDesde = position[0];
@@ -204,8 +327,8 @@ export class ExcelFormatDNVService {
 
     let style: any = {
       alignment: {
-        horizontal: 'left',
-        vertical: 'bottom',
+        horizontal: alignmentHorizontal ? alignmentHorizontal : 'left',
+        vertical: alignmentVertical ? alignmentVertical : 'bottom',
         wrapText: true
       },
       font: {
