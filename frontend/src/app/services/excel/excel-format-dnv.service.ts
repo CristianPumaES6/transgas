@@ -84,10 +84,10 @@ export class ExcelFormatDNVService {
             { width: 9.2 },
             { width: 9.2 },
             { width: 9.2 },
+            { width: 9.2 },//AA
             { width: 9.2 },
-            { width: 9.2 },
-            { width: 9.2 },
-            { width: 9.2 },
+            { width: 9.2 },//AC
+            { width: 9.4 },//AD
             { width: 9.2 },
             { width: 9.2 },
             { width: 9.2 },
@@ -291,7 +291,7 @@ export class ExcelFormatDNVService {
           positionColumn = [column, column];
           this.addStyleByColums(worksheet, positionRow, positionColumn, "Time elapsed sailing", 11, "", "ffffcc", true, false, "top", "left");
           // Distance
-          column +=1;
+          column += 1;
           positionColumn = [column, column];
           this.addStyleByColums(worksheet, positionRow, positionColumn, "Distance sailed", 11, "", "ffffcc", true, false, "top", "left");
           // Total Fuel consumption
@@ -308,7 +308,135 @@ export class ExcelFormatDNVService {
           let getRow = worksheet.getRow(row);
           getRow.height = 29.4;
 
-          
+
+          return row;
+        }
+      ).then(
+        resultRow => {
+          // HEADER 3
+          row = resultRow + 1;
+          // Reset
+          column = positCol;
+          // Degree
+          column = column + 2;
+          positionRow = [row, row];
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Degree", 11, "", "ffffcc", true, false, "top", "left");
+          //Minutes
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Minutes", 11, "", "ffffcc", true, false, "top", "left");
+          //North / South
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "North / South", 11, "", "ffffcc", true, false, "top", "left");
+          // Degree
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Degree", 11, "", "ffffcc", true, false, "top", "left");
+          //Minutes
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Minutes", 11, "", "ffffcc", true, false, "top", "left");
+          //North / South
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "East / West", 11, "", "ffffcc", true, false, "top", "left");
+
+          //HFO
+          column = column + 5;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "HFO", 11, "", "ffffcc", true, false, "top", "left");
+          //LFO
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "LFO", 11, "", "ffffcc", true, false, "top", "left");
+          //MGO
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "MGO", 11, "", "ffffcc", true, false, "top", "left");
+          //MDO
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "MDO", 11, "", "ffffcc", true, false, "top", "left");
+          //LPG
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "LPG", 11, "", "ffffcc", true, false, "top", "left");
+          //LNG
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "LNG", 11, "", "ffffcc", true, false, "top", "left");
+          //Methanol
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Methanol", 11, "", "ffffcc", true, false, "top", "left");
+          //Ethanol
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Ethanol", 11, "", "ffffcc", true, false, "top", "left");
+          //Other fuel consumption
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Other fuel consumption", 11, "", "ffffcc", true, false, "top", "left");
+          //Other fuel type
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Other fuel type", 11, "", "ffffcc", true, false, "top", "left");
+          //Other fuel emission factor
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Other fuel emission factor", 11, "", "ffffcc", true, false, "top", "left");
+
+
+
+          //HFO
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "HFO", 11, "", "ffffcc", true, false, "top", "left");
+          //LFO
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "LFO", 11, "", "ffffcc", true, false, "top", "left");
+          //MGO
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "MGO", 11, "", "ffffcc", true, false, "top", "left");
+          //MDO
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "MDO", 11, "", "ffffcc", true, false, "top", "left");
+          //LPG
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "LPG", 11, "", "ffffcc", true, false, "top", "left");
+          //LNG
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "LNG", 11, "", "ffffcc", true, false, "top", "left");
+          //Methanol
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Methanol", 11, "", "ffffcc", true, false, "top", "left");
+          //Ethanol
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Ethanol", 11, "", "ffffcc", true, false, "top", "left");
+          //Other fuel consumption
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Other fuel consumption", 11, "", "ffffcc", true, false, "top", "left");
+          //Other fuel type
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "Other fuel type", 11, "", "ffffcc", true, false, "top", "left");
+
+
+          let getRow = worksheet.getRow(row);
+          getRow.height = 35;
+
+
+
           return row;
         }
       )
