@@ -8,44 +8,50 @@
 <mat-horizontal-stepper linear #stepper>
   <mat-step [completed]="isFirstCompleted" label="Excel options" state="pdfOption">
 
-    <div class="az-content p-0">
 
 
-      <h5>
-        {{'REPORT_INFORMATION' | translateMessage:translateCategory}}
-      </h5>
-      <h5>
-        {{'EXCEL_FORMAT' | translateMessage:translateCategory}}
-      </h5>
-<!-- 
-      <div class="row ml-1 lh-1 mg-b-4 pl-0">
-        <mat-radio-group>
-          <mat-radio-button class="ml-1" value="OVERALL_PERFORMANCE">{{'OVERALL_PERFORMANCE' |
-            translateMessage:translateCategory}}
-          </mat-radio-button>
-          <br>
-          <mat-radio-button class="ml-1" value="CHART_VOYAGE_SUMMARY">{{'CHART_VOYAGE_SUMMARY' |
-            translateMessage:translateCategory}}
-          </mat-radio-button>
-          <br>
-          <mat-radio-button class="ml-1" value="VOYAGE_SUMMARY">{{'VOYAGE_SUMMARY' |
-            translateMessage:translateCategory}}
-          </mat-radio-button>
-          <br>
-          <mat-radio-button class="ml-1" value="BUNKERING_INFORMATION">{{'BUNKERING_INFORMATION' |
-            translateMessage:translateCategory}}
-          </mat-radio-button>
-        </mat-radio-group>
-      </div> -->
+    <div class="tx-24 mg-b-0 pl-0">
+
+      <mat-form-field class="w-100">
+        <mat-label>Select Excel Format</mat-label>
+
+        <mat-select [(ngModel)]="selectTypeExportExcel">
+          <mat-option value='DNV_FORMAT'>
+            DNV excel format
+          </mat-option>
+          <mat-option value='FORMAT_GENERIC'>
+            Generic Format
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field>
+
+
+      <div class="az-content p-0">
+
+        <ng-template [ngIf]="selectTypeExportExcel == 'DNV_FORMAT'">
+
+          <h5>
+            {{'REPORT_INFORMATION_DNV' | translateMessage:translateCategory}}
+          </h5>
+        </ng-template>
+        <ng-template [ngIf]="selectTypeExportExcel == 'FORMAT_GENERIC'">
+
+          <h5>
+            {{'REPORT_INFORMATION_GENERIC' | translateMessage:translateCategory}}
+          </h5>
+        </ng-template>
+      </div>
+
+
     </div>
-
 
     <div class="row">
       <div class="col-6 ">
 
-        <button mat-raised-button color="primary" matStepperNext (click)="ClickDownloading()">
+        <button mat-raised-button color="primary" [disabled]='!selectTypeExportExcel' matStepperNext (click)="ClickDownloading()">
           {{'DOWNLOAD' | translateMessage:translateCategory}}
-          <span style="font-size: 14pt;" class="icon-archivo-pdf"></span>
+          <span style="font-size: 14pt;" class="icon-archivo-excel"></span>
         </button>
 
       </div>
@@ -53,9 +59,6 @@
 
 
   </mat-step>
-  <mat-step label="PDF preview" state="pdfView">
-
-
-  </mat-step>
+  <mat-step label="Generate Format" state="pdfView"></mat-step>
 
 </mat-horizontal-stepper>
