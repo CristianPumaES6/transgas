@@ -173,7 +173,7 @@ export class ExcelFormatDNVService {
           // Esto empieza en la columna 3
           column = positCol + 2;
           positionColumn = [column, column + 1];
-          this.addStyleByColums(worksheet, positionRow, positionColumn, '9173056', 11, "", "", true, false);
+          this.addStyleByColums(worksheet, positionRow, positionColumn, selectUser.imo, 11, "", "", true, false);
 
           row = row + 1;
           column = positCol;
