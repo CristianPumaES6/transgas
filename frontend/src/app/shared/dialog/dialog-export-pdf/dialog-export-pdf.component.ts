@@ -15,12 +15,12 @@ import { User } from '../../../models/user';
 import { Voyage } from '../../../models/voyage';
 import { LanguageService } from '../../../services/language.service';
 import { DialogListReportComponent } from '../dialog-list-report/dialog-list-report.component';
-import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOverallPerformanceAnalisis, GenerateTableTotalSummaryOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from 'src/app/models/dialog-export-pdf';
-import { DataChart } from 'src/app/models/chart';
+import { GenerateSummaryTableOverallPerformanceAnalisis, GenerateTableSummaryOverallPerformanceAnalisis, GenerateTableTotalSummaryOverallPerformanceAnalisis, SummarySpeedCondition, SummaryVesselPerformanceReport } from '../../../models/dialog-export-pdf';
+import { DataChart } from '../../../models/chart';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import { PdfJsViewerComponent } from 'ng2-pdfjs-viewer';
-import { DailyReportService } from 'src/app/services/daily-report.service';
+import { DailyReportService } from '../../../services/daily-report.service';
 
 // RXJS
 import { forkJoin, Observable, of } from 'rxjs';

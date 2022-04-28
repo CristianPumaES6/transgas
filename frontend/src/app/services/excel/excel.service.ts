@@ -302,18 +302,6 @@ export class ExcelService {
 
   // Opcion que exporta el excel.
   public async ExportExcel(selectUserId: number, startDate: string, endDate: string, selectUser: User): Promise<boolean> {
-    /*   
-    const wb = new Workbook();
-    
-    
-      // Escribimos el excel
-      wb.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        fs.saveAs(blob, 'Report.xlsx');
-      });
-     */
-
-
 
     // Creamos una nueva hoja de trabajo
     let workbook = new Workbook();
@@ -2094,7 +2082,7 @@ export class ExcelService {
   }
 
   // Obtenemos la info de todos los viajes agregado.
-  private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+  public GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
     return this.dailyReportService.GetReportVoyagePortDailyByUserIdAndDate(userId, startDate, endDate).pipe(map(
@@ -3683,7 +3671,7 @@ export class ExcelService {
 
 
   // Obtenemos la info del combustible inicio fin
-  private GetInfoFuelStartEndByFilterDate(userId: number, startDate: string, endDate: string): Observable<InfoFuelStartEndForDate> {
+  public GetInfoFuelStartEndByFilterDate(userId: number, startDate: string, endDate: string): Observable<InfoFuelStartEndForDate> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
     return this.dailyReportService.GetStartEndROByFilterDate(userId, startDate, endDate).pipe(map(

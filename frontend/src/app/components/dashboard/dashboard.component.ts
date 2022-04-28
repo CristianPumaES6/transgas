@@ -56,7 +56,7 @@ import * as Html2canvas from 'html2canvas';
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
 import { OnlineOfflineService } from '../../services/online-offline.service';
-import { DialogExportExcelComponent, IDialogExportExcel } from 'src/app/shared/dialog/dialog-export-excel/dialog-export-excel.component';
+import { DialogExportExcelComponent, IDialogExportExcel } from '../../shared/dialog/dialog-export-excel/dialog-export-excel.component';
 
 @Component({
   selector: 'app-dashboard',

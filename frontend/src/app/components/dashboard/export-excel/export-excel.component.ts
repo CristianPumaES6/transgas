@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
-import { User } from 'src/app/models/user';
-import { ExcelService } from 'src/app/services/excel/excel.service';
-import { ExcelFormatDNVService } from 'src/app/services/excel/excel-format-dnv.service';
-import { LoadingService } from 'src/app/services/loading.service';
+import { User } from '../../../models/user';
+import { ExcelService } from '../../../services/excel/excel.service';
+import { ExcelFormatDNVService } from '../../../services/excel/excel-format-dnv.service';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-export-excel',
@@ -57,7 +57,10 @@ export class ExportExcelComponent implements OnInit {
       result => {
         this.loadingService.Open();
 
-        return this.excelFormatDNVService.ExportReporteEntryForUser(this.selectUser);
+        alert("Se desabilito esta opcion desde el backend.")
+
+        return true;
+        // return this.excelFormatDNVService.ExportReporteEntryForUser(this.selectUser);
       }
     ).then(
       result => {

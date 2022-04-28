@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Port } from '../../../models/port.entity';
 import { Like, Not, Repository } from 'typeorm';
-import { DummyPromise } from 'src/assets/promises.assets';
-import { URL_Server } from 'src/config/server.config';
+import { DummyPromise } from '../../../assets/promises.assets';
+import { URL_Server } from '../../../config/server.config';
 
 @Injectable()
 export class PortsService {

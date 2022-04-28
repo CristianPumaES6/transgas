@@ -20,8 +20,8 @@ import { Login, User } from '../../models/user'
 
 //Service
 import { AuthService } from '../../services/auth.service';
-import { EnvConfig } from 'src/app/config/env.config';
-import { DatabaseService } from 'src/app/services/database.service';
+import { EnvConfig } from '../../config/env.config';
+import { DatabaseService } from '../../services/database.service';
 
 
 @Component({

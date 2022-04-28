@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { User } from 'src/app/models/user';
-import { mathRound } from 'src/assets/math/math.assets';
+import { User } from '../../../models/user';
+import { mathRound } from '../../../../assets/math/math.assets';
 
 
 export class DashboardBunkering {

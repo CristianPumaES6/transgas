@@ -4,7 +4,7 @@ import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@an
 import { NotificationsService } from 'angular2-notifications';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OnlineOfflineService } from 'src/app/services/online-offline.service';
+import { OnlineOfflineService } from '../../services/online-offline.service';
 import { LoggedUser } from '../../../app/models/loggedUser';
 import { AuthService } from '../../../app/services/auth.service';
 import { LanguageService } from '../../../app/services/language.service';

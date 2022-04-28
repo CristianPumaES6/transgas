@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
 import { Like, Not, Repository } from 'typeorm';
-import { URL_Server } from 'src/config/server.config';
-import { DummyPromise } from 'src/assets/promises.assets';
-import { FormatDateSumDays, FormatDateUTCToDateHour, GetDate } from 'src/assets/moment.assets';
+import { URL_Server } from '../../../config/server.config';
+import { DummyPromise } from '../../../assets/promises.assets';
+import { FormatDateSumDays, FormatDateUTCToDateHour, GetDate } from '../../../assets/moment.assets';
 
 @Injectable()
 export class DailyReportsService {
@@ -931,7 +931,7 @@ export class DailyReportsService {
                 }
             ).then(
                 (result: any) => {
-                    console.log(result)
+                    
                     // Verificamos que el resultado no este vacio.
                     if (!result) throw 'ERROR GetReportVoyagePortDaily';
  
@@ -1035,7 +1035,7 @@ export class DailyReportsService {
                 }
             ).then(
                 (result: any) => {
-                    console.log(result)
+                    
                     // Verificamos que el resultado no este vacio.
                     if (!result) throw 'ERROR GetReportVoyagePortDaily';
  

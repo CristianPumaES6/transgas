@@ -6,8 +6,8 @@ import { promise } from 'protractor';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mathRound } from '../../../assets/math/math.assets';
-import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour } from '../../../assets/moment/moment.assets';
-import { GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour, FormatYYYYMMDDToHOURS, FormatYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
+import { GetFormatDNV, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
 import { ActivityPerformed } from '../../models/dashboard';
 import { GetReportVoyagePortDaily } from '../../models/dialog-export-excel';
 import { User } from '../../models/user';
@@ -17,6 +17,7 @@ import { LanguageService } from '../language.service';
 import * as html2canvas from 'html2canvas';
 import * as logoFile from '../../../assets/image-base64/logo-base64';
 import { ExcelService } from './excel.service';
+import { FormuleService } from '../formule.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,11 +34,12 @@ export class ExcelFormatDNVService {
     private languageService: LanguageService,
     private dailyReportService: DailyReportService,
     private excelService: ExcelService,
+    private formuleService: FormuleService
   ) { }
 
 
   // Opcion que exporta el excel.
-  public async ExportReporteEntryForUser(selectUser: User): Promise<boolean> {
+  public async ExportReporteEntryForUser(selectUserId: number, startDate: string, endDate: string, selectUser: User): Promise<boolean> {
 
 
     // Creamos una nueva hoja de trabajo
@@ -47,77 +49,81 @@ export class ExcelFormatDNVService {
     // aGREGAMOS LA HOJA DE TRABAJO
     let worksheet = workbook.addWorksheet("Log abstract - DCS noon - min");
 
-
-    let listGetReport: GetReportVoyagePortDaily[] = [];
-    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
-
     let rowCursor = 1;
-    return await Promise.resolve(true)
-      .then(
-        result => {
-          if (!result) throw 'ERROR GER REPORT';
+    return await Promise.resolve(true).then(
+      result => {
+        if (!result) throw 'ERROR GER REPORT';
 
-          worksheet.columns = [
-            { width: 12.6 },
-            { width: 7.7 },
-            { width: 10 },// C
-            { width: 8.3 },
-            { width: 9.2 }, // E
-            { width: 9.2 }, //F
-            { width: 9.2 },
-            { width: 9.2 },
-            { width: 10.8 }, // I
-            { width: 9.2 },
-            { width: 19.2 }, // K
-            { width: 9.2 },
-            { width: 9.2 }, // M 
-            { width: 11.2 }, //N
-            { width: 9.2 }, // O
-            { width: 9.2 }, // P
-            { width: 9.2 }, // Q
-            { width: 9.2 }, // R
-            { width: 9.4 }, // S
-            { width: 9.2 }, // T
-            { width: 9.8 },//U
-            { width: 9.2 }, // V
-            { width: 11.4 },//W
-            { width: 9.2 },
-            { width: 9.2 },
-            { width: 9.2 },
-            { width: 9.2 },//AA
-            { width: 9.2 },
-            { width: 9.2 },//AC
-            { width: 9.4 },//AD
-            { width: 9.2 },
-            { width: 9.2 },
-            { width: 9.2 },
-            { width: 29.2 },//AH E;LIMINAR BORRAR ESTO.
-          ];
+        worksheet.columns = [
+          { width: 12.6 },
+          { width: 7.7 },
+          { width: 10 },// C
+          { width: 8.3 },
+          { width: 9.2 }, // E
+          { width: 9.2 }, //F
+          { width: 9.2 },
+          { width: 9.2 },
+          { width: 10.8 }, // I
+          { width: 9.2 },
+          { width: 19.2 }, // K
+          { width: 9.2 },
+          { width: 9.2 }, // M 
+          { width: 11.2 }, //N
+          { width: 9.2 }, // O
+          { width: 9.2 }, // P
+          { width: 9.2 }, // Q
+          { width: 9.2 }, // R
+          { width: 9.4 }, // S
+          { width: 9.2 }, // T
+          { width: 9.8 },//U
+          { width: 9.2 }, // V
+          { width: 11.4 },//W
+          { width: 9.2 },
+          { width: 9.2 },
+          { width: 9.2 },
+          { width: 9.2 },//AA
+          { width: 9.2 },
+          { width: 9.2 },//AC
+          { width: 9.4 },//AD
+          { width: 9.2 },
+          { width: 9.2 },
+          { width: 9.2 },
+          { width: 29.2 },//AH E;LIMINAR BORRAR ESTO.
+        ];
 
 
-          return this.AddDashInfoBuque(worksheet, workbook, this.selectUser, rowCursor, 0)
-        }
-      ).then(
-        resultRowFinal => {
+        return this.AddDashInfoBuque(worksheet, workbook, selectUser, rowCursor, 0)
+      }
+    ).then(
+      resultRowFinal => {
 
-          rowCursor = resultRowFinal + 2;
+        rowCursor = resultRowFinal + 2;
 
-          return this.AddHeaderTableDNV(worksheet, workbook, this.selectUser, rowCursor, 0)
-        }
-      ).then(
-        resultRowFinal => {
+        return this.AddHeaderTableDNV(worksheet, rowCursor, 0)
+      }
+    ).then(
+      resultRowFinal => {
+        rowCursor = resultRowFinal;
 
-          // Escribimos el excel
-          workbook.xlsx.writeBuffer().then(
-            (data) => {
-              let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-              fs.saveAs(blob, 'FORMATO DNV-' + selectUser.name + '.xlsx');
-            }
-          );
+        // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+        return this.ArmamosElObjetoParaELFORMATODNV(selectUserId, startDate, endDate, selectUser);
+      }).then(
+        resultGetFormat => {
+          return this.AddValueTableDNV(worksheet, rowCursor, 0, resultGetFormat)
+        }).then(
+          resultGetFormat => {
 
-          return true;
-        }
-      );
+            // Escribimos el excel
+            workbook.xlsx.writeBuffer().then(
+              (data) => {
+                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                fs.saveAs(blob, 'FORMATO DNV-' + selectUser.name + '.xlsx');
+              }
+            );
+
+            return true;
+          }
+        );
   }
 
 
@@ -177,7 +183,7 @@ export class ExcelFormatDNVService {
           // Esto empieza en la columna 3
           column = positCol + 2;
           positionColumn = [column, column + 1];
-          this.addStyleByColums(worksheet, positionRow, positionColumn, 'CAMILA B', 11, "", "", true, false);
+          this.addStyleByColums(worksheet, positionRow, positionColumn, selectUser.name, 11, "", "", true, false);
 
 
           row = row + 1;
@@ -200,7 +206,7 @@ export class ExcelFormatDNVService {
 
 
   // Agregamos el cuadro de informacion del buque.
-  private AddHeaderTableDNV(worksheet, workbook, selectUser: User, positRow: number, positCol: number): Promise<number> {
+  private AddHeaderTableDNV(worksheet, positRow: number, positCol: number): Promise<number> {
 
     // Reset
     let row = positRow;
@@ -564,8 +570,263 @@ export class ExcelFormatDNVService {
 
           return row;
         }
+      ).then(
+
+        result => {
+          // aqui recorrer los reportes
+          return row;
+        }
+      );
+  }
+
+
+  private async ArmamosElObjetoParaELFORMATODNV(selectUserId: number, startDate: string, endDate: string, selectUser: User): Promise<GetFormatDNV[]> {
+
+    let ListGetFormatDNV: GetFormatDNV[] = [];
+
+    let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
+
+    return await Promise.resolve(true).then(
+      result => {
+        // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+        return this.excelService.GetReportVoyagePortDaily(selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      result => {
+        if (!result) throw 'ERROR GER REPORT';
+        listGetReportVoyagePortDaily = result;
+        // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+        return this.excelService.GetInfoFuelStartEndByFilterDate(selectUserId, startDate, endDate).pipe().toPromise();
+      }
+    ).then(
+      getInfoFuelStartEndByFilterDate => {
+        // FALTA CALCULAR EL ROB ACTUAL
+        let ROB_IFO = getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
+        let ROB_MGO = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
+
+
+        listGetReportVoyagePortDaily.forEach(
+          item => {
+            let getFormatDNV: GetFormatDNV = new GetFormatDNV();
+
+            getFormatDNV.reportId = item.dailyReportId;
+            getFormatDNV.date = FormatYYYYMMDDToSTRING(item.date);
+            getFormatDNV.time = FormatYYYYMMDDToHOURS(item.date);
+
+            // AGREGAR ESTA INFORMACION REVISAR ELIMINAR CORREGIR 
+            getFormatDNV.north_degree = 0;
+            getFormatDNV.north_minutes = 0;
+            getFormatDNV.north_north_south = "";
+
+            getFormatDNV.east_degree = 0;
+            getFormatDNV.east_minutes = 0;
+            getFormatDNV.east_east_west = "";
+
+
+            getFormatDNV.event = this.languageService.GetMessage(this.translateCategory, item.activityPerformed);
+
+            getFormatDNV.event_time_previous = item.steamingTime;
+            let activitie = item.activityPerformed;
+            if (activitie == "SAILING_IN_BALLAST" || activitie == "SAILING_WITH_LADEN" || activitie == "ECONOMICAL_NAVIGATION") {
+              getFormatDNV.event_time_sailing = item.steamingTime;
+            } else {
+              getFormatDNV.event_time_sailing = 0;
+            }
+            getFormatDNV.distance = item.distance;
+
+            getFormatDNV.machinery_hfo = 0;
+            getFormatDNV.machinery_lfo = this.formuleService.CalculateTotal_IFO_Or_MGO(item, 'IFO');
+            getFormatDNV.machinery_mgo = this.formuleService.CalculateTotal_IFO_Or_MGO(item, 'MGO');
+            getFormatDNV.machinery_mdo = 0;
+            getFormatDNV.machinery_lpg = 0;
+            getFormatDNV.machinery_lng = 0;
+            getFormatDNV.machinery_methanol = 0;
+            getFormatDNV.machinery_other_fuel_consumption = 0;
+            getFormatDNV.machinery_other_fuel_type = 0;
+            getFormatDNV.machinery_other_full_emission = 0;
+
+            ROB_IFO = ROB_IFO - getFormatDNV.machinery_lfo + item.bunkeringIfo;
+            ROB_MGO = ROB_MGO - getFormatDNV.machinery_mgo + item.bunkeringMgo;
+
+            getFormatDNV.rob_hfo = 0;
+            getFormatDNV.rob_lfo = ROB_IFO;
+            getFormatDNV.rob_mgo = ROB_MGO;
+            getFormatDNV.rob_mdo = 0;
+            getFormatDNV.rob_lpg = 0;
+            getFormatDNV.rob_lng = 0;
+            getFormatDNV.rob_methanol = 0;
+            getFormatDNV.rob_other_fuel = 0;
+            getFormatDNV.rob_other_fuel_type = 0;
+
+
+            ListGetFormatDNV.push(getFormatDNV)
+          }
+        )
+        return ListGetFormatDNV;
+      }
+    );
+
+
+
+  }
+
+
+  // Agregamos el cuadro de informacion del buque.
+  private AddValueTableDNV(worksheet, positRow: number, positCol: number, listGetFormatDNV: GetFormatDNV[]): Promise<number> {
+
+    // Reset
+    let row = positRow;
+    let column = positCol;
+
+    // Le sumo 7 celdas por que la logitud de la leyenda es 7 celdas
+    let positionRow = [row, row];
+    let positionColumn = [column, column];
+    return Promise.resolve(true)
+      .then(
+        result => {
+
+          listGetFormatDNV.forEach(
+            item => {
+
+              // HEADER 3
+              row = row + 1;
+              // UTC
+              column = positCol;
+              positionRow = [row, row];
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.date, 10, "", "ffffff", true, false, "center", "right");
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.time, 10, "", "ffffff", true, false, "center", "right");
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_degree, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_minutes, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_north_south, 10, "", "ffffff", true, false, "bottom", "left");
+
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_degree, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_minutes, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_east_west, 10, "", "ffffff", true, false, "bottom", "left");
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event, 10, "", "ffffff", true, false, "bottom", "left");
+
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event_time_previous, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event_time_sailing, 10, "", "ffffff", true, false, "center", "right");
+
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.distance, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_hfo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lfo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_mgo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_mdo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lpg, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lng, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_methanol, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_ethanol, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_fuel_consumption, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_fuel_type, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_full_emission, 10, "", "ffffff", true, false, "center", "right");
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_hfo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lfo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_mgo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_mdo, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lpg, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lng, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_methanol, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_ethanol, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_other_fuel, 10, "", "ffffff", true, false, "center", "right");
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_other_fuel_type, 10, "", "ffffff", true, false, "center", "right");
+
+
+              let getRow = worksheet.getRow(row);
+              getRow.height = 20;
+            }
+          )
+
+
+          return row;
+        }
+      ).then(
+
+        result => {
+          // aqui recorrer los reportes
+          return row;
+        }
       )
   }
+
 
   // Cosa que COPIAMOS Y NO DEBERIA SER ASI DEBERIA SER PERSONALIZADO
   private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], textorFormule: string | number | any, sizeFont: number, colortText: string, colorBackgraund: string, isAddBorder: boolean, isbold: boolean, alignmentVertical?: string, alignmentHorizontal?: string) {

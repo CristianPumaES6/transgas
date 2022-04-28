@@ -8,7 +8,7 @@ import { User } from '../../models/user';
 
 // Libreria Jquery.
 import * as $ from 'jquery';
-import { EnvConfig } from 'src/app/config/env.config';
+import { EnvConfig } from '../../config/env.config';
 
 @Component({
   selector: 'app-a-side',

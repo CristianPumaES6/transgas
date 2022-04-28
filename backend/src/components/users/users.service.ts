@@ -15,7 +15,7 @@ import { URL_Server } from '../../config/server.config'
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
-import { ConvertMMDDYYYToYYYYMMDD, GetDate } from 'src/assets/moment.assets';
+import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
 
 
 @Injectable()

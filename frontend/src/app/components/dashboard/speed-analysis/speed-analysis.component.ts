@@ -3,27 +3,27 @@ import * as Chart from 'chart.js';
 // import { ChartData, registerables } from 'chart.js'; // Para CHart 3.7
 // import { getRelativePosition } from 'chart.js/helpers';
 // import Chart from 'chart.js/auto';// Para CHart 3.7
-import { DailyReportService } from 'src/app/services/daily-report.service';
-import { GetReportVoyagePortDaily } from 'src/app/models/dialog-export-excel';
+import { DailyReportService } from '../../../services/daily-report.service';
+import { GetReportVoyagePortDaily } from '../../../models/dialog-export-excel';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ChartConfiguration } from 'chart.js';
-import { LoadingService } from 'src/app/services/loading.service';
-import { LanguageService } from 'src/app/services/language.service';
+import { LoadingService } from '../../../services/loading.service';
+import { LanguageService } from '../../../services/language.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DailyReport, Speed } from 'src/app/models/daily-report';
-import { Voyage } from 'src/app/models/voyage';
-import { Port } from 'src/app/models/port';
-import { ActivityPerformed } from 'src/app/models/dashboard';
-import { FormuleService } from 'src/app/services/formule.service';
+import { DailyReport, Speed } from '../../../models/daily-report';
+import { Voyage } from '../../../models/voyage';
+import { Port } from '../../../models/port';
+import { ActivityPerformed } from '../../../models/dashboard';
+import { FormuleService } from '../../../services/formule.service';
 
 import PerfectScrollbar from 'perfect-scrollbar';
-import { mathRound } from 'src/assets/math/math.assets';
-import { User } from 'src/app/models/user';
-import { UserService } from 'src/app/services/user.service';
-import { ConvertMomentUTC, IsAfter1Date, validateDate } from 'src/assets/moment/moment.assets';
+import { mathRound } from '../../../../assets/math/math.assets';
+import { User } from '../../../models/user';
+import { UserService } from '../../../services/user.service';
+import { ConvertMomentUTC, IsAfter1Date, validateDate } from '../../../../assets/moment/moment.assets';
 
 @Component({
   selector: 'app-speed-analysis',

@@ -262,3 +262,100 @@ export class GetInfoBunkering {
         this.observation = observation || '';
     }
 }
+
+
+export class GetFormatDNV {
+    
+
+    constructor(
+        public reportId?: number,
+        public date?: String,
+        public time?: String,
+
+        public north_degree?: number,
+        public north_minutes?: number,
+        public north_north_south?: String,
+        
+        public east_degree?: number,
+        public east_minutes?: number,
+        public east_east_west?: String,
+
+        public event?: String,
+
+        public event_time_previous?: number,
+        public event_time_sailing?: number,
+
+        public distance?: number,
+
+        public machinery_hfo?: number,
+        public machinery_lfo?: number,
+        public machinery_mgo?: number,
+        public machinery_mdo?: number,
+        public machinery_lpg?: number,
+        public machinery_lng?: number,
+        public machinery_methanol?: number,
+        public machinery_ethanol?: number,
+        public machinery_other_fuel_consumption?: number,
+        public machinery_other_fuel_type?: number,
+        public machinery_other_full_emission?: number,
+
+        public rob_hfo?: number,
+        public rob_lfo?: number,
+        public rob_mgo?: number,
+        public rob_mdo?: number,
+        public rob_lpg?: number,
+        public rob_lng?: number,
+        public rob_methanol?: number,
+        public rob_ethanol?: number,
+        public rob_other_fuel?: number,
+        public rob_other_fuel_type?: number,
+        
+    ) {
+        this.reportId = reportId || 0;
+        this.date = date || '';
+        this.time = time || '';
+
+        this.north_degree = north_degree || 0;
+        this.north_minutes = north_minutes || 0;
+        this.north_north_south = north_north_south || '';
+    
+        this.east_degree = east_degree || 0;
+        this.east_minutes = east_minutes || 0;
+        this.east_east_west = east_east_west || '';
+
+        this.event = event || '';
+
+        this.event_time_previous = event_time_previous || 0;
+        this.event_time_sailing = event_time_sailing || 0;
+
+
+        this.distance = distance || 0;
+
+        this.machinery_hfo = machinery_hfo || 0;
+        this.machinery_lfo = machinery_lfo || 0;
+        this.machinery_mgo = machinery_mgo || 0;
+        this.machinery_mdo = machinery_mdo || 0;
+        this.machinery_lpg = machinery_lpg || 0;
+        this.machinery_methanol = machinery_methanol || 0;
+        this.machinery_ethanol = machinery_ethanol || 0;
+        this.machinery_other_fuel_consumption = machinery_other_fuel_consumption || 0;
+        this.machinery_other_fuel_type = machinery_other_fuel_type || 0;
+        this.machinery_other_full_emission = machinery_other_full_emission || 0;
+   
+   
+        this.rob_hfo = rob_hfo || 0;
+        this.rob_lfo = rob_lfo || 0;
+        this.rob_mgo = rob_mgo || 0;
+        this.rob_mdo = rob_mdo || 0;
+        this.rob_lpg = rob_lpg || 0;
+        this.rob_lng = rob_lng || 0;
+        this.rob_methanol = rob_methanol || 0;
+        this.rob_ethanol = rob_ethanol || 0;
+        this.rob_other_fuel = rob_other_fuel || 0;
+        this.rob_other_fuel_type = rob_other_fuel_type || 0;
+   
+   
+   
+   
+    }
+}

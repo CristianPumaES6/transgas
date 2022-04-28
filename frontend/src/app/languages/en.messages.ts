@@ -473,8 +473,8 @@ export const dialog: any = {
     DAILY_CONSUMPTION: 'Daily Consp.',
     CHARTER: 'Charter',
     BUNKERING: 'Bunkering',
-    REPORT_INFORMATION: 'This report has the following information.',
-    EXCEL_FORMAT: 'It allows to export in Excel all the reports registered by the captain.',
+    REPORT_INFORMATION_GENERIC: 'The following format has the summary of fuel by activity, in addition to the reports registered by the captain.',
+    REPORT_INFORMATION_DNV: 'The following format is the one required to obtain the DNV identity certificate.',
     ADD_SAILING_NAVIGATION: 'What navigation information do you want to add?',
     IN_BALLAST: 'In Ballast',
     WITH_LADEN: 'With Laden',
@@ -499,7 +499,7 @@ export const dialog: any = {
     BUNKERING_INFORMATION: 'Bunkering Information',
     ECO_SPEED: 'Eco',
     FULL_SPEED: 'Full',
-    DOWNLOAD: 'DOWNLOADING'
+    DOWNLOAD: 'Download'
 };
 
 export const guards: any = {
@@ -507,14 +507,14 @@ export const guards: any = {
 }
 
 export const exportExcel: any = {
-    LOADING: 'LOADING',
-    DOWNLOADING: 'DISCHARGE',
-    SAILING_IN_BALLAST: 'S. BALLAST',
-    SAILING_WITH_LADEN: 'S. LADEN',
-    ECONOMICAL_NAVIGATION: 'ECONOMICAL',
-    ANCHORED: 'ANCHORED',
-    MANEUVER: 'MANEUVER',
-    OTHER_ACT: 'OTHER ACT.',
+    LOADING: 'Loading',
+    DOWNLOADING: 'Discharge',
+    SAILING_IN_BALLAST: 'S. Ballast',
+    SAILING_WITH_LADEN: 'S. Laden',
+    ECONOMICAL_NAVIGATION: 'Economical',
+    ANCHORED: 'Anchored',
+    MANEUVER: 'Maneuver',
+    OTHER_ACT: 'Other Act',
 
     FULL_SPEED: 'FULL',
     ECO_SPEED: 'ECO',
@@ -565,5 +565,16 @@ export const consumptionAnalysis: any = {
     TITLE_DAILY_COMSUMPTION_IFO: 'IFO DAILY CONSUMPTION',
     TITLE_DAILY_COMSUMPTION_LSFO: 'LSFO DAILY CONSUMPTION',
     TITLE_DAILY_COMSUMPTION_VLSFO: 'VLSFO DAILY CONSUMPTION',
-   
+    YEARS: 'Years',
+    SUMMARY_BY: 'Summary By',
+    VOYAGES: 'Voyages',
+    PORTS: 'Ports',
+    MONTHS: 'Months',
+    DAYS: 'Days',
+    VOYAGE: 'Voyage',
+    END_DATE: 'End date',
+    START_DATE: 'Start date',
+    BUQUE: 'Vessel',
+    CLEAR: 'Clear',
+    SELECT_BUQUE: 'Select Vessel',
 }

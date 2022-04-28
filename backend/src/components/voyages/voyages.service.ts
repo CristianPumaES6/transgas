@@ -11,7 +11,7 @@ import { Not } from "typeorm";
 import { DummyPromise } from '../../assets/promises.assets';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity'; // < Suele cambiar.
 import { URL_Server } from '../../config/server.config';
-import { Port } from 'src/models/port.entity';
+import { Port } from '../../models/port.entity';
 
 
 @Injectable()
