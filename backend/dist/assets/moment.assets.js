@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FormatDateUTCToDateHour = exports.ConvertMMDDYYYToYYYYMMDD = exports.GetDate = void 0;
+exports.FormatDateSumDays = exports.FormatDateUTCToDateHour = exports.ConvertMMDDYYYToYYYYMMDD = exports.GetDate = void 0;
 const moment = require("moment");
 const momentTimezone = require("moment-timezone");
 moment.locale();
@@ -21,4 +21,10 @@ function FormatDateUTCToDateHour(dateUTC) {
     return format;
 }
 exports.FormatDateUTCToDateHour = FormatDateUTCToDateHour;
+function FormatDateSumDays(dateUTC, subtractDays) {
+    let momentDate = moment.utc(dateUTC);
+    let subtract = momentDate.subtract(subtractDays, 'days');
+    return subtract.format('YYYY-MM-DD HH:mm:ss') + 'Z';
+}
+exports.FormatDateSumDays = FormatDateSumDays;
 //# sourceMappingURL=moment.assets.js.map

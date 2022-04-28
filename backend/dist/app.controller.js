@@ -83,7 +83,6 @@ let AppController = class AppController {
         ;
     }
     async loggedUsers(headers, loggedUser) {
-        console.log("@Post('loggedUsers')");
         return await promises_assets_1.DummyPromise().then((resultDummy) => {
             return this._AppGateway.IsUserLogeatedExit(loggedUser);
         }).then((results) => {
@@ -103,7 +102,6 @@ let AppController = class AppController {
         });
     }
     async GetLoggedUsers(headers, loggedUser) {
-        console.log("@Get('loggedUsers')");
         return await promises_assets_1.DummyPromise().then(result => {
             return this._AppGateway.GetLoggedUsers();
         }).then((resultLoggedUsers) => {
@@ -123,7 +121,6 @@ let AppController = class AppController {
         });
     }
     async EmitConnect() {
-        console.log("EmitConnect()");
         return await promises_assets_1.DummyPromise().then((resultDummy) => {
             return this.appService.EmitConnect();
         }).then((resultEmitConnect) => {

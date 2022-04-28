@@ -1,4 +1,4 @@
-import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
+import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
 import { Repository } from 'typeorm';
 export declare class DailyReportsService {
     private _dailyReportRepository;
@@ -15,4 +15,6 @@ export declare class DailyReportsService {
     GetReportVoyagePortDaily(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
     GetReportByUser(userId: number): Promise<GetReportVoyagePortDaily[]>;
     GetInfoVoyageROBAndBunkeringByBuqueAndDate(startDate: Date, endDate: Date, userId: number): Promise<GetInfoVoyageROBBunkering[]>;
+    GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filterBy: string): Promise<GetReportVoyagePortDaily[]>;
+    GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Promise<InfoReport_IFO_AND_MGO>;
 }

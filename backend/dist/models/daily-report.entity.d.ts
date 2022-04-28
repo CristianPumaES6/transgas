@@ -89,3 +89,8 @@ export declare class GetReportVoyagePortDaily {
     bunkeringMgo?: number;
     constructor(userId?: number, year?: number, voyageId?: number, voyageNumber?: number, portId?: number, portNumber?: number, departurePort?: string, arrivalPort?: string, dailyReportId?: number, date?: Date, hour?: string, steamingTime?: number, activityPerformed?: string, speedStraction?: string, observation?: string, distance?: number, beaufour?: string, mplaIfo?: number, auxIfo?: number, boilerIfo?: number, otherIfo?: number, bunkeringIfo?: number, mplaMgo?: number, auxMgo?: number, boilerMgo?: number, ppMgo?: number, giMgo?: number, otherMgo?: number, bunkeringMgo?: number);
 }
+export declare class InfoReport_IFO_AND_MGO {
+    ifo?: GetReportVoyagePortDaily[];
+    mgo?: GetReportVoyagePortDaily[];
+    constructor(ifo?: GetReportVoyagePortDaily[], mgo?: GetReportVoyagePortDaily[]);
+}

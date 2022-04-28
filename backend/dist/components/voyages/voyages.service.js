@@ -28,7 +28,6 @@ const typeorm_4 = require("typeorm");
 const promises_assets_1 = require("../../assets/promises.assets");
 const voyage_entity_1 = require("../../models/voyage.entity");
 const server_config_1 = require("../../config/server.config");
-const port_entity_1 = require("../../models/port.entity");
 let VoyagesService = class VoyagesService {
     constructor(voyageRepository) {
         this.voyageRepository = voyageRepository;

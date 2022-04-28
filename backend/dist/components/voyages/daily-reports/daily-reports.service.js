@@ -430,6 +430,250 @@ let DailyReportsService = class DailyReportsService {
             return listGetInfoVoyageROBBunkering;
         });
     }
+    async GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, filterBy) {
+        let startDateRegister = startDate == 'null' ? null : startDate;
+        let endDateRegister = endDate == 'null' ? null : endDate;
+        let cantUltimosDias = 40;
+        return await promises_assets_1.DummyPromise()
+            .then(result => {
+            if (!startDateRegister && !endDateRegister) {
+                return this._dailyReportRepository.createQueryBuilder('daily_report')
+                    .addSelect('daily_report.date', 'date')
+                    .innerJoin('daily_report.port', 'port')
+                    .innerJoin('port.voyage', 'voyage')
+                    .where('daily_report.status = :status', { status: 1 })
+                    .andWhere('voyage.status = :status', { status: 1 })
+                    .andWhere('port.status = :status', { status: 1 })
+                    .andWhere('daily_report.userId = :userId', { userId: userId })
+                    .andWhere('port.userId = :userId', { userId: userId })
+                    .andWhere('voyage.userId = :userId', { userId: userId })
+                    .orderBy('daily_report.date', 'DESC')
+                    .limit(1)
+                    .getRawMany();
+            }
+            else {
+                return null;
+            }
+        }).then(resultFind => {
+            if (resultFind) {
+                endDateRegister = resultFind[0].date;
+                startDateRegister = moment_assets_1.FormatDateSumDays(endDateRegister, cantUltimosDias);
+            }
+            return true;
+        }).then(result => {
+            let addSelectDinamic = filterBy === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                filterBy === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                    'daily_report.date';
+            let groupByDinamic = filterBy === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                filterBy === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                    filterBy === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                        filterBy === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                            'activityPerformed, voyage.year, voyage.id';
+            let orderBy = filterBy === 'VOYAGES' ? 'voyage.id' :
+                filterBy === 'PORTS' ? 'voyage.id, port.id' :
+                    filterBy === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                        filterBy === 'DAYS' ? "'daily_report'.'date'" :
+                            'voyage.id';
+            return this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select('voyage.userId', 'userId')
+                .addSelect('voyage.year', 'year')
+                .addSelect('voyage.id', 'voyageId')
+                .addSelect('voyage.voyageNumber', 'voyageNumber')
+                .addSelect('port.id', 'portId')
+                .addSelect('port.portNumber', 'portNumber')
+                .addSelect('min(port.departurePort)', 'departurePort')
+                .addSelect('max(port.arrivalPort)', 'arrivalPort')
+                .addSelect('daily_report.id', 'dailyReportId')
+                .addSelect(addSelectDinamic, 'date')
+                .addSelect('min(daily_report.date)', 'dayStart')
+                .addSelect('max(daily_report.date)', 'dayEnd')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.speedStraction', 'speedStraction')
+                .addSelect('daily_report.observation', 'observation')
+                .addSelect('COUNT(*)', 'countReports')
+                .addSelect('COUNT(DISTINCT "port"."id")', 'countPorts')
+                .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+                .addSelect('SUM(daily_report.distance)', 'distance')
+                .addSelect('daily_report.beaufour', 'beaufour')
+                .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+                .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+                .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+                .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+                .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+                .innerJoin('daily_report.port', 'port')
+                .innerJoin('port.voyage', 'voyage')
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+                .andWhere('port.userId = :userId', { userId: userId })
+                .andWhere('voyage.userId = :userId', { userId: userId })
+                .andWhere(' (daily_report.mplaIfo > :mplaIfo OR daily_report.auxIfo > :auxIfo OR daily_report.boilerIfo > :boilerIfo OR daily_report.otherIfo > :otherIfo OR daily_report.bunkeringIfo > :bunkeringIfo )', { mplaIfo: 0, auxIfo: 0, boilerIfo: 0, otherIfo: 0, bunkeringIfo: 0 })
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDateRegister })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDateRegister })
+                .groupBy(groupByDinamic)
+                .orderBy(orderBy)
+                .getRawMany();
+        }).then((result) => {
+            if (!result)
+                throw 'ERROR GetReportVoyagePortDaily';
+            return result;
+        });
+    }
+    async GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary) {
+        let startDateRegister = startDate == 'null' ? null : startDate;
+        let endDateRegister = endDate == 'null' ? null : endDate;
+        let cantUltimosDias = 40;
+        let result_IFO_AND_MGO = new daily_report_entity_1.InfoReport_IFO_AND_MGO();
+        return await promises_assets_1.DummyPromise()
+            .then(result => {
+            if (!startDateRegister && !endDateRegister) {
+                return this._dailyReportRepository.createQueryBuilder('daily_report')
+                    .addSelect('daily_report.date', 'date')
+                    .innerJoin('daily_report.port', 'port')
+                    .innerJoin('port.voyage', 'voyage')
+                    .where('daily_report.status = :status', { status: 1 })
+                    .andWhere('voyage.status = :status', { status: 1 })
+                    .andWhere('port.status = :status', { status: 1 })
+                    .andWhere('daily_report.userId = :userId', { userId: userId })
+                    .andWhere('port.userId = :userId', { userId: userId })
+                    .andWhere('voyage.userId = :userId', { userId: userId })
+                    .orderBy('daily_report.date', 'DESC')
+                    .limit(1)
+                    .getRawMany();
+            }
+            else {
+                return null;
+            }
+        }).then(resultFind => {
+            if (resultFind) {
+                endDateRegister = resultFind[0].date;
+                startDateRegister = moment_assets_1.FormatDateSumDays(endDateRegister, cantUltimosDias);
+            }
+            return true;
+        }).then(result => {
+            let addSelectDinamic = typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                    'daily_report.date';
+            let groupByDinamic = typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                    typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                        typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                            'activityPerformed, voyage.year, voyage.id';
+            let orderBy = typeSummary === 'VOYAGES' ? 'voyage.id' :
+                typeSummary === 'PORTS' ? 'voyage.id, port.id' :
+                    typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                        typeSummary === 'DAYS' ? "'daily_report'.'date'" :
+                            'voyage.id';
+            return this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select('voyage.userId', 'userId')
+                .addSelect('voyage.year', 'year')
+                .addSelect('voyage.id', 'voyageId')
+                .addSelect('voyage.voyageNumber', 'voyageNumber')
+                .addSelect('port.id', 'portId')
+                .addSelect('port.portNumber', 'portNumber')
+                .addSelect('min(port.departurePort)', 'departurePort')
+                .addSelect('max(port.arrivalPort)', 'arrivalPort')
+                .addSelect('daily_report.id', 'dailyReportId')
+                .addSelect(addSelectDinamic, 'date')
+                .addSelect('min(daily_report.date)', 'dayStart')
+                .addSelect('max(daily_report.date)', 'dayEnd')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.speedStraction', 'speedStraction')
+                .addSelect('daily_report.observation', 'observation')
+                .addSelect('COUNT(*)', 'countReports')
+                .addSelect('COUNT(DISTINCT "port"."id")', 'countPorts')
+                .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+                .addSelect('SUM(daily_report.distance)', 'distance')
+                .addSelect('daily_report.beaufour', 'beaufour')
+                .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+                .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+                .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+                .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+                .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+                .innerJoin('daily_report.port', 'port')
+                .innerJoin('port.voyage', 'voyage')
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+                .andWhere('port.userId = :userId', { userId: userId })
+                .andWhere('voyage.userId = :userId', { userId: userId })
+                .andWhere('(daily_report.mplaIfo > :mplaIfo OR daily_report.auxIfo > :auxIfo OR daily_report.boilerIfo > :boilerIfo OR daily_report.otherIfo > :otherIfo OR daily_report.bunkeringIfo > :bunkeringIfo )', { mplaIfo: 0, auxIfo: 0, boilerIfo: 0, otherIfo: 0, bunkeringIfo: 0 })
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDateRegister })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDateRegister })
+                .groupBy(groupByDinamic)
+                .orderBy(orderBy)
+                .getRawMany();
+        }).then((result) => {
+            if (!result)
+                throw 'ERROR GetReportVoyagePortDaily';
+            result_IFO_AND_MGO.ifo = result;
+            let addSelectDinamic = typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                    'daily_report.date';
+            let groupByDinamic = typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                    typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                        typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                            'activityPerformed, voyage.year, voyage.id';
+            let orderBy = typeSummary === 'VOYAGES' ? 'voyage.id' :
+                typeSummary === 'PORTS' ? 'voyage.id, port.id' :
+                    typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                        typeSummary === 'DAYS' ? "'daily_report'.'date'" :
+                            'voyage.id';
+            return this._dailyReportRepository.createQueryBuilder('daily_report')
+                .select('voyage.userId', 'userId')
+                .addSelect('voyage.year', 'year')
+                .addSelect('voyage.id', 'voyageId')
+                .addSelect('voyage.voyageNumber', 'voyageNumber')
+                .addSelect('port.id', 'portId')
+                .addSelect('port.portNumber', 'portNumber')
+                .addSelect('min(port.departurePort)', 'departurePort')
+                .addSelect('max(port.arrivalPort)', 'arrivalPort')
+                .addSelect('daily_report.id', 'dailyReportId')
+                .addSelect(addSelectDinamic, 'date')
+                .addSelect('min(daily_report.date)', 'dayStart')
+                .addSelect('max(daily_report.date)', 'dayEnd')
+                .addSelect('daily_report.hour', 'hour')
+                .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.speedStraction', 'speedStraction')
+                .addSelect('daily_report.observation', 'observation')
+                .addSelect('COUNT(*)', 'countReports')
+                .addSelect('COUNT(DISTINCT "port"."id")', 'countPorts')
+                .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+                .addSelect('SUM(daily_report.distance)', 'distance')
+                .addSelect('daily_report.beaufour', 'beaufour')
+                .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+                .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+                .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+                .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+                .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+                .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+                .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+                .innerJoin('daily_report.port', 'port')
+                .innerJoin('port.voyage', 'voyage')
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+                .andWhere('port.userId = :userId', { userId: userId })
+                .andWhere('voyage.userId = :userId', { userId: userId })
+                .andWhere('(daily_report.mplaMgo > :mplaMgo OR daily_report.auxMgo > :auxMgo OR daily_report.boilerMgo > :boilerMgo OR daily_report.giMgo > :giMgo OR daily_report.ppMgo > :ppMgo OR daily_report.otherMgo > :otherMgo OR daily_report.bunkeringMgo > :bunkeringMgo )', { mplaMgo: 0, auxMgo: 0, boilerMgo: 0, giMgo: 0, ppMgo: 0, otherMgo: 0, bunkeringMgo: 0 })
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDateRegister })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDateRegister })
+                .groupBy(groupByDinamic)
+                .orderBy(orderBy)
+                .getRawMany();
+        }).then((result) => {
+            if (!result)
+                throw 'ERROR GetReportVoyagePortDaily';
+            result_IFO_AND_MGO.mgo = result;
+            return result_IFO_AND_MGO;
+        });
+    }
 };
 DailyReportsService = __decorate([
     common_1.Injectable(),

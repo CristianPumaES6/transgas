@@ -1652,12 +1652,12 @@
         "affectsGlobalScope": false
       },
       "../src/assets/moment.assets.ts": {
-        "version": "47594b4cf4c677c2d1140dc8e1399ee2e4fe08ee78ef2bd96304dd7c9e84ca22",
-        "signature": "5fc7d54c755159a28f867a6f9f06b2fd2ebaedef1695d4da1987cfe86a2f7f22",
+        "version": "305551152e2c7cc8c26fa9ff10f716f20223c350dd806ef191e8da8791b38fa2",
+        "signature": "8e8c60c89919a84d9f4a679f52ed79e49a13e8f76ba3e67d461a132a3733ab30",
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "18fab4c2f6e3eb930b76a3c34f7eebeb7675097c155723633933eb33b8ba1747",
+        "version": "de9eeb68edbd6ef96a2a6c8888cc96b6729bf698f532ec00b78423d78e2163cf",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3047,7 +3047,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/users/users.service.ts": {
-        "version": "f1b62ac4c0be79820d6d8a93c03b7c2e0cc2409e4ad2674ec26219ad97928f94",
+        "version": "e3a5eb9aab996fcbf134b9f80ef7cd5d63ac1c1c01974d47eb5c709df826a550",
         "signature": "7779e08288c43095457256006c746bed840f740fd199102e2339f9f9d88ff65d",
         "affectsGlobalScope": false
       },
@@ -3092,7 +3092,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.controller.ts": {
-        "version": "540b290834fea204f2670587b80f55c12ce822fd7702d0aaef950dc9b2445095",
+        "version": "a0c87a196b9c5e2142ea76d773b38da860fb9d76f2268263c44b976a2de34289",
         "signature": "5aa12b25508f9e9870d01078c7f8b0b62c834cc271b2b97ff8bda1572344eb19",
         "affectsGlobalScope": false
       },
@@ -3252,8 +3252,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/daily-report.entity.ts": {
-        "version": "ad505660ca78e15929427cd7f19243f04d4f494508df273afa61a77a2afc861c",
-        "signature": "116dfdb86a0dea364a845ffa4b74591f11d84b3ea01de087a665f819113ced57",
+        "version": "54fb8ff00e4c7dda0f3d401f6736d5916500bfa3eea637cee8bc06eb39281b81",
+        "signature": "b844074527c4de8df280d46c4ce448930d859a1150208395b6b8f12169db9ebc",
         "affectsGlobalScope": false
       },
       "../src/models/port.entity.ts": {
@@ -3267,18 +3267,18 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "deeec0cce1950e595d72d43491c859c56e3ae2597486de799e6a719e58c5f47c",
+        "version": "a2fd9ed2eac284fde75e922e3669cbb1f82e7e0c42499906d87c7a58f5247c7f",
         "signature": "b39989582d42ddad9e605413adbca4b8a4db1d44f8c08e2463af84479897059f",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.service.ts": {
-        "version": "2ec399bd8f680a80de3a25551c10a92ae1ea25f2637e282338716c8f6a4ac74a",
+        "version": "636dddf84c23520833b278817179086cd48cd810bb4d52cdb3c82067fc9137b8",
         "signature": "c144c723f33e121d7eb41d68fe19a9a01e8f0ac7ddc0733c6059c0305c331f2e",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "1bc0e363e97f23fededbf10198ba01954c83652c8bd593ccfa369b55e7f03004",
-        "signature": "7b96ffb6f08f0740caf060816f1d404a23bae456ea20625051a069553fb8550d",
+        "version": "9eaacc23e4000efb25f71a3b7e04731db537dacc2b9ffb61877ae32bc4273857",
+        "signature": "e205d4eceeb249f49b75ecd05e10e246b70e07e4a9d840c762369e1c172a9912",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
@@ -3297,8 +3297,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.controller.ts": {
-        "version": "853b83c763b7250459202560343aa6b32cffd92e89257400458aa39f4e6a65ca",
-        "signature": "81e987fbb922fda71d320cf26c4d03687df06f087f3d72aa5cdaabe7d65bedc0",
+        "version": "823398a548eaef3fa04736ee32bc729b1fd98ed3e0b63bb1118fb8da2cfd27ac",
+        "signature": "d3e52dbb3bcab8ce67511e6aea76ec018f64478b62e05e6e2cc817bc59d5af93",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.module.ts": {
