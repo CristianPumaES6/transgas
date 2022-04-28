@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Para
 import { JwtDecode } from '../../../assets/jwtDecode.assets';
 import { FormatDateUTCToDateHour, GetDate } from '../../../assets/moment.assets';
 import { DummyPromise } from '../../../assets/promises.assets';
-import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser } from '../../../models/daily-report.entity';
+import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
 import { UserEntity } from '../../../models/user.entity';
 import { DailyReportsService } from './daily-reports.service';
 
@@ -719,9 +719,9 @@ export class DailyReportsController {
     }
 
 
-    // ELGANCIA EN EL CODIGO
-    @Get('get-total-by-activity/:userId/:startDate/:endDate')
-    GetTotalByActivityFilterByUserIdAndDateAndType(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date): Promise<any> {
+    // Obtener el total por actividad.
+    @Get('get-total-by-activity/:userId/:startDate/:endDate/:filter')
+    GetTotalByActivityFilterByUserIdAndDateAndType(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: string, @Param('endDate') endDate: string, @Param('filter') filter: string): Promise<any> {
 
 
         // Le asigno el valor al token desde la cabecera.
@@ -752,10 +752,71 @@ export class DailyReportsController {
             (resultValidate: Boolean) => {
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._dailyReportsService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate);
+                return this._dailyReportsService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, filter);
             }
         ).then(
             (results: GetReportVoyagePortDaily[]) => {
+
+                // Retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: results
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
+    // Total de consumo.
+    @Get('get-total-consumption-by-activity/:userId/:startDate/:endDate/:typeSummary')
+    GetTotalConsumerByActivityFilterByUserIdAndDateAndType(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: string, @Param('endDate') endDate: string, @Param('typeSummary') typeSummary: string): Promise<any> {
+
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+                // Validamos que los datos sean los necesarios.
+                if (userId) {
+
+                    return true;
+
+                } else throw new Error('MISSING_FIELS');
+
+            }
+        ).then(
+            (resultValidate: Boolean) => {
+
+                // Validamos que el userId sea el mismo que el del sailingAnality
+                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    return true;
+                } else if (Number(userId) !== Number(headerToken.id)) throw new Error('ERROR_USERID_FAIL');
+
+            }
+        ).then(
+            (resultValidate: Boolean) => {
+
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._dailyReportsService.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary);
+            }
+        ).then(
+            (results: InfoReport_IFO_AND_MGO) => {
 
                 // Retornamos una Respuesta exitosa.
                 return {

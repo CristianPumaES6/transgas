@@ -111,5 +111,10 @@ export class GetReportVoyagePortDaily {
         this.statusVoyage = statusVoyage || false;
     }
 
-
+    
+    // variables que contien la suma.
+    countReports: number;
+    countPorts: number;
+    dayStart: string;
+    dayEnd: string;
 }

@@ -16,7 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DailyReport, Speed } from '../../../models/daily-report';
 import { Voyage } from '../../../models/voyage';
 import { Port } from '../../../models/port';
-import { ActivityPerformed } from '../../../models/dashboard';
+import { ActivityPerformed, InfoReport_IFO_AND_MGO } from '../../../models/dashboard';
 import { FormuleService } from '../../../services/formule.service';
 
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -26,17 +26,17 @@ import { UserService } from '../../../services/user.service';
 import { ConvertMomentUTC, IsAfter1Date, validateDate } from '../../../../assets/moment/moment.assets';
 
 @Component({
-  selector: 'app-speed-analysis',
-  templateUrl: './speed-analysis.component.html',
-  styleUrls: ['./speed-analysis.component.scss']
+  selector: 'app-consumption-analysis',
+  templateUrl: './consumption-analysis.component.html',
+  styleUrls: ['./consumption-analysis.component.scss']
 })
-export class SpeedAnalysisComponent implements OnInit {
+export class ConsumptionAnalysisComponent implements OnInit {
   // Esta variable nos ayudara a saber si nos encontramos con conexion al servidor.
   public isOnline: boolean = true;
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();
-  public translateCategory: string = 'speedAnalysis';
+  public translateCategory: string = 'consumptionAnalysis';
 
   // Rol del usuario logeado.
   public roleUser: string = '';
@@ -45,9 +45,15 @@ export class SpeedAnalysisComponent implements OnInit {
   // ------------ Chart ----------------
   public xLabelReport: any[] = [];
   // Configuracion del SPEED
-  public dataSPEEDChartPoint: any[] = []; // Data
-  public configLineaSPEED: ChartConfiguration; // configuracion del elemento
-  public chartLineSPEED: Chart; // LINEA
+  public dataConsumptionChartPoint: any[] = []; // Data
+  public configLineaConsumption: ChartConfiguration; // configuracion del elemento
+  public chartLineConsumption: Chart; // LINEA
+
+  public xLabelReportMGO: any[] = [];
+  // Configuracion del SPEED
+  public dataConsumptionChartPointMGO: any[] = []; // Data
+  public configLineaConsumptionMGO: ChartConfiguration; // configuracion del elemento
+  public chartLineConsumptionMGO: Chart; // LINEA
 
   // Años que tiene el usuario.
   public yearsOfUsers: number[] = [];
@@ -69,6 +75,11 @@ export class SpeedAnalysisComponent implements OnInit {
   // Usuario seleccionado.
   public selectUser: User = new User();
 
+  // Si esta activado nos muestra con la formula de dailuconsumption.
+  public isDailyFormule: boolean = false;
+
+
+
   // DATA consultas server.
   // Todos los usuarios obtenidos por el getUsers.
   public getUsers: User[] = [];
@@ -88,6 +99,17 @@ export class SpeedAnalysisComponent implements OnInit {
     OTHER_ACT: []
   };
 
+  public listGetReportVoyagePortDailyMGO: GetReportVoyagePortDaily[] = [];
+  public reorganizarDataViajesMGO = {
+    LOADING: [],
+    DOWNLOADING: [],
+    SAILING_IN_BALLAST: [],
+    SAILING_WITH_LADEN: [],
+    ECONOMICAL_NAVIGATION: [],
+    ANCHORED: [],
+    MANEUVER: [],
+    OTHER_ACT: []
+  };
   public cantDecimal: number = 1;
   public aMonthEnglishShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -118,7 +140,8 @@ export class SpeedAnalysisComponent implements OnInit {
         this.PluginChartLine();
 
         // Inicializamos la lineaChartSPEED
-        this.GenetareLineSPEED();
+        this.GenetareLineIFO();
+        this.GenetareLineMGO();
 
         // Instanciamos el obj que usaremos en la consulta de registro de viajes
         let user: User = new User();
@@ -144,6 +167,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
         if (!firstUser) throw 'NO_BUQUE_REGISTER';
 
+        // Buscamos al primer usuario, si no es admin solo nos saldra el usuario logeado.
         return this.SelectUser(firstUser.id);
       }
     )
@@ -153,10 +177,7 @@ export class SpeedAnalysisComponent implements OnInit {
       new PerfectScrollbar('.body-full-container', {
         suppressScrollX: true
       });
-      // TABLE FIX HEAD
-      new PerfectScrollbar('.tableFixHead', {
-        suppressScrollX: true
-      });
+
     });
 
   }
@@ -166,7 +187,7 @@ export class SpeedAnalysisComponent implements OnInit {
 
     // Filtros por fecha.
     let userSelect = 0;
-    let filter = '';
+    let summaryBy = '';
     let dateStart = '';
     let dateEnd = '';
 
@@ -188,7 +209,7 @@ export class SpeedAnalysisComponent implements OnInit {
           // Obtenemos el usuario seleccionamos.
           userSelect = this.selectUserId;
           // agregamos el filtro.
-          filter = this.selectSummaryBy;
+          summaryBy = this.selectSummaryBy;
           // Seteammos una fecha solo si la fecha es null
           this.GenerateDateByThisFishYearAndOldYear(true);
           // Seteamos la fecha.
@@ -201,18 +222,25 @@ export class SpeedAnalysisComponent implements OnInit {
           dateEnd = this.endDate;
 
           // Obtenemos el total por actividad
-          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
+          return this.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, summaryBy).pipe().toPromise();
         }
       ).then(
         result => {
           if (!result) throw 'ERROR GER REPORT';
-          this.listGetReportVoyagePortDaily = result;
+          this.listGetReportVoyagePortDaily = result.ifo;
+          this.listGetReportVoyagePortDailyMGO = result.mgo;
 
           return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
         }
       ).then(
         result => {
           this.UpdateLineSPEED()
+
+          return this.GenerateDataForChartMGO(false, this.listGetReportVoyagePortDailyMGO);
+        }
+      ).then(
+        result => {
+          this.UpdateLineSPEED_MGO()
           return true;
         }
       ).then(
@@ -231,14 +259,17 @@ export class SpeedAnalysisComponent implements OnInit {
 
   }
 
+  // Esta funcion hace una busqueda por defecto omite loos filtros, se preocupa en los ultimos 40 dias del reporte.
   public async ClickClear(): Promise<boolean> {
     console.log('ClickClear()')
     // Inicia la promesa.
     return await Promise.resolve(true)
       .then(
         result => {
+          // Reset valores del filtro.
           this.startDate = null;
           this.endDate = null;
+          // El resumen se hace por puerto.
           this.selectSummaryBy = 'PORTS';
 
 
@@ -249,24 +280,31 @@ export class SpeedAnalysisComponent implements OnInit {
         result => {
           if (!result) throw 'ERROR REACTIVE_FORM'
 
+          // armamos los valores que se enviaran a la consulta
           let userSelect = this.selectUserId;
           let dateStart = this.startDate;
           let dateEnd = this.endDate;
-          let filter = this.selectSummaryBy;
+          let typeSummary = this.selectSummaryBy;
 
           // Obtenemos el total por actividad
-          return this.GetTotalByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, filter).pipe().toPromise();
+          return this.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userSelect, dateStart, dateEnd, typeSummary).pipe().toPromise();
         }
       ).then(
         result => {
           if (!result) throw 'ERROR GER REPORT';
-          this.listGetReportVoyagePortDaily = result;
+          this.listGetReportVoyagePortDaily = result.ifo;
+          this.listGetReportVoyagePortDailyMGO = result.mgo;
 
           return this.GenerateDataForChart(false, this.listGetReportVoyagePortDaily);
         }
       ).then(
         result => {
           this.UpdateLineSPEED()
+          return this.GenerateDataForChartMGO(false, this.listGetReportVoyagePortDailyMGO);
+        }
+      ).then(
+        result => {
+          this.UpdateLineSPEED_MGO();
           return true;
         }
       ).then(
@@ -320,10 +358,10 @@ export class SpeedAnalysisComponent implements OnInit {
     }
   }
 
-  private GenetareLineSPEED(): boolean {
+  private GenetareLineIFO(): boolean {
 
     // Configuracion Chart lineal
-    this.configLineaSPEED = {
+    this.configLineaConsumption = {
       // Update Char 3.7 quitar este type deberia ir en cada dataset.
       type: 'line',
       data: {
@@ -331,6 +369,18 @@ export class SpeedAnalysisComponent implements OnInit {
         datasets: []
       },
       options: {
+        title: {
+          display: true,
+          text: this.languageService.GetMessage(this.translateCategory,
+            this.isDailyFormule ?
+              (this.selectUser.isConsumptionLSFO ? 'TITLE_DAILY_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_DAILY_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_DAILY_COMSUMPTION_VLSFO' : 'TITLE_DAILY_COMSUMPTION_LSFO') :
+              (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO')
+
+          ),
+          fontColor: 'rgb(255,255,255)',
+          fontStyle: 'bold', // Tipo de texto de la leyenda.
+          padding: 1
+        },
         // Lineas los pongo por el public creo que es maxio y minimo corrigan.
         lines: [],
         onHover: (event, chartElement) => {
@@ -350,10 +400,10 @@ export class SpeedAnalysisComponent implements OnInit {
             // Obtenemos la ubicacion.
             let index = actEle._index;
             let datasetIndex = actEle._datasetIndex;
-            let dataSPEEDChartPoint = this.dataSPEEDChartPoint[datasetIndex];
-            let label = dataSPEEDChartPoint.label;
+            let dataConsumptionChartPoint = this.dataConsumptionChartPoint[datasetIndex];
+            let label = dataConsumptionChartPoint.label;
             // Obtenemos la lista de dataset del la actividad seleccionada.
-            let dataChartList = dataSPEEDChartPoint.data;
+            let dataChartList = dataConsumptionChartPoint.data;
             let ubication = dataChartList[index].ubication;
             // Obtenemos el registro real con la ubicacion.
             let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[ubication];
@@ -386,13 +436,11 @@ export class SpeedAnalysisComponent implements OnInit {
         legend: {
           // La leyenda es el texto que esta arriva del cuadro.
           display: true,
-          onClick: (event, legendItem) => {
-            console.log('onClick:' + legendItem.text);
-            return true
-          },
           labels: {
             fontColor: 'rgb(255,255,255)', // Color de la leyenda.
-            fontStyle: 'bold', // Tipo de texto de la leyenda.
+            fontStyle: 'normal', // Tipo de texto de la leyenda.
+            boxWidth: 7,
+            fontSize: 10,
           }
         },
         // Habilitamos la opcion para que sea responsive
@@ -427,13 +475,133 @@ export class SpeedAnalysisComponent implements OnInit {
     // Convertimos el canvaLineIfo en 2d
     let ctxLineSPEED: any = canvaLineSPEED.getContext('2d');
 
-    this.chartLineSPEED = new Chart(ctxLineSPEED, this.configLineaSPEED);
+    this.chartLineConsumption = new Chart(ctxLineSPEED, this.configLineaConsumption);
 
     return false;
 
   }
 
+  private GenetareLineMGO(): boolean {
 
+    // Configuracion Chart lineal
+    this.configLineaConsumptionMGO = {
+      // Update Char 3.7 quitar este type deberia ir en cada dataset.
+      type: 'line',
+      data: {
+        labels: [], // Lo pongo vacio por que en el update se colocara el valor.
+        datasets: []
+      },
+      options: {
+        title: {
+          display: true,
+          text: this.languageService.GetMessage(this.translateCategory,
+            this.isDailyFormule ?
+              'TITLE_DAILY_COMSUMPTION_MGO' :
+              'TITLE_COMSUMPTION_MGO'
+          ),
+          fontColor: 'rgb(255,255,255)',
+          fontStyle: 'bold', // Tipo de texto de la leyenda.
+          padding: 1
+        },
+        // Lineas los pongo por el public creo que es maxio y minimo corrigan.
+        lines: [],
+        onHover: (event, chartElement) => {
+          //console.log(event);
+          // console.log(chartElement);
+          let eventTarget = event.target as HTMLCanvasElement;
+          eventTarget.style.cursor = chartElement[0] ? 'pointer' : 'default';
+        },
+        // Otras opciones dentro del Chart
+        onClick: (event, activeElement) => {
+          // REVISAR ESTO, Aqui se ejecuta la data que se muestra al dar click a los puntos dentro del chart.
+          if (activeElement && activeElement.length) {
+
+            // Obtenemos la posicion 0 del activeElement
+            let actEle: any = activeElement[0];
+
+            // Obtenemos la ubicacion.
+            let index = actEle._index;
+            let datasetIndex = actEle._datasetIndex;
+            let dataConsumptionChartPoint = this.dataConsumptionChartPointMGO[datasetIndex];
+            let label = dataConsumptionChartPoint.label;
+            // Obtenemos la lista de dataset del la actividad seleccionada.
+            let dataChartList = dataConsumptionChartPoint.data;
+            let ubication = dataChartList[index].ubication;
+            // Obtenemos el registro real con la ubicacion.
+            let reportVoyagePortDaily = this.listGetReportVoyagePortDailyMGO[ubication];
+
+            this.startDate = reportVoyagePortDaily.dayStart;
+            this.endDate = reportVoyagePortDaily.dayEnd;
+
+
+            // Este click tendra consulta al server solo si no es de tipo dia.
+            let consultarServer = true;
+            if (this.selectSummaryBy == 'VOYAGES') {
+              this.selectSummaryBy = 'PORTS';
+            } else if (this.selectSummaryBy == 'PORTS') {
+              this.selectSummaryBy = 'DAYS';
+            } else if (this.selectSummaryBy == 'MONTHS') {
+              this.selectSummaryBy = 'DAYS';
+            } else if (this.selectSummaryBy == 'DAYS') {
+              consultarServer = false;
+            }
+            // Solo si el tipo de resumen es diferente a dias hacemos la consulta.
+            if (consultarServer) {
+              // Seteamos los valores configurados.
+              this.ReactiveForm(false, false, true, false, true)
+              // BUscamos segun los filtros.  
+              this.ClickButtonTest();
+            }
+
+          }
+        },
+        legend: {
+          // La leyenda es el texto que esta arriva del cuadro.
+          display: true,
+          labels: {
+            fontColor: 'rgb(255,255,255)', // Color de la leyenda.
+            fontStyle: 'normal', // Tipo de texto de la leyenda.
+            boxWidth: 7,
+            fontSize: 10,
+          }
+        },
+        // Habilitamos la opcion para que sea responsive
+        maintainAspectRatio: false,
+        tooltips: {}, // Lo pongo vacio por que en// Lo pongo vacio por que en el update se colocara el valor.
+        scales: {},// Lo pongo vacio por que en el update se colocara el valor.
+        /*  hover: {
+           // @ts-ignore
+           onHover: function (e: MouseEvent) {
+ 
+             console.log('hoverrrrrrrrrrrrrrr')
+             // puntos GetElementAtaEvent
+             var point = this.getElementAtEvent(e);
+ 
+             // event targer.
+             let eventTarget = e.target as HTMLCanvasElement;
+             ///home/kali/.vscode/extensions/ms-vscode.vscode-typescript-next-4.3.20210505/node_modules/typescript/lib/lib.dom.d.ts
+             if (point.length) {
+               eventTarget.style.cursor = 'pointer';// Aqui se esta modificando el TypeScript.
+             } else {
+               eventTarget.style.cursor = 'default';
+             }
+           }
+         } */
+      },
+      lineaMax: 0 // Lo pongo cero por que en el update se colocara el valor.
+    };
+
+
+    // Encapculamos el elemento del dom.
+    let canvaLineMGO: any = document.getElementById('myChartMGO');
+    // Convertimos el canvaLineIfo en 2d
+    let ctxLineMGO: any = canvaLineMGO.getContext('2d');
+
+    this.chartLineConsumptionMGO = new Chart(ctxLineMGO, this.configLineaConsumptionMGO);
+
+    return false;
+
+  }
   // GenerateDataForChart(): genera data para los chart.
   // Dependiendo del tipo de resumen, puede ser viaje, puertos, meses, dias
   private GenerateDataForChart(setDate: boolean, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]) {
@@ -443,7 +611,7 @@ export class SpeedAnalysisComponent implements OnInit {
     this.xLabelReport = [];
 
     // Data de los chart.
-    this.dataSPEEDChartPoint = [];
+    this.dataConsumptionChartPoint = [];
 
     this.reorganizarDataViajes = {
       LOADING: [],
@@ -460,7 +628,7 @@ export class SpeedAnalysisComponent implements OnInit {
     this.listTableSpeedByVoyage = [];
 
     // Configuracion de la linea maxima.
-    this.configLineaSPEED.lineaMax = 0;
+    this.configLineaConsumption.lineaMax = 0;
 
     // Fecha inicio y fin de la data.
     let startDate;
@@ -476,6 +644,12 @@ export class SpeedAnalysisComponent implements OnInit {
 
     let speed = 0;
 
+    // Esto se esta poniendo para darle un espacio a la izquierda. por que hay barras que estan despues del borde.
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
+      this.xLabelReport.push("")
+    } else {
+      //Resument por mes o dia no le inserto ese valor vacio.
+    }
 
     // recorremos todo el arreglo
     listGetReportVoyagePortDaily.forEach(
@@ -501,6 +675,7 @@ export class SpeedAnalysisComponent implements OnInit {
           // Armamos el texto de label para dias.
           txtLabelChart = String(iGetReportVoyagePortDaily.date);
         }
+
         // Posiciondel elemento
         let posicionDelLabelSiExiste = 0;
         // Buscamos si el label ya se registro.
@@ -520,85 +695,78 @@ export class SpeedAnalysisComponent implements OnInit {
           this.xLabelReport.push(txtLabelChart);
         }
 
-        // Obtenemos la velocidad IFO
-        let dataSpeed = new Speed();
-        dataSpeed.addInfoIFO(iGetReportVoyagePortDaily.distance, iGetReportVoyagePortDaily.steamingTime)
-        // El total de velocidad debe de ser mayor para poder pintarlo.
-        speed = this.MathRoundOneDecimal(this.formuleService.CalculateSpeed(dataSpeed.distanceIFO, dataSpeed.timeOperationIFO), this.cantDecimal);
-        // Solo si el valor de velocidad es mayor a cero lo pintaremos en el dashboard.
-        if (speed > 0) {
-          // Agrega o actualiza la lista de la tabla.
-          this.AddOrUpdateDataTableList(iGetReportVoyagePortDaily, indexReport);
+        // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
+        let totalIFO = this.isDailyFormule ?
+          this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'IFO') :
+          this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'IFO');
 
-          this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
-            { x: txtLabelChart, y: speed, ubication: indexReport }
-          );
+
+        if (totalIFO > this.configLineaConsumption.lineaMax) {
+          this.configLineaConsumption.lineaMax = totalIFO;
         };
 
 
-        // La linea maxima
-        if (speed > this.configLineaSPEED.lineaMax) {
-          this.configLineaSPEED.lineaMax = speed;
-        };
-
+        this.reorganizarDataViajes[iGetReportVoyagePortDaily.activityPerformed].push(
+          { x: txtLabelChart, y: totalIFO, ubication: indexReport }
+        );
       });
 
     // Solo agregamos una linea si hay registros.
     if (this.reorganizarDataViajes['LOADING'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'LOADING',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'LOADING'),
           data: this.reorganizarDataViajes['LOADING'],
-          backgroundColor: 'rgb(255,205,6)',
-          borderColor: 'rgb(255,205,6)',
+          backgroundColor: '#b57c00',
+          borderColor: '#b57c00',
           fill: false
         }
       )
     }
     if (this.reorganizarDataViajes['DOWNLOADING'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'DOWNLOADING',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'DOWNLOADING'),
           data: this.reorganizarDataViajes['DOWNLOADING'],
-          backgroundColor: 'rgb(255,33,6)',
-          borderColor: 'rgb(255,33,6)',
+          backgroundColor: '#d09306',
+          borderColor: '#d09306',
           fill: false,
           order: 2
         }
       );
     }
     if (this.reorganizarDataViajes['SAILING_IN_BALLAST'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'SAILING_IN_BALLAST',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'SAILING_IN_BALLAST'),
           data: this.reorganizarDataViajes['SAILING_IN_BALLAST'],
-          backgroundColor: 'rgb(33,205,6)',
-          borderColor: 'rgb(33,205,6)',
+          backgroundColor: '#ecab0f',
+          borderColor: '#ecab0f',
           fill: false,
           order: 3
 
         });
     }
     if (this.reorganizarDataViajes['SAILING_WITH_LADEN'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'SAILING_WITH_LADEN',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'SAILING_WITH_LADEN'),
           data: this.reorganizarDataViajes['SAILING_WITH_LADEN'],
-          backgroundColor: 'rgb(44,44,6)',
-          borderColor: 'rgb(44,44,6)',
+          backgroundColor: 'rgb(255,192,5)',
+          borderColor: 'rgb(255,192,5)',
           fill: false,
           order: 4
         });
     }
     if (this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'ECONOMICAL_NAVIGATION',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'ECONOMICAL_NAVIGATION'),
           data: this.reorganizarDataViajes['ECONOMICAL_NAVIGATION'],
           backgroundColor: 'rgb(22,205,6)',
           borderColor: 'rgb(22,205,6)',
@@ -607,38 +775,248 @@ export class SpeedAnalysisComponent implements OnInit {
         });
     }
     if (this.reorganizarDataViajes['ANCHORED'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'ANCHORED',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'ANCHORED'),
           data: this.reorganizarDataViajes['ANCHORED'],
-          backgroundColor: 'rgb(255,22,6)',
-          borderColor: 'rgb(255,22,6)',
+          backgroundColor: '#f7d547',
+          borderColor: '#f7d547',
           fill: false,
           order: 6
         });
     }
     if (this.reorganizarDataViajes['MANEUVER'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'MANEUVER',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'MANEUVER'),
           data: this.reorganizarDataViajes['MANEUVER'],
-          backgroundColor: 'rgb(255,66,6)',
-          borderColor: 'rgb(255,66,6)',
+          backgroundColor: '#ffff72',
+          borderColor: '#ffff72',
           fill: false,
           order: 7
         }
       );
     }
     if (this.reorganizarDataViajes['OTHER_ACT'].length > 0) {
-      this.dataSPEEDChartPoint.push(
+      this.dataConsumptionChartPoint.push(
         {
-          type: 'line',
-          label: 'OTHER_ACT',
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'OTHER_ACT'),
           data: this.reorganizarDataViajes['OTHER_ACT'],
-          backgroundColor: 'rgb(66,205,6)',
-          borderColor: 'rgb(66,205,6)',
+          backgroundColor: '#fffff1',
+          borderColor: '#fffff1',
+          fill: false,
+          order: 8
+        }
+      );
+    }
+
+    return true;
+  }
+
+  private GenerateDataForChartMGO(setDate: boolean, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]) {
+
+    console.log('GenerateDataForChartMGO(setDate: boolean)' + setDate)
+    // Texto x de los reportes.
+    this.xLabelReportMGO = [];
+
+    // Data de los chart.
+    this.dataConsumptionChartPointMGO = [];
+
+    this.reorganizarDataViajesMGO = {
+      LOADING: [],
+      DOWNLOADING: [],
+      SAILING_IN_BALLAST: [],
+      SAILING_WITH_LADEN: [],
+      ECONOMICAL_NAVIGATION: [],
+      ANCHORED: [],
+      MANEUVER: [],
+      OTHER_ACT: []
+    };
+
+
+    // Configuracion de la linea maxima.
+    this.configLineaConsumptionMGO.lineaMax = 0;
+
+    // Fecha inicio y fin de la data.
+    let startDate;
+    let endDate;
+
+
+    // Creamos esta variable para que nos avise cuando hay un nuevo registro
+    // Esta variable solo se usa en los filtro Sumary por mes y dia
+    let isAddNewVoyage: boolean = false;
+
+    let ultimoViaje: number = 0;
+    let ultimoPuerto: number = 0;
+
+    let speed = 0;
+
+    // Esto se esta poniendo para darle un espacio a la izquierda. por que hay barras que estan despues del borde.
+    if (this.selectSummaryBy === 'VOYAGES' || this.selectSummaryBy === 'PORTS') {
+      this.xLabelReportMGO.push("")
+    } else {
+      //Resument por mes o dia no le inserto ese valor vacio.
+    }
+
+    // recorremos todo el arreglo
+    listGetReportVoyagePortDaily.forEach(
+      (iGetReportVoyagePortDaily: GetReportVoyagePortDaily, indexReport: number) => {
+
+        // Generamos el texto para los labels segun tipo de resumen
+        let txtLabelChart: string = '';
+
+        if (this.selectSummaryBy === 'VOYAGES') {
+          // Armamos el texto de label para viajes.
+          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
+        } else if (this.selectSummaryBy === 'PORTS') {
+          // Armamos el texto de label para el puerto.
+          txtLabelChart = 'V' + iGetReportVoyagePortDaily.voyageNumber + ' P' + iGetReportVoyagePortDaily.portNumber + ' Y' + ('' + iGetReportVoyagePortDaily.year).slice(-2);
+        }
+        else if (this.selectSummaryBy === 'MONTHS') {
+          console.log(Number(String(iGetReportVoyagePortDaily.date).slice(-2)))
+          // Armamos el texto de label para mes.
+          txtLabelChart = String(iGetReportVoyagePortDaily.date).substring(0, 4)
+            + this.aMonthEnglishShort[Number(String(iGetReportVoyagePortDaily.date).slice(-2)) - 1];
+        }
+        else if (this.selectSummaryBy === 'DAYS') {
+          // Armamos el texto de label para dias.
+          txtLabelChart = String(iGetReportVoyagePortDaily.date);
+        }
+
+        // Posiciondel elemento
+        let posicionDelLabelSiExiste = 0;
+
+        // Buscamos si el label ya se registro.
+        let existeElLabel = this.xLabelReportMGO.find(
+          (label, index) => {
+            if (label == txtLabelChart) {
+              posicionDelLabelSiExiste = index;
+              return true
+            }
+            return false;
+          }
+        );
+
+        // Si no existe el label lo agregamos.
+        if (!existeElLabel) {
+          // Agregamos el texto al arreglo del chart.
+          this.xLabelReportMGO.push(txtLabelChart);
+        }
+
+        // si la opcion de Aplicar la formula de daily consumption esta activada aplicamos la formula, si no solo hacemos la suma de los equipos-
+        let totalMGO = this.isDailyFormule ?
+          this.formuleService.CalculateDailyTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'MGO') :
+          this.formuleService.CalculateTotal_IFO_Or_MGO(iGetReportVoyagePortDaily, 'MGO');
+
+        if (totalMGO > this.configLineaConsumptionMGO.lineaMax) {
+          this.configLineaConsumptionMGO.lineaMax = totalMGO;
+        };
+
+
+        this.reorganizarDataViajesMGO[iGetReportVoyagePortDaily.activityPerformed].push(
+          { x: txtLabelChart, y: totalMGO, ubication: indexReport }
+        );
+      });
+
+    // Solo agregamos una linea si hay registros.
+    if (this.reorganizarDataViajesMGO['LOADING'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'LOADING'),
+          data: this.reorganizarDataViajesMGO['LOADING'],
+          backgroundColor: '#b57c00',
+          borderColor: '#b57c00',
+          fill: false
+        }
+      )
+    }
+    if (this.reorganizarDataViajesMGO['DOWNLOADING'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'DOWNLOADING'),
+          data: this.reorganizarDataViajesMGO['DOWNLOADING'],
+          backgroundColor: '#d09306',
+          borderColor: '#d09306',
+          fill: false,
+          order: 2
+        }
+      );
+    }
+    if (this.reorganizarDataViajesMGO['SAILING_IN_BALLAST'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'SAILING_IN_BALLAST'),
+          data: this.reorganizarDataViajesMGO['SAILING_IN_BALLAST'],
+          backgroundColor: '#ecab0f',
+          borderColor: '#ecab0f',
+          fill: false,
+          order: 3
+
+        });
+    }
+    if (this.reorganizarDataViajesMGO['SAILING_WITH_LADEN'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'SAILING_WITH_LADEN'),
+          data: this.reorganizarDataViajesMGO['SAILING_WITH_LADEN'],
+          backgroundColor: 'rgb(255,192,5)',
+          borderColor: 'rgb(255,192,5)',
+          fill: false,
+          order: 4
+        });
+    }
+    if (this.reorganizarDataViajesMGO['ECONOMICAL_NAVIGATION'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'ECONOMICAL_NAVIGATION'),
+          data: this.reorganizarDataViajesMGO['ECONOMICAL_NAVIGATION'],
+          backgroundColor: 'rgb(22,205,6)',
+          borderColor: 'rgb(22,205,6)',
+          fill: false,
+          order: 5
+        });
+    }
+    if (this.reorganizarDataViajesMGO['ANCHORED'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'ANCHORED'),
+          data: this.reorganizarDataViajesMGO['ANCHORED'],
+          backgroundColor: '#f7d547',
+          borderColor: '#f7d547',
+          fill: false,
+          order: 6
+        });
+    }
+    if (this.reorganizarDataViajesMGO['MANEUVER'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'MANEUVER'),
+          data: this.reorganizarDataViajesMGO['MANEUVER'],
+          backgroundColor: '#ffff72',
+          borderColor: '#ffff72',
+          fill: false,
+          order: 7
+        }
+      );
+    }
+    if (this.reorganizarDataViajesMGO['OTHER_ACT'].length > 0) {
+      this.dataConsumptionChartPointMGO.push(
+        {
+          type: 'bar',
+          label: this.languageService.GetMessage(this.translateCategory, 'OTHER_ACT'),
+          data: this.reorganizarDataViajesMGO['OTHER_ACT'],
+          backgroundColor: '#fffff1',
+          borderColor: '#fffff1',
           fill: false,
           order: 8
         }
@@ -654,33 +1032,80 @@ export class SpeedAnalysisComponent implements OnInit {
 
 
     // Los label lo pongo vacio por es multi line
-    this.configLineaSPEED.data.labels = this.xLabelReport;
+    this.configLineaConsumption.data.labels = this.xLabelReport;
 
     // Actualizamos la dataSPEED
     // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
-    this.configLineaSPEED.data.datasets = this.dataSPEEDChartPoint;
+    this.configLineaConsumption.data.datasets = this.dataConsumptionChartPoint;
+
+    // UPDATE title
+    this.configLineaConsumption.options.title.text = this.languageService.GetMessage(this.translateCategory,
+      this.isDailyFormule ?
+        (this.selectUser.isConsumptionLSFO ? 'TITLE_DAILY_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_DAILY_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_DAILY_COMSUMPTION_VLSFO' : 'TITLE_DAILY_COMSUMPTION_LSFO') :
+        (this.selectUser.isConsumptionLSFO ? 'TITLE_COMSUMPTION_LSFO' : this.selectUser.isConsumptionIFO ? 'TITLE_COMSUMPTION_IFO' : this.selectUser.isConsumptionVLSFO ? 'TITLE_COMSUMPTION_VLSFO' : 'TITLE_COMSUMPTION_LSFO')
+    )
 
     // Vaciamos la configuracion de las lines SPEED
     // La linea es el campo que agregamos en el plugin.
-    this.configLineaSPEED.options.lines = [];
+    this.configLineaConsumption.options.lines = [];
 
-    this.configLineaSPEED.options.lines.push({
+    this.configLineaConsumption.options.lines.push({
       type: 'horizontal',
       y: 12,// this.selectUser.maxSpeed,
       color: 'red',
       label: ''
     });
     // Configuracion Tooltips
-    this.configLineaSPEED.options.tooltips = this.GetToolTipConfig('IFO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
+    this.configLineaConsumption.options.tooltips = this.GetToolTipConfig('IFO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
 
     // Agregamos la configuracion de las escalas.
-    this.configLineaSPEED.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaSPEED.lineaMax, 0) + 2);
+    this.configLineaConsumption.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaConsumption.lineaMax, 0) + 2);
     //
 
-    this.chartLineSPEED.update();
+    this.chartLineConsumption.update();
 
     return false;
   }
+
+
+  private UpdateLineSPEED_MGO(): boolean {
+    console.log('UpdateLineSPEED_MGO()');
+
+
+    // Los label lo pongo vacio por es multi line
+    this.configLineaConsumptionMGO.data.labels = this.xLabelReportMGO;
+
+    // Actualizamos la dataSPEED
+    // Revisar esto por que ponen datas .datasets[0].data  si la variable es un arreglo de tipo chartPOint
+    this.configLineaConsumptionMGO.data.datasets = this.dataConsumptionChartPointMGO;
+
+    // UPDATE title
+    this.configLineaConsumptionMGO.options.title.text = this.languageService.GetMessage(this.translateCategory,
+      this.isDailyFormule ? 'TITLE_DAILY_COMSUMPTION_MGO' : 'TITLE_COMSUMPTION_MGO'
+    )
+
+    // Vaciamos la configuracion de las lines SPEED
+    // La linea es el campo que agregamos en el plugin.
+    this.configLineaConsumptionMGO.options.lines = [];
+
+    this.configLineaConsumptionMGO.options.lines.push({
+      type: 'horizontal',
+      y: 12,// this.selectUser.maxSpeed,
+      color: 'red',
+      label: ''
+    });
+    // Configuracion Tooltips
+    this.configLineaConsumptionMGO.options.tooltips = this.GetToolTipConfig('MGO'); // Revisar para mejorar el tooltips viaje, puerto, mes, dias.
+
+    // Agregamos la configuracion de las escalas.
+    this.configLineaConsumptionMGO.options.scales = this.ConfigScales(this.xLabelReport, true, mathRound(this.configLineaConsumption.lineaMax, 0) + 2);
+    //
+
+    this.chartLineConsumptionMGO.update();
+
+    return false;
+  }
+
 
   private GetToolTipConfig(configIFOorMGOorSPEED): Chart.ChartTooltipOptions {
     // resultado de tooltip
@@ -705,10 +1130,10 @@ export class SpeedAnalysisComponent implements OnInit {
           let positionDataset = tooltipItem[0].datasetIndex;
 
           // Obtenemos la data del la linea correspondiente
-          let dataSPEEDChartPoint = this.dataSPEEDChartPoint[positionDataset].data;
+          let dataConsumptionChartPoint = this.dataConsumptionChartPoint[positionDataset].data;
 
           // Obtenemos la ubicacion que no sotros guardamos.
-          let positionArrayData = dataSPEEDChartPoint[index].ubication;
+          let positionArrayData = dataConsumptionChartPoint[index].ubication;
 
           // Reporte por viaje por dia.
           let reportVoyagePortDaily = this.listGetReportVoyagePortDaily[positionArrayData];
@@ -797,34 +1222,20 @@ export class SpeedAnalysisComponent implements OnInit {
     return config;
   }
 
-  // Obtenemos la info de todos los viajes agregado.
-  private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
-    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
-    // Obtenemos todos los usuarios
-    return this._dailyReportService.GetReportVoyagePortDailyByUserIdAndDate(userId, startDate, endDate).pipe(map(
-      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
+  // Obtenemos el consumo total por actividades
+  private GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<InfoReport_IFO_AND_MGO> {
 
-        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+    // Invocamos la consulta para obtener el consumo total por actividad.
+    return this._dailyReportService.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary).pipe(map(
+      (resultGetROBByUser: InfoReport_IFO_AND_MGO) => {
 
-
-        return resultGetROBByUser;
-      }
-    ));
-  }
-
-  // Obtenemos la info de todos los viajes agregado.
-  private GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filter): Observable<GetReportVoyagePortDaily[]> {
-    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
-    // Obtenemos todos los usuarios
-    return this._dailyReportService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, filter).pipe(map(
-      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
-
-        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
+        if (!resultGetROBByUser) throw 'ERROR_GetTotalByActivityFilterByUserIdAndDateAndType';
 
 
         return resultGetROBByUser;
       }
     ));
+
   }
 
 
@@ -968,7 +1379,7 @@ export class SpeedAnalysisComponent implements OnInit {
     return await Promise.resolve(true).then(
       result => {
 
-        // Seleccionamos al usuairo segun el selectUserId
+        // Seleccionamos al usuarios segun el selectUserId
         return this.getUsers.find(user => user.id === userId);
       }
     ).then(

@@ -32,7 +32,7 @@ import { LanguageService } from '../../services/language.service';
 import { LoadingService } from '../../services/loading.service';
 
 // Servicio para exportar la estructura de excel.
-import { ExcelService } from '../../services/excel.service';
+import { ExcelService } from '../../services/excel/excel.service';
 
 
 // Assets
@@ -56,7 +56,7 @@ import * as Html2canvas from 'html2canvas';
 import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
 import { OnlineOfflineService } from '../../services/online-offline.service';
-import { DialogExportExcelComponent, IDialogExportExcel } from 'src/app/shared/dialog/dialog-export-excel/dialog-export-excel.component';
+import { DialogExportExcelComponent, IDialogExportExcel } from '../../shared/dialog/dialog-export-excel/dialog-export-excel.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -334,7 +334,6 @@ export class DashboardComponent implements OnInit {
       }
     ).catch(
       err => {
-
         // Manejo el error
         let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
@@ -4222,7 +4221,7 @@ export class DashboardComponent implements OnInit {
 
         if (result) {
 
-         // alert('OKK');
+          // alert('OKK');
         }
       });
 

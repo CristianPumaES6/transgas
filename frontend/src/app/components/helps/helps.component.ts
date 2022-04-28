@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import PerfectScrollbar from 'perfect-scrollbar';
-import { EnvConfig } from 'src/app/config/env.config';
+import { EnvConfig } from '../../config/env.config';
 import { UserService } from '../../services/user.service';
 
 

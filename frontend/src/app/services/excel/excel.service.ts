@@ -5,15 +5,15 @@ import * as fs from 'file-saver';
 import { promise } from 'protractor';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { mathRound } from '../../assets/math/math.assets';
-import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour } from '../../assets/moment/moment.assets';
-import { GetROBByUser, InfoFuelStartEndForDate } from '../models/daily-report';
-import { ActivityPerformed } from '../models/dashboard';
-import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
-import { User } from '../models/user';
-import { Voyage } from '../models/voyage';
-import { DailyReportService } from './daily-report.service';
-import { LanguageService } from './language.service';
+import { mathRound } from '../../../assets/math/math.assets';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour } from '../../../assets/moment/moment.assets';
+import { GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
+import { ActivityPerformed } from '../../models/dashboard';
+import { GetReportVoyagePortDaily } from '../../models/dialog-export-excel';
+import { User } from '../../models/user';
+import { Voyage } from '../../models/voyage';
+import { DailyReportService } from '../daily-report.service';
+import { LanguageService } from '../language.service';
 
 @Injectable({
   providedIn: 'root'
@@ -302,18 +302,6 @@ export class ExcelService {
 
   // Opcion que exporta el excel.
   public async ExportExcel(selectUserId: number, startDate: string, endDate: string, selectUser: User): Promise<boolean> {
-    /*   
-    const wb = new Workbook();
-    
-    
-      // Escribimos el excel
-      wb.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        fs.saveAs(blob, 'Report.xlsx');
-      });
-     */
-
-
 
     // Creamos una nueva hoja de trabajo
     let workbook = new Workbook();
@@ -370,7 +358,7 @@ export class ExcelService {
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
     // Creamos la hoja de trabajo.
-    let worksheet = workbook.addWorksheet('Voyage ' + 2);
+    let worksheet = workbook.addWorksheet('General Overview');
     //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
 
 
@@ -1856,7 +1844,7 @@ export class ExcelService {
 
   }
   // ingresas el numero y devuelve la letra
-  private PositByCell(positionColum: number): string {
+  public PositByCell(positionColum: number): string {
     let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ',
       'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ',
@@ -1865,7 +1853,7 @@ export class ExcelService {
     return letras[positionColum];
   }
   // Busca la letra y devuelve el numero.
-  private SearchPositByCell(letraColum: string): any {
+  public SearchPositByCell(letraColum: string): any {
     let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ',
       'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ',
@@ -2094,7 +2082,7 @@ export class ExcelService {
   }
 
   // Obtenemos la info de todos los viajes agregado.
-  private GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+  public GetReportVoyagePortDaily(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
     return this.dailyReportService.GetReportVoyagePortDailyByUserIdAndDate(userId, startDate, endDate).pipe(map(
@@ -2229,7 +2217,7 @@ export class ExcelService {
     // le sumo 7 celdas por que la logitud de la leyenda es 7celdas
     let positionColumn = [colum, colum + 11];
     let posititonRow = posit;
-    this.addStyleByColums(worksheet, position, positionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '')
+    this.addStyleByColums(worksheet, position, positionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '');
     this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
 
     //ITEM
@@ -3683,7 +3671,7 @@ export class ExcelService {
 
 
   // Obtenemos la info del combustible inicio fin
-  private GetInfoFuelStartEndByFilterDate(userId: number, startDate: string, endDate: string): Observable<InfoFuelStartEndForDate> {
+  public GetInfoFuelStartEndByFilterDate(userId: number, startDate: string, endDate: string): Observable<InfoFuelStartEndForDate> {
     // Obtenemos el rob de inicio y el consumo hecho en el filtro.
     // Obtenemos todos los usuarios
     return this.dailyReportService.GetStartEndROByFilterDate(userId, startDate, endDate).pipe(map(

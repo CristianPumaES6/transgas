@@ -21,27 +21,28 @@ export const EnvConfig: EnvConfig = {
 
 
 //FRONT DEL LINUX SERVER
-/* 
-export const EnvConfig: EnvConfig = {
+
+/* export const EnvConfig: EnvConfig = {
     API: 'http://165.232.153.20:3000',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'http://165.232.153.20:4000',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-};
- */
+}; */
 
 
-/* 
+
+
+
 // SERVIDOR LINUX Firebase
-export const EnvConfig: EnvConfig = {
+/* export const EnvConfig: EnvConfig = {
     API: 'https://transgas.codev.site',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.codev.site',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
-*/
+ */
 
 /*
 // CONFIGURACION PARA DESARROLLO

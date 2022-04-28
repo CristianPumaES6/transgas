@@ -117,7 +117,7 @@ export class AppController {
   // Registramos o actualizamos al usuario logeado
   @Post('loggedUsers')
   async loggedUsers(@Headers() headers, @Body() loggedUser: LoggedUser): Promise<any> {
-    console.log("@Post('loggedUsers')");
+    //console.log("@Post('loggedUsers')");
 
     return await DummyPromise().then(
       (resultDummy: Boolean) => {
@@ -155,7 +155,7 @@ export class AppController {
   // Obtenemos los usuarios logeados.
   @Get('loggedUsers')
   async GetLoggedUsers(@Headers() headers, @Query() loggedUser: LoggedUser): Promise<any> {
-    console.log("@Get('loggedUsers')");
+    //console.log("@Get('loggedUsers')");
 
     return await DummyPromise().then(
       result => {
@@ -191,7 +191,7 @@ export class AppController {
   // Emitimos una solicitud de que usuarios estan conectados
   @Post('emitConnect')
   async EmitConnect(): Promise<any> {
-    console.log("EmitConnect()");
+  //  console.log("EmitConnect()");
     
     return await DummyPromise().then(
       (resultDummy: Boolean) => {

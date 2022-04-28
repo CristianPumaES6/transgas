@@ -207,7 +207,7 @@ export const fileUpload: any = {
     SUCCESS: 'Success',
     ERROR_UPLOAD_IMAGE: 'Image could not be updated.',
     SUCCESS_UPLOAD_IMAGE: 'The image was updated successfully.',
-}
+};
 
 export const voyage: any = {
     // Registro de viajes
@@ -330,7 +330,7 @@ export const voyage: any = {
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
     PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
-}
+};
 
 export const dashboard: any = {
     LEGEND: 'Legend',
@@ -439,7 +439,7 @@ export const dashboard: any = {
     TOOLTIP_ROB_MGO: 'ROB',
     ECO_SPEED: 'Eco',
     FULL_SPEED: 'Full'
-}
+};
 
 export const dialog: any = {
     TYPE_CONSUMPTION: 'Type consumption',
@@ -473,8 +473,8 @@ export const dialog: any = {
     DAILY_CONSUMPTION: 'Daily Consp.',
     CHARTER: 'Charter',
     BUNKERING: 'Bunkering',
-    REPORT_INFORMATION: 'This report has the following information.',
-    EXCEL_FORMAT: 'It allows to export in Excel all the reports registered by the captain.',
+    REPORT_INFORMATION_GENERIC: 'The following format has the summary of fuel by activity, in addition to the reports registered by the captain.',
+    REPORT_INFORMATION_DNV: 'The following format is the one required to obtain the DNV identity certificate.',
     ADD_SAILING_NAVIGATION: 'What navigation information do you want to add?',
     IN_BALLAST: 'In Ballast',
     WITH_LADEN: 'With Laden',
@@ -499,18 +499,33 @@ export const dialog: any = {
     BUNKERING_INFORMATION: 'Bunkering Information',
     ECO_SPEED: 'Eco',
     FULL_SPEED: 'Full',
-    DOWNLOAD: 'DOWNLOADING'
-}
+    DOWNLOAD: 'Download'
+};
 
 export const guards: any = {
 
 }
 
 export const exportExcel: any = {
+    LOADING: 'Loading',
+    DOWNLOADING: 'Discharge',
+    SAILING_IN_BALLAST: 'S. Ballast',
+    SAILING_WITH_LADEN: 'S. Laden',
+    ECONOMICAL_NAVIGATION: 'Economical',
+    ANCHORED: 'Anchored',
+    MANEUVER: 'Maneuver',
+    OTHER_ACT: 'Other Act',
+
+    FULL_SPEED: 'FULL',
+    ECO_SPEED: 'ECO',
+}
+
+export const speedAnalysis: any = {
+    FILTERS: 'Filters :',
     LOADING: 'LOADING',
     DOWNLOADING: 'DISCHARGE',
-    SAILING_IN_BALLAST: 'S. BALLAST',
-    SAILING_WITH_LADEN: 'S. LADEN',
+    SAILING_IN_BALLAST: 'BALLAST',
+    SAILING_WITH_LADEN: 'LADEN',
     ECONOMICAL_NAVIGATION: 'ECONOMICAL',
     ANCHORED: 'ANCHORED',
     MANEUVER: 'MANEUVER',
@@ -518,7 +533,48 @@ export const exportExcel: any = {
 
     FULL_SPEED: 'FULL',
     ECO_SPEED: 'ECO',
+    ID: 'ID',
+    FILTER_BY: 'Filter',
+    YOUR_SELECT_YEAR:'You must select a year.',
+    ERROR_REACTIVE_FORM:'ERROR_REACTIVE_FORM, Contact support'
 }
 
-export const speedAnalysisService: any = {
+export const consumptionAnalysis: any = {
+    FILTERS: 'Filters :',
+    LOADING: 'LOADING',
+    DOWNLOADING: 'DISCHARGE',
+    SAILING_IN_BALLAST: 'BALLAST',
+    SAILING_WITH_LADEN: 'LADEN',
+    ECONOMICAL_NAVIGATION: 'ECONOMICAL',
+    ANCHORED: 'ANCHORED',
+    MANEUVER: 'MANEUVER',
+    OTHER_ACT: 'OTHER ACT.',
+
+    FULL_SPEED: 'FULL',
+    ECO_SPEED: 'ECO',
+    ID: 'ID',
+    FILTER_BY: 'Filter',
+    YOUR_SELECT_YEAR:'You must select a year.',
+    ERROR_REACTIVE_FORM:'ERROR_REACTIVE_FORM, Contact support',
+    APPLY_DAILY_FORMULA: 'Apply Daily Formula',
+    TITLE_COMSUMPTION_LSFO: 'LSFO CONSUMPTION',
+    TITLE_COMSUMPTION_IFO: 'IFO CONSUMPTION',
+    TITLE_COMSUMPTION_VLSFO: 'VLSFO CONSUMPTION',
+    TITLE_COMSUMPTION_MGO: 'MGO CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_MGO: 'MGO DAILY CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_IFO: 'IFO DAILY CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_LSFO: 'LSFO DAILY CONSUMPTION',
+    TITLE_DAILY_COMSUMPTION_VLSFO: 'VLSFO DAILY CONSUMPTION',
+    YEARS: 'Years',
+    SUMMARY_BY: 'Summary By',
+    VOYAGES: 'Voyages',
+    PORTS: 'Ports',
+    MONTHS: 'Months',
+    DAYS: 'Days',
+    VOYAGE: 'Voyage',
+    END_DATE: 'End date',
+    START_DATE: 'Start date',
+    BUQUE: 'Vessel',
+    CLEAR: 'Clear',
+    SELECT_BUQUE: 'Select Vessel',
 }

@@ -12,6 +12,7 @@ import { AuthGuardService } from './auth-guard.service';
 // Modelos
 import { DailyReport, GetInfoVoyageROBBunkering, GetROBByUser } from '../models/daily-report';
 import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
+import { InfoReport_IFO_AND_MGO } from '../models/dashboard';
 
 @Injectable({ providedIn: 'root' })
 export class DailyReportService {
@@ -323,10 +324,12 @@ export class DailyReportService {
         );
     }
 
+    
+
     // Retorna el totar por actividad
-    GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+    GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filter: string): Observable<GetReportVoyagePortDaily[]> {
         // Armo el request
-        let url: string = this.url + '/daily-reports/get-total-by-activity/' + userId + '/' + startDate + '/' + endDate;
+        let url: string = this.url + '/daily-reports/get-total-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' +filter;
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
@@ -348,6 +351,36 @@ export class DailyReportService {
                 }
             ), catchError((err) => {
                 
+                return this.authGuardService.HandleError(err);
+            })
+        );
+    }
+
+    
+    // Retorna el totar por actividad
+    GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<InfoReport_IFO_AND_MGO> {
+        // Armo el request
+        let url: string = this.url + '/daily-reports/get-total-consumption-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' +typeSummary;
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    // Verifico si la respuesta fue correcta.
+                    if (response.status && response.status === 200) {
+                        
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
                 return this.authGuardService.HandleError(err);
             })
         );

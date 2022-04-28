@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
-import { User } from 'src/app/models/user';
-import { ExcelService } from 'src/app/services/excel.service';
-import { LanguageService } from 'src/app/services/language.service';
-import { LoadingService } from 'src/app/services/loading.service';
-import { FormatDateUTCToDateHour } from 'src/assets/moment/moment.assets';
+import { User } from '../../../models/user';
+import { ExcelFormatDNVService } from '../../../services/excel/excel-format-dnv.service';
+import { ExcelService } from '../../../services/excel/excel.service';
+import { LanguageService } from '../../../services/language.service';
+import { LoadingService } from '../../../services/loading.service';
+import { FormatDateUTCToDateHour } from '../../../../assets/moment/moment.assets';
 
 // Interface de los input del componente.
 export interface IDialogExportExcel {
@@ -27,6 +28,7 @@ export class DialogExportExcelComponent implements OnInit {
   // Traducciones
   public userLanguage: string = this.languageService.GetCurrentLanguage();
   public translateCategory: string = 'dialog';
+  public selectTypeExportExcel: string = '';
 
   constructor(
     // Dialog referencia es el mismo.
@@ -40,6 +42,7 @@ export class DialogExportExcelComponent implements OnInit {
     // Loading service.
     private loadingService: LoadingService,
     private excelService: ExcelService,
+    private excelFormatDNVService: ExcelFormatDNVService,
   ) { }
 
   ngOnInit(): void {
@@ -59,17 +62,25 @@ export class DialogExportExcelComponent implements OnInit {
           // Fecha de inicio.
           let dateStart = this.data.dateStartUTC;
           let dateEnd = this.data.dateEndUTC;
-      
+
           let selectUser: User = this.data.selectUser;
-      
-          return this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd, selectUser);
+
+          if (this.selectTypeExportExcel == 'FORMAT_GENERIC') {
+            return this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd, selectUser);
+          } else if (this.selectTypeExportExcel == 'DNV_FORMAT') {
+            return this.excelFormatDNVService.ExportReporteEntryForUser(this.data.selectUser.id, dateStart, dateEnd, selectUser);
+          }
         }
       ).then(
         result => {
+          if (!result) {
+            throw 'ERROR AL GENERAR DOCUMENTO';
+          }
+
           this.loadingService.Close();
         }
       )
 
-    
+
   }
 }

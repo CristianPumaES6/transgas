@@ -13,3 +13,16 @@
     }
   }
   
+.buttom_excel_format_dnv {
+  font-size: 25px !important;
+  color: green;
+  position: absolute;
+  cursor: pointer;
+  bottom: 2%;
+  right: 150px;
+  transform: all 1s;
+
+  &:hover {
+    font-size: 35px;
+  }
+}

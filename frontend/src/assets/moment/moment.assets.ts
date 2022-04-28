@@ -316,3 +316,14 @@ export function DiferentHourTwoMoment(moment1: moment.Moment, moment2: moment.Mo
     result = hours;
     return result;
 }
+
+export function FormatYYYYMMDDToHOURS(date: any): string {
+
+    
+    let momentDate = moment(date);
+
+    let result = momentDate.format('HH:mm');
+    
+    
+    return result;
+}

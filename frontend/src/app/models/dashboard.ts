@@ -1,5 +1,7 @@
 // Modelo generico del componente Dashboard.
 
+import { GetReportVoyagePortDaily } from "./dialog-export-excel";
+
 // Modelo de las actividades realizadas.
 export class ActivityPerformed {
     constructor(
@@ -91,5 +93,18 @@ export class ConsumptionAndBunkering{
         this.mgoConsumption = mgoConsumption || 0;
         this.ifoBunkering = ifoBunkering || 0;
         this.mgoBunkering = mgoBunkering || 0;
+    }
+}
+
+
+
+export class InfoReport_IFO_AND_MGO{
+    constructor(
+        public ifo?: GetReportVoyagePortDaily[],
+        public mgo?: GetReportVoyagePortDaily[]
+
+    ) {
+        this.ifo = [];
+        this.mgo = [];
     }
 }
