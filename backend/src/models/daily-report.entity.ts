@@ -20,6 +20,21 @@ export class DailyReport {
     port: Port;
 
 
+    @Column({ default: '', nullable: true })
+    north_degree: number;
+    @Column({ default: '', nullable: true })
+    north_minutes: number;
+    @Column({ default: '', nullable: true })
+    north_north_south: string;
+
+    @Column({ default: '', nullable: true })
+    east_degree: number;
+    @Column({ default: '', nullable: true })
+    east_minutes: number;
+    @Column({ default: '', nullable: true })
+    east_east_west: string;
+
+
 
     // actividad Registrada
     @Column({ default: "Otros" })

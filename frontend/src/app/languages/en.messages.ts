@@ -330,6 +330,8 @@ export const voyage: any = {
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
     PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
+    LONGITUDE : 'Longitude',
+    LATITUDE : 'Latitude'
 };
 
 export const dashboard: any = {
