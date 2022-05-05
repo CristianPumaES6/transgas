@@ -12,7 +12,7 @@
         <i class="icon-menu-dashboard"></i>
       </a>
 
-      <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT' || loggedUser.role == 'BUQUE'">
+      <ng-template [ngIf]="loggedUser.role == 'SUPPORT' || loggedUser.role == 'BUQUE'">
         <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'voyages'}" (click)="selectNavLink('voyages')"
           matTooltip="Voyage">
           <i class="icon-menu-port">
@@ -20,7 +20,7 @@
         </a>
       </ng-template>
 
-      <ng-template [ngIf]="loggedUser.role == 'ADMIN' || loggedUser.role == 'SUPPORT'">
+      <ng-template [ngIf]="loggedUser.role == 'SUPPORT'">
         <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'users'}" (click)="selectNavLink('users')"
           matTooltip="Users">
           <i class="icon-menu-user"></i>
