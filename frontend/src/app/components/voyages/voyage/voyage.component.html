@@ -170,13 +170,15 @@
           <div class="row pl-2 pb-2">
 
 
-            <div class="col row no-gutters">
+   
+            <div class="col-6 row no-gutters">
+
 
               <p class="m-0 grp-title">
                 {{'LATITUDE' | translateMessage:translateCategory}}
               </p>
 
-              <div class="col-12 row no-gutters personalizate"> 
+              <div class="col-12 row no-gutters personalizate">
                 <div class="col">
                   <mat-form-field>
                     <input matInput type="number" placeholder="Degree" [(ngModel)]="selectDailyReport.north_degree">
@@ -189,46 +191,39 @@
                 </div>
                 <div class="col">
                   <mat-form-field>
-                    <input matInput type="number" placeholder="North or South" [(ngModel)]="selectDailyReport.north_north_south">
+                    <input matInput type="number" placeholder="North or South"
+                      [(ngModel)]="selectDailyReport.north_north_south">
                   </mat-form-field>
                 </div>
+              </div>
             </div>
 
-            <div class="col row no-gutters">
-                <p class="m-0 grp-title">
-                  {{'LONGITUDE' | translateMessage:translateCategory}}
-                </p>
+            <div class="col-6 row no-gutters">
 
-                <div class="col-12 row no-gutters personalizate">
-                  <div class="col">
-                    <mat-form-field>
-                      <input matInput type="number" placeholder="Degree" [(ngModel)]="selectDailyReport.east_degree">
-                    </mat-form-field>
-                  </div>
-                  <div class="col">
-                    <mat-form-field>
-                      <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.east_minutes">
-                    </mat-form-field>
-                  </div>
-                  <div class="col">
-                    <mat-form-field>
-                      <input matInput type="number" placeholder="North or South" [(ngModel)]="selectDailyReport.east_east_west">
-                    </mat-form-field>
-                  </div>
+
+              <p class="m-0 grp-title">
+                {{'LONGITUDE' | translateMessage:translateCategory}}
+              </p>
+
+              <div class="col-12 row no-gutters personalizate">
+                <div class="col">
+                  <mat-form-field>
+                    <input matInput type="number" placeholder="Degree" [(ngModel)]="selectDailyReport.east_degree">
+                  </mat-form-field>
                 </div>
+                <div class="col">
+                  <mat-form-field>
+                    <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.east_minutes">
+                  </mat-form-field>
+                </div>
+                <div class="col">
+                  <mat-form-field>
+                    <input matInput type="number" placeholder="North or South"
+                      [(ngModel)]="selectDailyReport.east_east_west">
+                  </mat-form-field>
+                </div>
+
               </div>
-            </div> 
-            <div class="col-1 row no-gutters">
-              <ng-template [ngIf]="!isBunkering">
-                <div class="col-1">
-                  <div class="force-right pt-3">
-                    <a class="ml-0 ml-3-md " href="" (click)="ActivateBunkering(true)"
-                      matTooltip="{{'BUNKERING' | translateMessage:translateCategory}}">
-                      <i class="icon-gas-station"></i>
-                    </a>
-                  </div>
-                </div>
-              </ng-template>
             </div>
           </div>
 
