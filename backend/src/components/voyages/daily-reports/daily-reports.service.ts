@@ -432,6 +432,16 @@ export class DailyReportsService {
                 .addSelect('daily_report.otherMgo', 'otherMgo')
                 .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
 
+                // UBICACION.
+                .addSelect('daily_report.north_degree', 'north_degree')
+                .addSelect('daily_report.north_minutes', 'north_minutes')
+                .addSelect('daily_report.north_north_south', 'north_north_south')
+                // UBICACION
+                .addSelect('daily_report.east_degree', 'east_degree')
+                .addSelect('daily_report.east_minutes', 'east_minutes')
+                .addSelect('daily_report.east_east_west', 'east_east_west')
+
+
 
                 .innerJoin('daily_report.port', 'port')
                 .innerJoin('port.voyage', 'voyage')

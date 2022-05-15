@@ -94,7 +94,9 @@ export class ExcelFormatDNVService {
 
         return this.AddDashInfoBuque(worksheet, workbook, selectUser, rowCursor, 0)
       }
-    ).then(
+    )
+    // Agregamos la cabecera al formato excel
+    .then(
       resultRowFinal => {
 
         rowCursor = resultRowFinal + 2;
@@ -607,7 +609,7 @@ export class ExcelFormatDNVService {
 
 
         listGetReportVoyagePortDaily.forEach(
-          item => {
+          (item:GetReportVoyagePortDaily) => {
             let getFormatDNV: GetFormatDNV = new GetFormatDNV();
 
             getFormatDNV.reportId = item.dailyReportId;
@@ -615,13 +617,12 @@ export class ExcelFormatDNVService {
             getFormatDNV.time = FormatYYYYMMDDToHOURS(item.date);
 
             // AGREGAR ESTA INFORMACION REVISAR ELIMINAR CORREGIR 
-            getFormatDNV.north_degree = 0;
-            getFormatDNV.north_minutes = 0;
-            getFormatDNV.north_north_south = "";
-
-            getFormatDNV.east_degree = 0;
-            getFormatDNV.east_minutes = 0;
-            getFormatDNV.east_east_west = "";
+            getFormatDNV.north_degree = item.north_degree;
+            getFormatDNV.north_minutes = item.north_minutes;
+            getFormatDNV.north_north_south =  item.north_north_south;
+            getFormatDNV.east_degree  =  item.east_degree;
+            getFormatDNV.east_minutes  =  item.east_minutes;
+            getFormatDNV.east_east_west  =  item.east_east_west;
 
 
             getFormatDNV.event = this.languageService.GetMessage(this.translateCategory, item.activityPerformed);
