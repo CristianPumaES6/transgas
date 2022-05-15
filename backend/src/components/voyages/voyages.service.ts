@@ -189,7 +189,7 @@ export class VoyagesService {
                         where: [
                             // name && surname && nick && email
                             {
-                                userId: Like('%' + (voyage.userId || '') + '%'),
+                                userId: (voyage.userId || ''),
                                 voyageNumber: Like('%' + (voyage.voyageNumber || '') + '%'),
                                 year: Like('%' + (voyage.year || '') + '%'),
                                 status: Not(false)
