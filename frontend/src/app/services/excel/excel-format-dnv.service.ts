@@ -95,37 +95,37 @@ export class ExcelFormatDNVService {
         return this.AddDashInfoBuque(worksheet, workbook, selectUser, rowCursor, 0)
       }
     )
-    // Agregamos la cabecera al formato excel
-    .then(
-      resultRowFinal => {
+      // Agregamos la cabecera al formato excel
+      .then(
+        resultRowFinal => {
 
-        rowCursor = resultRowFinal + 2;
+          rowCursor = resultRowFinal + 2;
 
-        return this.AddHeaderTableDNV(worksheet, rowCursor, 0)
-      }
-    ).then(
-      resultRowFinal => {
-        rowCursor = resultRowFinal;
+          return this.AddHeaderTableDNV(worksheet, rowCursor, 0)
+        }
+      ).then(
+        resultRowFinal => {
+          rowCursor = resultRowFinal;
 
-        // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-        return this.ArmamosElObjetoParaELFORMATODNV(selectUserId, startDate, endDate, selectUser);
-      }).then(
-        resultGetFormat => {
-          return this.AddValueTableDNV(worksheet, rowCursor, 0, resultGetFormat)
+          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+          return this.ArmamosElObjetoParaELFORMATODNV(selectUserId, startDate, endDate, selectUser);
         }).then(
           resultGetFormat => {
+            return this.AddValueTableDNV(worksheet, rowCursor, 0, resultGetFormat)
+          }).then(
+            resultGetFormat => {
 
-            // Escribimos el excel
-            workbook.xlsx.writeBuffer().then(
-              (data) => {
-                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                fs.saveAs(blob, 'FORMATO DNV-' + selectUser.name + '.xlsx');
-              }
-            );
+              // Escribimos el excel
+              workbook.xlsx.writeBuffer().then(
+                (data) => {
+                  let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                  fs.saveAs(blob, 'FORMATO DNV-' + selectUser.name + '.xlsx');
+                }
+              );
 
-            return true;
-          }
-        );
+              return true;
+            }
+          );
   }
 
 
@@ -455,7 +455,7 @@ export class ExcelFormatDNVService {
           column = positCol;
           positionRow = [row, row];
           positionColumn = [column, column];
-          this.addStyleByColums(worksheet, positionRow, positionColumn, "UTC\nyyyy-mm-dd", 11, "", "ffffcc", true, false, "bottom", "left");
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "UTC\n yyyy-mm-dd", 11, "", "ffffcc", true, false, "bottom", "left");
 
 
           column = column + 1;
@@ -609,7 +609,7 @@ export class ExcelFormatDNVService {
 
 
         listGetReportVoyagePortDaily.forEach(
-          (item:GetReportVoyagePortDaily) => {
+          (item: GetReportVoyagePortDaily) => {
             let getFormatDNV: GetFormatDNV = new GetFormatDNV();
 
             getFormatDNV.reportId = item.dailyReportId;
@@ -619,10 +619,10 @@ export class ExcelFormatDNVService {
             // AGREGAR ESTA INFORMACION REVISAR ELIMINAR CORREGIR 
             getFormatDNV.north_degree = item.north_degree;
             getFormatDNV.north_minutes = item.north_minutes;
-            getFormatDNV.north_north_south =  item.north_north_south;
-            getFormatDNV.east_degree  =  item.east_degree;
-            getFormatDNV.east_minutes  =  item.east_minutes;
-            getFormatDNV.east_east_west  =  item.east_east_west;
+            getFormatDNV.north_north_south = item.north_north_south;
+            getFormatDNV.east_degree = item.east_degree;
+            getFormatDNV.east_minutes = item.east_minutes;
+            getFormatDNV.east_east_west = item.east_east_west;
 
 
             getFormatDNV.event = this.languageService.GetMessage(this.translateCategory, item.activityPerformed);
@@ -696,123 +696,123 @@ export class ExcelFormatDNVService {
               column = positCol;
               positionRow = [row, row];
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.date, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.date, 10, "", "ffffff", true, false, "center", "right", "Arial");
 
 
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.time, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.time, 10, "", "ffffff", true, false, "center", "right", "Arial");
 
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_degree, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_degree, 10, "", "ffffff", true, false, "center", "right", "Arial");
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_minutes, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_minutes, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_north_south, 10, "", "ffffff", true, false, "bottom", "left");
-
-
-
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_degree, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_minutes, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_east_west, 10, "", "ffffff", true, false, "bottom", "left");
-
-
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event, 10, "", "ffffff", true, false, "bottom", "left");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.north_north_south, 10, "", "ffffff", true, false, "bottom", "left", "Arial");
 
 
 
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event_time_previous, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_degree, 10, "", "ffffff", true, false, "center", "right", "Arial");
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event_time_sailing, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_minutes, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.east_east_west, 10, "", "ffffff", true, false, "bottom", "left", "Arial");
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event, 10, "", "ffffff", true, false, "bottom", "left", "Arial");
 
 
 
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.distance, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event_time_previous, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_hfo, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lfo, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_mgo, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_mdo, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lpg, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lng, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_methanol, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_ethanol, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_fuel_consumption, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_fuel_type, 10, "", "ffffff", true, false, "center", "right");
-              column = column + 1;
-              positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_full_emission, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.event_time_sailing, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+
 
 
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_hfo, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.distance, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lfo, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_hfo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_mgo, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lfo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_mdo, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_mgo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lpg, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_mdo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lng, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lpg, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_methanol, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_lng, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_ethanol, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_methanol, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_other_fuel, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_ethanol, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
               column = column + 1;
               positionColumn = [column, column];
-              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_other_fuel_type, 10, "", "ffffff", true, false, "center", "right");
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_fuel_consumption, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_fuel_type, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.machinery_other_full_emission, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+
+
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_hfo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lfo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_mgo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_mdo, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lpg, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_lng, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_methanol, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_ethanol, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_other_fuel, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.rob_other_fuel_type, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
 
 
               let getRow = worksheet.getRow(row);
-              getRow.height = 20;
+              getRow.height = 15;
             }
           )
 
@@ -830,7 +830,7 @@ export class ExcelFormatDNVService {
 
 
   // Cosa que COPIAMOS Y NO DEBERIA SER ASI DEBERIA SER PERSONALIZADO
-  private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], textorFormule: string | number | any, sizeFont: number, colortText: string, colorBackgraund: string, isAddBorder: boolean, isbold: boolean, alignmentVertical?: string, alignmentHorizontal?: string) {
+  private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], textorFormule: string | number | any, sizeFont: number, colortText: string, colorBackgraund: string, isAddBorder: boolean, isbold: boolean, alignmentVertical?: string, alignmentHorizontal?: string, nameFont?: string, numFmt?: string) {
 
     // Separamos las posiciones.
     let positionDesde = position[0];
@@ -850,6 +850,7 @@ export class ExcelFormatDNVService {
         size: sizeFont,
         bold: isbold ? true : false,
         color: { argb: colortText },
+        name: nameFont || 'Calibri'
       },
       fill: {
         type: 'pattern',
@@ -869,10 +870,22 @@ export class ExcelFormatDNVService {
       }
     }
 
+    if (numFmt) {
+      style.numFmt = numFmt;
+    }
 
     worksheet.getCell(this.excelService.PositByCell(columnDesde) + positionDesde).value = textorFormule;
+
     worksheet.getCell(this.excelService.PositByCell(columnDesde) + positionDesde).style = style;
     worksheet.mergeCells(this.excelService.PositByCell(columnDesde) + positionDesde, this.excelService.PositByCell(columnHasta) + positionHasta);
+  }
+  public MathRoundOneDecimal(valor, cantDecimales: number) {
+
+    if (!valor) { return 0; }
+
+    let result = mathRound(valor, cantDecimales)
+    debugger
+    return result;
   }
 
 
