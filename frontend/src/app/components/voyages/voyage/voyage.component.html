@@ -263,12 +263,18 @@
                 <div class="col">
 
 
-
-                  
                   <mat-form-field>
-                    <input matInput type="number" placeholder="North or South"
-                      [(ngModel)]="selectDailyReport.north_north_south">
+                    <mat-label>{{'POSITION' | translateMessage:translateCategory}}</mat-label>
+                    <mat-select [(ngModel)]="selectDailyReport.north_north_south" name="north_north_south">
+                      <mat-option value="North">
+                        North
+                      </mat-option>
+                      <mat-option value="South">
+                        South
+                      </mat-option>
+                    </mat-select>
                   </mat-form-field>
+
                 </div>
               </div>
             </div>
@@ -290,10 +296,19 @@
                   </mat-form-field>
                 </div>
                 <div class="col">
+
                   <mat-form-field>
-                    <input matInput type="number" placeholder="North or South"
-                      [(ngModel)]="selectDailyReport.east_east_west">
+                    <mat-label>{{'POSITION' | translateMessage:translateCategory}}</mat-label>
+                    <mat-select [(ngModel)]="selectDailyReport.east_east_west" name="east_east_west">
+                      <mat-option value="East">
+                        East
+                      </mat-option>
+                      <mat-option value="West">
+                        West
+                      </mat-option>
+                    </mat-select>
                   </mat-form-field>
+
                 </div>
               </div>
             </div>

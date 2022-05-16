@@ -19,6 +19,15 @@ export class DailyReport {
         // Hora
         public hour?: string,
 
+        //
+
+        public north_degree?: number,
+        public north_minutes?: number,
+        public north_north_south?: string,
+        public east_degree?: number,
+        public east_minutes?: number,
+        public east_east_west?: string,
+
 
         // Recarga de IFO
         public bunkeringIfo?: number,
@@ -74,7 +83,17 @@ export class DailyReport {
         this.speedStraction = speedStraction || '';
         this.date = date || null;
         this.hour = hour || '';
-        this.bunkeringIfo = bunkeringIfo || 0;
+
+
+
+        this.north_degree = north_degree || 0,
+            this.north_minutes = north_minutes || 0,
+            this.north_north_south = north_north_south || '',
+            this.east_degree = east_degree || 0,
+            this.east_minutes = east_minutes || 0,
+            this.east_east_west = east_east_west || '',
+
+            this.bunkeringIfo = bunkeringIfo || 0;
         this.bunkeringMgo = bunkeringMgo || 0;
         // Consumo IFO
         this.mplaIfo = mplaIfo || 0;
@@ -265,7 +284,7 @@ export class GetInfoBunkering {
 
 
 export class GetFormatDNV {
-    
+
 
     constructor(
         public reportId?: number,
@@ -275,7 +294,7 @@ export class GetFormatDNV {
         public north_degree?: number,
         public north_minutes?: number,
         public north_north_south?: String,
-        
+
         public east_degree?: number,
         public east_minutes?: number,
         public east_east_west?: String,
@@ -309,7 +328,7 @@ export class GetFormatDNV {
         public rob_ethanol?: number,
         public rob_other_fuel?: number,
         public rob_other_fuel_type?: number,
-        
+
     ) {
         this.reportId = reportId || 0;
         this.date = date || '';
@@ -318,7 +337,7 @@ export class GetFormatDNV {
         this.north_degree = north_degree || 0;
         this.north_minutes = north_minutes || 0;
         this.north_north_south = north_north_south || '';
-    
+
         this.east_degree = east_degree || 0;
         this.east_minutes = east_minutes || 0;
         this.east_east_west = east_east_west || '';
@@ -341,8 +360,8 @@ export class GetFormatDNV {
         this.machinery_other_fuel_consumption = machinery_other_fuel_consumption || 0;
         this.machinery_other_fuel_type = machinery_other_fuel_type || 0;
         this.machinery_other_full_emission = machinery_other_full_emission || 0;
-   
-   
+
+
         this.rob_hfo = rob_hfo || 0;
         this.rob_lfo = rob_lfo || 0;
         this.rob_mgo = rob_mgo || 0;
@@ -353,9 +372,9 @@ export class GetFormatDNV {
         this.rob_ethanol = rob_ethanol || 0;
         this.rob_other_fuel = rob_other_fuel || 0;
         this.rob_other_fuel_type = rob_other_fuel_type || 0;
-   
-   
-   
-   
+
+
+
+
     }
 }

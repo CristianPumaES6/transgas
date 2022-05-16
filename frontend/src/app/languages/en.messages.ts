@@ -331,7 +331,8 @@ export const voyage: any = {
     EDIT_REPORT: 'Edit Report',
     PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
     LONGITUDE : 'Longitude',
-    LATITUDE : 'Latitude'
+    LATITUDE : 'Latitude',
+    POSITION:'Position'
 };
 
 export const dashboard: any = {
