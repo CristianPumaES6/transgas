@@ -370,8 +370,7 @@ export class VoyagesService {
                     return resultFind[0];
                 } else {
 
-                    if (!resultFind) throw 'No records found in the database';
-                    return resultFind;
+                   return resultFind;
 
 
                 }
