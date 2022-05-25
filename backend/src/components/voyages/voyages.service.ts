@@ -338,7 +338,7 @@ export class VoyagesService {
 
     // Permite consultar si el numero de viaje existe
     // Retorna underfined si el viaje no existe.
-    async ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number): Promise<Voyage> {
+    async ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number,userId: number): Promise<Voyage> {
 
         return DummyPromise().then(
             result => {
@@ -352,7 +352,8 @@ export class VoyagesService {
                             // hacemos un where donde buscamos por id.
                             {
                                 voyageNumber: voyageNumber,
-                                year: yearVoyage
+                                year: yearVoyage,
+                                userId: userId
                             }
                         ]
                     });

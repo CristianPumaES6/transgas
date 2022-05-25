@@ -309,7 +309,7 @@ export class PortsService {
 
     // Permite consultar si el puerto existe en el viaje,
     // Retorna underfined si el puerto no existe.
-    async ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number): Promise<Port> {
+    async ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number, userId:number): Promise<Port> {
 
         return DummyPromise().then(
             result => {
@@ -330,6 +330,7 @@ export class PortsService {
                             {
                                 voyageId: voyageId,
                                 portNumber: portNumber,
+                                userId: userId
                             }
                         ],
                         take: 1,
