@@ -24,6 +24,9 @@ ng build --prod
 firebase deploy
 ```
 
+// DOMINIOS
+transgas.lowcodetool.com
+socket-transgas.lowcodetool.com
 
 ## PARA DEV
 
