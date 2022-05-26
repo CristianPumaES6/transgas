@@ -2556,10 +2556,6 @@ export class VoyageComponent implements OnInit {
       this.selectDailyReport.activityPerformed === 'SAILING_IN_BALLAST' ||
       this.selectDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
       this.selectDailyReport.speedStraction = 'FULL_SPEED';
-    } else if (
-      this.selectDailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION'
-    ) {
-      this.selectDailyReport.speedStraction = 'ECO_SPEED';
     }
   }
 
@@ -2571,6 +2567,7 @@ export class VoyageComponent implements OnInit {
     } else {
       
       this.selectDailyReport.activityPerformed = this.selectDailyReport.typeActivityPerformed;
+      this.ChangeActivityPerformed()
     }
   }
   // filtro befourt
