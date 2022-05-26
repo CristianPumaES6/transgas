@@ -230,7 +230,7 @@ let PortsService = class PortsService {
             return port;
         });
     }
-    async ThereIsThisPortInTheVoyage(portNumber, voyageId) {
+    async ThereIsThisPortInTheVoyage(portNumber, voyageId, userId) {
         return promises_assets_1.DummyPromise().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
@@ -245,6 +245,7 @@ let PortsService = class PortsService {
                         {
                             voyageId: voyageId,
                             portNumber: portNumber,
+                            userId: userId
                         }
                     ],
                     take: 1,

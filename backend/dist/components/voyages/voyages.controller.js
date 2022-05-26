@@ -295,8 +295,9 @@ let VoyagesController = class VoyagesController {
                 for (var ImportVoyages_1 = __asyncValues(ImportVoyages), ImportVoyages_1_1; ImportVoyages_1_1 = await ImportVoyages_1.next(), !ImportVoyages_1_1.done;) {
                     const importVoyage = ImportVoyages_1_1.value;
                     let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let userId = importVoyage.userId;
                     if (!existeViaje) {
-                        let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year);
+                        let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year, userId);
                         if (!voyageExistente) {
                             let newVoyage = new voyage_entity_1.Voyage();
                             delete newVoyage.id;
@@ -319,7 +320,7 @@ let VoyagesController = class VoyagesController {
                     existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
                     let existePort = searchKey(MappingPort, importVoyage.portNumber);
                     if (!existePort) {
-                        let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value);
+                        let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value, userId);
                         if (!portExiste) {
                             let newPort = new port_entity_1.Port();
                             delete newPort.id;
@@ -354,8 +355,6 @@ let VoyagesController = class VoyagesController {
                             newReport.hour = importVoyage.hour;
                         }
                     }
-                    newReport.bunkeringIfo = 0;
-                    newReport.bunkeringMgo = 0;
                     newReport.mplaIfo = importVoyage.mplaIfo || 0;
                     newReport.auxIfo = importVoyage.auxIfo || 0;
                     newReport.boilerIfo = importVoyage.boilerIfo || 0;
@@ -421,7 +420,14 @@ let VoyagesController = class VoyagesController {
                         newReport.activityPerformed = 'OTHER_ACT';
                     }
                     newReport.speedStraction = importVoyage.speedStraction;
-                    newReport.userIdCreated = headerToken.id;
+                    newReport.observation = importVoyage.observation;
+                    newReport.north_degree = importVoyage.north_degree || 0,
+                        newReport.north_minutes = importVoyage.north_minutes || 0,
+                        newReport.north_north_south = importVoyage.north_north_south || '',
+                        newReport.east_degree = importVoyage.east_degree || 0,
+                        newReport.east_minutes = importVoyage.east_minutes || 0,
+                        newReport.east_east_west = importVoyage.east_east_west || '',
+                        newReport.userIdCreated = headerToken.id;
                     newReport.dateCreated = moment_assets_1.GetDate();
                     delete newReport.userIdUpdated;
                     delete newReport.dateUpdated;

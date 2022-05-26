@@ -4,7 +4,14 @@ export declare class DailyReport {
     userId: number;
     portId: number;
     port: Port;
+    north_degree: number;
+    north_minutes: number;
+    north_north_south: string;
+    east_degree: number;
+    east_minutes: number;
+    east_east_west: string;
     activityPerformed: string;
+    typeActivityPerformed: string;
     speedStraction: string;
     date: Date;
     hour: string;
@@ -87,7 +94,13 @@ export declare class GetReportVoyagePortDaily {
     giMgo?: number;
     otherMgo?: number;
     bunkeringMgo?: number;
-    constructor(userId?: number, year?: number, voyageId?: number, voyageNumber?: number, portId?: number, portNumber?: number, departurePort?: string, arrivalPort?: string, dailyReportId?: number, date?: Date, hour?: string, steamingTime?: number, activityPerformed?: string, speedStraction?: string, observation?: string, distance?: number, beaufour?: string, mplaIfo?: number, auxIfo?: number, boilerIfo?: number, otherIfo?: number, bunkeringIfo?: number, mplaMgo?: number, auxMgo?: number, boilerMgo?: number, ppMgo?: number, giMgo?: number, otherMgo?: number, bunkeringMgo?: number);
+    north_degree?: number;
+    north_minutes?: number;
+    north_north_south?: string;
+    east_degree?: number;
+    east_minutes?: number;
+    east_east_west?: string;
+    constructor(userId?: number, year?: number, voyageId?: number, voyageNumber?: number, portId?: number, portNumber?: number, departurePort?: string, arrivalPort?: string, dailyReportId?: number, date?: Date, hour?: string, steamingTime?: number, activityPerformed?: string, speedStraction?: string, observation?: string, distance?: number, beaufour?: string, mplaIfo?: number, auxIfo?: number, boilerIfo?: number, otherIfo?: number, bunkeringIfo?: number, mplaMgo?: number, auxMgo?: number, boilerMgo?: number, ppMgo?: number, giMgo?: number, otherMgo?: number, bunkeringMgo?: number, north_degree?: number, north_minutes?: number, north_north_south?: string, east_degree?: number, east_minutes?: number, east_east_west?: string);
 }
 export declare class InfoReport_IFO_AND_MGO {
     ifo?: GetReportVoyagePortDaily[];

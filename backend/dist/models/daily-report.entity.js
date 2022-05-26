@@ -31,9 +31,37 @@ __decorate([
     __metadata("design:type", port_entity_1.Port)
 ], DailyReport.prototype, "port", void 0);
 __decorate([
+    typeorm_1.Column({ default: '', nullable: true }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "north_degree", void 0);
+__decorate([
+    typeorm_1.Column({ default: '', nullable: true }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "north_minutes", void 0);
+__decorate([
+    typeorm_1.Column({ default: '', nullable: true }),
+    __metadata("design:type", String)
+], DailyReport.prototype, "north_north_south", void 0);
+__decorate([
+    typeorm_1.Column({ default: '', nullable: true }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "east_degree", void 0);
+__decorate([
+    typeorm_1.Column({ default: '', nullable: true }),
+    __metadata("design:type", Number)
+], DailyReport.prototype, "east_minutes", void 0);
+__decorate([
+    typeorm_1.Column({ default: '', nullable: true }),
+    __metadata("design:type", String)
+], DailyReport.prototype, "east_east_west", void 0);
+__decorate([
     typeorm_1.Column({ default: "Otros" }),
     __metadata("design:type", String)
 ], DailyReport.prototype, "activityPerformed", void 0);
+__decorate([
+    typeorm_1.Column({ default: '', nullable: true }),
+    __metadata("design:type", String)
+], DailyReport.prototype, "typeActivityPerformed", void 0);
 __decorate([
     typeorm_1.Column({ default: '', nullable: false }),
     __metadata("design:type", String)
@@ -163,7 +191,7 @@ class GetInfoBunkering {
 }
 exports.GetInfoBunkering = GetInfoBunkering;
 class GetReportVoyagePortDaily {
-    constructor(userId, year, voyageId, voyageNumber, portId, portNumber, departurePort, arrivalPort, dailyReportId, date, hour, steamingTime, activityPerformed, speedStraction, observation, distance, beaufour, mplaIfo, auxIfo, boilerIfo, otherIfo, bunkeringIfo, mplaMgo, auxMgo, boilerMgo, ppMgo, giMgo, otherMgo, bunkeringMgo) {
+    constructor(userId, year, voyageId, voyageNumber, portId, portNumber, departurePort, arrivalPort, dailyReportId, date, hour, steamingTime, activityPerformed, speedStraction, observation, distance, beaufour, mplaIfo, auxIfo, boilerIfo, otherIfo, bunkeringIfo, mplaMgo, auxMgo, boilerMgo, ppMgo, giMgo, otherMgo, bunkeringMgo, north_degree, north_minutes, north_north_south, east_degree, east_minutes, east_east_west) {
         this.userId = userId;
         this.year = year;
         this.voyageId = voyageId;
@@ -193,6 +221,12 @@ class GetReportVoyagePortDaily {
         this.giMgo = giMgo;
         this.otherMgo = otherMgo;
         this.bunkeringMgo = bunkeringMgo;
+        this.north_degree = north_degree;
+        this.north_minutes = north_minutes;
+        this.north_north_south = north_north_south;
+        this.east_degree = east_degree;
+        this.east_minutes = east_minutes;
+        this.east_east_west = east_east_west;
         this.userId = userId || 0;
         this.year = year || 0;
         this.voyageId = voyageId || 0;
@@ -222,6 +256,12 @@ class GetReportVoyagePortDaily {
         this.giMgo = giMgo || 0;
         this.otherMgo = otherMgo || 0;
         this.bunkeringMgo = bunkeringMgo || 0;
+        this.north_degree = north_degree || 0;
+        this.north_minutes = north_minutes || 0;
+        this.north_north_south = north_north_south || '';
+        this.east_degree = east_degree || 0;
+        this.east_minutes = east_minutes || 0;
+        this.east_east_west = east_east_west || '';
     }
 }
 exports.GetReportVoyagePortDaily = GetReportVoyagePortDaily;

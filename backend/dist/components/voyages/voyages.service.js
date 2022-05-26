@@ -139,7 +139,7 @@ let VoyagesService = class VoyagesService {
                     relations: ["ports"],
                     where: [
                         {
-                            userId: typeorm_3.Like('%' + (voyage.userId || '') + '%'),
+                            userId: (voyage.userId || ''),
                             voyageNumber: typeorm_3.Like('%' + (voyage.voyageNumber || '') + '%'),
                             year: typeorm_3.Like('%' + (voyage.year || '') + '%'),
                             status: typeorm_4.Not(false)
@@ -250,7 +250,7 @@ let VoyagesService = class VoyagesService {
             return voyage;
         });
     }
-    async ThisVoyageNumberExists(voyageNumber, yearVoyage) {
+    async ThisVoyageNumberExists(voyageNumber, yearVoyage, userId) {
         return promises_assets_1.DummyPromise().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @voyageNumber='" + voyageNumber + "', @yearVoyage='" + yearVoyage + "'");
@@ -260,7 +260,8 @@ let VoyagesService = class VoyagesService {
                     where: [
                         {
                             voyageNumber: voyageNumber,
-                            year: yearVoyage
+                            year: yearVoyage,
+                            userId: userId
                         }
                     ]
                 });
@@ -272,8 +273,6 @@ let VoyagesService = class VoyagesService {
                 return resultFind[0];
             }
             else {
-                if (!resultFind)
-                    throw 'No records found in the database';
                 return resultFind;
             }
         });

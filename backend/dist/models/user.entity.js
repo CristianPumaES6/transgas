@@ -91,6 +91,10 @@ __decorate([
     __metadata("design:type", Number)
 ], UserEntity.prototype, "id", void 0);
 __decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "imo", void 0);
+__decorate([
     typeorm_1.Column({ nullable: false }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "nick", void 0);

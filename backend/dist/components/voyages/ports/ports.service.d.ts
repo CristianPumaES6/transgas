@@ -9,5 +9,5 @@ export declare class PortsService {
     GetsDetail(port: Port): Promise<Port[]>;
     Update(port: Port): Promise<Port>;
     Delete(port: Port): Promise<Port>;
-    ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number): Promise<Port>;
+    ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number, userId: number): Promise<Port>;
 }

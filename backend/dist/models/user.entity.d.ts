@@ -1,5 +1,6 @@
 export declare class UserEntity {
     id: number;
+    imo: string;
     nick: string;
     name: string;
     filename: string;

@@ -1657,7 +1657,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "de9eeb68edbd6ef96a2a6c8888cc96b6729bf698f532ec00b78423d78e2163cf",
+        "version": "a8828b215d0d05386e03c620b3562b0e24027dd80e9bd44155b8bb2271d34631",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -2982,8 +2982,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/user.entity.ts": {
-        "version": "6f7add3a9280a013eebba411f15b5850881749c4c8a2a22e1c1881936ccbfed0",
-        "signature": "9ea5ad535b37a58a4ffb1999d12c21712099079355c0425d137c81f95def005f",
+        "version": "74ee1791c5bbdfbd4b5a68e59ee64ccff3f32a6a7ae2c06a24728ff1384b3c2c",
+        "signature": "5c942f88c36c9a71393092f21da4447f5c45f1a128f7d6fb11e37df37c9811f4",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type.d.ts": {
@@ -3252,8 +3252,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/daily-report.entity.ts": {
-        "version": "54fb8ff00e4c7dda0f3d401f6736d5916500bfa3eea637cee8bc06eb39281b81",
-        "signature": "b844074527c4de8df280d46c4ce448930d859a1150208395b6b8f12169db9ebc",
+        "version": "24f82afe6a048680349c8ab03d6a1e232fac7d48f2aac0fb5eaa2c38e9978718",
+        "signature": "67a4312620aeb29d66769459800cab5026b70d56611a50cc89cfb44d90d708f8",
         "affectsGlobalScope": false
       },
       "../src/models/port.entity.ts": {
@@ -3262,27 +3262,27 @@
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "762ef592da9a13ed38a9115e301baea995dd2081b3192331953bf36bf36e949b",
-        "signature": "57b5c4d5f92b7e6c064efc5039d217649d5e65b0a4dd3aca7511acfae556b645",
+        "version": "eff93958d52337e2fe8821c11ee7f112671d4169cef8b9326bf7778f3e4e3781",
+        "signature": "24bf0479e48bdf353df0acc3e1761b014062c105000c7bd67879b52f5f289b87",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "a2fd9ed2eac284fde75e922e3669cbb1f82e7e0c42499906d87c7a58f5247c7f",
-        "signature": "b39989582d42ddad9e605413adbca4b8a4db1d44f8c08e2463af84479897059f",
+        "version": "a2cd80a19e8063ec3fee08483061727f1dbc0ede52d595e95cdc7ebe2978d3c6",
+        "signature": "a92b6919868c142e045958d2e3f867b99a9e229e3cfcd5ba2647470c5f4b88ae",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.service.ts": {
-        "version": "636dddf84c23520833b278817179086cd48cd810bb4d52cdb3c82067fc9137b8",
-        "signature": "c144c723f33e121d7eb41d68fe19a9a01e8f0ac7ddc0733c6059c0305c331f2e",
+        "version": "40fb2903a6cea97ff5bf2a08b9eb8b0e9f7028f4bde467eea0e784683dbebcf9",
+        "signature": "aef9788486c466d095bbd5bf1e464a609e4a6f1eecb4160350678beeb68bc947",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "9eaacc23e4000efb25f71a3b7e04731db537dacc2b9ffb61877ae32bc4273857",
+        "version": "d7aff97cf7639fd84ad4556ac2ce4796c144124ba00132b0341f1e358f5636f6",
         "signature": "e205d4eceeb249f49b75ecd05e10e246b70e07e4a9d840c762369e1c172a9912",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "a5e93300855e0789c95b6c800c6daff922d4f6f142c0f3f62122fff494f7241c",
+        "version": "bea55dcbbd4be13abfcde01fe0d29c61c1dc0d8d528b87c92bd713545792c1e0",
         "signature": "73b941819318f118eeaac1a054dc6893b71b71ffa9f2d483a75989bb13d6358c",
         "affectsGlobalScope": false
       },

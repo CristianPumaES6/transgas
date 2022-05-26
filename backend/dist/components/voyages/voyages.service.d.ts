@@ -11,5 +11,5 @@ export declare class VoyagesService {
     GetsByYears(voyageFilterByYears: VoyageFilterByYears): Promise<Voyage[]>;
     Update(voyage: Voyage): Promise<Voyage>;
     Delete(voyage: Voyage): Promise<Voyage>;
-    ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number): Promise<Voyage>;
+    ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number, userId: number): Promise<Voyage>;
 }
