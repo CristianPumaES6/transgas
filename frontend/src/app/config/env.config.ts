@@ -45,24 +45,24 @@ export const EnvConfig: EnvConfig = {
 
 
 
-// CONFIGURACION PARA DESARROLLO-server
-/* export const EnvConfig: EnvConfig = {
+// CONFIGURACION PARA test DESARROLLO-server
+export const EnvConfig: EnvConfig = {
     API: 'https://transgas.esteesel.club',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.esteesel.club',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
- */
+
 
 //CONFIG DEVELOPER LOCAL
-export const EnvConfig: EnvConfig = {
+/* export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'ws://localhost:4000',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-};
+}; */
 
 
 
