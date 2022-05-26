@@ -1125,6 +1125,8 @@ export class DatabaseService {
                 userId: dailyReport.userId,
                 portId: dailyReport.portId,
                 activityPerformed: dailyReport.activityPerformed,
+                typeActivityPerformed: dailyReport.typeActivityPerformed,
+                
                 speedStraction: dailyReport.speedStraction,
                 date: dailyReport.date,
                 hour: dailyReport.hour,
@@ -1152,6 +1154,15 @@ export class DatabaseService {
                 dateUpdated: dailyReport.dateUpdated,
                 status: dailyReport.status,
                 syncStatus: dailyReport.syncStatus,
+
+                // NUEVO CAMPO
+                north_degree:dailyReport.north_degree,
+                north_minutes:dailyReport.north_minutes,
+                north_north_south:dailyReport.north_north_south,
+                east_degree:dailyReport.east_degree,
+                east_minutes:dailyReport.east_minutes,
+                east_east_west:dailyReport.east_east_west,
+
             }
         ).then((result: boolean) => {
 

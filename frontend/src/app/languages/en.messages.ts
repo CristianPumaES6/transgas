@@ -272,6 +272,7 @@ export const voyage: any = {
     HOUR: 'Hour',
     ACTIVITY_PERFORMED: 'Activity Performed',
     // Opciones de Actividades realizadas / Activity performend
+    REPORT_AT_08_00:'Report at 08:00',
     LOADING: 'Loading',
     DOWNLOADING: 'Discharge',
     SAILING_IN_BALLAST: 'Sailing in ballast',
@@ -319,9 +320,11 @@ export const voyage: any = {
     ERROR_DAILY_REPORT_DELETE_LOCAL: 'Could not delete report local.',
     CHECK_DATE_FIELD: 'Check date field.',
     CHECK_HOUR_FIELD: 'Check hour field',
-    CHECK_ACTIVITY_FIELD: 'Check activity field',
+    CHECK_ACTIVITY_FIELD: 'Check activity performed field',
     CHECK_DISTANCE: 'Check distance',
     CHECK_BEFOURT: 'Check befourt',
+    CHECK_LATITUDE: 'Check latitud',
+    CHECK_LONGITUD: 'Check longitud',
     TOTAL_LSFO: 'Total LSFO',
     TOTAL_VLSFO: 'Total VLSFO',
     TOTAL_IFO: 'Total IFO',
@@ -330,6 +333,9 @@ export const voyage: any = {
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
     PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
+    LONGITUDE : 'Longitude',
+    LATITUDE : 'Latitude',
+    POSITION:'Position'
 };
 
 export const dashboard: any = {

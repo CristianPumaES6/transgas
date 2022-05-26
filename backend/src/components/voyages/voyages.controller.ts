@@ -449,17 +449,18 @@ export class VoyagesController {
     
             let MappingVoyage: Mapping[] = [];
             let MappingPort: Mapping[] = [];
-    
+            
             for await (const importVoyage of ImportVoyages) {
     
                 let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
     
+                let userId= importVoyage.userId;
                 // Consultamos si el numero de viaje ya lo tenemos mapeado.
                 // Si no lo tuvieramos lo registrariamos.
                 if (!existeViaje) {
     
                     // Hacemos una consulta si tenemos el numero de viaje en tal año.
-                    let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year);
+                    let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year,userId);
     
                     // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
                     if (!voyageExistente) {
@@ -511,8 +512,8 @@ export class VoyagesController {
                 if (!existePort) {
     
                     // Consultamos si existe el numero de puerto en el viaje.
-                    let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value)
-    
+                    let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value,userId)
+                                                          
     
                     // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
                     if (!portExiste) {
@@ -575,8 +576,7 @@ export class VoyagesController {
                     }
                 }
     
-                newReport.bunkeringIfo = 0
-                newReport.bunkeringMgo = 0;
+
                 newReport.mplaIfo = importVoyage.mplaIfo || 0;
                 newReport.auxIfo = importVoyage.auxIfo || 0;
                 newReport.boilerIfo = importVoyage.boilerIfo || 0;
@@ -640,7 +640,19 @@ export class VoyagesController {
                 }
                 // Tipo de velocidad.
                 newReport.speedStraction = importVoyage.speedStraction;
+                newReport.observation = importVoyage.observation;
     
+
+                
+
+                newReport.north_degree = importVoyage.north_degree || 0,
+                newReport.north_minutes = importVoyage.north_minutes || 0,
+                newReport.north_north_south = importVoyage.north_north_south || '',
+                newReport.east_degree = importVoyage.east_degree || 0,
+                newReport.east_minutes = importVoyage.east_minutes || 0,
+                newReport.east_east_west = importVoyage.east_east_west || '',
+
+
                 // Auditoria.
                 newReport.userIdCreated = headerToken.id;
                 newReport.dateCreated = GetDate();

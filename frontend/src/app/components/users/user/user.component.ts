@@ -316,6 +316,7 @@ export class UserComponent implements OnInit {
     // Inicializamos el formUser, si lo hacemos 2 proboca error, creao que deberia ser con un update
     if (initialize) {
       this.formUser = this.fb.group({
+        imo: ['', [Validators.nullValidator]],
         name: ['', [Validators.required]],
         nick: ['', [Validators.required]],
         password: ['', [Validators.required]],
@@ -340,6 +341,7 @@ export class UserComponent implements OnInit {
 
     // Obtenemos los valores del formulario
     if (getForm) {
+      this.user.imo = this.formUser.controls['imo'].value;
       this.user.name = this.formUser.controls['name'].value;
       this.user.nick = this.formUser.controls['nick'].value;
       this.user.password = this.formUser.controls['password'].value;
@@ -348,6 +350,7 @@ export class UserComponent implements OnInit {
 
     // Seteamos los valores del formulario con los datos del user.
     if (setForm) {
+      this.formUser.controls['imo'].setValue(this.user.imo);
       this.formUser.controls['name'].setValue(this.user.name);
       this.formUser.controls['nick'].setValue(this.user.nick);
       this.formUser.controls['password'].setValue(this.user.password);

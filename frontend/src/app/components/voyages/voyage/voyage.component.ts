@@ -1853,6 +1853,18 @@ export class VoyageComponent implements OnInit {
       }
     }
 
+    if (newDailyReport.typeActivityPerformed == 'REPORT_AT_08_00') {
+      if (!newDailyReport.east_degree || !newDailyReport.east_east_west || !newDailyReport.east_minutes) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LONGITUD'));
+        error = true;
+      }
+
+      if (!newDailyReport.north_degree || !newDailyReport.north_minutes || !newDailyReport.north_north_south) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LATITUDE'));
+        error = true;
+      }
+    }
+
     if (error) throw 'OK';
 
     newDailyReport.steamingTime = this.GenerateTimeOperation();
@@ -2556,10 +2568,18 @@ export class VoyageComponent implements OnInit {
       this.selectDailyReport.activityPerformed === 'SAILING_IN_BALLAST' ||
       this.selectDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
       this.selectDailyReport.speedStraction = 'FULL_SPEED';
-    } else if (
-      this.selectDailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION'
-    ) {
-      this.selectDailyReport.speedStraction = 'ECO_SPEED';
+    }
+  }
+
+  public ChangeTypeActivityPerformed() {
+    console.log('ChangeTypeActivityPerformed()')
+
+    if(this.selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00'){
+      this.selectDailyReport.activityPerformed = "";
+    } else {
+      
+      this.selectDailyReport.activityPerformed = this.selectDailyReport.typeActivityPerformed;
+      this.ChangeActivityPerformed()
     }
   }
   // filtro befourt

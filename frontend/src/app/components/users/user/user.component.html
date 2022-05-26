@@ -56,7 +56,21 @@
       <div class="media-list">
 
         <form [formGroup]="formUser">
+          <ng-template [ngIf]="(roleUser == 'ADMIN' || roleUser == 'SUPPORT') && user.role == 'BUQUE'">
+            <div class="row pb-2">
+              <div class="col-6 row no-gutters">
+                <mat-form-field class="w-100">
+                  <mat-label>{{'N° IMO' | translateMessage:translateCategory}}</mat-label>
+                  <input matInput type="text" placeholder="{{'IMO' | translateMessage:translateCategory}}"
+                    formControlName="imo">
 
+                  <mat-error *ngIf="errorHandling('imo', 'required')">
+                    IMO is <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </ng-template>
           <div class="row pb-2">
 
             <div class="col-6 row no-gutters">

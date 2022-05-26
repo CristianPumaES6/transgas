@@ -65,6 +65,16 @@ export class GetReportVoyagePortDaily {
         public syncStatusVoyage?: string,
         public statusVoyage?: boolean,
 
+
+        
+        // ULTIMOS CAMPOS DE UBICACION
+        public north_degree?: number,
+        public north_minutes?: number,
+        public north_north_south?: String,
+        public east_degree?: number,
+        public east_minutes?: number,
+        public east_east_west?: String,
+
     ) {
         this.userId = userId || 0;
         this.year = year || 0;
@@ -109,6 +119,15 @@ export class GetReportVoyagePortDaily {
         this.statusPort = statusDaily || false;
         this.syncStatusVoyage = syncStatusVoyage || '';
         this.statusVoyage = statusVoyage || false;
+
+
+        // ULTIMOS CAMPOS
+        this.north_degree = north_degree || 0;
+        this.north_minutes = north_minutes || 0;
+        this.north_north_south = north_north_south || '';
+        this.east_degree = east_degree || 0;
+        this.east_minutes = east_minutes || 0;
+        this.east_east_west = east_east_west || '';
     }
 
     

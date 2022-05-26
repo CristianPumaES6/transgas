@@ -1,6 +1,7 @@
 export class User {
     constructor(
         public id?: number,
+        public imo?: string,
         public nick?: string,
         public name?: string,
         public filename?: string,
@@ -89,6 +90,7 @@ export class User {
 
     ) {
         this.id = id || null;
+        this.imo = imo || '';
         this.nick = nick || '';
         this.name = name || '';
         this.filename = filename || '';

@@ -20,10 +20,28 @@ export class DailyReport {
     port: Port;
 
 
+    @Column({ default: '', nullable: true })
+    north_degree: number;
+    @Column({ default: '', nullable: true })
+    north_minutes: number;
+    @Column({ default: '', nullable: true })
+    north_north_south: string;
+
+    @Column({ default: '', nullable: true })
+    east_degree: number;
+    @Column({ default: '', nullable: true })
+    east_minutes: number;
+    @Column({ default: '', nullable: true })
+    east_east_west: string;
+
+
 
     // actividad Registrada
     @Column({ default: "Otros" })
     activityPerformed: string;
+
+    @Column({ default: '', nullable: true })
+    typeActivityPerformed: string;
 
     @Column({ default: '', nullable: false })
     speedStraction: string;
@@ -252,6 +270,18 @@ export class GetReportVoyagePortDaily {
         public otherMgo?: number,
         // Recarga de MGO
         public bunkeringMgo?: number,
+
+
+        // CAMPOS AGREGADOS logitud
+        public north_degree?: number,
+        public north_minutes?: number,
+        public north_north_south?: string,
+    
+        public east_degree?: number,
+        public east_minutes?: number,
+        public east_east_west?: string,
+    
+    
     ) {
         this.userId = userId || 0;
         this.year = year || 0;
@@ -290,6 +320,15 @@ export class GetReportVoyagePortDaily {
         this.otherMgo = otherMgo || 0;
         this.bunkeringMgo = bunkeringMgo || 0;
 
+
+        
+        this.north_degree =north_degree || 0;
+        this.north_minutes = north_minutes || 0;
+        this.north_north_south = north_north_south || '';
+    
+        this.east_degree = east_degree || 0;
+        this.east_minutes = east_minutes || 0;
+        this.east_east_west = east_east_west || '';
     }
 
 }

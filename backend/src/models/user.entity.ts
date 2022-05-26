@@ -6,6 +6,9 @@ export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ nullable: true })
+    imo: string;
+
     @Column({ nullable: false })
     nick: string;
 

@@ -76,4 +76,13 @@ export class ImportVoyage {
     giMgo: number;
     otherMgo:number;
     bunkeringMgo?: any;
+
+    
+
+    north_degree:number;
+    north_minutes:number;
+    north_north_south: string;
+    east_degree :number;
+    east_minutes:number;
+    east_east_west: string;
 }
