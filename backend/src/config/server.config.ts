@@ -2,7 +2,7 @@
 // CONFIGURACION PARA AMBIENTES DE WINDOWS
 export const URL_Server = {
     front: 'https://transgas-test.web.app',
-    back: 'https://transgas.codev.site/',
+    back: 'https://transgas.lowcodetool.com',
     version: 'v1.9M',
     puertoSocket: 4000,
     bd: 'MSSQL', // MSSQL, MYSQL
@@ -11,10 +11,10 @@ export const URL_Server = {
 
  
 /* 
-// SERVIDOR LINUX
+// SERVIDOR LINUX - FRONT Firebase
 export const URL_Server = {
     front: 'https://transgas.web.app',
-    back: 'https://transgas.codev.site',
+    back: 'https://transgas.lowcodetool.com',
     version: 'v1.9M',
     puertoSocket: 4000,
     bd: 'SQLITE', // MSSQL, MYSQL
