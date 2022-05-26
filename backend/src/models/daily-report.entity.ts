@@ -40,6 +40,9 @@ export class DailyReport {
     @Column({ default: "Otros" })
     activityPerformed: string;
 
+    @Column({ default: "" })
+    typeActivityPerformed: string;
+
     @Column({ default: '', nullable: false })
     speedStraction: string;
 
