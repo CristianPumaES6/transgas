@@ -226,6 +226,37 @@
               </mat-form-field>
             </div>
 
+            
+            <div class="col-3 row no-gutters">
+              <mat-form-field>
+                <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
+                <mat-select [(ngModel)]="selectDailyReport.typeActivityPerformed" name="typeActivityPerformed">
+                  <mat-option value="REPORT_AT_08_00" (click)="ChangeTypeActivityPerformed()">{{'REPORT_AT_08_00' |
+                    translateMessage:translateCategory}}
+                  </mat-option>
+                  <mat-option value="LOADING" (click)="ChangeActivityPerformed()">{{'LOADING' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="DOWNLOADING" (click)="ChangeActivityPerformed()">{{'DOWNLOADING' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="SAILING_IN_BALLAST" (click)="ChangeActivityPerformed()">{{'SAILING_IN_BALLAST' |
+                    translateMessage:translateCategory}}
+                  </mat-option>
+                  <mat-option value="SAILING_WITH_LADEN" (click)="ChangeActivityPerformed()">{{'SAILING_WITH_LADEN' |
+                    translateMessage:translateCategory}}
+                  </mat-option>
+                  <mat-option value="ECONOMICAL_NAVIGATION" (click)="ChangeActivityPerformed()">
+                    {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="ANCHORED" (click)="ChangeActivityPerformed()">{{'ANCHORED' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="MANEUVER" (click)="ChangeActivityPerformed()">{{'MANEUVER' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="OTHER_ACT" (click)="ChangeActivityPerformed()">{{'OTHER_ACT' |
+                    translateMessage:translateCategory}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
             <div class="row no-gutters cont-speed-straction"
               [ngClass]="{
               'col-2': selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' ||  selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN' ||  selectDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION' ,
@@ -240,80 +271,92 @@
             </div>
           </div>
 
+          <ng-template [ngIf]="selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00' ">
+            <div class="row pl-2 pb-2">
 
-          <div class="row pl-2 pb-2">
+
+              <div class="col-6 row no-gutters">
+                <p class="m-0 grp-title">
+                  {{'LATITUDE' | translateMessage:translateCategory}}
+                </p>
+
+                <div class="col-12 row no-gutters personalizate">
+                  <div class="col">
+                    <mat-form-field>
+                      <input matInput type="number" placeholder="Degree" [(ngModel)]="selectDailyReport.north_degree">
+                    </mat-form-field>
+                  </div>
+                  <div class="col">
+                    <mat-form-field>
+                      <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.north_minutes">
+                    </mat-form-field>
+                  </div>
+                  <div class="col">
 
 
-            <div class="col-6 row no-gutters">
-              <p class="m-0 grp-title">
-                {{'LATITUDE' | translateMessage:translateCategory}}
-              </p>
+                    <mat-form-field>
+                      <mat-label>{{'POSITION' | translateMessage:translateCategory}}</mat-label>
+                      <mat-select [(ngModel)]="selectDailyReport.north_north_south" name="north_north_south">
+                        <mat-option value="North">
+                          North
+                        </mat-option>
+                        <mat-option value="South">
+                          South
+                        </mat-option>
+                        <mat-option value="West">
+                          West
+                        </mat-option>
+                        <mat-option value="East">
+                          East
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
 
-              <div class="col-12 row no-gutters personalizate">
-                <div class="col">
-                  <mat-form-field>
-                    <input matInput type="number" placeholder="Degree" [(ngModel)]="selectDailyReport.north_degree">
-                  </mat-form-field>
+                  </div>
                 </div>
-                <div class="col">
-                  <mat-form-field>
-                    <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.north_minutes">
-                  </mat-form-field>
-                </div>
-                <div class="col">
+              </div>
 
+              <div class="col-6 row no-gutters">
+                <p class="m-0 grp-title">
+                  {{'LONGITUDE' | translateMessage:translateCategory}}
+                </p>
 
-                  <mat-form-field>
-                    <mat-label>{{'POSITION' | translateMessage:translateCategory}}</mat-label>
-                    <mat-select [(ngModel)]="selectDailyReport.north_north_south" name="north_north_south">
-                      <mat-option value="North">
-                        North
-                      </mat-option>
-                      <mat-option value="South">
-                        South
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
+                <div class="col-12 row no-gutters personalizate">
+                  <div class="col">
+                    <mat-form-field>
+                      <input matInput type="number" placeholder="Degree" [(ngModel)]="selectDailyReport.east_degree">
+                    </mat-form-field>
+                  </div>
+                  <div class="col">
+                    <mat-form-field>
+                      <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.east_minutes">
+                    </mat-form-field>
+                  </div>
+                  <div class="col">
 
+                    <mat-form-field>
+                      <mat-label>{{'POSITION' | translateMessage:translateCategory}}</mat-label>
+                      <mat-select [(ngModel)]="selectDailyReport.east_east_west" name="east_east_west">
+                        <mat-option value="North">
+                          North
+                        </mat-option>
+                        <mat-option value="South">
+                          South
+                        </mat-option>
+                        <mat-option value="East">
+                          East
+                        </mat-option>
+                        <mat-option value="West">
+                          West
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div class="col-6 row no-gutters">
-              <p class="m-0 grp-title">
-                {{'LONGITUDE' | translateMessage:translateCategory}}
-              </p>
-
-              <div class="col-12 row no-gutters personalizate">
-                <div class="col">
-                  <mat-form-field>
-                    <input matInput type="number" placeholder="Degree" [(ngModel)]="selectDailyReport.east_degree">
-                  </mat-form-field>
-                </div>
-                <div class="col">
-                  <mat-form-field>
-                    <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.east_minutes">
-                  </mat-form-field>
-                </div>
-                <div class="col">
-
-                  <mat-form-field>
-                    <mat-label>{{'POSITION' | translateMessage:translateCategory}}</mat-label>
-                    <mat-select [(ngModel)]="selectDailyReport.east_east_west" name="east_east_west">
-                      <mat-option value="East">
-                        East
-                      </mat-option>
-                      <mat-option value="West">
-                        West
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-
-                </div>
-              </div>
-            </div>
-          </div>
-
+          </ng-template>
 
 
           <ng-template [ngIf]="isBunkering">

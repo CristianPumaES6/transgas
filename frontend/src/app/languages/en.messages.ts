@@ -272,6 +272,7 @@ export const voyage: any = {
     HOUR: 'Hour',
     ACTIVITY_PERFORMED: 'Activity Performed',
     // Opciones de Actividades realizadas / Activity performend
+    REPORT_AT_08_00:'Report at 08:00',
     LOADING: 'Loading',
     DOWNLOADING: 'Discharge',
     SAILING_IN_BALLAST: 'Sailing in ballast',

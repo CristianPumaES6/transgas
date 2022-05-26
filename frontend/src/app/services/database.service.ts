@@ -1125,6 +1125,8 @@ export class DatabaseService {
                 userId: dailyReport.userId,
                 portId: dailyReport.portId,
                 activityPerformed: dailyReport.activityPerformed,
+                typeActivityPerformed: dailyReport.typeActivityPerformed,
+                
                 speedStraction: dailyReport.speedStraction,
                 date: dailyReport.date,
                 hour: dailyReport.hour,

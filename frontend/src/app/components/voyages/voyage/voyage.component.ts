@@ -2562,6 +2562,17 @@ export class VoyageComponent implements OnInit {
       this.selectDailyReport.speedStraction = 'ECO_SPEED';
     }
   }
+
+  public () {
+    console.log('ChangeActivityPerformed()')
+  
+    if(this.selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00'){
+      this.selectDailyReport.activityPerformed = "";
+    } else {
+      
+      this.selectDailyReport.activityPerformed = this.selectDailyReport.typeActivityPerformed;
+    }
+  }
   // filtro befourt
   private FilterInputBefourt(value: string): string[] {
     const filterValue = value.toLowerCase();

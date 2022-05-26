@@ -12,6 +12,8 @@ export class DailyReport {
         public portId?: number,
         // Actividades realizada
         public activityPerformed?: string,
+        // TypeActivity realizada
+        public typeActivityPerformed?: string,
         //  SpeedStraction ECO_SPEED | FULL_SPEED
         public speedStraction?: string,
         // Fecha de registro
@@ -80,6 +82,7 @@ export class DailyReport {
         this.userId = userId || null;
         this.portId = portId || null;
         this.activityPerformed = activityPerformed || '';
+        this.typeActivityPerformed = typeActivityPerformed || '';
         this.speedStraction = speedStraction || '';
         this.date = date || null;
         this.hour = hour || '';
