@@ -2563,9 +2563,9 @@ export class VoyageComponent implements OnInit {
     }
   }
 
-  public () {
-    console.log('ChangeActivityPerformed()')
-  
+  public ChangeTypeActivityPerformed() {
+    console.log('ChangeTypeActivityPerformed()')
+
     if(this.selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00'){
       this.selectDailyReport.activityPerformed = "";
     } else {
