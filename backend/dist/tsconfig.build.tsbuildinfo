@@ -1657,7 +1657,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "a8828b215d0d05386e03c620b3562b0e24027dd80e9bd44155b8bb2271d34631",
+        "version": "b8924e579c96b9d65db41d07ab2ec5cc11372d5915f3346f6e0a483d38aa918a",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
