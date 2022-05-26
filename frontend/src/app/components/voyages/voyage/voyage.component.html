@@ -275,8 +275,11 @@
             </div>
 
           
-            <div class="col-md-2 col"
-            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT')  }"
+            <div class="col"
+            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT') ,
+                'col-md-3': selectDailyReport.typeActivityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.typeActivityPerformed == 'SAILING_WITH_LADEN' || selectDailyReport.typeActivityPerformed ==  'OTHER_ACT',
+                'col-md-2': selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00' && (selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN') 
+            }"
           >
 
               <mat-form-field>
@@ -293,7 +296,10 @@
             </div>
 
             <div class="col"
-            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT')  }"
+            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT') ,
+            'col-md-3': selectDailyReport.typeActivityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.typeActivityPerformed == 'SAILING_WITH_LADEN' || selectDailyReport.typeActivityPerformed ==  'OTHER_ACT',
+            'col-md-2': selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00' && (selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN') 
+        }"
          >
               <mat-form-field>
                 <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}} (MI)"
