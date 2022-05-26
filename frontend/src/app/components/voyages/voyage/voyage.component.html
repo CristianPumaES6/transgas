@@ -171,7 +171,7 @@
 
 
 
-            <div class="col-3 row no-gutters">
+            <div class="col">
               <mat-form-field>
                 <input matInput type="datetime"
                   placeholder="{{'LAST_RECORDED_HOUR' | translateMessage:translateCategory}}"
@@ -179,10 +179,7 @@
                   [disabled]="roleUser==='SUPPORT'? false : true">
               </mat-form-field>
             </div>
-            <div class="row no-gutters"
-              [ngClass]="{
-              'col-2': selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' ||  selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN' ||  selectDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION' ,
-              'col-3': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
+            <div class="col">
               <mat-form-field>
                 <mat-label>{{'DATE' | translateMessage:translateCategory}}</mat-label>
                 <input matInput [matDatepicker]="picker" [(ngModel)]="selectDailyReport.date" (change)="onKeyUpEvent()">
@@ -190,10 +187,7 @@
                 <mat-datepicker #picker startView="year"></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col-2 row no-gutters"
-              [ngClass]="{
-              'col-2': selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' ||  selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN' ||  selectDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION' ,
-              'col-3': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
+            <div class="col">
               <mat-form-field>
                 <input matInput type="time" placeholder="{{'HOUR' | translateMessage:translateCategory}}"
                   [(ngModel)]="selectDailyReport.hour" (change)="onKeyUpEvent()">
@@ -213,7 +207,7 @@
           <div class="row pl-2 pb-2">
 
 
-            <div class="col-3 row no-gutters">
+            <div class="col-lg-3 col row no-gutters">
               <mat-form-field>
                 <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
                 <mat-select [(ngModel)]="selectDailyReport.typeActivityPerformed" name="typeActivityPerformed">
@@ -245,7 +239,9 @@
             </div>
 
 
-            <div class="col-3 row no-gutters">
+              <div class="col-3 col row no-gutters"
+              [ngClass]="{'d-none': selectDailyReport.typeActivityPerformed != 'REPORT_AT_08_00' }">
+  
               <mat-form-field>
                 <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
                 <mat-select [(ngModel)]="selectDailyReport.activityPerformed" name="activityPerformed">
@@ -271,10 +267,8 @@
               </mat-form-field>
             </div>
 
-            <div class="row no-gutters cont-speed-straction"
-              [ngClass]="{
-    'col-2': selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' ||  selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN' ||  selectDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION' ,
-    'd-none': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
+            <div class="col-lg-3 col-md-4 col row no-gutters cont-speed-straction"
+            [ngClass]="{'d-none': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
               <label class="m-0 grp-title">{{'SPEED_STRACTION' | translateMessage:translateCategory}}</label>
               <mat-radio-group [(ngModel)]="selectDailyReport.speedStraction">
                 <mat-radio-button value="ECO_SPEED">{{'ECO_SPEED' | translateMessage:translateCategory}}
@@ -527,7 +521,9 @@
 
 
 
-          <div class="row pl-2 pb-2">
+          <div class="row pl-2 pb-2"
+          [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT')  }"
+          >
 
             <div class="col">
 
