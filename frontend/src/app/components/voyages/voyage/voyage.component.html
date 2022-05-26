@@ -167,11 +167,11 @@
 
         <ng-template [ngIf]="List_Voyages_Ports_DailyReports==='DailyReports'">
 
-          <div class="row pl-2 pb-2">
+          <div class="row  pl-2 pb-2">
 
 
 
-            <div class="col">
+            <div class="col-md-3 col  no-gutters">
               <mat-form-field>
                 <input matInput type="datetime"
                   placeholder="{{'LAST_RECORDED_HOUR' | translateMessage:translateCategory}}"
@@ -179,7 +179,7 @@
                   [disabled]="roleUser==='SUPPORT'? false : true">
               </mat-form-field>
             </div>
-            <div class="col">
+            <div class="col-md-3 col  no-gutters">
               <mat-form-field>
                 <mat-label>{{'DATE' | translateMessage:translateCategory}}</mat-label>
                 <input matInput [matDatepicker]="picker" [(ngModel)]="selectDailyReport.date" (change)="onKeyUpEvent()">
@@ -187,14 +187,14 @@
                 <mat-datepicker #picker startView="year"></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col">
+            <div class="col-md-3 col  no-gutters">
               <mat-form-field>
                 <input matInput type="time" placeholder="{{'HOUR' | translateMessage:translateCategory}}"
                   [(ngModel)]="selectDailyReport.hour" (change)="onKeyUpEvent()">
               </mat-form-field>
 
             </div>
-            <div class="col">
+            <div class="col-md-3 col  no-gutters">
               <mat-form-field>
                 <input matInput type="number"
                   placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
@@ -207,7 +207,7 @@
           <div class="row pl-2 pb-2">
 
 
-            <div class="col-lg-3 col row no-gutters">
+            <div class="col-lg-3 col-md-3  col row no-gutters">
               <mat-form-field>
                 <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
                 <mat-select [(ngModel)]="selectDailyReport.typeActivityPerformed" name="typeActivityPerformed">
@@ -237,7 +237,7 @@
             </div>
 
 
-              <div class="col-3 col row no-gutters"
+              <div class="col-lg-3 col-md-3 col row no-gutters"
               [ngClass]="{'d-none': selectDailyReport.typeActivityPerformed != 'REPORT_AT_08_00' }">
   
               <mat-form-field>
@@ -263,7 +263,7 @@
               </mat-form-field>
             </div>
 
-            <div class="col-lg-3 col-md-4 col row no-gutters cont-speed-straction"
+            <div class="col-md-2 col row no-gutters cont-speed-straction"
             [ngClass]="{'d-none': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
               <label class="m-0 grp-title">{{'SPEED_STRACTION' | translateMessage:translateCategory}}</label>
               <mat-radio-group [(ngModel)]="selectDailyReport.speedStraction">
@@ -273,7 +273,37 @@
                 </mat-radio-button>
               </mat-radio-group>
             </div>
+
+          
+            <div class="col-md-2 col"
+            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT')  }"
+          >
+
+              <mat-form-field>
+                <mat-label>{{'BEFOURT' | translateMessage:translateCategory}}</mat-label>
+                <input type="text" placeholder="{{'PLACEHOLDER_BEFOURT' | translateMessage:translateCategory}}"
+                  aria-label="text" matInput [formControl]="myControlFormSelectBefourt" [matAutocomplete]="auto"
+                  [value]="selectDailyReport.beaufour">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of filteredOptionsSelectBefourt | async" [value]="option">
+                    {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <div class="col"
+            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT')  }"
+         >
+              <mat-form-field>
+                <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}} (MI)"
+                  [(ngModel)]="selectDailyReport.distance">
+              </mat-form-field>
+            </div> 
+
+
           </div>
+
           <ng-template [ngIf]="selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00' ">
             <div class="row pl-2 pb-2">
 
@@ -516,33 +546,6 @@
 
 
 
-
-          <div class="row pl-2 pb-2"
-          [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT')  }"
-          >
-
-            <div class="col">
-
-              <mat-form-field>
-                <mat-label>{{'BEFOURT' | translateMessage:translateCategory}}</mat-label>
-                <input type="text" placeholder="{{'PLACEHOLDER_BEFOURT' | translateMessage:translateCategory}}"
-                  aria-label="text" matInput [formControl]="myControlFormSelectBefourt" [matAutocomplete]="auto"
-                  [value]="selectDailyReport.beaufour">
-                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                  <mat-option *ngFor="let option of filteredOptionsSelectBefourt | async" [value]="option">
-                    {{option}}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
-
-            <div class="col">
-              <mat-form-field>
-                <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}} (MI)"
-                  [(ngModel)]="selectDailyReport.distance">
-              </mat-form-field>
-            </div>
-          </div>
 
           <div class="row pl-2 pb-2">
 

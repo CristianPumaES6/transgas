@@ -1853,6 +1853,18 @@ export class VoyageComponent implements OnInit {
       }
     }
 
+    if (newDailyReport.typeActivityPerformed == 'REPORT_AT_08_00') {
+      if (!newDailyReport.east_degree || !newDailyReport.east_east_west || !newDailyReport.east_minutes) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LONGITUD'));
+        error = true;
+      }
+
+      if (!newDailyReport.north_degree || !newDailyReport.north_minutes || !newDailyReport.north_north_south) {
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LATITUDE'));
+        error = true;
+      }
+    }
+
     if (error) throw 'OK';
 
     newDailyReport.steamingTime = this.GenerateTimeOperation();
