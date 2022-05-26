@@ -200,6 +200,51 @@
               </mat-form-field>
 
             </div>
+            <div class="col">
+              <mat-form-field>
+                <input matInput type="number"
+                  placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
+                  [(ngModel)]="selectDailyReport.steamingTime" [disabled]="roleUser==='SUPPORT'? false : true">
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <div class="row pl-2 pb-2">
+
+
+            <div class="col-3 row no-gutters">
+              <mat-form-field>
+                <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
+                <mat-select [(ngModel)]="selectDailyReport.typeActivityPerformed" name="typeActivityPerformed">
+                  <mat-option value="REPORT_AT_08_00" (click)="ChangeTypeActivityPerformed()">{{'REPORT_AT_08_00' |
+                    translateMessage:translateCategory}}
+                  </mat-option>
+                  <mat-option value="LOADING" (click)="ChangeTypeActivityPerformed()">{{'LOADING' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="DOWNLOADING" (click)="ChangeTypeActivityPerformed()">{{'DOWNLOADING' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="SAILING_IN_BALLAST" (click)="ChangeTypeActivityPerformed()">{{'SAILING_IN_BALLAST'
+                    |
+                    translateMessage:translateCategory}}
+                  </mat-option>
+                  <mat-option value="SAILING_WITH_LADEN" (click)="ChangeTypeActivityPerformed()">{{'SAILING_WITH_LADEN'
+                    |
+                    translateMessage:translateCategory}}
+                  </mat-option>
+                  <mat-option value="ECONOMICAL_NAVIGATION" (click)="ChangeTypeActivityPerformed()">
+                    {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="ANCHORED" (click)="ChangeTypeActivityPerformed()">{{'ANCHORED' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="MANEUVER" (click)="ChangeTypeActivityPerformed()">{{'MANEUVER' |
+                    translateMessage:translateCategory}}</mat-option>
+                  <mat-option value="OTHER_ACT" (click)="ChangeTypeActivityPerformed()">{{'OTHER_ACT' |
+                    translateMessage:translateCategory}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
             <div class="col-3 row no-gutters">
               <mat-form-field>
                 <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
@@ -226,41 +271,10 @@
               </mat-form-field>
             </div>
 
-            
-            <div class="col-3 row no-gutters">
-              <mat-form-field>
-                <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
-                <mat-select [(ngModel)]="selectDailyReport.typeActivityPerformed" name="typeActivityPerformed">
-                  <mat-option value="REPORT_AT_08_00" (click)="ChangeTypeActivityPerformed()">{{'REPORT_AT_08_00' |
-                    translateMessage:translateCategory}}
-                  </mat-option>
-                  <mat-option value="LOADING" (click)="ChangeTypeActivityPerformed()">{{'LOADING' |
-                    translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="DOWNLOADING" (click)="ChangeTypeActivityPerformed()">{{'DOWNLOADING' |
-                    translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="SAILING_IN_BALLAST" (click)="ChangeTypeActivityPerformed()">{{'SAILING_IN_BALLAST' |
-                    translateMessage:translateCategory}}
-                  </mat-option>
-                  <mat-option value="SAILING_WITH_LADEN" (click)="ChangeTypeActivityPerformed()">{{'SAILING_WITH_LADEN' |
-                    translateMessage:translateCategory}}
-                  </mat-option>
-                  <mat-option value="ECONOMICAL_NAVIGATION" (click)="ChangeTypeActivityPerformed()">
-                    {{'ECONOMICAL_NAVIGATION' | translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="ANCHORED" (click)="ChangeTypeActivityPerformed()">{{'ANCHORED' |
-                    translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="MANEUVER" (click)="ChangeTypeActivityPerformed()">{{'MANEUVER' |
-                    translateMessage:translateCategory}}</mat-option>
-                  <mat-option value="OTHER_ACT" (click)="ChangeTypeActivityPerformed()">{{'OTHER_ACT' |
-                    translateMessage:translateCategory}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-
             <div class="row no-gutters cont-speed-straction"
               [ngClass]="{
-              'col-2': selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' ||  selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN' ||  selectDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION' ,
-              'd-none': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
+    'col-2': selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' ||  selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN' ||  selectDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION' ,
+    'd-none': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
               <label class="m-0 grp-title">{{'SPEED_STRACTION' | translateMessage:translateCategory}}</label>
               <mat-radio-group [(ngModel)]="selectDailyReport.speedStraction">
                 <mat-radio-button value="ECO_SPEED">{{'ECO_SPEED' | translateMessage:translateCategory}}
@@ -270,7 +284,6 @@
               </mat-radio-group>
             </div>
           </div>
-
           <ng-template [ngIf]="selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00' ">
             <div class="row pl-2 pb-2">
 
@@ -511,33 +524,12 @@
           </div>
 
 
-          <div class="row pl-2 pb-2">
-
-            <div class="col">
-              <mat-form-field>
-                <input matInput type="number"
-                  placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
-                  [(ngModel)]="selectDailyReport.steamingTime" [disabled]="roleUser==='SUPPORT'? false : true">
-              </mat-form-field>
-            </div>
-            <div class="col">
-              <mat-form-field>
-                <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}} (MI)"
-                  [(ngModel)]="selectDailyReport.distance">
-              </mat-form-field>
-            </div>
-
-          </div>
 
 
 
           <div class="row pl-2 pb-2">
 
             <div class="col">
-
-
-
-
 
               <mat-form-field>
                 <mat-label>{{'BEFOURT' | translateMessage:translateCategory}}</mat-label>
@@ -550,16 +542,18 @@
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
-
-
-
-
-
-
-
-
-
             </div>
+
+            <div class="col">
+              <mat-form-field>
+                <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}} (MI)"
+                  [(ngModel)]="selectDailyReport.distance">
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row pl-2 pb-2">
+
             <div class="col">
               <mat-form-field class="example-full-width">
                 <mat-label>{{'OBSERVATIONS' | translateMessage:translateCategory}}</mat-label>
@@ -567,7 +561,6 @@
                   [(ngModel)]="selectDailyReport.observation"></textarea>
               </mat-form-field>
             </div>
-
           </div>
 
 
