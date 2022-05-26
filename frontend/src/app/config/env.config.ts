@@ -58,10 +58,10 @@ export const EnvConfig: EnvConfig = {
 
 // CONFIGURACION PARA DESARROLLO
 export const EnvConfig: EnvConfig = {
-    API: 'https://transgas.esteesel.club',
+    API: 'https://transgas.lowcodetool.com',
     ENV: '',
     VERSION: 'v1.9M',
-    SOCKET: 'https://socket-transgas.esteesel.club',
+    SOCKET: 'https://socket-transgas.lowcodetool.com',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
 
