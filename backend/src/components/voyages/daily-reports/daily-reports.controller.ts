@@ -156,7 +156,7 @@ export class DailyReportsController {
                     dailyReport.otherMgo = dailyReport.otherMgo || 0;
                     dailyReport.steamingTime = dailyReport.steamingTime || 0;
                     dailyReport.distance = dailyReport.distance || 0;
-
+                    
                     // Auditoria.
                     dailyReport.userIdCreated = headerToken.id;
                     dailyReport.dateCreated = GetDate();
