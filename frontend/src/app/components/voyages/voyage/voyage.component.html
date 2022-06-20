@@ -314,9 +314,9 @@
             <div class="row pl-2 pb-2">
 
 
-              <div class="col-6 row no-gutters">
-                <p class="m-0 grp-title">
-                  {{'LATITUDE' | translateMessage:translateCategory}}
+              <div class="col-6 row no-gutters title-group-lowcode">
+                <p class="m-0 grp-title color-label-material">
+                  {{'LATITUDE' | translateMessage:translateCategory}} <b>(DMM)</b>
                 </p>
 
                 <div class="col-12 row no-gutters personalizate">
@@ -327,7 +327,7 @@
                   </div>
                   <div class="col">
                     <mat-form-field>
-                      <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.north_minutes">
+                      <input matInput type="number" placeholder="Decimal Minutes" [(ngModel)]="selectDailyReport.north_minutes">
                     </mat-form-field>
                   </div>
                   <div class="col">
@@ -355,9 +355,9 @@
                 </div>
               </div>
 
-              <div class="col-6 row no-gutters">
-                <p class="m-0 grp-title">
-                  {{'LONGITUDE' | translateMessage:translateCategory}}
+              <div class="col-6 row no-gutters title-group-lowcode">
+                <p class="m-0 grp-title color-label-material">
+                  {{'LONGITUDE' | translateMessage:translateCategory}} <b>(DMM)</b>
                 </p>
 
                 <div class="col-12 row no-gutters personalizate">
@@ -368,7 +368,7 @@
                   </div>
                   <div class="col">
                     <mat-form-field>
-                      <input matInput type="number" placeholder="Minutes" [(ngModel)]="selectDailyReport.east_minutes">
+                      <input matInput type="number" placeholder="Decimal Minutes" [(ngModel)]="selectDailyReport.east_minutes">
                     </mat-form-field>
                   </div>
                   <div class="col">
@@ -439,9 +439,9 @@
 
             <ng-template
               [ngIf]="selectUser.isConsumptionIFO || selectUser.isConsumptionLSFO || selectUser.isConsumptionVLSFO">
-              <div class="col row no-gutters">
+              <div class="col row no-gutters title-group-lowcode">
 
-                <p class="m-0 grp-title">
+                <p class="m-0 grp-title color-label-material">
                   {{(selectUser.isConsumptionIFO?'CONSUMPTION_IFO': selectUser.isConsumptionVLSFO ? 'CONSUMPTION_VLSFO'
                   : 'CONSUMPTION_LSFO') | translateMessage:translateCategory}} (MT)
                 </p>
@@ -485,8 +485,8 @@
             </ng-template>
 
             <ng-template [ngIf]="selectUser.isConsumptionMGO">
-              <div class="col row no-gutters">
-                <p class="m-0 grp-title">{{'CONSUMPTION_MGO' | translateMessage:translateCategory}} (MT)</p>
+              <div class="col row no-gutters title-group-lowcode">
+                <p class="m-0 grp-title color-label-material">{{'CONSUMPTION_MGO' | translateMessage:translateCategory}} (MT)</p>
 
                 <div class="col-12 row no-gutters personalizate">
                   <ng-template [ngIf]="selectUser.isMEMGO">

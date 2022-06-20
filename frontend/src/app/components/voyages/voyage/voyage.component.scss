@@ -1,11 +1,11 @@
 @import "../../../variable";
-.PerfectScrollbar-reportTable{
+.PerfectScrollbar-reportTable {
   overflow: scroll;
 }
 
 .cont-speed-straction {
-  label {   
-    color: rgba(0,0,0,.54);
+  label {
+    color: rgba(0, 0, 0, 0.54);
     padding-bottom: 0;
     margin-bottom: 0;
     line-height: 1;
@@ -79,6 +79,17 @@
         }
       }
     }
+  }
+}
 
+.title-group-lowcode {
+  &:focus-within {
+    .color-label-material {
+      color: #3f51b5;
+    }
+  }
+
+  .color-label-material {
+    color: rgba(0, 0, 0, 0.54);
   }
 }
