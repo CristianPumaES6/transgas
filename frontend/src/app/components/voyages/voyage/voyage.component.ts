@@ -1470,10 +1470,10 @@ export class VoyageComponent implements OnInit {
         (resultPortIndexedDB: Port) => {
 
           newPort = resultPortIndexedDB;
-        
+
           // armamos el obj Azlist
           let azList = new AzList(newPort.id, 'Port N°' + newPort.portNumber, '(' + newPort.departurePort + ' - ' + newPort.arrivalPort + ')', '', '', String(newPort.totalReport))
-          
+
 
           // Actualizamos el puerto id con el nuevo id del bd local.
           this.selectPort.id = newPort.id;
@@ -1865,18 +1865,30 @@ export class VoyageComponent implements OnInit {
     }
 
     if (newDailyReport.typeActivityPerformed == 'REPORT_AT_08_00') {
-      if (!newDailyReport.east_degree || !newDailyReport.east_east_west || !newDailyReport.east_minutes) {
-        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LONGITUD'));
+
+      if (newDailyReport.east_degree === null || !newDailyReport.east_minutes === null || !newDailyReport.east_east_west) {
+        let text = '';
+        if (newDailyReport.east_degree === null) text = '(degree)';
+        if (newDailyReport.east_minutes === null) text = '(decimal minutes)';
+        if (!newDailyReport.east_east_west) text = '(position)';
+
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LONGITUD') + ' ' + text);
         error = true;
       }
 
-      if (!newDailyReport.north_degree || !newDailyReport.north_minutes || !newDailyReport.north_north_south) {
-        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LATITUDE'));
+      if (newDailyReport.north_degree === null || newDailyReport.north_minutes === null || !newDailyReport.north_north_south) {
+        let text = '';
+        if (newDailyReport.north_degree === null) text = '(degree)';
+        if (newDailyReport.north_minutes === null) text = '(decimal minutes)';
+        if (!newDailyReport.east_east_west) text = '(position)';
+
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_LATITUDE') + ' ' + text);
         error = true;
       }
+
     }
 
-    if (error) throw 'OK';
+    if (error) throw 'ERROR POR CAMPOS FORMULARIOS DAILY REPORT';
 
     newDailyReport.steamingTime = this.GenerateTimeOperation();
     newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour);
@@ -2585,10 +2597,10 @@ export class VoyageComponent implements OnInit {
   public ChangeTypeActivityPerformed() {
     console.log('ChangeTypeActivityPerformed()')
 
-    if(this.selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00'){
+    if (this.selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00') {
       this.selectDailyReport.activityPerformed = "";
     } else {
-      
+
       this.selectDailyReport.activityPerformed = this.selectDailyReport.typeActivityPerformed;
       this.ChangeActivityPerformed()
     }
