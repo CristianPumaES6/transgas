@@ -4,13 +4,14 @@ import { Port } from '../../../models/port.entity';
 import { Like, Not, Repository } from 'typeorm';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { URL_Server } from '../../../config/server.config';
+import { DailyReport } from 'src/models/daily-report.entity';
 
 @Injectable()
 export class PortsService {
 
     constructor(
         @InjectRepository(Port)
-        private portRepository: Repository<Port>,
+        private portRepository: Repository<Port>, 
     ) { }
 
 
@@ -310,7 +311,7 @@ export class PortsService {
     // Permite consultar si el puerto existe en el viaje,
     // Retorna underfined si el puerto no existe.
     async ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number, userId:number): Promise<Port> {
-
+        let portSearch :Port;
         return DummyPromise().then(
             result => {
 
@@ -330,7 +331,8 @@ export class PortsService {
                             {
                                 voyageId: voyageId,
                                 portNumber: portNumber,
-                                userId: userId
+                                userId: userId,
+                                status: true
                             }
                         ],
                         take: 1,
@@ -341,7 +343,8 @@ export class PortsService {
         ).then(resultFind => {
 
             if (resultFind && resultFind.length) {
-                let prueba = resultFind[0]
+                portSearch = resultFind[0];
+
                 return resultFind[0];
             }
             else {

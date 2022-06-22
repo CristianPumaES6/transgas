@@ -440,7 +440,6 @@ export class VoyagesController {
         
         try {
             
-
             let headerToken: UserEntity = JwtDecode(headers.authorization);
 
             if (!(headerToken.role === 'SUPPORT')) {
@@ -490,7 +489,8 @@ export class VoyagesController {
                         MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
                     }
                 }
-                // Actualizmos el viaje
+
+                // Actualizamos el viaje
                 existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
     
 
@@ -560,7 +560,7 @@ export class VoyagesController {
                 newReport.userId = importVoyage.userId;
                 newReport.portId = existePort.value;
     
-               
+               // MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA.
                 newReport.date = <any>importVoyage.date 
     
                 // Verificamos si existe una hora,
