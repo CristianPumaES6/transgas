@@ -111,24 +111,22 @@
         'CLEAR' | translateMessage:translateCategory}}</button>
 
       <br><br>
+
+
+
       <div class="row">
         <a class="pr-3 pb-3 buttom_Excel" (click)="ClickExportExcel()">
           <span class="icon-archivo-excel"></span>
         </a>
 
-
-
         <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
           <span class="icon-archivo-pdf"></span>
         </a>
 
-
         <ng-template [ngIf]="roleUser == 'SUPPORT'">
-
           <app-export-excel [selectUser]="selectUser"></app-export-excel>
-
         </ng-template>
-        
+
       </div>
 
 
@@ -689,7 +687,7 @@
                   <app-export-excel [selectUser]="selectUser"></app-export-excel>
 
                 </ng-template>
-                              
+
               </div>
             </div>
 
