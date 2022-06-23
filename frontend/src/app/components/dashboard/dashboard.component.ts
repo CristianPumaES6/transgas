@@ -57,6 +57,7 @@ import autoTable, { Cell, CellHookData, UserOptions } from 'jspdf-autotable'
 import { DashboardBunkering } from './dashboard-bunkering/dashboard-bunkering.component';
 import { OnlineOfflineService } from '../../services/online-offline.service';
 import { DialogExportExcelComponent, IDialogExportExcel } from '../../shared/dialog/dialog-export-excel/dialog-export-excel.component';
+import { IDialogConfigDashboard, DialogConfigDashboardComponent } from '../../shared/dialog/dialog-config-dashboard/dialog-config-dashboard.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -1288,6 +1289,43 @@ export class DashboardComponent implements OnInit {
       }
     );
 
+
+  }
+
+  // ClickConfigDashboard() : Esta funcion abre el modal de configuracion permite agregar unas opciones al panel de decimales.
+  public ClickConfigDashboard() {
+    console.log('ClickConfigDashboard()')
+    // Iniciamos las promesas.
+    Promise.resolve(true).then(
+      result => {
+        // Abrimos el loading.
+        this.loadingService.Open();
+
+        // Abremos el modal
+        return this.OpenDialogConfigDashboard(this.cantDecimal);
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Verificamos que se halla exportado correctamente.
+        if (!resultGenerateDashboard) throw 'ERROR_DIALOG_COFIG_DASHBOARD';
+
+        // Loading cerrar.
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
 
   }
 
@@ -4285,6 +4323,31 @@ export class DashboardComponent implements OnInit {
           // alert('OKK');
         }
       });
+
+    return true;
+
+  }
+
+  // Esta dunion agrega el dialog al modal mediante un componente.
+  private OpenDialogConfigDashboard(cantDecimal: number): boolean {
+    
+    // Armamos los datos que enviaremos al modal.
+    let dataDialog: IDialogConfigDashboard = {
+      cantDecimal: cantDecimal,
+    }; 
+    const dialogRef = this.dialog.open(DialogConfigDashboardComponent, {
+      data: dataDialog
+    });
+
+
+    dialogRef.afterClosed().subscribe(
+      (result: Boolean) => {
+
+        if (result) {
+        }
+
+      });
+
 
     return true;
 
