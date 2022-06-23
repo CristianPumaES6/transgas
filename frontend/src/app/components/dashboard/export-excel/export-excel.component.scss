@@ -1,28 +1,11 @@
-
 .buttom_excel {
-    font-size: 25px !important;
-    color: rgb(150, 14, 14);
-    position: absolute;
-    cursor: pointer;
-    bottom: 2%;
-    right: 100px;
-    transform: all 1s;
-  
-    &:hover {
-      font-size: 35px;
-    }
-  }
-  
-.buttom_excel_format_dnv {
-  font-size: 25px !important;
-  color: green;
-  position: absolute;
+  color: rgb(150, 14, 14);
   cursor: pointer;
-  bottom: 2%;
-  right: 150px;
-  transform: all 1s;
+  transform: font-size 1s;
+}
 
-  &:hover {
-    font-size: 35px;
-  }
+.buttom_excel_format_dnv {
+  color: green;
+  cursor: pointer;
+  transform: font-size 1s;
 }
