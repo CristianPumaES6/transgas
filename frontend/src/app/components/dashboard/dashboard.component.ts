@@ -4330,24 +4330,27 @@ export class DashboardComponent implements OnInit {
 
   // Esta dunion agrega el dialog al modal mediante un componente.
   private OpenDialogConfigDashboard(cantDecimal: number): boolean {
-    
+
     // Armamos los datos que enviaremos al modal.
     let dataDialog: IDialogConfigDashboard = {
       cantDecimal: cantDecimal,
-    }; 
+    };
     const dialogRef = this.dialog.open(DialogConfigDashboardComponent, {
       data: dataDialog
     });
 
 
+    // CUADO SE CIERRA DE COMPONENTE NOS RETORAN UN RESULTADO.
     dialogRef.afterClosed().subscribe(
-      (result: Boolean) => {
-
-        if (result) {
+     
+      (result: number) => {
+        if (!result) {
+          // Si el resultado es 0 o null no hacemos nada.
+        } else {
+          this.cantDecimal = result;
         }
 
       });
-
 
     return true;
 

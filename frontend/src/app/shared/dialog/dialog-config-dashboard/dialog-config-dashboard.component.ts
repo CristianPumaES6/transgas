@@ -16,20 +16,33 @@ export interface IDialogConfigDashboard {
 })
 export class DialogConfigDashboardComponent implements OnInit {
 
+  public translateCategory: string = 'dialog';
+  public decimalQuantity: number = 0;
+
   constructor(
-      // Dialog referencia es el mismo.
-      public dialogRef: MatDialogRef<DialogConfigDashboardComponent>,
-      // Data que se importara.
-      @Inject(MAT_DIALOG_DATA) public data: IDialogConfigDashboard,
-      // servicio de lenguaje.
-      private languageService: LanguageService,
-      // Servicios de notificaciones.
-      private notificationsService: NotificationsService,
-      // Loading service.
-      private loadingService: LoadingService
-  ) {}
+    // Dialog referencia es el mismo.
+    public dialogRef: MatDialogRef<DialogConfigDashboardComponent>,
+    // Data que se importara.
+    @Inject(MAT_DIALOG_DATA) public data: IDialogConfigDashboard,
+    // servicio de lenguaje.
+    private languageService: LanguageService,
+    // Servicios de notificaciones.
+    private notificationsService: NotificationsService,
+    // Loading service.
+    private loadingService: LoadingService
+  ) { }
+
 
   ngOnInit(): void {
+    // Seleccionamos el puerto ID
+    this.decimalQuantity = this.data.cantDecimal;
+  }
+
+  // guardar cambios.
+  public ClickSaveChanges() {
+    // Cerramos el componente.
+    this.dialogRef.close(this.decimalQuantity);
+
   }
 
 }

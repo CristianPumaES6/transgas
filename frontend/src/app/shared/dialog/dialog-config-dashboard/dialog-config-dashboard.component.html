@@ -1,1 +1,31 @@
-<p>dialog-config-dashboard works!</p>
+<h5>
+  {{'TITLE_COMPONENT_DIALOG_CONFIG_DASHBOARD' | translateMessage:translateCategory}}
+</h5>
+
+<p>
+  {{'DESCRIPTION_COMPONENT_DIALOG_CONFIG_DASHBOARD' | translateMessage:translateCategory}}
+</p>
+
+<div class="row">
+  <div class="col">
+    <mat-form-field>
+      <input matInput type="number" placeholder="{{'LABEL_QUANTITY_DECIMAL' | translateMessage:translateCategory}}"
+        [(ngModel)]="decimalQuantity">
+    </mat-form-field>
+  </div>
+  <div class="col">
+    <span matTooltip="{{'TOOLTIP_LABEL_QUANTITY_DECIMAL' | translateMessage:translateCategory}}"
+      matTooltipClass="multiline">
+      <i class="icon-menu-help"></i>
+    </span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <button mat-raised-button color="primary" [disabled]='!decimalQuantity' (click)="ClickSaveChanges()">
+      {{'SAVE_CHANGES' | translateMessage:translateCategory}}
+      <span style="font-size: 14pt;" class="icon-cogs"></span>
+    </button>
+  </div>
+</div>
