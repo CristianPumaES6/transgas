@@ -111,26 +111,28 @@
         'CLEAR' | translateMessage:translateCategory}}</button>
 
       <br><br>
-      <div class="row">
-        <a class="pr-3 pb-3 buttom_Excel" (click)="ClickExportExcel()">
+
+      <div class="iconos-options-code">
+
+        <a class="ml-2 buttom_Excel" (click)="ClickExportExcel()">
           <span class="icon-archivo-excel"></span>
         </a>
 
-
-
-        <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
+        <a class="ml-2 buttom_pdf" (click)="ClickExportPDF()">
           <span class="icon-archivo-pdf"></span>
         </a>
 
 
-        <ng-template [ngIf]="roleUser == 'SUPPORT'">
-
-          <app-export-excel [selectUser]="selectUser"></app-export-excel>
-
-        </ng-template>
-        
+        <a class="ml-4 buttom_config" (click)="ClickConfigDashboard()">
+          <span class="icon-cogs"></span>
+        </a>
       </div>
 
+      <ng-template [ngIf]="roleUser == 'SUPPORT'">
+        <div class="iconos-options-code">
+          <app-export-excel [selectUser]="selectUser"></app-export-excel>
+        </div>
+      </ng-template>
 
     </div><!-- card -->
   </div>
@@ -671,27 +673,28 @@
 
 
 
-            <br><br>
-            <div class="row">
+            <div class="iconos-options-code">
 
-              <div class="row">
-                <a class="pr-3 pb-3 buttom_Excel" (click)="ClickExportExcel()">
-                  <span class="icon-archivo-excel"></span>
-                </a>
+              <a class="ml-2 buttom_Excel" (click)="ClickExportExcel()">
+                <span class="icon-archivo-excel"></span>
+              </a>
+
+              <a class="ml-2 buttom_pdf" (click)="ClickExportPDF()">
+                <span class="icon-archivo-pdf"></span>
+              </a>
 
 
-                <a class="pr-3 pb-3 buttom_pdf" (click)="ClickExportPDF()">
-                  <span class="icon-archivo-pdf"></span>
-                </a>
-
-                <ng-template [ngIf]="roleUser == 'SUPPORT'">
-
-                  <app-export-excel [selectUser]="selectUser"></app-export-excel>
-
-                </ng-template>
-                              
-              </div>
+              <a class="ml-4 buttom_config" (click)="ClickConfigDashboard()">
+                <span class="icon-cogs"></span>
+              </a>
             </div>
+
+            <ng-template [ngIf]="roleUser == 'SUPPORT'">
+              <div class="iconos-options-code">
+                <app-export-excel [selectUser]="selectUser"></app-export-excel>
+              </div>
+            </ng-template>
+
 
 
           </div><!-- card -->

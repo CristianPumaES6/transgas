@@ -353,7 +353,8 @@ export class VoyagesService {
                             {
                                 voyageNumber: voyageNumber,
                                 year: yearVoyage,
-                                userId: userId
+                                userId: userId,
+                                status: true
                             }
                         ]
                     });
@@ -380,4 +381,47 @@ export class VoyagesService {
 
     }
 
+      // Permite consultar si el numero de viaje existe
+    // Retorna underfined si el viaje no existe.
+    async ThisVoyageIdExists(voyageId: number, userId: number): Promise<Voyage> {
+
+        return DummyPromise().then(
+            result => {
+
+                if (URL_Server.bd === 'MSSQL') {
+                    return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @id='"  +voyageId+ "', @userId='" + userId + "'");
+                } else {
+
+                    return this.voyageRepository.findOne({
+                        where: [
+                            // hacemos un where donde buscamos por id.
+                            {
+                                id: voyageId,
+                                userId: userId,
+                                status:1
+                            }
+                        ]
+                    });
+                }
+
+
+            }
+        ).then(
+            // Puede ser un arreglo en MSSQL o un objeto en SQLITE
+            (resultFind: any) => {
+
+                // No vlaidamos resultado por que tambien puede ser underfine.
+                if (URL_Server.bd === 'MSSQL') {
+                    if (!resultFind && resultFind.length > 0) throw 'NO_REGISTER'
+                    return resultFind[0];
+                } else {
+
+                   return resultFind;
+
+
+                }
+            });
+
+
+    }
 }

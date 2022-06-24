@@ -1,66 +1,43 @@
-EL SERVICIO QUE TIENE LA IMPORTACION ES importVoyages
+# ACTUALIZAR DATA DE UN BUQUE  🚢
 
-1 Apagamos el servidor.(Todo funcionara en Offline)
-Entrmos desde Putty, pm2 status, pm2 stop [Number]
+Este documento tiene informacion de como subir una data masiva desde un archivo excel.
+La finalidad de este documento es agilizar la subida de datos.
 
+## Comenzando 🚀
 
-2 Deberiamos descargar la ultima BD
-Nos ubicamos en un directorio y ejecutamos lo siguiente:
-scp root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/dbTransgas.sqlite3 ./
-
-
-
-3 Desde local levantar el aplicativo usando esa BD.
-
-4 Pegamos las columnas con los nombres de nuestra Entidad(Tabla BD).
-
-5 Copiamos el header mas los reportes, Lo pegamos en la siguiente URL https://www.convertcsv.com/csv-to-json.htm
-
-6 Copiamos el resultado y lo pegamos en el Postman, apuntando al Servicio
-{{url}}/voyages/importVoyages
-
-7 Copiamos la BD y lo pegamos en el servidor.
-Nos ubicamos en el directorio desde Consola y pegamos esto.
-scp dbTransgas.sqlite3 root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/
-
-8 Levantamos el servidor, y verificamos si esta OK.
-pm2 status
-pm2 start [Number]
+* 1 Debemos apagar el servidor. 
+    - Putty
+    - pm2 status
+    - pm2 stop [Number]
 
 
+* 2 Deberiamos descargar la ultima BD. 
+    - Nos ubicamos en un directorio y abrimos el cmd
+    - scp root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/dbTransgas.sqlite3 ./
 
 
+* 3 Desde local levantar el aplicativo usando esa BD.
 
+* 4 Comenzamos a llenar el Excel **FormatDocument v3.**
 
-Existe un manual por correo se le envio a alex.
+* 5 Pegamos el contenido del excel a convertcsv
+    - https://www.convertcsv.com/csv-to-json.htm
 
-una vez que se tenga el excel
+* 6 Copiamos el JSON generado y lo pegamos en el Postman, apuntando al Servicio
+    - {{url}}/voyages/importVoyages
 
-userId	year	voyageNumber	portNumber	departurePort	arrivalPort	VIAJE	date	hour	steamingTime	activityPerformed	observation	distance	TIEMPO_DE_NAVEGACION	VELOCIDAD	beaufour	RPM	mplaIfo	auxIfo	boilerIfo	TOTAL 	bunkeringIfo	ROB 	mplaMgo	auxMgo	boilerMgo	ppMgo	giMgo	TOTAL	bunkeringMgo	ROB
+* 7 Verificamos el total de consumo debe ser el mismo que el del excel.
 
+* 8 Verificamos el formato fecha y hora.
 
-se le cambia los nombres de las columnas
+* 9 Actualizamos la zona horaria que debe tener el registro.
 
-se le pega en el 
-https://www.convertcsv.com/csv-to-json.htm
+* 7 Copiamos la BD y lo pegamos en el servidor.
+    - Nos ubicamos en el directorio donde esta nuestra BD.
+    - scp dbTransgas.sqlite3 root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/
 
-el json lo ponemos en el aplicativo postman y subimos la data.
+* 8 Levantamos el servidor, y verificamos si esta OK.
+    - pm2 status
+    - pm2 start [Number]
 
-
-CONSULTAS SQLITE
-UPDATE HORA CON 4 digitos.
-
-// Consultamos si hay algun registro de hora con 4 caracteres.
-SELECT hour FROM daily_report
-WHERE LENGTH(hour) = 4
-
-SELECT ("0"||daily_report.hour ) AS 'Modi' FROM daily_report
-WHERE LENGTH(hour) = 4
-
-UPDATE daily_report
-SET hour = "0"||daily_report.hour
-WHERE LENGTH(hour) = 4
-
-
-// Actualizamos la hora en donde se registro el dato.
-
+* 9 Verificamos el total de consumo debe ser el mismo que el del excel.

@@ -440,7 +440,6 @@ export class VoyagesController {
         
         try {
             
-
             let headerToken: UserEntity = JwtDecode(headers.authorization);
 
             if (!(headerToken.role === 'SUPPORT')) {
@@ -490,7 +489,8 @@ export class VoyagesController {
                         MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
                     }
                 }
-                // Actualizmos el viaje
+
+                // Actualizamos el viaje
                 existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
     
 
@@ -560,9 +560,22 @@ export class VoyagesController {
                 newReport.userId = importVoyage.userId;
                 newReport.portId = existePort.value;
     
-               
-                newReport.date = <any>importVoyage.date 
-    
+               // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
+               let  textoCadena:string = importVoyage.date;
+
+        /*        if(importVoyage.date.length == 15){
+               newReport.date = <any> textoCadena.slice(0,-7)
+               } else if(importVoyage.date.length == 14){
+                newReport.date = <any> textoCadena.slice(0,-6)
+                }
+                else{
+                    console.log('REVISAR LA FECHA ERROR') 
+                    throw  'REVISAR LA FECHA ERRROR'
+                } */
+                newReport.date = <any> textoCadena;
+               newReport.hour = importVoyage.hour.slice(-5)
+
+                /* 
                 // Verificamos si existe una hora,
                 if (importVoyage.hour) {
                     // Verificamos el tamaño de la hora,
@@ -574,7 +587,11 @@ export class VoyagesController {
                     } else {
                         newReport.hour = importVoyage.hour;
                     }
-                }
+                } */
+
+                // -*--------------------------FIN MODIFICACION
+
+                
     
 
                 newReport.mplaIfo = importVoyage.mplaIfo || 0;

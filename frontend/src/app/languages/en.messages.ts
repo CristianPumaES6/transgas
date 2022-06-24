@@ -34,7 +34,6 @@ export const application: any = {
     CANNOT_CLOSE_PENDING_REPORTS: 'There are files stored locally, contact Cristian for help.',
     DATOS_SINCRONIZADOS: 'Synchronized Data',
     NO_DATA_LOCAL_EXCEL: 'There is no local data, no local data, server synced.'
-
 };
 
 // Cateogría para autenticacion
@@ -505,7 +504,12 @@ export const dialog: any = {
     BUNKERING_INFORMATION: 'Bunkering Information',
     ECO_SPEED: 'Eco',
     FULL_SPEED: 'Full',
-    DOWNLOAD: 'Download'
+    DOWNLOAD: 'Download',
+    TITLE_COMPONENT_DIALOG_CONFIG_DASHBOARD: 'Configuration Panel:',
+    DESCRIPTION_COMPONENT_DIALOG_CONFIG_DASHBOARD: 'Within this panel we can configure the options that the system allows us.',
+    LABEL_QUANTITY_DECIMAL:'Decimal quantity',
+    TOOLTIP_LABEL_QUANTITY_DECIMAL:'DECIMAL QUANTITY.- It allows modifying the number of decimals that we wish to observe.',
+    SAVE_CHANGES: 'Save changes'
 };
 
 export const guards: any = {

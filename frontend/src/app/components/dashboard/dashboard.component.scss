@@ -1,6 +1,5 @@
-
 @import "../../variable";
-   
+
 .background-content-linea {
   background: #121c3c;
   height: 290px;
@@ -27,31 +26,27 @@ canvas {
   background-color: rgba(255, 255, 255, 0) !important;
 }
 
-.buttom_Excel {
-  font-size: 24px !important;
-  color: green;
-  position: absolute;
-  cursor: pointer;
-  bottom: 2%;
-  right: 2%;
-  transform: all 1s;
+.iconos-options-code {
+  display: block;
+  text-align: right;
+  a {
+    font-size: 24px !important;
 
-  &:hover {
-    font-size: 35px;
-  }
-}
+    cursor: pointer;
+    transform: font-size 1s;
+    & :hover {
+      font-size: 26px;
+    }
+    &.buttom_Excel {
+      color: green;
+    }
 
-.buttom_pdf {
-  font-size: 25px !important;
-  color: rgb(150, 14, 14);
-  position: absolute;
-  cursor: pointer;
-  bottom: 2%;
-  right: 20%;
-  transform: all 1s;
-
-  &:hover {
-    font-size: 35px;
+    &.buttom_pdf {
+      color: rgb(150, 14, 14);
+    }
+    &.buttom_config {
+      color: rgb(63, 63, 63);
+    }
   }
 }
 
@@ -292,7 +287,6 @@ canvas {
 .color-min {
   background-color: rgb(133, 252, 97);
 }
-
 
 .color-blue-1 {
   color: #375f9a;
