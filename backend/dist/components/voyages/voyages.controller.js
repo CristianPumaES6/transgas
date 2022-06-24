@@ -346,15 +346,9 @@ let VoyagesController = class VoyagesController {
                     delete newReport.id;
                     newReport.userId = importVoyage.userId;
                     newReport.portId = existePort.value;
-                    newReport.date = importVoyage.date;
-                    if (importVoyage.hour) {
-                        if (importVoyage.hour.length === 4) {
-                            newReport.hour = '0' + importVoyage.hour;
-                        }
-                        else {
-                            newReport.hour = importVoyage.hour;
-                        }
-                    }
+                    let textoCadena = importVoyage.date;
+                    newReport.date = textoCadena;
+                    newReport.hour = importVoyage.hour.slice(-5);
                     newReport.mplaIfo = importVoyage.mplaIfo || 0;
                     newReport.auxIfo = importVoyage.auxIfo || 0;
                     newReport.boilerIfo = importVoyage.boilerIfo || 0;

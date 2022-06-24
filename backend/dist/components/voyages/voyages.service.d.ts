@@ -12,4 +12,5 @@ export declare class VoyagesService {
     Update(voyage: Voyage): Promise<Voyage>;
     Delete(voyage: Voyage): Promise<Voyage>;
     ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number, userId: number): Promise<Voyage>;
+    ThisVoyageIdExists(voyageId: number, userId: number): Promise<Voyage>;
 }

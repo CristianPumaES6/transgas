@@ -261,7 +261,35 @@ let VoyagesService = class VoyagesService {
                         {
                             voyageNumber: voyageNumber,
                             year: yearVoyage,
-                            userId: userId
+                            userId: userId,
+                            status: true
+                        }
+                    ]
+                });
+            }
+        }).then((resultFind) => {
+            if (server_config_1.URL_Server.bd === 'MSSQL') {
+                if (!resultFind && resultFind.length > 0)
+                    throw 'NO_REGISTER';
+                return resultFind[0];
+            }
+            else {
+                return resultFind;
+            }
+        });
+    }
+    async ThisVoyageIdExists(voyageId, userId) {
+        return promises_assets_1.DummyPromise().then(result => {
+            if (server_config_1.URL_Server.bd === 'MSSQL') {
+                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @id='" + voyageId + "', @userId='" + userId + "'");
+            }
+            else {
+                return this.voyageRepository.findOne({
+                    where: [
+                        {
+                            id: voyageId,
+                            userId: userId,
+                            status: 1
                         }
                     ]
                 });

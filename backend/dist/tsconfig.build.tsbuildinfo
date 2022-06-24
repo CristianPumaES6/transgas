@@ -1657,7 +1657,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "b8924e579c96b9d65db41d07ab2ec5cc11372d5915f3346f6e0a483d38aa918a",
+        "version": "2b313fa0311420f65f1995ac235fa7ea9e92406941e7100c683d42d4965059a7",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3267,12 +3267,12 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "a2cd80a19e8063ec3fee08483061727f1dbc0ede52d595e95cdc7ebe2978d3c6",
-        "signature": "a92b6919868c142e045958d2e3f867b99a9e229e3cfcd5ba2647470c5f4b88ae",
+        "version": "2bf5d026819485a02542b2acef24fe9d04db9c80641fad413c11becd9f618de0",
+        "signature": "7691f0338821697bd92206d85a4159f56e59b6d9f6315ec4e33170558bcf520d",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.service.ts": {
-        "version": "40fb2903a6cea97ff5bf2a08b9eb8b0e9f7028f4bde467eea0e784683dbebcf9",
+        "version": "2ff63efc9a99010aa3d380c552266125172e061f6693c059d54099fa0c31b5f2",
         "signature": "aef9788486c466d095bbd5bf1e464a609e4a6f1eecb4160350678beeb68bc947",
         "affectsGlobalScope": false
       },
@@ -3282,7 +3282,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "bea55dcbbd4be13abfcde01fe0d29c61c1dc0d8d528b87c92bd713545792c1e0",
+        "version": "c15ce96d22411c7bb5888fe839be2746fec08c01ff3a7f05e6040f95a987bd7d",
         "signature": "73b941819318f118eeaac1a054dc6893b71b71ffa9f2d483a75989bb13d6358c",
         "affectsGlobalScope": false
       },
@@ -3297,7 +3297,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.controller.ts": {
-        "version": "823398a548eaef3fa04736ee32bc729b1fd98ed3e0b63bb1118fb8da2cfd27ac",
+        "version": "caad3eddbfdd707125360ae3559a32c98dc71a2207b90dc38a695557a97cb63b",
         "signature": "d3e52dbb3bcab8ce67511e6aea76ec018f64478b62e05e6e2cc817bc59d5af93",
         "affectsGlobalScope": false
       },
@@ -6625,6 +6625,7 @@
         "../node_modules/typeorm/index.d.ts",
         "../src/assets/promises.assets.ts",
         "../src/config/server.config.ts",
+        "../src/models/daily-report.entity.ts",
         "../src/models/port.entity.ts"
       ],
       "../src/components/voyages/voyages.controller.ts": [

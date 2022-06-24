@@ -19,6 +19,7 @@ const port_entity_1 = require("../../../models/port.entity");
 const typeorm_2 = require("typeorm");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const server_config_1 = require("../../../config/server.config");
+const daily_report_entity_1 = require("../../../models/daily-report.entity");
 let PortsService = class PortsService {
     constructor(portRepository) {
         this.portRepository = portRepository;
@@ -231,6 +232,7 @@ let PortsService = class PortsService {
         });
     }
     async ThereIsThisPortInTheVoyage(portNumber, voyageId, userId) {
+        let portSearch;
         return promises_assets_1.DummyPromise().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
@@ -245,7 +247,8 @@ let PortsService = class PortsService {
                         {
                             voyageId: voyageId,
                             portNumber: portNumber,
-                            userId: userId
+                            userId: userId,
+                            status: true
                         }
                     ],
                     take: 1,
@@ -253,7 +256,7 @@ let PortsService = class PortsService {
             }
         }).then(resultFind => {
             if (resultFind && resultFind.length) {
-                let prueba = resultFind[0];
+                portSearch = resultFind[0];
                 return resultFind[0];
             }
             else {
