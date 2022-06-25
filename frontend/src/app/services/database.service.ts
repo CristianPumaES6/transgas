@@ -119,7 +119,7 @@ export class DatabaseService {
             }
         ).catch(
             err => {
-                console.log('Errr Sync')
+                console.log('Errr Sync');
                 console.log(err);
                 console.log('-----------------------------------------');
                 console.log('-----------------------------------------');
@@ -131,9 +131,8 @@ export class DatabaseService {
                 console.log(dailyReportsMappings); console.log('-----------------------------------------');
                 console.log('-----------------------------------------');
                 console.log('-----------------------------------------');
-                console.error('ERROR OFFLINEs');
-                throw 'Offline'
-
+                console.error('ERROR OFFLINE');
+                throw 'Offline';
             }
         )
 
@@ -981,6 +980,9 @@ export class DatabaseService {
                 departurePort: port.departurePort,
                 arrivalPort: port.arrivalPort,
 
+                startDate: port.startDate,
+                startIFO: port.startIFO,
+                startMGO: port.startMGO,
 
                 userIdCreated: port.userIdCreated,
                 dateCreated: port.dateCreated,

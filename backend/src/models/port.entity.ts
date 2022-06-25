@@ -19,9 +19,9 @@ export class Port {
     @ManyToOne(type => Voyage, voyage => voyage.id)
     voyage: Voyage;
     @OneToMany(type => DailyReport, dailyReport => dailyReport.port, {
-                                                                        eager: true,
-                                                                        cascade: true
-                                                                    })
+        eager: true,
+        cascade: true
+    })
     dailyReports: DailyReport[];
 
     // Numero de viaje.
@@ -35,7 +35,13 @@ export class Port {
     // Lugar de llegada.
     @Column()
     arrivalPort: string;
+    @Column({ default: null, nullable: true })
+    startDate: Date;
 
+    @Column({ default: 0, nullable: true })
+    startIFO: number;
+    @Column({ default: 0, nullable: true })
+    startMGO: number;
 
     // Auditoria
     @Column()

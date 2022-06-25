@@ -14,7 +14,10 @@ export class Port {
         public departurePort?: string,
         // Lugar de llegada.
         public arrivalPort?: string,
-
+        // Atributos de inicio de fecha IFO Y MGO
+        public startDate?: Date,
+        public startIFO?: number,
+        public startMGO?: number,
 
         // Auditoria
         public userIdCreated?: number,
@@ -31,6 +34,10 @@ export class Port {
         this.portNumber = portNumber || null;
         this.departurePort = departurePort || '';
         this.arrivalPort = arrivalPort || '';
+
+        this.startDate = startDate || null;
+        this.startIFO = startIFO || 0;
+        this.startMGO = startMGO || 0;
 
         // Audiotoria
         this.userIdCreated = userIdCreated || 0;

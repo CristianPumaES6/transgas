@@ -1054,7 +1054,17 @@ export class DialogExportPdfComponent implements OnInit {
                                   sVPR.totalPortSailing += 1;
 
                                   // Armamos el nuevo puerto.
-                                  let portSummary = new Port(port.id, port.userId, port.voyageId, port.portNumber, port.departurePort, port.arrivalPort, port.userIdCreated, port.dateCreated, port.userIdUpdated, port.dateUpdated, port.status);
+                                  let portSummary = new Port(
+                                    port.id,
+                                    port.userId,
+                                    port.voyageId,
+                                    port.portNumber,
+                                    port.departurePort,
+                                    port.arrivalPort,
+                                    port.startDate,
+                                    port.startIFO,
+                                    port.startMGO,
+                                    port.userIdCreated, port.dateCreated, port.userIdUpdated, port.dateUpdated, port.status);
                                   portSummary.dailyReports = [];
                                   // Agregamos el puerto al viaje.
                                   newVoyage.ports.push(portSummary);
@@ -6297,9 +6307,9 @@ export class DialogExportPdfComponent implements OnInit {
             // Tipo de navegacion
             let typeNavigation = '';
             if (iDailyReport.activityPerformed === 'SAILING_IN_BALLAST') {
-              typeNavigation = '(Ballast/'+this.languageService.GetMessage(this.translateCategory, iDailyReport.speedStraction)+')';
+              typeNavigation = '(Ballast/' + this.languageService.GetMessage(this.translateCategory, iDailyReport.speedStraction) + ')';
             } else if (iDailyReport.activityPerformed === 'SAILING_WITH_LADEN') {
-              typeNavigation = '(Laden/'+this.languageService.GetMessage(this.translateCategory, iDailyReport.speedStraction)+')';
+              typeNavigation = '(Laden/' + this.languageService.GetMessage(this.translateCategory, iDailyReport.speedStraction) + ')';
             }
             let rowGenerit = [];
 

@@ -646,6 +646,9 @@ export class VoyageComponent implements OnInit {
         newPort.voyageId = this.selectVoyage.id;
         newPort.departurePort = this.selectPort.departurePort;
         newPort.arrivalPort = this.selectPort.arrivalPort;
+        newPort.startDate = this.selectPort.startDate;
+        newPort.startIFO = this.selectPort.startIFO;
+        newPort.startMGO = this.selectPort.startMGO;
         newPort.status = true;
 
         this.CreatePortOnlineOffline(newPort);
@@ -2464,6 +2467,8 @@ export class VoyageComponent implements OnInit {
 
   }
 
+
+  
   private GenerateTimeOperation(): number {
 
     let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
