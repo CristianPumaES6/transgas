@@ -100,6 +100,7 @@ export class VoyageComponent implements OnInit {
 
   public lastRecordedHour: any;
 
+  public cantDecimal = 2;
 
   myControlFormSelectBefourt = new FormControl();
   optionsBefourt: string[] = [
@@ -571,7 +572,7 @@ export class VoyageComponent implements OnInit {
 
   }
 
-  public ClickNew() {
+  public async ClickNew() {
     console.log('ClickNew(event: AzList)');
 
     if (this.List_Voyages_Ports_DailyReports === 'Voyages') {
@@ -587,7 +588,8 @@ export class VoyageComponent implements OnInit {
       this.CreateVoyageOnlineOffline(newVoyage);
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
-      this.NewPort();
+      let resultNewPort = await this.NewPort();
+
       this.getDailyReports = [];
       this.aSideService.OpenClose('open-formulario');
 
@@ -596,23 +598,96 @@ export class VoyageComponent implements OnInit {
     return false;
   }
 
-  public NewPort(): void {
+  // CREA UN NUEVO PUERTO, y dentro del puerto se tiene la opcion de calcular el ultimo ROB Y CONSUMO TOTAL.
+  public async NewPort(): Promise<boolean> {
 
-    this.List_Voyages_Ports_DailyReports = 'Ports';
-    // habilitamos el puerto actual para registrar uno nuevo.
-    this.selectPort = new Port();
+    this.loadingService.Open();
 
-    this.Initialize();
-    this.disableEdit = false;
-
+    // INICIAMOS NUSTRAS VARIABLES
     let newPort = new Port();
 
-    if (this.getPorts && this.getPorts.length > 0) {
-      newPort.portNumber = this.getPorts[0].portNumber + 1;
-    }
-    else { newPort.portNumber = 1; };
+    // Ultimo registro del puerto anterior.
+    let idPenultimopuerto = 0;
+    let startROBIFOPenultimoPort = 0;
+    let startROBMGOPenultimoPort = 0;
 
-    this.sub_title_header_media = 'Port N°' + newPort.portNumber;
+
+
+    return await Promise.resolve(true).then(
+      result => {
+
+        this.List_Voyages_Ports_DailyReports = 'Ports';
+        // habilitamos el puerto actual para registrar uno nuevo.
+        this.selectPort = new Port();
+
+
+        if (this.getPorts && this.getPorts.length > 0) {
+          return this.getPorts;
+        } else {
+
+          // ESTA VARIABLE TENDRA AL PENULTIMO VIAJE
+          let elPenultimoVIajeES;
+
+          // Buscamos el ultimo viaje
+          this.getVoyages.find(
+            item => {
+
+              // verifciamos que el que no haya un penultimo viaje
+              // y que el item sea un viaje menor 
+              if (!elPenultimoVIajeES && item.status
+                && item.id < this.selectVoyage.id) {
+                // Le damos un valor y retornamos true para validar.
+                elPenultimoVIajeES = item.id;
+                return true;
+              }
+
+            }
+          )
+
+          return this.databaseService.getPortsByVoyageIndexDB(elPenultimoVIajeES);
+        }
+      }).then(
+        portsReverse => {
+
+          // Capturamos el primer puerto recordando que viene con un reverse.
+          newPort.portNumber = portsReverse[0].portNumber + 1;
+          idPenultimopuerto = portsReverse[0].id;
+          startROBIFOPenultimoPort = portsReverse[0].startIFO;
+          startROBMGOPenultimoPort = portsReverse[0].startMGO;
+
+          // consultamos el total del puerto
+          return this.databaseService.CosumptionTotalByPortID(idPenultimopuerto);
+        }).then(
+          (consumoTotalDeLosReportViajeAnterio: DailyReport) => {
+
+
+            newPort.startDate = consumoTotalDeLosReportViajeAnterio.date;
+            newPort.startIFO = startROBIFOPenultimoPort - this.TotalIFO(consumoTotalDeLosReportViajeAnterio);
+            newPort.startMGO = startROBMGOPenultimoPort - this.TotalMGO(consumoTotalDeLosReportViajeAnterio);
+            this.selectPort = newPort;
+
+
+            this.sub_title_header_media = 'Port N°' + newPort.portNumber;
+
+            this.Initialize();
+            this.disableEdit = false;
+            this.loadingService.Close();
+
+            return true;
+          }).catch(
+            err => {
+              // Manejo el error
+              let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_NewPort()'));
+
+              console.error(msg);
+              console.dir(err);
+
+              this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+              // Deshabilito el spinner de loading
+              this.loadingService.Close();
+              return false;
+            });
+
 
   }
 
@@ -2468,7 +2543,7 @@ export class VoyageComponent implements OnInit {
   }
 
 
-  
+
   private GenerateTimeOperation(): number {
 
     let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
@@ -2537,28 +2612,36 @@ export class VoyageComponent implements OnInit {
 
 
   // Total del consumo IFO
-  public TotalIFO(dailyReport: DailyReport): number {
+  public TotalIFO(dailyReport: DailyReport, cantDecimal?: number): number {
     // Total del consumo MGO
     let total = 0;
 
     // sumamos el consumo
 
     total = dailyReport.mplaIfo + dailyReport.auxIfo + dailyReport.boilerIfo + dailyReport.otherIfo;
-
-    // Retornamos el total de cosumo
-    return mathRound(total, 2);
+    if (cantDecimal) {
+      // Retornamos el total de cosumo
+      return mathRound(total, cantDecimal);
+    } else {
+      return total;
+    }
   }
 
   // Total del consumo MGO
-  public TotalMGO(dailyReport: DailyReport): number {
+  public TotalMGO(dailyReport: DailyReport, cantDecimal?: number): number {
     // Total del consumo MGO
     let total = 0;
 
     // sumamos el consumo
     total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.boilerMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
 
+    if (cantDecimal) {
+      return mathRound(total, cantDecimal);
+    } else {
+      return total;
+    }
     // Retornamos el total de cosumo
-    return mathRound(total, 2);
+
   }
 
 

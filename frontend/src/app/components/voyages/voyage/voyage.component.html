@@ -168,9 +168,9 @@
                       <td class="p-1 color-title-table border">{{ dailyReport.steamingTime }}</td>
                       <td
                         *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
-                        class="p-1 color-title-table border">{{ TotalIFO(dailyReport) }}</td>
+                        class="p-1 color-title-table border">{{ TotalIFO(dailyReport, cantDecimal) }}</td>
                       <td *ngIf="selectUser.isConsumptionMGO" class="p-1 color-title-table border">
-                        {{ TotalMGO(dailyReport) }}</td>
+                        {{ TotalMGO(dailyReport,cantDecimal) }}</td>
                       <td class="p-1 color-title-table border">{{ dailyReport.observation }}</td>
                       <td class="p-1 color-title-table border">
                         <a href="#" class="mr-3" (click)="ClickEditReport(dailyReport)">

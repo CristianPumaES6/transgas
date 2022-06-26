@@ -1011,6 +1011,7 @@ export class DatabaseService {
         );
 
     }
+
     //__________________________________________________________________________
     // =================== REPORT DAILY IndexedDB ====================================
     // Obtiene a todos los reportes de IndexDB
@@ -1074,6 +1075,74 @@ export class DatabaseService {
         );
     }
 
+
+    // CosumptionTotalByPortID
+    // RETORNA EL TOTAL Y EL ULTIMO CONSUMO.
+    public async CosumptionTotalByPortID(portId: number): Promise<DailyReport> {
+        console.log('CosumptionTotalByPortID(portId:number)' + portId);
+
+
+
+        return await this.db.dailyReports.toArray().then(
+            (results: DailyReport[]) => {
+
+                return results;
+
+            }
+        ).then(
+            (results: DailyReport[]) => {
+
+                // TotalConsumo.
+
+                let totalDailyReport: DailyReport = new DailyReport();
+
+                results.forEach(
+                    (indexDaily: DailyReport) => {
+
+                        // si el stado es true y el portId Coinciden sumamos.
+                        if (Boolean(indexDaily.status) === true && indexDaily.portId === portId) {
+
+                            // Recarga de IFO
+                            totalDailyReport.bunkeringIfo = totalDailyReport.bunkeringIfo + indexDaily.bunkeringIfo;
+                            // Recarga de MGO
+                            totalDailyReport.bunkeringMgo = totalDailyReport.bunkeringMgo + indexDaily.bunkeringMgo;
+
+                            // Consumo mplaIfo
+                            totalDailyReport.mplaIfo = totalDailyReport.mplaIfo + indexDaily.mplaIfo;
+                            // Consumo auxIfo
+                            totalDailyReport.auxIfo = totalDailyReport.auxIfo + indexDaily.auxIfo;
+                            // consumo boilerIfo
+                            totalDailyReport.boilerIfo = totalDailyReport.boilerIfo + indexDaily.boilerIfo;
+                            // Otros consumos Ifo
+                            totalDailyReport.otherIfo = totalDailyReport.otherIfo + indexDaily.otherIfo;
+
+                            // Consumo mplaMgo
+                            totalDailyReport.mplaMgo = totalDailyReport.mplaMgo + indexDaily.mplaMgo;
+                            // Consumo auxMgo
+                            totalDailyReport.auxMgo = totalDailyReport.auxMgo + indexDaily.auxMgo;
+                            // Consumo boilerMgo
+                            totalDailyReport.boilerMgo = totalDailyReport.boilerMgo + indexDaily.boilerMgo;
+                            // Consumo ppMgo
+                            totalDailyReport.ppMgo = totalDailyReport.ppMgo + indexDaily.ppMgo;
+                            // Consumo giMgo
+                            totalDailyReport.giMgo = totalDailyReport.giMgo + indexDaily.giMgo
+                            // Consumo otherMgo
+                            totalDailyReport.otherMgo = totalDailyReport.otherMgo + indexDaily.otherMgo
+
+
+                            totalDailyReport.date = indexDaily.date;
+                            totalDailyReport.hour = indexDaily.hour;
+                        }
+
+
+                    }
+                )
+
+                return totalDailyReport;
+            }
+        );
+
+    }
     // Agregar DailyReport por indexedDB
     public async addDailyReportIndexedDB(dailyReport: DailyReport): Promise<DailyReport> {
         console.log('addDailyReportIndexedDB(dailyReport: DailyReport)');
@@ -1128,7 +1197,7 @@ export class DatabaseService {
                 portId: dailyReport.portId,
                 activityPerformed: dailyReport.activityPerformed,
                 typeActivityPerformed: dailyReport.typeActivityPerformed,
-                
+
                 speedStraction: dailyReport.speedStraction,
                 date: dailyReport.date,
                 hour: dailyReport.hour,
@@ -1158,12 +1227,12 @@ export class DatabaseService {
                 syncStatus: dailyReport.syncStatus,
 
                 // NUEVO CAMPO
-                north_degree:dailyReport.north_degree,
-                north_minutes:dailyReport.north_minutes,
-                north_north_south:dailyReport.north_north_south,
-                east_degree:dailyReport.east_degree,
-                east_minutes:dailyReport.east_minutes,
-                east_east_west:dailyReport.east_east_west,
+                north_degree: dailyReport.north_degree,
+                north_minutes: dailyReport.north_minutes,
+                north_north_south: dailyReport.north_north_south,
+                east_degree: dailyReport.east_degree,
+                east_minutes: dailyReport.east_minutes,
+                east_east_west: dailyReport.east_east_west,
 
             }
         ).then((result: boolean) => {

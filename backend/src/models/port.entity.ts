@@ -35,9 +35,9 @@ export class Port {
     // Lugar de llegada.
     @Column()
     arrivalPort: string;
+
     @Column({ default: null, nullable: true })
     startDate: Date;
-
     @Column({ default: 0, nullable: true })
     startIFO: number;
     @Column({ default: 0, nullable: true })
