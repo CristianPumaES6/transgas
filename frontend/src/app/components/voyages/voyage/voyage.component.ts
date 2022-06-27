@@ -376,10 +376,12 @@ export class VoyageComponent implements OnInit {
       result => {
         // no validamos el resultado por que siempre es true.
 
-        return this.databaseService.getReportDailysByPortIdIndexDB(this.selectPort.id);
+        return this.ObtenerListaDeReportesConElTotalROBPorPortId(this.selectPort.id, this.selectPort.startIFO, this.selectPort.startMGO);
       }
     ).then(
-      dailyReports => {
+      (dailyReports: DailyReport[]) => {
+
+
         this.getDailyReports = dailyReports;
 
 
@@ -400,6 +402,36 @@ export class VoyageComponent implements OnInit {
         // Deshabilito el spinner de loading
         this.loadingService.Close();
         return false;
+      }
+    );
+
+
+  }
+
+  private async ObtenerListaDeReportesConElTotalROBPorPortId(portId: number, startIfo: number, startMGO: number): Promise<DailyReport[]> {
+
+    return await Promise.resolve(true).then(
+      result => {
+        // no validamos el resultado por que siempre es true.
+
+        return this.databaseService.getReportDailysByPortIdIndexDB(portId);
+      }
+    ).then(
+      (dailyReports: DailyReport[]) => {
+
+        let robCurrentIFO = startIfo;
+        let robCurrentMGO = startMGO;
+
+        dailyReports.map((indexDaily) => {
+          robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
+          robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
+          indexDaily.robIfo = mathRound(robCurrentIFO, this.cantDecimal);
+          indexDaily.robMgo = mathRound(robCurrentMGO, this.cantDecimal);
+        });
+
+
+
+        return dailyReports.reverse();
       }
     );
 
@@ -705,7 +737,7 @@ export class VoyageComponent implements OnInit {
   }
 
   // ESTE CLICK SAVE SE USAN EN PORT; VOYAGE: DAILY
-  public ClickSave() {
+  public async ClickSave() {
     console.log('ClickSave()');
 
     // Es el formulario de puertos
@@ -731,8 +763,20 @@ export class VoyageComponent implements OnInit {
       } else {
         let portToSave = this.selectPort;
         delete portToSave.dailyReports;
-        this.UpdatePortOnelineOffline(portToSave)
+        // VAlidamos el resultado del Update
+        let resultUpdate = await this.UpdatePortOnelineOffline(portToSave);
+        if (!resultUpdate) {
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARN'), 'Contactar Soporte Cristian Puma.');
+        };
 
+        // Generamos la lista de reportes con el ROB
+        let resultGenerateReport = await this.ObtenerListaDeReportesConElTotalROBPorPortId(portToSave.id, portToSave.startIFO, portToSave.startMGO);
+        if (!resultGenerateReport) {
+          this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARN'), 'Contactar Soporte Cristian Puma.');
+        }
+
+        // Se lo asignamos a la lista de arreglo que se muestra en table.
+        this.getDailyReports = resultGenerateReport;
       }
 
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
@@ -749,16 +793,24 @@ export class VoyageComponent implements OnInit {
 
         // Le agregamos la hora a la fecha.
         newDailyReport.status = true;
-
-        this.CreateDailyReportOnlineOffline(newDailyReport);
+        // VAlidamos el resultado del Create
+        let resultCreate = await this.CreateDailyReportOnlineOffline(newDailyReport);
+        if (!resultCreate) { this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARN'), 'Contactar Soporte Cristian Puma.'); }
 
       } else {
         let dailyReportToSave = this.selectDailyReport;
-        // Le agregamos la hora a la fecha.
 
-        this.UpdateDailyReportOnelineOffline(dailyReportToSave);
+        // VAlidamos el resultado del Update
+        let resultUpdate = await this.UpdateDailyReportOnelineOffline(dailyReportToSave);
+        if (!resultUpdate) { this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARN'), 'Contactar Soporte Cristian Puma.'); }
 
       }
+      // Generamos la lista de reportes con el ROB
+      let resultGenerateReport = await this.ObtenerListaDeReportesConElTotalROBPorPortId(this.selectPort.id, this.selectPort.startIFO, this.selectPort.startMGO);
+      if (!resultGenerateReport) { this.notificationsService.warn(this.languageService.GetMessage(this.translateCategory, 'WARN'), 'Contactar Soporte Cristian Puma.'); }
+
+      // Se lo asignamos a la lista de arreglo que se muestra en table.
+      this.getDailyReports = resultGenerateReport;
 
     }
 
@@ -889,10 +941,12 @@ export class VoyageComponent implements OnInit {
 
           this.selectPort = this.getPorts[0];
 
-          return this.databaseService.getReportDailysByPortIdIndexDB(this.selectPort.id);
+          return this.ObtenerListaDeReportesConElTotalROBPorPortId(this.selectPort.id, this.selectPort.startIFO, this.selectPort.startMGO);
         }
       ).then(
-        dailyReports => {
+        (dailyReports: DailyReport[]) => {
+
+
           this.getDailyReports = dailyReports;
 
           this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
@@ -1610,7 +1664,7 @@ export class VoyageComponent implements OnInit {
     }
   }
 
-  private UpdatePortOnelineOffline(portToSave: Port) {
+  private async UpdatePortOnelineOffline(portToSave: Port): Promise<boolean> {
 
     let error: boolean = false;
     if (!portToSave.departurePort && !portToSave.departurePort.length) {
@@ -1688,7 +1742,7 @@ export class VoyageComponent implements OnInit {
 
     } else {
 
-      Promise.resolve(true).then(
+      return await Promise.resolve(true).then(
         () => {
           // Consultamos al getPortIndexDB para saber el estado del sync.
           return this.databaseService.getPortIndexDB(portToSave.id);
@@ -1743,6 +1797,8 @@ export class VoyageComponent implements OnInit {
           this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_PORT_SAVE_LOCAL'));
 
           this.databaseService.EmitterCantOffline();
+
+          return true;
         }
       ).catch(
         error => {
@@ -1754,6 +1810,8 @@ export class VoyageComponent implements OnInit {
 
           // Deshabilito el spinner de loading
           this.loadingService.Close();
+
+          return false;
         }
       );
 
@@ -1914,7 +1972,7 @@ export class VoyageComponent implements OnInit {
   }
 
   // ----------------------------      DailyReport      -----------------------------
-  private CreateDailyReportOnlineOffline(newDailyReport: DailyReport) {
+  private async CreateDailyReportOnlineOffline(newDailyReport: DailyReport): Promise<boolean> {
 
     let error: boolean = false;
     if (!newDailyReport.date || !validateDate(newDailyReport.date)) {
@@ -2060,7 +2118,7 @@ export class VoyageComponent implements OnInit {
       newDailyReport.syncStatus = 'added';
       delete newDailyReport.id;
 
-      Promise.resolve(true).then(
+      return await Promise.resolve(true).then(
         () => {
           // Agregamos el port al indexedDB.
           return this.databaseService.addDailyReportIndexedDB(newDailyReport);
@@ -2103,52 +2161,58 @@ export class VoyageComponent implements OnInit {
               return port;
             }
           );
-          this.databaseService.updatePortIndexedDB(this.selectPort);
+          return this.databaseService.updatePortIndexedDB(this.selectPort);
 
+        }).then(
+          (resultPort: Port) => {
 
-          this.azLists = this.azLists.map(
-            (azList: AzList) => {
-              // Buscamos el id para cambiar el valor de result.
-              if (Number(azList.id) === Number(this.selectPort.id)) {
-                // Actualizamos el valor con el resultado
-                azList.item3 = String(this.selectPort.totalReport);
+            this.azLists = this.azLists.map(
+              (azList: AzList) => {
+                // Buscamos el id para cambiar el valor de result.
+                if (Number(azList.id) === Number(this.selectPort.id)) {
+                  // Actualizamos el valor con el resultado
+                  azList.item3 = String(this.selectPort.totalReport);
+                }
+
+                return azList;
               }
-
-              return azList;
-            }
-          );
+            );
 
 
 
-          // vuelvo a cargar los datos de incio del token.
-          this.Initialize();
+            // vuelvo a cargar los datos de incio del token.
+            this.Initialize();
 
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
+            // Deshabilito el spinner de loading
+            this.loadingService.Close();
 
-          // Muestro notificación
-          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE_LOCAL'));
-          this.List_Voyages_Ports_DailyReports = 'Ports';
+            // Muestro notificación
+            this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_DAILY_REPORT_CREATE_LOCAL'));
+            this.List_Voyages_Ports_DailyReports = 'Ports';
 
-          this.databaseService.EmitterCantOffline();
-        }
-      ).catch(
-        error => {
-          // Valido si viene un mensaje de error
-          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_DAILY_REPORT_CREATE_LOCAL');
+            this.databaseService.EmitterCantOffline();
 
-          // Muestro notificación
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+            return true;
+          }
+        ).catch(
+          error => {
+            // Valido si viene un mensaje de error
+            let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR_DAILY_REPORT_CREATE_LOCAL');
 
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        }
-      );
+            // Muestro notificación
+            this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+            // Deshabilito el spinner de loading
+            this.loadingService.Close();
+            return false;
+          }
+        );
 
     }
   }
 
-  private UpdateDailyReportOnelineOffline(dailyReportToSave: DailyReport) {
+  private async UpdateDailyReportOnelineOffline(dailyReportToSave: DailyReport): Promise<boolean> {
+
     let error: boolean = false;
     if (!dailyReportToSave.date || !validateDate(dailyReportToSave.date)) {
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'REVISAR DATE'));
@@ -2227,7 +2291,7 @@ export class VoyageComponent implements OnInit {
 
     } else {
 
-      Promise.resolve(true).then(
+      return await Promise.resolve(true).then(
         () => {
           // Consultamos al getPortIndexDB para saber el estado del sync.
           return this.databaseService.getDailyReportIndexDB(dailyReportToSave.id);
@@ -2272,6 +2336,9 @@ export class VoyageComponent implements OnInit {
           this.List_Voyages_Ports_DailyReports = 'Ports';
 
           this.databaseService.EmitterCantOffline();
+
+
+          return true;
         }
       ).catch(
         error => {
@@ -2283,6 +2350,8 @@ export class VoyageComponent implements OnInit {
 
           // Deshabilito el spinner de loading
           this.loadingService.Close();
+
+          return false;
         }
       );
 

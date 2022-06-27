@@ -271,7 +271,7 @@ export const voyage: any = {
     HOUR: 'Hour',
     ACTIVITY_PERFORMED: 'Activity Performed',
     // Opciones de Actividades realizadas / Activity performend
-    REPORT_AT_08_00:'Report at 08:00',
+    REPORT_AT_08_00: 'Report at 08:00',
     LOADING: 'Loading',
     DOWNLOADING: 'Discharge',
     SAILING_IN_BALLAST: 'Sailing in ballast',
@@ -332,9 +332,15 @@ export const voyage: any = {
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
     PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
-    LONGITUDE : 'Longitude',
-    LATITUDE : 'Latitude',
-    POSITION:'Position'
+    LONGITUDE: 'Longitude',
+    LATITUDE: 'Latitude',
+    POSITION: 'Position',
+    ACTIVITY: 'Activity',
+    PERFORMED: 'Performed',
+    TIME: 'Time',
+    OPERATION: 'Operation',
+    CONSUMPTION: 'Consumption',
+
 };
 
 export const dashboard: any = {
@@ -507,8 +513,8 @@ export const dialog: any = {
     DOWNLOAD: 'Download',
     TITLE_COMPONENT_DIALOG_CONFIG_DASHBOARD: 'Configuration Panel:',
     DESCRIPTION_COMPONENT_DIALOG_CONFIG_DASHBOARD: 'Within this panel we can configure the options that the system allows us.',
-    LABEL_QUANTITY_DECIMAL:'Decimal quantity',
-    TOOLTIP_LABEL_QUANTITY_DECIMAL:'DECIMAL QUANTITY.- It allows modifying the number of decimals that we wish to observe.',
+    LABEL_QUANTITY_DECIMAL: 'Decimal quantity',
+    TOOLTIP_LABEL_QUANTITY_DECIMAL: 'DECIMAL QUANTITY.- It allows modifying the number of decimals that we wish to observe.',
     SAVE_CHANGES: 'Save changes'
 };
 
@@ -545,8 +551,8 @@ export const speedAnalysis: any = {
     ECO_SPEED: 'ECO',
     ID: 'ID',
     FILTER_BY: 'Filter',
-    YOUR_SELECT_YEAR:'You must select a year.',
-    ERROR_REACTIVE_FORM:'ERROR_REACTIVE_FORM, Contact support'
+    YOUR_SELECT_YEAR: 'You must select a year.',
+    ERROR_REACTIVE_FORM: 'ERROR_REACTIVE_FORM, Contact support'
 }
 
 export const consumptionAnalysis: any = {
@@ -564,8 +570,8 @@ export const consumptionAnalysis: any = {
     ECO_SPEED: 'ECO',
     ID: 'ID',
     FILTER_BY: 'Filter',
-    YOUR_SELECT_YEAR:'You must select a year.',
-    ERROR_REACTIVE_FORM:'ERROR_REACTIVE_FORM, Contact support',
+    YOUR_SELECT_YEAR: 'You must select a year.',
+    ERROR_REACTIVE_FORM: 'ERROR_REACTIVE_FORM, Contact support',
     APPLY_DAILY_FORMULA: 'Apply Daily Formula',
     TITLE_COMSUMPTION_LSFO: 'LSFO CONSUMPTION',
     TITLE_COMSUMPTION_IFO: 'IFO CONSUMPTION',

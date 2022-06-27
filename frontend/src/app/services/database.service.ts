@@ -1041,7 +1041,7 @@ export class DatabaseService {
                     (dailyReport: DailyReport) => {
                         return Boolean(dailyReport.status) === true && Number(dailyReport.portId) === Number(portId);
                     }
-                ).reverse();
+                );
 
             }
         );

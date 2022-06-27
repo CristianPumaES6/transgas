@@ -89,14 +89,14 @@
               </mat-form-field>
 
               <br><br><br>
-                <input matInput type="datetime" placeholder="{{'STARTDATE234 IFO' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectPort.startDate" [disabled]='disableEdit'>
-                  <br><br>
+              <input matInput type="datetime" placeholder="{{'STARTDATE234 IFO' | translateMessage:translateCategory}}"
+                [(ngModel)]="selectPort.startDate" [disabled]='disableEdit'>
+              <br><br>
             </div>
           </div>
 
           <div class="row">
-            
+
             <div class="col-6 row no-gutters">
               <mat-form-field>
                 <input matInput type="text" placeholder="{{'START IFO' | translateMessage:translateCategory}}"
@@ -109,7 +109,7 @@
                   [(ngModel)]="selectPort.startMGO" [disabled]='disableEdit'>
               </mat-form-field>
             </div>
-            
+
           </div>
 
           <hr>
@@ -133,21 +133,41 @@
                   <tr>
 
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                      {{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</th>
+                      {{'ACTIVITY' | translateMessage:translateCategory}}<br />
+                      {{'PERFORMED' | translateMessage:translateCategory}}
+                    </th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1" style="min-width: 60px;">
                       {{'DATE' | translateMessage:translateCategory}}</th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'HOUR' | translateMessage:translateCategory}}</th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                      {{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)</th>
+                      {{'TIME' | translateMessage:translateCategory}}<br />
+                      {{'OPERATION' | translateMessage:translateCategory}}<br />
+                      (HRS)
+                    </th>
                     <th *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                      {{(selectUser.isConsumptionIFO?'TOTAL_IFO':selectUser.isConsumptionVLSFO ? 'TOTAL_VLSFO' :
-                      'TOTAL_LSFO') | translateMessage:translateCategory}} (MT)
+                      {{'CONSUMPTION' | translateMessage:translateCategory}}<br />
+                      {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
+                      translateMessage:translateCategory}}<br />
+                      (MT)
+                    </th>
+                    <th *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
+                      class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      ROB<br />
+                      {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
+                      translateMessage:translateCategory}}
                     </th>
                     <th *ngIf="selectUser.isConsumptionMGO"
                       class="color-title-table blue-3 font-small-1 border align-top pt-1">
-                      {{'TOTAL_MGO' | translateMessage:translateCategory}} (MT)
+                      {{'CONSUMPTION' | translateMessage:translateCategory}}<br />
+                      {{'MGO' | translateMessage:translateCategory}}<br />
+                      (MT)
+                    </th>
+                    <th *ngIf="selectUser.isConsumptionMGO"
+                      class="color-title-table blue-3 font-small-1 border align-top pt-1">
+                      ROB<br />
+                      {{'MGO' | translateMessage:translateCategory}}<br />
                     </th>
                     <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
                       {{'OBSERVATIONS' | translateMessage:translateCategory}}</th>
@@ -169,8 +189,16 @@
                       <td
                         *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                         class="p-1 color-title-table border">{{ TotalIFO(dailyReport, cantDecimal) }}</td>
+                      <td
+                        *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
+                        class="p-1 color-title-table border">
+                        {{ dailyReport.robIfo }}
+                      </td>
                       <td *ngIf="selectUser.isConsumptionMGO" class="p-1 color-title-table border">
-                        {{ TotalMGO(dailyReport,cantDecimal) }}</td>
+                        {{ TotalMGO(dailyReport,cantDecimal) }}
+                      </td>
+                      <td *ngIf="selectUser.isConsumptionMGO" class="p-1 color-title-table border">
+                        {{ dailyReport.robMgo }}</td>
                       <td class="p-1 color-title-table border">{{ dailyReport.observation }}</td>
                       <td class="p-1 color-title-table border">
                         <a href="#" class="mr-3" (click)="ClickEditReport(dailyReport)">
@@ -271,9 +299,9 @@
             </div>
 
 
-              <div class="col-lg-3 col-md-3 col row no-gutters"
+            <div class="col-lg-3 col-md-3 col row no-gutters"
               [ngClass]="{'d-none': selectDailyReport.typeActivityPerformed != 'REPORT_AT_08_00' }">
-  
+
               <mat-form-field>
                 <mat-label>{{'ACTIVITY_PERFORMED' | translateMessage:translateCategory}}</mat-label>
                 <mat-select [(ngModel)]="selectDailyReport.activityPerformed" name="activityPerformed">
@@ -298,7 +326,7 @@
             </div>
 
             <div class="col-md-2 col row no-gutters cont-speed-straction"
-            [ngClass]="{'d-none': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
+              [ngClass]="{'d-none': selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' }">
               <label class="m-0 grp-title">{{'SPEED_STRACTION' | translateMessage:translateCategory}}</label>
               <mat-radio-group [(ngModel)]="selectDailyReport.speedStraction">
                 <mat-radio-button value="ECO_SPEED">{{'ECO_SPEED' | translateMessage:translateCategory}}
@@ -308,13 +336,11 @@
               </mat-radio-group>
             </div>
 
-          
-            <div class="col"
-            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT') ,
+
+            <div class="col" [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT') ,
                 'col-md-3': selectDailyReport.typeActivityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.typeActivityPerformed == 'SAILING_WITH_LADEN' || selectDailyReport.typeActivityPerformed ==  'OTHER_ACT',
                 'col-md-2': selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00' && (selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN') 
-            }"
-          >
+            }">
 
               <mat-form-field>
                 <mat-label>{{'BEFOURT' | translateMessage:translateCategory}}</mat-label>
@@ -329,17 +355,15 @@
               </mat-form-field>
             </div>
 
-            <div class="col"
-            [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT') ,
+            <div class="col" [ngClass]="{'d-none': (selectDailyReport.activityPerformed != 'SAILING_IN_BALLAST' &&  selectDailyReport.activityPerformed != 'SAILING_WITH_LADEN' &&  selectDailyReport.activityPerformed != 'ECONOMICAL_NAVIGATION' &&  selectDailyReport.activityPerformed != 'MANEUVER'  &&  selectDailyReport.activityPerformed != 'OTHER_ACT') ,
             'col-md-3': selectDailyReport.typeActivityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.typeActivityPerformed == 'SAILING_WITH_LADEN' || selectDailyReport.typeActivityPerformed ==  'OTHER_ACT',
             'col-md-2': selectDailyReport.typeActivityPerformed == 'REPORT_AT_08_00' && (selectDailyReport.activityPerformed == 'SAILING_IN_BALLAST' || selectDailyReport.activityPerformed == 'SAILING_WITH_LADEN') 
-        }"
-         >
+        }">
               <mat-form-field>
                 <input matInput type="number" placeholder="{{'DISTANCE' | translateMessage:translateCategory}} (MI)"
                   [(ngModel)]="selectDailyReport.distance">
               </mat-form-field>
-            </div> 
+            </div>
 
 
           </div>
@@ -361,7 +385,8 @@
                   </div>
                   <div class="col">
                     <mat-form-field>
-                      <input matInput type="number" placeholder="Decimal Minutes" [(ngModel)]="selectDailyReport.north_minutes">
+                      <input matInput type="number" placeholder="Decimal Minutes"
+                        [(ngModel)]="selectDailyReport.north_minutes">
                     </mat-form-field>
                   </div>
                   <div class="col">
@@ -402,7 +427,8 @@
                   </div>
                   <div class="col">
                     <mat-form-field>
-                      <input matInput type="number" placeholder="Decimal Minutes" [(ngModel)]="selectDailyReport.east_minutes">
+                      <input matInput type="number" placeholder="Decimal Minutes"
+                        [(ngModel)]="selectDailyReport.east_minutes">
                     </mat-form-field>
                   </div>
                   <div class="col">
@@ -520,7 +546,8 @@
 
             <ng-template [ngIf]="selectUser.isConsumptionMGO">
               <div class="col row no-gutters title-group-lowcode">
-                <p class="m-0 grp-title color-label-material">{{'CONSUMPTION_MGO' | translateMessage:translateCategory}} (MT)</p>
+                <p class="m-0 grp-title color-label-material">{{'CONSUMPTION_MGO' | translateMessage:translateCategory}}
+                  (MT)</p>
 
                 <div class="col-12 row no-gutters personalizate">
                   <ng-template [ngIf]="selectUser.isMEMGO">
