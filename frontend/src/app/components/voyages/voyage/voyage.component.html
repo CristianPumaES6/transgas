@@ -26,7 +26,7 @@
 
 
 
-              <div class="rounded div-content-Start-End ">
+              <div class="div-content-Start-End">
 
                 <table>
                   <tbody>
@@ -81,21 +81,86 @@
             </div>
             <div class="col">
 
-              <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
-                <thead>
-                  <tr>
-                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                      IFO : 90mt
-                    </th>
-                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                      {{'TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
-                    </th>
-                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
-                      MGO : 90mt
-                    </th>
-                  </tr>
-                </thead>
-              </table>
+
+
+              <div class="div-content-table-total">
+
+
+                <table border="1" cellpadding="1" cellspacing="1" style="width:500px;">
+                  <tbody>
+                    <tr>
+                      <td colspan="2" rowspan="1">
+                        {{'TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
+                      </td>
+                      <td colspan="2" rowspan="1">
+                        <span>
+                          {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
+                          translateMessage:translateCategory}}
+                        </span>
+                        <span>
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalIfo,cantDecimal)}}
+                        </span>
+                      </td>
+                      <td colspan="2" rowspan="1">
+                        <span>
+                          {{ 'MGO' | translateMessage:translateCategory}}
+                        </span>
+                        <span>
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalMgo,cantDecimal)}}
+                          </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="1" rowspan="6"> {{ 'EQUIPMENT' | translateMessage:translateCategory}}</td>
+                      <td>M.E</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaIfo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaIfoTime,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaMgo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaMgoTime,cantDecimal)}}</td>
+                    </tr>
+                    <tr>
+                      <td>A.E</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxIfo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxIfoTime,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxMgo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxMgoTime,cantDecimal)}}</td>
+                    </tr>
+                    <tr>
+                      <td>Boiler</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerIfo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerIfoTime,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerMgo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerMgoTime,cantDecimal)}}</td>
+                    </tr>
+                    <tr>
+                      <td>I.G</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.giMgo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.giMgoTime,cantDecimal)}}</td>
+                    </tr>
+                    <tr>
+                      <td>POWER P</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.ppMgo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.ppMgoTime,cantDecimal)}}</td>
+                    </tr>
+                    <tr>
+                      <td>OTHER</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherIfo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherIfoTime,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherMgo,cantDecimal)}}</td>
+                      <td>{{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherMgoTime,cantDecimal)}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+
+
+
+              </div>
+
             </div>
           </div>
         </div>
