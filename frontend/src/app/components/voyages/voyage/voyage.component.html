@@ -36,7 +36,8 @@
                         {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
                         translateMessage:translateCategory}}</td>
                       <td class="color-title-table blue-3 h7 border">MGO</td>
-                      <td class="color-title-table blue-2 h7 border">Distance</td>
+                      <td class="color-title-table blue-2 h7 border"> {{ 'DISTANCE' |
+                        translateMessage:translateCategory}}</td>
                     </tr>
                     <tr>
                       <td class="color-title-table blue-1 h7 border"> Star Date</td>
@@ -47,7 +48,7 @@
                       <td colspan="1" rowspan="2" class="color-text-content h6 border">
                         {{MathRoundOneDecimal(selectPort.startMGO,cantDecimal)}}</td>
                       <td colspan="1" rowspan="4" class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpThisPort.distance,cantDecimal)}}</td>
+                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.distance,cantDecimal)}}</td>
                     </tr>
                     <tr>
                       <td class="color-title-table blue-1 h7 border"> {{'DEPARTURE_PORT' |
@@ -60,19 +61,23 @@
                       <td colspan="2" rowspan="1" class="color-text-content h6 border">{{selectPort.arrivalPort}}</td>
                       <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
                         MathRoundOneDecimal(
-                        selectPort.startIFO- (TotalIFO(totalConsumpThisPort) +
-                        totalConsumpThisPort.bunkeringIfo),cantDecimal)
-                        }}</td>
+                        selectPort.startIFO - totalConsumpAndTimeByEquiment.totalIfo +
+                        totalConsumpAndTimeByEquiment.bunkeringIfo
+                        , cantDecimal
+                        )
+                        }}
+                      </td>
                       <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
                         MathRoundOneDecimal(
-                        selectPort.startMGO- (TotalMGO(totalConsumpThisPort) +
-                        totalConsumpThisPort.bunkeringMgo),2)
+                        selectPort.startMGO- totalConsumpAndTimeByEquiment.totalMgo
+                        +totalConsumpAndTimeByEquiment.bunkeringMgo,
+                        cantDecimal)
                         }}</td>
                     </tr>
                     <tr>
                       <td class="color-title-table blue-1 h7 border"> End Date</td>
                       <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
-                        FormatDateUTCToDateHour(totalConsumpThisPort.date) }}</td>
+                        FormatDateUTCToDateHour(totalConsumpAndTimeByEquiment.lastDate) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -94,11 +99,11 @@
                       </td>
                       <td colspan="2" rowspan="1">
                         <span>
-                          {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
-                          translateMessage:translateCategory}}
+                          {{ (selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
+                          translateMessage:translateCategory }}
                         </span>
                         <span>
-                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalIfo,cantDecimal)}}
+                          {{ MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalIfo,cantDecimal) }}
                         </span>
                       </td>
                       <td colspan="2" rowspan="1">
@@ -106,8 +111,8 @@
                           {{ 'MGO' | translateMessage:translateCategory}}
                         </span>
                         <span>
-                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalMgo,cantDecimal)}}
-                          </span>
+                          {{ MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalMgo,cantDecimal) }}
+                        </span>
                       </td>
                     </tr>
                     <tr>
@@ -331,17 +336,19 @@
                       <td class="p-1 color-title-table border">{{ dailyReport.steamingTime }}</td>
                       <td
                         *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
-                        class="p-1 color-title-table border">{{ TotalIFO(dailyReport, cantDecimal) }}</td>
+                        class="p-1 color-title-table border">
+                        {{ MathRoundOneDecimal( TotalIFO(dailyReport) ,cantDecimal)}}
+                      </td>
                       <td
                         *ngIf="selectUser.isConsumptionIFO||selectUser.isConsumptionLSFO||selectUser.isConsumptionVLSFO"
                         class="p-1 color-title-table border">
-                        {{ dailyReport.robIfo }}
+                        {{ MathRoundOneDecimal( dailyReport.robIfo,cantDecimal) }}
                       </td>
                       <td *ngIf="selectUser.isConsumptionMGO" class="p-1 color-title-table border">
-                        {{ TotalMGO(dailyReport,cantDecimal) }}
+                        {{ MathRoundOneDecimal( TotalMGO(dailyReport) , cantDecimal)}}
                       </td>
                       <td *ngIf="selectUser.isConsumptionMGO" class="p-1 color-title-table border">
-                        {{ dailyReport.robMgo }}</td>
+                        {{ MathRoundOneDecimal( dailyReport.robMgo,cantDecimal) }}</td>
                       <td class="p-1 color-title-table border">{{ dailyReport.observation }}</td>
                       <td class="p-1 color-title-table border">
                         <a href="#" class="mr-3" (click)="ClickEditReport(dailyReport)">
