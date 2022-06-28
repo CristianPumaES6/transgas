@@ -93,3 +93,36 @@
     color: rgba(0, 0, 0, 0.54);
   }
 }
+
+.h7 {
+  font-size: 0.7rem;
+}
+
+.div-content-Start-End {
+  width: 400px;
+  table {
+    width: 100%;
+    text-align: center;
+    .color-title-table {
+      color: #ffffff;
+      &.blue-1 {
+        background: $blue-light-1;
+      }
+      &.blue-2 {
+        background: $blue-light-1;
+      }
+      &.blue-3 {
+        background: $blue-dark-1;
+      }
+    }
+    .border {
+      border-color: $blue-light-2 !important;
+    }
+
+    .color-text-content {
+      color: $t-blue;
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+}

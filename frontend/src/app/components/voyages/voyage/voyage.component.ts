@@ -75,6 +75,7 @@ export class VoyageComponent implements OnInit {
   public initialPort: Port = new Port();
   public selectPort: Port = new Port();
   public getPorts: Port[] = [];
+  public totalConsumpThisPort: DailyReport = new DailyReport();
 
   //
   public initialDailyReport: DailyReport = new DailyReport();
@@ -368,7 +369,7 @@ export class VoyageComponent implements OnInit {
         );
         this.selectPort = JSON.parse(JSON.stringify(this.selectPort));
 
-        this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
+        this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber;
 
         return true;
       }
@@ -419,10 +420,51 @@ export class VoyageComponent implements OnInit {
     ).then(
       (dailyReports: DailyReport[]) => {
 
+        // reseteamos los valores.
+        this.totalConsumpThisPort = new DailyReport();
+
         let robCurrentIFO = startIfo;
         let robCurrentMGO = startMGO;
 
         dailyReports.map((indexDaily) => {
+
+          this.totalConsumpThisPort.mplaIfo
+
+          // Sumamos el total de bunkering de IFO
+          this.totalConsumpThisPort.bunkeringIfo += indexDaily.bunkeringIfo;
+          this.totalConsumpThisPort.bunkeringMgo += indexDaily.bunkeringMgo;
+
+
+          // Consumo mplaIfo
+          this.totalConsumpThisPort.mplaIfo += indexDaily.mplaIfo;
+          // Consumo auxIfo
+          this.totalConsumpThisPort.auxIfo += indexDaily.auxIfo;
+          // consumo boilerIfo
+          this.totalConsumpThisPort.boilerIfo += indexDaily.boilerIfo;
+          // Otros consumos Ifo
+          this.totalConsumpThisPort.otherIfo += indexDaily.otherIfo;
+
+          // Consumo mplaMgo
+          this.totalConsumpThisPort.mplaMgo += indexDaily.mplaMgo;
+          // Consumo auxMgo
+          this.totalConsumpThisPort.auxMgo += indexDaily.auxMgo;
+          // Consumo boilerMgo
+          this.totalConsumpThisPort.boilerMgo += indexDaily.boilerMgo;
+          // Consumo ppMgo
+          this.totalConsumpThisPort.ppMgo += indexDaily.ppMgo;
+          // Consumo giMgo
+          this.totalConsumpThisPort.giMgo += indexDaily.giMgo;
+          // Consumo otherMgo
+          this.totalConsumpThisPort.otherMgo += indexDaily.otherMgo;
+
+
+          // total de Distancia
+          this.totalConsumpThisPort.distance += indexDaily.distance;
+
+          this.totalConsumpThisPort.date = indexDaily.date;
+          this.totalConsumpThisPort.hour = indexDaily.hour;
+
+
           robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
           robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
           indexDaily.robIfo = mathRound(robCurrentIFO, this.cantDecimal);
@@ -675,8 +717,12 @@ export class VoyageComponent implements OnInit {
 
             }
           )
-
-          return this.databaseService.getPortsByVoyageIndexDB(elPenultimoVIajeES);
+// si o hay vaijes le damos un port vacio
+          if (elPenultimoVIajeES) {
+            return this.databaseService.getPortsByVoyageIndexDB(elPenultimoVIajeES);
+          } else {
+            return [new Port()]
+          }
         }
       }).then(
         portsReverse => {
@@ -949,7 +995,7 @@ export class VoyageComponent implements OnInit {
 
           this.getDailyReports = dailyReports;
 
-          this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
+          this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber;
 
           this.List_Voyages_Ports_DailyReports = 'DailyReports';
 
@@ -971,7 +1017,7 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'Ports' || this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
       this.selectPort = this.getPorts[0];
-      this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber + ' (' + this.selectPort.departurePort + ' - ' + this.selectPort.arrivalPort + ')';
+      this.sub_title_header_media = 'Port N°' + this.selectPort.portNumber;
       this.List_Voyages_Ports_DailyReports = 'DailyReports';
 
       this.toolTipSave = 'SAVE_REPORT';
@@ -2621,7 +2667,7 @@ export class VoyageComponent implements OnInit {
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
 
 
-    return this.MathRoundOneDecimal(diferentHour, 2);
+    return this.MathRoundOneDecimal(diferentHour, this.cantDecimal);
 
   }
 
@@ -2732,8 +2778,13 @@ export class VoyageComponent implements OnInit {
   public MathRoundOneDecimal(valor, cantDecimales: number) {
     if (!valor) { return 0; }
 
-    let result = mathRound(valor, 2)
+    let result = mathRound(valor, cantDecimales)
     return result;
+  }
+
+  public FormatDateUTCToDateHour(dateUTC: any) {
+    if (!dateUTC) { return ''; }
+    return FormatDateUTCToDateHour(dateUTC)
   }
 
   public ChangeActivityPerformed() {

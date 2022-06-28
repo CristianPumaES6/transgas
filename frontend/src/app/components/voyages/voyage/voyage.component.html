@@ -15,11 +15,89 @@
   <div class="az-content-body az-content-body-contacts" style="width: 100%;">
 
     <div class="az-contact-info-header">
-      <div class="media">
+      <div class="media mr-5">
 
-        <div class="media-body ml-0">
-          <h4>{{title_header_media}}</h4>
-          <p class="mb-0">{{sub_title_header_media}}</p>
+        <div class="media-body ml-0 mr-5">
+          <div class="row">
+            <div class="col">
+              <h4>{{title_header_media}}</h4>
+              <h5 class="mb-0">{{sub_title_header_media}}</h5>
+
+
+
+
+              <div class="rounded div-content-Start-End ">
+
+                <table>
+                  <tbody>
+                    <tr>
+                      <td colspan="3" rowspan="1">&nbsp;</td>
+                      <td class="color-title-table blue-3 h7 border">
+                        {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
+                        translateMessage:translateCategory}}</td>
+                      <td class="color-title-table blue-3 h7 border">MGO</td>
+                      <td class="color-title-table blue-2 h7 border">Distance</td>
+                    </tr>
+                    <tr>
+                      <td class="color-title-table blue-1 h7 border"> Star Date</td>
+                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
+                        FormatDateUTCToDateHour(selectPort.startDate) }}</td>
+                      <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                        {{MathRoundOneDecimal(selectPort.startIFO,cantDecimal)}}</td>
+                      <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                        {{MathRoundOneDecimal(selectPort.startMGO,cantDecimal)}}</td>
+                      <td colspan="1" rowspan="4" class="color-text-content h6 border">
+                        {{MathRoundOneDecimal(totalConsumpThisPort.distance,cantDecimal)}}</td>
+                    </tr>
+                    <tr>
+                      <td class="color-title-table blue-1 h7 border"> {{'DEPARTURE_PORT' |
+                        translateMessage:translateCategory}}</td>
+                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{selectPort.departurePort}}</td>
+                    </tr>
+                    <tr>
+                      <td class="color-title-table blue-1 h7 border"> {{'ARRIVAL_PORT' |
+                        translateMessage:translateCategory}}</td>
+                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{selectPort.arrivalPort}}</td>
+                      <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
+                        MathRoundOneDecimal(
+                        selectPort.startIFO- (TotalIFO(totalConsumpThisPort) +
+                        totalConsumpThisPort.bunkeringIfo),cantDecimal)
+                        }}</td>
+                      <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
+                        MathRoundOneDecimal(
+                        selectPort.startMGO- (TotalMGO(totalConsumpThisPort) +
+                        totalConsumpThisPort.bunkeringMgo),2)
+                        }}</td>
+                    </tr>
+                    <tr>
+                      <td class="color-title-table blue-1 h7 border"> End Date</td>
+                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
+                        FormatDateUTCToDateHour(totalConsumpThisPort.date) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+            <div class="col">
+
+              <table class="modi table mb-0 tx-12 lh-4 tx-gray-500 mg-b-0">
+                <thead>
+                  <tr>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      IFO : 90mt
+                    </th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      {{'TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
+                    </th>
+                    <th class="color-title-table blue-1 font-small-1 border align-top pt-1">
+                      MGO : 90mt
+                    </th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
         </div>
 
       </div>
