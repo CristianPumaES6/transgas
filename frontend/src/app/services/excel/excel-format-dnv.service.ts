@@ -884,7 +884,7 @@ export class ExcelFormatDNVService {
     if (!valor) { return 0; }
 
     let result = mathRound(valor, cantDecimales)
-    debugger
+    
     return result;
   }
 

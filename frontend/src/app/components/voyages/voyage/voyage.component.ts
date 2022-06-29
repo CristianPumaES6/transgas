@@ -2742,13 +2742,16 @@ export class VoyageComponent implements OnInit {
 
   public MathRoundOneDecimal(valor, cantDecimales: number) {
     if (!valor) { return 0; }
-
+ 
     let result = mathRound(valor, cantDecimales)
     return result;
   }
 
   public FormatDateUTCToDateHour(dateUTC: any) {
+     
     if (!dateUTC) { return ''; }
+    if(validateDate(dateUTC)) return '';
+
     return FormatDateUTCToDateHour(dateUTC)
   }
 

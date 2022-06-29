@@ -155,7 +155,7 @@ export function IsAfter1Date(date1UTC: any, date2UTC: any): boolean {
 export function validateDate(fecha: any): boolean {
 
     let result = !!moment(fecha).isValid();
-
+ 
     return result;
 }
 
