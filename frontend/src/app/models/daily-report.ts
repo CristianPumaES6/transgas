@@ -381,3 +381,163 @@ export class GetFormatDNV {
 
     }
 }
+
+
+export class TotalConsumptioAndTimeEquiment {
+
+    constructor(
+        // Fecha de registro
+        public lastDate?: Date,
+        // Hora
+        public lastHour?: string,
+
+        // Recarga de IFO
+        public bunkeringIfo?: number,
+        // Recarga de MGO
+        public bunkeringMgo?: number,
+
+
+        // Consumo mplaIfo
+        public mplaIfo?: number,
+        public mplaIfoTime?: number,
+        // Consumo auxIfo
+        public auxIfo?: number,
+        public auxIfoTime?: number,
+        // consumo boilerIfo
+        public boilerIfo?: number,
+        public boilerIfoTime?: number,
+        // Otros consumos Ifo
+        public otherIfo?: number,
+        public otherIfoTime?: number,
+
+        // Consumo mplaMgo
+        public mplaMgo?: number,
+        public mplaMgoTime?: number,
+        // Consumo auxMgo
+        public auxMgo?: number,
+        public auxMgoTime?: number,
+        // Consumo boilerMgo
+        public boilerMgo?: number,
+        public boilerMgoTime?: number,
+        // Consumo ppMgo
+        public ppMgo?: number,
+        public ppMgoTime?: number,
+        // Consumo giMgo
+        public giMgo?: number,
+        public giMgoTime?: number,
+        // Consumo otherMgo
+        public otherMgo?: number,
+        public otherMgoTime?: number,
+
+
+
+
+        public distance?: number,
+
+    ) {
+        this.lastDate = lastDate || null;
+        this.lastHour = lastHour || '';
+        this.bunkeringIfo = bunkeringIfo || 0;
+        this.bunkeringMgo = bunkeringMgo || 0;
+
+        this.mplaIfo = mplaIfo || 0;
+        this.mplaIfoTime = mplaIfoTime || 0;
+        this.auxIfo = auxIfo || 0;
+        this.auxIfoTime = auxIfoTime || 0;
+        this.boilerIfo = boilerIfo || 0;
+        this.boilerIfoTime = boilerIfoTime || 0;
+        this.otherIfo = otherIfo || 0;
+        this.otherIfoTime = otherIfoTime || 0;
+
+
+        this.mplaMgo = mplaMgo || 0;
+        this.mplaMgoTime = mplaMgoTime || 0;
+        this.auxMgo = auxMgo || 0;
+        this.auxMgoTime = auxMgoTime || 0;
+        this.boilerMgo = boilerMgo || 0;
+        this.boilerMgoTime = boilerMgoTime || 0;
+        this.ppMgo = ppMgo || 0;
+        this.ppMgoTime = ppMgoTime || 0;
+        this.giMgo = giMgo || 0;
+        this.giMgoTime = giMgoTime || 0;
+        this.otherMgo = otherMgo || 0;
+        this.otherMgoTime = otherMgoTime || 0;
+
+
+        this.distance = distance || 0;
+    }
+
+    public totalIfo: number = 0;
+    public totalMgo: number = 0;
+    AddConsumptionAndTime(dailReport: DailyReport) {
+
+        this.lastDate = dailReport.date;
+        this.lastHour = dailReport.hour;
+
+        // Sumamos el total de bunkering de IFO
+        this.bunkeringIfo += dailReport.bunkeringIfo;
+        this.bunkeringMgo += dailReport.bunkeringMgo;
+
+        // Consumo mplaIfo
+        if (dailReport.mplaIfo) {
+            this.mplaIfo += dailReport.mplaIfo;
+            this.mplaIfoTime += dailReport.steamingTime;
+        }
+        // Consumo auxIfo
+        if (dailReport.auxIfo) {
+            this.auxIfo += dailReport.auxIfo;
+            this.auxIfoTime += dailReport.steamingTime;
+        }
+        // consumo boilerIfo
+        if (dailReport.boilerIfo) {
+            this.boilerIfo += dailReport.boilerIfo;
+            this.boilerIfoTime += dailReport.steamingTime;
+        }
+        // Otros consumos Ifo
+        if (dailReport.otherIfo) {
+            this.otherIfo += dailReport.otherIfo;
+            this.otherIfoTime += dailReport.steamingTime;
+        }
+
+        // Consumo mplaMgo
+        if (dailReport.mplaMgo) {
+            this.mplaMgo += dailReport.mplaMgo;
+            this.mplaMgoTime += dailReport.steamingTime;
+        }
+        // Consumo auxMgo
+        if (dailReport.auxMgo) {
+            this.auxMgo += dailReport.auxMgo;
+            this.auxMgoTime += dailReport.steamingTime;
+        }
+        // Consumo boilerMgo
+        if (dailReport.boilerMgo) {
+            this.boilerMgo += dailReport.boilerMgo;
+            this.boilerMgoTime += dailReport.steamingTime;
+        }
+        // Consumo ppMgo
+        if (dailReport.ppMgo) {
+            this.ppMgo += dailReport.ppMgo;
+            this.ppMgoTime += dailReport.steamingTime;
+        }
+        // Consumo giMgo
+        if (dailReport.giMgo) {
+            this.giMgo += dailReport.giMgo;
+            this.giMgoTime += dailReport.steamingTime;
+        }
+        // Consumo otherMgo
+        if (dailReport.otherMgo) {
+            this.otherMgo += dailReport.otherMgo;
+            this.otherMgoTime += dailReport.steamingTime;
+        }
+
+
+        // total de Distancia
+        this.distance += dailReport.distance;
+
+
+        this.totalIfo += dailReport.mplaIfo + dailReport.auxIfo + dailReport.boilerIfo + dailReport.otherIfo;
+        this.totalMgo += dailReport.mplaMgo + dailReport.auxMgo + dailReport.boilerMgo + dailReport.ppMgo + dailReport.giMgo + dailReport.otherMgo;
+
+    }
+
+}

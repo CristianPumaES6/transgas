@@ -340,7 +340,8 @@ export const voyage: any = {
     TIME: 'Time',
     OPERATION: 'Operation',
     CONSUMPTION: 'Consumption',
-
+    EQUIPMENT: 'Equipment',
+    TOTAL_CONSUMPTION: 'Total consumption'
 };
 
 export const dashboard: any = {

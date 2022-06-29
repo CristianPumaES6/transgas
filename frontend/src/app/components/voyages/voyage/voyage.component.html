@@ -17,219 +17,223 @@
     <div class="az-contact-info-header">
       <div class="media mr-5">
 
-        <div class="media-body ml-0 mr-5">
-          <div class="row">
+        <div class="media-body ml-0">
+          <div class="row  no-gutters">
             <div class="col">
               <h4>{{title_header_media}}</h4>
               <h5 class="mb-0">{{sub_title_header_media}}</h5>
 
 
 
+              <ng-template [ngIf]="(disableEdit && (selectPort.id))">
+                <div class="div-content-Start-End">
 
-              <div class="div-content-Start-End">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td colspan="3" rowspan="1">&nbsp;</td>
+                        <td class="color-title-table blue-3 h7 border">
+                          {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
+                          translateMessage:translateCategory}}</td>
+                        <td class="color-title-table blue-3 h7 border">MGO</td>
+                        <td class="color-title-table blue-2 h7 border"> {{ 'DISTANCE' |
+                          translateMessage:translateCategory}}</td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border"> Star Date</td>
+                        <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
+                          FormatDateUTCToDateHour(selectPort.startDate) }}</td>
+                        <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(selectPort.startIFO,cantDecimal)}}</td>
+                        <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(selectPort.startMGO,cantDecimal)}}</td>
+                        <td colspan="1" rowspan="4" class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.distance,cantDecimal)}}</td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border"> {{'DEPARTURE_PORT' |
+                          translateMessage:translateCategory}}</td>
+                        <td colspan="2" rowspan="1" class="color-text-content h6 border">{{selectPort.departurePort}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border"> {{'ARRIVAL_PORT' |
+                          translateMessage:translateCategory}}</td>
+                        <td colspan="2" rowspan="1" class="color-text-content h6 border">{{selectPort.arrivalPort}}</td>
+                        <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
+                          MathRoundOneDecimal(
+                          selectPort.startIFO - totalConsumpAndTimeByEquiment.totalIfo +
+                          totalConsumpAndTimeByEquiment.bunkeringIfo
+                          , cantDecimal
+                          )
+                          }}
+                        </td>
+                        <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
+                          MathRoundOneDecimal(
+                          selectPort.startMGO- totalConsumpAndTimeByEquiment.totalMgo
+                          +totalConsumpAndTimeByEquiment.bunkeringMgo,
+                          cantDecimal)
+                          }}</td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border"> End Date</td>
+                        <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
+                          FormatDateUTCToDateHour(totalConsumpAndTimeByEquiment.lastDate) }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-                <table>
-                  <tbody>
-                    <tr>
-                      <td colspan="3" rowspan="1">&nbsp;</td>
-                      <td class="color-title-table blue-3 h7 border">
-                        {{(selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
-                        translateMessage:translateCategory}}</td>
-                      <td class="color-title-table blue-3 h7 border">MGO</td>
-                      <td class="color-title-table blue-2 h7 border"> {{ 'DISTANCE' |
-                        translateMessage:translateCategory}}</td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border"> Star Date</td>
-                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
-                        FormatDateUTCToDateHour(selectPort.startDate) }}</td>
-                      <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(selectPort.startIFO,cantDecimal)}}</td>
-                      <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(selectPort.startMGO,cantDecimal)}}</td>
-                      <td colspan="1" rowspan="4" class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.distance,cantDecimal)}}</td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border"> {{'DEPARTURE_PORT' |
-                        translateMessage:translateCategory}}</td>
-                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{selectPort.departurePort}}</td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border"> {{'ARRIVAL_PORT' |
-                        translateMessage:translateCategory}}</td>
-                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{selectPort.arrivalPort}}</td>
-                      <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
-                        MathRoundOneDecimal(
-                        selectPort.startIFO - totalConsumpAndTimeByEquiment.totalIfo +
-                        totalConsumpAndTimeByEquiment.bunkeringIfo
-                        , cantDecimal
-                        )
-                        }}
-                      </td>
-                      <td colspan="1" rowspan="2" class="color-text-content h6 border">{{
-                        MathRoundOneDecimal(
-                        selectPort.startMGO- totalConsumpAndTimeByEquiment.totalMgo
-                        +totalConsumpAndTimeByEquiment.bunkeringMgo,
-                        cantDecimal)
-                        }}</td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border"> End Date</td>
-                      <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
-                        FormatDateUTCToDateHour(totalConsumpAndTimeByEquiment.lastDate) }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                </div>
+              </ng-template>
 
-              </div>
             </div>
             <div class="col">
 
 
 
-              <div class="div-content-table-total">
+              <ng-template [ngIf]="(disableEdit && (selectPort.id))">
+                <div class="div-content-table-total">
 
 
-                <table>
-                  <tbody>
-                    <tr>
-                      <td colspan="2" rowspan="1" class="color-title-table blue-1 h7 border">
-                        {{'TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
-                      </td>
-                      <td colspan="2" rowspan="1" class="color-title-table blue-3 h7 border">
-                        <span>
-                          {{ (selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
-                          translateMessage:translateCategory }}
-                        </span>
-                        <span class="h5">
-                          {{ MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalIfo,cantDecimal) }}
-                        </span>
-                        <span class="h8">mt</span>
-                      </td>
-                      <td colspan="2" rowspan="1" class="color-title-table blue-3 h7 border">
-                        <span>
-                          {{ 'MGO' | translateMessage:translateCategory}}
-                        </span>
-                        <span class="h5">
-                          {{ MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalMgo,cantDecimal) }}
-                        </span>
-                        <span class="h8">mt</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="1" rowspan="6" class="color-title-table blue-3 h5 border">{{ 'EQUIPMENT' |
-                        translateMessage:translateCategory}}</td>
-                      <td class="color-title-table blue-1 h7 border">M.E</td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaIfo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaIfoTime,cantDecimal)}}
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td colspan="2" rowspan="1" class="color-title-table blue-1 h7 border">
+                          {{'TOTAL_CONSUMPTION' | translateMessage:translateCategory}}
+                        </td>
+                        <td colspan="2" rowspan="1" class="color-title-table blue-3 h7 border">
+                          <span>
+                            {{ (selectUser.isConsumptionIFO?'IFO':selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO') |
+                            translateMessage:translateCategory }}
+                          </span>
+                          <span class="h5">
+                            {{ MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalIfo,cantDecimal) }}
+                          </span>
+                          <span class="h8">mt</span>
+                        </td>
+                        <td colspan="2" rowspan="1" class="color-title-table blue-3 h7 border">
+                          <span>
+                            {{ 'MGO' | translateMessage:translateCategory}}
+                          </span>
+                          <span class="h5">
+                            {{ MathRoundOneDecimal(totalConsumpAndTimeByEquiment.totalMgo,cantDecimal) }}
+                          </span>
+                          <span class="h8">mt</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="1" rowspan="6" class="color-title-table blue-3 h5 border">{{ 'EQUIPMENT' |
+                          translateMessage:translateCategory}}</td>
+                        <td class="color-title-table blue-1 h7 border">M.E</td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaIfo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaIfoTime,cantDecimal)}}
 
-                        <span class="h8">hrs</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaMgo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaMgoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border">A.E</td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxIfo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxIfoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxMgo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxMgoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border">Boiler</td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerIfo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerIfoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerMgo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerMgoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border">I.G</td>
-                      <td class="color-text-content h6 border"></td>
-                      <td class="color-text-content h6 border"></td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.giMgo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.giMgoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border">POWER P</td>
-                      <td class="color-text-content h6 border"></td>
-                      <td class="color-text-content h6 border"></td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.ppMgo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.ppMgoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="color-title-table blue-1 h7 border">OTHER</td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherIfo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherIfoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherMgo,cantDecimal)}}
-                        <span class="h8">mt</span>
-                      </td>
-                      <td class="color-text-content h6 border">
-                        {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherMgoTime,cantDecimal)}}
-                        <span class="h8">hrs</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-
+                          <span class="h8">hrs</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaMgo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.mplaMgoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border">A.E</td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxIfo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxIfoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxMgo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.auxMgoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border">Boiler</td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerIfo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerIfoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerMgo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.boilerMgoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border">I.G</td>
+                        <td class="color-text-content h6 border"></td>
+                        <td class="color-text-content h6 border"></td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.giMgo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.giMgoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border">POWER P</td>
+                        <td class="color-text-content h6 border"></td>
+                        <td class="color-text-content h6 border"></td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.ppMgo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.ppMgoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="color-title-table blue-1 h7 border">OTHER</td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherIfo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherIfoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherMgo,cantDecimal)}}
+                          <span class="h8">mt</span>
+                        </td>
+                        <td class="color-text-content h6 border">
+                          {{MathRoundOneDecimal(totalConsumpAndTimeByEquiment.otherMgoTime,cantDecimal)}}
+                          <span class="h8">hrs</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
 
 
-              </div>
 
+
+                </div>
+              </ng-template>
             </div>
           </div>
         </div>
@@ -275,54 +279,59 @@
 
         <ng-template [ngIf]="List_Voyages_Ports_DailyReports==='Ports'">
 
-          <div class="row pb-2">
-            <div class="col-6 row no-gutters">
-              <mat-form-field>
-                <input matInput type="text" placeholder="{{'DEPARTURE_PORT' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectPort.departurePort" [disabled]='disableEdit'>
-              </mat-form-field>
-            </div>
-            <div class="col-6 row no-gutters">
-              <mat-form-field>
-                <input matInput type="text" placeholder="{{'ARRIVAL_PORT' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectPort.arrivalPort" [disabled]='disableEdit'>
-              </mat-form-field>
-            </div>
-          </div>
+          <ng-template [ngIf]="!disableEdit">
 
-          <div class="row">
-            <div class="col-12 row no-gutters">
-
-              <mat-form-field>
-                <mat-label>{{'STARTDATE234' | translateMessage:translateCategory}}</mat-label>
-                <input matInput [matDatepicker]="picker1" [(ngModel)]="selectPort.startDate">
-                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                <mat-datepicker #picker1 startView="year"></mat-datepicker>
-              </mat-form-field>
-
-              <br><br><br>
-              <input matInput type="datetime" placeholder="{{'STARTDATE234 IFO' | translateMessage:translateCategory}}"
-                [(ngModel)]="selectPort.startDate" [disabled]='disableEdit'>
-              <br><br>
-            </div>
-          </div>
-
-          <div class="row">
-
-            <div class="col-6 row no-gutters">
-              <mat-form-field>
-                <input matInput type="text" placeholder="{{'START IFO' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectPort.startIFO" [disabled]='disableEdit'>
-              </mat-form-field>
-            </div>
-            <div class="col-6 row no-gutters">
-              <mat-form-field>
-                <input matInput type="text" placeholder="{{'START MGO' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectPort.startMGO" [disabled]='disableEdit'>
-              </mat-form-field>
+            <div class="row pb-2">
+              <div class="col-6 row no-gutters">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="{{'DEPARTURE_PORT' | translateMessage:translateCategory}}"
+                    [(ngModel)]="selectPort.departurePort" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+              <div class="col-6 row no-gutters">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="{{'ARRIVAL_PORT' | translateMessage:translateCategory}}"
+                    [(ngModel)]="selectPort.arrivalPort" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
             </div>
 
-          </div>
+            <div class="row">
+              <div class="col-12 row no-gutters">
+
+                <mat-form-field>
+                  <mat-label>{{'STARTDATE234' | translateMessage:translateCategory}}</mat-label>
+                  <input matInput [matDatepicker]="picker1" [(ngModel)]="selectPort.startDate">
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1 startView="year"></mat-datepicker>
+                </mat-form-field>
+
+                <br><br><br>
+                <input matInput type="datetime"
+                  placeholder="{{'STARTDATE234 IFO' | translateMessage:translateCategory}}"
+                  [(ngModel)]="selectPort.startDate" [disabled]='disableEdit'>
+                <br><br>
+              </div>
+            </div>
+
+            <div class="row">
+
+              <div class="col-6 row no-gutters">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="{{'START IFO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="selectPort.startIFO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+              <div class="col-6 row no-gutters">
+                <mat-form-field>
+                  <input matInput type="text" placeholder="{{'START MGO' | translateMessage:translateCategory}}"
+                    [(ngModel)]="selectPort.startMGO" [disabled]='disableEdit'>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </ng-template>
 
           <hr>
 

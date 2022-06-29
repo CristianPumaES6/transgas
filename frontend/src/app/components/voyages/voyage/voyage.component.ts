@@ -30,7 +30,7 @@ import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete
 import { MatDialog } from '@angular/material/dialog';
 import { Port } from '../../../models/port';
 import { PortService } from '../../../services/port.service';
-import { DailyReport } from '../../../models/daily-report';
+import { DailyReport, TotalConsumptioAndTimeEquiment } from '../../../models/daily-report';
 import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
 import { ConvertirDateHourToMoment, DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
@@ -75,7 +75,7 @@ export class VoyageComponent implements OnInit {
   public initialPort: Port = new Port();
   public selectPort: Port = new Port();
   public getPorts: Port[] = [];
-  public totalConsumpThisPort: DailyReport = new DailyReport();
+  public totalConsumpAndTimeByEquiment: TotalConsumptioAndTimeEquiment = new TotalConsumptioAndTimeEquiment();
 
   //
   public initialDailyReport: DailyReport = new DailyReport();
@@ -421,54 +421,19 @@ export class VoyageComponent implements OnInit {
       (dailyReports: DailyReport[]) => {
 
         // reseteamos los valores.
-        this.totalConsumpThisPort = new DailyReport();
+        this.totalConsumpAndTimeByEquiment = new TotalConsumptioAndTimeEquiment();
 
         let robCurrentIFO = startIfo;
         let robCurrentMGO = startMGO;
 
         dailyReports.map((indexDaily) => {
 
-          this.totalConsumpThisPort.mplaIfo
-
-          // Sumamos el total de bunkering de IFO
-          this.totalConsumpThisPort.bunkeringIfo += indexDaily.bunkeringIfo;
-          this.totalConsumpThisPort.bunkeringMgo += indexDaily.bunkeringMgo;
-
-
-          // Consumo mplaIfo
-          this.totalConsumpThisPort.mplaIfo += indexDaily.mplaIfo;
-          // Consumo auxIfo
-          this.totalConsumpThisPort.auxIfo += indexDaily.auxIfo;
-          // consumo boilerIfo
-          this.totalConsumpThisPort.boilerIfo += indexDaily.boilerIfo;
-          // Otros consumos Ifo
-          this.totalConsumpThisPort.otherIfo += indexDaily.otherIfo;
-
-          // Consumo mplaMgo
-          this.totalConsumpThisPort.mplaMgo += indexDaily.mplaMgo;
-          // Consumo auxMgo
-          this.totalConsumpThisPort.auxMgo += indexDaily.auxMgo;
-          // Consumo boilerMgo
-          this.totalConsumpThisPort.boilerMgo += indexDaily.boilerMgo;
-          // Consumo ppMgo
-          this.totalConsumpThisPort.ppMgo += indexDaily.ppMgo;
-          // Consumo giMgo
-          this.totalConsumpThisPort.giMgo += indexDaily.giMgo;
-          // Consumo otherMgo
-          this.totalConsumpThisPort.otherMgo += indexDaily.otherMgo;
-
-
-          // total de Distancia
-          this.totalConsumpThisPort.distance += indexDaily.distance;
-
-          this.totalConsumpThisPort.date = indexDaily.date;
-          this.totalConsumpThisPort.hour = indexDaily.hour;
-
+          this.totalConsumpAndTimeByEquiment.AddConsumptionAndTime(indexDaily);
 
           robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
           robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
-          indexDaily.robIfo = mathRound(robCurrentIFO, this.cantDecimal);
-          indexDaily.robMgo = mathRound(robCurrentMGO, this.cantDecimal);
+          indexDaily.robIfo = robCurrentIFO;
+          indexDaily.robMgo = robCurrentMGO;
         });
 
 
@@ -476,7 +441,6 @@ export class VoyageComponent implements OnInit {
         return dailyReports.reverse();
       }
     );
-
 
   }
 
@@ -664,6 +628,11 @@ export class VoyageComponent implements OnInit {
 
       let resultNewPort = await this.NewPort();
 
+      // Si es 0 entonces agrega al subtitulo puerto numero 1
+      if (!this.azLists.length) {
+        this.sub_title_header_media = 'Port N°' + 1;
+      }
+
       this.getDailyReports = [];
       this.aSideService.OpenClose('open-formulario');
 
@@ -717,7 +686,7 @@ export class VoyageComponent implements OnInit {
 
             }
           )
-// si o hay vaijes le damos un port vacio
+          // si o hay vaijes le damos un port vacio
           if (elPenultimoVIajeES) {
             return this.databaseService.getPortsByVoyageIndexDB(elPenultimoVIajeES);
           } else {
@@ -1681,6 +1650,9 @@ export class VoyageComponent implements OnInit {
           this.List_Voyages_Ports_DailyReports === 'DailyReports';
           // Vuelvo a cargar los datos de incio del token se abre el formulario dailyreport
           this.Initialize();
+          // reset al totalde consumo por equipo.
+          this.totalConsumpAndTimeByEquiment = new TotalConsumptioAndTimeEquiment();
+
           // selecciono el puerto registrado hace un momento.
           this.selectPort = newPort;
 
@@ -2727,34 +2699,27 @@ export class VoyageComponent implements OnInit {
 
 
   // Total del consumo IFO
-  public TotalIFO(dailyReport: DailyReport, cantDecimal?: number): number {
+  public TotalIFO(dailyReport: DailyReport): number {
     // Total del consumo MGO
     let total = 0;
 
     // sumamos el consumo
 
     total = dailyReport.mplaIfo + dailyReport.auxIfo + dailyReport.boilerIfo + dailyReport.otherIfo;
-    if (cantDecimal) {
-      // Retornamos el total de cosumo
-      return mathRound(total, cantDecimal);
-    } else {
-      return total;
-    }
+
+    return total;
   }
 
   // Total del consumo MGO
-  public TotalMGO(dailyReport: DailyReport, cantDecimal?: number): number {
+  public TotalMGO(dailyReport: DailyReport): number {
     // Total del consumo MGO
     let total = 0;
 
     // sumamos el consumo
     total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.boilerMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
 
-    if (cantDecimal) {
-      return mathRound(total, cantDecimal);
-    } else {
-      return total;
-    }
+    return total;
+
     // Retornamos el total de cosumo
 
   }
