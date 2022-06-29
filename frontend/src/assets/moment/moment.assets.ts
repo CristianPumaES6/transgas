@@ -18,8 +18,8 @@ export function ConvertMomentUTC(dateUTC): moment.Moment {
     return moment.utc(dateUTC);
 }
 
-export function ConvertMMDDYYYYHHmmToMomment(dateMMDDYYYYHHmm):moment.Moment {
-    return moment(dateMMDDYYYYHHmm,'MM/DD/YYYY HH:mm');
+export function ConvertMMDDYYYYHHmmToMomment(dateMMDDYYYYHHmm): moment.Moment {
+    return moment(dateMMDDYYYYHHmm, 'MM/DD/YYYY HH:mm');
 }
 
 // AL ser una class lo tengo que poner en el constructor para que pueda ser utilizado.
@@ -135,7 +135,7 @@ export function CompareAfterDates(date1UTC: any, date2UTC: any): string {
 
 // Verifica si la fecha es antes o no, revisar como esta entrando
 export function IsAfter1Date(date1UTC: any, date2UTC: any): boolean {
-    
+
     let d1 = moment.utc(date1UTC).local();
     let d2 = moment.utc(date2UTC).local();
 
@@ -155,7 +155,7 @@ export function IsAfter1Date(date1UTC: any, date2UTC: any): boolean {
 export function validateDate(fecha: any): boolean {
 
     let result = !!moment(fecha).isValid();
- 
+
     return result;
 }
 
@@ -228,11 +228,11 @@ export function FormatYYYYMMDD(date: any): string {
 // Tal cual es Año mes y dia, tal cual lo retorna
 export function FormatYYYYMMDDToSTRING(date: any): string {
 
-    
+
     let momentDate = moment(date, 'YYYY-MM-DD');
 
     let result = momentDate.format('YYYY-MM-DD')
-    
+
     return result;
 }
 
@@ -241,28 +241,29 @@ export function FormatYYYYMMDDToSTRING(date: any): string {
 // Revisar si es necesario, el query como esta trabajando aqui?
 export function AddOneDayAndConvertYYYYMMDDToSTRING(date: any): string {
 
-    
+
     let momentDate = moment(date, 'YYYY-MM-DD');
 
     momentDate.add(1, 'd');
 
     let result = momentDate.format('YYYY-MM-DD')
-    
+
     return result;
 }
 
 
-export function FormatDateUTCToDateHour(dateUTC:any): string{
-
-    if(!dateUTC) return '';
-    if(!validateDate(dateUTC)) return '';
+export function FormatDateUTCToDateHour(dateUTC: any): string {
+    debugger
+    if (!dateUTC) return '';
+    debugger
+    if (!validateDate(dateUTC)) return '';
     // Con el formato YYYY MM DD
     let momentDate = moment.utc(dateUTC);
 
     let local = momentDate.local();
 
     let format = local.format('MM/DD/YYYY HH:mm');
-    
+
     return format;
 }
 
@@ -273,7 +274,7 @@ export function ConvertirDateHourToMoment(dateLocal: any, hourLocal: any): momen
 
 
     let horanormal = dateLocal;
-    let  horaConverUTC=moment.utc(dateLocal, 'YYYY-MM-DD HH'); 
+    let horaConverUTC = moment.utc(dateLocal, 'YYYY-MM-DD HH');
     let fechalocal = horaConverUTC.local();
     let horaConvertFornmat = fechalocal.format('YYYY-MM-DD HH:mm:ss');
 
@@ -286,14 +287,14 @@ export function ConvertirDateHourToMoment(dateLocal: any, hourLocal: any): momen
 
     let momentLastDaily = moment(momentDate, 'YYYY-MM-DD HH:mm');
 
-    
+
     return momentLastDaily;
 }
-export function ConvertirDateHourToMoment2(dateLocal: any, hourLocal: any):any {
+export function ConvertirDateHourToMoment2(dateLocal: any, hourLocal: any): any {
 
 
     let horanormal = dateLocal;
-    let  horaConverUTC=moment.utc(dateLocal, 'YYYY-MM-DD HH'); 
+    let horaConverUTC = moment.utc(dateLocal, 'YYYY-MM-DD HH');
     let fechalocal = horaConverUTC.local();
     let horaConvertFornmat = fechalocal.format('YYYY-MM-DD HH:mm:ss');
 
@@ -305,7 +306,7 @@ export function ConvertirDateHourToMoment2(dateLocal: any, hourLocal: any):any {
 
     let momentLastDaily = moment(momentDate, 'YYYY-MM-DD HH:mm').utc().format('YYYY-MM-DDTHH:mm:ssZ');
 
-    
+
     return momentLastDaily;
 }
 
@@ -322,11 +323,11 @@ export function DiferentHourTwoMoment(moment1: moment.Moment, moment2: moment.Mo
 
 export function FormatYYYYMMDDToHOURS(date: any): string {
 
-    
+
     let momentDate = moment(date);
 
     let result = momentDate.format('HH:mm');
-    
-    
+
+
     return result;
 }

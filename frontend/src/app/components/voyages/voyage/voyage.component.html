@@ -42,7 +42,7 @@
                       <tr>
                         <td class="color-title-table blue-1 h7 border"> Star Date</td>
                         <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                          {{ FormatDateUTCToDateHour(selectPort.startDate) }}
+                          {{ FormatDateUTCToDateHour2(selectPort.startDate) }}
                         </td>
                         <td colspan="1" rowspan="2" class="color-text-content h6 border">
                           {{MathRoundOneDecimal(selectPort.startIFO,cantDecimal)}}</td>
@@ -79,8 +79,9 @@
                       <tr>
                         <td class="color-title-table blue-1 h7 border"> End Date</td>
                        
-                        <td colspan="2" rowspan="1" class="color-text-content h6 border">{{
-                          FormatDateUTCToDateHour(totalConsumpAndTimeByEquiment.lastDate) }}</td>
+                        <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                          {{ FormatDateUTCToDateHour2(totalConsumpAndTimeByEquiment.lastDate) }}
+                        </td>
                         </tr>
                     </tbody>
                   </table>

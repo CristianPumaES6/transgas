@@ -426,15 +426,17 @@ export class VoyageComponent implements OnInit {
         let robCurrentIFO = startIfo;
         let robCurrentMGO = startMGO;
 
-        dailyReports.map((indexDaily) => {
+        dailyReports.map(
+          (indexDaily) => {
+            this.totalConsumpAndTimeByEquiment.AddConsumptionAndTime(indexDaily);
 
-          this.totalConsumpAndTimeByEquiment.AddConsumptionAndTime(indexDaily);
+            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
+            robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
+            indexDaily.robIfo = robCurrentIFO;
+            indexDaily.robMgo = robCurrentMGO;
 
-          robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
-          robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
-          indexDaily.robIfo = robCurrentIFO;
-          indexDaily.robMgo = robCurrentMGO;
-        });
+          }
+        );
 
 
 
@@ -1038,7 +1040,7 @@ export class VoyageComponent implements OnInit {
     let convertMomentUTC = ConvertMomentUTC(dailyReportFind.date);
     let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime, 'hours');
 
-    this.lastRecordedHour = FormatDateUTCToDateHour(restarStemintime)
+    this.lastRecordedHour = FormatDateUTCToDateHour(restarStemintime);
 
     this.Initialize();
     this.disableEdit = false;
@@ -2747,12 +2749,10 @@ export class VoyageComponent implements OnInit {
     return result;
   }
 
-  public FormatDateUTCToDateHour(dateUTC: any) {
-     
-    if (!dateUTC) { return ''; }
-    if(validateDate(dateUTC)) return '';
+  public FormatDateUTCToDateHour2(dateUTC: any) {
+  
 
-    return FormatDateUTCToDateHour(dateUTC)
+    return FormatDateUTCToDateHour(dateUTC);
   }
 
   public ChangeActivityPerformed() {
