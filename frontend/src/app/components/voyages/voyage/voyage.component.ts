@@ -2555,6 +2555,26 @@ export class VoyageComponent implements OnInit {
 
         this.databaseService.updatePortIndexedDB(this.selectPort);
 
+        let robCurrentIFO = this.selectPort.startIFO;
+        let robCurrentMGO = this.selectPort.startMGO;
+        this.totalConsumpAndTimeByEquiment = new TotalConsumptioAndTimeEquiment();
+
+        this.getDailyReports = this.getDailyReports.reverse();
+
+        this.getDailyReports.map(
+          (indexDaily) => {
+            this.totalConsumpAndTimeByEquiment.AddConsumptionAndTime(indexDaily);
+
+            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
+            robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
+            indexDaily.robIfo = robCurrentIFO;
+            indexDaily.robMgo = robCurrentMGO;
+
+          }
+        );
+
+        this.getDailyReports = this.getDailyReports.reverse();
+
         // Inicializo los datos.
         this.Initialize();
 
@@ -2744,13 +2764,13 @@ export class VoyageComponent implements OnInit {
 
   public MathRoundOneDecimal(valor, cantDecimales: number) {
     if (!valor) { return 0; }
- 
+
     let result = mathRound(valor, cantDecimales)
     return result;
   }
 
   public FormatDateUTCToDateHour2(dateUTC: any) {
-  
+
 
     return FormatDateUTCToDateHour(dateUTC);
   }
