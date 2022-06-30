@@ -76,7 +76,7 @@ export class LogInComponent implements OnInit {
   public async Login() {
     console.log('Login()');
 
-    let resultUser: User = {};
+    let resultUser: User = <any>{};
     this.loadingService.Open();
     await Promise.resolve(true).then(
       result => {
