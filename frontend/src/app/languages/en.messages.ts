@@ -595,3 +595,10 @@ export const consumptionAnalysis: any = {
     CLEAR: 'Clear',
     SELECT_BUQUE: 'Select Vessel',
 }
+export const overview: any = {
+    DISTANCE: 'Distance',
+    DEPARTURE_PORT: 'Departure',
+    ARRIVAL_PORT: 'Arrival',
+
+}
+
