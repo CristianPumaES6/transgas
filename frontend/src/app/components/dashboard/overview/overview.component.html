@@ -25,29 +25,36 @@
                                 <tr>
                                     <td colspan="2" rowspan="1" class="color-text-content h6 border">
                                         <div class="d-block">Star Date</div>
-                                        {{ data.lastPortAndTotalConsump.startDate }}
+                                        <div style="text-align: center;">{{ data.lastPortAndTotalConsump.startDate }}
+                                        </div>
                                     </td>
                                     <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                                        {{
-                                        MathRoundOneDecimal(
-                                        data.lastPortAndTotalConsump.startIFO,
-                                        cantDecimal
-                                        ) }}</td>
+                                        <div style="text-align: center;">
+                                            {{
+                                            MathRoundOneDecimal(
+                                            data.lastPortAndTotalConsump.startIFO,
+                                            cantDecimal
+                                            ) }}
+                                        </div>
+                                    </td>
                                     <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                                        {{
-                                        MathRoundOneDecimal(
-                                        data.lastPortAndTotalConsump.startMGO,
-                                        cantDecimal
-                                        )
-                                        }}</td>
+                                        <div style="text-align: center;">
+                                            {{
+                                            MathRoundOneDecimal(
+                                            data.lastPortAndTotalConsump.startMGO,
+                                            cantDecimal
+                                            )
+                                            }}
+                                        </div>
+                                    </td>
                                     <td colspan="1" rowspan="4" class="color-text-content h6 border">
                                         <div class="h5">
-                                        {{
-                                        MathRoundOneDecimal(
-                                        data.lastPortAndTotalConsump.distance,
-                                        cantDecimal
-                                        )
-                                        }}
+                                            {{
+                                            MathRoundOneDecimal(
+                                            data.lastPortAndTotalConsump.distance,
+                                            cantDecimal
+                                            )
+                                            }}
                                         </div>
                                     </td>
                                 </tr>
@@ -70,25 +77,27 @@
                                     </td>
                                     <td colspan="1" rowspan="2" class="color-text-content h6 border">
                                         <div class="h5">
-                                        {{
-                                        MathRoundOneDecimal(
-                                        data.lastPortAndTotalConsump.startIFO- TotalIFO(data.lastPortAndTotalConsump)
-                                        + data.lastPortAndTotalConsump.bunkeringIfo,
-                                        cantDecimal
-                                        )
-                                        }}
+                                            {{
+                                            MathRoundOneDecimal(
+                                            data.lastPortAndTotalConsump.startIFO-
+                                            TotalIFO(data.lastPortAndTotalConsump)
+                                            + data.lastPortAndTotalConsump.bunkeringIfo,
+                                            cantDecimal
+                                            )
+                                            }}
                                         </div>
                                     </td>
                                     <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                                         <div class="h5">
-                                        {{
-                                        MathRoundOneDecimal(
-                                        data.lastPortAndTotalConsump.startMGO- TotalMGO(data.lastPortAndTotalConsump)
-                                        + data.lastPortAndTotalConsump.bunkeringMgo,
-                                        cantDecimal
-                                        )
-                                        }}
-                                         </div>
+                                        <div class="h5">
+                                            {{
+                                            MathRoundOneDecimal(
+                                            data.lastPortAndTotalConsump.startMGO-
+                                            TotalMGO(data.lastPortAndTotalConsump)
+                                            + data.lastPortAndTotalConsump.bunkeringMgo,
+                                            cantDecimal
+                                            )
+                                            }}
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>

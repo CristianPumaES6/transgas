@@ -1,3 +1,10 @@
+@import "../../../variable";
+
+.body-full-container {
+    height: 100%;
+    position: relative;
+}
+
 .card-edit-dev {
     justify-content: center;
     .card {
@@ -8,9 +15,9 @@
             color: #feb600;
             text-transform: uppercase;
         }
-.h5{
-    text-align: center;
-}
+        .h5 {
+            text-align: center;
+        }
         @media (max-width: 800px) {
             width: 80%;
         }
@@ -29,5 +36,22 @@
                 width: 100%;
             }
         }
+        .color-title-table {
+            color: #ffffff;
+            font-size: 7pt !important;
+            text-align: center;
+            &.blue-1 {
+              background: $blue-light-1;
+            }
+    
+            &.blue-2 {
+              background: $blue-light-1;
+            }
+    
+            &.blue-3 {
+              background: $blue-dark-1;
+            }
+          }
     }
+   
 }

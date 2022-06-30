@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
+import PerfectScrollbar from 'perfect-scrollbar';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GetLastPortAndTotalConsump } from 'src/app/models/port';
@@ -45,7 +46,11 @@ export class OverviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    setTimeout(() => {
+      new PerfectScrollbar('.body-full-container', {
+        suppressScrollX: true
+      });
+    },500);
     // Activamos el loading.
     this.loadingService.Open();
 
@@ -77,6 +82,7 @@ export class OverviewComponent implements OnInit {
         result => {
 
           this.loadingService.Close();
+       
         }
       ).catch(
         err => {
