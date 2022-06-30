@@ -355,4 +355,66 @@ export class PortsService {
             throw '';
         });
     }
+
+    
+    // NUEVOS QUERY CON OTRA CALIDA [o]v[o]
+    // Esta servicio prove el total de los parametros que tiene el viaje puerto y reporte.
+    async GetLastPortTotalConsumpByUserId(userId:number): Promise<any[]> {
+
+        // Si la fecha es null en automatico enviara los ultimos 40 registros.
+      
+
+        // Inicio de la promesa.
+        return await DummyPromise()
+            .then(
+                result => {
+      
+                    return this.portRepository.createQueryBuilder('port')
+                        .select('port.id', 'portId')
+                        .addSelect('port.userId', 'userId')
+                        .addSelect('port.departurePort', 'departurePort')
+                        .addSelect('port.arrivalPort', 'arrivalPort')
+
+                        .addSelect('port.startDate', 'startDate')
+                        .addSelect('port.startIFO', 'startIFO')
+                        .addSelect('port.startMGO', 'startMGO')
+                        .addSelect('max(daily_report.date)', 'maxDate')
+
+                        .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+                        .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+
+                        .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+                        .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+                        .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+                        .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+
+                        //-- Informacion del puerto
+                        .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+                        .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+                        .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+                        .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+                        .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+                        .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+
+                        .addSelect('SUM(daily_report.distance)', 'distance')
+                        // UNION DE TABLAS
+                        .leftJoinAndSelect(DailyReport,'daily_report', 'port.id = daily_report.portId AND daily_report.status= 1')
+                        
+                        // WHERE
+                        .where('port.userId = :userId', { userId: userId })
+
+                        .groupBy('port.id, port.userId, port.departurePort, port.arrivalPort,port.startDate, port.startIFO, port.startMGO', )
+                        .orderBy('port.id','DESC')
+                        .limit(1)
+                        .getRawMany()
+                }
+            ).then(
+                (result: any) => {
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetLastPortTotalConsumpByUserId';
+                  
+                    return result;
+                }
+            );
+    }
 }

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Para
 import { JwtDecode } from '../../../assets/jwtDecode.assets';
 import { GetDate } from '../../../assets/moment.assets';
 import { DummyPromise } from '../../../assets/promises.assets';
-import { Port } from '../../../models/port.entity';
+import { Port, GetLastPortAndTotalConsump } from '../../../models/port.entity';
 import { UserEntity } from '../../../models/user.entity';
 import { PortsService } from './ports.service';
 
@@ -12,6 +12,77 @@ export class PortsController {
     constructor(
         private readonly _portsService: PortsService,
     ) { }
+
+    @Get('GetUsersLastPort/:userId')
+    GetUsersLastPort(@Param('userId') userId): Promise<any> {
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+                // Validamos que los datos sean los necesarios.
+
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._portsService.GetLastPortTotalConsumpByUserId(userId);
+            }
+        ).then(
+            (results: any) => {
+
+                let listGetUsersLastPort: GetLastPortAndTotalConsump[] = [];
+
+                results.forEach(element => {
+                    let getLastPortAndTotalConsump: GetLastPortAndTotalConsump = new GetLastPortAndTotalConsump();
+
+                    getLastPortAndTotalConsump.portId = element.portId;
+                    getLastPortAndTotalConsump.userId = element.userId;
+                    getLastPortAndTotalConsump.departurePort = element.departurePort;
+                    getLastPortAndTotalConsump.arrivalPort = element.arrivalPort;
+
+                    getLastPortAndTotalConsump.startDate = element.startDate;
+                    getLastPortAndTotalConsump.startIFO = element.startIFO;
+                    getLastPortAndTotalConsump.startMGO = element.startMGO;
+                    getLastPortAndTotalConsump.lastDate = element.lastDate;
+
+                    getLastPortAndTotalConsump.bunkeringIfo = element.bunkeringIfo;
+                    getLastPortAndTotalConsump.bunkeringMgo = element.bunkeringMgo;
+
+                    getLastPortAndTotalConsump.mplaIfo = element.mplaIfo;
+                    getLastPortAndTotalConsump.auxIfo = element.auxIfo;
+                    getLastPortAndTotalConsump.boilerIfo = element.boilerIfo;
+                    getLastPortAndTotalConsump.otherIfo = element.otherIfo;
+
+                    getLastPortAndTotalConsump.mplaMgo = element.mplaMgo;
+                    getLastPortAndTotalConsump.auxMgo = element.auxMgo;
+                    getLastPortAndTotalConsump.boilerMgo = element.boilerMgo;
+                    getLastPortAndTotalConsump.ppMgo = element.ppMgo;
+                    getLastPortAndTotalConsump.giMgo = element.giMgo;
+                    getLastPortAndTotalConsump.otherMgo = element.otherMgo;
+
+                    getLastPortAndTotalConsump.distance = element.distance;
+                });
+
+                // Retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: listGetUsersLastPort
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
 
     @Get('detail')
     async GetsDetail(@Headers() headers, @Query() port: Port): Promise<any> {
@@ -233,7 +304,7 @@ export class PortsController {
 
     @Put(':id/update')
     async Update(@Headers() headers, @Param('id') id, @Body() port: Port): Promise<any> {
- 
+
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
         let headerToken: UserEntity = JwtDecode(headers.authorization);

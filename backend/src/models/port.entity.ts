@@ -58,3 +58,91 @@ export class Port {
     status: boolean;
 
 }
+
+
+export class GetLastPortAndTotalConsump {
+    portId: number;
+    userId: number;
+    departurePort: string;
+    arrivalPort: string;
+
+    startDate: string;
+    startIFO: number;
+    startMGO: number;
+    lastDate: string;
+
+    bunkeringIfo: number;
+    bunkeringMgo: number;
+
+    mplaIfo: number;
+    auxIfo: number;
+    boilerIfo: number;
+    otherIfo: number;
+
+    mplaMgo: number;
+    auxMgo: number;
+    boilerMgo: number;
+    ppMgo: number;
+    giMgo: number;
+    otherMgo: number;
+
+    distance: number;
+
+    constructor(
+
+        portId?: number,
+        userId?: number,
+        departurePort?: string,
+        arrivalPort?: string,
+
+        startDate?: string,
+        startIFO?: number,
+        startMGO?: number,
+        lastDate?: string,
+    
+        bunkeringIfo?: number,
+        bunkeringMgo?: number,
+    
+        mplaIfo?: number,
+        auxIfo?: number,
+        boilerIfo?: number,
+        otherIfo?: number,
+    
+        mplaMgo?: number,
+        auxMgo?: number,
+        boilerMgo?: number,
+        ppMgo?: number,
+        giMgo?: number,
+        otherMgo?: number,
+    
+        distance?: number,
+    ) {
+        
+        this.portId= portId|| 0;
+        this.userId= userId|| 0;
+        this.departurePort = departurePort  || '';
+        this.arrivalPort= arrivalPort  || '';
+
+        this.startDate= startDate  || '';
+        this.startIFO= startIFO|| 0;
+        this.startMGO= startMGO|| 0;
+        this.lastDate= lastDate  || '';
+    
+        this.bunkeringIfo=bunkeringIfo || 0;
+        this.bunkeringMgo=bunkeringMgo|| 0;
+    
+        this.mplaIfo=mplaIfo || 0;
+        this.auxIfo= auxIfo|| 0;
+        this.boilerIfo=boilerIfo || 0;
+        this.otherIfo=otherIfo || 0;
+    
+        this.mplaMgo=mplaMgo || 0;
+        this.auxMgo=auxMgo || 0;
+        this.boilerMgo=boilerMgo || 0;
+        this.ppMgo=ppMgo || 0;
+        this.giMgo=giMgo || 0;
+        this.otherMgo=otherMgo || 0;
+    
+        this.distance=distance || 0;
+    }
+}
