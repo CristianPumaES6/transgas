@@ -1,1 +1,135 @@
-<p>overview works!</p>
+<div class="body-full-container">
+
+
+    <div
+        class="row no-gutters pt-2 pt-ms-3 pt-md-3 pt-lg-3  pr-2 pr-ms-3 pr-md-3 pr-lg-3 pb-0 pb-ms-0 pb-md-0 pb-lg-0  pl-2 pl-ms-3 pl-md-3 pl-lg-3">
+
+
+        <div class="card mr-2" style="width: 18rem;">
+            <img class="card-img-top" src="{{image}}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{name}}</h5>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td colspan="3" rowspan="1">&nbsp;</td>
+                            <td class="color-title-table blue-3 h7 border">
+                            </td>
+                            <td class="color-title-table blue-3 h7 border">MGO</td>
+                            <td class="color-title-table blue-2 h7 border"> {{ 'DISTANCE' |
+                                translateMessage:translateCategory}}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border">Star Date</td>
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                {{ startDate }}
+                            </td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                {{ startIFO }}</td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                {{ startMGO }}</td>
+                            <td colspan="1" rowspan="4" class="color-text-content h6 border">
+                                {{ distance }}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border"> {{'DEPARTURE_PORT' |
+                                translateMessage:translateCategory}}</td>
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                {{departurePort}}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border"> {{'ARRIVAL_PORT' |
+                                translateMessage:translateCategory}}</td>
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">{{arrivalPort}}
+                            </td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endIFO}}</td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endMGO}}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border"> End Date</td>
+
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                {{ lastDate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body">
+                <a href="#" class="card-link">Card link</a>
+            </div>
+            <div class="card-bottom">
+                <a href="#" class="card-link">Another link</a>
+            </div>
+        </div>
+
+
+
+        <div class="card mr-2" style="width: 18rem;">
+            <img class="card-img-top" src="{{image}}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{name}}</h5>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td colspan="3" rowspan="1">&nbsp;</td>
+                            <td class="color-title-table blue-3 h7 border">
+                            </td>
+                            <td class="color-title-table blue-3 h7 border">MGO</td>
+                            <td class="color-title-table blue-2 h7 border"> {{ 'DISTANCE' |
+                                translateMessage:translateCategory}}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border">Star Date</td>
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                {{ startDate }}
+                            </td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                {{ startIFO }}</td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                {{ startMGO }}</td>
+                            <td colspan="1" rowspan="4" class="color-text-content h6 border">
+                                {{ distance }}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border"> {{'DEPARTURE_PORT' |
+                                translateMessage:translateCategory}}</td>
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                {{departurePort}}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border"> {{'ARRIVAL_PORT' |
+                                translateMessage:translateCategory}}</td>
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">{{arrivalPort}}
+                            </td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endIFO}}</td>
+                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endMGO}}</td>
+                        </tr>
+                        <tr>
+                            <td class="color-title-table blue-1 h7 border"> End Date</td>
+
+                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                {{ lastDate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body">
+                <a href="#" class="card-link">Card link</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-white" style="width: 300px;background-color: black;">
+        <img class="card-img" src="{{image}}" alt="Card image">
+        <div class="card-img-overlay" style="width: 300px;background-color: black;">
+            <h5 class="card-title">{{name}}</h5>
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+                content. This content is a little bit longer.</p>
+            <p class="card-text">Last updated 3 mins ago</p>
+        </div>
+    </div>
+
+
+</div>
