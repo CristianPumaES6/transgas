@@ -1,128 +1,87 @@
 <div class="body-full-container">
 
-    <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="getUsers">
+    <ng-template ngFor let-i="index" let-c="count" let-data [ngForOf]="getUsers">
 
 
 
 
 
         <div
-        class="row no-gutters pt-2 pt-ms-3 pt-md-3 pt-lg-3  pr-2 pr-ms-3 pr-md-3 pr-lg-3 pb-0 pb-ms-0 pb-md-0 pb-lg-0  pl-2 pl-ms-3 pl-md-3 pl-lg-3">
+            class="row no-gutters pt-2 pt-ms-3 pt-md-3 pt-lg-3  pr-2 pr-ms-3 pr-md-3 pr-lg-3 pb-0 pb-ms-0 pb-md-0 pb-lg-0  pl-2 pl-ms-3 pl-md-3 pl-lg-3">
+            <div class="card mr-2" style="width: 18rm;">
+                <img class="card-img-top" src="{{data.filename}}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{data.name}}</h5>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" rowspan="1">&nbsp;</td>
+                                <td class="color-title-table blue-3 h7 border">
+                                </td>
+                                <td class="color-title-table blue-3 h7 border">MGO</td>
+                                <td class="color-title-table blue-2 h7 border">
+                                    {{ 'DISTANCE' | translateMessage:translateCategory}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                    Star Date
+                                    {{ data.lastPortAndTotalConsump.startDate }}
+                                </td>
+                                <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                    {{ data.lastPortAndTotalConsump.startIFO }}</td>
+                                <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                    {{ data.lastPortAndTotalConsump.startMGO }}</td>
+                                <td colspan="1" rowspan="4" class="color-text-content h6 border">
+                                    {{ data.lastPortAndTotalConsump.distance }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                    {{'DEPARTURE_PORT' |
+                                    translateMessage:translateCategory}}
+                                    {{data.lastPortAndTotalConsump.departurePort}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                    {{'ARRIVAL_PORT' | translateMessage:translateCategory}}
+                                    {{data.lastPortAndTotalConsump.arrivalPort}}
+                                </td>
+                                <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                    {{ 
+                                        MathRoundOneDecimal(
+                                            data.lastPortAndTotalConsump.startIFO- TotalIFO(data.lastPortAndTotalConsump) 
+                                            + data.lastPortAndTotalConsump.bunkeringIfo,
+                                            cantDecimal
+                                        )
+                                    }}
+                                </td>
+                                <td colspan="1" rowspan="2" class="color-text-content h6 border">
+                                    {{ 
+                                        MathRoundOneDecimal(
+                                            data.lastPortAndTotalConsump.startMGO- TotalMGO(data.lastPortAndTotalConsump) 
+                                            + data.lastPortAndTotalConsump.bunkeringMgo,
+                                            cantDecimal
+                                        )
+                                    }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" rowspan="1" class="color-text-content h6 border">
+                                    End Date
+                                    {{data.lastPortAndTotalConsump.lastDate}}
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="card-link">Card link</a>
+                </div>
+            </div>
 
 
-        <div class="card mr-2" style="width: 18rem;">
-            <img class="card-img-top" src="{{dailyReport.filename   }}" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">{{dailyReport.name}}</h5>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td colspan="2" rowspan="1">&nbsp;</td>
-                            <td class="color-title-table blue-3 h7 border">
-                            </td>
-                            <td class="color-title-table blue-3 h7 border">MGO</td>
-                            <td class="color-title-table blue-2 h7 border"> {{ 'DISTANCE' |
-                                translateMessage:translateCategory}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                                Star Date
-                                {{ startDate }}
-                            </td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                                {{ startIFO }}</td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                                {{ startMGO }}</td>
-                            <td colspan="1" rowspan="4" class="color-text-content h6 border">
-                                {{ distance }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                                {{'DEPARTURE_PORT' |
-                                translateMessage:translateCategory}}
-                                {{departurePort}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                                {{'ARRIVAL_PORT' | translateMessage:translateCategory}}
-                                {{arrivalPort}}
-                            </td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endIFO}}</td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endMGO}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                                End Date
-                                {{ lastDate}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-body">
-                <a href="#" class="card-link">Card link</a>
-            </div>
         </div>
-    </div>
-
-    <div class="card bg-dark text-white" style="width:  400px">
-        <img class="card-img" src="{{image}}" alt="Card image">
-        <div class="card-img-overlay" style="background: rgba(0, 0, 0, 0.541);">
-            <h5 class="card-title">{{name}}</h5>
-            <div class="card-text">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td colspan="3" rowspan="1">&nbsp;</td>
-                            <td class="color-title-table blue-3 h7 border">
-                            </td>
-                            <td class="color-title-table blue-3 h7 border">MGO</td>
-                            <td class="color-title-table blue-2 h7 border"> {{ 'DISTANCE' |
-                                translateMessage:translateCategory}}</td>
-                        </tr>
-                        <tr>
-                            <td class="color-title-table blue-1 h7 border">Star Date</td>
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                                {{ startDate }}
-                            </td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                                {{ startIFO }}</td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">
-                                {{ startMGO }}</td>
-                            <td colspan="1" rowspan="4" class="color-text-content h6 border">
-                                {{ distance }}</td>
-                        </tr>
-                        <tr>
-                            <td class="color-title-table blue-1 h7 border"> {{'DEPARTURE_PORT' |
-                                translateMessage:translateCategory}}</td>
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                                {{departurePort}}</td>
-                        </tr>
-                        <tr>
-                            <td class="color-title-table blue-1 h7 border"> {{'ARRIVAL_PORT' |
-                                translateMessage:translateCategory}}</td>
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">{{arrivalPort}}
-                            </td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endIFO}}</td>
-                            <td colspan="1" rowspan="2" class="color-text-content h6 border">{{ endMGO}}</td>
-                        </tr>
-                        <tr>
-                            <td class="color-title-table blue-1 h7 border"> End Date</td>
-
-                            <td colspan="2" rowspan="1" class="color-text-content h6 border">
-                                {{ lastDate}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-
-
-
-
 
     </ng-template>
 

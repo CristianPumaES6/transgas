@@ -30,34 +30,33 @@ export class PortsController {
                 let getLastPortAndTotalConsump: GetLastPortAndTotalConsump = new GetLastPortAndTotalConsump();
 
                 results.forEach(element => {
-                    let getLastPortAndTotalConsump: GetLastPortAndTotalConsump = new GetLastPortAndTotalConsump();
 
-                    getLastPortAndTotalConsump.portId = element.portId;
-                    getLastPortAndTotalConsump.userId = element.userId;
-                    getLastPortAndTotalConsump.departurePort = element.departurePort;
-                    getLastPortAndTotalConsump.arrivalPort = element.arrivalPort;
+                    getLastPortAndTotalConsump.portId = element.portId || 0;
+                    getLastPortAndTotalConsump.userId = element.userId || 0;
+                    getLastPortAndTotalConsump.departurePort = element.departurePort || '';
+                    getLastPortAndTotalConsump.arrivalPort = element.arrivalPort || '';
 
-                    getLastPortAndTotalConsump.startDate = element.startDate;
-                    getLastPortAndTotalConsump.startIFO = element.startIFO;
-                    getLastPortAndTotalConsump.startMGO = element.startMGO;
-                    getLastPortAndTotalConsump.lastDate = element.lastDate;
+                    getLastPortAndTotalConsump.startDate = element.startDate || '';
+                    getLastPortAndTotalConsump.startIFO = element.startIFO || 0;
+                    getLastPortAndTotalConsump.startMGO = element.startMGO || 0;
+                    getLastPortAndTotalConsump.lastDate = element.maxDate || '';
 
-                    getLastPortAndTotalConsump.bunkeringIfo = element.bunkeringIfo;
-                    getLastPortAndTotalConsump.bunkeringMgo = element.bunkeringMgo;
+                    getLastPortAndTotalConsump.bunkeringIfo = element.bunkeringIfo || 0;
+                    getLastPortAndTotalConsump.bunkeringMgo = element.bunkeringMgo || 0;
 
-                    getLastPortAndTotalConsump.mplaIfo = element.mplaIfo;
-                    getLastPortAndTotalConsump.auxIfo = element.auxIfo;
-                    getLastPortAndTotalConsump.boilerIfo = element.boilerIfo;
-                    getLastPortAndTotalConsump.otherIfo = element.otherIfo;
+                    getLastPortAndTotalConsump.mplaIfo = element.mplaIfo || 0;
+                    getLastPortAndTotalConsump.auxIfo = element.auxIfo || 0;
+                    getLastPortAndTotalConsump.boilerIfo = element.boilerIfo || 0;
+                    getLastPortAndTotalConsump.otherIfo = element.otherIfo || 0;
 
-                    getLastPortAndTotalConsump.mplaMgo = element.mplaMgo;
-                    getLastPortAndTotalConsump.auxMgo = element.auxMgo;
-                    getLastPortAndTotalConsump.boilerMgo = element.boilerMgo;
-                    getLastPortAndTotalConsump.ppMgo = element.ppMgo;
-                    getLastPortAndTotalConsump.giMgo = element.giMgo;
-                    getLastPortAndTotalConsump.otherMgo = element.otherMgo;
+                    getLastPortAndTotalConsump.mplaMgo = element.mplaMgo || 0;
+                    getLastPortAndTotalConsump.auxMgo = element.auxMgo || 0;
+                    getLastPortAndTotalConsump.boilerMgo = element.boilerMgo || 0;
+                    getLastPortAndTotalConsump.ppMgo = element.ppMgo || 0;
+                    getLastPortAndTotalConsump.giMgo = element.giMgo || 0;
+                    getLastPortAndTotalConsump.otherMgo = element.otherMgo || 0;
 
-                    getLastPortAndTotalConsump.distance = element.distance;
+                    getLastPortAndTotalConsump.distance = element.distance || 0;
                 });
 
                 // Retornamos una Respuesta exitosa.

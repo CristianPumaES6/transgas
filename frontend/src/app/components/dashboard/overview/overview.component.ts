@@ -9,6 +9,7 @@ import { LanguageService } from 'src/app/services/language.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { PortService } from 'src/app/services/port.service';
 import { UserService } from 'src/app/services/user.service';
+import { mathRound } from 'src/assets/math/math.assets';
 
 @Component({
   selector: 'app-overview',
@@ -31,7 +32,7 @@ export class OverviewComponent implements OnInit {
   public getUsers: User[] = [];
   public getLastPortAndTotalConsump: GetLastPortAndTotalConsump[] = [];
 
-
+  public cantDecimal = 2;
 
 
   public name: string = '';
@@ -87,23 +88,24 @@ export class OverviewComponent implements OnInit {
       result => {
         if (!result) throw 'Connection error COD200';
 
-        this.ObtenerElresumenDelPuertoPorListaUsuarios()
+        return this.ObtenerElresumenDelPuertoPorListaUsuarios()
+      }).then(
+        result => {
 
+          this.loadingService.Close();
+        }
+      ).catch(
+        err => {
+          // Manejo el error
+          let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
 
-        this.loadingService.Close();
-      }
-    ).catch(
-      err => {
-        // Manejo el error
-        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+          console.error(msg);
+          console.dir(err);
 
-        console.error(msg);
-        console.dir(err);
-
-        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
-        // Deshabilito el spinner de loading
-        this.loadingService.Close();
-      });
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
   }
 
 
@@ -120,6 +122,7 @@ export class OverviewComponent implements OnInit {
         // Filtramos para que solos los busques se visualizen
         this.getUsers = resultUser.filter((userItem: User) => {
           if (userItem.role === 'BUQUE') {
+            userItem.lastPortAndTotalConsump = new GetLastPortAndTotalConsump();
             return true;
           }
           return false;
@@ -139,7 +142,7 @@ export class OverviewComponent implements OnInit {
 
     for (let index = 0; index < this.getUsers.length; index++) {
       const element = this.getUsers[index];
-      let result = await this.GetLastPortAndTotalConsump(element.id).pipe().toPromise();
+      let result = await this.GetLastPortAndTotalConsump(element.id).toPromise();
 
       this.getUsers[index].lastPortAndTotalConsump = result;
     }
@@ -165,5 +168,42 @@ export class OverviewComponent implements OnInit {
       }
     ));
 
+  }
+
+
+
+
+
+  // Total del consumo IFO
+  public TotalIFO(dailyReport: GetLastPortAndTotalConsump): number {
+    // Total del consumo MGO
+    let total = 0;
+
+    // sumamos el consumo
+
+    total = dailyReport.mplaIfo + dailyReport.auxIfo + dailyReport.boilerIfo + dailyReport.otherIfo;
+
+    return total;
+  }
+
+  // Total del consumo MGO
+  public TotalMGO(dailyReport: GetLastPortAndTotalConsump): number {
+    // Total del consumo MGO
+    let total = 0;
+
+    // sumamos el consumo
+    total = dailyReport.mplaMgo + dailyReport.auxMgo + dailyReport.boilerMgo + dailyReport.ppMgo + dailyReport.giMgo + dailyReport.otherMgo;
+
+    return total;
+
+    // Retornamos el total de cosumo
+
+  }
+
+  public MathRoundOneDecimal(valor, cantDecimales: number) {
+    if (!valor) { return 0; }
+
+    let result = mathRound(valor, cantDecimales)
+    return result;
   }
 }
