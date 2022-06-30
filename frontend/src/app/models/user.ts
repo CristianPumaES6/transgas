@@ -1,3 +1,5 @@
+import { GetLastPortAndTotalConsump } from "./port";
+
 export class User {
     constructor(
         public id?: number,
@@ -183,6 +185,7 @@ export class User {
         this.syncStatus = '';
     }
 
+    lastPortAndTotalConsump: GetLastPortAndTotalConsump;
 }
 
 

@@ -1,14 +1,19 @@
 <div class="body-full-container">
 
+    <ng-template ngFor let-i="index" let-c="count" let-dailyReport [ngForOf]="getUsers">
 
-    <div
+
+
+
+
+        <div
         class="row no-gutters pt-2 pt-ms-3 pt-md-3 pt-lg-3  pr-2 pr-ms-3 pr-md-3 pr-lg-3 pb-0 pb-ms-0 pb-md-0 pb-lg-0  pl-2 pl-ms-3 pl-md-3 pl-lg-3">
 
 
         <div class="card mr-2" style="width: 18rem;">
-            <img class="card-img-top" src="{{image}}" alt="Card image cap">
+            <img class="card-img-top" src="{{dailyReport.filename   }}" alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title">{{name}}</h5>
+                <h5 class="card-title">{{dailyReport.name}}</h5>
                 <table>
                     <tbody>
                         <tr>
@@ -113,6 +118,13 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+
+    </ng-template>
 
 
 </div>

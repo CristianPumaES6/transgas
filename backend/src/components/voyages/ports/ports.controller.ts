@@ -13,8 +13,8 @@ export class PortsController {
         private readonly _portsService: PortsService,
     ) { }
 
-    @Get('GetUsersLastPort/:userId')
-    GetUsersLastPort(@Param('userId') userId): Promise<any> {
+    @Get('getLastPortAndTotalConsump/:userId')
+    GetLastPortAndTotalConsump(@Param('userId') userId): Promise<any> {
 
         // Inicio una promesa Dummy.
         return DummyPromise().then(
@@ -27,7 +27,7 @@ export class PortsController {
         ).then(
             (results: any) => {
 
-                let listGetUsersLastPort: GetLastPortAndTotalConsump[] = [];
+                let getLastPortAndTotalConsump: GetLastPortAndTotalConsump = new GetLastPortAndTotalConsump();
 
                 results.forEach(element => {
                     let getLastPortAndTotalConsump: GetLastPortAndTotalConsump = new GetLastPortAndTotalConsump();
@@ -64,7 +64,8 @@ export class PortsController {
                 return {
                     status: HttpStatus.OK,
                     message: 'OK',
-                    data: listGetUsersLastPort
+                    data: getLastPortAndTotalConsump
+
                 };
             }
         ).catch(

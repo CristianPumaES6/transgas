@@ -83,6 +83,15 @@ export class OverviewComponent implements OnInit {
         // Traigo a todos los User y lo instancio en el obj.
         return this.GetUsers(user).pipe().toPromise();
       }
+    ).then(
+      result => {
+        if (!result) throw 'Connection error COD200';
+
+        this.ObtenerElresumenDelPuertoPorListaUsuarios()
+
+
+        this.loadingService.Close();
+      }
     ).catch(
       err => {
         // Manejo el error
@@ -127,28 +136,32 @@ export class OverviewComponent implements OnInit {
 
   private async ObtenerElresumenDelPuertoPorListaUsuarios(): Promise<boolean> {
 
-    this.getUsers.map(
-      item => {
 
-        item.name = 'ddd';
-      }
-    )
+    for (let index = 0; index < this.getUsers.length; index++) {
+      const element = this.getUsers[index];
+      let result = await this.GetLastPortAndTotalConsump(element.id).pipe().toPromise();
+
+      this.getUsers[index].lastPortAndTotalConsump = result;
+    }
+
+
+
 
     return true;
   }
 
   // GetUsers: Cargo todos los Users para el listado de Users.
-  private GetLastPortAndTotalConsump(userId: number): Observable<boolean> {
+  private GetLastPortAndTotalConsump(userId: number): Observable<GetLastPortAndTotalConsump> {
     // Test
     console.log('GetUsers(user: User)');
 
     // Obtenemos todos los usuarios
     return this.portService.GetTotalByActivityFilterByUserIdAndDateAndType(userId).pipe(map(
-      (result: GetLastPortAndTotalConsump[]) => {
+      (result: GetLastPortAndTotalConsump) => {
 
-        this.getLastPortAndTotalConsump = result;
+        result = result || new GetLastPortAndTotalConsump();
         // Segun el resultado retornamos la respuesta.
-        return (result !== null);
+        return result;
       }
     ));
 
