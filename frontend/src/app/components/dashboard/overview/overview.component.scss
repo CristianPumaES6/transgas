@@ -1,10 +1,33 @@
 .card-edit-dev {
-    min-height: 220px; 
-    width: 420px;
-    .card-img-overlay{
-        background: rgba(0, 0, 0, 0.3);
-        table{
+    justify-content: center;
+    .card {
+        cursor: pointer;
+        min-height: 300px;
+        width: 420px;
+        .card-title {
+            color: #feb600;
+            text-transform: uppercase;
+        }
+.h5{
+    text-align: center;
+}
+        @media (max-width: 800px) {
+            width: 80%;
+        }
+        @media (max-width: 670px) {
             width: 100%;
+        }
+        :hover {
+            & .card-img-overlay {
+                background: rgba(0, 0, 0, 0.6);
+            }
+        }
+        .card-img-overlay {
+            background: rgba(0, 0, 0, 0.5);
+
+            table {
+                width: 100%;
+            }
         }
     }
 }
