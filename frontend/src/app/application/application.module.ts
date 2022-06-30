@@ -31,6 +31,7 @@ import { DialogUpdateServerComponent } from '../shared/dialog/dialog-update-serv
 import { SpeedAnalysisComponent } from '../components/dashboard/speed-analysis/speed-analysis.component';
 import { ConsumptionAnalysisComponent } from '../components/dashboard/consumption-analysis/consumption-analysis.component';
 import { DialogConfigDashboardComponent } from '../shared/dialog/dialog-config-dashboard/dialog-config-dashboard.component';
+import { OverviewComponent } from '../components/dashboard/overview/overview.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { DialogConfigDashboardComponent } from '../shared/dialog/dialog-config-d
     DialogUpdateServerComponent,
     SpeedAnalysisComponent,
     ConsumptionAnalysisComponent,
-    DialogConfigDashboardComponent
+    DialogConfigDashboardComponent,
+    OverviewComponent
   ],
   imports: [
     GlobalModule,

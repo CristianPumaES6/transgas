@@ -7,7 +7,7 @@
     </a>
     <nav class="nav">
       <a href="#" class="nav-link"
-        [ngClass]="{'active' : navLink === 'dashboard' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
+        [ngClass]="{'active' : navLink === 'dashboard'|| navLink === 'overview' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
         (click)="selectNavLink('dashboard')" matTooltip="Dashboard">
         <i class="icon-menu-dashboard"></i>
       </a>
@@ -54,7 +54,7 @@
 
       <ng-template [ngIf]="isOpenSubMenu || !isOpenSubMenu">
         <a id="asideDashboard" href="#" class="az-iconbar-pane show"
-          [ngClass]="{'active' : navLink === 'dashboard' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
+          [ngClass]="{'active' : navLink === 'dashboard' || navLink === 'overview' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
           (click)="selectNavLink('dashboard')">
           <h6 class="az-iconbar-title">{{'DASHBOARD' | translateMessage:translateCategory}}</h6>
 
@@ -68,16 +68,23 @@
           <small class="az-iconbar-text">{{'DESCRIPTION_DASHBOARD' | translateMessage:translateCategory}}</small>
 
           <nav class="nav">
-            
+
+            <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'overview'}"
+              (click)="selectNavLink('overview')">Overview</a>
+
             <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'general_analysis'}"
               (click)="selectNavLink('general_analysis')">General Analysis</a>
-              
-            <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'consumer_analysis'}"
-              (click)="selectNavLink('consumer_analysis')">Consumer Analysis</a>
-           
+
+            <ng-template [ngIf]="loggedUser.role == 'SUPPORT'">
+
+              <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'consumer_analysis'}"
+                (click)="selectNavLink('consumer_analysis')">Consumer Analysis</a>
+
               <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'speed_analysis'}"
-              (click)="selectNavLink('speed_analysis')">Speed Analysis</a>
-              
+                (click)="selectNavLink('speed_analysis')">Speed Analysis</a>
+
+            </ng-template>
+
           </nav>
 
         </ng-template>

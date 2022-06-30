@@ -14,6 +14,7 @@ import { HelpsComponent } from '../components/helps/helps.component';
 import { IsUpdateServerGuard } from '../guard/is-update-server.guard';
 import { SpeedAnalysisComponent } from '../components/dashboard/speed-analysis/speed-analysis.component';
 import { ConsumptionAnalysisComponent } from '../components/dashboard/consumption-analysis/consumption-analysis.component';
+import { OverviewComponent } from '../components/dashboard/overview/overview.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
       // se esta agregando el canActive para saber si es un buque y redireccione a voyages.
       { path: '', component: DashboardComponent, canActivate: [IsBuqueGuard] },
       // Dashboard de la pagina
+      { path: 'dashboard/overview', component: OverviewComponent },
       { path: 'dashboard/general_analysis', component: DashboardComponent },
       { path: 'dashboard/speed_analysis', component: SpeedAnalysisComponent },
       { path: 'dashboard/consumer_analysis', component: ConsumptionAnalysisComponent },

@@ -318,8 +318,8 @@ export class ApplicationComponent implements OnInit {
         if (!resultDailyReport) throw 'ERROR';
         listDailyReport = resultDailyReport.filter(voyage => voyage.syncStatus == 'added' || voyage.syncStatus == 'updated' || voyage.syncStatus == 'deleted');
 
-        if (!listDailyReport.length){
-          this.notificationsService.alert(this.languageService.GetMessage(this.translateCategory, 'DATOS_SINCRONIZADOS'),this.languageService.GetMessage(this.translateCategory, 'NO_DATA_LOCAL_EXCEL'));
+        if (!listDailyReport.length) {
+          this.notificationsService.alert(this.languageService.GetMessage(this.translateCategory, 'DATOS_SINCRONIZADOS'), this.languageService.GetMessage(this.translateCategory, 'NO_DATA_LOCAL_EXCEL'));
           return true;
         }
 
@@ -472,7 +472,11 @@ export class ApplicationComponent implements OnInit {
     console.log('OnSelectNavLink(navLink: string)');
 
 
-    switch (navLink) { //Modulo de dashboard
+    switch (navLink) {
+      case 'overview':
+        this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
+        break;
+      //Modulo de dashboard
       case 'general_analysis':
         this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
         break;

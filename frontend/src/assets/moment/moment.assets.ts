@@ -253,9 +253,9 @@ export function AddOneDayAndConvertYYYYMMDDToSTRING(date: any): string {
 
 
 export function FormatDateUTCToDateHour(dateUTC: any): string {
-    debugger
+    
     if (!dateUTC) return '';
-    debugger
+    
     if (!validateDate(dateUTC)) return '';
     // Con el formato YYYY MM DD
     let momentDate = moment.utc(dateUTC);

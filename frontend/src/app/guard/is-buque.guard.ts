@@ -26,7 +26,7 @@ export class IsBuqueGuard implements CanActivate {
       this._router.navigate(['./../application/voyages'], { relativeTo: this.activatedRoute });
       return false;
     } else {
-      this._router.navigate(['./../application/dashboard/general_analysis'], { relativeTo: this.activatedRoute });
+      this._router.navigate(['./../application/dashboard/overview'], { relativeTo: this.activatedRoute });
       return false;
     }
   }
