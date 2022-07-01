@@ -16,4 +16,5 @@ export declare class DailyReportsController {
     GetReportByUser(headers: any, userId: number): Promise<any>;
     GetTotalByActivityFilterByUserIdAndDateAndType(headers: any, userId: number, startDate: string, endDate: string, filter: string): Promise<any>;
     GetTotalConsumerByActivityFilterByUserIdAndDateAndType(headers: any, userId: number, startDate: string, endDate: string, typeSummary: string): Promise<any>;
+    GetReportDNVByUser(headers: any, userId: number, startDate: Date, endDate: Date): Promise<any>;
 }

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Port = void 0;
+exports.GetLastPortAndTotalConsump = exports.Port = void 0;
 const typeorm_1 = require("typeorm");
 const daily_report_entity_1 = require("./daily-report.entity");
 const voyage_entity_1 = require("./voyage.entity");
@@ -51,6 +51,18 @@ __decorate([
     __metadata("design:type", String)
 ], Port.prototype, "arrivalPort", void 0);
 __decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Date)
+], Port.prototype, "startDate", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0, nullable: true }),
+    __metadata("design:type", Number)
+], Port.prototype, "startIFO", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0, nullable: true }),
+    __metadata("design:type", Number)
+], Port.prototype, "startMGO", void 0);
+__decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], Port.prototype, "userIdCreated", void 0);
@@ -74,4 +86,30 @@ Port = __decorate([
     typeorm_1.Entity()
 ], Port);
 exports.Port = Port;
+class GetLastPortAndTotalConsump {
+    constructor(portId, userId, departurePort, arrivalPort, startDate, startIFO, startMGO, lastDate, bunkeringIfo, bunkeringMgo, mplaIfo, auxIfo, boilerIfo, otherIfo, mplaMgo, auxMgo, boilerMgo, ppMgo, giMgo, otherMgo, distance) {
+        this.portId = portId || 0;
+        this.userId = userId || 0;
+        this.departurePort = departurePort || '';
+        this.arrivalPort = arrivalPort || '';
+        this.startDate = startDate || '';
+        this.startIFO = startIFO || 0;
+        this.startMGO = startMGO || 0;
+        this.lastDate = lastDate || '';
+        this.bunkeringIfo = bunkeringIfo || 0;
+        this.bunkeringMgo = bunkeringMgo || 0;
+        this.mplaIfo = mplaIfo || 0;
+        this.auxIfo = auxIfo || 0;
+        this.boilerIfo = boilerIfo || 0;
+        this.otherIfo = otherIfo || 0;
+        this.mplaMgo = mplaMgo || 0;
+        this.auxMgo = auxMgo || 0;
+        this.boilerMgo = boilerMgo || 0;
+        this.ppMgo = ppMgo || 0;
+        this.giMgo = giMgo || 0;
+        this.otherMgo = otherMgo || 0;
+        this.distance = distance || 0;
+    }
+}
+exports.GetLastPortAndTotalConsump = GetLastPortAndTotalConsump;
 //# sourceMappingURL=port.entity.js.map

@@ -3,6 +3,7 @@ import { PortsService } from './ports.service';
 export declare class PortsController {
     private readonly _portsService;
     constructor(_portsService: PortsService);
+    GetLastPortAndTotalConsump(userId: any): Promise<any>;
     GetsDetail(headers: any, port: Port): Promise<any>;
     Get(headers: any, id: any): Promise<any>;
     Gets(headers: any, port: Port): Promise<any>;

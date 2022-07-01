@@ -10,4 +10,5 @@ export declare class PortsService {
     Update(port: Port): Promise<Port>;
     Delete(port: Port): Promise<Port>;
     ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number, userId: number): Promise<Port>;
+    GetLastPortTotalConsumpByUserId(userId: number): Promise<any[]>;
 }

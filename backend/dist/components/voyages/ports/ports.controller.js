@@ -23,6 +23,49 @@ let PortsController = class PortsController {
     constructor(_portsService) {
         this._portsService = _portsService;
     }
+    GetLastPortAndTotalConsump(userId) {
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            return this._portsService.GetLastPortTotalConsumpByUserId(userId);
+        }).then((results) => {
+            let getLastPortAndTotalConsump = new port_entity_1.GetLastPortAndTotalConsump();
+            results.forEach(element => {
+                getLastPortAndTotalConsump.portId = element.portId || 0;
+                getLastPortAndTotalConsump.userId = element.userId || 0;
+                getLastPortAndTotalConsump.departurePort = element.departurePort || '';
+                getLastPortAndTotalConsump.arrivalPort = element.arrivalPort || '';
+                getLastPortAndTotalConsump.startDate = element.startDate || '';
+                getLastPortAndTotalConsump.startIFO = element.startIFO || 0;
+                getLastPortAndTotalConsump.startMGO = element.startMGO || 0;
+                getLastPortAndTotalConsump.lastDate = element.maxDate || '';
+                getLastPortAndTotalConsump.bunkeringIfo = element.bunkeringIfo || 0;
+                getLastPortAndTotalConsump.bunkeringMgo = element.bunkeringMgo || 0;
+                getLastPortAndTotalConsump.mplaIfo = element.mplaIfo || 0;
+                getLastPortAndTotalConsump.auxIfo = element.auxIfo || 0;
+                getLastPortAndTotalConsump.boilerIfo = element.boilerIfo || 0;
+                getLastPortAndTotalConsump.otherIfo = element.otherIfo || 0;
+                getLastPortAndTotalConsump.mplaMgo = element.mplaMgo || 0;
+                getLastPortAndTotalConsump.auxMgo = element.auxMgo || 0;
+                getLastPortAndTotalConsump.boilerMgo = element.boilerMgo || 0;
+                getLastPortAndTotalConsump.ppMgo = element.ppMgo || 0;
+                getLastPortAndTotalConsump.giMgo = element.giMgo || 0;
+                getLastPortAndTotalConsump.otherMgo = element.otherMgo || 0;
+                getLastPortAndTotalConsump.distance = element.distance || 0;
+            });
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: getLastPortAndTotalConsump
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
     async GetsDetail(headers, port) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         return promises_assets_1.DummyPromise().then((resultDummy) => {
@@ -225,6 +268,13 @@ let PortsController = class PortsController {
         });
     }
 };
+__decorate([
+    common_1.Get('getLastPortAndTotalConsump/:userId'),
+    __param(0, common_1.Param('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PortsController.prototype, "GetLastPortAndTotalConsump", null);
 __decorate([
     common_1.Get('detail'),
     __param(0, common_1.Headers()), __param(1, common_1.Query()),

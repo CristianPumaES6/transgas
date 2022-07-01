@@ -475,6 +475,38 @@ let DailyReportsController = class DailyReportsController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    GetReportDNVByUser(headers, userId, startDate, endDate) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (userId) {
+                return true;
+            }
+            else
+                throw new Error('MISSING_FIELS');
+        }).then((resultValidate) => {
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                return true;
+            }
+            else if (Number(userId) !== Number(headerToken.id))
+                throw new Error('ERROR_USERID_FAIL');
+        }).then((resultValidate) => {
+            return this._dailyReportsService.GetReportDNVByUser(userId, startDate, endDate);
+        }).then((results) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: results
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
 };
 __decorate([
     common_1.Get(':id'),
@@ -567,6 +599,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetTotalConsumerByActivityFilterByUserIdAndDateAndType", null);
+__decorate([
+    common_1.Get('get-report-dnv-by-user/:userId/:startDate/:endDate'),
+    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')), __param(2, common_1.Param('startDate')), __param(3, common_1.Param('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number, Date, Date]),
+    __metadata("design:returntype", Promise)
+], DailyReportsController.prototype, "GetReportDNVByUser", null);
 DailyReportsController = __decorate([
     common_1.Controller('daily-reports'),
     __metadata("design:paramtypes", [daily_reports_service_1.DailyReportsService])

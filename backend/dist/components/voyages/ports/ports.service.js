@@ -266,6 +266,43 @@ let PortsService = class PortsService {
             throw '';
         });
     }
+    async GetLastPortTotalConsumpByUserId(userId) {
+        return await promises_assets_1.DummyPromise()
+            .then(result => {
+            return this.portRepository.createQueryBuilder('port')
+                .select('port.id', 'portId')
+                .addSelect('port.userId', 'userId')
+                .addSelect('port.departurePort', 'departurePort')
+                .addSelect('port.arrivalPort', 'arrivalPort')
+                .addSelect('port.startDate', 'startDate')
+                .addSelect('port.startIFO', 'startIFO')
+                .addSelect('port.startMGO', 'startMGO')
+                .addSelect('max(daily_report.date)', 'maxDate')
+                .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+                .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+                .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+                .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+                .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+                .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+                .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+                .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+                .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+                .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+                .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+                .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+                .addSelect('SUM(daily_report.distance)', 'distance')
+                .leftJoinAndSelect(daily_report_entity_1.DailyReport, 'daily_report', 'port.id = daily_report.portId AND daily_report.status= 1')
+                .where('port.userId = :userId', { userId: userId })
+                .groupBy('port.id, port.userId, port.departurePort, port.arrivalPort,port.startDate, port.startIFO, port.startMGO')
+                .orderBy('port.id', 'DESC')
+                .limit(1)
+                .getRawMany();
+        }).then((result) => {
+            if (!result)
+                throw 'ERROR GetLastPortTotalConsumpByUserId';
+            return result;
+        });
+    }
 };
 PortsService = __decorate([
     common_1.Injectable(),
