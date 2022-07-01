@@ -301,18 +301,7 @@
 
             <div class="row">
               <div class="col-12 row no-gutters">
-
-                <mat-form-field>
-                  <mat-label>{{'STARTDATE234' | translateMessage:translateCategory}}</mat-label>
-                  <input matInput [matDatepicker]="picker1" [(ngModel)]="selectPort.startDate">
-                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                  <mat-datepicker #picker1 startView="year"></mat-datepicker>
-                </mat-form-field>
-
-                <br><br><br>
-                <input matInput type="datetime"
-                  placeholder="{{'STARTDATE234 IFO' | translateMessage:translateCategory}}"
-                  [(ngModel)]="selectPort.startDate" [disabled]='disableEdit'>
+                <span>{{FormatDateUTCToDateHour2(selectPort.startDate)}}</span>
                 <br><br>
               </div>
             </div>
@@ -321,13 +310,13 @@
 
               <div class="col-6 row no-gutters">
                 <mat-form-field>
-                  <input matInput type="text" placeholder="{{'START IFO' | translateMessage:translateCategory}}"
+                  <input matInput type="number" placeholder="{{'START IFO' | translateMessage:translateCategory}}"
                     [(ngModel)]="selectPort.startIFO" [disabled]='disableEdit'>
                 </mat-form-field>
               </div>
               <div class="col-6 row no-gutters">
                 <mat-form-field>
-                  <input matInput type="text" placeholder="{{'START MGO' | translateMessage:translateCategory}}"
+                  <input matInput type="number" placeholder="{{'START MGO' | translateMessage:translateCategory}}"
                     [(ngModel)]="selectPort.startMGO" [disabled]='disableEdit'>
                 </mat-form-field>
               </div>
