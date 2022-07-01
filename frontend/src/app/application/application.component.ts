@@ -45,7 +45,7 @@ import { DailyReport } from '../models/daily-report';
 export class ApplicationComponent implements OnInit {
 
   // Usuario logeado.
-  public loggedUser: User = {};
+  public loggedUser: User = <any>{};
 
   // Variables de traduccion
   public userLanguage: string = this.languageService.GetCurrentLanguage();

@@ -592,7 +592,9 @@ export class ExcelFormatDNVService {
     return await Promise.resolve(true).then(
       result => {
         // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-        return this.excelService.GetReportVoyagePortDaily(selectUserId, startDate, endDate).pipe().toPromise();
+
+        // DNV
+        return this.excelService.GetReportDNVByUser(selectUserId, startDate, endDate).pipe().toPromise();
       }
     ).then(
       result => {
@@ -614,7 +616,7 @@ export class ExcelFormatDNVService {
 
             getFormatDNV.reportId = item.dailyReportId;
             getFormatDNV.date = FormatYYYYMMDDToSTRING(item.date);
-            getFormatDNV.time = FormatYYYYMMDDToHOURS(item.date);
+            getFormatDNV.time = '08:00';
 
             // AGREGAR ESTA INFORMACION REVISAR ELIMINAR CORREGIR 
             getFormatDNV.north_degree = item.north_degree;
@@ -884,7 +886,7 @@ export class ExcelFormatDNVService {
     if (!valor) { return 0; }
 
     let result = mathRound(valor, cantDecimales)
-    
+
     return result;
   }
 

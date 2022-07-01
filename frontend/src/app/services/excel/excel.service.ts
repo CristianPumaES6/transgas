@@ -2097,6 +2097,26 @@ export class ExcelService {
 
   }
 
+
+
+
+  // Obtenemos la info de todos los viajes agregado.
+  public GetReportDNVByUser(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+    // Obtenemos el rob de inicio y el consumo hecho en el filtro.
+    // Obtenemos todos los usuarios
+    return this.dailyReportService.GetReportDNVByUser(userId, startDate, endDate).pipe(map(
+      (resultGetROBByUser: GetReportVoyagePortDaily[]) => {
+
+        if (!resultGetROBByUser && resultGetROBByUser.length > 0) throw 'ERROR_GET_ROB_BY_USER';
+
+
+        return resultGetROBByUser;
+      }
+    ));
+
+  }
+
+
   private StyleCellHeader(worksheet: any, cell: string, bg: string) {
     // Border
     worksheet.getCell(cell).fill = {
@@ -3941,7 +3961,7 @@ export class ExcelService {
               { header: 'auxIfo', key: 'auxIfo' },
               { header: 'boilerIfo', key: 'boilerIfo' },
               { header: 'otherIfo', key: 'otherIfo' },
-              
+
               { header: 'mplaMgo', key: 'MplaMgo' },
               { header: 'auxMgo', key: 'auxMgo' },
               { header: 'boilerMgo', key: 'boilerMgo' },
@@ -3950,7 +3970,7 @@ export class ExcelService {
               { header: 'otherMgo', key: 'otherMgo' },
 
 
-              
+
               { header: 'steamingTime', key: 'steamingTime' },
               { header: 'speedStraction', key: 'speedStraction' },
               { header: 'distance', key: 'distance' },
@@ -3966,7 +3986,7 @@ export class ExcelService {
               (report) => {
 
 
-                positionRow += 1; 
+                positionRow += 1;
                 worksheet.addRow({
                   userId: report.userId,
                   year: report.year,
@@ -3979,28 +3999,28 @@ export class ExcelService {
 
                   departurePort: report.departurePort,
                   arrivalPort: report.arrivalPort,
-                  
-                  activityPerformed : report.activityPerformed,
-                  date:report.date,
-                  hour:report.hour,
 
-                  bunkeringIfo:report.bunkeringIfo,
+                  activityPerformed: report.activityPerformed,
+                  date: report.date,
+                  hour: report.hour,
+
+                  bunkeringIfo: report.bunkeringIfo,
                   bunkeringMgo: report.bunkeringMgo,
 
                   mplaIfo: report.mplaIfo,
-                  auxIfo:report.auxIfo,
+                  auxIfo: report.auxIfo,
                   boilerIfo: report.boilerIfo,
                   otherIfo: report.otherIfo,
 
-                  mplaMgo:report.mplaMgo,
-                  auxMgo:report.auxMgo,
+                  mplaMgo: report.mplaMgo,
+                  auxMgo: report.auxMgo,
                   boilerMgo: report.boilerMgo,
                   ppMgo: report.ppMgo,
-                  giMgo:report.giMgo,
+                  giMgo: report.giMgo,
                   otherMgo: report.otherMgo,
 
 
-                  steamingTime :report.steamingTime,
+                  steamingTime: report.steamingTime,
                   distance: report.distance,
                   speedStraction: report.speedStraction,
                   beaufour: report.beaufour,
@@ -4041,6 +4061,7 @@ export class ExcelService {
 
   }
 }
+
 
 export class InfoVessel {
   constructor(

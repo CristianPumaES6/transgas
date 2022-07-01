@@ -804,8 +804,8 @@ export class DailyReportsService {
         let cantUltimosDias = 40;
 
 
-        let result_IFO_AND_MGO:InfoReport_IFO_AND_MGO=new InfoReport_IFO_AND_MGO();
-     
+        let result_IFO_AND_MGO: InfoReport_IFO_AND_MGO = new InfoReport_IFO_AND_MGO();
+
         // Inicio de la promesa.
         return await DummyPromise()
             .then(
@@ -850,24 +850,24 @@ export class DailyReportsService {
                 result => {
 
                     let addSelectDinamic =
-                    typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
-                        typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
-                            'daily_report.date';
+                        typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                            typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                'daily_report.date';
 
-                let groupByDinamic =
-                    typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
-                        typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
-                            typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
-                                typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
-                                    'activityPerformed, voyage.year, voyage.id';
+                    let groupByDinamic =
+                        typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                            typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                                typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                                    typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                        'activityPerformed, voyage.year, voyage.id';
 
-                let orderBy =
-                    typeSummary === 'VOYAGES' ? 'voyage.id' :
-                        typeSummary === 'PORTS' ? 'voyage.id, port.id' :
-                            typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
-                                typeSummary === 'DAYS' ? "'daily_report'.'date'" :
-                                    'voyage.id';
-                
+                    let orderBy =
+                        typeSummary === 'VOYAGES' ? 'voyage.id' :
+                            typeSummary === 'PORTS' ? 'voyage.id, port.id' :
+                                typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                                    typeSummary === 'DAYS' ? "'daily_report'.'date'" :
+                                        'voyage.id';
+
 
 
                     return this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -941,32 +941,32 @@ export class DailyReportsService {
                 }
             ).then(
                 (result: any) => {
-                    
+
                     // Verificamos que el resultado no este vacio.
                     if (!result) throw 'ERROR GetReportVoyagePortDaily';
- 
+
                     // LA info del ifo lo guardamos en la primera posicion.
                     result_IFO_AND_MGO.ifo = result;
 
- 
+
                     let addSelectDinamic =
-                    typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
-                        typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
-                            'daily_report.date';
+                        typeSummary === 'MONTHS' ? "strftime('%Y-%m', 'daily_report'.'date')" :
+                            typeSummary === 'DAYS' ? "strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                'daily_report.date';
 
-                let groupByDinamic =
-                    typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
-                        typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
-                            typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
-                                typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
-                                    'activityPerformed, voyage.year, voyage.id';
+                    let groupByDinamic =
+                        typeSummary === 'VOYAGES' ? 'activityPerformed, voyage.id' :
+                            typeSummary === 'PORTS' ? 'activityPerformed, voyage.id, port.id' :
+                                typeSummary === 'MONTHS' ? "activityPerformed, strftime('%Y-%m', 'daily_report'.'date')" :
+                                    typeSummary === 'DAYS' ? "activityPerformed, strftime('%Y-%m-%d', 'daily_report'.'date')" :
+                                        'activityPerformed, voyage.year, voyage.id';
 
-                let orderBy =
-                    typeSummary === 'VOYAGES' ? 'voyage.id' :
-                        typeSummary === 'PORTS' ? 'voyage.id, port.id' :
-                            typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
-                                typeSummary === 'DAYS' ? "'daily_report'.'date'" :
-                                    'voyage.id';
+                    let orderBy =
+                        typeSummary === 'VOYAGES' ? 'voyage.id' :
+                            typeSummary === 'PORTS' ? 'voyage.id, port.id' :
+                                typeSummary === 'MONTHS' ? "voyage.id,  strftime('%Y-%m', 'daily_report'.'date')" :
+                                    typeSummary === 'DAYS' ? "'daily_report'.'date'" :
+                                        'voyage.id';
 
                     return this._dailyReportRepository.createQueryBuilder('daily_report')
                         .select('voyage.userId', 'userId')
@@ -1006,8 +1006,8 @@ export class DailyReportsService {
                         .addSelect('daily_report.beaufour', 'beaufour')
 
 
- 
-                        
+
+
                         // Suma total de consumo por maquina
                         .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
                         .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
@@ -1031,10 +1031,10 @@ export class DailyReportsService {
                         .andWhere('daily_report.userId = :userId', { userId: userId })
                         .andWhere('port.userId = :userId', { userId: userId })
                         .andWhere('voyage.userId = :userId', { userId: userId })
-                        
+
                         // Comprobamos que halla algun consumo del tipo de combustible.         
-                        .andWhere('(daily_report.mplaMgo > :mplaMgo OR daily_report.auxMgo > :auxMgo OR daily_report.boilerMgo > :boilerMgo OR daily_report.giMgo > :giMgo OR daily_report.ppMgo > :ppMgo OR daily_report.otherMgo > :otherMgo OR daily_report.bunkeringMgo > :bunkeringMgo )', 
-                        { mplaMgo: 0, auxMgo: 0, boilerMgo: 0, giMgo: 0, ppMgo: 0, otherMgo: 0,bunkeringMgo:0 })
+                        .andWhere('(daily_report.mplaMgo > :mplaMgo OR daily_report.auxMgo > :auxMgo OR daily_report.boilerMgo > :boilerMgo OR daily_report.giMgo > :giMgo OR daily_report.ppMgo > :ppMgo OR daily_report.otherMgo > :otherMgo OR daily_report.bunkeringMgo > :bunkeringMgo )',
+                            { mplaMgo: 0, auxMgo: 0, boilerMgo: 0, giMgo: 0, ppMgo: 0, otherMgo: 0, bunkeringMgo: 0 })
 
                         .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDateRegister })
                         .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDateRegister })
@@ -1045,14 +1045,92 @@ export class DailyReportsService {
                 }
             ).then(
                 (result: any) => {
-                    
+
                     // Verificamos que el resultado no este vacio.
                     if (!result) throw 'ERROR GetReportVoyagePortDaily';
- 
+
                     // LA info del ifo lo guardamos en la primera posicion.
                     result_IFO_AND_MGO.mgo = result;
 
                     return result_IFO_AND_MGO;
                 });
     }
+
+
+    async GetReportDNVByUser(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
+
+        // Hacemos where por todos los campos de la entidad
+        return await
+            this._dailyReportRepository.createQueryBuilder('daily_report')
+
+                .select('MAX(voyage.userId)', 'userId')
+                .addSelect('MAX(voyage.year)', 'year')
+                .addSelect('MAX(voyage.id)', 'voyageId')
+                .addSelect('MAX(voyage.voyageNumber)', 'voyageNumber')
+
+                .addSelect('MAX(port.id)', 'portId')
+                .addSelect('MAX(port.portNumber)', 'portNumber')
+                .addSelect('MAX(port.departurePort)', 'departurePort')
+                .addSelect('MAX(port.arrivalPort)', 'arrivalPort')
+
+
+                .addSelect('MAX(daily_report.id)', 'dailyReportId')
+                .addSelect('daily_report.date', 'date')
+                .addSelect('MAX(daily_report.hour)', 'hour')
+
+                .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+                .addSelect('MAX(daily_report.activityPerformed)', 'activityPerformed')
+                .addSelect('MAX(daily_report.speedStraction)', 'speedStraction')
+                .addSelect('MAX(daily_report.observation)', 'observation')
+
+                .addSelect('SUM(daily_report.distance)', 'distance')
+                .addSelect('MAX(daily_report.beaufour)', 'beaufour')
+
+                .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+                .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+                .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+                .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+                .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+
+                .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+                .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+                .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+                .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+                .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+                .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+                .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+
+                // UBICACION.
+                .addSelect('MAX(daily_report.north_degree)', 'north_degree')
+                .addSelect('MAX(daily_report.north_minutes)', 'north_minutes')
+                .addSelect('MAX(daily_report.north_north_south)', 'north_north_south')
+                // UBICACION
+                .addSelect('MAX(daily_report.east_degree)', 'east_degree')
+                .addSelect('MAX(daily_report.east_minutes)', 'east_minutes')
+                .addSelect('MAX(daily_report.east_east_west)', 'east_east_west')
+
+
+
+                .innerJoin('daily_report.port', 'port')
+                .innerJoin('port.voyage', 'voyage')
+
+                .where('daily_report.status = :status', { status: 1 })
+                .andWhere('port.status = :status', { status: 1 })
+                .andWhere('voyage.status = :status', { status: 1 })
+
+                .andWhere('daily_report.userId = :userId', { userId: userId })
+
+                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                .groupBy("strftime('%Y-%m-%d', 'daily_report'.'date')")
+                .getRawMany()
+                .then(
+                    (result: any) => {
+                        // Verificamos que el resultado no este vacio.
+                        if (!result) throw 'ERROR GetReportVoyagePortDaily';
+                        return result;
+                    }
+                );
+    }
+
 }

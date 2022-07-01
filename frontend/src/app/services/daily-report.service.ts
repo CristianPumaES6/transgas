@@ -211,7 +211,7 @@ export class DailyReportService {
     // Obtenemos el consumo actual
     GetStartEndROByFilterDate(userId: number, startDate: string, endDate: string): Observable<GetROBByUser[]> {
         // Armo el request
-        let url: string = this.url + '/daily-reports/get-start-end-rob/' + userId+'/'+startDate+'/'+endDate;
+        let url: string = this.url + '/daily-reports/get-start-end-rob/' + userId + '/' + startDate + '/' + endDate;
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
@@ -254,14 +254,14 @@ export class DailyReportService {
                 (response: any) => {
                     // Verifico si la respuesta fue correcta.
                     if (response.status && response.status === 200) {
-                        
+
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
                     }
                 }
             ), catchError((err) => {
-                
+
                 return this.authGuardService.HandleError(err);
             })
         );
@@ -284,7 +284,7 @@ export class DailyReportService {
                 (response: any) => {
                     // Verifico si la respuesta fue correcta.
                     if (response.status && response.status === 200) {
-                        
+
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
@@ -324,12 +324,12 @@ export class DailyReportService {
         );
     }
 
-    
+
 
     // Retorna el totar por actividad
     GetTotalByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, filter: string): Observable<GetReportVoyagePortDaily[]> {
         // Armo el request
-        let url: string = this.url + '/daily-reports/get-total-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' +filter;
+        let url: string = this.url + '/daily-reports/get-total-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' + filter;
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
@@ -343,24 +343,24 @@ export class DailyReportService {
                 (response: any) => {
                     // Verifico si la respuesta fue correcta.
                     if (response.status && response.status === 200) {
-                        
+
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
                     }
                 }
             ), catchError((err) => {
-                
+
                 return this.authGuardService.HandleError(err);
             })
         );
     }
 
-    
+
     // Retorna el totar por actividad
     GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Observable<InfoReport_IFO_AND_MGO> {
         // Armo el request
-        let url: string = this.url + '/daily-reports/get-total-consumption-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' +typeSummary;
+        let url: string = this.url + '/daily-reports/get-total-consumption-by-activity/' + userId + '/' + startDate + '/' + endDate + '/' + typeSummary;
         let headers: HttpHeaders = new HttpHeaders(
             {
                 'Content-Type': 'application/json',
@@ -374,7 +374,7 @@ export class DailyReportService {
                 (response: any) => {
                     // Verifico si la respuesta fue correcta.
                     if (response.status && response.status === 200) {
-                        
+
                         return response.data;
                     } else {
                         throw response.description || response.error || '';
@@ -386,5 +386,33 @@ export class DailyReportService {
         );
     }
 
+    // Retorna el totar por actividad
+    GetReportDNVByUser(userId: number, startDate: string, endDate: string): Observable<GetReportVoyagePortDaily[]> {
+        // Armo el request
+        let url: string = this.url + '/daily-reports/get-report-dnv-by-user/' + userId + '/' + startDate + '/' + endDate;
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+        let options: any = { headers: headers, responseType: 'json' };
+
+        // Mando consulta al API
+        return this.httpClient.get(url, options).pipe(
+            map(
+                (response: any) => {
+                    // Verifico si la respuesta fue correcta.
+                    if (response.status && response.status === 200) {
+
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ), catchError((err) => {
+                return this.authGuardService.HandleError(err);
+            })
+        );
+    }
 
 }
