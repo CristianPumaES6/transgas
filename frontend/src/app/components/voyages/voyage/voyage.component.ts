@@ -430,8 +430,8 @@ export class VoyageComponent implements OnInit {
           (indexDaily) => {
             this.totalConsumpAndTimeByEquiment.AddConsumptionAndTime(indexDaily);
 
-            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
-            robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
+            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily) + indexDaily.bunkeringIfo; 
+            robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily) + indexDaily.bunkeringMgo;
             indexDaily.robIfo = robCurrentIFO;
             indexDaily.robMgo = robCurrentMGO;
 
@@ -2565,8 +2565,8 @@ export class VoyageComponent implements OnInit {
           (indexDaily) => {
             this.totalConsumpAndTimeByEquiment.AddConsumptionAndTime(indexDaily);
 
-            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily);
-            robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily);
+            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily) + indexDaily.bunkeringIfo;
+            robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily) + indexDaily.bunkeringMgo;
             indexDaily.robIfo = robCurrentIFO;
             indexDaily.robMgo = robCurrentMGO;
 
