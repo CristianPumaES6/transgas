@@ -101,7 +101,7 @@ export class VoyageComponent implements OnInit {
 
   public lastRecordedHour: any;
 
-  public cantDecimal = 2;
+  public cantDecimal = 3;
 
   myControlFormSelectBefourt = new FormControl();
   optionsBefourt: string[] = [
@@ -711,8 +711,8 @@ export class VoyageComponent implements OnInit {
 
 
             newPort.startDate = consumoTotalDeLosReportViajeAnterio.date;
-            newPort.startIFO = startROBIFOPenultimoPort - this.TotalIFO(consumoTotalDeLosReportViajeAnterio);
-            newPort.startMGO = startROBMGOPenultimoPort - this.TotalMGO(consumoTotalDeLosReportViajeAnterio);
+            newPort.startIFO = startROBIFOPenultimoPort - this.TotalIFO(consumoTotalDeLosReportViajeAnterio)  + consumoTotalDeLosReportViajeAnterio.bunkeringIfo;
+            newPort.startMGO = startROBMGOPenultimoPort - this.TotalMGO(consumoTotalDeLosReportViajeAnterio) + consumoTotalDeLosReportViajeAnterio.bunkeringMgo;
             this.selectPort = newPort;
 
 
