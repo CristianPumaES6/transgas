@@ -1,6 +1,9 @@
  
 
 
+// Si la hora esta correcta saldra 5 que es el total de caracteres de 08:00
+SELECT LENGTH(hour) FROM daily_report
+GROUP by LENGTH(hour);
 
 CONSULTAS SQLITE
 UPDATE HORA CON 4 digitos.
