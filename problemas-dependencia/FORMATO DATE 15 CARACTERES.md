@@ -24,9 +24,34 @@ SELECT  SUBSTRING(daily_report.date, 1, 19),
 FROM daily_report
 where  
     daily_report.userId = 13
-    AND length(daily_report.date) = 23 
+    AND length(daily_report.date) = 23
     AND status = true;
         
+
+
+
+-- MARIA JOSE - ENAMORADA DE JORGE
+
+--------------------------------------
+-----------[  LEONARDO B  ]-----------
+--------------------------------------
+-- Primero actualizar el horario a todos los registros.
+-- ya que desde la subida de data masiva no agrega la hora.
+
+UPDATE daily_report
+SET date =   SUBSTRING(date, 1, 11) || hour || ':00'
+WHERE
+    daily_report.userId = 13
+    AND id >= 4701;
+
+
+-- Luego le resto la diferencia de horario por la zona horaria.
+
+UPDATE daily_report
+SET date =   datetime(date,'+3 hour'  )
+WHERE  
+    daily_report.userId = 13
+    AND id >= 4701;
 
 
 
