@@ -41,8 +41,8 @@ where
 UPDATE daily_report
 SET date =   SUBSTRING(date, 1, 11) || hour || ':00'
 WHERE
-    daily_report.userId = 13
-    AND id >= 4701;
+    daily_report.userId = 22
+    AND id >= 5329;
 
 
 -- Luego le resto la diferencia de horario por la zona horaria.
@@ -50,8 +50,8 @@ WHERE
 UPDATE daily_report
 SET date =   datetime(date,'+3 hour'  )
 WHERE  
-    daily_report.userId = 13
-    AND id >= 4701;
+    daily_report.userId = 22
+    AND id >= 5329;
 
 
 

@@ -224,6 +224,16 @@ export function FormatYYYYMMDD(date: any): string {
     return result;
 }
 
+// Tal cual es Año mes y dia, tal cual lo retorna
+export function FormatYYYYMMDDUTCToSTRING(date: any): string {
+
+
+    let momentDate = moment.utc(date, 'YYYY-MM-DD');
+
+    let result = momentDate.format('YYYY-MM-DD')
+
+    return result;
+}
 
 // Tal cual es Año mes y dia, tal cual lo retorna
 export function FormatYYYYMMDDToSTRING(date: any): string {
