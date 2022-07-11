@@ -334,16 +334,12 @@ export class ExcelService {
               // Armamos el reporte.
               this.ReportVoyage(workbook, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser)
 
-
-              // Aqui seria por por viaje y pagina, cada viaje una nueva hoja.
-              for (const getReportVoyagePortDaily of listGetReportVoyagePortDaily) {
-
-              }
-
               // Escribimos el excel
               workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                fs.saveAs(blob, 'Report.xlsx');
+                let blob = new Blob(
+                  [data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+                );
+                fs.saveAs(blob, 'REPORT '+selectUser.name.toUpperCase()+'.xlsx');
               });
 
               return true;
@@ -737,7 +733,7 @@ export class ExcelService {
       'VOYAGE', '', //G
       'DEPARTURE', '', '', '', //G
       'ARRIVAL', '', '', '', //G
-      'DATE', '', '', //J
+      'DATE UTC', '', '', //J
       'HOURS', '',  //L
       'TIME', '', //N
       'ACTIVITY PERFORMED', '', '', '',//R
@@ -1533,9 +1529,10 @@ export class ExcelService {
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
           getReportVoyagePortDaily.departurePort, '', '', '',
           getReportVoyagePortDaily.arrivalPort, '', '', '',
-          FormatDate(getReportVoyagePortDaily.date), '', '',
+          getReportVoyagePortDaily.date, '', '',
           getReportVoyagePortDaily.hour, '',
-          { formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
+          //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
+          { formula: '=(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
           this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), '', '', '',
 
 
@@ -1545,7 +1542,7 @@ export class ExcelService {
 
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          { formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
+          { formula: '=(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
           // Velocidad formula.
           { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
