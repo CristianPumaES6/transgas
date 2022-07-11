@@ -6,7 +6,7 @@ import { promise } from 'protractor';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mathRound } from '../../../assets/math/math.assets';
-import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour, FormatYYYYMMDDToHOURS, FormatYYYYMMDDToSTRING } from '../../../assets/moment/moment.assets';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour, FormatYYYYMMDDToHOURS, FormatYYYYMMDDToSTRING, FormatYYYYMMDDUTCToSTRING } from '../../../assets/moment/moment.assets';
 import { GetFormatDNV, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
 import { ActivityPerformed } from '../../models/dashboard';
 import { GetReportVoyagePortDaily } from '../../models/dialog-export-excel';
@@ -615,8 +615,8 @@ export class ExcelFormatDNVService {
             let getFormatDNV: GetFormatDNV = new GetFormatDNV();
 
             getFormatDNV.reportId = item.dailyReportId;
-            getFormatDNV.date = FormatYYYYMMDDToSTRING(item.date);
-            getFormatDNV.time = '08:00';
+            getFormatDNV.date = FormatYYYYMMDDUTCToSTRING(item.date);
+            getFormatDNV.time = '09:00';
 
             // AGREGAR ESTA INFORMACION REVISAR ELIMINAR CORREGIR 
             getFormatDNV.north_degree = item.north_degree;
@@ -627,7 +627,7 @@ export class ExcelFormatDNVService {
             getFormatDNV.east_east_west = item.east_east_west;
 
 
-            getFormatDNV.event = this.languageService.GetMessage(this.translateCategory, item.activityPerformed);
+            getFormatDNV.event = 'Daily';
 
             getFormatDNV.event_time_previous = item.steamingTime;
             let activitie = item.activityPerformed;

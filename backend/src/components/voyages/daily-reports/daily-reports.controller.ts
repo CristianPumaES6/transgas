@@ -841,6 +841,8 @@ export class DailyReportsController {
         );
     }
 
+   // aqui estan correinedo 2 servicios de nest.
+   //GetReportDNVByUserNOON(MODIF)     GetReportDNVByUser(ORIGINAL) 
     @Get('get-report-dnv-by-user/:userId/:startDate/:endDate')
     GetReportDNVByUser(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date): Promise<any> {
 
@@ -873,7 +875,7 @@ export class DailyReportsController {
             (resultValidate: Boolean) => {
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._dailyReportsService.GetReportDNVByUser(userId, startDate, endDate);
+                return this._dailyReportsService.GetReportDNVByUserNOON(userId, startDate, endDate);
             }
         ).then(
             (results: GetReportVoyagePortDaily[]) => {
@@ -900,4 +902,6 @@ export class DailyReportsController {
             }
         );
     }
+
+ 
 }
