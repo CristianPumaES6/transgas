@@ -490,7 +490,7 @@ let DailyReportsController = class DailyReportsController {
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
         }).then((resultValidate) => {
-            return this._dailyReportsService.GetReportDNVByUser(userId, startDate, endDate);
+            return this._dailyReportsService.GetReportDNVByUserNOON(userId, startDate, endDate);
         }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,

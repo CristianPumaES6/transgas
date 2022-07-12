@@ -1657,7 +1657,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "2b313fa0311420f65f1995ac235fa7ea9e92406941e7100c683d42d4965059a7",
+        "version": "f42dead50a2fc020678a3d6ed719defc150d1239859054228c38bf563d06c896",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3277,8 +3277,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "d0f78aa6896b6238919ee9446599803b3310a6b7a55fe7a62ee219312d0d3447",
-        "signature": "5d685038e67ad4e0045b25f2b233a7975f71617a10b0586190a4235ba6a1341b",
+        "version": "ec66aadb6da219b6d204f1099fdbdcf28d8ada5081748ac1a798ad84b4690cdd",
+        "signature": "ca2827c3a86b13092edbb4f23da0ccb13971af824234a195d121a4fe5135ff7a",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
@@ -3297,7 +3297,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.controller.ts": {
-        "version": "e8a9659abc1f831c885d41af862266af33eb1238bbf1781164252c9c25be7eaf",
+        "version": "2d9385063706340f17ecd52c3a704ead36331f34fb73bfde3017336660051684",
         "signature": "c94a2d80751fd9a65e3ba843d59ef8306a444956e3cab18004891025da3a2f80",
         "affectsGlobalScope": false
       },

@@ -733,6 +733,59 @@ let DailyReportsService = class DailyReportsService {
             return result;
         });
     }
+    async GetReportDNVByUserNOON(userId, startDate, endDate) {
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
+            .select('MAX(voyage.userId)', 'userId')
+            .addSelect('MAX(voyage.year)', 'year')
+            .addSelect('MAX(voyage.id)', 'voyageId')
+            .addSelect('MAX(voyage.voyageNumber)', 'voyageNumber')
+            .addSelect('MAX(port.id)', 'portId')
+            .addSelect('MAX(port.portNumber)', 'portNumber')
+            .addSelect('MAX(port.departurePort)', 'departurePort')
+            .addSelect('MAX(port.arrivalPort)', 'arrivalPort')
+            .addSelect('MAX(daily_report.id)', 'dailyReportId')
+            .addSelect("datetime(daily_report.date,'+8.99 hour')", 'date')
+            .addSelect('MAX(daily_report.hour)', 'hour')
+            .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+            .addSelect('MAX(daily_report.activityPerformed)', 'activityPerformed')
+            .addSelect('MAX(daily_report.speedStraction)', 'speedStraction')
+            .addSelect('MAX(daily_report.observation)', 'observation')
+            .addSelect('SUM(daily_report.distance)', 'distance')
+            .addSelect('MAX(daily_report.beaufour)', 'beaufour')
+            .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+            .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+            .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+            .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+            .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+            .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+            .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+            .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+            .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+            .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+            .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+            .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+            .addSelect('MAX(daily_report.north_degree)', 'north_degree')
+            .addSelect('MAX(daily_report.north_minutes)', 'north_minutes')
+            .addSelect('MAX(daily_report.north_north_south)', 'north_north_south')
+            .addSelect('MAX(daily_report.east_degree)', 'east_degree')
+            .addSelect('MAX(daily_report.east_minutes)', 'east_minutes')
+            .addSelect('MAX(daily_report.east_east_west)', 'east_east_west')
+            .innerJoin('daily_report.port', 'port')
+            .innerJoin('port.voyage', 'voyage')
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+            .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+            .groupBy("strftime('%Y-%m-%d',datetime('daily_report'.'date','+8.999 hour'))")
+            .getRawMany()
+            .then((result) => {
+            if (!result)
+                throw 'ERROR GetReportVoyagePortDaily';
+            return result;
+        });
+    }
 };
 DailyReportsService = __decorate([
     common_1.Injectable(),
