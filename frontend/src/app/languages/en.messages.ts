@@ -487,6 +487,8 @@ export const dialog: any = {
     BUNKERING: 'Bunkering',
     REPORT_INFORMATION_GENERIC: 'The following format has the summary of fuel by activity, in addition to the reports registered by the captain.',
     REPORT_INFORMATION_DNV: 'The following format is the one required to obtain the DNV identity certificate.',
+    REPORT_INFORMATION_FORMAT_GENERIC_LUCIA: 'The following format has a summary of consumption segregated by trips.',
+    REPORT_INFORMATION_EXPORT_VESSEL_DATA: 'The following format exports all the registered information of the ship, allowing to correct and review the entered data. Once the excel file has been corrected, it must be sent to the programmer to update it in the background.',
     ADD_SAILING_NAVIGATION: 'What navigation information do you want to add?',
     IN_BALLAST: 'In Ballast',
     WITH_LADEN: 'With Laden',
