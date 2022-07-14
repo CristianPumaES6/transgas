@@ -10,7 +10,7 @@ import { mathRound } from '../../../assets/math/math.assets';
 import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour } from '../../../assets/moment/moment.assets';
 import { GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
 import { ActivityPerformed } from '../../models/dashboard';
-import { GetReportVoyagePortDaily } from '../../models/dialog-export-excel';
+import { GetReportVoyagePortDaily, GetReportVoyagePortDaily2 } from '../../models/dialog-export-excel';
 import { User } from '../../models/user';
 import { Voyage } from '../../models/voyage';
 import { DailyReportService } from '../daily-report.service';
@@ -309,17 +309,19 @@ export class ExcelFormatVesselDataRegisterService {
     workbook.creator = 'transgas.web.app';
 
 
-    let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+    let listGetReportVoyagePortDaily: GetReportVoyagePortDaily2[] = [];
     let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
     return await Promise.resolve(true)
       .then(
         result => {
-          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
+          // Buscamos los  reportes registrados por filtro de usuario y fecha
           return this.GetReportVoyagePortDaily(selectUserId, startDate, endDate).pipe().toPromise();
         }).then(
           result => {
-            if (!result) throw 'ERROR GER REPORT';
+            // validamos
+            if (!result) throw 'ERROR GER REPORT FOR USER';
+            // guardamos los datos en una variable.
             listGetReportVoyagePortDaily = result;
 
 
@@ -329,7 +331,9 @@ export class ExcelFormatVesselDataRegisterService {
           }).then(
             result => {
 
+              // validamos
               if (!result) throw 'ERROR GER REPORT';
+              // guardamos los datos en una variable.
               getInfoFuelStartEndByFilterDate = result;
 
               // Armamos el reporte.
@@ -340,7 +344,7 @@ export class ExcelFormatVesselDataRegisterService {
                 let blob = new Blob(
                   [data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
                 );
-                fs.saveAs(blob, 'REPORT ' + selectUser.name.toUpperCase() + '.xlsx');
+                fs.saveAs(blob, 'DATA REGISTER ' + selectUser.name.toUpperCase() + '.xlsx');
               });
 
               return true;
@@ -352,10 +356,11 @@ export class ExcelFormatVesselDataRegisterService {
   // Agrega el reporte.
   private ReportVoyage(workbook: Workbook, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: User): Workbook {
 
+    // tipo de combustible.
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
     // Creamos la hoja de trabajo.
-    let worksheet = workbook.addWorksheet('General Overview');
+    let worksheet = workbook.addWorksheet('Report register');
     //  let titleRow = worksheet.addRow(['Voyage','Date','Hour','Time','Activity Performed','Observation' ]);
 
 
@@ -363,22 +368,22 @@ export class ExcelFormatVesselDataRegisterService {
     // Hasta la E las columnas son invisibles para guardar algo.
     // apartir de la F todas las columnas tienen el mismo tamanio
     worksheet.columns = [
-      { width: 0 },
-      { width: 0 },
-      { width: 0 },
-      { width: 0 },
-      { width: 0 },
-      // D
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
+      { width: 0 }, // A
+      { width: 0 }, // B
+      { width: 0 }, // C
+      { width: 0 }, // D
+      { width: 0 }, // E
+      
+      { width: 8 }, // F Numero Viaje
+      { width: 16 }, // G Numero Puerto
+      { width: 16 }, // H Departure
+      { width: 16 }, // I Arrival
+      { width: 8 }, // startDate
+      { width: 8 }, // startIFO
+      { width: 8 }, // startMGO
+      { width: 16 }, // date
+      { width: 8 }, // hour
+      { width: 8 }, // steamingTime
       { width: 4 },
       { width: 4 },
       { width: 4 },
@@ -457,11 +462,11 @@ export class ExcelFormatVesselDataRegisterService {
       { width: 4 },
     ];
 
-    // la posicion inicioa en la fila 3
+    // La posicion inicio en la fila 3
     let position = 3;
 
-    // nos ubicamos en una posicion para empezar a poner los row
-    //this.mergeCellReport(worksheet, position);
+    // Nos ubicamos en una posicion para empezar a poner los row
+    // this.mergeCellReport(worksheet, position);
 
     let colorYellowTransgas = 'FFCD06';
     // Variables de colores-
@@ -494,10 +499,6 @@ export class ExcelFormatVesselDataRegisterService {
     let positionColumn = 7
     let positionRow = position;
 
-    // Agregamos el cuadro de la leyenda
-    let tamanioLegend = this.StyleDashLegend(worksheet, positionRow, positionColumn);
-
-
 
 
 
@@ -520,14 +521,9 @@ export class ExcelFormatVesselDataRegisterService {
     positionRow += 2;
 
     positionColumn = 20;
-    let tamanioCosumptionIFO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'IFO');
-
-
-    positionColumn = 60;
-    let tamanioCosumptionMGO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'MGO');
-
+    
     /// Filas aprox del cuadro de consumo.
-    positionRow += tamanioCosumptionIFO + 1;
+    positionRow += positionColumn + 1;
 
     // Dos saltos de linea
     positionRow += 2;
@@ -2194,118 +2190,6 @@ export class ExcelFormatVesselDataRegisterService {
       horizontal: 'center'
     };
   };
-
-
-  // 3119898 *225
-
-  // Esta funcion permite poner un cuadro de leyenda.
-  private StyleDashLegend(worksheet, posit, colum): number {
-
-    let colorYellowTransgas = 'FFCD06';
-    // Variables de colores-
-    let blueHard = '001556'
-    let blueMedium = '09155694'
-    let blueLow = 'b6c2ff94';
-
-
-    let blueHard1 = '375f9a'
-    let blueHard2 = '0040d8'
-    let blueHard3 = '001556'
-
-    let greenHard = '091556'
-    let greenMedium = ''
-    let greenLow = 'b6c2ff94';
-
-    let black = '000'
-    let white = 'ffffff';
-
-    // Variables de colores-
-    let grisFuerte = 'd4d4d4'
-    let grisMedio = 'ebe8e8'
-    let grisSuave = 'f3f3f3';
-
-    let redHard = '9a2929';
-    let redMedium = 'ffa4a4';
-    let redLow = 'ffd6d6';
-
-
-    //Agregamos la leyenda
-    // segimos en la misma linea.
-    let position = [posit, posit];
-    // le sumo 7 celdas por que la logitud de la leyenda es 7celdas
-    let positionColumn = [colum, colum + 11];
-    let posititonRow = posit;
-    this.addStyleByColums(worksheet, position, positionColumn, 'LEGEND', 10, colorYellowTransgas, blueHard3, '');
-    this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
-
-    //ITEM
-    // Le damos un salto vacio.
-    posititonRow = posititonRow + 2;
-    // Item de la leyenda
-    position = [posititonRow, posititonRow];
-    positionColumn = [colum + 1, colum + 1];
-    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, blueHard3, '')
-    // texto.
-    positionColumn = [colum + 3, colum + 10];
-    this.addStyleByColums(worksheet, position, positionColumn, 'Data recorded by the captain', 8, black, white, '')
-
-    //ITEM
-    // bajamos
-    posititonRow = posititonRow + 1;
-    // Item de la leyenda
-    position = [posititonRow, posititonRow];
-    positionColumn = [colum + 1, colum + 1];
-    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, blueHard2, '')
-    // texto.
-    positionColumn = [colum + 3, colum + 10];
-    this.addStyleByColums(worksheet, position, positionColumn, 'Value obtained by a formula.', 8, black, white, '')
-
-
-    //ITEM
-    // bajamos
-    posititonRow = posititonRow + 1;
-    // Item de la leyenda
-    position = [posititonRow, posititonRow];
-    positionColumn = [colum + 1, colum + 1];
-    this.addStyleByColums(worksheet, position, positionColumn, '0', 10, grisSuave, null, '')
-    // texto.
-    positionColumn = [colum + 3, colum + 10];
-    this.addStyleByColums(worksheet, position, positionColumn, 'Null value', 8, black, white, '')
-
-
-    //ITEM
-    // bajamos
-    posititonRow = posititonRow + 1;
-    // Item de la leyenda
-    position = [posititonRow, posititonRow];
-    positionColumn = [colum + 1, colum + 1];
-    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, greenLow, '')
-    // texto.
-    positionColumn = [colum + 3, colum + 10];
-    this.addStyleByColums(worksheet, position, positionColumn, 'Positive value', 8, black, white, '')
-
-
-    //ITEM
-    // bajamos
-    posititonRow = posititonRow + 1;
-    // Item de la leyenda
-    position = [posititonRow, posititonRow];
-    positionColumn = [colum + 1, colum + 1];
-    this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, redLow, '')
-    // texto.
-    positionColumn = [colum + 3, colum + 10];
-    this.addStyleByColums(worksheet, position, positionColumn, 'Negative value', 8, black, white, '')
-
-
-    // disminuimos las filas registradas
-    position = [posititonRow - 5, posititonRow = posititonRow + 1];
-    positionColumn = [colum, colum + 11];
-    this.addStyleBorder(worksheet, position, positionColumn, 'thick', blueHard3)
-
-
-    let totaldeRow = 11;
-    return totaldeRow;
-  }
 
 
   private StyleDashInfoVessel(worksheet, posit, colum, selectUser: User, infoVessel: InfoVessel): number {

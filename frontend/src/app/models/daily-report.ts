@@ -202,6 +202,7 @@ export class GetROBByUser {
 
 }
 
+// Este objeto indica el inicio y fin del combustible.
 export class InfoFuelStartEndForDate {
 
     constructor(
