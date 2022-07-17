@@ -532,7 +532,96 @@ export class ExcelFormatVesselDataRegisterService {
 
     let tamanioTableReport = this.AddReportTable(worksheet, positionRow, positionColumn, selectUser, infoVessel, textIFOorVLSFOorLSFO);
 
+    positionRow = tamanioTableReport
+    listGetReportVoyagePortDaily.forEach(
+      (getReportVoyagePortDaily, index) => {
 
+
+
+        positionRow += 1;
+        let dataRow = [
+          getReportVoyagePortDaily.voyageId,
+          getReportVoyagePortDaily.portId,
+          getReportVoyagePortDaily.dailyReportId,
+          '', { formula: 'AND( AI' + positionRow + ' <12, AI' + positionRow + ' > 0 )' },
+          'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
+          getReportVoyagePortDaily.departurePort, '', '', '',
+          getReportVoyagePortDaily.arrivalPort, '', '', '',
+          getReportVoyagePortDaily.date, '', '',
+          getReportVoyagePortDaily.hour, '',
+          //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
+          { formula: '=(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
+          this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), '', '', '',
+
+
+          this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.speedStraction), '',
+
+          getReportVoyagePortDaily.observation, '', '', '', '', '', '',
+
+          getReportVoyagePortDaily.distance, '',
+          // Solo si es de la actividad de navegacion deberia de agregarse.
+          { formula: '=(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
+          // Velocidad formula.
+          { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
+          getReportVoyagePortDaily.beaufour, '',
+
+          //IFO
+          getReportVoyagePortDaily.mplaIfo, '',
+          getReportVoyagePortDaily.auxIfo, '',
+          getReportVoyagePortDaily.boilerIfo, '',
+          getReportVoyagePortDaily.otherIfo, '',
+          // Total
+          { formula: 'SUM(AR' + positionRow + ':AX' + positionRow + ')' }, '',
+          // dailyConsumption
+          { formula: 'IF(ISERROR(' + 'AZ' + positionRow + '*24/' + 'AL' + positionRow + '),0,' + 'AZ' + positionRow + '*24/' + 'AL' + positionRow + ')' }, '',
+          getReportVoyagePortDaily.bunkeringIfo, '',
+          // RobIFO
+          { formula: 'BF' + (positionRow - 1) + '-AZ' + positionRow + '+BD' + positionRow }, '',
+
+          getReportVoyagePortDaily.mplaMgo, '',
+          getReportVoyagePortDaily.auxMgo, '',
+          getReportVoyagePortDaily.boilerMgo, '',
+          getReportVoyagePortDaily.ppMgo, '',
+          getReportVoyagePortDaily.giMgo, '',
+          getReportVoyagePortDaily.otherMgo, '',
+
+          // Total
+          { formula: 'SUM(BH' + positionRow + ':BS' + positionRow + ')' }, '',
+
+          // dailyConsumption
+          { formula: 'IF(ISERROR(' + 'BT' + positionRow + '*24/' + 'AL' + positionRow + '),0,' + 'BT' + positionRow + '*24/' + 'AL' + positionRow + ')' }, '',
+          getReportVoyagePortDaily.bunkeringMgo, '',
+
+          // RobIFO
+          { formula: 'BZ' + (positionRow - 1) + '-BT' + positionRow + '+BX' + positionRow }, '',
+        ];
+
+        worksheet.addRow(dataRow);
+        this.mergeCellReport(worksheet, positionRow);
+        // Si es el primer registro se debe calcular con el rob del viaje anterior
+        if (index == 0) {
+
+          // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
+          worksheet.getCell('U' + positionRow).value = getReportVoyagePortDaily.steamingTime;
+          worksheet.getCell('AL' + positionRow).value = getReportVoyagePortDaily.steamingTime;
+
+
+
+          worksheet.getCell('BF' + positionRow).value = <any>{ formula: 'BE' + (positionRow - 2) + '-AZ' + positionRow + '+BD' + positionRow };
+          worksheet.getCell('BZ' + positionRow).value = <any>{ formula: 'BY' + (positionRow - 2) + '-BT' + positionRow + '+BX' + positionRow };
+
+          this.addFormatting(worksheet, positionRow)
+          // Agregamos el formadate
+        } else {
+
+          this.addFormatting(worksheet, positionRow)
+        }
+
+
+
+      }
+
+    );
 
     return workbook;
   }
