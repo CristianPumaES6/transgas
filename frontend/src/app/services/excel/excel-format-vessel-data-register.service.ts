@@ -373,7 +373,6 @@ export class ExcelFormatVesselDataRegisterService {
       { width: 0 }, // C
       { width: 0 }, // D
       { width: 0 }, // E
-
       { width: 8 }, // F Numero Viaje
       { width: 16 }, // G Numero Puerto
       { width: 16 }, // H Departure
@@ -523,7 +522,6 @@ export class ExcelFormatVesselDataRegisterService {
     positionRow += 2;
 
     positionColumn = 20;
-
     /// Filas aprox del cuadro de consumo.
     positionRow += positionColumn + 1;
 
