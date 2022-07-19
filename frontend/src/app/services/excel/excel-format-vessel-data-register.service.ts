@@ -327,25 +327,26 @@ export class ExcelFormatVesselDataRegisterService {
 
             // Buscamos la informacion del combustible de inicio y fin segun la fecha.
             return this.GetInfoFuelStartEndByFilterDate(selectUserId, startDate, endDate).pipe().toPromise();
-
           }).then(
             result => {
 
-              // validamos
-              if (!result) throw 'ERROR GER REPORT';
-              // guardamos los datos en una variable.
+              // Validamos
+              if (!result) { throw 'ERROR GER REPORT' };
+              // Guardamos los datos en una variable.
               getInfoFuelStartEndByFilterDate = result;
 
               // Armamos el reporte.
               this.ReportVoyage(workbook, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser)
 
               // Escribimos el excel
-              workbook.xlsx.writeBuffer().then((data) => {
-                let blob = new Blob(
-                  [data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
-                );
-                fs.saveAs(blob, 'DATA REGISTER ' + selectUser.name.toUpperCase() + '.xlsx');
-              });
+              workbook.xlsx.writeBuffer().then(
+                (data) => {
+                  let blob = new Blob(
+                    [data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+                  );
+                  fs.saveAs(blob, 'DATA REGISTER ' + selectUser.name.toUpperCase() + '.xlsx');
+                }
+              );
 
               return true;
             }
@@ -499,38 +500,11 @@ export class ExcelFormatVesselDataRegisterService {
     let positionRow = position;
 
 
+    let tamanioTableReport = this.AddReportTable(worksheet, positionRow, positionColumn, selectUser, textIFOorVLSFOorLSFO);
+
+    positionRow = tamanioTableReport;
 
 
-
-    let infoVessel: InfoVessel = new InfoVessel();
-    infoVessel.date_start = listGetReportVoyagePortDaily[0].date + '';
-    infoVessel.date_end = listGetReportVoyagePortDaily[listGetReportVoyagePortDaily.length - 1].date + '';
-    infoVessel.ifo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
-    infoVessel.mgo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
-
-
-
-    // Agregamos la informacion del buque.
-    positionColumn = 25;
-    let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel);
-    // a la posicion del row le sumamos el tamaño del cuadro.
-
-
-    positionRow += tamanioInfoVessel;
-
-    // Dos saltos de linea
-    positionRow += 2;
-
-    positionColumn = 20;
-    /// Filas aprox del cuadro de consumo.
-    positionRow += positionColumn + 1;
-
-    // Dos saltos de linea
-    positionRow += 2;
-
-    let tamanioTableReport = this.AddReportTable(worksheet, positionRow, positionColumn, selectUser, infoVessel, textIFOorVLSFOorLSFO);
-
-    positionRow = tamanioTableReport
     listGetReportVoyagePortDaily.forEach(
       (getReportVoyagePortDaily, index) => {
 
@@ -541,80 +515,53 @@ export class ExcelFormatVesselDataRegisterService {
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
           getReportVoyagePortDaily.dailyReportId,
-          '', { formula: 'AND( AI' + positionRow + ' <12, AI' + positionRow + ' > 0 )' },
-          'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
-          getReportVoyagePortDaily.departurePort, '', '', '',
-          getReportVoyagePortDaily.arrivalPort, '', '', '',
-          getReportVoyagePortDaily.date, '', '',
-          getReportVoyagePortDaily.hour, '',
-          //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-          { formula: '=(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
-          this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), '', '', '',
-
-
-          this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.speedStraction), '',
-
-          getReportVoyagePortDaily.observation, '', '', '', '', '', '',
-
-          getReportVoyagePortDaily.distance, '',
+          '', '',
+          'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year,
+          getReportVoyagePortDaily.departurePort,
+          getReportVoyagePortDaily.arrivalPort,
+          getReportVoyagePortDaily.date,
+          getReportVoyagePortDaily.hour,
+          { formula: '=IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
+          //this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), // REVISAR ERROR REVISAR
+          getReportVoyagePortDaily.activityPerformed,
+          this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.speedStraction), // REVISAR ERROR REVISAR
+          getReportVoyagePortDaily.observation,
+          getReportVoyagePortDaily.distance,
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          { formula: '=(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
+          { formula: '=IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
           // Velocidad formula.
-          { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
-          getReportVoyagePortDaily.beaufour, '',
-
+          { formula: 'IF(ISERROR(O' + positionRow + '/P' + positionRow + '),0,O' + positionRow + '/P' + positionRow + ')' },
+          getReportVoyagePortDaily.beaufour,
           //IFO
-          getReportVoyagePortDaily.mplaIfo, '',
-          getReportVoyagePortDaily.auxIfo, '',
-          getReportVoyagePortDaily.boilerIfo, '',
-          getReportVoyagePortDaily.otherIfo, '',
+          getReportVoyagePortDaily.mplaIfo,
+          getReportVoyagePortDaily.auxIfo,
+          getReportVoyagePortDaily.boilerIfo,
+          getReportVoyagePortDaily.otherIfo,
           // Total
-          { formula: 'SUM(AR' + positionRow + ':AX' + positionRow + ')' }, '',
+          { formula: 'SUM(S' + positionRow + ':V' + positionRow + ')' },
           // dailyConsumption
-          { formula: 'IF(ISERROR(' + 'AZ' + positionRow + '*24/' + 'AL' + positionRow + '),0,' + 'AZ' + positionRow + '*24/' + 'AL' + positionRow + ')' }, '',
-          getReportVoyagePortDaily.bunkeringIfo, '',
+          { formula: 'IF(ISERROR(' + 'W' + positionRow + '*24/' + 'P' + positionRow + '),0,' + 'W' + positionRow + '*24/' + 'P' + positionRow + ')' },
+          getReportVoyagePortDaily.bunkeringIfo,
           // RobIFO
-          { formula: 'BF' + (positionRow - 1) + '-AZ' + positionRow + '+BD' + positionRow }, '',
+          { formula: 'Z' + (positionRow - 1) + '-W' + positionRow + '+Y' + positionRow },
 
-          getReportVoyagePortDaily.mplaMgo, '',
-          getReportVoyagePortDaily.auxMgo, '',
-          getReportVoyagePortDaily.boilerMgo, '',
-          getReportVoyagePortDaily.ppMgo, '',
-          getReportVoyagePortDaily.giMgo, '',
-          getReportVoyagePortDaily.otherMgo, '',
-
+          getReportVoyagePortDaily.mplaMgo,
+          getReportVoyagePortDaily.auxMgo,
+          getReportVoyagePortDaily.boilerMgo,
+          getReportVoyagePortDaily.ppMgo,
+          getReportVoyagePortDaily.giMgo,
+          getReportVoyagePortDaily.otherMgo,
           // Total
-          { formula: 'SUM(BH' + positionRow + ':BS' + positionRow + ')' }, '',
-
+          { formula: 'SUM(AA' + positionRow + ':AF' + positionRow + ')' },
           // dailyConsumption
-          { formula: 'IF(ISERROR(' + 'BT' + positionRow + '*24/' + 'AL' + positionRow + '),0,' + 'BT' + positionRow + '*24/' + 'AL' + positionRow + ')' }, '',
-          getReportVoyagePortDaily.bunkeringMgo, '',
-
+          { formula: 'IF(ISERROR(' + 'AG' + positionRow + '*24/' + 'P' + positionRow + '),0,' + 'AG' + positionRow + '*24/' + 'P' + positionRow + ')' },
+          getReportVoyagePortDaily.bunkeringMgo,
           // RobIFO
-          { formula: 'BZ' + (positionRow - 1) + '-BT' + positionRow + '+BX' + positionRow }, '',
+          { formula: 'AJ' + (positionRow - 1) + '-AG' + positionRow + '+AI' + positionRow },
+
         ];
 
         worksheet.addRow(dataRow);
-        this.mergeCellReport(worksheet, positionRow);
-        // Si es el primer registro se debe calcular con el rob del viaje anterior
-        if (index == 0) {
-
-          // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
-          worksheet.getCell('U' + positionRow).value = getReportVoyagePortDaily.steamingTime;
-          worksheet.getCell('AL' + positionRow).value = getReportVoyagePortDaily.steamingTime;
-
-
-
-          worksheet.getCell('BF' + positionRow).value = <any>{ formula: 'BE' + (positionRow - 2) + '-AZ' + positionRow + '+BD' + positionRow };
-          worksheet.getCell('BZ' + positionRow).value = <any>{ formula: 'BY' + (positionRow - 2) + '-BT' + positionRow + '+BX' + positionRow };
-
-          this.addFormatting(worksheet, positionRow)
-          // Agregamos el formadate
-        } else {
-
-          this.addFormatting(worksheet, positionRow)
-        }
-
 
 
       }
@@ -881,41 +828,6 @@ export class ExcelFormatVesselDataRegisterService {
   }
 
 
-  private mergeCellReport(worksheet: Worksheet, position) {
-
-    worksheet.mergeCells('F' + position, 'G' + position);
-    worksheet.mergeCells('H' + position, 'K' + position);
-    worksheet.mergeCells('L' + position, 'O' + position);
-    worksheet.mergeCells('P' + position, 'R' + position);
-    worksheet.mergeCells('S' + position, 'T' + position);
-    worksheet.mergeCells('U' + position, 'V' + position);
-    worksheet.mergeCells('W' + position, 'Z' + position);
-    worksheet.mergeCells('AA' + position, 'AB' + position);
-    worksheet.mergeCells('AC' + position, 'AI' + position);
-    worksheet.mergeCells('AJ' + position, 'AK' + position);
-    worksheet.mergeCells('AL' + position, 'AM' + position);
-    worksheet.mergeCells('AN' + position, 'AO' + position);
-    worksheet.mergeCells('AP' + position, 'AQ' + position);
-    worksheet.mergeCells('AR' + position, 'AS' + position);
-    worksheet.mergeCells('AT' + position, 'AU' + position);
-    worksheet.mergeCells('AV' + position, 'AW' + position);
-    worksheet.mergeCells('AX' + position, 'AY' + position);
-    worksheet.mergeCells('AZ' + position, 'BA' + position);
-    worksheet.mergeCells('BB' + position, 'BC' + position);
-    worksheet.mergeCells('BD' + position, 'BE' + position);
-    worksheet.mergeCells('BF' + position, 'BG' + position);
-    worksheet.mergeCells('BH' + position, 'BI' + position);
-    worksheet.mergeCells('BJ' + position, 'BK' + position);
-    worksheet.mergeCells('BL' + position, 'BM' + position);
-    worksheet.mergeCells('BN' + position, 'BO' + position);
-    worksheet.mergeCells('BP' + position, 'BQ' + position);
-    worksheet.mergeCells('BR' + position, 'BS' + position);
-    worksheet.mergeCells('BT' + position, 'BU' + position);
-    worksheet.mergeCells('BV' + position, 'BW' + position);
-    worksheet.mergeCells('BX' + position, 'BY' + position);
-    worksheet.mergeCells('BZ' + position, 'CA' + position);
-
-  }
 
   private addFormatting(worksheet: Worksheet, position: number) {
 
@@ -1208,7 +1120,7 @@ export class ExcelFormatVesselDataRegisterService {
     };
   };
 
-  private AddReportTable(worksheet, posit, colum, selectUser: User, infoVessel: InfoVessel, textIFOorVLSFOorLSFO: string): number {
+  private AddReportTable(worksheet, posit, colum, selectUser: User, textIFOorVLSFOorLSFO: string): number {
     // Nos ubicamos en una posicion para empezar a poner los row
     // this.mergeCellReport(worksheet, position);
 
@@ -1445,41 +1357,41 @@ export class ExcelFormatVesselDataRegisterService {
       'voyageId', 'portId', 'dailyReportId', '', '',//E
 
 
-      'VOYAGE', '', //G
-      'DEPARTURE', '', '', '', //G
-      'ARRIVAL', '', '', '', //G
-      'DATE UTC', '', '', //J
-      'HOURS', '',  //L
-      'TIME', '', //N
-      'ACTIVITY PERFORMED', '', '', '',//R
-      'SPEED', '',
-      'OBSERVATION', '', '', '', '', '', '',//V
+      'VOYAGE',
+      'DEPARTURE',
+      'ARRIVAL',
+      'DATE UTC',
+      'HOURS',
+      'TIME',
+      'ACTIVITY PERFORMED',
+      'SPEED',
+      'OBSERVATION',
 
-      'DISTANCE', '',//X
-      'TIME', '',//Z
-      'SPEED', '',//AB
-      'BEAUFORT', '',//AD
+      'DISTANCE',
+      'TIME',
+      'SPEED',
+      'BEAUFORT',
 
-      'MPLA', '',//AF
-      'AUX', '',//AH
-      'BOILER', '',//AJ
-      'OTHER', '',//AL
-      'TOTAL', '',//AN
-      'DAILY COSUMTION', '',
-      'BUNKERING', '',//AP
-      'ROB', '',//AR
+      'MPLA',
+      'AUX',
+      'BOILER',
+      'OTHER',
+      'TOTAL',
+      'DAILY COSUMTION',
+      'BUNKERING',
+      'ROB',
 
 
-      'MPLA', '',//AF
-      'AUX', '',//AH
-      'BOILER', '',//AJ
-      'P.P', '',//AJ
-      'G.I', '',//AJ
-      'OTHER', '',//AL
-      'TOTAL', '',//AN
-      'DAILY COSUMTION', '',
-      'BUNKERING', '',//AP
-      'ROB', '',//AR },
+      'MPLA',
+      'AUX',
+      'BOILER',
+      'P.P',
+      'G.I',
+      'OTHER',
+      'TOTAL',
+      'DAILY COSUMTION',
+      'BUNKERING',
+      'ROB'
     ]);
     worksheet.getCell('F' + positionRow).style = {
       alignment: {
@@ -2228,7 +2140,6 @@ export class ExcelFormatVesselDataRegisterService {
       }
     };
 
-    this.mergeCellReport(worksheet, positionRow);
 
 
 
