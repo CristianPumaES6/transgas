@@ -1077,8 +1077,8 @@ export class ExcelFormatVesselDataRegisterService {
     }
     worksheet.mergeCells('O' + positionRow, 'R' + positionRow);
 
-    worksheet.getCell('AR' + positionRow).value = "PREVIOUS VOYAGE";
-    worksheet.getCell('AR' + positionRow).style = {
+    worksheet.getCell('S' + positionRow).value = "PREVIOUS VOYAGE";
+    worksheet.getCell('S' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -1102,10 +1102,10 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.mergeCells('AR' + positionRow, 'BD' + positionRow);
+    worksheet.mergeCells('S' + positionRow, 'W' + positionRow);
 
-    worksheet.getCell('BE' + positionRow).value = <any>{ formula: 'AK7' };
-    worksheet.getCell('BE' + positionRow).style = {
+    worksheet.getCell('X' + positionRow).value = <any>{ formula: 'AK7' };
+    worksheet.getCell('X' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -1130,11 +1130,11 @@ export class ExcelFormatVesselDataRegisterService {
       }
     };
 
-    worksheet.mergeCells('BE' + positionRow, 'BG' + positionRow);
+    worksheet.mergeCells('X' + positionRow, 'Z' + positionRow);
 
 
-    worksheet.getCell('BH' + positionRow).value = "PREVIOUS VOYAGE";
-    worksheet.getCell('BH' + positionRow).style = {
+    worksheet.getCell('AA' + positionRow).value = "PREVIOUS VOYAGE";
+    worksheet.getCell('AA' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -1158,9 +1158,9 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.mergeCells('BH' + positionRow, 'BX' + positionRow);
-    worksheet.getCell('BY' + positionRow).value = <any>{ formula: 'AM7' };
-    worksheet.getCell('BY' + positionRow).style = {
+    worksheet.mergeCells('AA' + positionRow, 'AG' + positionRow);
+    worksheet.getCell('AH' + positionRow).value = <any>{ formula: 'AM7' };
+    worksheet.getCell('AH' + positionRow).style = {
       alignment: {
         horizontal: 'right',
         vertical: 'middle'
@@ -1184,7 +1184,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.mergeCells('BY' + positionRow, 'CA' + positionRow);
+    worksheet.mergeCells('AH' + positionRow, 'AJ' + positionRow);
 
 
     positionRow += 1;
@@ -1551,7 +1551,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AR' + positionRow).style = {
+    worksheet.getCell('S' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
