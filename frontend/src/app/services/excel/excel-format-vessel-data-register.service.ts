@@ -202,11 +202,12 @@ export class ExcelFormatVesselDataRegisterService {
       { width: 8 }, // F Numero Viaje
       { width: 16 }, // G Numero Puerto
       { width: 16 }, // H Departure
-      { width: 16 }, // I Arrival
-      { width: 8 }, // startDate
-      { width: 8 }, // startIFO
-      { width: 8 }, // startMGO
-      { width: 16 }, // date
+      { width: 16 }, // I DATE
+      { width: 8 }, // J   Hour
+      { width: 14 }, // k ACTIVITY 
+      { width: 10 }, //  L 
+      { width: 8 }, //  M 
+      { width: 24 }, // N
       { width: 8 }, // hour
       { width: 8 }, // steamingTime
       { width: 4 },
@@ -340,7 +341,8 @@ export class ExcelFormatVesselDataRegisterService {
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
           getReportVoyagePortDaily.dailyReportId,
-          '', '',
+          getReportVoyagePortDaily.userId, 
+          getReportVoyagePortDaily.year,
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year,
           getReportVoyagePortDaily.departurePort,
           getReportVoyagePortDaily.arrivalPort,
@@ -384,6 +386,13 @@ export class ExcelFormatVesselDataRegisterService {
           // RobIFO
           { formula: 'AJ' + (positionRow - 1) + '-AG' + positionRow + '+AI' + positionRow },
 
+          getReportVoyagePortDaily.north_degree,
+          getReportVoyagePortDaily.north_minutes,
+          getReportVoyagePortDaily.north_north_south,
+
+          getReportVoyagePortDaily.east_degree,
+          getReportVoyagePortDaily.east_minutes,
+          getReportVoyagePortDaily.east_east_west
         ];
 
         worksheet.addRow(dataRow);
@@ -1179,44 +1188,53 @@ export class ExcelFormatVesselDataRegisterService {
 
     positionRow += 1;
     worksheet.addRow([
-      'voyageId', 'portId', 'dailyReportId', '', '',//E
+      'voyageId', 'portId', 'dailyReportId', 'userId', 'year',//E
 
 
       'VOYAGE',
-      'DEPARTURE',
-      'ARRIVAL',
-      'DATE UTC',
-      'HOURS',
-      'TIME',
-      'ACTIVITY PERFORMED',
+      'departurePort',
+      'arrivalPort',
+      'date',
+      'hour',
+      'steamingTime',
+      'activityPerformed',
       'SPEED',
-      'OBSERVATION',
+      'observation',
 
-      'DISTANCE',
-      'TIME',
-      'SPEED',
-      'BEAUFORT',
+      'distance',
+      'steamingTime',
+      'SPEED22',
+      'beaufour',
 
-      'MPLA',
-      'AUX',
-      'BOILER',
-      'OTHER',
+      'mplaIfo',
+      'auxIfo',
+      'boilerIfo',
+      'otherIfo',
       'TOTAL',
       'DAILY COSUMTION',
-      'BUNKERING',
+      'bunkeringIfo',
       'ROB',
 
 
-      'MPLA',
-      'AUX',
-      'BOILER',
-      'P.P',
-      'G.I',
-      'OTHER',
+      'mplaMgo',
+      'auxMgo',
+      'boilerMgo',
+      'ppMgo',
+      'giMgo',
+      'otherMgo',
       'TOTAL',
       'DAILY COSUMTION',
-      'BUNKERING',
-      'ROB'
+      'bunkeringMgo',
+      'ROB',
+
+      'north_degree',
+      'north_minutes',
+      'north_north_south',
+      
+      'east_degree',
+      'east_minutes',
+      'east_east_west'
+      
     ]);
     worksheet.getCell('F' + positionRow).style = {
       alignment: {
@@ -2247,138 +2265,7 @@ export class ExcelFormatVesselDataRegisterService {
 
 
 
-  // Opcion que exporta el excel.
-  public async ExportReporteEntryForUser(selectUser: User): Promise<boolean> {
-
-
-    // Creamos una nueva hoja de trabajo
-    let workbook = new Workbook();
-    workbook.creator = 'codev.site';
-
-
-    let listGetReport: GetReportVoyagePortDaily[] = [];
-    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
-
-    return await Promise.resolve(true)
-      .then(
-        result => {
-          // Buscamos la informacion del combustible de inicio y fin segun la fecha.
-          return this.GetReporteEntryForUser(selectUser.id).pipe().toPromise();
-        }).then(
-          result => {
-            if (!result) throw 'ERROR GER REPORT';
-            listGetReport = result;
-
-            // aGREGAMOS LA HOJA DE TRABAJO
-            let worksheet = workbook.addWorksheet(selectUser.name);
-
-
-            worksheet.columns = [
-              { header: 'userId', key: 'userId' },
-              { header: 'year', key: 'year' },
-
-
-              { header: 'voyageId', key: 'voyageId' },
-              { header: 'voyageNumber', key: 'voyageNumber' },
-              { header: 'portId', key: 'portId' },
-              { header: 'portNumber', key: 'portNumber' },
-              { header: 'dailyReportId', key: 'dailyReportId' },
-              { header: 'departurePort', key: 'departurePort' },
-              { header: 'arrivalPort', key: 'arrivalPort' },
-
-              { header: 'activityPerformed', key: 'activityPerformed' },
-              { header: 'date', key: 'date' },
-              { header: 'hour', key: 'hour' },
-
-              { header: 'bunkeringIfo', key: 'bunkeringIfo' },
-              { header: 'bunkeringMgo', key: 'bunkeringMgo' },
-
-              { header: 'mplaIfo', key: 'mplaIfo' },
-              { header: 'auxIfo', key: 'auxIfo' },
-              { header: 'boilerIfo', key: 'boilerIfo' },
-              { header: 'otherIfo', key: 'otherIfo' },
-
-              { header: 'mplaMgo', key: 'MplaMgo' },
-              { header: 'auxMgo', key: 'auxMgo' },
-              { header: 'boilerMgo', key: 'boilerMgo' },
-              { header: 'ppMgo', key: 'ppMgo' },
-              { header: 'giMgo', key: 'giMgo' },
-              { header: 'otherMgo', key: 'otherMgo' },
-
-
-
-              { header: 'steamingTime', key: 'steamingTime' },
-              { header: 'speedStraction', key: 'speedStraction' },
-              { header: 'distance', key: 'distance' },
-              { header: 'beaufour', key: 'beaufour' },
-              { header: 'observation', key: 'observation' },
-
-              { header: 'status', key: 'status' },
-            ];
-
-
-            let positionRow = 0;
-            listGetReport.forEach(
-              (report) => {
-
-
-                positionRow += 1;
-                worksheet.addRow({
-                  userId: report.userId,
-                  year: report.year,
-
-                  voyageId: report.voyageId,
-                  voyageNumber: report.voyageNumber,
-                  portId: report.portId,
-                  portNumber: report.portNumber,
-                  dailyReportId: report.dailyReportId,
-
-                  departurePort: report.departurePort,
-                  arrivalPort: report.arrivalPort,
-
-                  activityPerformed: report.activityPerformed,
-                  date: report.date,
-                  hour: report.hour,
-
-                  bunkeringIfo: report.bunkeringIfo,
-                  bunkeringMgo: report.bunkeringMgo,
-
-                  mplaIfo: report.mplaIfo,
-                  auxIfo: report.auxIfo,
-                  boilerIfo: report.boilerIfo,
-                  otherIfo: report.otherIfo,
-
-                  mplaMgo: report.mplaMgo,
-                  auxMgo: report.auxMgo,
-                  boilerMgo: report.boilerMgo,
-                  ppMgo: report.ppMgo,
-                  giMgo: report.giMgo,
-                  otherMgo: report.otherMgo,
-
-
-                  steamingTime: report.steamingTime,
-                  distance: report.distance,
-                  speedStraction: report.speedStraction,
-                  beaufour: report.beaufour,
-                  observation: report.observation,
-
-                  status: 1
-                });
-
-              }
-            );
-
-
-            // Escribimos el excel
-            workbook.xlsx.writeBuffer().then((data) => {
-              let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-              fs.saveAs(blob, 'Report.xlsx');
-            });
-
-            return true;
-          }
-        );
-  }
+   
 
 
   // Obtenemos la info de todos los viajes agregado.
