@@ -210,51 +210,51 @@ export class ExcelFormatVesselDataRegisterService {
       { width: 24 }, // N
       { width: 8 }, // hour
       { width: 8 }, // steamingTime
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
-      { width: 4 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
+      { width: 8 },
       { width: 4 },
       { width: 4 },
       { width: 4 },
@@ -991,8 +991,8 @@ export class ExcelFormatVesselDataRegisterService {
     let positionRows = [positionRow, positionRow];
     let positionColumns = [colum, colum + 53];
 
-    worksheet.getCell('AR' + positionRow).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
-    worksheet.getCell('AR' + positionRow).style = {
+    worksheet.getCell('S' + positionRow).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
+    worksheet.getCell('S' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1017,10 +1017,10 @@ export class ExcelFormatVesselDataRegisterService {
       }
 
     }
-    worksheet.mergeCells('AR' + positionRow, 'BG' + positionRow);
+    worksheet.mergeCells('S' + positionRow, 'Z' + positionRow);
 
-    worksheet.getCell('BH' + positionRow).value = "MGO CONSUMPTION IN MT";
-    worksheet.getCell('BH' + positionRow).style = {
+    worksheet.getCell('AA' + positionRow).value = "MGO CONSUMPTION IN MT";
+    worksheet.getCell('AA' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1045,11 +1045,12 @@ export class ExcelFormatVesselDataRegisterService {
       }
 
     };
-    worksheet.mergeCells('BH' + positionRow, 'CA' + positionRow);
+    worksheet.mergeCells('AA' + positionRow, 'AJ' + positionRow);
 
+    // Salto de linea
     positionRow += 1;
-    worksheet.getCell('AJ' + positionRow).value = "NAVIGATION DATA";
-    worksheet.getCell('AJ' + positionRow).style = {
+    worksheet.getCell('O' + positionRow).value = "NAVIGATION DATA";
+    worksheet.getCell('O' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1074,7 +1075,7 @@ export class ExcelFormatVesselDataRegisterService {
       }
 
     }
-    worksheet.mergeCells('AJ' + positionRow, 'AQ' + positionRow);
+    worksheet.mergeCells('O' + positionRow, 'R' + positionRow);
 
     worksheet.getCell('AR' + positionRow).value = "PREVIOUS VOYAGE";
     worksheet.getCell('AR' + positionRow).style = {
@@ -1198,7 +1199,7 @@ export class ExcelFormatVesselDataRegisterService {
       'hour',
       'steamingTime',
       'activityPerformed',
-      'SPEED',
+      'speedStraction',
       'observation',
 
       'distance',
@@ -1454,7 +1455,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AJ' + positionRow).style = {
+    worksheet.getCell('O' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
