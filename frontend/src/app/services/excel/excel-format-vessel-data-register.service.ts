@@ -678,9 +678,6 @@ export class ExcelFormatVesselDataRegisterService {
     let redMedium = 'ffa4a4';
     let redLow = 'ffd6d6';
 
-    // Agregar formato a una fcelda
-    worksheet.getCell('P' + position).numFmt = 'm/d/yyyy';
-
     // Agrega formato a Actividad
     worksheet.addConditionalFormatting({
       ref: 'W' + position + ':Z' + position,
@@ -1203,7 +1200,7 @@ export class ExcelFormatVesselDataRegisterService {
       'observation',
 
       'distance',
-      'steamingTime',
+      'steamingTime2',
       'SPEED22',
       'beaufour',
 
@@ -1262,6 +1259,30 @@ export class ExcelFormatVesselDataRegisterService {
       }
     };
 
+    worksheet.getCell('G' + positionRow).style = {
+      alignment: {
+        horizontal: 'center',
+        vertical: 'middle'
+      },
+      font: {
+        size: 8,
+        bold: true,
+        color: { argb: white },
+      },
+      fill: {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+          argb: blueHard1
+        }
+      },
+      border: {
+        top: { style: 'thin', color: { argb: grisSuave } },
+        left: { style: 'thin', color: { argb: grisSuave } },
+        bottom: { style: 'thin', color: { argb: grisSuave } },
+        right: { style: 'thin', color: { argb: grisSuave } }
+      }
+    };
     worksheet.getCell('H' + positionRow).style = {
       alignment: {
         horizontal: 'center',
@@ -1286,32 +1307,8 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('L' + positionRow).style = {
-      alignment: {
-        horizontal: 'center',
-        vertical: 'middle'
-      },
-      font: {
-        size: 8,
-        bold: true,
-        color: { argb: white },
-      },
-      fill: {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: {
-          argb: blueHard1
-        }
-      },
-      border: {
-        top: { style: 'thin', color: { argb: grisSuave } },
-        left: { style: 'thin', color: { argb: grisSuave } },
-        bottom: { style: 'thin', color: { argb: grisSuave } },
-        right: { style: 'thin', color: { argb: grisSuave } }
-      }
-    };
 
-    worksheet.getCell('P' + positionRow).style = {
+    worksheet.getCell('I' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1359,7 +1356,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('U' + positionRow).style = {
+    worksheet.getCell('K' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1383,7 +1380,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('W' + positionRow).style = {
+    worksheet.getCell('L' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1407,7 +1404,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AA' + positionRow).style = {
+    worksheet.getCell('N' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1455,7 +1452,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('O' + positionRow).style = {
+    worksheet.getCell('I' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1479,7 +1476,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('AL' + positionRow).style = {
+    worksheet.getCell('L' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
@@ -1551,7 +1548,7 @@ export class ExcelFormatVesselDataRegisterService {
         right: { style: 'thin', color: { argb: grisSuave } }
       }
     };
-    worksheet.getCell('S' + positionRow).style = {
+    worksheet.getCell('J' + positionRow).style = {
       alignment: {
         horizontal: 'center',
         vertical: 'middle'
