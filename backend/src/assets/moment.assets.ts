@@ -45,3 +45,8 @@ export function FormatDateSumDays(dateUTC: any, subtractDays: number): string {
     // damos formato a una fecha.
     return subtract.format('YYYY-MM-DD HH:mm:ss') + 'Z';
 }
+export function ConvertMomentUTC(dateUTC): moment.Moment {
+
+    // lo desencripto
+    return moment.utc(dateUTC);
+}

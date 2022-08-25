@@ -20,7 +20,7 @@ async function bootstrap() {
 
   // the next two lines did the trick
   // app.use(bodyParser.json({limit: '50mb'}));
-  // pp.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+  // app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
   
   // Habilitamos el CORS
   // app.use(cors(options))

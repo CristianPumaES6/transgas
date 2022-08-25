@@ -10,7 +10,7 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
+import { ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport } from '../../models/daily-report.entity';
@@ -437,143 +437,148 @@ export class VoyagesController {
     // Registra viajes desde un arreglo del objeto Port.
     @Post('importVoyages')
     async ImportJSONVoyages(@Headers() headers, @Body() ImportVoyages: ImportVoyage[]): Promise<any> {
-        
+
         try {
-            
+
             let headerToken: UserEntity = JwtDecode(headers.authorization);
 
             if (!(headerToken.role === 'SUPPORT')) {
                 return 'HOLA QUE HACES? Escribeme WSP => +51976873362';
             }
-    
+
             let MappingVoyage: Mapping[] = [];
             let MappingPort: Mapping[] = [];
-            
+
             for await (const importVoyage of ImportVoyages) {
-    
-                let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-    
-                let userId= importVoyage.userId;
-                // Consultamos si el numero de viaje ya lo tenemos mapeado.
-                // Si no lo tuvieramos lo registrariamos.
-                if (!existeViaje) {
-    
-                    // Hacemos una consulta si tenemos el numero de viaje en tal año.
-                    let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year,userId);
-    
-                    // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
-                    if (!voyageExistente) {
-    
-                        // ARMAMOS AL NUEVO VIAJE
-                        let newVoyage = new Voyage();
-                        delete newVoyage.id;
-                        newVoyage.userId = importVoyage.userId;
-                        newVoyage.voyageNumber = importVoyage.voyageNumber;
-                        newVoyage.year = importVoyage.year;
-                        // Auditoria.
-                        newVoyage.userIdCreated = headerToken.id;
-                        newVoyage.dateCreated = GetDate();
-                        delete newVoyage.userIdUpdated;
-                        delete newVoyage.dateUpdated;
-                        newVoyage.status = true;
-    
-                        // LO REGISTRAMOS
-                        let voyageRegister = await this._voyagesService.Create(newVoyage);
-    
-                        // Lo agregamos al mapping
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
-                        // Reset mapping Port
-                        MappingPort = [];
-                    } else {
-                        // Agregamos al mapping el id buscado por numero de viaje.
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
-                    }
-                }
 
-                // Actualizamos el viaje
-                existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-                // Consultamos si tenemos mapeado el puerto.
-                // Si no lo tuvieramos lo registrariamos.
-                let existePort = searchKey(MappingPort, importVoyage.portNumber);
-                if (!existePort) {
-    
-                    // Consultamos si existe el numero de puerto en el viaje.
-                    let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value,userId)
-                                                          
-    
-                    // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
-                    if (!portExiste) {
-                        let newPort = new Port();
-                        delete newPort.id;
-                        newPort.userId = importVoyage.userId;
-                        newPort.voyageId = existeViaje.value;
-                        newPort.departurePort = importVoyage.departurePort;
-                        newPort.arrivalPort = importVoyage.arrivalPort;
-                        newPort.portNumber = importVoyage.portNumber
-                        // Auditoria.
-                        newPort.userIdCreated = headerToken.id;
-                        newPort.dateCreated = GetDate();
-                        delete newPort.userIdUpdated;
-                        delete newPort.dateUpdated;
-                        newPort.status = true;
-    
-                        // Lo registramos
-                        let portRegister = await this._portsService.Create(newPort);
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
-                    } else {
-                        // Agregamos al mapping el id buscado por numero de viaje.
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id))
-                    }
-    
-                }
-                // Actualizamos el puerto
-                existePort = searchKey(MappingPort, importVoyage.portNumber);
-    
-
-
-
-
-
-
-
+                // ESto lo comenbe por que no queria registrar ningun viaje solore reportes
+                /* 
+                          let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+              
+                          let userId= importVoyage.userId;
+                          // Consultamos si el numero de viaje ya lo tenemos mapeado.
+                          // Si no lo tuvieramos lo registrariamos.
+                          if (!existeViaje) {
+              
+                              // Hacemos una consulta si tenemos el numero de viaje en tal año.
+                              let voyageExistente = await this._voyagesService.ThisVoyageNumberExists(importVoyage.voyageNumber, importVoyage.year,userId);
+              
+                              // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+                              if (!voyageExistente) {
+              
+                                  // ARMAMOS AL NUEVO VIAJE
+                                  let newVoyage = new Voyage();
+                                  delete newVoyage.id;
+                                  newVoyage.userId = importVoyage.userId;
+                                  newVoyage.voyageNumber = importVoyage.voyageNumber;
+                                  newVoyage.year = importVoyage.year;
+                                  // Auditoria.
+                                  newVoyage.userIdCreated = headerToken.id;
+                                  newVoyage.dateCreated = GetDate();
+                                  delete newVoyage.userIdUpdated;
+                                  delete newVoyage.dateUpdated;
+                                  newVoyage.status = true;
+              
+                                  // LO REGISTRAMOS
+                                  let voyageRegister = await this._voyagesService.Create(newVoyage);
+              
+                                  // Lo agregamos al mapping
+                                  MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
+                                  // Reset mapping Port
+                                  MappingPort = [];
+                              } else {
+                                  // Agregamos al mapping el id buscado por numero de viaje.
+                                  MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
+                              }
+                          }
+          
+                          // Actualizamos el viaje
+                          existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+              
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+                          // Consultamos si tenemos mapeado el puerto.
+                          // Si no lo tuvieramos lo registrariamos.
+                          let existePort = searchKey(MappingPort, importVoyage.portNumber);
+                          if (!existePort) {
+              
+                              // Consultamos si existe el numero de puerto en el viaje.
+                              let portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value,userId)
+                                                                    
+              
+                              // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+                              if (!portExiste) {
+                                  let newPort = new Port();
+                                  delete newPort.id;
+                                  newPort.userId = importVoyage.userId;
+                                  newPort.voyageId = existeViaje.value;
+                                  newPort.departurePort = importVoyage.departurePort;
+                                  newPort.arrivalPort = importVoyage.arrivalPort;
+                                  newPort.portNumber = importVoyage.portNumber
+                                  // Auditoria.
+                                  newPort.userIdCreated = headerToken.id;
+                                  newPort.dateCreated = GetDate();
+                                  delete newPort.userIdUpdated;
+                                  delete newPort.dateUpdated;
+                                  newPort.status = true;
+              
+                                  // Lo registramos
+                                  let portRegister = await this._portsService.Create(newPort);
+                                  MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
+                              } else {
+                                  // Agregamos al mapping el id buscado por numero de viaje.
+                                  MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id))
+                              }
+              
+                          } 
+                          // Actualizamos el puerto
+                          existePort = searchKey(MappingPort, importVoyage.portNumber);
+              
+          
+          
+          */
 
 
 
-                
+
+
+
+
+
                 // Armamos el obj de reporte.
                 let newReport = new DailyReport();
-                delete newReport.id;
-                newReport.userId = importVoyage.userId;
-                newReport.portId = existePort.value;
-    
-               // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
-               let  textoCadena:string = importVoyage.date;
+                // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear le pondria null
+                newReport.id = importVoyage.dailyReportId;
+                delete newReport.userId;
+                delete newReport.portId;
+                //  newReport.userId = importVoyage.userId;
+                //  newReport.portId = existePort.value;
 
-        /*        if(importVoyage.date.length == 15){
-               newReport.date = <any> textoCadena.slice(0,-7)
-               } else if(importVoyage.date.length == 14){
-                newReport.date = <any> textoCadena.slice(0,-6)
-                }
-                else{
-                    console.log('REVISAR LA FECHA ERROR') 
-                    throw  'REVISAR LA FECHA ERRROR'
-                } */
-                newReport.date = <any> textoCadena;
-               newReport.hour = importVoyage.hour.slice(-5)
+                // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
+                let textoCadena: any = importVoyage.date;
+
+                /*        if(importVoyage.date.length == 15){
+                       newReport.date = <any> textoCadena.slice(0,-7)
+                       } else if(importVoyage.date.length == 14){
+                        newReport.date = <any> textoCadena.slice(0,-6)
+                        }
+                        else{
+                            console.log('REVISAR LA FECHA ERROR') 
+                            throw  'REVISAR LA FECHA ERRROR'
+                        } */
+                newReport.date = <any>textoCadena;
+                newReport.hour = importVoyage.hour;
 
                 /* 
                 // Verificamos si existe una hora,
@@ -591,8 +596,8 @@ export class VoyagesController {
 
                 // -*--------------------------FIN MODIFICACION
 
-                
-    
+
+
 
                 newReport.mplaIfo = importVoyage.mplaIfo || 0;
                 newReport.auxIfo = importVoyage.auxIfo || 0;
@@ -603,10 +608,10 @@ export class VoyagesController {
                 newReport.boilerMgo = importVoyage.boilerMgo || 0;
                 newReport.ppMgo = importVoyage.ppMgo || 0;
                 newReport.giMgo = importVoyage.giMgo || 0;
-                newReport.otherMgo =  importVoyage.otherMgo || 0;
+                newReport.otherMgo = importVoyage.otherMgo || 0;
                 newReport.steamingTime = importVoyage.steamingTime || 0;
                 newReport.distance = importVoyage.distance || 0;
-    
+
                 if (!importVoyage.beaufour) {
                     newReport.beaufour = '';
                 } else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
@@ -624,50 +629,50 @@ export class VoyagesController {
                 } else {
                     newReport.beaufour = importVoyage.beaufour;
                 }
-    
+
                 newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
                 newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
-    
+
                 newReport.observation = importVoyage.observation;
-    
+
                 newReport.activityPerformed = importVoyage.activityPerformed;
                 if (newReport.activityPerformed == 'CARGANDO') {
                     newReport.activityPerformed = 'LOADING';
-    
+
                 } else if (newReport.activityPerformed == 'DESCARGANDO') {
                     newReport.activityPerformed = 'DOWNLOADING';
-    
+
                 } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
                     newReport.activityPerformed = 'SAILING_IN_BALLAST';
-    
+
                 } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
                     newReport.activityPerformed = 'SAILING_WITH_LADEN';
-    
+
                 } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
                     newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
-    
+
                 } else if (newReport.activityPerformed == 'FONDEADO') {
                     newReport.activityPerformed = 'ANCHORED';
-    
+
                 } else if (newReport.activityPerformed == 'MANIOBRA') {
                     newReport.activityPerformed = 'MANEUVER';
-    
+
                 } else if (newReport.activityPerformed == 'OTRAS ACT.') {
                     newReport.activityPerformed = 'OTHER_ACT';
                 }
                 // Tipo de velocidad.
                 newReport.speedStraction = importVoyage.speedStraction;
                 newReport.observation = importVoyage.observation;
-    
 
-                
 
-                newReport.north_degree = importVoyage.north_degree || 0,
-                newReport.north_minutes = importVoyage.north_minutes || 0,
-                newReport.north_north_south = importVoyage.north_north_south || '',
-                newReport.east_degree = importVoyage.east_degree || 0,
-                newReport.east_minutes = importVoyage.east_minutes || 0,
-                newReport.east_east_west = importVoyage.east_east_west || '',
+
+
+                newReport.north_degree = importVoyage.north_degree || 0;
+                newReport.north_minutes = importVoyage.north_minutes || 0;
+                newReport.north_north_south = importVoyage.north_north_south || '';
+                newReport.east_degree = importVoyage.east_degree || 0;
+                newReport.east_minutes = importVoyage.east_minutes || 0;
+                newReport.east_east_west = importVoyage.east_east_west || '';
 
 
                 // Auditoria.
@@ -676,11 +681,11 @@ export class VoyagesController {
                 delete newReport.userIdUpdated;
                 delete newReport.dateUpdated;
                 newReport.status = true;
-    
-                await this._dailyReportsService.Create(newReport);
-    
+
+                await this._dailyReportsService.Update(newReport);
+
             }
-    
+
             return 'Se registraron los datos correctamente.';
 
 
