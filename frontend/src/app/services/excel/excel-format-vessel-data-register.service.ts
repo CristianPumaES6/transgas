@@ -194,47 +194,47 @@ export class ExcelFormatVesselDataRegisterService {
     // Hasta la E las columnas son invisibles para guardar algo.
     // apartir de la F todas las columnas tienen el mismo tamanio
     worksheet.columns = [
-      { width: 0 }, // A
-      { width: 0 }, // B
-      { width: 0 }, // C
-      { width: 0 }, // D
-      { width: 0 }, // E
+      { width: 0 }, // A   voyageId
+      { width: 0 }, // B   portId 
+      { width: 0 }, // C   dailyReportId
+      { width: 0 }, // D   userId
+      { width: 0 }, // E   year
       { width: 8 }, // F Numero Viaje
-      { width: 16 }, // G Numero Puerto
-      { width: 16 }, // H Departure
-      { width: 16 }, // I DATE
+      { width: 16 }, // G Departure
+      { width: 16 }, // H Arrival
+      { width: 16 }, // I DATE UTC
       { width: 8 }, // J   Hour
-      { width: 14 }, // k ACTIVITY 
-      { width: 10 }, //  L 
-      { width: 8 }, //  M 
-      { width: 24 }, // N
-      { width: 8 }, // hour
-      { width: 8 }, // steamingTime
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
-      { width: 8 },
+      { width: 14 }, // k    steamingTime2
+      { width: 10 }, //  L  ACTIVITY
+      { width: 8 }, //  M     Tipo de velocidad
+      { width: 24 }, // N     Observacione
+      { width: 8 }, // Distance
+      { width: 8 }, // P   steamingTime2
+      { width: 8 }, //Q    SPEED
+      { width: 8 },  //R   BEFOUR
+      { width: 8 },  //S    MPLA
+      { width: 8 },  //T AUX
+      { width: 8 },  // U Boiler ifo
+      { width: 8 }, // V other
+      { width: 8 }, // Total Consumop
+      { width: 8 }, // COnsumo diario
+      { width: 8 }, // BUNKERING
+      { width: 8 }, // Z  ROB
+      { width: 8 }, // AA     mplaMGO
+      { width: 8 }, // AB auxMGO 
+      { width: 8 }, // AC Boilker
+      { width: 8 }, // AD 
+      { width: 8 }, // AE
+      { width: 8 }, //AF
+      { width: 8 }, // AG
+      { width: 8 }, // AH
+      { width: 8 }, // AI
+      { width: 8 }, //AK
+      { width: 8 }, /// AL
+      { width: 8 }, // AM
+      { width: 8 }, // AN
+      { width: 8 }, // AO
+      { width: 8 }, // AP
       { width: 8 },
       { width: 8 },
       { width: 8 },
@@ -343,7 +343,7 @@ export class ExcelFormatVesselDataRegisterService {
           getReportVoyagePortDaily.dailyReportId,
           getReportVoyagePortDaily.userId, 
           getReportVoyagePortDaily.year,
-          'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year,
+          getReportVoyagePortDaily.voyageNumber,
           getReportVoyagePortDaily.departurePort,
           getReportVoyagePortDaily.arrivalPort,
           getReportVoyagePortDaily.date,
@@ -392,7 +392,8 @@ export class ExcelFormatVesselDataRegisterService {
 
           getReportVoyagePortDaily.east_degree,
           getReportVoyagePortDaily.east_minutes,
-          getReportVoyagePortDaily.east_east_west
+          getReportVoyagePortDaily.east_east_west,
+          getReportVoyagePortDaily.typeActivityPerformed,
         ];
 
         worksheet.addRow(dataRow);
@@ -1231,7 +1232,8 @@ export class ExcelFormatVesselDataRegisterService {
       
       'east_degree',
       'east_minutes',
-      'east_east_west'
+      'east_east_west',
+      'typeActivityPerformed'
       
     ]);
     worksheet.getCell('F' + positionRow).style = {

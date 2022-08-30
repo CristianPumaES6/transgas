@@ -24,6 +24,8 @@ export class GetReportVoyagePortDaily {
 
         // Actividades realizada
         public activityPerformed?: string,
+        public typeActivityPerformed?: string,
+        
         //  SpeedStraction ECO_SPEED | FULL_SPEED
         public speedStraction?: string,
         // Observaciones
@@ -93,6 +95,7 @@ export class GetReportVoyagePortDaily {
         this.steamingTime = steamingTime || 0;
 
         this.activityPerformed = activityPerformed || '';
+        this.typeActivityPerformed = typeActivityPerformed || '';
         this.speedStraction = speedStraction || '';
         this.observation = observation || '';
 
