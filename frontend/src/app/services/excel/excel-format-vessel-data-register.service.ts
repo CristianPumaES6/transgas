@@ -1190,7 +1190,7 @@ export class ExcelFormatVesselDataRegisterService {
       'voyageId', 'portId', 'dailyReportId', 'userId', 'year',//E
 
 
-      'VOYAGE',
+      'voyageNumber',
       'departurePort',
       'arrivalPort',
       'date',
