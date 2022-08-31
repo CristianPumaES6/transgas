@@ -45,6 +45,7 @@ export class VoyageFilterByYears {
 // estructura de excel de importacion de
 export class ImportVoyage {
     voyageId:number;
+    portId:number;
     dailyReportId:number;
     userId: number;
     year: number;
