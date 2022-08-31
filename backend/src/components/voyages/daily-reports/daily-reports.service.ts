@@ -66,10 +66,10 @@ export class DailyReportsService {
 
                 } else {
                     return this._dailyReportRepository.find({
-                        where: {
+                        where: [{
                             id: id,
                             status: Not(false)
-                        }
+                        }]
                     });
                 }
 

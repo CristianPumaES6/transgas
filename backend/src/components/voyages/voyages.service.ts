@@ -124,10 +124,10 @@ export class VoyagesService {
                 } else {
 
                     return this.voyageRepository.find({
-                        where: {
+                        where: [{
                             id: id,
                             status: Not(false)
-                        }
+                        }]
                     });
 
                 }
@@ -338,7 +338,7 @@ export class VoyagesService {
 
     // Permite consultar si el numero de viaje existe
     // Retorna underfined si el viaje no existe.
-    async ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number,userId: number): Promise<Voyage> {
+    async ThisVoyageNumberExistsInTheYear(voyageNumber: number, yearVoyage: number,userId: number): Promise<Voyage> {
 
         return DummyPromise().then(
             result => {
@@ -368,7 +368,9 @@ export class VoyagesService {
 
                 // No vlaidamos resultado por que tambien puede ser underfine.
                 if (URL_Server.bd === 'MSSQL') {
-                    if (!resultFind && resultFind.length > 0) throw 'NO_REGISTER'
+                    if (!resultFind && resultFind.length > 0){
+                        throw 'NO_REGISTER'
+                    } 
                     return resultFind[0];
                 } else {
 
