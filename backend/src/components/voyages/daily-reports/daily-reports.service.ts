@@ -412,6 +412,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.hour', 'hour')
                 .addSelect('daily_report.steamingTime', 'steamingTime')
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.typeActivityPerformed', 'typeActivityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
                 .addSelect('daily_report.observation', 'observation')
 
