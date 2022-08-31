@@ -707,6 +707,9 @@ export class VoyagesController {
                 } else if (newReport.activityPerformed == 'OTRAS ACT.') {
                     newReport.activityPerformed = 'OTHER_ACT';
                 }
+
+                
+                newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
                 // Tipo de velocidad.
                 newReport.speedStraction = importVoyage.speedStraction;
                 newReport.observation = importVoyage.observation;
