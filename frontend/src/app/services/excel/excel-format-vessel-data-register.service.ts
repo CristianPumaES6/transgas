@@ -340,10 +340,10 @@ export class ExcelFormatVesselDataRegisterService {
         let dataRow = [
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
-          getReportVoyagePortDaily.dailyReportId,
-          getReportVoyagePortDaily.userId, 
+          getReportVoyagePortDaily.dailyReportId, 
           getReportVoyagePortDaily.year,
           getReportVoyagePortDaily.voyageNumber,
+          getReportVoyagePortDaily.portNumber,
           getReportVoyagePortDaily.departurePort,
           getReportVoyagePortDaily.arrivalPort,
           getReportVoyagePortDaily.date,
@@ -394,6 +394,7 @@ export class ExcelFormatVesselDataRegisterService {
           getReportVoyagePortDaily.east_minutes,
           getReportVoyagePortDaily.east_east_west,
           getReportVoyagePortDaily.typeActivityPerformed,
+          getReportVoyagePortDaily.userId,
         ];
 
         worksheet.addRow(dataRow);
@@ -1187,10 +1188,10 @@ export class ExcelFormatVesselDataRegisterService {
 
     positionRow += 1;
     worksheet.addRow([
-      'voyageId', 'portId', 'dailyReportId', 'userId', 'year',//E
-
+      'voyageId', 'portId', 'dailyReportId',  'year',//E
 
       'voyageNumber',
+      'portNumber',
       'departurePort',
       'arrivalPort',
       'date',
@@ -1233,7 +1234,8 @@ export class ExcelFormatVesselDataRegisterService {
       'east_degree',
       'east_minutes',
       'east_east_west',
-      'typeActivityPerformed'
+      'typeActivityPerformed',
+      'userId'
       
     ]);
     worksheet.getCell('F' + positionRow).style = {

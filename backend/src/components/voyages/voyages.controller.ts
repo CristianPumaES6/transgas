@@ -497,9 +497,10 @@ export class VoyagesController {
                         MappingPort = [];
                     } else {
                         if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO ES EL MISMO QUE EL DEL VIAJE'
-                        if (voyageExistente.voyageNumber != importVoyage.voyageNumber || voyageExistente.year != importVoyage.year) {
+                        if (voyageExistente.voyageNumber != importVoyage.voyageNumber
+                            || voyageExistente.year != importVoyage.year) {
 
-
+                            delete voyageExistente.ports;
                             voyageExistente.voyageNumber = importVoyage.voyageNumber;
                             voyageExistente.year = importVoyage.year;
                             voyageExistente.userIdUpdated = headerToken.id;
@@ -511,6 +512,8 @@ export class VoyagesController {
                         }
                         // Agregamos al mapping el id buscado por numero de viaje.
                         MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
+                        // Reset mapping Port
+                        MappingPort = [];
                     }
 
 
@@ -545,7 +548,7 @@ export class VoyagesController {
                         portExiste = await this._portsService.Get(importVoyage.portId)
                     }
 
-                    console.log('portExistet' + portExiste.voyageId)
+                    console.log('portExistet' + portExiste)
                     // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
                     if (!portExiste) {
                         let newPort = new Port();
@@ -555,6 +558,14 @@ export class VoyagesController {
                         newPort.departurePort = importVoyage.departurePort;
                         newPort.arrivalPort = importVoyage.arrivalPort;
                         newPort.portNumber = importVoyage.portNumber
+                        /*              
+                            ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
+                            OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
+                            newPort.startDate = <any>importVoyage.date;
+                            newPort.startIFO = <any>importVoyage.ROB[0] || 0;
+                            newPort.startMGO = <any>importVoyage.ROB[1] || 0;
+                        */
+
                         // Auditoria.
                         newPort.userIdCreated = headerToken.id;
                         newPort.dateCreated = GetDate();
@@ -571,8 +582,11 @@ export class VoyagesController {
                         console.log('Entro al else de port')
                         if (portExiste.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO ES EL MISMO QUE EL DEL PUERTO'
 
-                        if (portExiste.voyageId != importVoyage.voyageId
-                            || portExiste.portNumber != importVoyage.portNumber
+
+                        // ESTO SE DEBE DE TENER EN CUENTA SI DESEAMOS MODIFICAR LA POSICION DE UN 
+                        // PUERTO A OTRO VIAJEID
+                        // portExiste.voyageId != importVoyage.voyageId ||
+                        if (portExiste.portNumber != importVoyage.portNumber
                             || portExiste.departurePort != importVoyage.departurePort
                             || portExiste.arrivalPort != importVoyage.arrivalPort) {
 
@@ -580,7 +594,14 @@ export class VoyagesController {
                             portExiste.portNumber = importVoyage.portNumber
                             portExiste.departurePort = importVoyage.departurePort
                             portExiste.arrivalPort = importVoyage.arrivalPort
+                            /*      
+                                ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
+                                OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
+                                portExiste.startDate = <any>importVoyage.date || 0;
+                                portExiste.startIFO = <any>importVoyage.ROB[0] || 0;
+                                portExiste.startMGO = <any>importVoyage.ROB[1] || 0; */
 
+                            delete portExiste.dailyReports;
                             portExiste.dateUpdated = GetDate();
                             portExiste.status = true;
 
@@ -607,6 +628,12 @@ export class VoyagesController {
                 let newReport = new DailyReport();
                 // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear le pondria null
                 newReport.id = importVoyage.dailyReportId;
+
+                if (importVoyage.dailyReportId) {
+                    newReport.id = Number(importVoyage.dailyReportId);
+                } else {
+                    delete newReport.id;
+                }
                 // delete newReport.userId;
                 // delete newReport.portId;
                 newReport.userId = importVoyage.userId;
@@ -615,17 +642,22 @@ export class VoyagesController {
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
                 let textoCadena: any = importVoyage.date;
 
-                /*        if(importVoyage.date.length == 15){
-                       newReport.date = <any> textoCadena.slice(0,-7)
-                       } else if(importVoyage.date.length == 14){
+                /*
+                    if( importVoyage.date.length == 15 ){
+                        newReport.date = <any> textoCadena.slice(0,-7)
+                    } else if (importVoyage.date.length == 14){
                         newReport.date = <any> textoCadena.slice(0,-6)
-                        }
-                        else{
-                            console.log('REVISAR LA FECHA ERROR') 
-                            throw  'REVISAR LA FECHA ERRROR'
-                        } */
+                    } else {
+                        console.log('REVISAR LA FECHA ERROR') 
+                        throw  'REVISAR LA FECHA ERRROR'
+                    }
+                */
                 newReport.date = <any>textoCadena;
-                newReport.hour = importVoyage.hour;
+                if (textoCadena.length == 23) {
+                    newReport.hour = textoCadena.slice(11, 19)
+                } else {
+                    console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
+                }
 
                 /* 
                 // Verificamos si existe una hora,
@@ -708,7 +740,7 @@ export class VoyagesController {
                     newReport.activityPerformed = 'OTHER_ACT';
                 }
 
-                
+
                 newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
                 // Tipo de velocidad.
                 newReport.speedStraction = importVoyage.speedStraction;
@@ -732,7 +764,12 @@ export class VoyagesController {
                 delete newReport.dateUpdated;
                 newReport.status = true;
 
-                await this._dailyReportsService.Update(newReport);
+                // Si no tiene un reportId lo creamos
+                if (!importVoyage.dailyReportId) {
+                    await this._dailyReportsService.Create(newReport);
+                } else {
+                    await this._dailyReportsService.Update(newReport);
+                }
 
             }
 

@@ -58,6 +58,7 @@ export class ImportVoyage {
     hour: string;
     steamingTime: number;
     activityPerformed: string;
+    typeActivityPerformed: string;
     speedStraction:string;
     observation: string;
     distance?: any;
