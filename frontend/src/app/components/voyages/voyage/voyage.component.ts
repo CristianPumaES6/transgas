@@ -24,7 +24,7 @@ import { map, mergeMap, startWith } from 'rxjs/operators';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { DatabaseService } from '../../../services/database.service';
 import { Voyage } from '../../../models/voyage';
-import { ConvertirDateHourToMoment2, ConvertMMDDYYYYHHmmToMomment, ConvertMoment, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate, getYear, stringToDate, validateDate } from '../../../../assets/moment/moment.assets';
+import { ConvertirDateHourToMoment2, ConvertMMDDYYYYHHmmToMomment, ConvertMoment, ConvertMomentUTC, FormatDateUTCToDateHour, FormatDateUTCToDateHourUTC, GetDate, getYear, JuntarFechaYHoraUTCToMoment, JuntarFechaYHoraUTCToMoment2, stringToDate, stringUTCToDateUTC, validateDate } from '../../../../assets/moment/moment.assets';
 import { mathRound } from '../../../../assets/math/math.assets';
 import { DialogData, DialogDeleteComponent } from '../../../shared/dialog/delete/dialog-delete.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,6 +35,7 @@ import { DailyReportService } from '../../../services/daily-report.service';
 import { OnlineOfflineService } from '../../../services/online-offline.service';
 import { ConvertirDateHourToMoment, DiferentHourTwoMoment, FormatYYYYMMDD, FormatYYYYMMDDToSTRING } from '../../../../assets/moment/moment.assets';
 import { FormControl } from '@angular/forms';
+import { Moment } from 'moment';
 
 
 @Component({
@@ -430,7 +431,7 @@ export class VoyageComponent implements OnInit {
           (indexDaily) => {
             this.totalConsumpAndTimeByEquiment.AddConsumptionAndTime(indexDaily);
 
-            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily) + indexDaily.bunkeringIfo; 
+            robCurrentIFO = robCurrentIFO - this.TotalIFO(indexDaily) + indexDaily.bunkeringIfo;
             robCurrentMGO = robCurrentMGO - this.TotalMGO(indexDaily) + indexDaily.bunkeringMgo;
             indexDaily.robIfo = robCurrentIFO;
             indexDaily.robMgo = robCurrentMGO;
@@ -711,7 +712,7 @@ export class VoyageComponent implements OnInit {
 
 
             newPort.startDate = consumoTotalDeLosReportViajeAnterio.date;
-            newPort.startIFO = startROBIFOPenultimoPort - this.TotalIFO(consumoTotalDeLosReportViajeAnterio)  + consumoTotalDeLosReportViajeAnterio.bunkeringIfo;
+            newPort.startIFO = startROBIFOPenultimoPort - this.TotalIFO(consumoTotalDeLosReportViajeAnterio) + consumoTotalDeLosReportViajeAnterio.bunkeringIfo;
             newPort.startMGO = startROBMGOPenultimoPort - this.TotalMGO(consumoTotalDeLosReportViajeAnterio) + consumoTotalDeLosReportViajeAnterio.bunkeringMgo;
             this.selectPort = newPort;
 
@@ -804,6 +805,7 @@ export class VoyageComponent implements OnInit {
       if (!this.selectDailyReport.id) {
 
         let newDailyReport = this.selectDailyReport;
+
         newDailyReport.userId = this.selectUser.id;
         newDailyReport.portId = this.selectPort.id;
 
@@ -1036,11 +1038,22 @@ export class VoyageComponent implements OnInit {
     // Parseamos el obj para evirar cambios de valor de regerencia
     this.selectDailyReport = JSON.parse(JSON.stringify(dailyReportFind));
 
-    // Le asignamos la hora lastRecort
-    let convertMomentUTC = ConvertMomentUTC(dailyReportFind.date);
-    let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime, 'hours');
+    // SOLO PARA EL SEATMERIY
+    if (this.selectUser.id == 19) {
 
-    this.lastRecordedHour = FormatDateUTCToDateHour(restarStemintime);
+
+      // Le asignamos la hora lastRecort
+      let convertMomentUTC = ConvertMomentUTC(dailyReportFind.date);
+      let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime, 'hours');
+
+      this.lastRecordedHour = FormatDateUTCToDateHourUTC(restarStemintime);
+    } else {
+      // Le asignamos la hora lastRecort
+      let convertMomentUTC = ConvertMomentUTC(dailyReportFind.date);
+      let restarStemintime = convertMomentUTC.subtract(dailyReportFind.steamingTime, 'hours');
+
+      this.lastRecordedHour = FormatDateUTCToDateHour(restarStemintime);
+    }
 
     this.Initialize();
     this.disableEdit = false;
@@ -2047,8 +2060,14 @@ export class VoyageComponent implements OnInit {
     if (error) throw 'ERROR POR CAMPOS FORMULARIOS DAILY REPORT';
 
     newDailyReport.steamingTime = this.GenerateTimeOperation();
-    newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour);
 
+    if (this.selectUser.id == 19) {
+
+      newDailyReport.date = JuntarFechaYHoraUTCToMoment2(newDailyReport.date, newDailyReport.hour);
+
+    } else {
+      newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour);
+    }
 
     // Verificamos si estamos en linea
     if (false) {
@@ -2263,8 +2282,15 @@ export class VoyageComponent implements OnInit {
 
     dailyReportToSave.steamingTime = this.GenerateTimeOperation();
 
-    dailyReportToSave.date = ConvertirDateHourToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
+    if (this.selectUser.id == 19) {
 
+      dailyReportToSave.date = JuntarFechaYHoraUTCToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
+
+    } else {
+
+      dailyReportToSave.date = ConvertirDateHourToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
+
+    }
     // Verifico si estamos conexion a internet, si es asi descargo los usuarios.
     if (false) {
 
@@ -2625,7 +2651,12 @@ export class VoyageComponent implements OnInit {
         this.databaseService.GetLastReportDailys().then(
           result => {
 
-            this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
+            if (this.selectUser.id == 19) {
+              this.lastRecordedHour = FormatDateUTCToDateHourUTC(result.date);
+            } else {
+              this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
+            }
+
 
 
             // ya que se inicia un nuevo reporte, verificamos los cambios de la actividad.
@@ -2654,8 +2685,18 @@ export class VoyageComponent implements OnInit {
 
 
   private GenerateTimeOperation(): number {
+    let lastDateHour: Moment;
 
-    let lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
+    if (this.selectUser.id == 19) {
+      let dateSend = this.selectDailyReport.date;
+      lastDateHour = ConvertirDateHourToMoment(dateSend, this.selectDailyReport.hour);
+
+    } else {
+      lastDateHour = ConvertirDateHourToMoment(this.selectDailyReport.date, this.selectDailyReport.hour);
+    }
+
+    if (!lastDateHour) return 0;
+
     let momendate = ConvertMMDDYYYYHHmmToMomment(this.lastRecordedHour);
 
     let diferentHour = DiferentHourTwoMoment(lastDateHour, momendate);
@@ -2714,7 +2755,13 @@ export class VoyageComponent implements OnInit {
 
   // Mejorar esto
   public FormatDate(fecha: any): string {
-    let formatfecha = stringToDate(fecha);
+    let formatfecha;
+    // Esto solo lo pongo para  el usuario seatmerit que trabaraja con horario utc
+    if (this.selectUser.id == 19) {
+      formatfecha = stringUTCToDateUTC(fecha);
+    } else {
+      formatfecha = stringToDate(fecha);
+    }
 
     return formatfecha;
   }
@@ -2769,10 +2816,17 @@ export class VoyageComponent implements OnInit {
     return result;
   }
 
-  public FormatDateUTCToDateHour2(dateUTC: any) {
+  public FormatDateUTCToDateHour2(dateUTC: any): string {
 
+    let result = '';
 
-    return FormatDateUTCToDateHour(dateUTC);
+    // Esto solo lo pongo para  el usuario seatmerit que trabaraja con horario utc
+    if (this.selectUser.id == 19) {
+      result = FormatDateUTCToDateHourUTC(dateUTC);
+    } else {
+      result = FormatDateUTCToDateHour(dateUTC);
+    }
+    return result;
   }
 
   public ChangeActivityPerformed() {
