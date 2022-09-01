@@ -652,7 +652,9 @@ export class VoyagesController {
                         throw  'REVISAR LA FECHA ERRROR'
                     }
                 */
-                newReport.date = <any>textoCadena;
+
+                    // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
+                newReport.date = <any>ConvertMomentUTC(textoCadena).utc().format();
                 if (textoCadena.length == 23) {
                     newReport.hour = textoCadena.slice(11, 19)
                 } else {
