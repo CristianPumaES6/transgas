@@ -194,11 +194,11 @@ export class ExcelFormatVesselDataRegisterService {
     // Hasta la E las columnas son invisibles para guardar algo.
     // apartir de la F todas las columnas tienen el mismo tamanio
     worksheet.columns = [
-      { width: 0 }, // A   voyageId
-      { width: 0 }, // B   portId 
-      { width: 0 }, // C   dailyReportId
-      { width: 0 }, // D   userId
-      { width: 0 }, // E   year
+      { width: 4 }, // A   voyageId
+      { width: 4 }, // B   portId 
+      { width: 4 }, // C   dailyReportId
+      { width: 4 }, // D   userId
+      { width: 4 }, // E   year
       { width: 8 }, // F Numero Viaje
       { width: 16 }, // G Departure
       { width: 16 }, // H Arrival
