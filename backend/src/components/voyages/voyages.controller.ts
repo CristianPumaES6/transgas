@@ -561,10 +561,12 @@ export class VoyagesController {
                         /*              
                             ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
+                          
                             newPort.startDate = <any>importVoyage.date;
-                            newPort.startIFO = <any>importVoyage.ROB[0] || 0;
-                            newPort.startMGO = <any>importVoyage.ROB[1] || 0;
-                        */
+                            */
+                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0];
+                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1];
+
 
                         // Auditoria.
                         newPort.userIdCreated = headerToken.id;
@@ -575,6 +577,7 @@ export class VoyagesController {
 
                         // Lo registramos
                         let portRegister = await this._portsService.Create(newPort);
+                        console.log('Create port')
                         MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
                     } else {
 
@@ -588,7 +591,9 @@ export class VoyagesController {
                         // portExiste.voyageId != importVoyage.voyageId ||
                         if (portExiste.portNumber != importVoyage.portNumber
                             || portExiste.departurePort != importVoyage.departurePort
-                            || portExiste.arrivalPort != importVoyage.arrivalPort) {
+                            || portExiste.arrivalPort != importVoyage.arrivalPort
+                            || portExiste.startIFO != <any>importVoyage.ROB[0]
+                            || portExiste.startMGO != <any>importVoyage.ROB[1]) {
 
                             portExiste.voyageId = importVoyage.voyageId
                             portExiste.portNumber = importVoyage.portNumber
@@ -598,14 +603,15 @@ export class VoyagesController {
                                 ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
                                 OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
                                 portExiste.startDate = <any>importVoyage.date || 0;
-                                portExiste.startIFO = <any>importVoyage.ROB[0] || 0;
-                                portExiste.startMGO = <any>importVoyage.ROB[1] || 0; */
+                                */
+                            portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0];
+                            portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1];
 
                             delete portExiste.dailyReports;
                             portExiste.dateUpdated = GetDate();
                             portExiste.status = true;
 
-                            console.log('Se actualizo el VOyageId')
+                            console.log('Se actualizo el Puerto')
                             portExiste = await this._portsService.Update(portExiste)
                         }
 
@@ -653,7 +659,7 @@ export class VoyagesController {
                     }
                 */
 
-                    // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
+                // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
                 newReport.date = <any>ConvertMomentUTC(textoCadena).utc().format();
                 if (textoCadena.length == 23) {
                     newReport.hour = textoCadena.slice(11, 19)
@@ -661,6 +667,9 @@ export class VoyagesController {
                     console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
                 }
 
+                // No se actualiza ni fecha ni HOra
+                delete newReport.date;
+                delete newReport.hour;
                 /* 
                 // Verificamos si existe una hora,
                 if (importVoyage.hour) {
@@ -760,17 +769,25 @@ export class VoyagesController {
 
 
                 // Auditoria.
-                newReport.userIdCreated = headerToken.id;
-                newReport.dateCreated = GetDate();
-                delete newReport.userIdUpdated;
-                delete newReport.dateUpdated;
                 newReport.status = true;
 
                 // Si no tiene un reportId lo creamos
                 if (!importVoyage.dailyReportId) {
+
+                    newReport.userIdCreated = headerToken.id;
+                    newReport.dateCreated = GetDate();
+                    delete newReport.userIdUpdated;
+                    delete newReport.dateUpdated;
                     await this._dailyReportsService.Create(newReport);
+                    console.log('Create' + newReport.date);
+
                 } else {
+                    newReport.userIdUpdated = headerToken.id;
+                    newReport.dateUpdated = GetDate();
+                    delete newReport.userIdCreated;
+                    delete newReport.dateCreated;
                     await this._dailyReportsService.Update(newReport);
+                    console.log('Update' + newReport.id);
                 }
 
             }
