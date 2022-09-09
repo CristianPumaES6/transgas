@@ -657,7 +657,14 @@ export class VoyagesController {
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
                 let textoCadena: any = importVoyage.date;
-                textoCadena = <any>ConvertMomentUTC(textoCadena).utc().format();
+                textoCadena = <any>ConvertMomentUTC(textoCadena)
+                
+                let textUTC = textoCadena.utc().format();
+
+                // A la fecha le redusco 4 horas debido que se tiene esa diferencia
+                // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
+                //textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
+                textoCadena=textoCadena.utc().format();
 
                 ultimaFecha= textoCadena;
                 /*
@@ -672,9 +679,9 @@ export class VoyagesController {
                 */
 
                 // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
-                newReport.date = textoCadena;
-                if (textoCadena.length == 20) {
-                    newReport.hour = textoCadena.slice(11, 19)
+                if (textUTC.length == 20) {
+                    newReport.date = ultimaFecha;
+                    newReport.hour = textUTC.slice(11, 19)
                 } else {
                     console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
                 }
@@ -682,7 +689,8 @@ export class VoyagesController {
                 // No se actualiza ni fecha ni HOra
 
                 // Verificamos si existe una hora,
-                /*if (importVoyage.hour) {
+                /*
+                if (importVoyage.hour) {
                     // Verificamos el tamaño de la hora,
                     // Lo normal seria 03:00 esto seria un total de 5 caracteres
                     // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
@@ -692,10 +700,11 @@ export class VoyagesController {
                     } else {
                         newReport.hour = importVoyage.hour;
                     }
-                }*/
+                }
+                */
 
-                delete newReport.date;
-                delete newReport.hour;
+                //newReport.date;
+                //newReport.hour;
 
                 // -*--------------------------FIN MODIFICACION
 
