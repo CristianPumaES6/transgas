@@ -450,6 +450,7 @@ export class VoyagesController {
             let MappingVoyage: Mapping[] = [];
             let MappingPort: Mapping[] = [];
 
+            let ultimaFecha:any;
             for await (const importVoyage of ImportVoyages) {
 
                 // Busca el numero de viaje si ya se registro
@@ -562,13 +563,15 @@ export class VoyagesController {
                             ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
                   */
-                        let textoCadena: any = importVoyage.date;
-                        textoCadena = <any>ConvertMomentUTC(textoCadena).utc().format();
+                 
+                        if(ultimaFecha){
+                            newPort.startDate = ultimaFecha;
+                        }else{
+                            newPort.startDate = null;
+                        }
 
-                        newPort.startDate = <any>ConvertMomentUTC(textoCadena).utc().format();
-
-                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0];
-                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1];
+                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0]-importVoyage.bunkeringIfo;
+                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1]-importVoyage.bunkeringMgo;
 
 
                         // Auditoria.
@@ -592,23 +595,27 @@ export class VoyagesController {
                         // ESTO SE DEBE DE TENER EN CUENTA SI DESEAMOS MODIFICAR LA POSICION DE UN 
                         // PUERTO A OTRO VIAJEID
                         // portExiste.voyageId != importVoyage.voyageId ||
-                        if (portExiste.portNumber != importVoyage.portNumber
+                        if ((portExiste.portNumber != importVoyage.portNumber
                             || portExiste.departurePort != importVoyage.departurePort
                             || portExiste.arrivalPort != importVoyage.arrivalPort
                             || portExiste.startIFO != <any>importVoyage.ROB[0]
-                            || portExiste.startMGO != <any>importVoyage.ROB[1]) {
+                            || portExiste.startMGO != <any>importVoyage.ROB[1])
+                            && <any>importVoyage.updatePort) {
+
 
                             portExiste.voyageId = existeViaje.value;
                             portExiste.portNumber = importVoyage.portNumber
                             portExiste.departurePort = importVoyage.departurePort
                             portExiste.arrivalPort = importVoyage.arrivalPort
-                            /*      
-                                ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
-                                OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
-                                portExiste.startDate = <any>importVoyage.date || 0;
-                                */
-                            portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0];
-                            portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1];
+                            
+                            if(ultimaFecha){
+                                portExiste.startDate = ultimaFecha;
+                            }else{
+                                delete portExiste.startDate
+                            }
+                        
+                            portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0]-importVoyage.bunkeringIfo;
+                            portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1]-importVoyage.bunkeringMgo;
 
                             delete portExiste.dailyReports;
                             portExiste.dateUpdated = GetDate();
@@ -651,6 +658,8 @@ export class VoyagesController {
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
                 let textoCadena: any = importVoyage.date;
                 textoCadena = <any>ConvertMomentUTC(textoCadena).utc().format();
+
+                ultimaFecha= textoCadena;
                 /*
                     if( importVoyage.date.length == 15 ){
                         newReport.date = <any> textoCadena.slice(0,-7)
@@ -685,8 +694,8 @@ export class VoyagesController {
                     }
                 }*/
 
-                // delete newReport.date;
-                // delete newReport.hour;
+                delete newReport.date;
+                delete newReport.hour;
 
                 // -*--------------------------FIN MODIFICACION
 
