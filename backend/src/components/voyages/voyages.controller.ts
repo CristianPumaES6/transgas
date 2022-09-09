@@ -561,9 +561,12 @@ export class VoyagesController {
                         /*              
                             ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
-                          
-                            newPort.startDate = <any>importVoyage.date;
-                            */
+                  */
+                        let textoCadena: any = importVoyage.date;
+                        textoCadena = <any>ConvertMomentUTC(textoCadena).utc().format();
+
+                        newPort.startDate = <any>ConvertMomentUTC(textoCadena).utc().format();
+
                         newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0];
                         newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1];
 
@@ -595,7 +598,7 @@ export class VoyagesController {
                             || portExiste.startIFO != <any>importVoyage.ROB[0]
                             || portExiste.startMGO != <any>importVoyage.ROB[1]) {
 
-                            portExiste.voyageId = importVoyage.voyageId
+                            portExiste.voyageId = existeViaje.value;
                             portExiste.portNumber = importVoyage.portNumber
                             portExiste.departurePort = importVoyage.departurePort
                             portExiste.arrivalPort = importVoyage.arrivalPort
@@ -647,7 +650,7 @@ export class VoyagesController {
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
                 let textoCadena: any = importVoyage.date;
-
+                textoCadena = <any>ConvertMomentUTC(textoCadena).utc().format();
                 /*
                     if( importVoyage.date.length == 15 ){
                         newReport.date = <any> textoCadena.slice(0,-7)
@@ -660,19 +663,17 @@ export class VoyagesController {
                 */
 
                 // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
-                newReport.date = <any>ConvertMomentUTC(textoCadena).utc().format();
-                if (textoCadena.length == 23) {
+                newReport.date = textoCadena;
+                if (textoCadena.length == 20) {
                     newReport.hour = textoCadena.slice(11, 19)
                 } else {
                     console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
                 }
 
                 // No se actualiza ni fecha ni HOra
-                delete newReport.date;
-                delete newReport.hour;
-                /* 
+
                 // Verificamos si existe una hora,
-                if (importVoyage.hour) {
+                /*if (importVoyage.hour) {
                     // Verificamos el tamaño de la hora,
                     // Lo normal seria 03:00 esto seria un total de 5 caracteres
                     // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
@@ -682,7 +683,10 @@ export class VoyagesController {
                     } else {
                         newReport.hour = importVoyage.hour;
                     }
-                } */
+                }*/
+
+                // delete newReport.date;
+                // delete newReport.hour;
 
                 // -*--------------------------FIN MODIFICACION
 
