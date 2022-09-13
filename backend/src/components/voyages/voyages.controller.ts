@@ -663,7 +663,7 @@ export class VoyagesController {
 
                 // A la fecha le redusco 4 horas debido que se tiene esa diferencia
                 // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
-                //textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
+                // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
                 textoCadena=textoCadena.utc().format();
 
                 ultimaFecha= textoCadena;
@@ -703,8 +703,9 @@ export class VoyagesController {
                 }
                 */
 
-                //newReport.date;
-                //newReport.hour;
+                // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
+                delete newReport.date;
+                delete newReport.hour;
 
                 // -*--------------------------FIN MODIFICACION
 

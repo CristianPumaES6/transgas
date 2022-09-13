@@ -1235,7 +1235,8 @@ export class ExcelFormatVesselDataRegisterService {
       'east_minutes',
       'east_east_west',
       'typeActivityPerformed',
-      'userId'
+      'userId',
+      'updatePort'
       
     ]);
     worksheet.getCell('F' + positionRow).style = {
