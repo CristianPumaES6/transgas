@@ -623,8 +623,8 @@ export class DailyReportsController {
         ).then(
             (resultValidate: Boolean) => {
 
-                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._dailyReportsService.GetReportVoyagePortDaily(userId, startDate, endDate);
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro de fecha mas no por viaje id
+                return this._dailyReportsService.GetReportVoyagePortDaily(userId, startDate, endDate, null);
             }
         ).then(
             (results: GetReportVoyagePortDaily[]) => {
@@ -841,8 +841,8 @@ export class DailyReportsController {
         );
     }
 
-   // aqui estan correinedo 2 servicios de nest.
-   //GetReportDNVByUserNOON(MODIF)     GetReportDNVByUser(ORIGINAL) 
+    // aqui estan correinedo 2 servicios de nest.
+    //GetReportDNVByUserNOON(MODIF)     GetReportDNVByUser(ORIGINAL) 
     @Get('get-report-dnv-by-user/:userId/:startDate/:endDate')
     GetReportDNVByUser(@Headers() headers, @Param('userId') userId: number, @Param('startDate') startDate: Date, @Param('endDate') endDate: Date): Promise<any> {
 
@@ -903,5 +903,5 @@ export class DailyReportsController {
         );
     }
 
- 
+
 }
