@@ -389,8 +389,8 @@ export class DailyReportsService {
     }
 
 
-    // Retorna todos los viajes segun filtro.
-    async GetReportVoyagePortDaily(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
+    // Retorna todos los viajes segun filtro de feca o por viaje id
+    async GetReportVoyagePortDaily(userId: number, startDate: Date, endDate: Date, filterByVoyage: number): Promise<GetReportVoyagePortDaily[]> {
 
         // Hacemos where por todos los campos de la entidad
         return await
@@ -453,8 +453,11 @@ export class DailyReportsService {
 
                 .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
-                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                .andWhere('( datetime(daily_report.date) >= datetime(:startDate) AND datetime(daily_report.date) <= datetime(:endDate) ) OR voyage.id = :voyageId',
+                    { startDate: startDate, endDate: endDate, voyageId: filterByVoyage })
+
+
+                .orderBy('daily_report.date', 'ASC')
                 .getRawMany()
                 .then(
                     (result: any) => {
