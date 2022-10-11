@@ -16,6 +16,7 @@ import { Moment } from 'moment';
 import { VoyagesModule } from './components/voyages/voyages.module';
 
 import { AppGateway } from './app.gateway';
+import { FormatExcelLastVoyageService } from './services/format-excel-last-voyage/format-excel-last-voyage.service';
 
 @Module({
  
@@ -54,7 +55,7 @@ import { AppGateway } from './app.gateway';
 
   controllers: [AppController],
   providers: [AppService, 
-    AppGateway // por mientras queeste desactivado
+    AppGateway, FormatExcelLastVoyageService // por mientras queeste desactivado
   ],
 })
 export class AppModule { }
