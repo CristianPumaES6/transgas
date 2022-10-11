@@ -9,6 +9,9 @@ import { PortsModule } from './ports/ports.module';
 import { DailyReportsModule } from './daily-reports/daily-reports.module';
 import { PortsService } from './ports/ports.service';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
+import { FormatExcelLastVoyageService } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
+
+
 
 @Module({  
   //Importamos el TypeOrm con el modulo a usar, para que funcione en el servicio.
@@ -17,7 +20,7 @@ import { DailyReportsService } from './daily-reports/daily-reports.service';
     PortsModule,
     DailyReportsModule,
   ],
-  providers: [VoyagesService],
+  providers: [VoyagesService,FormatExcelLastVoyageService],
   controllers: [VoyagesController]
 })
 export class VoyagesModule {}
