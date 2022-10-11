@@ -333,6 +333,17 @@ export class GetReportVoyagePortDaily {
 
 }
 
+// Informacion de inicio y fin de combustible de una fecha
+export class InfoFuelStartEndForDate {
+
+    constructor(
+        public infoFuelStart?: GetROBByUser,
+        public infoFuelEnd?: GetROBByUser
+    ) {
+        this.infoFuelStart = infoFuelStart || new GetROBByUser();
+        this.infoFuelEnd = infoFuelEnd || new GetROBByUser();
+    }
+}
 
 export class InfoReport_IFO_AND_MGO {
     constructor(
