@@ -426,4 +426,30 @@ export class VoyagesService {
 
 
     }
+
+
+    // Nos devuelve los ultimos 2 viaje por el filtro de usuario ID
+    async GetLastVoyage(userId:number):Promise<any>{
+        return await
+        this.voyageRepository.createQueryBuilder('voyage')
+
+            .select('voyage.id', 'id')
+            .addSelect('voyage.voyageNumber', 'voyageNumber')
+            
+            .where('voyage.userId = :userId', { userId: userId })
+            .andWhere('voyage.status = :status', { status: 1 })
+
+            .orderBy('voyage.id', 'DESC')
+            
+            .limit(2)
+            .getRawMany()
+            .then(
+                (result: any) => {
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetLastVoyage';
+
+                    return result;
+                }
+            );
+    }
 }
