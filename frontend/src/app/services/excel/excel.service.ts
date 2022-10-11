@@ -2845,48 +2845,18 @@ export class ExcelService {
     return posit;
   }
   private StyleDashActivity(worksheet, posit, colum, selectUser: User, isIFOorMGO: string): number {
-    let date_start = '22/22/22'
-    let hour_start = '20:20'
-    let ifo_start = 200;
-    let mgo_start = 300;
-    let date_end = '22/22/22'
-    let hour_end = '22:21'
-    let ifo_end = 222;
-    let mgo_end = 440;
-    let totalBunkeringIFO = 0;
-    let totalBunkeringMGO = 0;
+ 
 
-    let totalConsumptIFO = 0;
-    let totalConsumptMGO = 0;
-
-
-
-    let colorYellowTransgas = 'FFCD06';
-    // Variables de colores-
-    let blueHard = '001556'
-    let blueMedium = '09155694'
-    let blueLow = 'b6c2ff94';
-
-
-    let blueHard1 = '375f9a'
-    let blueHard2 = '0040d8'
+    let colorYellowTransgas = 'FFCD06'; 
     let blueHard3 = '001556'
-
-    let greenHard = '091556'
-    let greenMedium = 'b6c2ff94'
-    let greenLow = 'b6c2ff94';
-
+    let greenMedium = 'b6c2ff94' 
     let black = '000'
     let white = 'ffffff';
 
-    // Variables de colores-
-    let grisFuerte = 'd4d4d4'
-    let grisMedio = 'ebe8e8'
-    let grisSuave = 'f3f3f3';
-
-    let redHard = '9a2929';
-    let redMedium = 'ffa4a4';
-    let redLow = 'ffd6d6';
+    // Variables de colores- 
+    let grisMedio = 'ebe8e8' 
+ 
+    let redMedium = 'ffa4a4'; 
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
@@ -4057,6 +4027,7 @@ export class ExcelService {
     ));
 
   }
+
 }
 
 

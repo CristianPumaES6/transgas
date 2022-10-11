@@ -1,0 +1,19 @@
+<h1>Configuracion de Mail: {{user.name}}</h1>
+
+<p>Desde el siguiente panel tenemos la opcion de configurar el envio de la informacion del ultimo viaje realizado.</p>
+
+<p>
+    <mat-form-field>
+        <input matInput type="text" placeholder="Mail" [(ngModel)]="mail">
+    </mat-form-field>
+</p>
+<p>
+    <mat-slide-toggle [(ngModel)]="sendAutomatic">Envio automatico</mat-slide-toggle>
+</p>
+
+<p>
+    <button mat-button color="primary" (click)="ClickSave()" matTooltip="">
+        Guardar cambio
+        <mat-icon class="icon-save"></mat-icon>
+    </button>
+</p>

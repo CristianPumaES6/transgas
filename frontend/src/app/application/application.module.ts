@@ -32,6 +32,7 @@ import { SpeedAnalysisComponent } from '../components/dashboard/speed-analysis/s
 import { ConsumptionAnalysisComponent } from '../components/dashboard/consumption-analysis/consumption-analysis.component';
 import { DialogConfigDashboardComponent } from '../shared/dialog/dialog-config-dashboard/dialog-config-dashboard.component';
 import { OverviewComponent } from '../components/dashboard/overview/overview.component';
+import { DialogConfigMailComponent } from '../shared/dialog/dialog-config-mail/dialog-config-mail.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { OverviewComponent } from '../components/dashboard/overview/overview.com
     SpeedAnalysisComponent,
     ConsumptionAnalysisComponent,
     DialogConfigDashboardComponent,
-    OverviewComponent
+    OverviewComponent,
+    DialogConfigMailComponent
   ],
   imports: [
     GlobalModule,

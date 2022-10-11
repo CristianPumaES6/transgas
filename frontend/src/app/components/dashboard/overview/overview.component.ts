@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -10,6 +11,7 @@ import { LanguageService } from 'src/app/services/language.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { PortService } from 'src/app/services/port.service';
 import { UserService } from 'src/app/services/user.service';
+import { DialogConfigMailComponent, IDialogConfigMail } from 'src/app/shared/dialog/dialog-config-mail/dialog-config-mail.component';
 import { mathRound } from 'src/assets/math/math.assets';
 
 @Component({
@@ -43,6 +45,7 @@ export class OverviewComponent implements OnInit {
     private notificationsService: NotificationsService,
     private loadingService: LoadingService,
     private portService: PortService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -50,7 +53,7 @@ export class OverviewComponent implements OnInit {
       new PerfectScrollbar('.body-full-container', {
         suppressScrollX: true
       });
-    },500);
+    }, 500);
     // Activamos el loading.
     this.loadingService.Open();
 
@@ -82,7 +85,7 @@ export class OverviewComponent implements OnInit {
         result => {
 
           this.loadingService.Close();
-       
+
         }
       ).catch(
         err => {
@@ -195,5 +198,79 @@ export class OverviewComponent implements OnInit {
 
     let result = mathRound(valor, cantDecimales)
     return result;
+  }
+
+  // ClickConfigSendMail() : Esta funcion sirve para abrir el popUp de configuracion de mensaje.
+  public ClickConfigSendMail(user: User) {
+    // Dashboard
+    console.log('ClickConfigDashboard()')
+    // Iniciamos las promesas.
+    Promise.resolve(true).then(
+      result => {
+        // Abrimos el loading.
+        this.loadingService.Open();
+
+        // Abremos el modal
+        return this.OpenDialogConfigMail(user, "cristian.puma.es6@gmail.com", false);
+      }
+    ).then(
+      resultGenerateDashboard => {
+        // Verificamos que se halla exportado correctamente.
+        if (!resultGenerateDashboard) throw 'ERROR_DIALOG_COFIG_DASHBOARD';
+
+        // Loading cerrar.
+        this.loadingService.Close();
+      }
+    ).catch(
+      err => {
+
+        // Manejo el error
+        let msg: string = this.languageService.GetMessage(this.translateCategory, this.languageService.GetMessage(this.translateCategory, err || 'ERROR_ON_LOAD'));
+
+        console.error(msg);
+        console.dir(err);
+
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+        // Deshabilito el spinner de loading
+        this.loadingService.Close();
+      }
+    );
+
+  }
+
+
+  // Esta dunion agrega el dialog al modal mediante un componente.
+  private OpenDialogConfigMail(user: User, mail: string, isActiveAutomaticMessageSend: boolean): boolean {
+
+    // Armamos los datos que enviaremos al modal.
+    let dataDialog: IDialogConfigMail = {
+      user: user,
+      mail: mail,
+      isActiveAutomaticMessageSend: isActiveAutomaticMessageSend
+    };
+
+    const dialogRef = this.dialog.open(DialogConfigMailComponent, {
+      data: dataDialog
+    });
+
+
+    // CUADO SE CIERRA DE COMPONENTE NOS RETORAN UN RESULTADO.
+    dialogRef.afterClosed().subscribe(
+
+      (result: number) => {
+
+        console.log(result);
+        alert(result);
+
+        if (!result) {
+          // Si el resultado es 0 o null no hacemos nada.
+        } else {
+          this.cantDecimal = result;
+        }
+
+      });
+
+    return true;
+
   }
 }
