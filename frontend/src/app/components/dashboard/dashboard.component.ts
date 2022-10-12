@@ -2629,7 +2629,7 @@ export class DashboardComponent implements OnInit {
                         // agregamos la fecha a nuestro arreglo.
                         this.xLabelReport.push(day);
 
-                        let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
+                        let dataExtra: DailyReport[] = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
                         // y los ocmentarios registrados.
                         dataExtra.push(report)
 
