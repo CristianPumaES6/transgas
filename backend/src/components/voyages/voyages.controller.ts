@@ -13,8 +13,9 @@ import { UserEntity } from '../../models/user.entity';
 import { ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
-import { DailyReport } from '../../models/daily-report.entity';
+import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
+import { FormatExcelLastVoyageService } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
 
 
 @Controller('voyages')
@@ -24,6 +25,7 @@ export class VoyagesController {
         private readonly _voyagesService: VoyagesService,
         private readonly _portsService: PortsService,
         private readonly _dailyReportsService: DailyReportsService,
+        private readonly _formatExcelLastVoyageService: FormatExcelLastVoyageService,
     ) { }
 
 
@@ -338,12 +340,10 @@ export class VoyagesController {
 
                     // Enviar los datos necesarios.
                     throw 'MISSING_FIELS';
-
                 }
             }
         ).then(
             (resultUpdate: Voyage) => {
-
                 // Validamos el resultado
                 if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE');
 
@@ -366,6 +366,7 @@ export class VoyagesController {
                     error: clientMsg,
                     message: errorMsg,
                 }, HttpStatus.ACCEPTED);
+
             }
         );
     }
@@ -385,11 +386,9 @@ export class VoyagesController {
                 if (Number(id)) {
                     // Decodeamos.
                     return this._voyagesService.Get(id);
-
                 } else {
                     // Enviar los datos necesarios.
                     throw new Error('MISSING_FIELS');
-
                 }
 
             }
@@ -450,7 +449,7 @@ export class VoyagesController {
             let MappingVoyage: Mapping[] = [];
             let MappingPort: Mapping[] = [];
 
-            let ultimaFecha:any;
+            let ultimaFecha: any;
             for await (const importVoyage of ImportVoyages) {
 
                 // Busca el numero de viaje si ya se registro
@@ -563,15 +562,15 @@ export class VoyagesController {
                             ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
                   */
-                 
-                        if(ultimaFecha){
+
+                        if (ultimaFecha) {
                             newPort.startDate = ultimaFecha;
-                        }else{
+                        } else {
                             newPort.startDate = null;
                         }
 
-                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0]-importVoyage.bunkeringIfo;
-                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1]-importVoyage.bunkeringMgo;
+                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
 
                         // Auditoria.
@@ -607,15 +606,15 @@ export class VoyagesController {
                             portExiste.portNumber = importVoyage.portNumber
                             portExiste.departurePort = importVoyage.departurePort
                             portExiste.arrivalPort = importVoyage.arrivalPort
-                            
-                            if(ultimaFecha){
+
+                            if (ultimaFecha) {
                                 portExiste.startDate = ultimaFecha;
-                            }else{
+                            } else {
                                 delete portExiste.startDate
                             }
-                        
-                            portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0]-importVoyage.bunkeringIfo;
-                            portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1]-importVoyage.bunkeringMgo;
+
+                            portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                            portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
                             delete portExiste.dailyReports;
                             portExiste.dateUpdated = GetDate();
@@ -658,15 +657,15 @@ export class VoyagesController {
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
                 let textoCadena: any = importVoyage.date;
                 textoCadena = <any>ConvertMomentUTC(textoCadena)
-                
+
                 let textUTC = textoCadena.utc().format();
 
                 // A la fecha le redusco 4 horas debido que se tiene esa diferencia
                 // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
                 // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
-                textoCadena=textoCadena.utc().format();
+                textoCadena = textoCadena.utc().format();
 
-                ultimaFecha= textoCadena;
+                ultimaFecha = textoCadena;
                 /*
                     if( importVoyage.date.length == 15 ){
                         newReport.date = <any> textoCadena.slice(0,-7)
@@ -821,6 +820,80 @@ export class VoyagesController {
         } catch (error) {
             return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! '
         }
+    }
+
+    @Post('sendEmailLastVoyage')
+    async SendEmailLastVoyage(): Promise<any> {
+
+        let user = new UserEntity();
+        let userId = 2
+        let voyageId: number = null;
+
+        let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+        let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
+
+
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+
+                return this._voyagesService.GetLastVoyage(userId);
+            }
+        ).then(
+            result => {
+                if (result.length != 2) throw 'ERROR debe de haber mas de 2 viajes.';
+
+                // Penultimo viaje creado.
+                voyageId = result[1].id;
+
+                return this._dailyReportsService.GetReportVoyagePortDaily(userId, null, null, voyageId);
+
+            }
+        ).then(
+            resultGetReportVoyagePortDaily => {
+                if (resultGetReportVoyagePortDaily.length == 0) throw 'ERROR debe de arrojar mas de un registro';
+                listGetReportVoyagePortDaily = resultGetReportVoyagePortDaily;
+
+                let minDate = resultGetReportVoyagePortDaily[0].date;
+                let maxDate = resultGetReportVoyagePortDaily[resultGetReportVoyagePortDaily.length - 1].date;
+
+                return this._dailyReportsService.GetStartEndROByFilterDate(minDate, maxDate, userId)
+            }
+        ).then(
+            resultGetStartEndROByFilterDate => {
+
+
+                if (!resultGetStartEndROByFilterDate) throw 'ERROR GetStartEndROByFilterDate';
+
+
+                // Trabajaremos con las siguientes variables.
+                let startDataROB: GetROBByUser = new GetROBByUser();
+                let endDataROB: GetROBByUser = new GetROBByUser()
+
+                // IFO
+                startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo, 2;
+                startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo, 2;
+                startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo, 2;
+                startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo, 2;
+
+                // MGO
+                endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo), 2;
+                endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo), 2;
+                endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo, 2;
+                endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo, 2;
+
+                // Creamos la informacion de incio y fin de combustible
+                getInfoFuelStartEndByFilterDate = new InfoFuelStartEndForDate(
+                    startDataROB,
+                    endDataROB
+                );
+
+
+
+                return this._formatExcelLastVoyageService.GenerateExcel(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, user)
+
+            }
+        )
+
     }
 
 }
