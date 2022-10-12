@@ -193,74 +193,74 @@ export class FormatExcelLastVoyageService {
 
 
                             //----------------------------------------------------------------------------
-                             positionRow += 1;
-                             colum = 0;
-                                positionRows = [positionRow, positionRow];
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                               
+                            positionRow += 1;
+                            colum = 0;
+                            positionRows = [positionRow, positionRow];
+                            positionColumns = [colum, colum];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                            // siguiente columna
+                            colum += 1;
+                            positionColumns = [colum, colum];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                            // siguiente columna
+                            colum += 1;
+                            positionColumns = [colum, colum];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                            // siguiente columna
+                            colum += 1;
+                            positionColumns = [colum, colum];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                            // siguiente columna
+                            colum += 1;
+                            positionColumns = [colum, colum];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                            // siguiente columna
+                            colum += 1;
+                            positionColumns = [colum, colum];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
 
 
                         }
-//----------------------------------------------------------------------------
-                             positionRow += 1;
-                             colum = 0;
-                                positionRows = [positionRow, positionRow];
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                               
+                        //----------------------------------------------------------------------------
+                        positionRow += 1;
+                        colum = 0;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
 
                     }
                 )
