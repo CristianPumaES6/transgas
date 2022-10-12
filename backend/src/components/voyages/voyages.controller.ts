@@ -825,17 +825,20 @@ export class VoyagesController {
     @Post('sendEmailLastVoyage')
     async SendEmailLastVoyage(): Promise<any> {
 
+        // Datos para para la consultas.
         let user = new UserEntity();
         let userId = 2
         let voyageId: number = null;
 
+        // estas varaibles contendran la informacion correcta.
         let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
         let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
 
+        // Empezamos la promesa.
         return DummyPromise().then(
             (resultDummy: Boolean) => {
-
+                // Consultaos los ultimpos viajes.
                 return this._voyagesService.GetLastVoyage(userId);
             }
         ).then(
@@ -845,20 +848,26 @@ export class VoyagesController {
                 // Penultimo viaje creado.
                 voyageId = result[1].id;
 
+                // Obtenemos todos los reportes del viaje. REVISAR Aqi podriaoms obneter el detalle del viaje y asi tenerlo ordenando.
                 return this._dailyReportsService.GetReportVoyagePortDaily(userId, null, null, voyageId);
 
             }
         ).then(
+            // AQUI OBTENDREMOS EL ROB DE INICIO Y FIN
             resultGetReportVoyagePortDaily => {
                 if (resultGetReportVoyagePortDaily.length == 0) throw 'ERROR debe de arrojar mas de un registro';
+                // Guardamos el resultado
                 listGetReportVoyagePortDaily = resultGetReportVoyagePortDaily;
 
+                // Primera Fecha y ultima fecha del reporte
                 let minDate = resultGetReportVoyagePortDaily[0].date;
                 let maxDate = resultGetReportVoyagePortDaily[resultGetReportVoyagePortDaily.length - 1].date;
 
+                // Obtenemos el resultado.
                 return this._dailyReportsService.GetStartEndROByFilterDate(minDate, maxDate, userId)
             }
         ).then(
+            // Lainformacion la procesamos para saber el rob de inicio y fin.
             resultGetStartEndROByFilterDate => {
 
 
@@ -888,7 +897,7 @@ export class VoyagesController {
                 );
 
 
-
+                // Generamos el excel
                 return this._formatExcelLastVoyageService.GenerateExcel(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, user)
 
             }
