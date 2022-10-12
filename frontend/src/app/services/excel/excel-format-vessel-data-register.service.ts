@@ -348,14 +348,14 @@ export class ExcelFormatVesselDataRegisterService {
           getReportVoyagePortDaily.arrivalPort,
           getReportVoyagePortDaily.date,
           getReportVoyagePortDaily.hour,
-          { formula: '=IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
+          { formula: 'IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
           //this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), // REVISAR ERROR REVISAR
           getReportVoyagePortDaily.activityPerformed,
           this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.speedStraction), // REVISAR ERROR REVISAR
           getReportVoyagePortDaily.observation,
           getReportVoyagePortDaily.distance,
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          { formula: '=IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
+          { formula: 'IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
           // Velocidad formula.
           { formula: 'IF(ISERROR(O' + positionRow + '/P' + positionRow + '),0,O' + positionRow + '/P' + positionRow + ')' },
           getReportVoyagePortDaily.beaufour,

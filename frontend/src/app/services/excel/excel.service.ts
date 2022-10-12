@@ -1532,7 +1532,7 @@ export class ExcelService {
           getReportVoyagePortDaily.date, '', '',
           getReportVoyagePortDaily.hour, '',
           //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-          { formula: '=(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
+          { formula: '(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
           this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), '', '', '',
 
 
@@ -1542,7 +1542,7 @@ export class ExcelService {
 
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          { formula: '=(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
+          { formula: '(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
           // Velocidad formula.
           { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
