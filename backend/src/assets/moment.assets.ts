@@ -35,6 +35,12 @@ export function FormatDateUTCToDateHour(dateUTC: any): string {
 }
 
 
+export function ConvertDateUTC_To_FORMAT_UTC(dateUTC): string {
+    let momentDate = moment.utc(dateUTC);
+
+    return momentDate.format('YYYY-MM-DD HH:mm:ss');
+}
+
 // Resta una cantidad de dias a una fecha utc.
 export function FormatDateSumDays(dateUTC: any, subtractDays: number): string {
     // Con el formato YYYY MM DD

@@ -10,6 +10,7 @@ import * as fileSaver from 'file-saver';
 import { UserEntity } from 'src/models/user.entity';
 import { Voyage } from 'src/models/voyage.entity';
 import { Port } from 'src/models/port.entity';
+import { ConvertDateUTC_To_FORMAT_UTC } from 'src/assets/moment.assets';
 
 
 @Injectable()
@@ -38,45 +39,54 @@ export class FormatExcelLastVoyageService {
 
                 let worksheet = workbook.addWorksheet('Data Report');
 
-
+                // Generamos la hoja de data report
                 this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
 
-
+                // Colores
                 let black = '000000'
                 let white = 'ffffff';
                 let redMedium = 'ffa4a4';
                 let redLow = 'ffd6d6';
                 let blueHard1 = '375f9a'
 
+                // Tipo de combustible.
                 let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
+                // HOJA DE PUERTO
                 let worksheetPuerto: Worksheet;
                 let puertoActual: Port = new Port();
+
                 // posicion de fila
                 let positionRow = 1;
                 let colum = 0;
-
-                // Primer titulo
                 let positionRows = [positionRow, positionRow];
                 let positionColumns = [colum, colum + 2];
-
+                // Numero del puerto
                 let numeroDePuerto = 0;
+
+                // recorremos todos los reportes.
                 listGetReportVoyagePortDaily.forEach(
                     itemReport => {
 
+                        // Si el puerto es diferentes, significa que es un nuevo puerto el que se esta agregando.
                         if (puertoActual.id != itemReport.portId) {
+                            // Contabilizamos el numero de puerto
                             numeroDePuerto++;
+                            // puerto actual
                             puertoActual.id = itemReport.portId;
-                            // posicion de fila
+                            // Reset position
                             positionRow = 1;
                             colum = 0;
-                            // Primer titulo
+                            // posicion del titulo.
                             positionRows = [positionRow, positionRow];
                             positionColumns = [colum, colum + 2];
 
+                            // Agregamos los datos del puerto actual
                             puertoActual.departurePort = itemReport.departurePort;
                             puertoActual.arrivalPort = itemReport.arrivalPort;
+
+                            // creamos y guardamos nuestro hoja del puerto
                             worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + " " + puertoActual.departurePort + ' - ' + puertoActual.arrivalPort);
                             worksheetPuerto.columns = [
                                 { width: 22 },
@@ -85,8 +95,9 @@ export class FormatExcelLastVoyageService {
                                 { width: 12 },
                                 { width: 12 },
                                 { width: 12 },
+                                { width: 12 },
+                                { width: 12 },
                             ];
-
 
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LPG/E : “' + selectUser.name + '”', 20, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
@@ -95,11 +106,11 @@ export class FormatExcelLastVoyageService {
                             positionRow += 1;
                             positionRows = [positionRow, positionRow];
                             positionColumns = [colum, colum + 3];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'REPORTE DE VIAJE', 22, black, white, '')
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'REPORTE DE VIAJE', 22, black, white, '');
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // viaje
+                            // Numero de viaje y año
                             colum += 4;
-                            positionColumns = [colum, colum + 1];
+                            positionColumns = [colum, colum + 2];
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'VOY ' + itemReport.voyageNumber + '-' + itemReport.year, 22, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
@@ -118,7 +129,7 @@ export class FormatExcelLastVoyageService {
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             // Cuadro vacio con salto de 3 linea
                             colum += 1;
-                            positionColumns = [colum, colum + 1];
+                            positionColumns = [colum, colum+1];
                             positionRows = [positionRow, positionRow + 1];
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
                             // Cuadro fecha con salto de 1 linea
@@ -129,8 +140,8 @@ export class FormatExcelLastVoyageService {
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             // Cuadro fecha
                             colum += 1;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.date, 11, black, white, '')
+                            positionColumns = [colum, colum + 1];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,  ConvertDateUTC_To_FORMAT_UTC(itemReport.date) +" GMT", 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
@@ -153,11 +164,11 @@ export class FormatExcelLastVoyageService {
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             // cuadro fecha REVISAR ESTA FECHA SIEMPRE SE DEBE ACTUALIZAR hasta que se registre la actividad
                             colum += 1;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.date, 11, black, white, '')
+                            positionColumns = [colum, colum + 1];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, " -- CAMBIAR VALOR 1 --", 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
-                            // TITULO DE LOS REGISTROS
+                            // --------------  TITULO DE LOS REGISTROS ----------------
                             positionRow += 1;
                             colum = 0;
                             positionRows = [positionRow, positionRow];
@@ -192,7 +203,7 @@ export class FormatExcelLastVoyageService {
 
 
 
-                            //----------------------------------------------------------------------------
+                            //-------------------------------Valores de los proximos registros---------------------------------------------
                             positionRow += 1;
                             colum = 0;
                             positionRows = [positionRow, positionRow];
@@ -1726,10 +1737,10 @@ export class FormatExcelLastVoyageService {
                     'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
                     getReportVoyagePortDaily.departurePort, '', '', '',
                     getReportVoyagePortDaily.arrivalPort, '', '', '',
-                    getReportVoyagePortDaily.date, '', '',
+                    ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), '', '',
                     getReportVoyagePortDaily.hour, '',
                     //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-                    { formula: '=(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
+                    { formula: '(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
                     this.translate(getReportVoyagePortDaily.activityPerformed), '', '', '',
 
 
@@ -1739,7 +1750,7 @@ export class FormatExcelLastVoyageService {
 
                     getReportVoyagePortDaily.distance, '',
                     // Solo si es de la actividad de navegacion deberia de agregarse.
-                    { formula: '=(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
+                    { formula: '(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
                     // Velocidad formula.
                     { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
                     getReportVoyagePortDaily.beaufour, '',
