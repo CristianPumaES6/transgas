@@ -10,7 +10,7 @@ import * as fileSaver from 'file-saver';
 import { UserEntity } from 'src/models/user.entity';
 import { Voyage } from 'src/models/voyage.entity';
 import { Port } from 'src/models/port.entity';
-import { ConvertDateUTC_To_FORMAT_UTC } from 'src/assets/moment.assets';
+import { ConvertDateUTC_To_FORMAT_UTC, ObtenerHoraDeDosStringUTC } from 'src/assets/moment.assets';
 
 
 @Injectable()
@@ -65,9 +65,10 @@ export class FormatExcelLastVoyageService {
                 // Numero del puerto
                 let numeroDePuerto = 0;
 
+                let itemReportBefore: GetReportVoyagePortDaily;
                 // recorremos todos los reportes.
                 listGetReportVoyagePortDaily.forEach(
-                    itemReport => {
+                    (itemReport,indexItem) => {
 
                         // Si el puerto es diferentes, significa que es un nuevo puerto el que se esta agregando.
                         if (puertoActual.id != itemReport.portId) {
@@ -99,7 +100,7 @@ export class FormatExcelLastVoyageService {
                                 { width: 12 },
                             ];
 
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LPG/E : “' + selectUser.name + '”', 20, black, white, '')
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION “' + selectUser.name + '”', 20, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
                             // Titulo del viaje
@@ -115,7 +116,7 @@ export class FormatExcelLastVoyageService {
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
-                            // Salto de linea DATOS DEL VIAJE --- Navegando de:
+                            // Salto de linea PARA REPORTES DEL VIAJE SOLO ACTIVIDADES DE NAVEGACION --- Navegando de:
                             positionRow += 1;
                             colum = 0;
                             positionRows = [positionRow, positionRow];
@@ -129,7 +130,7 @@ export class FormatExcelLastVoyageService {
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             // Cuadro vacio con salto de 3 linea
                             colum += 1;
-                            positionColumns = [colum, colum+1];
+                            positionColumns = [colum, colum + 1];
                             positionRows = [positionRow, positionRow + 1];
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
                             // Cuadro fecha con salto de 1 linea
@@ -141,7 +142,7 @@ export class FormatExcelLastVoyageService {
                             // Cuadro fecha
                             colum += 1;
                             positionColumns = [colum, colum + 1];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,  ConvertDateUTC_To_FORMAT_UTC(itemReport.date) +" GMT", 11, black, white, '')
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(itemReport.date) + " GMT", 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
@@ -182,13 +183,13 @@ export class FormatExcelLastVoyageService {
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             // siguiente columna
                             colum += 1;
-                            positionColumns = [colum, colum];
+                            positionColumns = [colum, colum + 1];
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HORAS\nNAVEGADAS', 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             // siguiente columna
-                            colum += 1;
+                            colum += 2;
                             positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCIA\nOBERVADA', 11, black, white, '')
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCIA\nOBSERVADAS', 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             // siguiente columna
                             colum += 1;
@@ -235,43 +236,61 @@ export class FormatExcelLastVoyageService {
                             positionColumns = [colum, colum];
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-
-
                         }
+
+                        // EMPEZAMOS guardando validamos si hay un item anterior.
+                        let existeUnValorAnterior = !itemReportBefore ? false : true;
                         //----------------------------------------------------------------------------
                         positionRow += 1;
                         colum = 0;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(itemReport.date), 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                         // siguiente columna
                         colum += 1;
                         positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.north_degree + 'º' + itemReport.north_minutes + "'" + itemReport.north_north_south + "/" + itemReport.east_degree + 'º' + itemReport.east_minutes + "'" + itemReport.east_east_west, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum + 1];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.steamingTime
+                            + " ≃ " +
+                            // solo si existe un registro anterior validamos que este ok
+                            (existeUnValorAnterior ? 2 : 0)
+                            , 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 2;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.distance, 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                         // siguiente columna
                         colum += 1;
                         positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                         // siguiente columna
                         colum += 1;
                         positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.beaufour, 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.activityPerformed, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.observation, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+
+
+                        // ALterminar actualizamos el antiguo reporte
+                        itemReportBefore = itemReport;
 
                     }
                 )
@@ -279,76 +298,7 @@ export class FormatExcelLastVoyageService {
 
 
                 /* 
-                               
-                
-                
-                             
-                                //----------------------------------------------------------------------------
-                              //----------------------------------------------------------------------------
-                                positionRow += 1;
-                                colum = 0;
-                                positionRows = [positionRow, positionRow];
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                //---------------------------------------------------------------------------
-                                positionRow += 1;
-                                colum = 0;
-                                positionRows = [positionRow, positionRow];
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                
+                          
                 
                 
                 

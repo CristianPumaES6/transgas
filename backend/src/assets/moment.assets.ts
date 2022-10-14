@@ -56,3 +56,17 @@ export function ConvertMomentUTC(dateUTC): moment.Moment {
     // lo desencripto
     return moment.utc(dateUTC);
 }
+
+export function ObtenerHoraDeDosStringUTC(fechaUTC:string,fechaUTC2:string):number{
+
+    let result=0;
+
+    let fecha1 = moment.utc(fechaUTC);
+    let fecha2 = moment.utc(fechaUTC2);
+
+
+    var duration = moment.duration(fecha1.diff(fecha2));
+    result = duration.asHours();
+
+    return result;
+}
