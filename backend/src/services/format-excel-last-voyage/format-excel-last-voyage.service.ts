@@ -65,8 +65,10 @@ export class FormatExcelLastVoyageService {
                 let positionColumns = [colum, colum + 2];
                 // Numero del puerto
                 let numeroDePuerto = 0;
-
+                // existe un valor antes?
                 let itemReportBefore: GetReportVoyagePortDaily;
+                let existeUnValorAnterior = false;
+                
                 // recorremos todos los reportes.
                 listGetReportVoyagePortDaily.forEach(
                     (itemReport, indexItem) => {
@@ -74,8 +76,6 @@ export class FormatExcelLastVoyageService {
                         //Es el primer puerto 
                         let primerNuevoPuerto = puertoActual.id != itemReport.portId;
 
-                        // existe un valor antes?
-                        let existeUnValorAnterior = false; 
                         // el id es diferentes?
                         if (primerNuevoPuerto) {
                             // si existe un puerto anterior coloco esto
@@ -222,9 +222,6 @@ export class FormatExcelLastVoyageService {
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FUERZA\nVIENTO Y MAR', 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                             
-                            // ni bien se tiene un valor lo registramos
-                            // EMPEZAMOS guardando validamos si hay un item anterior.
-                            existeUnValorAnterior = !itemReportBefore ? false : true;
                         }
 
                         //----------------------------------------------------------------------------
@@ -288,6 +285,9 @@ export class FormatExcelLastVoyageService {
 
                         // ALterminar actualizamos el antiguo reporte
                         itemReportBefore = itemReport;
+                        // ni bien se tiene un valor lo registramos
+                        // EMPEZAMOS guardando validamos si hay un item anterior.
+                        existeUnValorAnterior = !itemReportBefore ? false : true;
 
                     }
                 )
