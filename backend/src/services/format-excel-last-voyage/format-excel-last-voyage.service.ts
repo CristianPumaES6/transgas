@@ -68,7 +68,7 @@ export class FormatExcelLastVoyageService {
                 // existe un valor antes?
                 let itemReportBefore: GetReportVoyagePortDaily;
                 let existeUnValorAnterior = false;
-                
+                let contadorDeItemPorPuerto = 0;
                 // recorremos todos los reportes.
                 listGetReportVoyagePortDaily.forEach(
                     (itemReport, indexItem) => {
@@ -82,6 +82,9 @@ export class FormatExcelLastVoyageService {
                             // Ultimo registro.
                             if (indexItem == (listGetReportVoyagePortDaily.length - 1)) {
 
+
+                                contadorDeItemPorPuerto++;
+
                                 // RESUMEN TOTAL
                                 positionRow += 1;
                                 colum = 0;
@@ -89,6 +92,34 @@ export class FormatExcelLastVoyageService {
                                 positionColumns = [colum, colum + 1];
                                 this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
                                 this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                                // siguiente columna
+                                colum += 2;
+                                positionColumns = [colum, colum + 1];
+
+
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                                    { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
+                                    , 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                                // siguiente columna
+                                colum += 2;
+                                positionColumns = [colum, colum];
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                                    { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
+                                    , 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                                // siguiente columna
+                                colum += 1;
+                                positionColumns = [colum, colum];
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                                    { formula: this.PositByCell(colum - 1) + positionRow + '/' + this.PositByCell(colum - 3) + positionRow }
+                                    , 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+
                             }
 
 
@@ -106,7 +137,8 @@ export class FormatExcelLastVoyageService {
                             // Agregamos los datos del puerto actual
                             puertoActual.departurePort = itemReport.departurePort;
                             puertoActual.arrivalPort = itemReport.arrivalPort;
-
+                            // reset al contador
+                            contadorDeItemPorPuerto = 0;
                             // creamos y guardamos nuestro hoja del puerto
                             worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + " " + puertoActual.departurePort + ' - ' + puertoActual.arrivalPort);
                             worksheetPuerto.columns = [
@@ -221,7 +253,7 @@ export class FormatExcelLastVoyageService {
                             positionColumns = [colum, colum];
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FUERZA\nVIENTO Y MAR', 11, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            
+
                         }
 
                         //----------------------------------------------------------------------------
@@ -239,11 +271,7 @@ export class FormatExcelLastVoyageService {
                         // siguiente columna
                         colum += 1;
                         positionColumns = [colum, colum + 1];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.steamingTime
-                            + " ≃ " +
-                            // solo si existe un registro anterior validamos que este ok
-                            (existeUnValorAnterior ? ObtenerHoraDeDosStringUTC( String(itemReportBefore.date), String(itemReport.date) ) : 0)
-                            , 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.steamingTime, 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                         // siguiente columna
                         colum += 2;
@@ -271,6 +299,7 @@ export class FormatExcelLastVoyageService {
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.observation, 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
+
                         // Ultimo registro.
                         if (indexItem == (listGetReportVoyagePortDaily.length - 1)) {
 
@@ -288,6 +317,8 @@ export class FormatExcelLastVoyageService {
                         // ni bien se tiene un valor lo registramos
                         // EMPEZAMOS guardando validamos si hay un item anterior.
                         existeUnValorAnterior = !itemReportBefore ? false : true;
+                        // le sumamos uno al contador por que se registro la linea
+                        contadorDeItemPorPuerto++;
 
                     }
                 )
@@ -300,27 +331,7 @@ export class FormatExcelLastVoyageService {
                 
                 
                                 
-                                // siguiente columna
-                                colum += 2;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FORMULE', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FORMULE', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FORMULE', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FORMULE', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                
+                              
                                 //---------------------------------------------------------------------------
                                 positionRow += 1;
                                 colum = 0;
