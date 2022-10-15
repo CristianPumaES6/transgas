@@ -118,6 +118,36 @@ export class FormatExcelLastVoyageService {
                                     { formula: this.PositByCell(colum - 1) + positionRow + '/' + this.PositByCell(colum - 3) + positionRow }
                                     , 11, black, white, '')
                                 this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                                //---------------------------------------------------------------------------
+                                positionRow += 1;
+                                colum = 0;
+                                positionRows = [positionRow, positionRow];
+                                positionColumns = [colum, colum];
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                                // siguiente columna
+                                colum += 1;
+                                positionColumns = [colum, colum];
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                                    { formula: this.PositByCell(colum + 2) + (positionRow - 1) }
+                                    , 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                                // siguiente columna
+                                colum += 1;
+                                positionColumns = [colum, colum];
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, textIFOorVLSFOorLSFO, 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                                // siguiente columna
+                                colum += 1;
+                                positionColumns = [colum, colum];
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MDO/MGO', 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                                // siguiente columna
+                                colum += 1;
+                                positionColumns = [colum, colum + 1];
+                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LUBRICANTES / OIL', 11, black, white, '')
+                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
 
 
                             }
@@ -332,35 +362,7 @@ export class FormatExcelLastVoyageService {
                 
                                 
                               
-                                //---------------------------------------------------------------------------
-                                positionRow += 1;
-                                colum = 0;
-                                positionRows = [positionRow, positionRow];
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FORMULA22', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, textIFOorVLSFOorLSFO, 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MDO/MGO', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum + 1];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LUBRICANTES / OIL', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                
-                                //---------------------------------------------------------------------------
+                            //---------------------------------------------------------------------------
                                 positionRow += 1;
                                 colum = 0;
                                 positionRows = [positionRow, positionRow];
