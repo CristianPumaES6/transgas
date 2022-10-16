@@ -59,7 +59,7 @@ export class FormatExcelLastVoyageService {
                 let puertoActual: Port = new Port();
 
                 // posicion de fila
-                let positionRow = 1;
+                let positionRow = 4;
                 let colum = 0;
                 let positionRows = [positionRow, positionRow];
                 let positionColumns = [colum, colum + 2];
@@ -171,16 +171,9 @@ export class FormatExcelLastVoyageService {
                             contadorDeItemPorPuerto = 0;
                             // creamos y guardamos nuestro hoja del puerto
                             worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + " " + puertoActual.departurePort + ' - ' + puertoActual.arrivalPort);
-                            worksheetPuerto.columns = [
-                                { width: 22 },
-                                { width: 22 },
-                                { width: 12 },
-                                { width: 12 },
-                                { width: 12 },
-                                { width: 12 },
-                                { width: 12 },
-                                { width: 12 },
-                            ];
+
+                            // le damos un reset al tamaño de la columna
+                            this.ResetColumn(worksheetPuerto);
 
                             this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION “' + selectUser.name + '”', 20, black, white, '')
                             this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
@@ -495,9 +488,8 @@ export class FormatExcelLastVoyageService {
 
     }
 
+    private async ResetColumn(worksheet: Worksheet): Promise<boolean> {
 
-    // Generamos la hoja de Data Report
-    private async GenerarHojaDataReport(worksheet: Worksheet, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<boolean> {
         // Hasta la E las columnas son invisibles para guardar algo.
         // apartir de la F todas las columnas tienen el mismo tamanio
         worksheet.columns = [
@@ -622,6 +614,14 @@ export class FormatExcelLastVoyageService {
             { width: 4 },
         ];
 
+        return true;
+    }
+
+    // Generamos la hoja de Data Report
+    private async GenerarHojaDataReport(worksheet: Worksheet, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<boolean> {
+
+        // reset colum
+        this.ResetColumn(worksheet);
         // la posicion inicioa en la fila 3
         let position = 3;
 
