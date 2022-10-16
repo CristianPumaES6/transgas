@@ -44,309 +44,7 @@ export class FormatExcelLastVoyageService {
                 this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
 
-                // Colores
-                let black = '000000'
-                let white = 'ffffff';
-                let redMedium = 'ffa4a4';
-                let redLow = 'ffd6d6';
-                let blueHard1 = '375f9a'
-
-                // Tipo de combustible.
-                let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
-
-                // HOJA DE PUERTO
-                let worksheetPuerto: Worksheet;
-                let puertoActual: Port = new Port();
-
-                // posicion de fila
-                let positionRow = 4;
-                let colum = 0;
-                let positionRows = [positionRow, positionRow];
-                let positionColumns = [colum, colum + 2];
-                // Numero del puerto
-                let numeroDePuerto = 0;
-                // existe un valor antes?
-                let itemReportBefore: GetReportVoyagePortDaily;
-                let existeUnValorAnterior = false;
-                let contadorDeItemPorPuerto = 0;
-                // recorremos todos los reportes.
-                listGetReportVoyagePortDaily.forEach(
-                    (itemReport, indexItem) => {
-
-                        //Es el primer puerto 
-                        let primerNuevoPuerto = puertoActual.id != itemReport.portId;
-
-                        // el id es diferentes?
-                        if (primerNuevoPuerto) {
-                            // si existe un puerto anterior coloco esto
-                            // Ultimo registro.
-                            if (indexItem == (listGetReportVoyagePortDaily.length - 1)) {
-
-
-                                contadorDeItemPorPuerto++;
-
-                                // RESUMEN TOTAL
-                                positionRow += 1;
-                                colum = 0;
-                                positionRows = [positionRow, positionRow];
-                                positionColumns = [colum, colum + 1];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                                // siguiente columna
-                                colum += 2;
-                                positionColumns = [colum, colum + 1];
-
-
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                                    { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
-                                    , 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                                // siguiente columna
-                                colum += 2;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                                    { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
-                                    , 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                                    { formula: this.PositByCell(colum - 1) + positionRow + '/' + this.PositByCell(colum - 3) + positionRow }
-                                    , 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                //---------------------------------------------------------------------------
-                                positionRow += 1;
-                                colum = 0;
-                                positionRows = [positionRow, positionRow];
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                                    { formula: this.PositByCell(colum + 2) + (positionRow - 1) }
-                                    , 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, textIFOorVLSFOorLSFO, 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MDO/MGO', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                                // siguiente columna
-                                colum += 1;
-                                positionColumns = [colum, colum + 1];
-                                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LUBRICANTES / OIL', 11, black, white, '')
-                                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-
-
-                            }
-
-
-                            // Contabilizamos el numero de puerto
-                            numeroDePuerto++;
-                            // puerto actual
-                            puertoActual.id = itemReport.portId;
-                            // Reset position
-                            positionRow = 1;
-                            colum = 0;
-                            // posicion del titulo.
-                            positionRows = [positionRow, positionRow];
-                            positionColumns = [colum, colum + 2];
-
-                            // Agregamos los datos del puerto actual
-                            puertoActual.departurePort = itemReport.departurePort;
-                            puertoActual.arrivalPort = itemReport.arrivalPort;
-                            // reset al contador
-                            contadorDeItemPorPuerto = 0;
-                            // creamos y guardamos nuestro hoja del puerto
-                            worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + " " + puertoActual.departurePort + ' - ' + puertoActual.arrivalPort);
-
-                            // le damos un reset al tamaño de la columna
-                            this.ResetColumn(worksheetPuerto);
-
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION “' + selectUser.name + '”', 20, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                            // Titulo del viaje
-                            positionRow += 1;
-                            positionRows = [positionRow, positionRow];
-                            positionColumns = [colum, colum + 3];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'REPORTE DE VIAJE', 22, black, white, '');
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // Numero de viaje y año
-                            colum += 4;
-                            positionColumns = [colum, colum + 2];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'VOY ' + itemReport.voyageNumber + '-' + itemReport.year, 22, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-
-                            // Salto de linea PARA REPORTES DEL VIAJE SOLO ACTIVIDADES DE NAVEGACION --- Navegando de:
-                            positionRow += 1;
-                            colum = 0;
-                            positionRows = [positionRow, positionRow];
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'NAVEGANDO DE :', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // Siguiente columna
-                            colum += 1;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.departurePort, 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // Cuadro vacio con salto de 3 linea
-                            colum += 1;
-                            positionColumns = [colum, colum + 1];
-                            positionRows = [positionRow, positionRow + 1];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                            // Cuadro fecha con salto de 1 linea
-                            colum += 2;
-                            positionColumns = [colum, colum];
-                            positionRows = [positionRow, positionRow];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // Cuadro fecha
-                            colum += 1;
-                            positionColumns = [colum, colum + 1];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(itemReport.date) + " GMT", 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-
-                            // Salto de linea ARRIVO
-                            positionRow += 1;
-                            colum = 0;
-                            positionRows = [positionRow, positionRow];
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'ARRIBO A :', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // siguiente columna
-                            colum += 1;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.departurePort, 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // FECHA ARRIVO
-                            colum += 3;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // cuadro fecha REVISAR ESTA FECHA SIEMPRE SE DEBE ACTUALIZAR hasta que se registre la actividad
-                            colum += 1;
-                            positionColumns = [colum, colum + 1];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, " -- CAMBIAR VALOR 1 --", 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                            // --------------  TITULO DE LOS REGISTROS ----------------
-                            positionRow += 1;
-                            colum = 0;
-                            positionRows = [positionRow, positionRow];
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // siguiente columna
-                            colum += 1;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSICION', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // siguiente columna
-                            colum += 1;
-                            positionColumns = [colum, colum + 1];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HORAS\nNAVEGADAS', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // siguiente columna
-                            colum += 2;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCIA\nOBSERVADAS', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // siguiente columna
-                            colum += 1;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'VELOCIDAD', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                            // siguiente columna
-                            colum += 1;
-                            positionColumns = [colum, colum];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FUERZA\nVIENTO Y MAR', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                        }
-
-                        //----------------------------------------------------------------------------
-                        positionRow += 1;
-                        colum = 0;
-                        positionRows = [positionRow, positionRow];
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(itemReport.date), 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.north_degree + 'º' + itemReport.north_minutes + "'" + itemReport.north_north_south + "/" + itemReport.east_degree + 'º' + itemReport.east_minutes + "'" + itemReport.east_east_west, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum + 1];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.steamingTime, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 2;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.distance, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.beaufour, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.activityPerformed, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, itemReport.observation, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-
-                        // Ultimo registro.
-                        if (indexItem == (listGetReportVoyagePortDaily.length - 1)) {
-
-                            // RESUMEN TOTAL
-                            positionRow += 1;
-                            colum = 0;
-                            positionRows = [positionRow, positionRow];
-                            positionColumns = [colum, colum + 1];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        }
-
-                        // ALterminar actualizamos el antiguo reporte
-                        itemReportBefore = itemReport;
-                        // ni bien se tiene un valor lo registramos
-                        // EMPEZAMOS guardando validamos si hay un item anterior.
-                        existeUnValorAnterior = !itemReportBefore ? false : true;
-                        // le sumamos uno al contador por que se registro la linea
-                        contadorDeItemPorPuerto++;
-
-                    }
-                )
-
-
+                this.StyleDashSailing(workbook, 0, 0, new UserEntity(), listGetReportVoyagePortDaily)
 
                 /* 
                           
@@ -3220,383 +2918,378 @@ export class FormatExcelLastVoyageService {
         return positionRow - posit;
     }
 
-    private StyleDashSailing(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string): number {
-
+    private StyleDashSailing(workbook: Workbook, posit, columReset, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): number {
 
 
         let colorYellowTransgas = 'FFCD06';
-
-        let blueHard1 = '375f9a'
-        let blueHard2 = '0040d8'
-        let blueHard3 = '001556'
+        let blueHard1 = '375f9a';
+        let blueHard2 = '0040d8';
+        let blueHard3 = '001556';
         let white = 'ffffff';
+        let black = '000000';
 
 
-
+        // Tipo de combustible
         let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
+
+        // HOJA DE PUERTO
+        let worksheetPuerto: Worksheet;
+        let puertoActual: Port = new Port();
         let positionRow = posit;
+        let colum = columReset;
 
-        // Primer titulo
         let positionRows = [positionRow, positionRow];
-        let positionColumns = [colum, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'VESSEL PERFORMANCE ' + (isIFOorMGO == 'IFO' ? textIFOorVLSFOorLSFO : 'MGO'), 20, colorYellowTransgas, blueHard3, '')
+        let positionColumns = [colum, colum];
 
-        let startRowReport = positionRow + 16;
+        // Numero del puerto
+        let numeroDePuerto = 0;
+        // existe un valor antes?
+        let itemReportBefore: GetReportVoyagePortDaily;
+        let existeUnValorAnterior = false;
+        let contadorDeItemPorPuerto = 0;
 
-        //================AGREGAMOS LA CEBECERA=========
-        // TItulo 
-        positionRow += 1;
-        positionRows = [positionRow, positionRow + 1];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'ACTIVITY\nPERFORMED', 8, white, blueHard1, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL TIME\nPER ACTIVITY\n(HRS)', 6, white, blueHard1, '')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL DISTANCE (MILES)', 8, white, blueHard1, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)', 8, white, blueHard2, '')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)\n(CHARTER)', 6, white, blueHard3, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT)', 7, white, blueHard1, '')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT)', 7, white, blueHard2, '')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT) (CHARTER)', 7, white, blueHard3, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING TIME\n(HRS) (CHARTER)', 8, white, blueHard3, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT) (CHARTER)', 6, white, blueHard3, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE CONSUMPTION\n(MT)', 7, white, blueHard2, '')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE TIME\n(HRS)', 8, white, blueHard2, '')
+        // recorremos todos los reportes.
+        listGetReportVoyagePortDaily.forEach(
+            (getReportVoyagePortDaily, index) => {
 
-        //================= Primera actividad Loading
-        positionRow += 2;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LOADING'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.loadingConsumptionIFO : selectUser.loadingConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
+                //Es el primer puerto 
+                let primerNuevoPuerto = puertoActual.id != getReportVoyagePortDaily.portId;
+                // el id es diferentes?
+                if (primerNuevoPuerto) {
+                    // si existe un puerto anterior coloco esto
+                    // Ultimo registro.
+                    if (index == (listGetReportVoyagePortDaily.length - 1)) {
 
-        //================= Primera actividad Discharge
-        positionRow += 1;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('DOWNLOADING'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.dischargeConsumptionIFO : selectUser.dischargeConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
+                        contadorDeItemPorPuerto++;
+
+                        // RESUMEN TOTAL
+                        positionRow += 1;
+                        colum = 0;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum + 1];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                        // siguiente columna
+                        colum += 2;
+                        positionColumns = [colum, colum + 1];
+
+
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
+                            , 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                        // siguiente columna
+                        colum += 2;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
+                            , 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: this.PositByCell(colum - 1) + positionRow + '/' + this.PositByCell(colum - 3) + positionRow }
+                            , 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        //---------------------------------------------------------------------------
+                        positionRow += 1;
+                        colum = 0;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: this.PositByCell(colum + 2) + (positionRow - 1) }
+                            , 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, textIFOorVLSFOorLSFO, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MDO/MGO', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum + 1];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LUBRICANTES / OIL', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
 
-        //================= Primera actividad Ballasst
-        positionRow += 1;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('BALLAST'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingBallastConsumptionIFO : selectUser.sailingBallastConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-' + this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
+                    }
 
 
-        //================= Primera actividad Laden
-        positionRow += 1;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LADEN'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingLoadConsumptionIFO : selectUser.sailingLoadConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-' + this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
+                    // Contabilizamos el numero de puerto
+                    numeroDePuerto++;
+                    // puerto actual
+                    puertoActual.id = getReportVoyagePortDaily.portId;
+                    // Reset position
+                    positionRow = posit;
+                    colum = columReset;
+
+                    // posicion del titulo.
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum + 2];
+
+                    // Agregamos los datos del puerto actual
+                    puertoActual.departurePort = getReportVoyagePortDaily.departurePort;
+                    puertoActual.arrivalPort = getReportVoyagePortDaily.arrivalPort;
+                    // reset al contador
+                    contadorDeItemPorPuerto = 0;
+
+                    worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + " " + puertoActual.departurePort + ' - ' + puertoActual.arrivalPort);
 
 
-
-        //================= Primera actividad ECO
-        positionRow += 1;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('ECONOMICAL'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 3) + positionRow + '-' + this.PositByCell(colum + 24) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
+                    // le damos un reset al tamaño de la columna
+                    this.ResetColumn(worksheetPuerto);
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION “' + selectUser.name + '”', 20, colorYellowTransgas, blueHard3, '')
+                    colum += 4;
 
 
-        //================= Primera actividad ANCHORED
-        positionRow += 1;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('ANCHORED'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.anchoredConsumptionIFO : selectUser.anchoredConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
-
-        //================= Primera actividad ANCHORED
-        positionRow += 1;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('MANEUVER'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.maneuverConsumptionIFO : selectUser.maneuverConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
-
-        //================= Primera actividad OTHER
-        positionRow += 1;
-        positionRows = [positionRow, positionRow];
-        positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('OTHER_ACT'), 10, blueHard3, white, '')
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000' : '$BT$' + startRowReport + ':$BT$10000') + ',$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
-        positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
-        positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.otherConsumptionIFO : selectUser.otherConsumptionMGO, 8, blueHard3, white, '')
-        positionColumns = [colum + 24, colum + 26];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(' + this.PositByCell(colum + 24) + + positionRow + '=0, ' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 3) + positionRow + '/24,' + this.PositByCell(colum + 21) + + positionRow + '*' + this.PositByCell(colum + 24) + + positionRow + '/24)', result: 0.14 }, 8, blueHard3, white, '')
-        positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: '' + this.PositByCell(colum + 15) + positionRow + '-' + this.PositByCell(colum + 27) + + positionRow, result: 0.14 }, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_CONSUMPTION')
-        positionColumns = [colum + 33, colum + 35];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, blueHard3, white, '')
-        this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'BALANCE_TIME')
-
-        // Lineas suabes internas
-        /*     positionRows = [posit - 8, posit];
-            positionColumns = [colum, colum];
-            this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-            positionColumns = [colum + 3, colum + 3];
-            this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-            positionColumns = [colum + 5, colum + 5];
-            this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        
-         */
-        // BOrde final alrededor
-
-        positionRows = [posit + 2, posit + 10];
-        positionColumns = [colum, colum + 2];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionRows = [posit + 2, posit + 10];
-        positionColumns = [colum + 3, colum + 5];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionRows = [posit + 2, posit + 10];
-        positionColumns = [colum + 6, colum + 8];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionRows = [posit + 2, posit + 10];
-        positionColumns = [colum + 9, colum + 11];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionRows = [posit + 2, posit + 10];
-        positionColumns = [colum + 12, colum + 14];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionColumns = [colum + 15, colum + 18];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionColumns = [colum + 19, colum + 21];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionColumns = [colum + 22, colum + 24];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionColumns = [colum + 25, colum + 27];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionColumns = [colum + 28, colum + 30];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionColumns = [colum + 31, colum + 33];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
-        positionColumns = [colum + 34, colum + 35];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, true, true, false)
+                    // Titulo del viaje
+                    positionRow += 1;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum + 3];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'REPORTE DE VIAJE', 22, black, white, '');
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // Numero de viaje y año
+                    colum += 4;
+                    positionColumns = [colum, colum + 2];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'VOY ' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, 22, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
-        positionRows = [posit, positionRow];
-        positionColumns = [colum, colum + 35];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
+                    // Salto de linea PARA REPORTES DEL VIAJE SOLO ACTIVIDADES DE NAVEGACION --- Navegando de:
+                    positionRow += 1;
+                    colum = 0;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'NAVEGANDO DE :', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // Siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.departurePort, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // Cuadro vacio con salto de 3 linea
+                    colum += 1;
+                    positionColumns = [colum, colum + 1];
+                    positionRows = [positionRow, positionRow + 1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
+                    // Cuadro fecha con salto de 1 linea
+                    colum += 2;
+                    positionColumns = [colum, colum];
+                    positionRows = [positionRow, positionRow];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // Cuadro fecha
+                    colum += 1;
+                    positionColumns = [colum, colum + 1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + " GMT", 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+
+                    // Salto de linea ARRIVO
+                    positionRow += 1;
+                    colum = 0;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'ARRIBO A :', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.departurePort, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // FECHA ARRIVO
+                    colum += 3;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // cuadro fecha REVISAR ESTA FECHA SIEMPRE SE DEBE ACTUALIZAR hasta que se registre la actividad
+                    colum += 1;
+                    positionColumns = [colum, colum + 1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, " -- CAMBIAR VALOR 1 --", 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                    // --------------  TITULO DE LOS REGISTROS ----------------
+                    positionRow += 1;
+                    colum = 0;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSICION', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum + 1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HORAS\nNAVEGADAS', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 2;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCIA\nOBSERVADAS', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'VELOCIDAD', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FUERZA\nVIENTO Y MAR', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                    //----------------------------------------------------------------------------
+                    positionRow += 1;
+                    colum = 0;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + "/" + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum + 1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.steamingTime, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 2;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.distance, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.beaufour, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.activityPerformed, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                    colum += 1;
+                    positionColumns = [colum, colum];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.observation, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+
+                    // Ultimo registro.
+                    if (index == (listGetReportVoyagePortDaily.length - 1)) {
+
+                        // RESUMEN TOTAL
+                        positionRow += 1;
+                        colum = 0;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum + 1];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    }
+
+                    // ALterminar actualizamos el antiguo reporte
+                    itemReportBefore = getReportVoyagePortDaily;
+                    // ni bien se tiene un valor lo registramos
+                    // EMPEZAMOS guardando validamos si hay un item anterior.
+                    existeUnValorAnterior = !itemReportBefore ? false : true;
+                    // le sumamos uno al contador por que se registro la linea
+                    contadorDeItemPorPuerto++;
+
+                }
+
+                        //----------------------------------------------------------------------------
+                        positionRow += 1;
+                        colum = 0;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + "/" + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum + 1];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.steamingTime, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 2;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.distance, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        // siguiente columna
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.beaufour, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.activityPerformed, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                        colum += 1;
+                        positionColumns = [colum, colum];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.observation, 11, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+
+                        // Ultimo registro.
+                        if (index == (listGetReportVoyagePortDaily.length - 1)) {
+
+                            // RESUMEN TOTAL
+                            positionRow += 1;
+                            colum = 0;
+                            positionRows = [positionRow, positionRow];
+                            positionColumns = [colum, colum + 1];
+                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        }
+
+                        // ALterminar actualizamos el antiguo reporte
+                        itemReportBefore = getReportVoyagePortDaily;
+                        // ni bien se tiene un valor lo registramos
+                        // EMPEZAMOS guardando validamos si hay un item anterior.
+                        existeUnValorAnterior = !itemReportBefore ? false : true;
+                        // le sumamos uno al contador por que se registro la linea
+                        contadorDeItemPorPuerto++;
+
+            }
+
+        );
 
         return positionRow - posit;
     }
