@@ -3223,69 +3223,69 @@ export class FormatExcelLastVoyageService {
 
                 }
 
-                        //----------------------------------------------------------------------------
-                        positionRow += 1;
-                        colum = 0;
-                        positionRows = [positionRow, positionRow];
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + "/" + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum + 1];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.steamingTime, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 2;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.distance, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.beaufour, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                //----------------------------------------------------------------------------
+                positionRow += 1;
+                colum = 0;
+                positionRows = [positionRow, positionRow];
+                positionColumns = [colum, colum];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                // siguiente columna
+                colum += 1;
+                positionColumns = [colum, colum];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + "/" + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west, 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                // siguiente columna
+                colum += 1;
+                positionColumns = [colum, colum + 1];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.steamingTime, 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                // siguiente columna
+                colum += 2;
+                positionColumns = [colum, colum];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.distance, 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                // siguiente columna
+                colum += 1;
+                positionColumns = [colum, colum];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                // siguiente columna
+                colum += 1;
+                positionColumns = [colum, colum];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.beaufour, 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.activityPerformed, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                colum += 1;
+                positionColumns = [colum, colum];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.activityPerformed, 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.observation, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                colum += 1;
+                positionColumns = [colum, colum];
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.observation, 11, black, white, '')
+                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
-                        // Ultimo registro.
-                        if (index == (listGetReportVoyagePortDaily.length - 1)) {
+                // Ultimo registro.
+                if (index == (listGetReportVoyagePortDaily.length - 1)) {
 
-                            // RESUMEN TOTAL
-                            positionRow += 1;
-                            colum = 0;
-                            positionRows = [positionRow, positionRow];
-                            positionColumns = [colum, colum + 1];
-                            this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
-                            this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        }
+                    // RESUMEN TOTAL
+                    positionRow += 1;
+                    colum = 0;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum + 1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                }
 
-                        // ALterminar actualizamos el antiguo reporte
-                        itemReportBefore = getReportVoyagePortDaily;
-                        // ni bien se tiene un valor lo registramos
-                        // EMPEZAMOS guardando validamos si hay un item anterior.
-                        existeUnValorAnterior = !itemReportBefore ? false : true;
-                        // le sumamos uno al contador por que se registro la linea
-                        contadorDeItemPorPuerto++;
+                // ALterminar actualizamos el antiguo reporte
+                itemReportBefore = getReportVoyagePortDaily;
+                // ni bien se tiene un valor lo registramos
+                // EMPEZAMOS guardando validamos si hay un item anterior.
+                existeUnValorAnterior = !itemReportBefore ? false : true;
+                // le sumamos uno al contador por que se registro la linea
+                contadorDeItemPorPuerto++;
 
             }
 
