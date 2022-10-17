@@ -104,8 +104,8 @@ export class VoyageComponent implements OnInit {
 
   public cantDecimal = 3;
 
-  myControlFormSelectBefourt = new FormControl();
-  optionsBefourt: string[] = [
+  myControlFormSelectBEAUFORT = new FormControl();
+  optionsBEAUFORT: string[] = [
     '1', '2', '3', '4', '5', '6',
     'N1', 'N2', 'N3', 'N4', 'N5', 'N6',
     'NE1', 'NE2', 'NE3', 'NE4', 'NE5', 'NE6',
@@ -115,7 +115,7 @@ export class VoyageComponent implements OnInit {
     'SW1', 'SW2', 'SW3', 'SW4', 'SW5', 'SW6',
     'W1', 'W2', 'W3', 'W4', 'W5', 'W6',
     'N1', 'N2', 'N3', 'N4', 'N5', 'N6'];
-  filteredOptionsSelectBefourt: Observable<string[]>;
+  filteredOptionsSelectBEAUFORT: Observable<string[]>;
 
   constructor(
     private router: Router,
@@ -164,9 +164,9 @@ export class VoyageComponent implements OnInit {
   ngOnInit(): void {
 
 
-    this.filteredOptionsSelectBefourt = this.myControlFormSelectBefourt.valueChanges.pipe(
+    this.filteredOptionsSelectBEAUFORT = this.myControlFormSelectBEAUFORT.valueChanges.pipe(
       startWith(''),
-      map(value => this.FilterInputBefourt(value)),
+      map(value => this.FilterInputBEAUFORT(value)),
     );
 
     console.log('ngOnInit()');
@@ -800,7 +800,7 @@ export class VoyageComponent implements OnInit {
     } else if (this.List_Voyages_Ports_DailyReports === 'DailyReports') {
 
 
-      this.selectDailyReport.beaufour = this.myControlFormSelectBefourt.value;
+      this.selectDailyReport.beaufour = this.myControlFormSelectBEAUFORT.value;
 
       if (!this.selectDailyReport.id) {
 
@@ -2023,7 +2023,7 @@ export class VoyageComponent implements OnInit {
 
     if (newDailyReport.activityPerformed == 'SAILING_IN_BALLAST' || newDailyReport.activityPerformed == 'SAILING_WITH_LADEN' || newDailyReport.activityPerformed == 'ECONOMICAL_NAVIGATION') {
       if (!newDailyReport.beaufour) {
-        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_BEFOURT'));
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_BEAUFORT'));
         error = true;
       }
 
@@ -2268,7 +2268,7 @@ export class VoyageComponent implements OnInit {
 
     if (dailyReportToSave.activityPerformed == 'SAILING_IN_BALLAST' || dailyReportToSave.activityPerformed == 'SAILING_WITH_LADEN' || dailyReportToSave.activityPerformed == 'ECONOMICAL_NAVIGATION') {
       if (!dailyReportToSave.beaufour) {
-        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_BEFOURT'));
+        this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_BEAUFORT'));
         error = true;
       }
 
@@ -2723,7 +2723,7 @@ export class VoyageComponent implements OnInit {
       // El objeto user lo seteamos.
       let dailyReport: DailyReport = this.selectDailyReport;
       // Se obtine el valor segun se esta iniciando.
-      this.myControlFormSelectBefourt.setValue(dailyReport.beaufour);
+      this.myControlFormSelectBEAUFORT.setValue(dailyReport.beaufour);
       // Retorno el objeto
       return JSON.parse(JSON.stringify(dailyReport));
     }
@@ -2855,11 +2855,11 @@ export class VoyageComponent implements OnInit {
       this.ChangeActivityPerformed()
     }
   }
-  // filtro befourt
-  private FilterInputBefourt(value: string): string[] {
+  // filtro BEAUFORT
+  private FilterInputBEAUFORT(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.optionsBefourt.filter(option => option.toLowerCase().includes(filterValue));
+    return this.optionsBEAUFORT.filter(option => option.toLowerCase().includes(filterValue));
   }
 
 }

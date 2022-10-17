@@ -4001,7 +4001,7 @@ export class DashboardComponent implements OnInit {
               }
 
             } else if (configIFOorMGOorSPEED === 'SPEED') {
-              result.push('Befourt :    ' + beaufour);
+              result.push('Beaufort :    ' + beaufour);
 
               if (chartPoint.speed.steamingTime > 0) {
                 result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.steamingTime, this.cantDecimal) + ' hrs');

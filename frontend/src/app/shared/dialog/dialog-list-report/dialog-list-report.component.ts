@@ -317,7 +317,7 @@ export class DialogListReportComponent implements OnInit {
 
     } else if (isIFO_MGO_SPEED === 'SPEED') {
       result += 'Distance: ' + this.TwoDecimal(report.distance)
-      result += '\n Befourt: ' + report.beaufour;
+      result += '\n Beaufort: ' + report.beaufour;
     }
 
     return result;

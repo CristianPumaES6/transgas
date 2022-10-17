@@ -129,7 +129,7 @@ export class ExcelService {
   public async ExportReportDaily(Voyages: Voyage[]): Promise<boolean> {
 
     const title = 'CONSUMPTION FORMAT';
-    const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
+    const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEAUFORT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
 
 
     // Creamos una nueva hoja de trabajo
@@ -156,7 +156,7 @@ export class ExcelService {
         { width: 10 },// Distance
         { width: 10 },// Time
         { width: 10 },// Speed
-        { width: 15 },// Befourt
+        { width: 15 },// BEAUFORT
         { width: 7 },// M.E
         { width: 7 },// A.E
         { width: 7 },// Boiler
@@ -207,7 +207,7 @@ export class ExcelService {
       this.StyleCellHeader(worksheet, 'H4', '001556');// DISTANCE
       this.StyleCellHeader(worksheet, 'I4', '001556');// TIME
       this.StyleCellHeader(worksheet, 'J4', '0040d8');// SPEED // Color especial
-      this.StyleCellHeader(worksheet, 'K4', '375f9a');// BEFOURT
+      this.StyleCellHeader(worksheet, 'K4', '375f9a');// BEAUFORT
 
 
       this.StyleCellHeader(worksheet, 'L4', '001556');// Colores de maquina
