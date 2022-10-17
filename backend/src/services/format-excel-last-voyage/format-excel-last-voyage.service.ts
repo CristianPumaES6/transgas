@@ -2935,30 +2935,9 @@ export class FormatExcelLastVoyageService {
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
                             { formula: this.PositByCell(colum + 2) + (positionRow - 1) }
                             , 11, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                            this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
+
+                        
                         // siguiente columna
                         colum += 3;
                         positionColumns = [colum, colum + 2];
