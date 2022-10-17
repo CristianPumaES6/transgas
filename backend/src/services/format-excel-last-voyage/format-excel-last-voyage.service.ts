@@ -46,7 +46,7 @@ export class FormatExcelLastVoyageService {
 
                 this.StyleDashSailing(workbook, 0, 10, new UserEntity(), listGetReportVoyagePortDaily)
 
-        
+
                 return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
             }
         ).then(
@@ -2821,6 +2821,10 @@ export class FormatExcelLastVoyageService {
         let existeUnValorAnterior = false;
         let contadorDeItemPorPuerto = 0;
 
+        let refreshFecha = {
+            row: 0,
+            colum: 0
+        }
         // recorremos todos los reportes.
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
@@ -3326,7 +3330,7 @@ export class FormatExcelLastVoyageService {
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION', 20, colorYellowTransgas, blueHard3, '')
 
                     // Navegando de :---------
-                    positionRow += 1;
+                    positionRow += 2;
                     // Start date
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 3];
@@ -3345,8 +3349,8 @@ export class FormatExcelLastVoyageService {
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '');
 
                     // Numero de viaje y año
-                    colum += 4;
-                    positionColumns = [colum, colum + 4];
+                    colum += 3;
+                    positionColumns = [colum, colum + 5];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + " GMT", 8, black, white, '');
 
 
@@ -3371,14 +3375,18 @@ export class FormatExcelLastVoyageService {
 
                     // Numero de viaje y año
                     colum += 3;
-                    positionColumns = [colum, colum + 4];
+                    positionColumns = [colum, colum + 5];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, " -- CAMBIAR VALOR 1 --", 8, black, white, '');
-
+                    // guardamos esta ubicacion para luego actuailzar la fecha.
+                    refreshFecha = {
+                        row: positionRow,
+                        colum: colum
+                    }
 
 
 
                     // --------------  TITULO DE LOS REGISTROS ----------------
-                    positionRow += 1;
+                    positionRow += 2;
                     colum = columReset;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 4];
@@ -3549,8 +3557,6 @@ export class FormatExcelLastVoyageService {
                         }
                     };
 
-
-
                     // Ultimo registro.
                     if (index == (listGetReportVoyagePortDaily.length - 1)) {
 
@@ -3579,8 +3585,14 @@ export class FormatExcelLastVoyageService {
                 colum = columReset;
                 positionRows = [positionRow, positionRow];
                 positionColumns = [colum, colum + 4];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+  
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 8, black, white, '');
+                this.addStyleToBorders(worksheetPuerto, positionRows, positionColumns, 'thick', blueHard3, false, false, true, true)
+             
+             
+                
+                
+                
                 // siguiente columna
                 colum += 5;
                 positionColumns = [colum, colum + 5];
@@ -3618,6 +3630,9 @@ export class FormatExcelLastVoyageService {
                 this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
+                worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date)+' GMT';
+   
+             
                 // Ultimo registro.
                 if (index == (listGetReportVoyagePortDaily.length - 1)) {
 
