@@ -2927,7 +2927,7 @@ export class FormatExcelLastVoyageService {
         let blueHard3 = '001556';
         let white = 'ffffff';
         let black = '000000';
-
+        let grisSuave = 'f3f3f3';
 
         // Tipo de combustible
         let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
@@ -3065,14 +3065,14 @@ export class FormatExcelLastVoyageService {
 
 
                     colum += 4;
-                    positionColumns = [colum, colum + 5];
+                    positionColumns = [colum, colum + 6];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.departurePort, 8, black, white, '');
 
 
                     // Titulo del viaje
-                    colum += 6;
+                    colum += 7;
                     positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum + 3];
+                    positionColumns = [colum, colum + 2];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '');
 
                     // Numero de viaje y año
@@ -3090,14 +3090,14 @@ export class FormatExcelLastVoyageService {
 
 
                     colum += 4;
-                    positionColumns = [colum, colum + 5];
+                    positionColumns = [colum, colum + 6];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.arrivalPort, 8, black, white, '');
 
 
                     // Titulo del viaje
-                    colum += 6;
+                    colum += 7;
                     positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum + 3];
+                    positionColumns = [colum, colum + 2];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '');
 
                     // Numero de viaje y año
@@ -3107,23 +3107,94 @@ export class FormatExcelLastVoyageService {
 
 
 
+
                     // --------------  TITULO DE LOS REGISTROS ----------------
                     positionRow += 1;
                     colum = columReset;
                     positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    positionColumns = [colum, colum+4];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '')
+                    worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
+                        alignment: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        font: {
+                            size: 8,
+                            bold: true,
+                            color: { argb: white },
+                        },
+                        fill: {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: blueHard1
+                            }
+                        },
+                        border: {
+                            top: { style: 'thin', color: { argb: grisSuave } },
+                            left: { style: 'thin', color: { argb: grisSuave } },
+                            bottom: { style: 'thin', color: { argb: grisSuave } },
+                            right: { style: 'thin', color: { argb: grisSuave } }
+                        }
+                    };
+
                     // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSICION', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    colum += 5;
+                    positionColumns = [colum, colum+4];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSITION', 11, black, white, '')
+                    worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
+                        alignment: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        font: {
+                            size: 8,
+                            bold: true,
+                            color: { argb: white },
+                        },
+                        fill: {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: blueHard1
+                            }
+                        },
+                        border: {
+                            top: { style: 'thin', color: { argb: grisSuave } },
+                            left: { style: 'thin', color: { argb: grisSuave } },
+                            bottom: { style: 'thin', color: { argb: grisSuave } },
+                            right: { style: 'thin', color: { argb: grisSuave } }
+                        }
+                    };
                     // siguiente columna
-                    colum += 1;
+                    colum += 5;
                     positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HORAS\nNAVEGADAS', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HOURS\nSAILED', 11, black, white, '')
+                    worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
+                        alignment: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        font: {
+                            size: 8,
+                            bold: true,
+                            color: { argb: white },
+                        },
+                        fill: {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: blueHard2
+                            }
+                        },
+                        border: {
+                            top: { style: 'thin', color: { argb: grisSuave } },
+                            left: { style: 'thin', color: { argb: grisSuave } },
+                            bottom: { style: 'thin', color: { argb: grisSuave } },
+                            right: { style: 'thin', color: { argb: grisSuave } }
+                        }
+                    };
                     // siguiente columna
                     colum += 2;
                     positionColumns = [colum, colum];
