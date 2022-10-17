@@ -3020,36 +3020,71 @@ export class FormatExcelLastVoyageService {
                             , 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                         //---------------------------------------------------------------------------
-                        positionRow += 1;
-                        colum = columReset;
-                        positionRows = [positionRow, positionRow];
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
                         // siguiente columna
-                        colum += 1;
+                        positionRow += 1; 
+                        positionRows = [positionRow, positionRow];
+                        colum = columReset;
+                        positionColumns = [colum, colum + 7];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+
+                        // siguiente columna
+                        colum += 9;
                         positionColumns = [colum, colum];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
                             { formula: this.PositByCell(colum + 2) + (positionRow - 1) }
                             , 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, textIFOorVLSFOorLSFO, 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MDO/MGO', 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                        // siguiente columna
-                        colum += 1;
-                        positionColumns = [colum, colum + 1];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LUBRICANTES / OIL', 11, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
 
-
+                      
 
                     }
 
