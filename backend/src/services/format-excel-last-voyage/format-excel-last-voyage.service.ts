@@ -3101,7 +3101,7 @@ export class FormatExcelLastVoyageService {
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '');
 
                     // Numero de viaje y año
-                    colum += 4;
+                    colum += 3;
                     positionColumns = [colum, colum + 4];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, " -- CAMBIAR VALOR 1 --", 8, black, white, '');
 
@@ -3113,7 +3113,7 @@ export class FormatExcelLastVoyageService {
                     colum = columReset;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum+4];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE UTC:', 8, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -3141,7 +3141,7 @@ export class FormatExcelLastVoyageService {
 
                     // siguiente columna
                     colum += 5;
-                    positionColumns = [colum, colum+4];
+                    positionColumns = [colum, colum+5];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSITION', 11, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
                         alignment: {
@@ -3168,9 +3168,9 @@ export class FormatExcelLastVoyageService {
                         }
                     };
                     // siguiente columna
-                    colum += 5;
-                    positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HOURS\nSAILED', 11, black, white, '')
+                    colum += 6;
+                    positionColumns = [colum, colum + 2];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HOURS SAILED', 11, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -3196,63 +3196,90 @@ export class FormatExcelLastVoyageService {
                         }
                     };
                     // siguiente columna
-                    colum += 2;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCIA\nOBSERVADAS', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'VELOCIDAD', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FUERZA\nVIENTO Y MAR', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                    //----------------------------------------------------------------------------
-                    positionRow += 1;
-                    colum = columReset;
-                    positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + "/" + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.steamingTime, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    colum += 3;
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCE', 11, black, white, '')
+                    worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
+                        alignment: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        font: {
+                            size: 8,
+                            bold: true,
+                            color: { argb: white },
+                        },
+                        fill: {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: blueHard1
+                            }
+                        },
+                        border: {
+                            top: { style: 'thin', color: { argb: grisSuave } },
+                            left: { style: 'thin', color: { argb: grisSuave } },
+                            bottom: { style: 'thin', color: { argb: grisSuave } },
+                            right: { style: 'thin', color: { argb: grisSuave } }
+                        }
+                    };
                     // siguiente columna
                     colum += 2;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.distance, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'SPEED', 11, black, white, '')
+                    worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
+                        alignment: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        font: {
+                            size: 8,
+                            bold: true,
+                            color: { argb: white },
+                        },
+                        fill: {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: blueHard1
+                            }
+                        },
+                        border: {
+                            top: { style: 'thin', color: { argb: grisSuave } },
+                            left: { style: 'thin', color: { argb: grisSuave } },
+                            bottom: { style: 'thin', color: { argb: grisSuave } },
+                            right: { style: 'thin', color: { argb: grisSuave } }
+                        }
+                    };
                     // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.beaufour, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    colum += 2;
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BEAUFORT', 11, black, white, '')
+                    worksheetPuerto.getCell(this.PositByCell(colum)  + positionRow).style = {
+                        alignment: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        font: {
+                            size: 8,
+                            bold: true,
+                            color: { argb: white },
+                        },
+                        fill: {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: blueHard1
+                            }
+                        },
+                        border: {
+                            top: { style: 'thin', color: { argb: grisSuave } },
+                            left: { style: 'thin', color: { argb: grisSuave } },
+                            bottom: { style: 'thin', color: { argb: grisSuave } },
+                            right: { style: 'thin', color: { argb: grisSuave } }
+                        }
+                    };
 
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.activityPerformed, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.observation, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
                     // Ultimo registro.
@@ -3277,48 +3304,49 @@ export class FormatExcelLastVoyageService {
 
                 }
 
-                //----------------------------------------------------------------------------
-                positionRow += 1;
-                colum = columReset;
-                positionRows = [positionRow, positionRow];
-                positionColumns = [colum, colum];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                // siguiente columna
-                colum += 1;
-                positionColumns = [colum, colum];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + "/" + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west, 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                // siguiente columna
-                colum += 1;
-                positionColumns = [colum, colum + 1];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.steamingTime, 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                // siguiente columna
-                colum += 2;
-                positionColumns = [colum, colum];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.distance, 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                // siguiente columna
-                colum += 1;
-                positionColumns = [colum, colum];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                // siguiente columna
-                colum += 1;
-                positionColumns = [colum, colum];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.beaufour, 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                
+                    //----------------------------------------------------------------------------
+                    positionRow += 1;
+                    colum = columReset;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum+4];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 5;
+                    positionColumns = [colum, colum+5];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + "/" + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 6;
+                    positionColumns = [colum, colum + 2];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.steamingTime, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 3;
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.distance, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 2;
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '--REVISAR FORMULA2--', 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    // siguiente columna
+                    colum += 2;
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.beaufour, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
-                colum += 1;
-                positionColumns = [colum, colum];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.activityPerformed, 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    colum += 2;
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.activityPerformed, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
-                colum += 1;
-                positionColumns = [colum, colum];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.observation, 11, black, white, '')
-                this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    colum += 2;
+                    positionColumns = [colum, colum+1];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.observation, 11, black, white, '')
+                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
 
 
                 // Ultimo registro.
