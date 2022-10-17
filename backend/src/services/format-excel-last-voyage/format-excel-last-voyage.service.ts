@@ -3039,9 +3039,6 @@ export class FormatExcelLastVoyageService {
                     positionRow = posit;
                     colum = columReset;
 
-                    // posicion del titulo.
-                    positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum + 2];
 
                     // Agregamos los datos del puerto actual
                     puertoActual.departurePort = getReportVoyagePortDaily.departurePort;
@@ -3053,76 +3050,62 @@ export class FormatExcelLastVoyageService {
 
 
                     // le damos un reset al tamaño de la columna
+                    positionRow += 1;
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum + 18];
                     this.ResetColumn(worksheetPuerto);
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION “' + selectUser.name + '”', 20, colorYellowTransgas, blueHard3, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION', 20, colorYellowTransgas, blueHard3, '')
+
+                    // Navegando de :---------
+                    positionRow += 1;
+                    // Start date
+                    positionRows = [positionRow, positionRow];
+                    positionColumns = [colum, colum + 3];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'SAILING FROM :', 8, black, white, '');
+
+
                     colum += 4;
+                    positionColumns = [colum, colum + 5];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.departurePort, 8, black, white, '');
 
 
                     // Titulo del viaje
-                    positionRow += 1;
+                    colum += 6;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 3];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'REPORTE DE VIAJE', 22, black, white, '');
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '');
+
                     // Numero de viaje y año
                     colum += 4;
-                    positionColumns = [colum, colum + 2];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'VOY ' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, 22, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    positionColumns = [colum, colum + 4];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + " GMT", 8, black, white, '');
 
 
-                    // Salto de linea PARA REPORTES DEL VIAJE SOLO ACTIVIDADES DE NAVEGACION --- Navegando de:
                     positionRow += 1;
                     colum = columReset;
+                    // Start date
                     positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'NAVEGANDO DE :', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // Siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.departurePort, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // Cuadro vacio con salto de 3 linea
-                    colum += 1;
-                    positionColumns = [colum, colum + 1];
-                    positionRows = [positionRow, positionRow + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 11, black, white, '')
-                    // Cuadro fecha con salto de 1 linea
-                    colum += 2;
-                    positionColumns = [colum, colum];
-                    positionRows = [positionRow, positionRow];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // Cuadro fecha
-                    colum += 1;
-                    positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + " GMT", 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    positionColumns = [colum, colum + 3];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'ARRIVE TO :', 8, black, white, '');
 
 
-                    // Salto de linea ARRIVO
-                    positionRow += 1;
-                    colum = columReset;
+                    colum += 4;
+                    positionColumns = [colum, colum + 5];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.arrivalPort, 8, black, white, '');
+
+
+                    // Titulo del viaje
+                    colum += 6;
                     positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'ARRIBO A :', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // siguiente columna
-                    colum += 1;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.departurePort, 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // FECHA ARRIVO
-                    colum += 3;
-                    positionColumns = [colum, colum];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'FECHA :', 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    // cuadro fecha REVISAR ESTA FECHA SIEMPRE SE DEBE ACTUALIZAR hasta que se registre la actividad
-                    colum += 1;
-                    positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, " -- CAMBIAR VALOR 1 --", 11, black, white, '')
-                    this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+                    positionColumns = [colum, colum + 3];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '');
+
+                    // Numero de viaje y año
+                    colum += 4;
+                    positionColumns = [colum, colum + 4];
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, " -- CAMBIAR VALOR 1 --", 8, black, white, '');
+
+
 
                     // --------------  TITULO DE LOS REGISTROS ----------------
                     positionRow += 1;
