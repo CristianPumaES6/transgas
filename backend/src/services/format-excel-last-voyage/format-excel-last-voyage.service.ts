@@ -3022,7 +3022,7 @@ export class FormatExcelLastVoyageService {
                         //---------------------------------------------------------------------------
 
                         // siguiente columna
-                        positionRow += 1; 
+                        positionRow += 1;
                         positionRows = [positionRow, positionRow];
                         colum = columReset;
                         positionColumns = [colum, colum + 7];
@@ -3054,8 +3054,8 @@ export class FormatExcelLastVoyageService {
 
 
                         // siguiente columna
-                        colum += 9;
-                        positionColumns = [colum, colum];
+                        colum += 8;
+                        positionColumns = [colum, colum + 2];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
                             { formula: this.PositByCell(colum + 2) + (positionRow - 1) }
                             , 11, black, white, '')
@@ -3083,8 +3083,347 @@ export class FormatExcelLastVoyageService {
                                 right: { style: 'thin', color: { argb: grisSuave } }
                             }
                         };
+                        // siguiente columna
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LSFO', 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+                        // siguiente columna
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MGO', 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
 
-                      
+
+
+
+                        // siguiente columna
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'Lubricante', 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+
+
+                        positionRow += 1;
+                        colum = columReset;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum + 10];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS AL INICIO DEL VIAJE :', 8, black, white, '');
+
+                        colum += 11;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+
+                        positionRow += 1;
+                        colum = columReset;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum + 10];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS AL TERMINO DEL VIAJE', 8, black, white, '');
+
+                        colum += 11;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+
+                        positionRow += 1;
+                        colum = columReset;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum + 10];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS CONSUMIDOS EN EL VIAJE', 8, black, white, '');
+
+                        colum += 11;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+
+                        positionRow += 1;
+                        colum = columReset;
+                        positionRows = [positionRow, positionRow];
+                        positionColumns = [colum, colum + 10];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'CONSUMO PROMEDIO / DIA', 8, black, white, '');
+
+                        colum += 11;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
+
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
+                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
+                            alignment: {
+                                horizontal: 'center',
+                                vertical: 'middle'
+                            },
+                            font: {
+                                size: 8,
+                                bold: true,
+                                color: { argb: white },
+                            },
+                            fill: {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: blueHard1
+                                }
+                            },
+                            border: {
+                                top: { style: 'thin', color: { argb: grisSuave } },
+                                left: { style: 'thin', color: { argb: grisSuave } },
+                                bottom: { style: 'thin', color: { argb: grisSuave } },
+                                right: { style: 'thin', color: { argb: grisSuave } }
+                            }
+                        };
 
                     }
 
