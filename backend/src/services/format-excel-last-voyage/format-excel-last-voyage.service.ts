@@ -223,7 +223,10 @@ export class FormatExcelLastVoyageService {
         let redMedium = 'ffa4a4';
         let redLow = 'ffd6d6';
 
-        let positionColumn = 7;
+        // Reset Column en que columna empieza
+        let resetColumn = 7;
+
+        let positionColumn = resetColumn;
         let positionRow = position;
 
         // Esta funcion permite poner un cuadro de leyenda.
@@ -239,6 +242,8 @@ export class FormatExcelLastVoyageService {
         infoVessel.mgo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
 
         // Agregamos la informacion del buque.
+        //positionRow += 1;
+        //positionColumn = resetColumn;
         positionColumn = 25;
         let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel);
 
@@ -1500,7 +1505,11 @@ export class FormatExcelLastVoyageService {
 
         positionRows = positionRow;
         let positionColumn = colum;
-        let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser, infoVessel);
+        let posicionDelosRegistrosNormales = {
+            start: 56,
+            end:63
+        };
+        let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser, infoVessel,posicionDelosRegistrosNormales);
 
 
 
@@ -1526,7 +1535,7 @@ export class FormatExcelLastVoyageService {
 
         return positionRow - posit;
     }
-    private StyleDashBuque(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel): number {
+    private StyleDashBuque(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel,posicionDelosRegistrosNormales:any): number {
         let date_start = infoVessel.date_start;
         let hour_start = infoVessel.hour_start;
         let ifo_start = infoVessel.ifo_start;
@@ -1614,13 +1623,13 @@ export class FormatExcelLastVoyageService {
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(BD34:BD4000)' },
+            { formula: 'SUM(BD'+posicionDelosRegistrosNormales.start+':BD'+posicionDelosRegistrosNormales.end+')' },
             8, black, white, '');
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
 
-            { formula: 'SUM(BX34:BX4000)' }
+            { formula: 'SUM(BX'+posicionDelosRegistrosNormales.start+':BX'+posicionDelosRegistrosNormales.end+')' }
             , 8, black, white, '');
 
 
@@ -1632,12 +1641,12 @@ export class FormatExcelLastVoyageService {
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(AR34:AY4000)' },
+            { formula: 'SUM(AR'+posicionDelosRegistrosNormales.start+':AY'+posicionDelosRegistrosNormales.end+')' },
             8, black, white, '');
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(BH34:BS4000)' },
+            { formula: 'SUM(BH'+posicionDelosRegistrosNormales.start+':BS'+posicionDelosRegistrosNormales.end+')' },
             8, black, white, '');
 
 
