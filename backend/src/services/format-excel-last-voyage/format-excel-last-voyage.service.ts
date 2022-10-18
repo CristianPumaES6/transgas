@@ -2892,7 +2892,7 @@ export class FormatExcelLastVoyageService {
 
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
 
-                            { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')' }
+                            { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')/24' }
                             , 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
@@ -3096,59 +3096,17 @@ export class FormatExcelLastVoyageService {
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 8, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: this.PositByCell(colum) + (positionRow - 1) + '-' + this.PositByCell(colum) + (positionRow - 2) }
+                            , 8, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         colum += 3;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 8, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: this.PositByCell(colum) + (positionRow - 1) + '-' + this.PositByCell(colum) + (positionRow - 2) }
+                            , 8, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
 
                         positionRow += 1;
@@ -3159,59 +3117,18 @@ export class FormatExcelLastVoyageService {
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: this.PositByCell(colum) + (positionRow - 1) + '/' + this.PositByCell(colum - 3) + (positionRow - 4) }
+                            , 8, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
+
 
                         colum += 3;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 11, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            { formula: this.PositByCell(colum) + (positionRow - 1) + '-' + this.PositByCell(colum - 6) + (positionRow - 4) }
+                            , 8, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                     }
 
