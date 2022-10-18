@@ -8,6 +8,7 @@ import * as fs from 'fs';
 
 import * as fileSaver from 'file-saver';
 import { UserEntity } from 'src/models/user.entity';
+import { DailyReport } from 'src/models/daily-report.entity';
 import { Voyage } from 'src/models/voyage.entity';
 import { Port } from 'src/models/port.entity';
 import { ConvertDateUTC_To_FORMAT_UTC, ObtenerHoraDeDosStringUTC } from 'src/assets/moment.assets';
@@ -44,7 +45,7 @@ export class FormatExcelLastVoyageService {
                 this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
 
-                this.StyleDashSailing(workbook, 0, 10, new UserEntity(), listGetReportVoyagePortDaily)
+                this.StyleDashSailing(workbook, 0, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
 
 
                 return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
@@ -2790,7 +2791,7 @@ export class FormatExcelLastVoyageService {
         return positionRow - posit;
     }
 
-    private StyleDashSailing(workbook: Workbook, posit, columReset, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): number {
+    private StyleDashSailing(workbook: Workbook, posit, columReset, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate): number {
 
 
         let colorYellowTransgas = 'FFCD06';
@@ -2826,6 +2827,18 @@ export class FormatExcelLastVoyageService {
             colum: 0
         }
 
+        //Guardamos la primera fila
+        let firshRow = 0;
+        let lastRow = 0;
+        let firstROB = {
+            IFO: getInfoFuelStartEndByFilterDate.infoFuelStart.total_bunkering_ifo - getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo,
+            MGO: getInfoFuelStartEndByFilterDate.infoFuelStart.total_bunkering_mgo - getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo,
+        }
+
+        let lastROB = {
+            IFO: firstROB.IFO,
+            MGO: firstROB.MGO
+        }
 
         // recorremos todos los reportes.
         listGetReportVoyagePortDaily.forEach(
@@ -2878,7 +2891,8 @@ export class FormatExcelLastVoyageService {
 
 
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                            { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
+
+                            { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')' }
                             , 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
@@ -2886,7 +2900,7 @@ export class FormatExcelLastVoyageService {
                         colum += 3;
                         positionColumns = [colum, colum + 1];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                            { formula: 'SUM(' + this.PositByCell(colum) + (positionRow - 1) + ' : ' + this.PositByCell(colum) + (positionRow - contadorDeItemPorPuerto) + ')' }
+                            { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')' }
                             , 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
@@ -2935,7 +2949,7 @@ export class FormatExcelLastVoyageService {
                         colum += 8;
                         positionColumns = [colum, colum + 2];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                            { formula: this.PositByCell(colum + 2) + (positionRow - 1) }
+                            { formula: this.PositByCell(colum + 3) + (positionRow - 1) }
                             , 11, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
 
@@ -3039,59 +3053,17 @@ export class FormatExcelLastVoyageService {
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 8, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            firstROB.IFO
+                            , 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         colum += 3;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 8, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            firstROB.MGO
+                            , 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
 
                         positionRow += 1;
@@ -3102,59 +3074,18 @@ export class FormatExcelLastVoyageService {
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 8, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            lastROB.IFO
+                            , 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         colum += 3;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 0, 8, black, white, '')
-                        worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
-                            alignment: {
-                                horizontal: 'center',
-                                vertical: 'middle'
-                            },
-                            font: {
-                                size: 8,
-                                bold: true,
-                                color: { argb: white },
-                            },
-                            fill: {
-                                type: 'pattern',
-                                pattern: 'solid',
-                                fgColor: {
-                                    argb: blueHard1
-                                }
-                            },
-                            border: {
-                                top: { style: 'thin', color: { argb: grisSuave } },
-                                left: { style: 'thin', color: { argb: grisSuave } },
-                                bottom: { style: 'thin', color: { argb: grisSuave } },
-                                right: { style: 'thin', color: { argb: grisSuave } }
-                            }
-                        };
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
+                            lastROB.MGO
+                            , 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
+
 
 
                         positionRow += 1;
@@ -3558,6 +3489,8 @@ export class FormatExcelLastVoyageService {
                     // le sumamos uno al contador por que se registro la linea
                     contadorDeItemPorPuerto++;
 
+                    // La proxima Fila sera la
+                    firshRow = positionRow + 1;
                 }
 
                 if (getReportVoyagePortDaily.typeActivityPerformed == 'REPORT_AT_08_00'
@@ -3611,7 +3544,8 @@ export class FormatExcelLastVoyageService {
 
                     worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + ' GMT';
 
-
+                    // Guardamos la ultima fila
+                    lastRow = positionRow;
                 }
 
                 // Ultimo registro.
@@ -3633,6 +3567,9 @@ export class FormatExcelLastVoyageService {
                 existeUnValorAnterior = !itemReportBefore ? false : true;
                 // le sumamos uno al contador por que se registro la linea
                 contadorDeItemPorPuerto++;
+
+                lastROB.IFO = (lastROB.IFO - this.SumaIfo(<any>getReportVoyagePortDaily)) + getReportVoyagePortDaily.bunkeringIfo;
+                lastROB.MGO = (lastROB.MGO - this.SumaMgo(<any>getReportVoyagePortDaily)) + getReportVoyagePortDaily.bunkeringMgo;
 
             }
 
@@ -4268,6 +4205,15 @@ export class FormatExcelLastVoyageService {
             default:
                 break;
         }
+    }
+    private SumaIfo(report: DailyReport): number {
+        let ifo = report.mplaIfo + report.auxIfo + report.boilerIfo + report.otherIfo;
+        return ifo;
+    }
+
+    private SumaMgo(report: DailyReport): number {
+        let mgo = report.mplaMgo + report.auxMgo + report.boilerMgo + report.ppMgo + report.giMgo + report.otherMgo;
+        return mgo;
     }
 }
 
