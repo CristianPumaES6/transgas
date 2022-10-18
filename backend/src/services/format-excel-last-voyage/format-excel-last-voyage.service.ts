@@ -194,7 +194,7 @@ export class FormatExcelLastVoyageService {
 
         // reset colum
         this.ResetColumn(worksheet);
-        // la posicion inicioa en la fila 3
+        // la posicion inicioa en la fila 3 o 25
         let position = 25;
 
         // Colores amarillo
