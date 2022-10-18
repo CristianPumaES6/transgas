@@ -2859,14 +2859,14 @@ export class FormatExcelLastVoyageService {
                         colum = columReset;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
                         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                             alignment: {
                                 horizontal: 'center',
                                 vertical: 'middle'
                             },
                             font: {
-                                size: 11,
+                                size: 8,
                                 bold: true,
                                 color: { argb: white },
                             },
@@ -2891,9 +2891,8 @@ export class FormatExcelLastVoyageService {
 
 
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-
                             { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')/24' }
-                            , 11, black, white, '')
+                            , 8, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         // siguiente columna
@@ -2901,7 +2900,7 @@ export class FormatExcelLastVoyageService {
                         positionColumns = [colum, colum + 1];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
                             { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')' }
-                            , 11, black, white, '')
+                            , 8, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         // siguiente columna
@@ -2909,7 +2908,7 @@ export class FormatExcelLastVoyageService {
                         positionColumns = [colum, colum + 1];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
                             { formula: this.PositByCell(colum - 2) + positionRow + '/' + this.PositByCell(colum - 5) + positionRow }
-                            , 11, black, white, '')
+                            , 8, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
                         //---------------------------------------------------------------------------
 
@@ -2918,7 +2917,7 @@ export class FormatExcelLastVoyageService {
                         positionRows = [positionRow, positionRow];
                         colum = columReset;
                         positionColumns = [colum, colum + 7];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 8, black, white, '')
                         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                             alignment: {
                                 horizontal: 'center',
@@ -2950,14 +2949,14 @@ export class FormatExcelLastVoyageService {
                         positionColumns = [colum, colum + 2];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
                             { formula: this.PositByCell(colum + 3) + (positionRow - 1) }
-                            , 11, black, white, '')
+                            , 8, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
 
 
                         // siguiente columna
                         colum += 3;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LSFO', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LSFO', 8, black, white, '')
                         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                             alignment: {
                                 horizontal: 'center',
@@ -2985,7 +2984,7 @@ export class FormatExcelLastVoyageService {
                         // siguiente columna
                         colum += 3;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MGO', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'MGO', 8, black, white, '')
                         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                             alignment: {
                                 horizontal: 'center',
@@ -3017,7 +3016,7 @@ export class FormatExcelLastVoyageService {
                         // siguiente columna
                         colum += 3;
                         positionColumns = [colum, colum + 2];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'Lubricante', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'Lubricante', 8, black, white, '')
                         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                             alignment: {
                                 horizontal: 'center',
@@ -3050,6 +3049,7 @@ export class FormatExcelLastVoyageService {
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS AL INICIO DEL VIAJE :', 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
@@ -3065,12 +3065,18 @@ export class FormatExcelLastVoyageService {
                             , 8, black, white, '');
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
+
 
                         positionRow += 1;
                         colum = columReset;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS AL TERMINO DEL VIAJE', 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
@@ -3087,12 +3093,18 @@ export class FormatExcelLastVoyageService {
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
 
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
+
 
                         positionRow += 1;
                         colum = columReset;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS CONSUMIDOS EN EL VIAJE', 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
@@ -3108,12 +3120,18 @@ export class FormatExcelLastVoyageService {
                             , 8, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
+
 
                         positionRow += 1;
                         colum = columReset;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'CONSUMO PROMEDIO / DIA', 8, black, white, '');
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                         colum += 11;
                         positionColumns = [colum, colum + 2];
@@ -3126,8 +3144,13 @@ export class FormatExcelLastVoyageService {
                         colum += 3;
                         positionColumns = [colum, colum + 2];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-                            { formula: this.PositByCell(colum) + (positionRow - 1) + '-' + this.PositByCell(colum - 6) + (positionRow - 4) }
+                            { formula: this.PositByCell(colum) + (positionRow - 1) + '/' + this.PositByCell(colum - 6) + (positionRow - 4) }
                             , 8, black, white, '')
+                        this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
+
+                        colum += 3;
+                        positionColumns = [colum, colum + 2];
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 8, black, white, '');
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
                     }
@@ -3154,7 +3177,7 @@ export class FormatExcelLastVoyageService {
                     // le damos un reset al tamaño de la columna
                     positionRow += 1;
                     positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum + 18];
+                    positionColumns = [colum, colum + 19];
                     this.ResetColumn(worksheetPuerto);
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION', 20, colorYellowTransgas, blueHard3, '')
 
@@ -3248,7 +3271,7 @@ export class FormatExcelLastVoyageService {
                     // siguiente columna
                     colum += 5;
                     positionColumns = [colum, colum + 5];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSITION', 11, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSITION', 8, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -3276,7 +3299,7 @@ export class FormatExcelLastVoyageService {
                     // siguiente columna
                     colum += 6;
                     positionColumns = [colum, colum + 2];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HOURS SAILED', 11, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'HOURS SAILED', 8, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -3304,7 +3327,7 @@ export class FormatExcelLastVoyageService {
                     // siguiente columna
                     colum += 3;
                     positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCE', 11, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DISTANCE', 8, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -3332,7 +3355,7 @@ export class FormatExcelLastVoyageService {
                     // siguiente columna
                     colum += 2;
                     positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'SPEED', 11, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'SPEED', 8, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -3360,7 +3383,7 @@ export class FormatExcelLastVoyageService {
                     // siguiente columna
                     colum += 2;
                     positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BEAUFORT', 11, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BEAUFORT', 8, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -3394,7 +3417,7 @@ export class FormatExcelLastVoyageService {
                         colum = columReset;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
+                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                     }
 
@@ -3473,7 +3496,7 @@ export class FormatExcelLastVoyageService {
                     colum = columReset;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 1];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 11, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
                     this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
                 }
 
