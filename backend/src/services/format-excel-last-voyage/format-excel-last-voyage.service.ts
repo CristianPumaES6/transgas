@@ -40,13 +40,14 @@ export class FormatExcelLastVoyageService {
                 workbook.creator = 'transgas.web.app';
 
                 let worksheet = workbook.addWorksheet('Data Report');
-
+                
                 // Generamos la hoja de data report
                 this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
+          
+                this.StyleDashSailing(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
 
-                this.StyleDashSailing(workbook, 0, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
-
+             
 
                 return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
             }
@@ -2840,6 +2841,9 @@ export class FormatExcelLastVoyageService {
             MGO: firstROB.MGO
         }
 
+
+       let itemDelRegistro: GetReportVoyagePortDaily[]=[];
+       
         // recorremos todos los reportes.
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
@@ -2856,7 +2860,7 @@ export class FormatExcelLastVoyageService {
 
                         // RESUMEN TOTAL
                         positionRow += 1;
-                        colum = columReset;
+                        colum = columReset + 1;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
@@ -2915,7 +2919,7 @@ export class FormatExcelLastVoyageService {
                         // siguiente columna
                         positionRow += 1;
                         positionRows = [positionRow, positionRow];
-                        colum = columReset;
+                        colum = columReset + 1;
                         positionColumns = [colum, colum + 7];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 8, black, white, '')
                         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
@@ -3045,7 +3049,7 @@ export class FormatExcelLastVoyageService {
 
 
                         positionRow += 1;
-                        colum = columReset;
+                        colum = columReset + 1;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS AL INICIO DEL VIAJE :', 8, black, white, '');
@@ -3072,7 +3076,7 @@ export class FormatExcelLastVoyageService {
 
 
                         positionRow += 1;
-                        colum = columReset;
+                        colum = columReset + 1;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS AL TERMINO DEL VIAJE', 8, black, white, '');
@@ -3100,7 +3104,7 @@ export class FormatExcelLastVoyageService {
 
 
                         positionRow += 1;
-                        colum = columReset;
+                        colum = columReset + 1;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'BUNKERS CONSUMIDOS EN EL VIAJE', 8, black, white, '');
@@ -3127,7 +3131,7 @@ export class FormatExcelLastVoyageService {
 
 
                         positionRow += 1;
-                        colum = columReset;
+                        colum = columReset + 1;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'CONSUMO PROMEDIO / DIA', 8, black, white, '');
@@ -3153,6 +3157,14 @@ export class FormatExcelLastVoyageService {
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, '', 8, black, white, '');
                         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
+
+
+
+                        // disminuimos las filas registradas
+                        positionRows = [positionRow - 18, positionRow = positionRow + 1];
+                        positionColumns = [columReset, columReset + 21];
+                        this.addStyleBorder(worksheetPuerto, positionRows, positionColumns, 'thick', blueHard3)
+
                     }
 
 
@@ -3162,8 +3174,6 @@ export class FormatExcelLastVoyageService {
                     puertoActual.id = getReportVoyagePortDaily.portId;
                     // Reset position
                     positionRow = posit;
-                    colum = columReset;
-
 
                     // Agregamos los datos del puerto actual
                     puertoActual.departurePort = getReportVoyagePortDaily.departurePort;
@@ -3177,10 +3187,11 @@ export class FormatExcelLastVoyageService {
                     // le damos un reset al tamaño de la columna
                     positionRow += 1;
                     positionRows = [positionRow, positionRow];
-                    positionColumns = [colum, colum + 19];
+                    positionColumns = [columReset, columReset + 21];
                     this.ResetColumn(worksheetPuerto);
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION', 20, colorYellowTransgas, blueHard3, '')
 
+                    colum = columReset + 1;
                     // Navegando de :---------
                     positionRow += 2;
                     // Start date
@@ -3207,7 +3218,7 @@ export class FormatExcelLastVoyageService {
 
 
                     positionRow += 1;
-                    colum = columReset;
+                    colum = columReset + 1;
                     // Start date
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 3];
@@ -3239,7 +3250,7 @@ export class FormatExcelLastVoyageService {
 
                     // --------------  TITULO DE LOS REGISTROS ----------------
                     positionRow += 2;
-                    colum = columReset;
+                    colum = columReset + 1;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 4];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE UTC:', 8, black, white, '')
@@ -3414,7 +3425,7 @@ export class FormatExcelLastVoyageService {
 
                         // RESUMEN TOTAL
                         positionRow += 1;
-                        colum = columReset;
+                        colum = columReset + 1;
                         positionRows = [positionRow, positionRow];
                         positionColumns = [colum, colum + 10];
                         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
@@ -3440,7 +3451,7 @@ export class FormatExcelLastVoyageService {
                 ) {
                     //----------------------------------------------------------------------------
                     positionRow += 1;
-                    colum = columReset;
+                    colum = columReset + 1;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 4];
 
@@ -3493,7 +3504,7 @@ export class FormatExcelLastVoyageService {
 
                     // RESUMEN TOTAL
                     positionRow += 1;
-                    colum = columReset;
+                    colum = columReset + 1;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [colum, colum + 1];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
