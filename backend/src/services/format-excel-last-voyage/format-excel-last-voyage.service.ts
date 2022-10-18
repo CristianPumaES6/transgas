@@ -40,14 +40,14 @@ export class FormatExcelLastVoyageService {
                 workbook.creator = 'transgas.web.app';
 
                 let worksheet = workbook.addWorksheet('Data Report');
-                
+
                 // Generamos la hoja de data report
                 this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
-          
+
                 this.StyleDashSailing(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
 
-             
+
 
                 return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
             }
@@ -195,7 +195,7 @@ export class FormatExcelLastVoyageService {
         // reset colum
         this.ResetColumn(worksheet);
         // la posicion inicioa en la fila 3
-        let position = 3;
+        let position = 25;
 
         // Colores amarillo
         let colorYellowTransgas = 'FFCD06';
@@ -1596,7 +1596,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'START DATE', 8, black, white, '');
         // date start
         positionColumns = [colum + 5, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, date_start, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(date_start) + ' GMT', 8, black, white, '');
 
         // IFO start
         positionColumns = [colum + 10, colum + 11];
@@ -1648,7 +1648,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'END DATE', 8, black, white, '');
         // date start
         positionColumns = [colum + 5, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, date_end, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(date_end) + ' GMT', 8, black, white, '');
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
@@ -2842,8 +2842,8 @@ export class FormatExcelLastVoyageService {
         }
 
 
-       let itemDelRegistro: GetReportVoyagePortDaily[]=[];
-       
+        let itemDelRegistro: GetReportVoyagePortDaily[] = [];
+
         // recorremos todos los reportes.
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
@@ -3161,10 +3161,21 @@ export class FormatExcelLastVoyageService {
 
 
                         // disminuimos las filas registradas
-                        positionRows = [positionRow - 18, positionRow = positionRow + 1];
+                        positionRows = [positionRow - 17, positionRow = positionRow + 1];
                         positionColumns = [columReset, columReset + 21];
                         this.addStyleBorder(worksheetPuerto, positionRows, positionColumns, 'thick', blueHard3)
 
+
+
+
+
+
+
+
+
+                        // AQUI RESETEO EL COLUM
+
+                        itemDelRegistro = [];
                     }
 
 
@@ -3522,6 +3533,7 @@ export class FormatExcelLastVoyageService {
                 lastROB.IFO = (lastROB.IFO - this.SumaIfo(<any>getReportVoyagePortDaily)) + getReportVoyagePortDaily.bunkeringIfo;
                 lastROB.MGO = (lastROB.MGO - this.SumaMgo(<any>getReportVoyagePortDaily)) + getReportVoyagePortDaily.bunkeringMgo;
 
+                itemDelRegistro.push(getReportVoyagePortDaily);
             }
 
         );
