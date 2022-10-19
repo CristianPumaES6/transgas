@@ -1507,9 +1507,9 @@ export class FormatExcelLastVoyageService {
         let positionColumn = colum;
         let posicionDelosRegistrosNormales = {
             start: 56,
-            end:63
+            end: 63
         };
-        let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser, infoVessel,posicionDelosRegistrosNormales);
+        let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser, infoVessel, posicionDelosRegistrosNormales);
 
 
 
@@ -1530,12 +1530,14 @@ export class FormatExcelLastVoyageService {
         positionColumn = colum + 46;
         let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'MGO');
 
-        positionRow = tamanioActivityMGO + 2;
+
+
+        positionRow = tamanioBuque + 2;
 
 
         return positionRow - posit;
     }
-    private StyleDashBuque(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel,posicionDelosRegistrosNormales:any): number {
+    private StyleDashBuque(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel, posicionDelosRegistrosNormales: any): number {
         let date_start = infoVessel.date_start;
         let hour_start = infoVessel.hour_start;
         let ifo_start = infoVessel.ifo_start;
@@ -1597,7 +1599,6 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'MGO', 8, white, blueHard3, '')
 
-
         posit += 1;
         // Start date
         positionRows = [posit, posit];
@@ -1615,23 +1616,134 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, mgo_start, 8, black, white, '');
 
 
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TIME', 8, white, blueHard3, '')
+
+        posit += 1;
+        // Start date
+        positionRows = [posit, posit + 7];
+        positionColumns = [colum + 2, colum + 5];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'CONSUMPTION', 8, black, white, '');
+
+        positionRows = [posit, posit];
+        positionColumns = [colum + 6, colum + 9];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LOADING').toUpperCase(), 8, black, white, '');
+        positionColumns = [colum + 10, colum + 11];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        //MGO 
+        positionColumns = [colum + 12, colum + 13];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        // time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+
+
+
+        posit += 1;
+        positionRows = [posit, posit];
+        positionColumns = [colum + 6, colum + 9];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('DOWNLOADING').toUpperCase(), 8, black, white, '');
+        positionColumns = [colum + 10, colum + 11];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        //MGO 
+        positionColumns = [colum + 12, colum + 13];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        // time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+
+
+
+        posit += 1;
+        positionRows = [posit, posit];
+        positionColumns = [colum + 6, colum + 9];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('SAILING_IN_BALLAST').toUpperCase(), 8, black, white, '');
+        positionColumns = [colum + 10, colum + 11];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        //MGO 
+        positionColumns = [colum + 12, colum + 13];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        // time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+
+
+        posit += 1;
+        positionRows = [posit, posit];
+        positionColumns = [colum + 6, colum + 9];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('SAILING_WITH_LADEN').toUpperCase(), 8, black, white, '');
+        positionColumns = [colum + 10, colum + 11];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        //MGO 
+        positionColumns = [colum + 12, colum + 13];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        // time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+
+
+        posit += 1;
+        positionRows = [posit, posit];
+        positionColumns = [colum + 6, colum + 9];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('ANCHORED').toUpperCase(), 8, black, white, '');
+        positionColumns = [colum + 10, colum + 11];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        //MGO 
+        positionColumns = [colum + 12, colum + 13];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        // time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+
+
+        posit += 1;
+        positionRows = [posit, posit];
+        positionColumns = [colum + 6, colum + 9];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('MANEUVER').toUpperCase(), 8, black, white, '');
+        positionColumns = [colum + 10, colum + 11];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        //MGO 
+        positionColumns = [colum + 12, colum + 13];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        // time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+
+
+        posit += 1;
+        positionRows = [posit, posit];
+        positionColumns = [colum + 6, colum + 9];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('OTHER_ACT').toUpperCase(), 8, black, white, '');
+        positionColumns = [colum + 10, colum + 11];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        //MGO 
+        positionColumns = [colum + 12, colum + 13];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        // time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+
+
+
         posit += 1;
         // Start date
         positionRows = [posit, posit];
         positionColumns = [colum + 6, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Bunkering', 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'Total Bunkering'.toUpperCase(), 8, black, white, '');
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(BD'+posicionDelosRegistrosNormales.start+':BD'+posicionDelosRegistrosNormales.end+')' },
+            { formula: 'SUM(BD' + posicionDelosRegistrosNormales.start + ':BD' + posicionDelosRegistrosNormales.end + ')' },
             8, black, white, '');
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
 
-            { formula: 'SUM(BX'+posicionDelosRegistrosNormales.start+':BX'+posicionDelosRegistrosNormales.end+')' }
+            { formula: 'SUM(BX' + posicionDelosRegistrosNormales.start + ':BX' + posicionDelosRegistrosNormales.end + ')' }
             , 8, black, white, '');
-
+        //time
+        positionColumns = [colum + 14, colum + 15];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, '', 8, black, white, '');
 
         posit += 1;
         // Start date
@@ -1641,12 +1753,12 @@ export class FormatExcelLastVoyageService {
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(AR'+posicionDelosRegistrosNormales.start+':AY'+posicionDelosRegistrosNormales.end+')' },
+            { formula: 'SUM(AR' + posicionDelosRegistrosNormales.start + ':AY' + posicionDelosRegistrosNormales.end + ')' },
             8, black, white, '');
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(BH'+posicionDelosRegistrosNormales.start+':BS'+posicionDelosRegistrosNormales.end+')' },
+            { formula: 'SUM(BH' + posicionDelosRegistrosNormales.start + ':BS' + posicionDelosRegistrosNormales.end + ')' },
             8, black, white, '');
 
 
@@ -1671,29 +1783,41 @@ export class FormatExcelLastVoyageService {
             8, black, white, '');
 
 
-        positionColumns = [colum, colum + 13];
+        positionColumns = [colum, colum + 15];
         // Lineas suabes internas
+        positionRows = [posit - 10, posit - 10];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
+        positionRows = [posit - 9, posit - 9];
+        positionColumns = [colum + 6, colum + 15];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
+        positionRows = [posit - 8, posit - 8];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
+        positionRows = [posit - 7, posit - 7];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
+        positionRows = [posit - 6, posit - 6];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
+        positionRows = [posit - 5, posit - 5];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
+        positionRows = [posit - 4, posit - 4];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
         positionRows = [posit - 3, posit - 3];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, false, true, true)
-
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
         positionRows = [posit - 2, posit - 2];
-        positionColumns = [colum + 6, colum + 13];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, false, true, true)
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
+
         positionRows = [posit - 1, posit - 1];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, false, false, true, true)
+        positionColumns = [colum, colum + 13];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
 
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 13];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, false, true, true)
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard3, true, true, true, true)
 
         // BOrde alrededor.
-        positionRows = [posit - 3, posit];
+        positionRows = [posit - 10, posit];
         positionColumns = [colum, colum + 13];
         this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
-
-
-        positionRows = [posit - 4, posit - 4];
-        positionColumns = [colum + 10, colum + 13];
+        positionColumns = [colum, colum + 13];
         this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
 
 
