@@ -1500,7 +1500,7 @@ export class FormatExcelLastVoyageService {
         let positionRow = posit;
 
         let positionRows = [positionRow, positionRow];
-        let positionColumns = [colum, colum + 53];
+        let positionColumns = [colum, colum + 55];
 
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'INFO VESSEL', 20, colorYellowTransgas, blueHard3)
         this.addBorder(worksheet, positionRow, colum, 'thick', blueHard3, '');
@@ -1535,7 +1535,7 @@ export class FormatExcelLastVoyageService {
         let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'MGO');
 
 
-        positionColumn = colum + 47;
+        positionColumn = colum + 48;
         let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'MGO');
 
 
@@ -1922,7 +1922,7 @@ export class FormatExcelLastVoyageService {
         // FULL Y ECO Performan SPEED
         positionColumns = [colum + 4, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'FULL', 8, white, blueHard2, '')
-        positionColumns = [colum + 5, colum + 5];
+        positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'ECO', 8, white, blueHard2, '')
 
 
@@ -1975,7 +1975,7 @@ export class FormatExcelLastVoyageService {
             ],
         });
 
-        positionColumns = [colum + 5, colum + 5];
+        positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: isIFOorMGO == 'IFO' ? 'AD25' : 'BR25' },
             8, black, white, '')
@@ -2063,7 +2063,7 @@ export class FormatExcelLastVoyageService {
             ],
         });
 
-        positionColumns = [colum + 5, colum + 5];
+        positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: isIFOorMGO == 'IFO' ? 'AD25' : 'BR25' },
             8, black, white, '')
@@ -2145,44 +2145,21 @@ export class FormatExcelLastVoyageService {
         return posit;
     }
     private StyleDashActivity(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string): number {
-        let date_start = '22/22/22'
-        let hour_start = '20:20'
-        let ifo_start = 200;
-        let mgo_start = 300;
-        let date_end = '22/22/22'
-        let hour_end = '22:21'
-        let ifo_end = 222;
-        let mgo_end = 440;
-        let totalBunkeringIFO = 0;
-        let totalBunkeringMGO = 0;
-
-        let totalConsumptIFO = 0;
-        let totalConsumptMGO = 0;
 
 
 
         let colorYellowTransgas = 'FFCD06';
         // Variables de colores-
-        let blueHard = '001556'
-        let blueMedium = '09155694'
-        let blueLow = 'b6c2ff94';
 
-
-        let blueHard1 = '375f9a'
-        let blueHard2 = '0040d8'
         let blueHard3 = '001556'
 
-        let greenHard = '091556'
         let greenMedium = 'b6c2ff94'
-        let greenLow = 'b6c2ff94';
 
         let black = '000'
         let white = 'ffffff';
 
-        // Variables de colores-
-        let grisFuerte = 'd4d4d4'
-        let grisMedio = 'ebe8e8'
-        let grisSuave = 'f3f3f3';
+        // Variables de colores- 
+        let grisMedio = 'ebe8e8';
 
         let redHard = '9a2929';
         let redMedium = 'ffa4a4';
@@ -2193,6 +2170,12 @@ export class FormatExcelLastVoyageService {
 
         let positionRows = [posit, posit];
         let positionColumns = [colum, colum + 6];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? textIFOorVLSFOorLSFO : 'MGO', 8, white, blueHard3, '')
+
+
+        posit += 1;
+        positionRows = [posit, posit];
+        positionColumns = [colum, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION', 10, colorYellowTransgas, blueHard3, '')
 
 
