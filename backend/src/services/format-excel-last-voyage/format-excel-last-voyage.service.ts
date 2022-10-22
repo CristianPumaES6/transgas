@@ -194,8 +194,7 @@ export class FormatExcelLastVoyageService {
 
         // reset colum
         this.ResetColumn(worksheet);
-        // la posicion inicioa en la fila 3 o 25
-        let position = 25;
+
 
         // Colores amarillo
         let colorYellowTransgas = 'FFCD06';
@@ -227,18 +226,24 @@ export class FormatExcelLastVoyageService {
         let resetColumn = 7;
 
         let positionColumn = resetColumn;
-        let positionRow = position;
+        let positionRow = 2;
 
-
-
-        let posicionDelosRegistrosNormales:PosicionDelosRegistrosNormales = {
-            startRow: 56,
-            endRow: 63
-        };
 
         // Esta funcion permite poner un cuadro de leyenda.
         this.StyleDashLegend(worksheet, positionRow, positionColumn);
+        // la posicion inicioa en la fila 3 o 25
+        let position = 25;
+        positionRow = 25;
 
+
+        let posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales = {
+            startRow: 56,
+            endRow: 63
+        };
+        let posicionDelosRegistrosActivitPerforment: PosicionDelosRegistrosNormales = {
+            startRow: 56,
+            endRow: 63
+        };
 
 
 
@@ -251,8 +256,8 @@ export class FormatExcelLastVoyageService {
         // Agregamos la informacion del buque.
         //positionRow += 1;
         //positionColumn = resetColumn;
-        positionColumn = 25;
-        let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel,posicionDelosRegistrosNormales);
+        positionColumn = 7;
+        let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel, posicionDelosRegistrosNormales);
 
         // a la posicion del row le sumamos el tamaño del cuadro.
         positionRow += tamanioInfoVessel;
@@ -261,10 +266,10 @@ export class FormatExcelLastVoyageService {
         positionRow += 2;
 
         //
-        positionColumn = 20;
+        positionColumn = 7;
         let tamanioCosumptionIFO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'IFO');
         //
-        positionColumn = 60;
+        positionColumn = 47;
         let tamanioCosumptionMGO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'MGO');
 
 
@@ -1460,7 +1465,7 @@ export class FormatExcelLastVoyageService {
         let totaldeRow = 11;
         return totaldeRow;
     }
-    private StyleDashInfoVessel(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel,posicionDelosRegistrosNormales:PosicionDelosRegistrosNormales): number {
+    private StyleDashInfoVessel(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel, posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales): number {
 
         let colorYellowTransgas = 'FFCD06';
         // Variables de colores-
@@ -1519,18 +1524,18 @@ export class FormatExcelLastVoyageService {
         positionColumn = colum + 19;
         let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'IFO');
 
-        positionColumn = colum + 26;
+        positionColumn = colum + 27;
         let tamanioActivity = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'IFO');
 
 
         // ========== LInea 3
 
 
-        positionColumn = colum + 39;
+        positionColumn = colum + 40;
         let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'MGO');
 
 
-        positionColumn = colum + 46;
+        positionColumn = colum + 47;
         let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'MGO');
 
 
@@ -1860,30 +1865,14 @@ export class FormatExcelLastVoyageService {
         return posit;
     }
     private StyleDashSpeed(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string): number {
-        let date_start = '22/22/22'
-        let hour_start = '20:20'
-        let ifo_start = 200;
-        let mgo_start = 300;
-        let date_end = '22/22/22'
-        let hour_end = '22:21'
-        let ifo_end = 222;
-        let mgo_end = 440;
-        let totalBunkeringIFO = 0;
-        let totalBunkeringMGO = 0;
 
-        let totalConsumptIFO = 0;
-        let totalConsumptMGO = 0;
 
 
 
         let colorYellowTransgas = 'FFCD06';
-        // Variables de colores-
-        let blueHard = '001556'
-        let blueMedium = '09155694'
-        let blueLow = 'b6c2ff94';
 
 
-        let blueHard1 = '375f9a'
+
         let blueHard2 = '0040d8'
         let blueHard3 = '001556'
 
@@ -1905,17 +1894,21 @@ export class FormatExcelLastVoyageService {
 
         let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
+        let positionRows = [posit, posit];
+        let positionColumns = [colum, colum + 6];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? textIFOorVLSFOorLSFO : 'MGO', 8, white, blueHard3, '')
 
-        let positionRows = [posit, posit + 1];
-        let positionColumns = [colum, colum + 1];
+        posit += 1;
+        positionRows = [posit, posit + 1];
+        positionColumns = [colum, colum + 1];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'SPEED', 10, colorYellowTransgas, blueHard3, '')
 
         positionRows = [posit, posit];
         positionColumns = [colum + 2, colum + 3];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'CHARTER', 8, white, blueHard3, '')
 
-        positionColumns = [colum + 4, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'PERFORMEND', 5, white, blueHard2, '')
+        positionColumns = [colum + 4, colum + 6];
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'PERFORMEND', 8, white, blueHard2, '')
 
         posit += 1;
         positionRows = [posit, posit];
@@ -4384,8 +4377,8 @@ export class PosicionDelosRegistrosNormales {
     constructor(
         public startRow?: number,
         public endRow?: number
-    ){
-        
+    ) {
+
         this.startRow = startRow || 0;
         this.endRow = endRow || 0;
     }
