@@ -229,6 +229,13 @@ export class FormatExcelLastVoyageService {
         let positionColumn = resetColumn;
         let positionRow = position;
 
+
+
+        let posicionDelosRegistrosNormales:PosicionDelosRegistrosNormales = {
+            startRow: 56,
+            endRow: 63
+        };
+
         // Esta funcion permite poner un cuadro de leyenda.
         this.StyleDashLegend(worksheet, positionRow, positionColumn);
 
@@ -245,7 +252,7 @@ export class FormatExcelLastVoyageService {
         //positionRow += 1;
         //positionColumn = resetColumn;
         positionColumn = 25;
-        let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel);
+        let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel,posicionDelosRegistrosNormales);
 
         // a la posicion del row le sumamos el tamaño del cuadro.
         positionRow += tamanioInfoVessel;
@@ -1453,7 +1460,7 @@ export class FormatExcelLastVoyageService {
         let totaldeRow = 11;
         return totaldeRow;
     }
-    private StyleDashInfoVessel(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel): number {
+    private StyleDashInfoVessel(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel,posicionDelosRegistrosNormales:PosicionDelosRegistrosNormales): number {
 
         let colorYellowTransgas = 'FFCD06';
         // Variables de colores-
@@ -1505,10 +1512,6 @@ export class FormatExcelLastVoyageService {
 
         positionRows = positionRow;
         let positionColumn = colum;
-        let posicionDelosRegistrosNormales = {
-            start: 56,
-            end: 63
-        };
         let tamanioBuque = this.StyleDashBuque(worksheet, positionRows, positionColumn, selectUser, infoVessel, posicionDelosRegistrosNormales);
 
 
@@ -1537,7 +1540,7 @@ export class FormatExcelLastVoyageService {
 
         return positionRow - posit;
     }
-    private StyleDashBuque(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel, posicionDelosRegistrosNormales: any): number {
+    private StyleDashBuque(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel, posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales): number {
         let date_start = infoVessel.date_start;
         let hour_start = infoVessel.hour_start;
         let ifo_start = infoVessel.ifo_start;
@@ -1733,12 +1736,12 @@ export class FormatExcelLastVoyageService {
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(AR' + posicionDelosRegistrosNormales.start + ':AY' + posicionDelosRegistrosNormales.end + ')' },
+            { formula: 'SUM(AR' + posicionDelosRegistrosNormales.startRow + ':AY' + posicionDelosRegistrosNormales.endRow + ')' },
             8, black, white, '');
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(BH' + posicionDelosRegistrosNormales.start + ':BS' + posicionDelosRegistrosNormales.end + ')' },
+            { formula: 'SUM(BH' + posicionDelosRegistrosNormales.startRow + ':BS' + posicionDelosRegistrosNormales.endRow + ')' },
             8, black, white, '');
 
         posit += 1;
@@ -1749,13 +1752,13 @@ export class FormatExcelLastVoyageService {
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: 'SUM(BD' + posicionDelosRegistrosNormales.start + ':BD' + posicionDelosRegistrosNormales.end + ')' },
+            { formula: 'SUM(BD' + posicionDelosRegistrosNormales.startRow + ':BD' + posicionDelosRegistrosNormales.endRow + ')' },
             8, black, white, '');
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
 
-            { formula: 'SUM(BX' + posicionDelosRegistrosNormales.start + ':BX' + posicionDelosRegistrosNormales.end + ')' }
+            { formula: 'SUM(BX' + posicionDelosRegistrosNormales.startRow + ':BX' + posicionDelosRegistrosNormales.endRow + ')' }
             , 8, black, white, '');
 
 
@@ -4377,3 +4380,13 @@ export class InfoVessel {
         this.totalConsumptMGO = totalConsumptMGO || 0;
     }
 }
+export class PosicionDelosRegistrosNormales {
+    constructor(
+        public startRow?: number,
+        public endRow?: number
+    ){
+        
+        this.startRow = startRow || 0;
+        this.endRow = endRow || 0;
+    }
+};
