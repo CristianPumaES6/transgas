@@ -822,12 +822,11 @@ export class VoyagesController {
         }
     }
 
-    @Post('sendEmailLastVoyage')
-    async SendEmailLastVoyage(): Promise<any> {
+    @Post('sendEmailLastVoyage/:gmail')
+    async SendEmailLastVoyage( @Body() user: UserEntity, @Param('gmail') gmail): Promise<any> {
 
         // Datos para para la consultas.
-        let user = new UserEntity();
-        let userId = 2
+        let userId = user.id;
         let voyageId: number = null;
 
         // estas varaibles contendran la informacion correcta.
