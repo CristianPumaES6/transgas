@@ -237,12 +237,13 @@ export class FormatExcelLastVoyageService {
 
 
         let posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales = {
-            startRow: 56,
-            endRow: 63
+            startRow: 58,
+            endRow: 67
         };
         let posicionDelosRegistrosActivitPerforment: PosicionDelosRegistrosNormales = {
-            startRow: 56,
-            endRow: 63
+            startRow: 47,
+            endRow: 54,
+            startColum: 7
         };
 
 
@@ -257,7 +258,7 @@ export class FormatExcelLastVoyageService {
         //positionRow += 1;
         //positionColumn = resetColumn;
         positionColumn = 7;
-        let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel, posicionDelosRegistrosNormales);
+        let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel, posicionDelosRegistrosNormales, posicionDelosRegistrosActivitPerforment);
 
         // a la posicion del row le sumamos el tamaño del cuadro.
         positionRow += tamanioInfoVessel;
@@ -1465,7 +1466,7 @@ export class FormatExcelLastVoyageService {
         let totaldeRow = 11;
         return totaldeRow;
     }
-    private StyleDashInfoVessel(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel, posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales): number {
+    private StyleDashInfoVessel(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel, posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales, posicionDelosRegistrosActivitPerforment: PosicionDelosRegistrosNormales): number {
 
         let colorYellowTransgas = 'FFCD06';
         // Variables de colores-
@@ -1522,7 +1523,7 @@ export class FormatExcelLastVoyageService {
 
 
         positionColumn = colum + 19;
-        let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'IFO');
+        let tamanioSpeed = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'IFO', posicionDelosRegistrosActivitPerforment);
 
         positionColumn = colum + 27;
         let tamanioActivity = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'IFO');
@@ -1532,7 +1533,7 @@ export class FormatExcelLastVoyageService {
 
 
         positionColumn = colum + 40;
-        let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'MGO');
+        let tamanioSpeedMGO = this.StyleDashSpeed(worksheet, positionRows, positionColumn, selectUser, 'MGO', posicionDelosRegistrosActivitPerforment);
 
 
         positionColumn = colum + 48;
@@ -1864,7 +1865,7 @@ export class FormatExcelLastVoyageService {
 
         return posit;
     }
-    private StyleDashSpeed(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string): number {
+    private StyleDashSpeed(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string, posicionDelosRegistrosActivitPerforment: PosicionDelosRegistrosNormales): number {
 
 
 
@@ -1932,37 +1933,37 @@ export class FormatExcelLastVoyageService {
 
         // FULL Y ECO Charter SPEED IFO
         positionColumns = [colum, colum + 1];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('BALLAST'), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 2, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO), 8, black, white, '');
         positionColumns = [colum + 3, colum + 3];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(), 8, black, white, '');
 
-        // FULL Y ECO Performan SPEED
+        // VELOCIDAD REAL
         positionColumns = [colum + 4, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: isIFOorMGO == 'IFO' ? 'AD23' : 'BR23' },
+            { formula: isIFOorMGO == 'IFO' ? 'Q' + (posicionDelosRegistrosActivitPerforment.startRow + 2) : 'BE' + (posicionDelosRegistrosActivitPerforment.startRow + 2) },
             8, black, white, '');
         // Agrega formato a Actividad
         worksheet.addConditionalFormatting({
             ref: this.PositByCell(positionColumns[0]) + positionRows[0],
             rules: [
                 // si la actividad es navegando deberia tener una distancia.    
-                {
+               /* {
                     type: 'expression',
-                    priority: 2,
-                    formulae: ['AND(' + this.PositByCell(colum + 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
-                    style: {
-                        fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
-                    },
-                }, {
-                    type: 'expression',
-                    priority: 2,
-                    formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+                    priority: 2 ,
+                    formulae: ['AND(' +this.PositByCell(positionColumns[0]) + positionRows[0] + '>=' + this.PositByCell(colum + 2) + positionRows[0] +',' + this.PositByCell(colum + 2) + positionRows[0] + '>0)'],
                     style: {
                         fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
                     },
-                }, {
+                },  {
+                    type: 'expression',
+                    priority: 2,
+                    formulae: ['AND(' + this.PositByCell(colum + 2) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(colum + 2) + positionRows[0] + '>0)'],
+                    style: {
+                        fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
+                    },
+                },  */{
                     type: 'cellIs',
                     priority: 1,
                     operator: 'equal',
@@ -1977,7 +1978,7 @@ export class FormatExcelLastVoyageService {
 
         positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: isIFOorMGO == 'IFO' ? 'AD25' : 'BR25' },
+             0,
             8, black, white, '')
 
         // Agrega formato a Actividad
@@ -1985,21 +1986,21 @@ export class FormatExcelLastVoyageService {
             ref: this.PositByCell(positionColumns[0]) + positionRows[0],
             rules: [
                 // si la actividad es navegando deberia tener una distancia.    
-                {
+               /* {
                     type: 'expression',
-                    priority: 2,
-                    formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+                    priority: 3,
+                    formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
                     style: {
                         fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
                     },
                 }, {
                     type: 'expression',
                     priority: 2,
-                    formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '<' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
+                    formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '>=' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
                     style: {
                         fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
                     },
-                }, {
+                },*/ {
                     type: 'cellIs',
                     priority: 1,
                     operator: 'equal',
@@ -2020,7 +2021,7 @@ export class FormatExcelLastVoyageService {
 
         // FULL Y ECO Charter SPEED IFO
         positionColumns = [colum, colum + 1];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LADEN'), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 2, colum + 2];
         this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO, 8, black, white, '');
         positionColumns = [colum + 3, colum + 3];
@@ -2028,15 +2029,16 @@ export class FormatExcelLastVoyageService {
 
         // FULL Y ECO Performan SPEED
         positionColumns = [colum + 4, colum + 4];
-        this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: isIFOorMGO == 'IFO' ? 'AD24' : 'BR24' },
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 
+            { formula: isIFOorMGO == 'IFO' ? 'Q' + (posicionDelosRegistrosActivitPerforment.startRow + 3) : 'BE' + (posicionDelosRegistrosActivitPerforment.startRow + 3) },
+          
             8, black, white, '');
         // Agrega formato a Actividad
         worksheet.addConditionalFormatting({
             ref: this.PositByCell(colum + 4) + positionRows[0],
             rules: [
                 // si la actividad es navegando deberia tener una distancia.    
-                {
+               /* {
                     type: 'expression',
                     priority: 2,
                     formulae: ['AND(' + this.PositByCell(colum + 2) + positionRows[0] + '>' + this.PositByCell(colum + 4) + positionRows[0] + ',' + this.PositByCell(colum + 4) + positionRows[0] + '>0)'],
@@ -2050,7 +2052,7 @@ export class FormatExcelLastVoyageService {
                     style: {
                         fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
                     },
-                }, {
+                }, */{
                     type: 'cellIs',
                     priority: 1,
                     operator: 'equal',
@@ -2065,7 +2067,7 @@ export class FormatExcelLastVoyageService {
 
         positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-            { formula: isIFOorMGO == 'IFO' ? 'AD25' : 'BR25' },
+            0,
             8, black, white, '')
 
         // Agrega formato a Actividad
@@ -2073,7 +2075,7 @@ export class FormatExcelLastVoyageService {
             ref: this.PositByCell(positionColumns[0]) + positionRows[0],
             rules: [
                 // si la actividad es navegando deberia tener una distancia.    
-                {
+               /* {
                     type: 'expression',
                     priority: 2,
                     formulae: ['AND(' + this.PositByCell(colum + 3) + positionRows[0] + '>' + this.PositByCell(positionColumns[0]) + positionRows[0] + ',' + this.PositByCell(positionColumns[0]) + positionRows[0] + '>0)'],
@@ -2087,7 +2089,7 @@ export class FormatExcelLastVoyageService {
                     style: {
                         fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenMedium } },
                     },
-                }, {
+                },*/ {
                     type: 'cellIs',
                     priority: 1,
                     operator: 'equal',
@@ -2135,12 +2137,6 @@ export class FormatExcelLastVoyageService {
         // Lineas suabes internas
         positionRows = [posit - 3, posit];
         this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
-
-        positionColumns = [colum + 4, colum + 5];
-        // Lineas suabes internas
-        positionRows = [posit - 3, posit];
-        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard2, false, false, false, false)
-
 
         return posit;
     }
@@ -4359,10 +4355,12 @@ export class InfoVessel {
 export class PosicionDelosRegistrosNormales {
     constructor(
         public startRow?: number,
-        public endRow?: number
+        public endRow?: number,
+        public startColum?: number
     ) {
 
         this.startRow = startRow || 0;
         this.endRow = endRow || 0;
+        this.startColum = startColum || 0;
     }
 };
