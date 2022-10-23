@@ -1937,7 +1937,7 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 2, colum + 2];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO), 8, black, white, '');
         positionColumns = [colum + 3, colum + 3];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO), 8, black, white, '');
 
         // VELOCIDAD REAL
         positionColumns = [colum + 4, colum + 4];
@@ -1978,7 +1978,7 @@ export class FormatExcelLastVoyageService {
 
         positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
-             0,
+            0,
             8, black, white, '')
 
         // Agrega formato a Actividad
@@ -2023,15 +2023,15 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum, colum + 1];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 2, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO), 8, black, white, '');
         positionColumns = [colum + 3, colum + 3];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO), 8, black, white, '');
 
         // FULL Y ECO Performan SPEED
         positionColumns = [colum + 4, colum + 4];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: isIFOorMGO == 'IFO' ? 'Q' + (posicionDelosRegistrosActivitPerforment.startRow + 3) : 'BE' + (posicionDelosRegistrosActivitPerforment.startRow + 3) },
-          
+
             8, black, white, '');
         // Agrega formato a Actividad
         worksheet.addConditionalFormatting({
@@ -2127,16 +2127,16 @@ export class FormatExcelLastVoyageService {
         this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thin', blueHard2, false, false, true, true)
 
 
-
-
-
-
-
         // BOrde final alrededor
         positionColumns = [colum, colum + 3];
         // Lineas suabes internas
         positionRows = [posit - 3, posit];
         this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
+
+        positionColumns = [colum + 4, colum + 5];
+        // Lineas suabes internas
+        positionRows = [posit - 3, posit];
+        this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard2, false, false, false, false)
 
         return posit;
     }
