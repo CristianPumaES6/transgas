@@ -230,19 +230,19 @@ export class FormatExcelLastVoyageService {
 
 
         // Esta funcion permite poner un cuadro de leyenda.
-        this.StyleDashLegend(worksheet, positionRow, positionColumn);
-        // la posicion inicioa en la fila 3 o 25
-        let position = 25;
-        positionRow = 25;
+        let cantidadDeFilaInsertadas = this.StyleDashLegend(worksheet, positionRow, positionColumn);
+
+
+        positionRow += cantidadDeFilaInsertadas;
 
 
         let posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales = {
-            startRow: 58,
-            endRow: 67
+            startRow: 47,
+            endRow: 54
         };
         let posicionDelosRegistrosActivitPerforment: PosicionDelosRegistrosNormales = {
-            startRow: 47,
-            endRow: 54,
+            startRow: 34,
+            endRow: 41,
             startColum: 7
         };
 
@@ -255,27 +255,24 @@ export class FormatExcelLastVoyageService {
         infoVessel.mgo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
 
         // Agregamos la informacion del buque.
-        //positionRow += 1;
+        positionRow += 2;
         //positionColumn = resetColumn;
         positionColumn = 7;
         let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel, posicionDelosRegistrosNormales, posicionDelosRegistrosActivitPerforment);
 
         // a la posicion del row le sumamos el tamaño del cuadro.
-        positionRow += tamanioInfoVessel;
-
-        // Dos saltos de linea
-        positionRow += 2;
+        positionRow += tamanioInfoVessel + 2;
 
         //
         positionColumn = 7;
-        let tamanioCosumptionIFO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'IFO');
+        let tamanioCosumptionIFO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'IFO', posicionDelosRegistrosNormales);
         //
         positionColumn = 47;
-        let tamanioCosumptionMGO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'MGO');
+        let tamanioCosumptionMGO = this.StyleDashCosumption(worksheet, positionRow, positionColumn, selectUser, 'MGO', posicionDelosRegistrosNormales);
 
-    
+
         /// Filas aprox del cuadro de consumo.
-        positionRow += tamanioCosumptionIFO + 1;
+        positionRow += tamanioCosumptionIFO + 2;
         let tamanioRegisterReport = this.StyleDashReportRegister(worksheet, positionRow, selectUser, listGetReportVoyagePortDaily);
 
         return true;
@@ -383,7 +380,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleBorder(worksheet, position, positionColumn, 'thick', blueHard3)
 
 
-        let totaldeRow = 11;
+        let totaldeRow = 8;
         return totaldeRow;
     }
 
@@ -462,8 +459,11 @@ export class FormatExcelLastVoyageService {
         let tamanioActivityMGO = this.StyleDashActivity(worksheet, positionRows, positionColumn, selectUser, 'MGO', posicionDelosRegistrosActivitPerforment);
 
 
-
-        positionRow = tamanioBuque + 2;
+        // Los espacios vacios de arriba
+        positionRow += 2;
+        positionRow = tamanioBuque;
+        // Los espacios vacios de abajo
+        positionRow += 2;
 
 
         return positionRow - posit;
@@ -1493,7 +1493,8 @@ export class FormatExcelLastVoyageService {
          */
         return posit;
     }
-    private StyleDashCosumption(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string): number {
+
+    private StyleDashCosumption(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string, posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales): number {
 
 
 
@@ -1515,7 +1516,8 @@ export class FormatExcelLastVoyageService {
         let positionColumns = [colum, colum + 35];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'VESSEL PERFORMANCE ' + (isIFOorMGO == 'IFO' ? textIFOorVLSFOorLSFO : 'MGO'), 20, colorYellowTransgas, blueHard3, '')
 
-        let startRowReport = positionRow + 16;
+        let startRowReport = posicionDelosRegistrosNormales.startRow;
+        let endRowReport = posicionDelosRegistrosNormales.endRow;
 
         //================AGREGAMOS LA CEBECERA=========
         // TItulo 
@@ -1524,25 +1526,25 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum, colum + 2];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'ACTIVITY\nPERFORMED', 8, white, blueHard1, '')
         positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL TIME\nPER ACTIVITY\n(HRS)', 6, white, blueHard1, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL TIME\nPER ACTIVITY\n(HRS)', 8, white, blueHard1, '')
         positionColumns = [colum + 6, colum + 8];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL DISTANCE (MILES)', 8, white, blueHard1, '')
         positionColumns = [colum + 9, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)', 8, white, blueHard2, '')
         positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)\n(CHARTER)', 6, white, blueHard3, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'AVERAGE SPEED\n(MILES/HRS)\n(CHARTER)', 8, white, blueHard3, '')
         positionColumns = [colum + 15, colum + 17];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT)', 7, white, blueHard1, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT)', 8, white, blueHard1, '')
         positionColumns = [colum + 18, colum + 20];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT)', 7, white, blueHard2, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT)', 8, white, blueHard2, '')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT) (CHARTER)', 7, white, blueHard3, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'DAILY CONSUMPTION\n(MT) (CHARTER)', 8, white, blueHard3, '')
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'SAILING TIME\n(HRS) (CHARTER)', 8, white, blueHard3, '')
         positionColumns = [colum + 27, colum + 29];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT) (CHARTER)', 6, white, blueHard3, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TOTAL CONSUMPTION\n(MT) (CHARTER)', 8, white, blueHard3, '')
         positionColumns = [colum + 30, colum + 32];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE CONSUMPTION\n(MT)', 7, white, blueHard2, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE CONSUMPTION\n(MT)', 8, white, blueHard2, '')
         positionColumns = [colum + 33, colum + 35];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'BALANCE TIME\n(HRS)', 8, white, blueHard2, '')
 
@@ -1550,9 +1552,9 @@ export class FormatExcelLastVoyageService {
         positionRow += 2;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LOADING'), 10, blueHard3, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LOADING').toUpperCase(), 10, blueHard3, white, '')
         positionColumns = [colum + 3, colum + 5];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME')
         positionColumns = [colum + 6, colum + 8];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($AJ$' + startRowReport + ':$AJ$10000,$W$' + startRowReport + ':$W$10000,' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$10000,">0"' : '$BT$' + startRowReport + ':$BT$10000,">0"') + ')', result: 0.14 }, 8, blueHard3, white, '')
@@ -1871,7 +1873,7 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum, colum + 35];
         this.addStyleToBorders(worksheet, positionRows, positionColumns, 'thick', blueHard3, false, false, false, false)
 
-        return positionRow - posit;
+        return positionRow - posit + 1;// que  falto
     }
 
     private StyleDashSailing(workbook: Workbook, posit, columReset, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate): number {
@@ -2795,7 +2797,6 @@ export class FormatExcelLastVoyageService {
         };
 
         worksheet.mergeCells('BE' + positionRow, 'BG' + positionRow);
-
 
         worksheet.getCell('BH' + positionRow).value = "PREVIOUS VOYAGE";
         worksheet.getCell('BH' + positionRow).style = {
@@ -3736,156 +3737,196 @@ export class FormatExcelLastVoyageService {
         return positionRow;
     }
 
-
     private MultipleFormateWorksheet(worksheet: Worksheet, positionRow: number, positionColum: number, typeFormat: string) {
 
         let greenLow = 'b6c2ff94';
         let redLow = 'ffd6d6';
+        let grisMedio = 'ebe8e8';
+
+        /*      if (typeFormat === 'TOTAL_TIME') {
+                 worksheet.addConditionalFormatting({
+                     ref: this.PositByCell(positionColum) + positionRow,
+                     rules: [
+                         // si la actividad es navegando deberia tener una distancia.    
+                         {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 21) + positionRow + ',' + this.PositByCell(positionColum + 21) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+                             },
+                         }, {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 21) + positionRow + ',' + this.PositByCell(positionColum + 21) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+                             },
+                         }
+     
+                     ],
+                 });
+     
+             } else if (typeFormat === 'AVERAGE_SPEED') {
+                 worksheet.addConditionalFormatting({
+                     ref: this.PositByCell(positionColum) + positionRow,
+                     rules: [
+                         // si la actividad es navegando deberia tener una distancia.    
+                         {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+                             },
+                         }, {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+                             },
+                         }
+     
+                     ],
+                 });
+             } else if (typeFormat === 'TOTAL_CONSUMPTION') {
+                 worksheet.addConditionalFormatting({
+                     ref: this.PositByCell(positionColum) + positionRow,
+                     rules: [
+                         // si la actividad es navegando deberia tener una distancia.    
+                         {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 12) + positionRow + ',' + this.PositByCell(positionColum + 12) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+                             },
+                         }, {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 12) + positionRow + ',' + this.PositByCell(positionColum + 12) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+                             },
+                         }
+     
+                     ],
+                 });
+             } else if (typeFormat === 'DAILY_CONSUMPTION') {
+                 worksheet.addConditionalFormatting({
+                     ref: this.PositByCell(positionColum) + positionRow,
+                     rules: [
+                         // si la actividad es navegando deberia tener una distancia.    
+                         {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+                             },
+                         }, {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+                             },
+                         }
+     
+                     ],
+                 });
+             } else if (typeFormat === 'BALANCE_CONSUMPTION') {
+                 worksheet.addConditionalFormatting({
+                     ref: this.PositByCell(positionColum) + positionRow,
+                     rules: [
+                         // si la actividad es navegando deberia tener una distancia.    
+                         {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+                             },
+                         }, {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+                             },
+                         }
+     
+                     ],
+                 });
+             } else if (typeFormat === 'BALANCE_TIME') {
+                 worksheet.addConditionalFormatting({
+                     ref: this.PositByCell(positionColum) + positionRow,
+                     rules: [
+                         // si la actividad es navegando deberia tener una distancia.    
+                         {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
+                             },
+                         }, {
+                             type: 'expression',
+                             priority: 2,
+                             formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
+                             style: {
+                                 fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
+                             },
+                         }
+     
+                     ],
+                 });
+             }
+      */
 
 
-        if (typeFormat === 'TOTAL_TIME') {
-            worksheet.addConditionalFormatting({
-                ref: this.PositByCell(positionColum) + positionRow,
-                rules: [
-                    // si la actividad es navegando deberia tener una distancia.    
-                    {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 21) + positionRow + ',' + this.PositByCell(positionColum + 21) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
-                        },
-                    }, {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 21) + positionRow + ',' + this.PositByCell(positionColum + 21) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
-                        },
-                    }
+        worksheet.addConditionalFormatting({
+            ref: this.PositByCell(positionColum) + positionRow,
+            rules: [
+                // si la actividad es navegando deberia tener una distancia.    
+                {
+                    type: 'cellIs',
+                    priority: 1,
+                    operator: 'equal',
+                    formulae: [0],
+                    style: {
+                        font: { color: { argb: grisMedio } },
+                    },
+                },
 
-                ],
-            });
-
-        } else if (typeFormat === 'AVERAGE_SPEED') {
-            worksheet.addConditionalFormatting({
-                ref: this.PositByCell(positionColum) + positionRow,
-                rules: [
-                    // si la actividad es navegando deberia tener una distancia.    
-                    {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
-                        },
-                    }, {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
-                        },
-                    }
-
-                ],
-            });
-        } else if (typeFormat === 'TOTAL_CONSUMPTION') {
-            worksheet.addConditionalFormatting({
-                ref: this.PositByCell(positionColum) + positionRow,
-                rules: [
-                    // si la actividad es navegando deberia tener una distancia.    
-                    {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 12) + positionRow + ',' + this.PositByCell(positionColum + 12) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
-                        },
-                    }, {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 12) + positionRow + ',' + this.PositByCell(positionColum + 12) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
-                        },
-                    }
-
-                ],
-            });
-        } else if (typeFormat === 'DAILY_CONSUMPTION') {
-            worksheet.addConditionalFormatting({
-                ref: this.PositByCell(positionColum) + positionRow,
-                rules: [
-                    // si la actividad es navegando deberia tener una distancia.    
-                    {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
-                        },
-                    }, {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<' + this.PositByCell(positionColum + 3) + positionRow + ',' + this.PositByCell(positionColum + 3) + positionRow + '<>0' + ',' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
-                        },
-                    }
-
-                ],
-            });
-        } else if (typeFormat === 'BALANCE_CONSUMPTION') {
-            worksheet.addConditionalFormatting({
-                ref: this.PositByCell(positionColum) + positionRow,
-                rules: [
-                    // si la actividad es navegando deberia tener una distancia.    
-                    {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
-                        },
-                    }, {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
-                        },
-                    }
-
-                ],
-            });
-        } else if (typeFormat === 'BALANCE_TIME') {
-            worksheet.addConditionalFormatting({
-                ref: this.PositByCell(positionColum) + positionRow,
-                rules: [
-                    // si la actividad es navegando deberia tener una distancia.    
-                    {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '>0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redLow } },
-                        },
-                    }, {
-                        type: 'expression',
-                        priority: 2,
-                        formulae: ['AND(' + this.PositByCell(positionColum) + positionRow + '<0,' + this.PositByCell(positionColum) + positionRow + '<>0)'],
-                        style: {
-                            fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
-                        },
-                    }
-
-                ],
-            });
-        }
-
-
+            ],
+        });
     }
+
+    private RuleFormatCeroGris(worksheet: Worksheet, positionRow: number, positionColum: number) {
+
+        let grisMedio = 'ebe8e8';
+
+
+        worksheet.addConditionalFormatting({
+            ref: this.PositByCell(positionColum) + positionRow,
+            rules: [
+                // si la actividad es navegando deberia tener una distancia.    
+                {
+                    type: 'cellIs',
+                    priority: 1,
+                    operator: 'equal',
+                    formulae: [0],
+                    style: {
+                        font: { color: { argb: grisMedio } },
+                    },
+                },
+
+            ],
+        });
+    }
+
     private addStyleByColums(worksheet: Worksheet, position: number[], column: number[], textorFormule: string | number | any, sizeFont: number, colortText: string, colorBackgraund: string, Eliminar?) {
 
         // SEparamos las posiciones.
@@ -3926,6 +3967,7 @@ export class FormatExcelLastVoyageService {
         // }
         worksheet.mergeCells(this.PositByCell(columnDesde) + positionDesde, this.PositByCell(columnHasta) + positionHasta);
     }
+
     private addStyleBorder(worksheet: Worksheet, position: number[], column: number[], borderStyle, colorborder: string) {
 
         // SEparamos las posiciones.
@@ -3967,6 +4009,7 @@ export class FormatExcelLastVoyageService {
             this.addBorder(worksheet, positionHasta, index, borderStyle, colorborder, 'bottom');
         }
     }
+
     private mergeCellReport(worksheet: Worksheet, position) {
 
         worksheet.mergeCells('F' + position, 'G' + position);
@@ -4002,7 +4045,6 @@ export class FormatExcelLastVoyageService {
         worksheet.mergeCells('BZ' + position, 'CA' + position);
 
     }
-
 
     private addFormatting(worksheet: Worksheet, position: number) {
 
@@ -4175,6 +4217,7 @@ export class FormatExcelLastVoyageService {
 
         return letras[positionColum];
     }
+
     // Agrega borde a una celda en expeciofica
     //righUpperRorner =
     private addBorder(worksheet: Worksheet, positionRow: number, positionColumn: number, borderStyle, colorborder: string, lugardelBorde: string) {
@@ -4220,6 +4263,7 @@ export class FormatExcelLastVoyageService {
 
 
     }
+
     private addStyleToBorders(worksheet: Worksheet, position: number[], column: number[], borderStyle, colorborder: string, top: boolean, right: boolean, bottom: boolean, left: boolean) {
 
         // SEparamos las posiciones.
@@ -4300,6 +4344,7 @@ export class FormatExcelLastVoyageService {
         }
 
     }
+
     // Busca la letra y devuelve el numero.
     public SearchPositByCell(letraColum: string): any {
         let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
@@ -4316,7 +4361,6 @@ export class FormatExcelLastVoyageService {
             }
         );
     }
-
 
     private translate(text: string): string {
 
@@ -4364,6 +4408,7 @@ export class FormatExcelLastVoyageService {
                 break;
         }
     }
+
     private SumaIfo(report: DailyReport): number {
         let ifo = report.mplaIfo + report.auxIfo + report.boilerIfo + report.otherIfo;
         return ifo;
@@ -4373,6 +4418,7 @@ export class FormatExcelLastVoyageService {
         let mgo = report.mplaMgo + report.auxMgo + report.boilerMgo + report.ppMgo + report.giMgo + report.otherMgo;
         return mgo;
     }
+
 }
 
 export class InfoVessel {
