@@ -3766,7 +3766,10 @@ export class FormatExcelLastVoyageService {
                     this.addFormatting(worksheet, positionRow)
                 }
 
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('U'));
                 this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AJ'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AN'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AL'));
                 this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AR'));
                 this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AT'));
                 this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AV'));
@@ -3965,7 +3968,7 @@ export class FormatExcelLastVoyageService {
 
         let grisMedio = 'ebe8e8';
 
-
+        worksheet.getCell(this.PositByCell(positionColum) + positionRow).numFmt = '0.00'
         worksheet.addConditionalFormatting({
             ref: this.PositByCell(positionColum) + positionRow,
             rules: [
