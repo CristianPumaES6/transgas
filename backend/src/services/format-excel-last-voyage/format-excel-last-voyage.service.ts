@@ -3679,7 +3679,7 @@ export class FormatExcelLastVoyageService {
             }
         };
 
-        this.mergeCellReport(worksheet, positionRow);
+        this.mergeCellReport(worksheet, positionRow, false);
 
 
         listGetReportVoyagePortDaily.forEach(
@@ -3746,15 +3746,15 @@ export class FormatExcelLastVoyageService {
                 ];
 
                 worksheet.addRow(dataRow);
-                this.mergeCellReport(worksheet, positionRow);
+
+
+                this.mergeCellReport(worksheet, positionRow, true);
                 // Si es el primer registro se debe calcular con el rob del viaje anterior
                 if (index == 0) {
 
                     // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
                     worksheet.getCell('U' + positionRow).value = getReportVoyagePortDaily.steamingTime;
                     worksheet.getCell('AL' + positionRow).value = getReportVoyagePortDaily.steamingTime;
-
-
 
                     worksheet.getCell('BF' + positionRow).value = <any>{ formula: 'BE' + (positionRow - 2) + '-AZ' + positionRow + '+BD' + positionRow };
                     worksheet.getCell('BZ' + positionRow).value = <any>{ formula: 'BY' + (positionRow - 2) + '-BT' + positionRow + '+BX' + positionRow };
@@ -3766,8 +3766,25 @@ export class FormatExcelLastVoyageService {
                     this.addFormatting(worksheet, positionRow)
                 }
 
-
-
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AJ'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AR'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AT'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AV'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AX'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('AZ'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BB'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BD'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BF'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BH'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BJ'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BL'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BN'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BP'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BR'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BT'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BV'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BX'));
+                this.RuleFormatCeroGris(worksheet, positionRow, this.SearchPositByCell('BZ'));
             }
 
         );
@@ -4050,7 +4067,10 @@ export class FormatExcelLastVoyageService {
         }
     }
 
-    private mergeCellReport(worksheet: Worksheet, position) {
+    private mergeCellReport(worksheet: Worksheet, position, addFontSize: boolean) {
+
+
+        let blueHard3 = '001556'
 
         worksheet.mergeCells('F' + position, 'G' + position);
         worksheet.mergeCells('H' + position, 'K' + position);
@@ -4084,6 +4104,362 @@ export class FormatExcelLastVoyageService {
         worksheet.mergeCells('BX' + position, 'BY' + position);
         worksheet.mergeCells('BZ' + position, 'CA' + position);
 
+
+
+
+
+
+
+
+
+        if (addFontSize) {
+
+            worksheet.getCell('F' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            };
+            worksheet.getCell('H' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            };
+            worksheet.getCell('L' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('P' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('S' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('U' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('W' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AA' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AC' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AJ' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AL' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            };
+            worksheet.getCell('AN' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AP' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AR' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AT' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AV' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AX' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('AZ' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BB' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BD' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BF' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BH' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BJ' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BL' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BN' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BP' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BR' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BT' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BV' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BX' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+            worksheet.getCell('BZ' + position).style = {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                font: {
+                    size: 8,
+                    bold: true,
+                    color: { argb: blueHard3 },
+                }
+            }
+
+        }
+
+
+
     }
 
     private addFormatting(worksheet: Worksheet, position: number) {
@@ -4112,7 +4488,7 @@ export class FormatExcelLastVoyageService {
                 {
                     type: 'expression',
                     priority: 2,
-                    formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AJ' + position + ') )'],
+                    formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0<=AJ' + position + ') )'],
                     style: {
                         border: {
                             top: { style: 'double', color: { argb: redHard } },
@@ -4135,7 +4511,7 @@ export class FormatExcelLastVoyageService {
                 {
                     type: 'expression',
                     priority: 2,
-                    formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AJ' + position + ') )'],
+                    formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0<=AJ' + position + ') )'],
                     style: {
                         border: {
                             top: { style: 'double', color: { argb: redHard } },
@@ -4149,80 +4525,7 @@ export class FormatExcelLastVoyageService {
             ],
         });
 
-        // Agrega el formato a speed
-        worksheet.addConditionalFormatting({
-            ref: 'AN' + position + ':AO' + position,
-            rules: [
 
-                {
-                    type: 'cellIs',
-                    priority: 1,
-                    operator: 'equal',
-                    formulae: [0],
-                    style: {
-                        border: {},
-                        font: { color: { argb: grisMedio } },
-                    },
-                },
-                // Menor que 
-                {
-                    type: 'expression',
-                    priority: 1,
-                    formulae: ['AND( AN' + position + ' <12, AN' + position + ' > 0 )'],
-                    style: {
-                        font: { color: { argb: redHard } },
-                        fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
-                    },
-                },
-                // Mayor que 
-                {
-                    type: 'expression',
-                    priority: 1,
-                    formulae: ['AN' + position + ' >=12'],
-                    style: {
-                        font: { color: { argb: greenHard } },
-                        fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },
-                    },
-                },
-                // si la actividad es navegando deberia tener una velocidad.       
-                {
-                    type: 'expression',
-                    priority: 2,
-                    formulae: ['AND( OR(EXACT(W' + position + ',"SAILING_WITH_LADEN"), EXACT(W' + position + ',"SAILING_IN_BALLAST"), EXACT(W' + position + ',"ECONOMICAL_NAVIGATION") ), (0=AN' + position + ') )'],
-                    style: {
-                        border: {
-                            top: { style: 'double', color: { argb: redHard } },
-                            left: { style: 'double', color: { argb: redHard } },
-                            bottom: { style: 'double', color: { argb: redHard } },
-                            right: { style: 'double', color: { argb: redHard } }
-                        }
-                    },
-                },
-
-            ],
-        });
-
-        // Agrega formato a Tiempo
-        worksheet.addConditionalFormatting({
-            ref: 'AL' + position + ':AM' + position,
-            rules: [
-                // si la actividad es navegando deberia tener una distancia.    
-                {
-                    type: 'expression',
-                    priority: 2,
-                    formulae: ['AND(  (0=AL' + position + ') )'],
-                    style: {
-                        border: {
-                            top: { style: 'double', color: { argb: redHard } },
-                            left: { style: 'double', color: { argb: redHard } },
-                            bottom: { style: 'double', color: { argb: redHard } },
-                            right: { style: 'double', color: { argb: redHard } }
-                        }
-                    },
-                },
-
-            ],
-        });
 
         if (position % 2 === 0) {
             // Agrega formato a Actividad
@@ -4392,7 +4695,7 @@ export class FormatExcelLastVoyageService {
             'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ',
             'CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'CJ', 'CK', 'CL', 'CM', 'CN', 'CO', 'CP', 'CQ', 'CR', 'CS', 'CT', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ'];
 
-
+        return letras.indexOf(letraColum);
         letras.forEach(
             (letra, index) => {
                 if (letra === letraColum) {
