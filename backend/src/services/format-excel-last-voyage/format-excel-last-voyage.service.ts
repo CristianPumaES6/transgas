@@ -254,11 +254,21 @@ export class FormatExcelLastVoyageService {
         infoVessel.ifo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
         infoVessel.mgo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
 
+
+
+
+        let posicionDelInfoVessel: PosicionDelosRegistrosNormales = {
+            startRow: positionRow + 2,
+            endRow: 41,
+            startColum: 7
+        };
         // Agregamos la informacion del buque.
         positionRow += 2;
         //positionColumn = resetColumn;
         positionColumn = 7;
         let tamanioInfoVessel = this.StyleDashInfoVessel(worksheet, positionRow, positionColumn, selectUser, infoVessel, posicionDelosRegistrosNormales, posicionDelosRegistrosActivitPerforment);
+        posicionDelInfoVessel.endRow = positionRow + tamanioInfoVessel;
+
 
         // a la posicion del row le sumamos el tamaño del cuadro.
         positionRow += tamanioInfoVessel + 2;
@@ -273,7 +283,7 @@ export class FormatExcelLastVoyageService {
 
         /// Filas aprox del cuadro de consumo.
         positionRow += tamanioCosumptionIFO + 2;
-        let tamanioRegisterReport = this.StyleDashReportRegister(worksheet, positionRow, selectUser, listGetReportVoyagePortDaily);
+        let tamanioRegisterReport = this.StyleDashReportRegister(worksheet, positionRow, selectUser, listGetReportVoyagePortDaily, posicionDelInfoVessel);
 
         return true;
     }
@@ -2863,7 +2873,7 @@ export class FormatExcelLastVoyageService {
         return positionRow - posit;
     }
 
-    private StyleDashReportRegister(worksheet: Worksheet, posit: number, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[]): number {
+    private StyleDashReportRegister(worksheet: Worksheet, posit: number, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], posicionDelInfoVessel: PosicionDelosRegistrosNormales): number {
 
         // Colores amarillo
         let colorYellowTransgas = 'FFCD06';
@@ -3008,7 +3018,7 @@ export class FormatExcelLastVoyageService {
         };
         worksheet.mergeCells('AR' + positionRow, 'BD' + positionRow);
 
-        worksheet.getCell('BE' + positionRow).value = <any>{ formula: 'AK7' };
+        worksheet.getCell('BE' + positionRow).value = <any>{ formula: 'S' + (posicionDelInfoVessel.startRow + 4) };
         worksheet.getCell('BE' + positionRow).style = {
             alignment: {
                 horizontal: 'right',
@@ -3035,6 +3045,7 @@ export class FormatExcelLastVoyageService {
         };
 
         worksheet.mergeCells('BE' + positionRow, 'BG' + positionRow);
+        worksheet.getCell('BE' + positionRow).numFmt = '0.00'
 
         worksheet.getCell('BH' + positionRow).value = "PREVIOUS VOYAGE";
         worksheet.getCell('BH' + positionRow).style = {
@@ -3062,7 +3073,7 @@ export class FormatExcelLastVoyageService {
             }
         };
         worksheet.mergeCells('BH' + positionRow, 'BX' + positionRow);
-        worksheet.getCell('BY' + positionRow).value = <any>{ formula: 'AM7' };
+        worksheet.getCell('BY' + positionRow).value = <any>{ formula: 'U' + (posicionDelInfoVessel.startRow + 4) };
         worksheet.getCell('BY' + positionRow).style = {
             alignment: {
                 horizontal: 'right',
@@ -3088,6 +3099,7 @@ export class FormatExcelLastVoyageService {
             }
         };
         worksheet.mergeCells('BY' + positionRow, 'CA' + positionRow);
+        worksheet.getCell('BY' + positionRow).numFmt = '0.00'
 
         positionRow += 1;
         worksheet.addRow([
