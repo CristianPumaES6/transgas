@@ -4274,6 +4274,8 @@ export class FormatExcelLastVoyageService {
 
 
         let blueHard3 = '001556'
+        
+        let black = '000000'
 
         worksheet.mergeCells('F' + position, 'G' + position);
         worksheet.mergeCells('H' + position, 'K' + position);
@@ -4325,7 +4327,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             };
             worksheet.getCell('H' + position).style = {
@@ -4336,7 +4338,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             };
             worksheet.getCell('L' + position).style = {
@@ -4347,7 +4349,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('P' + position).style = {
@@ -4358,7 +4360,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('S' + position).style = {
@@ -4369,7 +4371,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('U' + position).style = {
@@ -4380,7 +4382,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('W' + position).style = {
@@ -4391,7 +4393,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AA' + position).style = {
@@ -4402,7 +4404,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AC' + position).style = {
@@ -4413,7 +4415,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AJ' + position).style = {
@@ -4424,7 +4426,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AL' + position).style = {
@@ -4435,7 +4437,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             };
             worksheet.getCell('AN' + position).style = {
@@ -4446,7 +4448,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AP' + position).style = {
@@ -4457,7 +4459,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AR' + position).style = {
@@ -4468,7 +4470,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AT' + position).style = {
@@ -4479,7 +4481,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AV' + position).style = {
@@ -4490,7 +4492,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AX' + position).style = {
@@ -4501,7 +4503,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('AZ' + position).style = {
@@ -4512,7 +4514,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BB' + position).style = {
@@ -4523,7 +4525,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BD' + position).style = {
@@ -4534,7 +4536,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BF' + position).style = {
@@ -4545,7 +4547,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BH' + position).style = {
@@ -4556,7 +4558,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BJ' + position).style = {
@@ -4567,7 +4569,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BL' + position).style = {
@@ -4578,7 +4580,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BN' + position).style = {
@@ -4589,7 +4591,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BP' + position).style = {
@@ -4600,7 +4602,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BR' + position).style = {
@@ -4611,7 +4613,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BT' + position).style = {
@@ -4622,7 +4624,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BV' + position).style = {
@@ -4633,7 +4635,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BX' + position).style = {
@@ -4644,7 +4646,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
             worksheet.getCell('BZ' + position).style = {
@@ -4655,7 +4657,7 @@ export class FormatExcelLastVoyageService {
                 font: {
                     size: 8,
                     bold: true,
-                    color: { argb: blueHard3 },
+                    color: { argb: black },
                 }
             }
 
@@ -5009,4 +5011,4 @@ export class PosicionDelosRegistrosNormales {
         this.endRow = endRow || 0;
         this.startColum = startColum || 0;
     }
-};
+};  
