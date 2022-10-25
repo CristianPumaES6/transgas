@@ -484,7 +484,8 @@ export class FormatExcelLastVoyageService {
         let totalConsumptIFO = 0;
         let totalConsumptMGO = 0;
 
-
+        let startRowReport = posicionDelosRegistrosNormales.startRow;
+        let endRowReport = posicionDelosRegistrosNormales.endRow;
 
         let colorYellowTransgas = 'FFCD06';
         // Variables de colores-
@@ -562,12 +563,29 @@ export class FormatExcelLastVoyageService {
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LOADING').toUpperCase(), 8, black, white, '');
+
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
+
+
         //MGO 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($BT$' + startRowReport + ':$BT$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
@@ -581,15 +599,36 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('DOWNLOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($BT$' + startRowReport + ':$BT$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
@@ -599,15 +638,36 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('SAILING_IN_BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($BT$' + startRowReport + ':$BT$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
@@ -616,15 +676,36 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('SAILING_WITH_LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($BT$' + startRowReport + ':$BT$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
@@ -633,15 +714,36 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('ANCHORED').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($BT$' + startRowReport + ':$BT$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
@@ -650,15 +752,36 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('MANEUVER').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($BT$' + startRowReport + ':$BT$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
@@ -667,15 +790,36 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('OTHER_ACT').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($BT$' + startRowReport + ':$BT$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns,
+            {
+                formula:
+                    'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport +
+                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                    + ')'
+            }
+            , 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
