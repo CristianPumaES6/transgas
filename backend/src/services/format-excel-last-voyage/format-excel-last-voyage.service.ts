@@ -1770,7 +1770,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.loadingConsumptionIFO : selectUser.loadingConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.loadingConsumptionIFO : selectUser.loadingConsumptionMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -1809,7 +1809,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.dischargeConsumptionIFO : selectUser.dischargeConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.dischargeConsumptionIFO : selectUser.dischargeConsumptionMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -1841,7 +1841,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
         positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 15, colum + 17];
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_CONSUMPTION')
@@ -1850,7 +1850,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingBallastConsumptionIFO : selectUser.sailingBallastConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.sailingBallastConsumptionIFO : selectUser.sailingBallastConsumptionMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -1881,7 +1881,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
         positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 15, colum + 17];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + '' : '$BT$' + startRowReport + ':$BT$' + endRowReport + '') + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '')
@@ -1890,7 +1890,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingLoadConsumptionIFO : selectUser.sailingLoadConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.sailingLoadConsumptionIFO : selectUser.sailingLoadConsumptionMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -1922,7 +1922,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 6) + positionRow + '/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'AVERAGE_SPEED')
         positionColumns = [colum + 12, colum + 14];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 15, colum + 17];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS(' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + '' : '$BT$' + startRowReport + ':$BT$' + endRowReport + '') + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '')
@@ -1931,7 +1931,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -1971,7 +1971,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.anchoredConsumptionIFO : selectUser.anchoredConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(Number(isIFOorMGO == 'IFO' ? selectUser.anchoredConsumptionIFO : selectUser.anchoredConsumptionMGO)), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -2010,7 +2010,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.maneuverConsumptionIFO : selectUser.maneuverConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.maneuverConsumptionIFO : selectUser.maneuverConsumptionMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -2049,7 +2049,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + '),0,' + this.PositByCell(colum + 15) + positionRow + '*24/' + this.PositByCell(colum + 3) + positionRow + ')', result: 0.14 }, 8, black, white, '')
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'DAILY_CONSUMPTION')
         positionColumns = [colum + 21, colum + 23];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, isIFOorMGO == 'IFO' ? selectUser.otherConsumptionIFO : selectUser.otherConsumptionMGO, 8, black, white, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.otherConsumptionIFO : selectUser.otherConsumptionMGO), 8, black, white, '')
         this.RuleFormatCeroGris(worksheet, positionRows[0], positionColumns[0]);
         positionColumns = [colum + 24, colum + 26];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'IF(ISERROR(' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + '),0,' + this.PositByCell(colum + 6) + + positionRow + '/' + this.PositByCell(colum + 12) + + positionRow + ')', result: 0.14 }, 8, black, white, '')
@@ -4274,7 +4274,7 @@ export class FormatExcelLastVoyageService {
 
 
         let blueHard3 = '001556'
-        
+
         let black = '000000'
 
         worksheet.mergeCells('F' + position, 'G' + position);
