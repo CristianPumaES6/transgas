@@ -752,15 +752,15 @@ export class FormatExcelLastVoyageService {
         positionColumns = [colum + 7, colum + 9];
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('MANEUVER').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns,
-            {
-                formula:
-                    'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
-                    ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
-                    + ')'
-            }
-            , 8, black, white, '')
-        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
+            this.addStyleByColums(worksheet, positionRows, positionColumns,
+                {
+                    formula:
+                        'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
+                        ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum + 7) + posit
+                        + ')'
+                }
+                , 8, black, white, '')
+            this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
@@ -1031,8 +1031,10 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 2, colum + 2];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO), 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         positionColumns = [colum + 3, colum + 3];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO), 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
         // VELOCIDAD REAL
         positionColumns = [colum + 4, colum + 4];
@@ -1070,12 +1072,12 @@ export class FormatExcelLastVoyageService {
 
             ],
         });
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
         positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             0,
             8, black, white, '')
-
         // Agrega formato a Actividad
         worksheet.addConditionalFormatting({
             ref: this.PositByCell(positionColumns[0]) + positionRows[0],
@@ -1107,7 +1109,7 @@ export class FormatExcelLastVoyageService {
 
             ],
         });
-
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         posit += 1;
@@ -1119,9 +1121,11 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 2, colum + 2];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO), 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
+
         positionColumns = [colum + 3, colum + 3];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingEconomicalIFO : selectUser.contractSpeedSailingEconomicalMGO), 8, black, white, '');
-
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // FULL Y ECO Performan SPEED
         positionColumns = [colum + 4, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
@@ -1159,12 +1163,12 @@ export class FormatExcelLastVoyageService {
 
             ],
         });
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
         positionColumns = [colum + 5, colum + 6];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             0,
             8, black, white, '')
-
         // Agrega formato a Actividad
         worksheet.addConditionalFormatting({
             ref: this.PositByCell(positionColumns[0]) + positionRows[0],
@@ -1196,7 +1200,7 @@ export class FormatExcelLastVoyageService {
 
             ],
         });
-
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
 
