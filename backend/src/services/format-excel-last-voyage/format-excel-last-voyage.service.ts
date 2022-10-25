@@ -321,7 +321,7 @@ export class FormatExcelLastVoyageService {
         // Item de la leyenda
         position = [posititonRow, posititonRow];
         positionColumn = [colum + 1, colum + 1];
-        this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, blueHard3)
+        this.addStyleByColums(worksheet, position, positionColumn, '', 10, null, blueHard1)
         // texto.
         positionColumn = [colum + 3, colum + 10];
         this.addStyleByColums(worksheet, position, positionColumn, 'Data recorded by the captain', 8, black, white)
@@ -469,7 +469,6 @@ export class FormatExcelLastVoyageService {
         return positionRow - posit;
     }
 
-
     private StyleDashBuque(worksheet, posit, colum, selectUser: UserEntity, infoVessel: InfoVessel, posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales): number {
         let date_start = infoVessel.date_start;
         let hour_start = infoVessel.hour_start;
@@ -523,14 +522,14 @@ export class FormatExcelLastVoyageService {
         colum += 1;
         positionRows = [posit, posit];
         let positionColumns = [colum, colum + 4];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.name, 15, blueHard3, white)
+        this.addStyleByColums(worksheet, positionRows, positionColumns, selectUser.name, 15, black, white)
         this.addBorder(worksheet, posit, colum, 'thick', blueHard3, '');
 
         positionColumns = [colum + 10, colum + 11];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, textIFOorVLSFOorLSFO, 8, white, blueHard3, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, textIFOorVLSFOorLSFO, 8, white, blueHard2, '')
 
         positionColumns = [colum + 12, colum + 13];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'MGO', 8, white, blueHard3, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'MGO', 8, white, blueHard2, '')
 
         posit += 1;
         // Start date
@@ -544,13 +543,15 @@ export class FormatExcelLastVoyageService {
         // IFO start
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, ifo_start, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, mgo_start, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         positionColumns = [colum + 14, colum + 15];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TIME', 8, white, blueHard3, '')
+        this.addStyleByColums(worksheet, positionRows, positionColumns, 'TIME', 8, white, blueHard1, '')
 
         posit += 1;
         // Start date
@@ -563,12 +564,15 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('LOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
 
@@ -578,12 +582,15 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('DOWNLOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
 
@@ -593,12 +600,15 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('SAILING_IN_BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         posit += 1;
@@ -607,12 +617,15 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('SAILING_WITH_LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         posit += 1;
@@ -621,12 +634,15 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('ANCHORED').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         posit += 1;
@@ -635,12 +651,15 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('MANEUVER').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         posit += 1;
@@ -649,12 +668,15 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, this.translate('OTHER_ACT').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO 
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         // time
         positionColumns = [colum + 14, colum + 15];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 0, 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
 
@@ -668,11 +690,13 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: 'SUM(AR' + posicionDelosRegistrosNormales.startRow + ':AY' + posicionDelosRegistrosNormales.endRow + ')' },
             8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: 'SUM(BH' + posicionDelosRegistrosNormales.startRow + ':BS' + posicionDelosRegistrosNormales.endRow + ')' },
             8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
         posit += 1;
         // Start date
@@ -684,12 +708,14 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: 'SUM(BD' + posicionDelosRegistrosNormales.startRow + ':BD' + posicionDelosRegistrosNormales.endRow + ')' },
             8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
 
             { formula: 'SUM(BX' + posicionDelosRegistrosNormales.startRow + ':BX' + posicionDelosRegistrosNormales.endRow + ')' }
             , 8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         posit += 1;
@@ -702,6 +728,7 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             0,
             8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
 
@@ -718,11 +745,13 @@ export class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: this.PositByCell(positionColumns[0]) + (posit - 11) + '-' + this.PositByCell(positionColumns[0]) + (posit - 3) + '+' + this.PositByCell(positionColumns[0]) + (posit - 2) },
             8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
         //MGO Start
         positionColumns = [colum + 12, colum + 13];
         this.addStyleByColums(worksheet, positionRows, positionColumns,
             { formula: this.PositByCell(positionColumns[0]) + (posit - 11) + '-' + this.PositByCell(positionColumns[0]) + (posit - 3) + '+' + this.PositByCell(positionColumns[0]) + (posit - 2) },
             8, black, white, '');
+        this.RuleFormatCeroGris(worksheet, posit, positionColumns[0])
 
 
         positionColumns = [colum, colum + 13];
@@ -789,10 +818,8 @@ export class FormatExcelLastVoyageService {
 
         return posit;
     }
+
     private StyleDashSpeed(worksheet, posit, colum, selectUser: UserEntity, isIFOorMGO: string, posicionDelosRegistrosActivitPerforment: PosicionDelosRegistrosNormales): number {
-
-
-
 
         let colorYellowTransgas = 'FFCD06';
 
