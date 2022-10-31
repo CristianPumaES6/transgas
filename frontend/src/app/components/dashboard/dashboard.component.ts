@@ -20,6 +20,7 @@ import { DailyReport, GetROBByUser, Speed } from '../../models/daily-report';
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO, FilterWithDate, ConsumptionAndBunkering } from '../../models/dashboard';
 
 
+
 // Service 
 import { UserService } from '../../services/user.service';
 import { VoyageService } from '../../services/voyage.service';
