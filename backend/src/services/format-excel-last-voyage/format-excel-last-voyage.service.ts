@@ -2186,7 +2186,7 @@ export class FormatExcelLastVoyageService {
                 if (primerNuevoPuerto) {
                     // si existe un puerto anterior coloco esto
                     // Ultimo registro.
-                    if (index == (listGetReportVoyagePortDaily.length - 1)) {
+                    if (index > 0) {
 
                         contadorDeItemPorPuerto++;
 
@@ -2532,7 +2532,7 @@ export class FormatExcelLastVoyageService {
                     positionRows = [positionRow, positionRow];
                     positionColumns = [columReset, columReset + 21];
                     this.ResetColumn(worksheetPuerto);
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATOS DE NAVEGACION', 20, colorYellowTransgas, blueHard3, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'NAVIGATION DATA', 20, colorYellowTransgas, blueHard3, '')
 
                     colum = columReset + 1;
                     // Navegando de :---------

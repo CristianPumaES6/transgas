@@ -16,6 +16,7 @@ import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
+import { UsersService } from '../users/users.service';
 
 
 @Controller('voyages')
@@ -26,6 +27,7 @@ export class VoyagesController {
         private readonly _portsService: PortsService,
         private readonly _dailyReportsService: DailyReportsService,
         private readonly _formatExcelLastVoyageService: FormatExcelLastVoyageService,
+        private readonly _usersService: UsersService,
     ) { }
 
 
@@ -837,6 +839,13 @@ export class VoyagesController {
         // Empezamos la promesa.
         return DummyPromise().then(
             (resultDummy: Boolean) => {
+                // Consultaos los ultimpos viajes.
+                return this._usersService.Get(userId);
+            }
+        ).then(
+            (resultUser: UserEntity) => {
+
+                user = resultUser;
                 // Consultaos los ultimpos viajes.
                 return this._voyagesService.GetLastVoyage(userId);
             }
