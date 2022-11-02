@@ -1138,6 +1138,14 @@ export class DailyReportsService {
     }
     async GetReportDNVByUserNOON(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
 
+
+
+        let stringGroupBY = "datetime('daily_report'.'date','+8.999 hour')";
+
+        // si el usuario es TAUROGAS
+        if (userId == 14) {
+            stringGroupBY = "datetime('daily_report'.'date','+7.9999 hour')";
+        }
         // Hacemos where por todos los campos de la entidad
         return await
             this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -1154,7 +1162,7 @@ export class DailyReportsService {
 
 
                 .addSelect('MAX(daily_report.id)', 'dailyReportId')
-                .addSelect("datetime(daily_report.date,'+8.99 hour')", 'date')
+                .addSelect(stringGroupBY, 'date')
                 .addSelect('MAX(daily_report.hour)', 'hour')
 
                 .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
@@ -1200,7 +1208,7 @@ export class DailyReportsService {
 
                 .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
                 .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
-                .groupBy("strftime('%Y-%m-%d',datetime('daily_report'.'date','+8.999 hour'))")
+                .groupBy("strftime('%Y-%m-%d'," + stringGroupBY + ")")
                 .getRawMany()
                 .then(
                     (result: any) => {

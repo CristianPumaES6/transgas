@@ -10,7 +10,7 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
+import { ConvertDateUTC_To_FORMAT_UTC, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
@@ -445,7 +445,7 @@ export class VoyagesController {
             let headerToken: UserEntity = JwtDecode(headers.authorization);
 
             if (!(headerToken.role === 'SUPPORT')) {
-                return 'HOLA QUE HACES? Escribeme WSP => +51976873362';
+                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
             }
 
             let MappingVoyage: Mapping[] = [];
@@ -458,12 +458,14 @@ export class VoyagesController {
                 let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
 
                 let userId = importVoyage.userId;
+
                 // Consultamos si el numero de viaje ya lo tenemos mapeado.
-                // Si no lo tuvieramos lo registrariamos.
+                // Si no lo tuvieramos lo buscaremos en la BD
                 if (!existeViaje) {
 
                     let voyageExistente: Voyage;
 
+                    // Si no existe un Vije ID lo buscamos por numero y año
                     if (!importVoyage.voyageId) {
                         // Hacemos una consulta si tenemos el numero de viaje en tal año.
                         voyageExistente = await this._voyagesService.ThisVoyageNumberExistsInTheYear(importVoyage.voyageNumber, importVoyage.year, userId);
@@ -493,12 +495,15 @@ export class VoyagesController {
                         // LO REGISTRAMOS
                         let voyageRegister = await this._voyagesService.Create(newVoyage);
 
+                        console.log('Se CREO EL VIAJE NUMERO '+newVoyage.voyageNumber+'   con id :'+newVoyage.id)
+
                         // Lo agregamos al mapping
                         MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
                         // Reset mapping Port
                         MappingPort = [];
                     } else {
-                        if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO ES EL MISMO QUE EL DEL VIAJE'
+                        if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.'
+                        
                         if (voyageExistente.voyageNumber != importVoyage.voyageNumber
                             || voyageExistente.year != importVoyage.year) {
 
@@ -550,7 +555,8 @@ export class VoyagesController {
                         portExiste = await this._portsService.Get(importVoyage.portId)
                     }
 
-                    console.log('portExistet' + portExiste)
+                    console.log('portExistet' + portExiste);
+
                     // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
                     if (!portExiste) {
                         let newPort = new Port();
@@ -561,9 +567,9 @@ export class VoyagesController {
                         newPort.arrivalPort = importVoyage.arrivalPort;
                         newPort.portNumber = importVoyage.portNumber
                         /*              
-                            ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OCION PARA QUE SE REGISTE EL DATO ANTERIOR
+                            ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OPCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
-                  */
+                        */
 
                         if (ultimaFecha) {
                             newPort.startDate = ultimaFecha;
@@ -584,13 +590,13 @@ export class VoyagesController {
 
                         // Lo registramos
                         let portRegister = await this._portsService.Create(newPort);
-                        console.log('Create port')
+                        console.log('Se CREO EL PUERTO NUMERO '+portRegister.portNumber+'   con id :'+portRegister.id)
                         MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
                     } else {
 
 
                         console.log('Entro al else de port')
-                        if (portExiste.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO ES EL MISMO QUE EL DEL PUERTO'
+                        if (portExiste.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar'
 
 
                         // ESTO SE DEBE DE TENER EN CUENTA SI DESEAMOS MODIFICAR LA POSICION DE UN 
@@ -622,7 +628,7 @@ export class VoyagesController {
                             portExiste.dateUpdated = GetDate();
                             portExiste.status = true;
 
-                            console.log('Se actualizo el Puerto')
+                            console.log('Se actualizo el PUERTO NUMERO '+portExiste.portNumber+'   con id :'+portExiste.id)
                             portExiste = await this._portsService.Update(portExiste)
                         }
 
@@ -643,9 +649,8 @@ export class VoyagesController {
 
                 // Armamos el obj de reporte.
                 let newReport = new DailyReport();
-                // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear le pondria null
-                newReport.id = importVoyage.dailyReportId;
 
+                // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear eliminaria el ID
                 if (importVoyage.dailyReportId) {
                     newReport.id = Number(importVoyage.dailyReportId);
                 } else {
@@ -657,18 +662,18 @@ export class VoyagesController {
                 newReport.portId = existePort.value;
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
-                let textoCadena: any = importVoyage.date;
-                textoCadena = <any>ConvertMomentUTC(textoCadena)
+           
 
-                let textUTC = textoCadena.utc().format();
+                ultimaFecha =  ConvertDateUTC_To_FORMAT_UTC(importVoyage.date)+'.000';
 
                 // A la fecha le redusco 4 horas debido que se tiene esa diferencia
                 // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
                 // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
-                textoCadena = textoCadena.utc().format();
+               
+                /*     
+                    let textoCadena: any = importVoyage.date;
+                    textoCadena = <any>ConvertMomentUTC(textoCadena)
 
-                ultimaFecha = textoCadena;
-                /*
                     if( importVoyage.date.length == 15 ){
                         newReport.date = <any> textoCadena.slice(0,-7)
                     } else if (importVoyage.date.length == 14){
@@ -680,17 +685,16 @@ export class VoyagesController {
                 */
 
                 // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
-                if (textUTC.length == 20) {
+           
+                if (ultimaFecha.length == 23) {
                     newReport.date = ultimaFecha;
-                    newReport.hour = textUTC.slice(11, 19)
                 } else {
                     console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
                 }
 
                 // No se actualiza ni fecha ni HOra
 
-                // Verificamos si existe una hora,
-                /*
+                // Verificamos si existe una hora
                 if (importVoyage.hour) {
                     // Verificamos el tamaño de la hora,
                     // Lo normal seria 03:00 esto seria un total de 5 caracteres
@@ -698,15 +702,17 @@ export class VoyagesController {
                     if (importVoyage.hour.length === 4) {
                         // concatenamos el 0 a la hora.
                         newReport.hour = '0' + importVoyage.hour;
-                    } else {
+                    } else if(importVoyage.hour.length == 5) {
                         newReport.hour = importVoyage.hour;
+                    }else {
+
+                        console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' +importVoyage.dailyReportId)
                     }
                 }
-                */
 
                 // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
-                delete newReport.date;
-                delete newReport.hour;
+               // delete newReport.date;
+                // delete newReport.hour;
 
                 // -*--------------------------FIN MODIFICACION
 
@@ -717,13 +723,18 @@ export class VoyagesController {
                 newReport.auxIfo = importVoyage.auxIfo || 0;
                 newReport.boilerIfo = importVoyage.boilerIfo || 0;
                 newReport.otherIfo = importVoyage.otherIfo || 0;
+
                 newReport.mplaMgo = importVoyage.mplaMgo || 0;
                 newReport.auxMgo = importVoyage.auxMgo || 0;
                 newReport.boilerMgo = importVoyage.boilerMgo || 0;
                 newReport.ppMgo = importVoyage.ppMgo || 0;
                 newReport.giMgo = importVoyage.giMgo || 0;
                 newReport.otherMgo = importVoyage.otherMgo || 0;
-                newReport.steamingTime = importVoyage.steamingTime || 0;
+
+
+               newReport.steamingTime = importVoyage.steamingTime || 0;
+                //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
+
                 newReport.distance = importVoyage.distance || 0;
 
                 if (!importVoyage.beaufour) {
