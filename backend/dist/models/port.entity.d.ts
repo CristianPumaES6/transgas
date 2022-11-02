@@ -1,0 +1,44 @@
+import { DailyReport } from './daily-report.entity';
+import { Voyage } from './voyage.entity';
+export declare class Port {
+    id: number;
+    userId: number;
+    voyageId: number;
+    voyage: Voyage;
+    dailyReports: DailyReport[];
+    portNumber: number;
+    departurePort: string;
+    arrivalPort: string;
+    startDate: Date;
+    startIFO: number;
+    startMGO: number;
+    userIdCreated: number;
+    dateCreated: string;
+    userIdUpdated: number;
+    dateUpdated: string;
+    status: boolean;
+}
+export declare class GetLastPortAndTotalConsump {
+    portId: number;
+    userId: number;
+    departurePort: string;
+    arrivalPort: string;
+    startDate: string;
+    startIFO: number;
+    startMGO: number;
+    lastDate: string;
+    bunkeringIfo: number;
+    bunkeringMgo: number;
+    mplaIfo: number;
+    auxIfo: number;
+    boilerIfo: number;
+    otherIfo: number;
+    mplaMgo: number;
+    auxMgo: number;
+    boilerMgo: number;
+    ppMgo: number;
+    giMgo: number;
+    otherMgo: number;
+    distance: number;
+    constructor(portId?: number, userId?: number, departurePort?: string, arrivalPort?: string, startDate?: string, startIFO?: number, startMGO?: number, lastDate?: string, bunkeringIfo?: number, bunkeringMgo?: number, mplaIfo?: number, auxIfo?: number, boilerIfo?: number, otherIfo?: number, mplaMgo?: number, auxMgo?: number, boilerMgo?: number, ppMgo?: number, giMgo?: number, otherMgo?: number, distance?: number);
+}
