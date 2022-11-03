@@ -1141,11 +1141,18 @@ export class DailyReportsService {
 
 
         let stringGroupBY = "datetime('daily_report'.'date','+8.999 hour')";
-
+       
         // si el usuario es TAUROGAS
         if (userId == 14) {
             stringGroupBY = "datetime('daily_report'.'date','+7.9999 hour')";
         }
+   
+        // si el usuario es Huntegas
+        if (userId == 10) {
+            stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+        }
+
+
         // Hacemos where por todos los campos de la entidad
         return await
             this._dailyReportRepository.createQueryBuilder('daily_report')
