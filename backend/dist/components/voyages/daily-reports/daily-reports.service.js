@@ -739,6 +739,9 @@ let DailyReportsService = class DailyReportsService {
         if (userId == 14) {
             stringGroupBY = "datetime('daily_report'.'date','+7.9999 hour')";
         }
+        if (userId == 10) {
+            stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+        }
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
             .select('MAX(voyage.userId)', 'userId')
             .addSelect('MAX(voyage.year)', 'year')
