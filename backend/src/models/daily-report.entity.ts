@@ -221,6 +221,7 @@ export class GetReportVoyagePortDaily {
         public year?: number,
         public voyageId?: number,
         public voyageNumber?: number,
+        
         public portId?: number,
         public portNumber?: number,
         public departurePort?: string,

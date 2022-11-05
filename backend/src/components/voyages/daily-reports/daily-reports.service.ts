@@ -798,8 +798,6 @@ export class DailyReportsService {
             );
     }
 
-
-
     async GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Promise<InfoReport_IFO_AND_MGO> {
 
         // Si la fecha es null en automatico enviara los ultimos 40 registros.
@@ -1060,7 +1058,6 @@ export class DailyReportsService {
                 });
     }
 
-
     async GetReportDNVByUser(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
 
         // Hacemos where por todos los campos de la entidad
@@ -1136,6 +1133,7 @@ export class DailyReportsService {
                     }
                 );
     }
+
     async GetReportDNVByUserNOON(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
 
 
@@ -1225,4 +1223,5 @@ export class DailyReportsService {
                     }
                 );
     }
+
 }
