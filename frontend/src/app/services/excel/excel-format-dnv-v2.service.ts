@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mathRound } from '../../../assets/math/math.assets';
 import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour, FormatDateUTCToDateHourUTC, FormatYYYYMMDDToHOURS, FormatYYYYMMDDToSTRING, FormatYYYYMMDDUTCToSTRING } from '../../../assets/moment/moment.assets';
-import { GetFormatDNV, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
+import { DailyReport, GetFormatDNV, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
 import { ActivityPerformed } from '../../models/dashboard';
 import { GetReportVoyagePortDaily, GetReportVoyagePortDaily2 } from '../../models/dialog-export-excel';
 import { User } from '../../models/user';
@@ -618,118 +618,286 @@ export class ExcelFormatDNVV2Service {
         listGetReportVoyagePortDaily.forEach(
           (item: GetReportVoyagePortDaily) => {
             let getFormatDNV: GetFormatDNV = new GetFormatDNV();
-            
-            
-            if(String(dia_actual.date).slice(0,10)==String(item.date).slice(0,10)){
-              
-                dia_actual.userId = item.userId;
-                dia_actual.year = item.year;
-                dia_actual.voyageId = item.voyageId;
-                dia_actual.voyageNumber = item.voyageNumber;
-        
-                dia_actual.portId = item.portId;
-                dia_actual.portNumber = item.portNumber;
-                dia_actual.departurePort = item.departurePort;
-                dia_actual.arrivalPort = item.arrivalPort;
-                dia_actual.startDate = item.startDate;
-                dia_actual.startIFO = item.startIFO;
-                dia_actual.startMGO = item.startMGO;
-                
-        
-                dia_actual.dailyReportId = item.dailyReportId;
-                dia_actual.date = item.date;
-                dia_actual.hour = item.hour;
-                dia_actual.steamingTime = dia_actual.steamingTime+item.steamingTime;
-        
-                dia_actual.activityPerformed = item.activityPerformed;
-                dia_actual.typeActivityPerformed = item.typeActivityPerformed;
-                dia_actual.speedStraction = item.speedStraction || dia_actual.speedStraction;
-                dia_actual.observation = item.observation;
-        
-                dia_actual.distance =  dia_actual.distance+item.distance;
-            
-                // Consumo IFO
-                dia_actual.mplaIfo =dia_actual.mplaIfo+ item.mplaIfo;
-                dia_actual.auxIfo = dia_actual.auxIfo+item.auxIfo;
-                dia_actual.boilerIfo = dia_actual.boilerIfo+item.boilerIfo;
-                dia_actual.otherIfo = dia_actual.otherIfo +item.otherIfo;
-                dia_actual.bunkeringIfo = dia_actual.bunkeringIfo+item.bunkeringIfo;
-        
-                // Consumo MGO
-                dia_actual.mplaMgo = dia_actual.mplaMgo+item.mplaMgo;
-                dia_actual.auxMgo = dia_actual.auxMgo+item.auxMgo;
-                dia_actual.boilerMgo = dia_actual.boilerMgo+item.boilerMgo;
-                dia_actual.ppMgo = dia_actual.ppMgo+item.ppMgo;
-                dia_actual.giMgo = dia_actual.giMgo +item.giMgo;
-                dia_actual.otherMgo = dia_actual.otherMgo+item.otherMgo;
-                dia_actual.bunkeringMgo = dia_actual.bunkeringMgo+item.bunkeringMgo;
-        
-   
-        
-                // ULTIMOS CAMPOS
-                dia_actual.north_degree = item.north_degree|| dia_actual.north_degree;
-                dia_actual.north_minutes = item.north_minutes||dia_actual.north_minutes;
-                dia_actual.north_north_south = item.north_north_south||dia_actual.north_north_south ;
-                dia_actual.east_degree = item.east_degree||dia_actual.east_degree;
-                dia_actual.east_minutes = item.east_minutes||dia_actual.east_minutes;
-                dia_actual.east_east_west = item.east_east_west||dia_actual.east_east_west;
 
-            }else{
+            // validamos si estamos en el mismo dia.
+            if (String(dia_actual.date).slice(0, 10) == String(item.date).slice(0, 10)) {
+
+
+              dia_actual.userId = item.userId;
+              dia_actual.year = item.year;
+              dia_actual.voyageId = item.voyageId;
+              dia_actual.voyageNumber = item.voyageNumber;
+
+              dia_actual.portId = item.portId;
+              dia_actual.portNumber = item.portNumber;
+              dia_actual.departurePort = item.departurePort;
+              dia_actual.arrivalPort = item.arrivalPort;
+              dia_actual.startDate = item.startDate;
+              dia_actual.startIFO = item.startIFO;
+              dia_actual.startMGO = item.startMGO;
+              // valoras del reporte
+              dia_actual.dailyReportId = item.dailyReportId;
+              dia_actual.date = item.date;
+              dia_actual.hour = item.hour;
+              dia_actual.steamingTime = dia_actual.steamingTime + item.steamingTime;
+
+              dia_actual.activityPerformed = item.activityPerformed;
+              dia_actual.typeActivityPerformed = item.typeActivityPerformed;
+              dia_actual.speedStraction = item.speedStraction || dia_actual.speedStraction;
+              dia_actual.observation = item.observation;
+
+              // ULTIMOS CAMPOS
+              dia_actual.north_degree = item.north_degree || dia_actual.north_degree;
+              dia_actual.north_minutes = item.north_minutes || dia_actual.north_minutes;
+              dia_actual.north_north_south = item.north_north_south || dia_actual.north_north_south;
+              dia_actual.east_degree = item.east_degree || dia_actual.east_degree;
+              dia_actual.east_minutes = item.east_minutes || dia_actual.east_minutes;
+              dia_actual.east_east_west = item.east_east_west || dia_actual.east_east_west;
+
+              // validamos que la suma de los resultados no superarran las 24 horas
+              if (dia_actual.steamingTime + item.steamingTime > 24) {
                 // actualizamos el dia anterior
-                dia_anterior = dia_actual;
-console.log(dia_anterior.date)
-                // registramos el dia actual
-                dia_actual.userId = item.userId;
-                dia_actual.year = item.year;
-                dia_actual.voyageId = item.voyageId;
-                dia_actual.voyageNumber = item.voyageNumber;
-        
-                dia_actual.portId = item.portId;
-                dia_actual.portNumber = item.portNumber;
-                dia_actual.departurePort = item.departurePort;
-                dia_actual.arrivalPort = item.arrivalPort;
-                dia_actual.startDate = item.startDate;
-                dia_actual.startIFO = item.startIFO;
-                dia_actual.startMGO = item.startMGO;
-                
-        
-                dia_actual.dailyReportId = item.dailyReportId;
-                dia_actual.date = item.date;
-                dia_actual.hour = item.hour;
-                dia_actual.steamingTime = dia_actual.steamingTime;
-        
-                dia_actual.activityPerformed = item.activityPerformed;
-                dia_actual.typeActivityPerformed = item.typeActivityPerformed;
-                dia_actual.speedStraction = item.speedStraction;
-                dia_actual.observation = item.observation;
-        
-                dia_actual.distance =  dia_actual.distance+item.distance;
-            
+                dia_anterior = JSON.parse(JSON.stringify(dia_actual));
+
+                // El resumen del dia anterior es 
+                let reportTemporal = new GetReportVoyagePortDaily();
+
+                // Cuanto tiempo le falta al otro registro para tener 24 horas
+                reportTemporal.steamingTime = (dia_actual.steamingTime + item.steamingTime) - 24;
+
+                // cuanto es el cosnumo total
+
+                // Consumo por horas
+                reportTemporal.mplaIfo = (item.mplaIfo > 0) ? item.mplaIfo / item.steamingTime : 0;
+                reportTemporal.auxIfo = (item.auxIfo > 0) ? item.auxIfo / item.steamingTime : 0;
+                reportTemporal.boilerIfo = (item.boilerIfo > 0) ? item.boilerIfo / item.steamingTime : 0;
+                reportTemporal.otherIfo = (item.otherIfo > 0) ? item.otherIfo / item.steamingTime : 0;
+
+                reportTemporal.mplaMgo = (item.mplaMgo > 0) ? item.mplaMgo / item.steamingTime : 0;
+                reportTemporal.auxMgo = (item.auxMgo > 0) ? item.auxMgo / item.steamingTime : 0;
+                reportTemporal.boilerMgo = (item.boilerMgo > 0) ? item.boilerMgo / item.steamingTime : 0;
+                reportTemporal.ppMgo = (item.ppMgo > 0) ? item.ppMgo / item.steamingTime : 0;
+                reportTemporal.giMgo = (item.giMgo > 0) ? item.giMgo / item.steamingTime : 0;
+                reportTemporal.otherMgo = (item.otherMgo > 0) ? item.otherMgo / item.steamingTime : 0;
+
+                reportTemporal.bunkeringIfo = (item.bunkeringIfo > 0 || item.bunkeringIfo < 0) ? item.bunkeringIfo / item.steamingTime : 0;
+                reportTemporal.bunkeringMgo = (item.bunkeringMgo > 0 || item.bunkeringMgo < 0) ? item.bunkeringMgo / item.steamingTime : 0;
+
+
+                // AHORA VAMOS A OBTENER EL CONSUMO TOTAL ASIGNADO AL VIAJE ANTERIRO
+                reportTemporal.mplaIfo = reportTemporal.mplaIfo > 0 ? reportTemporal.mplaIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.auxIfo = reportTemporal.auxIfo > 0 ? reportTemporal.auxIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.boilerIfo = reportTemporal.boilerIfo > 0 ? reportTemporal.boilerIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.otherIfo = reportTemporal.otherIfo > 0 ? reportTemporal.otherIfo * reportTemporal.steamingTime : 0;
+
+                reportTemporal.mplaMgo = reportTemporal.mplaMgo > 0 ? reportTemporal.mplaMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.auxMgo = reportTemporal.auxMgo > 0 ? reportTemporal.auxMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.boilerMgo = reportTemporal.boilerMgo > 0 ? reportTemporal.boilerMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.ppMgo = reportTemporal.ppMgo > 0 ? reportTemporal.ppMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.giMgo = reportTemporal.giMgo > 0 ? reportTemporal.giMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.otherMgo = reportTemporal.otherMgo > 0 ? reportTemporal.otherMgo * reportTemporal.steamingTime : 0;
+
+                reportTemporal.bunkeringIfo = (item.bunkeringIfo > 0 || item.bunkeringIfo < 0) ? reportTemporal.bunkeringIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.bunkeringMgo = (item.bunkeringMgo > 0 || item.bunkeringMgo < 0) ? reportTemporal.bunkeringMgo * reportTemporal.steamingTime : 0;
+
+
+                // sumamos el consumo que le falta al dia anterior
+                dia_anterior.mplaIfo = dia_anterior.mplaIfo + reportTemporal.mplaIfo;
+                dia_anterior.auxIfo = dia_anterior.auxIfo + reportTemporal.auxIfo;
+                dia_anterior.boilerIfo = dia_anterior.boilerIfo + reportTemporal.boilerIfo;
+                dia_anterior.otherIfo = dia_anterior.otherIfo + reportTemporal.otherIfo;
+                dia_anterior.mplaMgo = dia_anterior.mplaMgo + reportTemporal.mplaMgo;
+                dia_anterior.auxMgo = dia_anterior.auxMgo + reportTemporal.auxMgo;
+                dia_anterior.boilerMgo = dia_anterior.boilerMgo + reportTemporal.boilerMgo;
+                dia_anterior.ppMgo = dia_anterior.ppMgo + reportTemporal.ppMgo;
+                dia_anterior.giMgo = dia_anterior.giMgo + reportTemporal.giMgo;
+                dia_anterior.otherMgo = dia_anterior.otherMgo + reportTemporal.otherMgo;
+
+                dia_anterior.bunkeringIfo = dia_anterior.bunkeringIfo + reportTemporal.bunkeringIfo;
+                dia_anterior.bunkeringMgo = dia_anterior.bunkeringMgo + reportTemporal.bunkeringMgo;
+
+                dia_anterior.steamingTime = dia_anterior.steamingTime + reportTemporal.steamingTime;
+                // Ahora ponnerle el valor correcto al dia.
+                dia_actual.steamingTime = dia_actual.steamingTime - reportTemporal.steamingTime;
+                dia_actual.distance = dia_actual.distance - reportTemporal.steamingTime;
                 // Consumo IFO
-                dia_actual.mplaIfo =dia_actual.mplaIfo;
-                dia_actual.auxIfo = dia_actual.auxIfo;
-                dia_actual.boilerIfo = dia_actual.boilerIfo;
-                dia_actual.otherIfo = dia_actual.otherIfo;
-                dia_actual.bunkeringIfo = dia_actual.bunkeringIfo;
-        
+                dia_actual.mplaIfo = dia_actual.mplaIfo - reportTemporal.mplaIfo;
+                dia_actual.auxIfo = dia_actual.auxIfo - reportTemporal.auxIfo;
+                dia_actual.boilerIfo = dia_actual.boilerIfo - reportTemporal.boilerIfo;
+                dia_actual.otherIfo = dia_actual.otherIfo - reportTemporal.otherIfo;
+                dia_actual.bunkeringIfo = dia_actual.bunkeringIfo - reportTemporal.bunkeringIfo;
                 // Consumo MGO
-                dia_actual.mplaMgo = dia_actual.mplaMgo;
-                dia_actual.auxMgo = dia_actual.auxMgo;
-                dia_actual.boilerMgo = dia_actual.boilerMgo;
-                dia_actual.ppMgo = dia_actual.ppMgo;
-                dia_actual.giMgo = dia_actual.giMgo;
-                dia_actual.otherMgo = dia_actual.otherMgo;
-                dia_actual.bunkeringMgo = dia_actual.bunkeringMgo;
-        
-   
-        
-                // ULTIMOS CAMPOS
-                dia_actual.north_degree = item.north_degree;
-                dia_actual.north_minutes = item.north_minutes;
-                dia_actual.north_north_south = item.north_north_south;
-                dia_actual.east_degree = item.east_degree;
-                dia_actual.east_minutes = item.east_minutes;
-                dia_actual.east_east_west = item.east_east_west;
+                dia_actual.mplaMgo = dia_actual.mplaMgo - reportTemporal.bunkeringIfo;
+                dia_actual.auxMgo = dia_actual.auxMgo - reportTemporal.auxMgo;
+                dia_actual.boilerMgo = dia_actual.boilerMgo - reportTemporal.boilerMgo;
+                dia_actual.ppMgo = dia_actual.ppMgo - reportTemporal.ppMgo;
+                dia_actual.giMgo = dia_actual.giMgo - reportTemporal.giMgo;
+                dia_actual.otherMgo = dia_actual.otherMgo - reportTemporal.otherMgo;
+                dia_actual.bunkeringMgo = dia_actual.bunkeringMgo - reportTemporal.bunkeringMgo;
+
+
+              } else {
+
+
+                dia_actual.distance = dia_actual.distance + item.distance;
+
+                // Consumo IFO
+                dia_actual.mplaIfo = dia_actual.mplaIfo + item.mplaIfo;
+                dia_actual.auxIfo = dia_actual.auxIfo + item.auxIfo;
+                dia_actual.boilerIfo = dia_actual.boilerIfo + item.boilerIfo;
+                dia_actual.otherIfo = dia_actual.otherIfo + item.otherIfo;
+                dia_actual.bunkeringIfo = dia_actual.bunkeringIfo + item.bunkeringIfo;
+
+                // Consumo MGO
+                dia_actual.mplaMgo = dia_actual.mplaMgo + item.mplaMgo;
+                dia_actual.auxMgo = dia_actual.auxMgo + item.auxMgo;
+                dia_actual.boilerMgo = dia_actual.boilerMgo + item.boilerMgo;
+                dia_actual.ppMgo = dia_actual.ppMgo + item.ppMgo;
+                dia_actual.giMgo = dia_actual.giMgo + item.giMgo;
+                dia_actual.otherMgo = dia_actual.otherMgo + item.otherMgo;
+                dia_actual.bunkeringMgo = dia_actual.bunkeringMgo + item.bunkeringMgo;
+
+
+
+              }
+
+            }
+            // no es el mismo dia
+            else {
+              // actualizamos el dia anterior
+              dia_anterior = JSON.parse(JSON.stringify(dia_actual));
+
+              // nueva variable
+              dia_actual = new GetReportVoyagePortDaily();
+              // Datos del viaje
+              dia_actual.userId = item.userId;
+              dia_actual.year = item.year;
+              dia_actual.voyageId = item.voyageId;
+              dia_actual.voyageNumber = item.voyageNumber;
+              // Datos del puerto
+              dia_actual.portId = item.portId;
+              dia_actual.portNumber = item.portNumber;
+              dia_actual.departurePort = item.departurePort;
+              dia_actual.arrivalPort = item.arrivalPort;
+              dia_actual.startDate = item.startDate;
+              dia_actual.startIFO = item.startIFO;
+              dia_actual.startMGO = item.startMGO;
+              // datos del dailkyReport
+              dia_actual.dailyReportId = item.dailyReportId;
+              dia_actual.date = item.date;
+              dia_actual.hour = item.hour;
+              // ULTIMOS CAMPOS
+              dia_actual.north_degree = item.north_degree;
+              dia_actual.north_minutes = item.north_minutes;
+              dia_actual.north_north_south = item.north_north_south;
+              dia_actual.east_degree = item.east_degree;
+              dia_actual.east_minutes = item.east_minutes;
+              dia_actual.east_east_west = item.east_east_west;
+              // ESTOS VALORES CAMBIARAN
+              dia_actual.steamingTime = dia_actual.steamingTime;
+              dia_actual.distance = dia_actual.distance + item.distance;
+              // Consumo IFO
+              dia_actual.mplaIfo = dia_actual.mplaIfo;
+              dia_actual.auxIfo = dia_actual.auxIfo;
+              dia_actual.boilerIfo = dia_actual.boilerIfo;
+              dia_actual.otherIfo = dia_actual.otherIfo;
+              dia_actual.bunkeringIfo = dia_actual.bunkeringIfo;
+              // Consumo MGO
+              dia_actual.mplaMgo = dia_actual.mplaMgo;
+              dia_actual.auxMgo = dia_actual.auxMgo;
+              dia_actual.boilerMgo = dia_actual.boilerMgo;
+              dia_actual.ppMgo = dia_actual.ppMgo;
+              dia_actual.giMgo = dia_actual.giMgo;
+              dia_actual.otherMgo = dia_actual.otherMgo;
+              dia_actual.bunkeringMgo = dia_actual.bunkeringMgo;
+
+
+              // El resumen del dia anterior es 
+              if (dia_anterior.steamingTime <= 24) {
+
+                let reportTemporal = new GetReportVoyagePortDaily();
+
+                // Cuanto tiempo le falta al otro registro para tener 24 horas
+                reportTemporal.steamingTime = dia_anterior.steamingTime - 24;
+
+                // cuanto es el cosnumo total
+
+                // Consumo por horas
+                reportTemporal.mplaIfo = (item.mplaIfo > 0) ? item.mplaIfo / item.steamingTime : 0;
+                reportTemporal.auxIfo = (item.auxIfo > 0) ? item.auxIfo / item.steamingTime : 0;
+                reportTemporal.boilerIfo = (item.boilerIfo > 0) ? item.boilerIfo / item.steamingTime : 0;
+                reportTemporal.otherIfo = (item.otherIfo > 0) ? item.otherIfo / item.steamingTime : 0;
+
+                reportTemporal.mplaMgo = (item.mplaMgo > 0) ? item.mplaMgo / item.steamingTime : 0;
+                reportTemporal.auxMgo = (item.auxMgo > 0) ? item.auxMgo / item.steamingTime : 0;
+                reportTemporal.boilerMgo = (item.boilerMgo > 0) ? item.boilerMgo / item.steamingTime : 0;
+                reportTemporal.ppMgo = (item.ppMgo > 0) ? item.ppMgo / item.steamingTime : 0;
+                reportTemporal.giMgo = (item.giMgo > 0) ? item.giMgo / item.steamingTime : 0;
+                reportTemporal.otherMgo = (item.otherMgo > 0) ? item.otherMgo / item.steamingTime : 0;
+
+                reportTemporal.bunkeringIfo = (item.bunkeringIfo > 0 || item.bunkeringIfo < 0) ? item.bunkeringIfo / item.steamingTime : 0;
+                reportTemporal.bunkeringMgo = (item.bunkeringMgo > 0 || item.bunkeringMgo < 0) ? item.bunkeringMgo / item.steamingTime : 0;
+
+
+                // AHORA VAMOS A OBTENER EL CONSUMO TOTAL ASIGNADO AL VIAJE ANTERIRO
+                reportTemporal.mplaIfo = reportTemporal.mplaIfo > 0 ? reportTemporal.mplaIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.auxIfo = reportTemporal.auxIfo > 0 ? reportTemporal.auxIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.boilerIfo = reportTemporal.boilerIfo > 0 ? reportTemporal.boilerIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.otherIfo = reportTemporal.otherIfo > 0 ? reportTemporal.otherIfo * reportTemporal.steamingTime : 0;
+
+                reportTemporal.mplaMgo = reportTemporal.mplaMgo > 0 ? reportTemporal.mplaMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.auxMgo = reportTemporal.auxMgo > 0 ? reportTemporal.auxMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.boilerMgo = reportTemporal.boilerMgo > 0 ? reportTemporal.boilerMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.ppMgo = reportTemporal.ppMgo > 0 ? reportTemporal.ppMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.giMgo = reportTemporal.giMgo > 0 ? reportTemporal.giMgo * reportTemporal.steamingTime : 0;
+                reportTemporal.otherMgo = reportTemporal.otherMgo > 0 ? reportTemporal.otherMgo * reportTemporal.steamingTime : 0;
+
+                reportTemporal.bunkeringIfo = (item.bunkeringIfo > 0 || item.bunkeringIfo < 0) ? reportTemporal.bunkeringIfo * reportTemporal.steamingTime : 0;
+                reportTemporal.bunkeringMgo = (item.bunkeringMgo > 0 || item.bunkeringMgo < 0) ? reportTemporal.bunkeringMgo * reportTemporal.steamingTime : 0;
+
+
+                // sumamos el consumo que le falta al dia anterior
+                dia_anterior.mplaIfo = dia_anterior.mplaIfo + reportTemporal.mplaIfo;
+                dia_anterior.auxIfo = dia_anterior.auxIfo + reportTemporal.auxIfo;
+                dia_anterior.boilerIfo = dia_anterior.boilerIfo + reportTemporal.boilerIfo;
+                dia_anterior.otherIfo = dia_anterior.otherIfo + reportTemporal.otherIfo;
+                dia_anterior.mplaMgo = dia_anterior.mplaMgo + reportTemporal.mplaMgo;
+                dia_anterior.auxMgo = dia_anterior.auxMgo + reportTemporal.auxMgo;
+                dia_anterior.boilerMgo = dia_anterior.boilerMgo + reportTemporal.boilerMgo;
+                dia_anterior.ppMgo = dia_anterior.ppMgo + reportTemporal.ppMgo;
+                dia_anterior.giMgo = dia_anterior.giMgo + reportTemporal.giMgo;
+                dia_anterior.otherMgo = dia_anterior.otherMgo + reportTemporal.otherMgo;
+
+
+                dia_anterior.bunkeringIfo = dia_anterior.bunkeringIfo + reportTemporal.bunkeringIfo;
+                dia_anterior.bunkeringMgo = dia_anterior.bunkeringMgo + reportTemporal.bunkeringMgo;
+
+                dia_anterior.steamingTime = dia_anterior.steamingTime + reportTemporal.steamingTime;
+                // Ahora ponnerle el valor correcto al dia.
+                dia_actual.steamingTime = dia_actual.steamingTime - reportTemporal.steamingTime;
+                dia_actual.distance = dia_actual.distance - reportTemporal.steamingTime;
+                // Consumo IFO
+                dia_actual.mplaIfo = dia_actual.mplaIfo - reportTemporal.mplaIfo;
+                dia_actual.auxIfo = dia_actual.auxIfo - reportTemporal.auxIfo;
+                dia_actual.boilerIfo = dia_actual.boilerIfo - reportTemporal.boilerIfo;
+                dia_actual.otherIfo = dia_actual.otherIfo - reportTemporal.otherIfo;
+                dia_actual.bunkeringIfo = dia_actual.bunkeringIfo - reportTemporal.bunkeringIfo;
+                // Consumo MGO
+                dia_actual.mplaMgo = dia_actual.mplaMgo - reportTemporal.bunkeringIfo;
+                dia_actual.auxMgo = dia_actual.auxMgo - reportTemporal.auxMgo;
+                dia_actual.boilerMgo = dia_actual.boilerMgo - reportTemporal.boilerMgo;
+                dia_actual.ppMgo = dia_actual.ppMgo - reportTemporal.ppMgo;
+                dia_actual.giMgo = dia_actual.giMgo - reportTemporal.giMgo;
+                dia_actual.otherMgo = dia_actual.otherMgo - reportTemporal.otherMgo;
+                dia_actual.bunkeringMgo = dia_actual.bunkeringMgo - reportTemporal.bunkeringMgo;
+
+
+              }
+
+
+
+
+
 
             }
 
@@ -898,6 +1066,8 @@ console.log(dia_anterior.date)
           return row;
         }
       )
+
+
   }
 
 
@@ -958,6 +1128,17 @@ console.log(dia_anterior.date)
     let result = mathRound(valor, cantDecimales)
 
     return result;
+  }
+
+
+  private SumaIfo(report: DailyReport): number {
+    let ifo = report.mplaIfo + report.auxIfo + report.boilerIfo + report.otherIfo;
+    return ifo;
+  }
+
+  private SumaMgo(report: DailyReport): number {
+    let mgo = report.mplaMgo + report.auxMgo + report.boilerMgo + report.ppMgo + report.giMgo + report.otherMgo;
+    return mgo;
   }
 
 

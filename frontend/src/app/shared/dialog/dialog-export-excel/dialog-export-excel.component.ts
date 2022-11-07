@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
 import { User } from '../../../models/user';
-import { ExcelFormatDNVService } from '../../../services/excel/excel-format-dnv.service';
+import { ExcelFormatDNVV2Service } from '../../../services/excel/excel-format-dnv-v2.service';
 import { ExcelFormatVesselDataRegisterService } from '../../../services/excel/excel-format-vessel-data-register.service';
 import { ExcelService } from '../../../services/excel/excel.service';
 import { LanguageService } from '../../../services/language.service';
@@ -43,7 +43,7 @@ export class DialogExportExcelComponent implements OnInit {
     // Loading service.
     private loadingService: LoadingService,
     private excelService: ExcelService,
-    private excelFormatDNVService: ExcelFormatDNVService,
+    private excelFormatDNVService: ExcelFormatDNVV2Service,
     private excelFormatVesselDataRegisterService: ExcelFormatVesselDataRegisterService,
   ) { }
 

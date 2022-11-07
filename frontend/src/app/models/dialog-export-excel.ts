@@ -13,6 +13,10 @@ export class GetReportVoyagePortDaily {
         public portNumber?: number,
         public departurePort?: string,
         public arrivalPort?: string,
+        public startDate?: Date,
+        public startIFO?: number,
+        public startMGO?: number,
+        
 
         public dailyReportId?: number,
         // Fecha de registro
@@ -84,10 +88,15 @@ export class GetReportVoyagePortDaily {
         this.year = year || 0;
         this.voyageId = voyageId || 0;
         this.voyageNumber = voyageNumber || 0;
+
         this.portId = portId || 0;
         this.portNumber = portNumber || 0;
         this.departurePort = departurePort || '';
         this.arrivalPort = arrivalPort || '';
+        this.startDate = startDate || null;
+        this.startIFO = startIFO ||0;
+        this.startMGO = startMGO || 0;
+        
 
         this.dailyReportId = dailyReportId || 0;
         this.date = date || null;
