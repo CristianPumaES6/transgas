@@ -8,6 +8,7 @@ import { ExcelService } from '../../../services/excel/excel.service';
 import { LanguageService } from '../../../services/language.service';
 import { LoadingService } from '../../../services/loading.service';
 import { FormatDateUTCToDateHour } from '../../../../assets/moment/moment.assets';
+import { ExcelFormatDNVService } from 'src/app/services/excel/excel-format-dnv.service';
 
 // Interface de los input del componente.
 export interface IDialogExportExcel {
@@ -43,7 +44,7 @@ export class DialogExportExcelComponent implements OnInit {
     // Loading service.
     private loadingService: LoadingService,
     private excelService: ExcelService,
-    private excelFormatDNVService: ExcelFormatDNVV2Service,
+    private excelFormatDNVService: ExcelFormatDNVService,
     private excelFormatVesselDataRegisterService: ExcelFormatVesselDataRegisterService,
   ) { }
 
