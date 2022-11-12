@@ -589,6 +589,7 @@ export class ExcelFormatDNVV2Service {
     let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
     let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
+    let ignoreElPrimerDia = false;
     return await Promise.resolve(true).then(
       result => {
         // Buscamos la informacion del combustible de inicio y fin segun la fecha.
@@ -608,6 +609,7 @@ export class ExcelFormatDNVV2Service {
       }
     ).then(
       getInfoFuelStartEndByFilterDate => {
+
         // FALTA CALCULAR EL ROB ACTUAL
         let ROB_IFO = getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
         let ROB_MGO = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
@@ -639,7 +641,6 @@ export class ExcelFormatDNVV2Service {
               dia_actual.dailyReportId = item.dailyReportId;
               dia_actual.date = item.date;
               dia_actual.hour = item.hour;
-              dia_actual.steamingTime = dia_actual.steamingTime + item.steamingTime;
 
               dia_actual.activityPerformed = item.activityPerformed;
               dia_actual.typeActivityPerformed = item.typeActivityPerformed;
@@ -654,20 +655,18 @@ export class ExcelFormatDNVV2Service {
               dia_actual.east_minutes = item.east_minutes || dia_actual.east_minutes;
               dia_actual.east_east_west = item.east_east_west || dia_actual.east_east_west;
 
-              // validamos que la suma de los resultados no superarran las 24 horas
-              if (dia_actual.steamingTime + item.steamingTime > 24) {
+              // Validamos que la suma de los resultados no superaran las 24 horas
+              if ( (dia_actual.steamingTime + item.steamingTime) >= 23.5) {
                 // actualizamos el dia anterior
                 dia_anterior = JSON.parse(JSON.stringify(dia_actual));
 
                 // El resumen del dia anterior es 
                 let reportTemporal = new GetReportVoyagePortDaily();
 
-                // Cuanto tiempo le falta al otro registro para tener 24 horas
-                reportTemporal.steamingTime = (dia_actual.steamingTime + item.steamingTime) - 24;
-
-                // cuanto es el cosnumo total
-
-                // Consumo por horas
+                // Horas que faltan para 24 horas
+                reportTemporal.steamingTime = 24 - dia_actual.steamingTime;
+                console.log( "TIEMPO que sobra para las 24h : " + reportTemporal.steamingTime )
+                // cuanto es el cosnumo total por horas
                 reportTemporal.mplaIfo = (item.mplaIfo > 0) ? item.mplaIfo / item.steamingTime : 0;
                 reportTemporal.auxIfo = (item.auxIfo > 0) ? item.auxIfo / item.steamingTime : 0;
                 reportTemporal.boilerIfo = (item.boilerIfo > 0) ? item.boilerIfo / item.steamingTime : 0;
@@ -717,28 +716,36 @@ export class ExcelFormatDNVV2Service {
                 dia_anterior.bunkeringMgo = dia_anterior.bunkeringMgo + reportTemporal.bunkeringMgo;
 
                 dia_anterior.steamingTime = dia_anterior.steamingTime + reportTemporal.steamingTime;
+
+
+                let resul:any = this.convertGetReportVoyagePortDailyToGetFormatDNV(dia_anterior, ROB_IFO, ROB_MGO);
+                ROB_IFO = resul.ROB_IFO;
+                ROB_MGO = resul.ROB_MGO;
+                // aqui registramos al dia anterior
+                ListGetFormatDNV.push(resul.FormatDNV)
+
                 // Ahora ponnerle el valor correcto al dia.
-                dia_actual.steamingTime = dia_actual.steamingTime - reportTemporal.steamingTime;
-                dia_actual.distance = dia_actual.distance - reportTemporal.steamingTime;
+                dia_actual.steamingTime = item.steamingTime - reportTemporal.steamingTime;
+                dia_actual.distance = item.distance - reportTemporal.steamingTime;
                 // Consumo IFO
-                dia_actual.mplaIfo = dia_actual.mplaIfo - reportTemporal.mplaIfo;
-                dia_actual.auxIfo = dia_actual.auxIfo - reportTemporal.auxIfo;
-                dia_actual.boilerIfo = dia_actual.boilerIfo - reportTemporal.boilerIfo;
-                dia_actual.otherIfo = dia_actual.otherIfo - reportTemporal.otherIfo;
-                dia_actual.bunkeringIfo = dia_actual.bunkeringIfo - reportTemporal.bunkeringIfo;
+                dia_actual.mplaIfo = item.mplaIfo - reportTemporal.mplaIfo;
+                dia_actual.auxIfo = item.auxIfo - reportTemporal.auxIfo;
+                dia_actual.boilerIfo = item.boilerIfo - reportTemporal.boilerIfo;
+                dia_actual.otherIfo = item.otherIfo - reportTemporal.otherIfo;
+                dia_actual.bunkeringIfo = item.bunkeringIfo - reportTemporal.bunkeringIfo;
                 // Consumo MGO
-                dia_actual.mplaMgo = dia_actual.mplaMgo - reportTemporal.bunkeringIfo;
-                dia_actual.auxMgo = dia_actual.auxMgo - reportTemporal.auxMgo;
-                dia_actual.boilerMgo = dia_actual.boilerMgo - reportTemporal.boilerMgo;
-                dia_actual.ppMgo = dia_actual.ppMgo - reportTemporal.ppMgo;
-                dia_actual.giMgo = dia_actual.giMgo - reportTemporal.giMgo;
-                dia_actual.otherMgo = dia_actual.otherMgo - reportTemporal.otherMgo;
-                dia_actual.bunkeringMgo = dia_actual.bunkeringMgo - reportTemporal.bunkeringMgo;
+                dia_actual.mplaMgo = item.mplaMgo - reportTemporal.bunkeringIfo;
+                dia_actual.auxMgo = item.auxMgo - reportTemporal.auxMgo;
+                dia_actual.boilerMgo = item.boilerMgo - reportTemporal.boilerMgo;
+                dia_actual.ppMgo = item.ppMgo - reportTemporal.ppMgo;
+                dia_actual.giMgo = item.giMgo - reportTemporal.giMgo;
+                dia_actual.otherMgo = item.otherMgo - reportTemporal.otherMgo;
+                dia_actual.bunkeringMgo = item.bunkeringMgo - reportTemporal.bunkeringMgo;
 
 
               } else {
 
-
+                dia_actual.steamingTime = dia_actual.steamingTime + item.steamingTime;
                 dia_actual.distance = dia_actual.distance + item.distance;
 
                 // Consumo IFO
@@ -763,7 +770,10 @@ export class ExcelFormatDNVV2Service {
 
             }
             // no es el mismo dia
-            else {
+            else if(dia_actual.date) {
+
+
+              let getFormatDNV = new GetFormatDNV();
               // actualizamos el dia anterior
               dia_anterior = JSON.parse(JSON.stringify(dia_actual));
 
@@ -793,32 +803,16 @@ export class ExcelFormatDNVV2Service {
               dia_actual.east_degree = item.east_degree;
               dia_actual.east_minutes = item.east_minutes;
               dia_actual.east_east_west = item.east_east_west;
-              // ESTOS VALORES CAMBIARAN
-              dia_actual.steamingTime = dia_actual.steamingTime;
-              dia_actual.distance = dia_actual.distance + item.distance;
-              // Consumo IFO
-              dia_actual.mplaIfo = dia_actual.mplaIfo;
-              dia_actual.auxIfo = dia_actual.auxIfo;
-              dia_actual.boilerIfo = dia_actual.boilerIfo;
-              dia_actual.otherIfo = dia_actual.otherIfo;
-              dia_actual.bunkeringIfo = dia_actual.bunkeringIfo;
-              // Consumo MGO
-              dia_actual.mplaMgo = dia_actual.mplaMgo;
-              dia_actual.auxMgo = dia_actual.auxMgo;
-              dia_actual.boilerMgo = dia_actual.boilerMgo;
-              dia_actual.ppMgo = dia_actual.ppMgo;
-              dia_actual.giMgo = dia_actual.giMgo;
-              dia_actual.otherMgo = dia_actual.otherMgo;
-              dia_actual.bunkeringMgo = dia_actual.bunkeringMgo;
+
 
 
               // El resumen del dia anterior es 
-              if (dia_anterior.steamingTime <= 24) {
+              if (dia_anterior.steamingTime>0 && dia_anterior.steamingTime <= 23.5) {
 
                 let reportTemporal = new GetReportVoyagePortDaily();
 
                 // Cuanto tiempo le falta al otro registro para tener 24 horas
-                reportTemporal.steamingTime = dia_anterior.steamingTime - 24;
+                reportTemporal.steamingTime = 24-dia_anterior.steamingTime;
 
                 // cuanto es el cosnumo total
 
@@ -873,6 +867,19 @@ export class ExcelFormatDNVV2Service {
                 dia_anterior.bunkeringMgo = dia_anterior.bunkeringMgo + reportTemporal.bunkeringMgo;
 
                 dia_anterior.steamingTime = dia_anterior.steamingTime + reportTemporal.steamingTime;
+
+
+                
+                let resul:any = this.convertGetReportVoyagePortDailyToGetFormatDNV(dia_anterior, ROB_IFO, ROB_MGO);
+                ROB_IFO = resul.ROB_IFO;
+                ROB_MGO = resul.ROB_MGO;
+                // aqui registramos al dia anterior
+                ListGetFormatDNV.push(resul.FormatDNV)
+
+
+
+
+
                 // Ahora ponnerle el valor correcto al dia.
                 dia_actual.steamingTime = dia_actual.steamingTime - reportTemporal.steamingTime;
                 dia_actual.distance = dia_actual.distance - reportTemporal.steamingTime;
@@ -891,6 +898,25 @@ export class ExcelFormatDNVV2Service {
                 dia_actual.otherMgo = dia_actual.otherMgo - reportTemporal.otherMgo;
                 dia_actual.bunkeringMgo = dia_actual.bunkeringMgo - reportTemporal.bunkeringMgo;
 
+              } else {
+
+                // ESTOS VALORES CAMBIARAN
+                dia_actual.steamingTime = dia_actual.steamingTime;
+                dia_actual.distance = dia_actual.distance + item.distance;
+                // Consumo IFO
+                dia_actual.mplaIfo = dia_actual.mplaIfo;
+                dia_actual.auxIfo = dia_actual.auxIfo;
+                dia_actual.boilerIfo = dia_actual.boilerIfo;
+                dia_actual.otherIfo = dia_actual.otherIfo;
+                dia_actual.bunkeringIfo = dia_actual.bunkeringIfo;
+                // Consumo MGO
+                dia_actual.mplaMgo = dia_actual.mplaMgo;
+                dia_actual.auxMgo = dia_actual.auxMgo;
+                dia_actual.boilerMgo = dia_actual.boilerMgo;
+                dia_actual.ppMgo = dia_actual.ppMgo;
+                dia_actual.giMgo = dia_actual.giMgo;
+                dia_actual.otherMgo = dia_actual.otherMgo;
+                dia_actual.bunkeringMgo = dia_actual.bunkeringMgo;
 
               }
 
@@ -899,9 +925,53 @@ export class ExcelFormatDNVV2Service {
 
 
 
+            }else{
+                // nueva variable
+                dia_actual = new GetReportVoyagePortDaily();
+                // Datos del viaje
+                dia_actual.userId = item.userId;
+                dia_actual.year = item.year;
+                dia_actual.voyageId = item.voyageId;
+                dia_actual.voyageNumber = item.voyageNumber;
+                // Datos del puerto
+                dia_actual.portId = item.portId;
+                dia_actual.portNumber = item.portNumber;
+                dia_actual.departurePort = item.departurePort;
+                dia_actual.arrivalPort = item.arrivalPort;
+                dia_actual.startDate = item.startDate;
+                dia_actual.startIFO = item.startIFO;
+                dia_actual.startMGO = item.startMGO;
+                // datos del dailkyReport
+                dia_actual.dailyReportId = item.dailyReportId;
+                dia_actual.date = item.date;
+                dia_actual.hour = item.hour;
+                // ULTIMOS CAMPOS
+                dia_actual.north_degree = item.north_degree;
+                dia_actual.north_minutes = item.north_minutes;
+                dia_actual.north_north_south = item.north_north_south;
+                dia_actual.east_degree = item.east_degree;
+                dia_actual.east_minutes = item.east_minutes;
+                dia_actual.east_east_west = item.east_east_west;
+
+                  // ESTOS VALORES CAMBIARAN
+                  dia_actual.steamingTime = item.steamingTime;
+                  dia_actual.distance = item.distance;
+                  // Consumo IFO
+                  dia_actual.mplaIfo = item.mplaIfo;
+                  dia_actual.auxIfo = item.auxIfo;
+                  dia_actual.boilerIfo = item.boilerIfo;
+                  dia_actual.otherIfo = item.otherIfo;
+                  dia_actual.bunkeringIfo = item.bunkeringIfo;
+                  // Consumo MGO
+                  dia_actual.mplaMgo = item.mplaMgo;
+                  dia_actual.auxMgo = item.auxMgo;
+                  dia_actual.boilerMgo = item.boilerMgo;
+                  dia_actual.ppMgo = item.ppMgo;
+                  dia_actual.giMgo = item.giMgo;
+                  dia_actual.otherMgo = item.otherMgo;
+                  dia_actual.bunkeringMgo = item.bunkeringMgo;
             }
 
-            ListGetFormatDNV.push(getFormatDNV)
           }
         )
         return ListGetFormatDNV;
@@ -911,6 +981,73 @@ export class ExcelFormatDNVV2Service {
 
 
   }
+
+  private convertGetReportVoyagePortDailyToGetFormatDNV(itemGetReportVoyagePortDaily: GetReportVoyagePortDaily, ROB_IFO: number, ROB_MGO: number): any {
+
+    let newGetFormatDNV: GetFormatDNV = new GetFormatDNV();
+
+    newGetFormatDNV.reportId = itemGetReportVoyagePortDaily.dailyReportId || 0;
+    newGetFormatDNV.date = String(itemGetReportVoyagePortDaily.date) || '';
+    newGetFormatDNV.time = 'E0:00';
+
+    newGetFormatDNV.north_degree = itemGetReportVoyagePortDaily.north_degree || 0;
+    newGetFormatDNV.north_minutes = itemGetReportVoyagePortDaily.north_minutes || 0;
+    newGetFormatDNV.north_north_south = itemGetReportVoyagePortDaily.north_north_south || '';
+
+    newGetFormatDNV.east_degree = itemGetReportVoyagePortDaily.east_degree || 0;
+    newGetFormatDNV.east_minutes = itemGetReportVoyagePortDaily.east_minutes || 0;
+    newGetFormatDNV.east_east_west = itemGetReportVoyagePortDaily.east_east_west || '';
+
+    newGetFormatDNV.event = 'noon';
+
+    newGetFormatDNV.event_time_previous = itemGetReportVoyagePortDaily.steamingTime || 0;
+    newGetFormatDNV.event_time_sailing = 999 || 0;
+
+
+    newGetFormatDNV.distance = itemGetReportVoyagePortDaily.distance || 0;
+
+    newGetFormatDNV.machinery_hfo = 0 || 0;
+    newGetFormatDNV.machinery_lfo = (
+      itemGetReportVoyagePortDaily.mplaIfo +
+      itemGetReportVoyagePortDaily.boilerIfo +
+      itemGetReportVoyagePortDaily.auxIfo +
+      itemGetReportVoyagePortDaily.otherIfo) || 0;
+    newGetFormatDNV.machinery_mgo = (
+      itemGetReportVoyagePortDaily.mplaMgo +
+      itemGetReportVoyagePortDaily.boilerMgo +
+      itemGetReportVoyagePortDaily.auxMgo +
+      itemGetReportVoyagePortDaily.ppMgo +
+      itemGetReportVoyagePortDaily.giMgo +
+      itemGetReportVoyagePortDaily.otherMgo) || 0;
+    newGetFormatDNV.machinery_mdo = 0;
+    newGetFormatDNV.machinery_lpg = 0;
+    newGetFormatDNV.machinery_methanol = 0;
+    newGetFormatDNV.machinery_ethanol = 0;
+    newGetFormatDNV.machinery_other_fuel_consumption = 0;
+    newGetFormatDNV.machinery_other_fuel_type = 0;
+    newGetFormatDNV.machinery_other_full_emission = 0;
+
+    console.log("consumo de IFO:"+newGetFormatDNV.machinery_lfo+"  MGO:"+newGetFormatDNV.machinery_mgo)
+    ROB_IFO = (ROB_IFO + itemGetReportVoyagePortDaily.bunkeringIfo) - newGetFormatDNV.machinery_lfo;
+    ROB_MGO = (ROB_MGO + itemGetReportVoyagePortDaily.bunkeringMgo) - newGetFormatDNV.machinery_mgo;
+
+    console.log("IFO : " + ROB_IFO + "  MGO:" + ROB_MGO)
+    newGetFormatDNV.rob_hfo = 0 || 0;
+    newGetFormatDNV.rob_lfo = ROB_IFO || 0;
+    newGetFormatDNV.rob_mgo = ROB_MGO || 0;
+    newGetFormatDNV.rob_mdo = 0;
+    newGetFormatDNV.rob_lpg = 0;
+    newGetFormatDNV.rob_lng = 0;
+    newGetFormatDNV.rob_methanol = 0;
+    newGetFormatDNV.rob_ethanol = 0;
+    newGetFormatDNV.rob_other_fuel = 0;
+    newGetFormatDNV.rob_other_fuel_type = 0;
+
+    return <any>{
+      FormatDNV:newGetFormatDNV,
+      ROB_IFO:ROB_IFO,
+      ROB_MGO:ROB_MGO};
+  };
 
 
   // Agregamos el cuadro de informacion del buque.
