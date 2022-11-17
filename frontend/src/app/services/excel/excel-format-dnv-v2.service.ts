@@ -769,9 +769,9 @@ export class ExcelFormatDNVV2Service {
               }
 
             }
-            // no es el mismo dia
-            else if(dia_actual.date) {
-
+            // no es el mismo dia REVISAR POR QUE OCURRE ESTO
+            else if(dia_anterior.date) {
+              // dia_actual
 
               let getFormatDNV = new GetFormatDNV();
               // actualizamos el dia anterior

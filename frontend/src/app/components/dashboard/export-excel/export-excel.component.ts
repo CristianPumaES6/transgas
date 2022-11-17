@@ -4,6 +4,7 @@ import { User } from '../../../models/user';
 import { ExcelService } from '../../../services/excel/excel.service';
 import { ExcelFormatDNVService } from '../../../services/excel/excel-format-dnv.service';
 import { LoadingService } from '../../../services/loading.service';
+import { ExcelFormatDNVV2Service } from 'src/app/services/excel/excel-format-dnv-v2.service';
 
 @Component({
   selector: 'app-export-excel',
