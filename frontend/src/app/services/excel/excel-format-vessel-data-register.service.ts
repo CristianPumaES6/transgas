@@ -1236,7 +1236,8 @@ export class ExcelFormatVesselDataRegisterService {
       'east_east_west',
       'typeActivityPerformed',
       'userId',
-      'updatePort'
+      'updatePort',
+      'delete_report'
       
     ]);
     worksheet.getCell('F' + positionRow).style = {

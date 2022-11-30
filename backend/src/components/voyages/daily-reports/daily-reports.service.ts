@@ -1138,15 +1138,26 @@ export class DailyReportsService {
 
 
 
-        let stringGroupBY = "datetime('daily_report'.'date','+8.999 hour')";
+        let stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
        
         // si el usuario es TAUROGAS
         if (userId == 14) {
-            stringGroupBY = "datetime('daily_report'.'date','+7.9999 hour')";
+            stringGroupBY = "datetime('daily_report'.'date','+7.999999 hour')";
         }
    
         // si el usuario es Huntegas
         if (userId == 10) {
+            stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+        }
+
+        // CHAVIN NO SE PUDO
+
+        // si el usuario es CARAL
+        if (userId == 21) {
+            stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+        }
+
+        if (userId == 2) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
         }
 

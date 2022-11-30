@@ -90,4 +90,7 @@ export class ImportVoyage {
     east_minutes:number;
     east_east_west: string;
     updatePort: number; // Esto nos dice si el puerto se va actualizar o no
+
+
+    delete_report: boolean;
 }

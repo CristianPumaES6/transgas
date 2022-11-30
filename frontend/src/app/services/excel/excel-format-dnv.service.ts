@@ -612,8 +612,10 @@ export class ExcelFormatDNVService {
 
         listGetReportVoyagePortDaily.forEach(
           (item: GetReportVoyagePortDaily) => {
+            
             let getFormatDNV: GetFormatDNV = new GetFormatDNV();
             let hora = '';
+
             if (selectUserId == 10) {
               hora = '17:00'
             }

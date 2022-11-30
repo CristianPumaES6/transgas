@@ -803,8 +803,13 @@ export class VoyagesController {
                 newReport.east_east_west = importVoyage.east_east_west || '';
 
 
-                // Auditoria.
-                newReport.status = true;
+
+                if (importVoyage.delete_report){
+                    newReport.status = false;
+                } else {
+                    // Auditoria.
+                    newReport.status = true;
+                }
 
                 // Si no tiene un reportId lo creamos
                 if (!importVoyage.dailyReportId) {
