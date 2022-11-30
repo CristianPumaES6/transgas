@@ -1,6 +1,6 @@
-<h1>Configuracion de Mail: {{user.name}}</h1>
+<h1>Mail Configuration: {{user.name}}</h1>
 
-<p>Desde el siguiente panel tenemos la opcion de configurar el envio de la informacion del ultimo viaje realizado.</p>
+<p>From the next panel we have the option to configure the sending of the information of the last trip made.</p>
 
 <p>
     <mat-form-field>
@@ -8,12 +8,17 @@
     </mat-form-field>
 </p>
 <p>
-    <mat-slide-toggle [(ngModel)]="sendAutomatic">Envio automatico</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="sendAutomatic">Activate automatic sending</mat-slide-toggle>
 </p>
 
 <p>
     <button mat-button color="primary" (click)="ClickSave()" matTooltip="">
-        Guardar cambio
+        Save Changes
+        <mat-icon class="icon-save"></mat-icon>
+    </button>
+    
+    <button mat-button color="secundary" (click)="ClickSave()" matTooltip="">
+        Test Send
         <mat-icon class="icon-save"></mat-icon>
     </button>
 </p>
