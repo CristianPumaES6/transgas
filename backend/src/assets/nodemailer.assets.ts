@@ -28,8 +28,8 @@ export function NodemailerInit(): Promise<boolean> {
     return DummyPromise().then(
         (result: boolean) => {
 
-            let email = 'mayra.vision.st@gmail.com';
-            let password = '';
+            let email = 'transgasshippinglines@gmail.com';
+            let password = 'ybtfkfmdswtkansn';
 
             // Create reusable transporter object using the default SMTP transport
             mailServer = nodemailer.createTransport({
