@@ -20,7 +20,7 @@ export class FormatExcelLastVoyageService {
 
 
     // Actualiza un Voyage
-    async GenerateExcel(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<any> {
+    async GenerateExcel(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<boolean> {
 
         // Hacemos una busqueda por id
         return await DummyPromise().then(
@@ -30,7 +30,7 @@ export class FormatExcelLastVoyageService {
         )
     }
 
-    async FormatGeneric(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<any> {
+    async FormatGeneric(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<boolean> {
 
         return await DummyPromise().then(
             result => {

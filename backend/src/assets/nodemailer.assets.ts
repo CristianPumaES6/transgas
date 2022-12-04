@@ -220,3 +220,50 @@ export function SendMailForgotPsw(to: string, name: string, token: string): Prom
         }
     );
 }
+
+export function SendMailInfoLastVoyage(to: string, name: string, title:string): Promise<boolean> {
+
+    //variable de contenido
+    let contentHTML: string = '';
+
+    // Inicio una promesa Dummy.
+    return DummyPromise().then(
+        result => {
+
+            let objRender = {
+                name: name,
+            }
+
+            // Devuelvo el contenido obtenido
+            return HbsConvertHtmlRender('mailSendLastVoyage.hbs', objRender);
+        }
+    ).then(
+        (renderHtml: string) => {
+
+            if (!renderHtml) throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
+
+            return MailSendSMTP(null, to, title, renderHtml, true);
+        }
+    ).then(
+        (resultInfo: boolean) => {
+            if (!resultInfo) throw 'La funcion MailSendSMTP no funciono como esperabamos.';
+
+            // Hay que validarlo.
+            //resultInfo
+            return resultInfo;
+        }
+    ).catch(
+        err => {
+            // Obtengo mensajes de error
+            const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+            // caso contrario retornamos un error
+            throw {
+                error: clientMsg,
+                message: errorMsg,
+            };
+        }
+    );
+}
+

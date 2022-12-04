@@ -17,6 +17,8 @@ import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndFo
 import { DailyReportsService } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
+import { SendMailConfig } from '../../models/sendMailConfig';
+import { SendMailInfoLastVoyage } from './../../assets/nodemailer.assets'
 
 
 @Controller('voyages')
@@ -840,11 +842,14 @@ export class VoyagesController {
         }
     }
 
-    @Post('sendEmailLastVoyage/:gmail')
-    async SendEmailLastVoyage( @Body() user: UserEntity, @Param('gmail') gmail): Promise<any> {
+    @Post('sendEmailLastVoyage')
+    async SendEmailLastVoyage( @Body() sendMailConfig: SendMailConfig): Promise<any> {
 
         // Datos para para la consultas.
-        let userId = user.id;
+        let userId = sendMailConfig.userId;
+        let email = sendMailConfig.emails;
+        
+        let userEntity : UserEntity = null;
         let voyageId: number = null;
 
         // estas varaibles contendran la informacion correcta.
@@ -861,7 +866,7 @@ export class VoyagesController {
         ).then(
             (resultUser: UserEntity) => {
 
-                user = resultUser;
+                userEntity = resultUser;
                 // Consultaos los ultimpos viajes.
                 return this._voyagesService.GetLastVoyage(userId);
             }
@@ -922,8 +927,12 @@ export class VoyagesController {
 
 
                 // Generamos el excel
-                return this._formatExcelLastVoyageService.GenerateExcel(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, user)
+                return this._formatExcelLastVoyageService.GenerateExcel(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity)
 
+            }
+        ).then(
+            result => {
+                return SendMailInfoLastVoyage(sendMailConfig.emails, userEntity.name, "Reporte del ultimo viaje" )
             }
         )
 
