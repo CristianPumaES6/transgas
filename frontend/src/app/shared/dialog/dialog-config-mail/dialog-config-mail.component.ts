@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
 import { User } from 'src/app/models/user';
+import { DailyReportService } from 'src/app/services/daily-report.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -23,7 +24,7 @@ export class DialogConfigMailComponent implements OnInit {
   public translateCategory: string = 'dialog';
 
   public user: User;
-  public mail: string = "cristian.puma.es6@gmail.com";
+  public emails: string = "";
   public sendAutomatic = false;
 
 
@@ -34,6 +35,8 @@ export class DialogConfigMailComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: IDialogConfigMail,
     // servicio de lenguaje.
     private languageService: LanguageService,
+
+    private dailyReportService: DailyReportService,
     // Servicios de notificaciones.
     private notificationsService: NotificationsService,
     // Loading service.
@@ -50,8 +53,44 @@ export class DialogConfigMailComponent implements OnInit {
   public ClickSave() {
     alert(
       "userID :" + this.user + "\n" +
-      "mail :" + this.mail + "\n" +
+      "mail :" + this.emails + "\n" +
       "sendAutomatic :" + this.sendAutomatic + "\n"
     );
+  }
+
+  public ClickTest() {
+    this.loadingService.Open();
+
+    let error: boolean = false;
+    if (!this.emails) {
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'INFO'), this.languageService.GetMessage(this.translateCategory, 'CHECK_EMAILS'));
+      error = true;
+    }
+
+    if (!error) {
+
+      this.dailyReportService.PostSendEmailLastVoyage(this.user.id, this.emails).subscribe(
+        (resultSend: boolean) => {
+          if (!Boolean(resultSend)) { throw 'ERROR SEND MAIL.' }
+
+          this.loadingService.Close();
+          // Muestro notificación
+          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_TEST_SEND_EMAIL'));
+
+        },
+        error => {
+          // Valido si viene un mensaje de error
+          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR');
+
+          // Muestro notificación
+          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+
+          // Deshabilito el spinner de loading
+          this.loadingService.Close();
+        });
+
+    } else {
+      this.loadingService.Close();
+    }
   }
 }

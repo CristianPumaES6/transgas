@@ -518,7 +518,12 @@ export const dialog: any = {
     DESCRIPTION_COMPONENT_DIALOG_CONFIG_DASHBOARD: 'Within this panel we can configure the options that the system allows us.',
     LABEL_QUANTITY_DECIMAL: 'Decimal quantity',
     TOOLTIP_LABEL_QUANTITY_DECIMAL: 'DECIMAL QUANTITY.- It allows modifying the number of decimals that we wish to observe.',
-    SAVE_CHANGES: 'Save changes'
+    SAVE_CHANGES: 'Save changes',
+    CHECK_EMAILS: 'Check email fiel.',
+    SUCCESS_TEST_SEND_EMAIL: 'The test was sent correctly.',
+    ERROR: 'Error',
+    SUCCESS: 'Success',
+    
 };
 
 export const guards: any = {
