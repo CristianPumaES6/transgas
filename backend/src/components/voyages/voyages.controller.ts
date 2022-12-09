@@ -934,7 +934,31 @@ export class VoyagesController {
             result => {
                 return SendMailInfoLastVoyage(sendMailConfig.emails, userEntity.name, "Reporte del ultimo viaje" )
             }
-        )
+        ).then(
+            result => {
+                if(!result){ throw 'ERROR SUPPORT'}
+              // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: result
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+                // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
 
     }
 
