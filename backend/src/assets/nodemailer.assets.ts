@@ -2,7 +2,7 @@ import * as nodemailer from 'nodemailer';
 
 // modulos de node
 import * as path from 'path';
-
+import * as fs from 'fs';
 // Modelos
 import { UserEntity } from '../models/user.entity';
 
@@ -15,7 +15,7 @@ import { HbsConvertHtmlRender } from './hbs.assets'
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 // Template config
-import { TEMPLATE_MAIL_PATH } from '../config/path.config';
+import { SQLITE_PATH, TEMPLATE_MAIL_PATH } from '../config/path.config';
 import { MailOptions } from '../models/assets/mailOptions.model';
 
 
@@ -185,7 +185,7 @@ export function SendMailForgotPsw(to: string, name: string, token: string): Prom
 
             let objRender = {
                 name: name,
-                url: 'localhost:4200?token='+token,
+                url: 'localhost:4200?token=' + token,
             }
 
             // Devuelvo el contenido obtenido
@@ -221,7 +221,7 @@ export function SendMailForgotPsw(to: string, name: string, token: string): Prom
     );
 }
 
-export function SendMailInfoLastVoyage(to: string, name: string, title:string): Promise<boolean> {
+export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: string, bufferFile: Buffer): Promise<boolean> {
 
     //variable de contenido
     let contentHTML: string = '';
@@ -242,7 +242,24 @@ export function SendMailInfoLastVoyage(to: string, name: string, title:string): 
 
             if (!renderHtml) throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
 
-            return MailSendSMTP(null, to, title, renderHtml, true);
+            // Arreglo de archivos a adjuntar
+            let attachments = [
+                /*
+                {
+                  filename: 'export.xlsx',
+                  content: fs.createReadStream(SQLITE_PATH + "/export0.7551635636276641.xlsx")
+                } 
+                */
+                {
+                    filename: 'export.xlsx',
+                    content: bufferFile,
+                    contentType:
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                },
+            ];
+
+            // Funcion que envia el correo con adjuntos
+            return MailSendSMTP(null, to, title, renderHtml, true, '', '', attachments);
         }
     ).then(
         (resultInfo: boolean) => {

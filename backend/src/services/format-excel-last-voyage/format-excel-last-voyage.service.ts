@@ -20,7 +20,7 @@ export class FormatExcelLastVoyageService {
 
 
     // Actualiza un Voyage
-    async GenerateExcel(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<boolean> {
+    async GenerateExcelBuffer(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<Buffer> {
 
         // Hacemos una busqueda por id
         return await DummyPromise().then(
@@ -30,11 +30,12 @@ export class FormatExcelLastVoyageService {
         )
     }
 
-    async FormatGeneric(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<boolean> {
+    async FormatGeneric(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<Buffer> {
 
+
+        // Dummy
         return await DummyPromise().then(
             result => {
-
                 // Creamos una nueva hoja de trabajo
                 let workbook = new Workbook();
                 workbook.creator = 'transgas.web.app';
@@ -44,19 +45,17 @@ export class FormatExcelLastVoyageService {
                 // Generamos la hoja de data report
                 this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
-
                 this.StyleDashSailing(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
 
-
-
-                return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
+                // return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
+                return workbook.xlsx.writeBuffer();
             }
         ).then(
-            result => {
+            result=> {
 
-                return true;
+                return  <any>result;
             }
-        );
+        )
 
     }
 

@@ -18,7 +18,7 @@ import { DailyReportsService } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { SendMailConfig } from '../../models/sendMailConfig';
-import { SendMailInfoLastVoyage } from './../../assets/nodemailer.assets'
+import { SendMailArchiveInfoLastVoyage } from './../../assets/nodemailer.assets'
 
 
 @Controller('voyages')
@@ -899,9 +899,7 @@ export class VoyagesController {
             // Lainformacion la procesamos para saber el rob de inicio y fin.
             resultGetStartEndROByFilterDate => {
 
-
                 if (!resultGetStartEndROByFilterDate) throw 'ERROR GetStartEndROByFilterDate';
-
 
                 // Trabajaremos con las siguientes variables.
                 let startDataROB: GetROBByUser = new GetROBByUser();
@@ -925,19 +923,19 @@ export class VoyagesController {
                     endDataROB
                 );
 
-
                 // Generamos el excel
-                return this._formatExcelLastVoyageService.GenerateExcel(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity)
-
+                return this._formatExcelLastVoyageService.GenerateExcelBuffer(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity)
+            }
+        ).then(
+            resultBuffer => {
+                // 
+                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, "Reporte del ultimo viaje",resultBuffer)
             }
         ).then(
             result => {
-                return SendMailInfoLastVoyage(sendMailConfig.emails, userEntity.name, "Reporte del ultimo viaje" )
-            }
-        ).then(
-            result => {
+                // 
                 if(!result){ throw 'ERROR SUPPORT'}
-              // retornamos una Respuesta exitosa.
+                // retornamos una Respuesta exitosa.
                 return {
                     status: HttpStatus.OK,
                     message: 'OK',
