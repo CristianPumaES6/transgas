@@ -70,3 +70,8 @@ export function ObtenerHoraDeDosStringUTC(fechaUTC:string,fechaUTC2:string):numb
 
     return result;
 }
+
+export function GetHours(): any {
+   return  moment().format('HH mm ss'); 
+}
+
