@@ -31,31 +31,39 @@ export class FormatExcelLastVoyageService {
     }
 
     async FormatGeneric(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<Buffer> {
-
+       
+       // esta variable lo creamos para luego poder reusarlo.
+        let workbook: any;
 
         // Dummy
         return await DummyPromise().then(
             result => {
-                // Creamos una nueva hoja de trabajo
-                let workbook = new Workbook();
+                // Creamos una nueva  libro de trabajo
+                workbook = new Workbook();
                 workbook.creator = 'transgas.web.app';
 
+                // creamos la hora data report
                 let worksheet = workbook.addWorksheet('Data Report');
 
-                // Generamos la hoja de data report
+                // Generamos la hoja de los reportes generado por el capitan
                 this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
+                // registramos los cuadros de dashboard.
                 this.StyleDashSailing(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
 
-                // return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
-                return workbook.xlsx.writeBuffer();
-            }
-        ).then(
-            result=> {
+                // Revisar eliminar por que no necesitamos guardar el achivo
+                return workbook.xlsx.writeFile('export' + Math.random() + '.xlsx');
+            })
+            .then(
+                result => {
+                    return workbook.xlsx.writeBuffer();
+                }
+            ).then(
+                (result: Buffer) => {
 
-                return  <any>result;
-            }
-        )
+                    return result;
+                }
+            )
 
     }
 
@@ -2179,10 +2187,12 @@ export class FormatExcelLastVoyageService {
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
 
-                //Es el primer puerto 
+                // Es el primer puerto 
                 let primerNuevoPuerto = puertoActual.id != getReportVoyagePortDaily.portId;
-                // el id es diferentes?
+
+                // El id es diferentes?
                 if (primerNuevoPuerto) {
+                    
                     // si existe un puerto anterior coloco esto
                     // Ultimo registro.
                     if (index > 0) {
@@ -2806,7 +2816,7 @@ export class FormatExcelLastVoyageService {
                         getReportVoyagePortDaily.typeActivityPerformed == 'REPORT_AT_08_00' ?
                             getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + " / " + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west :
                             this.translate(getReportVoyagePortDaily.activityPerformed)
-                        , 8, black, white, '')
+                        , 8, black, white, '');
                     this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
                     // siguiente columna
                     colum += 6;
@@ -2851,6 +2861,8 @@ export class FormatExcelLastVoyageService {
                     positionColumns = [colum, colum + 1];
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
                     this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
+
+                    
                 }
 
                 // ALterminar actualizamos el antiguo reporte
