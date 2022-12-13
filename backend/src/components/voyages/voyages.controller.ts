@@ -928,7 +928,7 @@ export class VoyagesController {
             }
         ).then(
             resultBuffer => {
-                // 
+                // Enviar archivo mail.
                 return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, "Reporte del ultimo viaje",resultBuffer)
             }
         ).then(
