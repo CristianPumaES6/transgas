@@ -36,8 +36,8 @@ export class FormatExcelLastVoyageService {
         let workbook: any;
 
         // Dummy
-        return await DummyPromise().then(
-            result => {
+        return await DummyPromise(
+            ).then(result => {
                 // Creamos una nueva  libro de trabajo
                 workbook = new Workbook();
                 workbook.creator = 'transgas.web.app';
@@ -53,17 +53,11 @@ export class FormatExcelLastVoyageService {
 
                 // Revisar eliminar por que no necesitamos guardar el achivo
                 return workbook.xlsx.writeFile(GetHours() + '.xlsx');
-            })
-            .then(
-                result => {
+            }).then(result => {
                     return workbook.xlsx.writeBuffer();
-                }
-            ).then(
-                (result: Buffer) => {
-
+            }).then((result: Buffer) => {
                     return result;
-                }
-            )
+                });
 
     }
 
