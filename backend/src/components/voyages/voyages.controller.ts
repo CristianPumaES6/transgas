@@ -856,6 +856,7 @@ export class VoyagesController {
         let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
         let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
+        let numeroViaje= 0;
 
         // Empezamos la promesa.
         return DummyPromise().then(
@@ -929,14 +930,14 @@ export class VoyagesController {
         ).then(
             resultBuffer => {
                 // Enviar archivo mail.
-                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, "Reporte del ultimo viaje",resultBuffer)
+                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + "Voyage Nº"+numeroViaje,resultBuffer)
             }
         ).then(
             result => {
                 // 
                 if(!result){ throw 'ERROR SUPPORT'}
                 // retornamos una Respuesta exitosa.
-                return {
+                        return {
                     status: HttpStatus.OK,
                     message: 'OK',
                     data: result

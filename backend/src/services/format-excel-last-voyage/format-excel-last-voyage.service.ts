@@ -37,27 +37,27 @@ export class FormatExcelLastVoyageService {
 
         // Dummy
         return await DummyPromise(
-            ).then(result => {
-                // Creamos una nueva  libro de trabajo
-                workbook = new Workbook();
-                workbook.creator = 'transgas.web.app';
+        ).then(result => {
+            // Creamos una nueva  libro de trabajo
+            workbook = new Workbook();
+            workbook.creator = 'transgas.web.app';
 
-                // creamos la hora data report
-                let worksheet = workbook.addWorksheet('Data Report');
+            // creamos la hora data report
+            let worksheet = workbook.addWorksheet('Data Report');
 
-                // Generamos la hoja de los reportes generado por el capitan
-                this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
+            // Generamos la hoja de los reportes generado por el capitan
+            this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
-                // registramos los cuadros de dashboard.
-                this.StyleDashSailing(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
+            // Registramos los cuadros de dashboard.
+            this.StyleDashSailing(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
 
-                // Revisar eliminar por que no necesitamos guardar el achivo
-                return workbook.xlsx.writeFile(GetHours() + '.xlsx');
-            }).then(result => {
-                    return workbook.xlsx.writeBuffer();
-            }).then((result: Buffer) => {
-                    return result;
-                });
+            // Revisar eliminar por que no necesitamos guardar el achivo
+            return workbook.xlsx.writeFile(GetHours() + '.xlsx');
+        }).then(result => {
+            return workbook.xlsx.writeBuffer();
+        }).then((result: Buffer) => {
+            return result;
+        });
 
     }
 
@@ -2181,19 +2181,20 @@ export class FormatExcelLastVoyageService {
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
 
-                // Es el primer puerto 
+                // Es el primer puerto, al inicio siempre es diferente 
                 let primerNuevoPuerto = puertoActual.id != getReportVoyagePortDaily.portId;
 
                 // El id es diferentes?
                 if (primerNuevoPuerto) {
                     // si existe un puerto anterior coloco esto
 
-                    // Ultimo registro.
+                    // solo si es el ultimo registro entrara.
                     if (index > 0) {
 
                         this.cuadroResumentotal(contadorDeItemPorPuerto, positionRow, columReset, worksheetPuerto, lastRow, firshRow, lastROB, firshRow);
 
-
+                        firstROB.IFO = lastROB.IFO;
+                        firstROB.MGO = lastROB.MGO;
                         // AQUI RESETEO EL COLUM
 
                         itemDelRegistro = [];
@@ -2213,7 +2214,7 @@ export class FormatExcelLastVoyageService {
                     // reset al contador
                     contadorDeItemPorPuerto = 0;
 
-                    worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + " " + puertoActual.departurePort + ' - ' + puertoActual.arrivalPort);
+                    worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + ' - ' + puertoActual.arrivalPort);
 
 
                     // le damos un reset al tamaño de la columna
@@ -2314,7 +2315,7 @@ export class FormatExcelLastVoyageService {
                     // siguiente columna
                     colum += 5;
                     positionColumns = [colum, colum + 5];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSITION', 8, black, white, '')
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'POSITION / ACTIVITY', 8, black, white, '')
                     worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
                         alignment: {
                             horizontal: 'center',
@@ -2452,7 +2453,7 @@ export class FormatExcelLastVoyageService {
                         }
                     };
 
-                    // Ultimo registro.
+                    // Si es el Ultimo registro le agrego el total
                     if (index == (listGetReportVoyagePortDaily.length - 1)) {
 
                         // RESUMEN TOTAL
@@ -2525,19 +2526,12 @@ export class FormatExcelLastVoyageService {
 
 
 
-                    worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + ' GMT';
-
                     // Guardamos la ultima fila
                     lastRow = positionRow;
                 }
 
-                // Ultimo registro.
-                if (index == (listGetReportVoyagePortDaily.length - 1)) {
+                    worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + ' GMT';
 
-
-                    this.cuadroResumentotal(contadorDeItemPorPuerto, positionRow, columReset, worksheetPuerto, lastRow, firshRow, lastROB, firshRow);
-
-                }
 
                 // ALterminar actualizamos el antiguo reporte
                 itemReportBefore = getReportVoyagePortDaily;
@@ -2549,6 +2543,14 @@ export class FormatExcelLastVoyageService {
 
                 lastROB.IFO = (lastROB.IFO - this.SumaIfo(<any>getReportVoyagePortDaily)) + getReportVoyagePortDaily.bunkeringIfo;
                 lastROB.MGO = (lastROB.MGO - this.SumaMgo(<any>getReportVoyagePortDaily)) + getReportVoyagePortDaily.bunkeringMgo;
+
+                // Ultimo registro.
+                if (index == (listGetReportVoyagePortDaily.length - 1)) {
+
+
+                    this.cuadroResumentotal(contadorDeItemPorPuerto, positionRow, columReset, worksheetPuerto, lastRow, firstROB, lastROB, firshRow);
+
+                }
 
                 itemDelRegistro.push(getReportVoyagePortDaily);
             }
@@ -2627,7 +2629,7 @@ export class FormatExcelLastVoyageService {
 
 
         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-            { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')/24' }
+            { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')' }
             , 8, black, white, '')
         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
 
@@ -2684,7 +2686,7 @@ export class FormatExcelLastVoyageService {
         colum += 8;
         positionColumns = [colum, colum + 2];
         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns,
-            { formula: this.PositByCell(colum + 3) + (positionRow - 1) }
+            { formula: "(" + this.PositByCell(colum + 3) + (positionRow - 1) + ")/24" }
             , 8, black, white, '')
         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
 
