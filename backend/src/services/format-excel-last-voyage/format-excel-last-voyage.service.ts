@@ -239,7 +239,7 @@ export class FormatExcelLastVoyageService {
 
         let posicionDelosRegistrosNormales: PosicionDelosRegistrosNormales = {
             startRow: 47,
-            endRow: 54
+            endRow: 46 + listGetReportVoyagePortDaily.length
         };
         let posicionDelosRegistrosActivitPerforment: PosicionDelosRegistrosNormales = {
             startRow: 34,
@@ -2530,7 +2530,7 @@ export class FormatExcelLastVoyageService {
                     lastRow = positionRow;
                 }
 
-                    worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + ' GMT';
+                worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + ' GMT';
 
 
                 // ALterminar actualizamos el antiguo reporte
