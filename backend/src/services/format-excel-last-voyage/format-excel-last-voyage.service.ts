@@ -2125,6 +2125,7 @@ export class FormatExcelLastVoyageService {
         return positionRow - posit + 1;// que  falto
     }
 
+    // Dibujamos los viajes
     private StyleDashSailing(workbook: Workbook, posit, columReset, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate): number {
 
 
@@ -2165,8 +2166,8 @@ export class FormatExcelLastVoyageService {
         let firshRow = 0;
         let lastRow = 0;
         let firstROB = {
-            IFO: getInfoFuelStartEndByFilterDate.infoFuelStart.total_bunkering_ifo - getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo,
-            MGO: getInfoFuelStartEndByFilterDate.infoFuelStart.total_bunkering_mgo - getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo,
+            IFO: getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo,
+            MGO: getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo,
         }
 
         let lastROB = {
@@ -2188,7 +2189,7 @@ export class FormatExcelLastVoyageService {
                 if (primerNuevoPuerto) {
                     // si existe un puerto anterior coloco esto
 
-                    // solo si es el ultimo registro entrara.
+                    // Solo si es el ultimo registro entrara.
                     if (index > 0) {
 
                         this.cuadroResumentotal(contadorDeItemPorPuerto, positionRow, columReset, worksheetPuerto, lastRow, firshRow, lastROB, firshRow);
@@ -2203,7 +2204,7 @@ export class FormatExcelLastVoyageService {
 
                     // Contabilizamos el numero de puerto
                     numeroDePuerto++;
-                    // puerto actual
+                    // Puerto actual
                     puertoActual.id = getReportVoyagePortDaily.portId;
                     // Reset position
                     positionRow = posit;
@@ -2211,19 +2212,20 @@ export class FormatExcelLastVoyageService {
                     // Agregamos los datos del puerto actual
                     puertoActual.departurePort = getReportVoyagePortDaily.departurePort;
                     puertoActual.arrivalPort = getReportVoyagePortDaily.arrivalPort;
-                    // reset al contador
+                    // Reset al contador
                     contadorDeItemPorPuerto = 0;
 
                     worksheetPuerto = workbook.addWorksheet("Port N°" + numeroDePuerto + ' - ' + puertoActual.arrivalPort);
 
 
-                    // le damos un reset al tamaño de la columna
+                    // Le damos un reset al tamaño de la columna
                     positionRow += 1;
                     positionRows = [positionRow, positionRow];
                     positionColumns = [columReset, columReset + 21];
                     this.ResetColumn(worksheetPuerto);
                     this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'NAVIGATION DATA', 20, colorYellowTransgas, blueHard3, '')
 
+                    // A la colum le sumamos 1
                     colum = columReset + 1;
                     // Navegando de :---------
                     positionRow += 2;
@@ -2477,6 +2479,7 @@ export class FormatExcelLastVoyageService {
                     firshRow = positionRow + 1;
                 }
 
+                // SOLO SE REGISTRAN SI ES ALGUNA DE LAS SIGUEINTES ACTIVIDADES
                 if (getReportVoyagePortDaily.typeActivityPerformed == 'REPORT_AT_08_00'
                     || getReportVoyagePortDaily.distance > 0
                     || getReportVoyagePortDaily.activityPerformed == 'SAILING_IN_BALLAST'
@@ -2561,7 +2564,10 @@ export class FormatExcelLastVoyageService {
     }
 
 
+
     private cuadroResumentotal(contadorDeItemPorPuerto: number, positionRow: number, columReset: number, worksheetPuerto: Worksheet, lastRow: number, firstROB: any, lastROB: any, firshRow: number) {
+
+        // 
         contadorDeItemPorPuerto++;
 
 
@@ -2655,7 +2661,7 @@ export class FormatExcelLastVoyageService {
         positionRows = [positionRow, positionRow];
         colum = columReset + 1;
         positionColumns = [colum, colum + 7];
-        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DIAS NAV:', 8, black, white, '')
+        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DAYS SAIL:', 8, black, white, '')
         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
             alignment: {
                 horizontal: 'center',
@@ -2691,7 +2697,7 @@ export class FormatExcelLastVoyageService {
         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
 
 
-        // siguiente columna
+        // ------------------------------------- siguiente columna
         colum += 3;
         positionColumns = [colum, colum + 2];
         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'LSFO', 8, black, white, '')
@@ -2894,8 +2900,8 @@ export class FormatExcelLastVoyageService {
 
 
 
-        // disminuimos las filas registradas
-        positionRows = [positionRow - 17, positionRow = positionRow + 1];
+        // Borde de todos los cuadros
+        positionRows = [positionRow - 13, positionRow +1];
         positionColumns = [columReset, columReset + 21];
         this.addStyleBorder(worksheetPuerto, positionRows, positionColumns, 'thick', blueHard3)
 
