@@ -497,7 +497,7 @@ export class VoyagesController {
                         // LO REGISTRAMOS
                         let voyageRegister = await this._voyagesService.Create(newVoyage);
 
-                        console.log('Se CREO EL VIAJE NUMERO '+newVoyage.voyageNumber+'   con id :'+newVoyage.id)
+                        console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id)
 
                         // Lo agregamos al mapping
                         MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
@@ -505,7 +505,7 @@ export class VoyagesController {
                         MappingPort = [];
                     } else {
                         if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.'
-                        
+
                         if (voyageExistente.voyageNumber != importVoyage.voyageNumber
                             || voyageExistente.year != importVoyage.year) {
 
@@ -592,7 +592,7 @@ export class VoyagesController {
 
                         // Lo registramos
                         let portRegister = await this._portsService.Create(newPort);
-                        console.log('Se CREO EL PUERTO NUMERO '+portRegister.portNumber+'   con id :'+portRegister.id)
+                        console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
                         MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
                     } else {
 
@@ -630,7 +630,7 @@ export class VoyagesController {
                             portExiste.dateUpdated = GetDate();
                             portExiste.status = true;
 
-                            console.log('Se actualizo el PUERTO NUMERO '+portExiste.portNumber+'   con id :'+portExiste.id)
+                            console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id)
                             portExiste = await this._portsService.Update(portExiste)
                         }
 
@@ -664,14 +664,14 @@ export class VoyagesController {
                 newReport.portId = existePort.value;
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
-           
 
-                ultimaFecha =  ConvertDateUTC_To_FORMAT_UTC(importVoyage.date)+'.000';
+
+                ultimaFecha = ConvertDateUTC_To_FORMAT_UTC(importVoyage.date) + '.000';
 
                 // A la fecha le redusco 4 horas debido que se tiene esa diferencia
                 // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
                 // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
-               
+
                 /*     
                     let textoCadena: any = importVoyage.date;
                     textoCadena = <any>ConvertMomentUTC(textoCadena)
@@ -687,7 +687,7 @@ export class VoyagesController {
                 */
 
                 // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
-           
+
                 if (ultimaFecha.length == 23) {
                     newReport.date = ultimaFecha;
                 } else {
@@ -704,16 +704,16 @@ export class VoyagesController {
                     if (importVoyage.hour.length === 4) {
                         // concatenamos el 0 a la hora.
                         newReport.hour = '0' + importVoyage.hour;
-                    } else if(importVoyage.hour.length == 5) {
+                    } else if (importVoyage.hour.length == 5) {
                         newReport.hour = importVoyage.hour;
-                    }else {
+                    } else {
 
-                        console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' +importVoyage.dailyReportId)
+                        console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId)
                     }
                 }
 
                 // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
-               // delete newReport.date;
+                // delete newReport.date;
                 // delete newReport.hour;
 
                 // -*--------------------------FIN MODIFICACION
@@ -734,7 +734,7 @@ export class VoyagesController {
                 newReport.otherMgo = importVoyage.otherMgo || 0;
 
 
-               newReport.steamingTime = importVoyage.steamingTime || 0;
+                newReport.steamingTime = importVoyage.steamingTime || 0;
                 //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
 
                 newReport.distance = importVoyage.distance || 0;
@@ -806,7 +806,7 @@ export class VoyagesController {
 
 
 
-                if (importVoyage.delete_report){
+                if (importVoyage.delete_report) {
                     newReport.status = false;
                 } else {
                     // Auditoria.
@@ -843,20 +843,21 @@ export class VoyagesController {
     }
 
     @Post('sendEmailLastVoyage')
-    async SendEmailLastVoyage( @Body() sendMailConfig: SendMailConfig): Promise<any> {
+    async SendEmailLastVoyage(@Body() sendMailConfig: SendMailConfig): Promise<any> {
 
         // Datos para para la consultas.
         let userId = sendMailConfig.userId;
         let email = sendMailConfig.emails;
-        
-        let userEntity : UserEntity = null;
+
+        let userEntity: UserEntity = null;
         let voyageId: number = null;
 
         // estas varaibles contendran la informacion correcta.
         let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
         let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
-        let numeroViaje= 0;
+        let numeroViaje = 0;
+        let numeroAnio = 0;
 
         // Empezamos la promesa.
         return DummyPromise().then(
@@ -875,6 +876,8 @@ export class VoyagesController {
             result => {
                 if (result.length != 2) throw 'ERROR debe de haber mas de 2 viajes.';
 
+                numeroViaje = result[1].voyageNumber;
+                numeroAnio = result[1].year;
                 // Penultimo viaje creado.
                 voyageId = result[1].id;
 
@@ -930,14 +933,14 @@ export class VoyagesController {
         ).then(
             resultBuffer => {
                 // Enviar archivo mail.
-                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + "Voyage Nº"+numeroViaje,resultBuffer)
+                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, resultBuffer);
             }
         ).then(
             result => {
                 // 
-                if(!result){ throw 'ERROR SUPPORT'}
+                if (!result) { throw 'ERROR SUPPORT' }
                 // retornamos una Respuesta exitosa.
-                        return {
+                return {
                     status: HttpStatus.OK,
                     message: 'OK',
                     data: result

@@ -260,8 +260,7 @@ export class OverviewComponent implements OnInit {
       (result: number) => {
 
         console.log(result);
-        alert(result);
-
+       
         if (!result) {
           // Si el resultado es 0 o null no hacemos nada.
         } else {

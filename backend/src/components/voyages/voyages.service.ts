@@ -435,6 +435,7 @@ export class VoyagesService {
 
             .select('voyage.id', 'id')
             .addSelect('voyage.voyageNumber', 'voyageNumber')
+            .addSelect('voyage.year', 'year')
             
             .where('voyage.userId = :userId', { userId: userId })
             .andWhere('voyage.status = :status', { status: 1 })

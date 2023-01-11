@@ -251,7 +251,7 @@ export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: s
                 } 
                 */
                 {
-                    filename: 'export.xlsx',
+                    filename: title + '.xlsx',
                     content: bufferFile,
                     contentType:
                         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
