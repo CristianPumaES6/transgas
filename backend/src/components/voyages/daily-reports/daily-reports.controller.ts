@@ -444,7 +444,7 @@ export class DailyReportsController {
         ).then(
             (resultValidate: Boolean) => {
 
-                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                // Ejecutamos el servicio que permite obtener el rob de inicio y fin.
                 return this._dailyReportsService.GetStartEndROByFilterDate(startDate, endDate, userId);
             }
         ).then(

@@ -217,7 +217,7 @@ export class DailyReportsService {
                 .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
                 .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
 
-                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                 .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -251,6 +251,7 @@ export class DailyReportsService {
         // Este arreglo contendra la info del rob del inicio del viaje y cuanto consumio en el rango de fecha.
         let StartEndROB: any[] = [];
 
+    
         // Hacemos where por todos los campos de la entidad
         // Buscamos la info del rob asta antes del inicio de fecha
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -261,7 +262,7 @@ export class DailyReportsService {
             .addSelect(' SUM( daily_report.bunkeringMgo ) ', "total_bunkering_mgo")
 
 
-            .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+            .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
             .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -296,7 +297,7 @@ export class DailyReportsService {
                         .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
                         .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
 
-                        .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                        .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                         .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -342,7 +343,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
 
-                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                 .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -377,7 +378,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
 
 
-                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                 .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -457,7 +458,7 @@ export class DailyReportsService {
 
 
 
-                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                 .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
                 .where('daily_report.status = :status', { status: 1 })
@@ -526,7 +527,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
 
 
-                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                 .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
                 .where('daily_report.status = :status', { status: 1 })
@@ -565,7 +566,7 @@ export class DailyReportsService {
 
 
 
-            .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+            .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
             .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -602,7 +603,7 @@ export class DailyReportsService {
                         .addSelect(' daily_report.bunkeringMgo ', "bunkeringMgo")
                         .addSelect(' daily_report.observation ', "observation")
 
-                        .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                        .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                         .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -685,7 +686,7 @@ export class DailyReportsService {
                             .addSelect('daily_report.date', 'date')
 
                             // UNION DE TABLAS
-                            .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                            .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                             .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
                             // Where status
                             .where('daily_report.status = :status', { status: 1 })
@@ -786,7 +787,7 @@ export class DailyReportsService {
 
                         // UNION DE TABLAS
 
-                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                         .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -838,7 +839,7 @@ export class DailyReportsService {
                             .addSelect('daily_report.date', 'date')
 
                             // UNION DE TABLAS
-                            .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                            .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                             .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
                             // Where status
@@ -940,7 +941,7 @@ export class DailyReportsService {
                         .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
 
                         // UNION DE TABLAS
-                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                         .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -1044,7 +1045,7 @@ export class DailyReportsService {
                         .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
 
                         // UNION DE TABLAS
-                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                         .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -1134,7 +1135,7 @@ export class DailyReportsService {
 
 
 
-                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                 .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
@@ -1236,7 +1237,7 @@ export class DailyReportsService {
                 .addSelect('MAX(daily_report.east_east_west)', 'east_east_west')
 
 
-                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1')
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
                 .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
