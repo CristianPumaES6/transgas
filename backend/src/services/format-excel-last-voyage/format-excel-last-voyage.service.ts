@@ -2901,7 +2901,7 @@ export class FormatExcelLastVoyageService {
 
 
         // Borde de todos los cuadros
-        positionRows = [positionRow - 13, positionRow + 1];
+        positionRows = [firshRow-6, positionRow + 1];
         positionColumns = [columReset, columReset + 21];
         this.addStyleBorder(worksheetPuerto, positionRows, positionColumns, 'thick', blueHard3)
 
