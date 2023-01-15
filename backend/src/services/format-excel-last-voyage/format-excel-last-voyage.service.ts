@@ -49,7 +49,7 @@ export class FormatExcelLastVoyageService {
             this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
 
             // Registramos los cuadros de dashboard.
-            this.StyleDashSailing(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
+            this.AddInfoByPortAccordingToTheTravelreport(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
 
             // Revisar eliminar por que no necesitamos guardar el achivo
             return workbook.xlsx.writeFile(GetHours() + '.xlsx');
@@ -2126,7 +2126,7 @@ export class FormatExcelLastVoyageService {
     }
 
     // Dibujamos los viajes
-    private StyleDashSailing(workbook: Workbook, posit, columReset, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate): number {
+    private AddInfoByPortAccordingToTheTravelreport(workbook: Workbook, posit, columReset, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate): number {
 
 
         let colorYellowTransgas = 'FFCD06';
@@ -2454,18 +2454,6 @@ export class FormatExcelLastVoyageService {
                             right: { style: 'thin', color: { argb: grisSuave } }
                         }
                     };
-
-                    // Si es el Ultimo registro le agrego el total
-                    if (index == (listGetReportVoyagePortDaily.length - 1)) {
-
-                        // RESUMEN TOTAL
-                        positionRow += 1;
-                        colum = columReset + 1;
-                        positionRows = [positionRow, positionRow];
-                        positionColumns = [colum, colum + 10];
-                        this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
-                        this.addBorder(worksheetPuerto, positionRow, colum, 'thick', black, '');
-                    }
 
                     // ALterminar actualizamos el antiguo reporte
                     itemReportBefore = getReportVoyagePortDaily;
@@ -2901,7 +2889,7 @@ export class FormatExcelLastVoyageService {
 
 
         // Borde de todos los cuadros
-        positionRows = [firshRow-6, positionRow + 1];
+        positionRows = [firshRow - 6, positionRow + 1];
         positionColumns = [columReset, columReset + 21];
         this.addStyleBorder(worksheetPuerto, positionRows, positionColumns, 'thick', blueHard3)
 
