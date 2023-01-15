@@ -2176,8 +2176,8 @@ export class FormatExcelLastVoyageService {
         }
 
 
-        let itemDelRegistro: GetReportVoyagePortDaily[] = [];
-
+        let itemDelRegistro: GetReportVoyagePortDaily[] = []; 
+        itemReportBefore = listGetReportVoyagePortDaily[0]
         // recorremos todos los reportes.
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
@@ -2249,7 +2249,7 @@ export class FormatExcelLastVoyageService {
                     // Numero de viaje y año
                     colum += 3;
                     positionColumns = [colum, colum + 5];
-                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + " GMT", 8, black, white, '');
+                    this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, ConvertDateUTC_To_FORMAT_UTC(itemReportBefore.date) + " GMT", 8, black, white, '');
 
 
                     positionRow += 1;
@@ -2591,6 +2591,7 @@ export class FormatExcelLastVoyageService {
         let redMedium = 'ffa4a4';
         let redLow = 'ffd6d6';
 
+        
         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
             alignment: {
