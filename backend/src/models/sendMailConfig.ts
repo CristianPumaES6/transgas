@@ -12,3 +12,17 @@ export class SendMailConfig {
     }
 
 }
+
+export class MailLastVoyage {
+    public nameBuque:string;
+    public dateCurrent:string;
+
+    constructor(
+        nameBuque?:string,
+        dateCurrent?:string
+    ) {
+        this.nameBuque = nameBuque || ''; 
+        this.dateCurrent = dateCurrent || null;
+    }
+
+}

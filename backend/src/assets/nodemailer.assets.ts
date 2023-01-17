@@ -17,6 +17,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 // Template config
 import { SQLITE_PATH, TEMPLATE_MAIL_PATH } from '../config/path.config';
 import { MailOptions } from '../models/assets/mailOptions.model';
+import { MailLastVoyage } from 'src/models/sendMailConfig';
 
 
 let mailServer;
@@ -221,7 +222,7 @@ export function SendMailForgotPsw(to: string, name: string, token: string): Prom
     );
 }
 
-export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: string, bufferFile: Buffer): Promise<boolean> {
+export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: string, bufferFile: Buffer, mailLastVoyage: MailLastVoyage): Promise<boolean> {
 
     //variable de contenido
     let contentHTML: string = '';
@@ -230,12 +231,9 @@ export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: s
     return DummyPromise().then(
         result => {
 
-            let objRender = {
-                name: name,
-            }
 
             // Devuelvo el contenido obtenido
-            return HbsConvertHtmlRender('mailSendLastVoyage.hbs', objRender);
+            return HbsConvertHtmlRender('mailSendLastVoyage.hbs', mailLastVoyage);
         }
     ).then(
         (renderHtml: string) => {
