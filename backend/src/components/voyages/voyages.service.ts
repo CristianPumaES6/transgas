@@ -124,10 +124,10 @@ export class VoyagesService {
                 } else {
 
                     return this.voyageRepository.find({
-                        where: {
+                        where: [{
                             id: id,
                             status: Not(false)
-                        }
+                        }]
                     });
 
                 }
