@@ -65,12 +65,21 @@ export class DailyReportsService {
                     `);
 
                 } else {
+
+                    
                     return this._dailyReportRepository.find({
-                        where: {
+                        where: [
+                            // name && surname && nick && email
+                            {
+                                
                             id: id,
                             status: Not(false)
-                        }
-                    });
+                            }
+                        ]
+                        });
+
+
+                    
                 }
 
             }

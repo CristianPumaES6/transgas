@@ -109,10 +109,10 @@ export class PortsService {
               `)
                 } else {
                     return this.portRepository.findOne({
-                        where: {
+                        where: [{
                             id: id,
                             status: Not(false)
-                        }
+                        }]
                     })
                 }
 
