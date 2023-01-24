@@ -76,7 +76,6 @@
             <td width="680">
                 <div style="text-align: center;">
                     <div style="display: block; color:#0855c4;font-size:25.5px;font-family:sans-serif;">
-                        <br>
                         <b>Vessel : {{nameBuque}}</b>
                     </div>
                 </div>
@@ -102,7 +101,7 @@
                         <strong>
                             <span style="color:#0855c4; font-size:30px;">MGO :
                             </span>
-                            <span style="color:#0855c4; font-size:60px;">54 mt</span>
+                            <span style="color:#0855c4; font-size:60px;">{{currentMGO}} mt</span>
                         </strong>
                     </span>
                 </div>
@@ -120,95 +119,31 @@
                     </span>
                 </a>
 
-                <table class="default">
+                <div style="align-items: center;display: block;">
+                    <table class="default" cellspacing="0" cellpadding="0" style="margin: auto;" >
 
-                    <tr>
-
-                        <th>Hoy</th>
-
-                        <th>Mañana</th>
-
-                        <th>Miércoles</th>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>Soleado</td>
-
-                        <td>Mayormente soleado</td>
-
-                        <td>Parcialmente nublado</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>19°C</td>
-
-                        <td>17°C</td>
-
-                        <td>12°C</td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>E 13 km/h</td>
-
-                        <td>E 11 km/h</td>
-
-                        <td>S 16 km/h</td>
-
-                    </tr>
-
-                </table>
-
-
-                <table align="center" border="0" cellpadding="0" cellspacing="0" width="680">
-                    <tbody>
-                        <tr>
-                            <td width="6.5%"> &nbsp;</td>
-                            <td align="left" width="24%"> <a href="transgas.web.app" style="text-decoration:none"
-                                    target="_blank"><span style="color:#02aeee;font-size:16px"><b>Loading</b></span><br>
-                                    <span style="color:#00adee;font-size:16px"><b>Anchored</b></span><br> <span
-                                        style="color:#00adee;font-size:16px"><b>Maneuver</b></span><br> <span
-                                        style="color:#00adee;font-size:16px"><b>Discharge</b></span><br> <span
-                                        style="color:#00adee;font-size:16px"><b>Sailing</b></span> </a></td>
-                            <td align="left" width="8%"> &nbsp;</td>
-                            <td align="left" width="60%">
-                                <a href="transgas.web.app" style="text-decoration:none" target="_blank">
-                                    <span style="color:#616161;font-size:16px">:
-                                        <strong> 4hr
-                                            4.3mt
-                                        </strong>
-                                    </span>
-                                    <br>
-                                    <span style="color:#616161;font-size:16px">:
-                                        <strong> 4hr 4.3mt</strong>
-                                    </span>
-                                    <br>
-                                    <span style="color:#616161;font-size:16px">:
-                                        <strong> 4hr
-                                            4.3mt
-                                        </strong>
-                                    </span>
-                                    <br>
-                                    <span style="color:#616161;font-size:16px">:
-                                        <strong> 4hr 4.3mt</strong>
-                                    </span>
-                                    <br>
-                                    <span style="color:#616161;font-size:16px">:
-                                        <strong> 4hr 4.3mt</strong>
-                                    </span>
-                                </a>
-                            </td>
-                            <td width="28%"> &nbsp;</td>
+                        <tr style="
+                        border-color: #155af5!important; color: white;">
+                            <th style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">ACTIVITY<br>PERFORMED</th>
+                            <th style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">TIME</th>
+                            <th style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">CONSUMPTION</th>
+                            <th style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">DAILY<br>CONSUMPTION<br>(MT)</th>
+                            <th style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #001556;">DAILY<br>CONSUMPTION<br>(MT)<br>(CHARTER)</th>
                         </tr>
-                    </tbody>
-                </table>
+                        <tr style="
+                        border-color: #155af5!important;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">ACTIVITY</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">TIME</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">CONSUMPTION</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">DAILY</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">DAILY</th>
+                        </tr>
+    
+                    </table>
+                </div>
 
 
+               
 
 
 
