@@ -1,7 +1,30 @@
 @import "../../../variable";
+
 .PerfectScrollbar-reportTable {
-  overflow: scroll;
+  overflow: hidden;
 }
+
+.az-contact-info-body {
+
+  .media-list {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  @media (min-width: 1345px) {
+    &.table-scrool {
+      height: calc(100% - 220px);
+    }
+  }
+
+
+  @media (max-width: 1345px) {
+    &.table-scrool {
+      height: calc(100% - 370px);
+    }
+  }
+}
+
 
 .cont-speed-straction {
   label {
@@ -17,6 +40,7 @@
   &.table {
     overflow: hidden hidden;
     font-size: 7pt !important;
+
     // Clase de bootstrap estoy modificando solo el color del borde-
     .border {
       border-color: $blue-light-2 !important;
@@ -97,28 +121,35 @@
 .h7 {
   font-size: 0.7rem;
 }
+
 .h8 {
   font-size: 0.6rem;
 }
 
 .div-content-Start-End {
   width: 400px;
+
   table {
     width: 100%;
     text-align: center;
+
     .color-title-table {
       color: #ffffff;
       text-transform: uppercase;
+
       &.blue-1 {
         background: $blue-light-1;
       }
+
       &.blue-2 {
         background: $blue-light-1;
       }
+
       &.blue-3 {
         background: $blue-dark-1;
       }
     }
+
     .border {
       border-color: $blue-light-2 !important;
     }
@@ -133,22 +164,28 @@
 
 .div-content-table-total {
   width: 450px;
+
   table {
     width: 100%;
     text-align: center;
+
     .color-title-table {
       color: #ffffff;
       text-transform: uppercase;
+
       &.blue-1 {
         background: $blue-light-1;
       }
+
       &.blue-2 {
         background: $blue-light-1;
       }
+
       &.blue-3 {
         background: $blue-dark-1;
       }
     }
+
     .border {
       border-color: $blue-light-2 !important;
     }

@@ -90,7 +90,8 @@
               </ng-template>
 
             </div>
-            <div class="col">
+
+            <div class="col pt-sm-2">
 
 
 
@@ -277,7 +278,24 @@
       </div><!-- az-contact-action -->
 
     </div><!-- az-contact-info-header -->
-    <div class="az-contact-info-body sin-image">
+
+    
+    <ng-template [ngIf]="List_Voyages_Ports_DailyReports==='Ports'">
+
+      <ng-template [ngIf]="selectPort.id">
+        <div class="text-right pb-0">
+          <button mat-button color="primary" (click)="ClickAddNewReport()"
+            matTooltip="{{'ADD_REPORT' | translateMessage:translateCategory}}">
+            {{'ADD_REPORT' | translateMessage:translateCategory}}
+            <mat-icon class="icon-clipboard"></mat-icon>
+          </button>
+        </div>
+      </ng-template>
+
+    </ng-template>
+
+
+    <div class="az-contact-info-body table-scrool">
       <div class="media-list">
 
         <ng-template [ngIf]="List_Voyages_Ports_DailyReports==='Ports'">
@@ -325,19 +343,7 @@
 
           </ng-template>
 
-          <hr>
-
-          <ng-template [ngIf]="selectPort.id">
-            <div class="text-right pb-3">
-              <button mat-button color="primary" (click)="ClickAddNewReport()"
-                matTooltip="{{'ADD_REPORT' | translateMessage:translateCategory}}">
-                {{'ADD_REPORT' | translateMessage:translateCategory}}
-                <mat-icon class="icon-clipboard"></mat-icon>
-              </button>
-            </div>
-          </ng-template>
-
-          <div class="row pb-2">
+          <div class="row pb-0">
 
             <div [ngClass]="{'d-none': getDailyReports.length == 0}" class="PerfectScrollbar-reportTable col-12">
 

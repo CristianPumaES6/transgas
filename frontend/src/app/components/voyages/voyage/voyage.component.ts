@@ -200,7 +200,7 @@ export class VoyageComponent implements OnInit {
 
     setTimeout(() => {
       // PerfectScroll a body
-      new PerfectScrollbar('.az-contact-info-body', {
+      new PerfectScrollbar('.table-scrool', {
         suppressScrollX: true
       });
 
