@@ -454,6 +454,8 @@ export const dashboard: any = {
 };
 
 export const dialog: any = {
+    NEW_MODULE: 'New module',
+    NEW_MODULE_DESCRIPTION : 'This action is available in a later version.',
     TYPE_CONSUMPTION: 'Type consumption',
     MORE_INFORMATION: 'More information :',
     VIEW_ALL_VOYAGE: 'See All Voyage',

@@ -51,11 +51,9 @@ export class DialogConfigMailComponent implements OnInit {
 
 
   public ClickSave() {
-    alert(
-      "userID :" + this.user + "\n" +
-      "mail :" + this.emails + "\n" +
-      "sendAutomatic :" + this.sendAutomatic + "\n"
-    );
+    
+    this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE'), this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE_DESCRIPTION'));
+     
   }
 
   public ClickTest() {
@@ -69,7 +67,9 @@ export class DialogConfigMailComponent implements OnInit {
 
     if (!error) {
 
-      this.dailyReportService.PostSendEmailLastVoyage(this.user.id, this.emails).subscribe(
+      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE'), this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE_DESCRIPTION'));
+     
+ /*      this.dailyReportService.PostSendEmailLastVoyage(this.user.id, this.emails).subscribe(
         (resultSend: boolean) => {
           if (!Boolean(resultSend)) { throw 'ERROR SEND MAIL.' }
 
@@ -88,7 +88,7 @@ export class DialogConfigMailComponent implements OnInit {
           // Deshabilito el spinner de loading
           this.loadingService.Close();
         });
-
+ */
     } else {
       this.loadingService.Close();
     }
