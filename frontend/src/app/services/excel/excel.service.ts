@@ -129,7 +129,7 @@ export class ExcelService {
   public async ExportReportDaily(Voyages: Voyage[]): Promise<boolean> {
 
     const title = 'CONSUMPTION FORMAT';
-    const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEFOURT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
+    const header = ['PORT N°', 'DEPARTURE', 'ARRIVAL', 'DATE', 'HOUR', 'ACTIVITY PERFORMEND', 'OBSERVATIONS', 'DISTANCE', 'TIME', 'SPEED', 'BEAUFORT', 'M.E', 'A.E', 'BOILER', 'TOTAL', 'M.E', 'A.E', 'BOILER', 'P.P', 'G.I', 'TOTAL'];
 
 
     // Creamos una nueva hoja de trabajo
@@ -156,7 +156,7 @@ export class ExcelService {
         { width: 10 },// Distance
         { width: 10 },// Time
         { width: 10 },// Speed
-        { width: 15 },// Befourt
+        { width: 15 },// BEAUFORT
         { width: 7 },// M.E
         { width: 7 },// A.E
         { width: 7 },// Boiler
@@ -207,7 +207,7 @@ export class ExcelService {
       this.StyleCellHeader(worksheet, 'H4', '001556');// DISTANCE
       this.StyleCellHeader(worksheet, 'I4', '001556');// TIME
       this.StyleCellHeader(worksheet, 'J4', '0040d8');// SPEED // Color especial
-      this.StyleCellHeader(worksheet, 'K4', '375f9a');// BEFOURT
+      this.StyleCellHeader(worksheet, 'K4', '375f9a');// BEAUFORT
 
 
       this.StyleCellHeader(worksheet, 'L4', '001556');// Colores de maquina
@@ -1532,7 +1532,7 @@ export class ExcelService {
           getReportVoyagePortDaily.date, '', '',
           getReportVoyagePortDaily.hour, '',
           //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-          { formula: '=(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
+          { formula: '(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
           this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), '', '', '',
 
 
@@ -1542,7 +1542,7 @@ export class ExcelService {
 
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          { formula: '=(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
+          { formula: '(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
           // Velocidad formula.
           { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
@@ -2845,48 +2845,18 @@ export class ExcelService {
     return posit;
   }
   private StyleDashActivity(worksheet, posit, colum, selectUser: User, isIFOorMGO: string): number {
-    let date_start = '22/22/22'
-    let hour_start = '20:20'
-    let ifo_start = 200;
-    let mgo_start = 300;
-    let date_end = '22/22/22'
-    let hour_end = '22:21'
-    let ifo_end = 222;
-    let mgo_end = 440;
-    let totalBunkeringIFO = 0;
-    let totalBunkeringMGO = 0;
+ 
 
-    let totalConsumptIFO = 0;
-    let totalConsumptMGO = 0;
-
-
-
-    let colorYellowTransgas = 'FFCD06';
-    // Variables de colores-
-    let blueHard = '001556'
-    let blueMedium = '09155694'
-    let blueLow = 'b6c2ff94';
-
-
-    let blueHard1 = '375f9a'
-    let blueHard2 = '0040d8'
+    let colorYellowTransgas = 'FFCD06'; 
     let blueHard3 = '001556'
-
-    let greenHard = '091556'
-    let greenMedium = 'b6c2ff94'
-    let greenLow = 'b6c2ff94';
-
+    let greenMedium = 'b6c2ff94' 
     let black = '000'
     let white = 'ffffff';
 
-    // Variables de colores-
-    let grisFuerte = 'd4d4d4'
-    let grisMedio = 'ebe8e8'
-    let grisSuave = 'f3f3f3';
-
-    let redHard = '9a2929';
-    let redMedium = 'ffa4a4';
-    let redLow = 'ffd6d6';
+    // Variables de colores- 
+    let grisMedio = 'ebe8e8' 
+ 
+    let redMedium = 'ffa4a4'; 
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
@@ -4057,6 +4027,7 @@ export class ExcelService {
     ));
 
   }
+
 }
 
 

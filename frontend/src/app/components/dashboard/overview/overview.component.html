@@ -7,7 +7,12 @@
             <div class="card bg-dark text-white mr-2 mb-2">
                 <img class="card-img" src="{{data.filename}}" alt="Card image">
                 <div class="card-img-overlay">
-                    <h5 class="card-title h3">{{data.name}}</h5>
+                    <div class="cont-title">
+                        <h5 class="card-title h3">{{data.name}}</h5>
+                        <a (click)="ClickConfigSendMail(data)" class="buttom_config">
+                            <span class="icon-cogs"></span>
+                        </a>
+                    </div>
                     <div class="card-text">
                         <table>
                             <tbody>

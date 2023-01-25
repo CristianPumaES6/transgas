@@ -2,11 +2,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationsService } from 'angular2-notifications';
 import { User } from '../../../models/user';
-import { ExcelFormatDNVService } from '../../../services/excel/excel-format-dnv.service';
+import { ExcelFormatDNVV2Service } from '../../../services/excel/excel-format-dnv-v2.service';
+import { ExcelFormatVesselDataRegisterService } from '../../../services/excel/excel-format-vessel-data-register.service';
 import { ExcelService } from '../../../services/excel/excel.service';
 import { LanguageService } from '../../../services/language.service';
 import { LoadingService } from '../../../services/loading.service';
 import { FormatDateUTCToDateHour } from '../../../../assets/moment/moment.assets';
+import { ExcelFormatDNVService } from 'src/app/services/excel/excel-format-dnv.service';
 
 // Interface de los input del componente.
 export interface IDialogExportExcel {
@@ -43,6 +45,7 @@ export class DialogExportExcelComponent implements OnInit {
     private loadingService: LoadingService,
     private excelService: ExcelService,
     private excelFormatDNVService: ExcelFormatDNVService,
+    private excelFormatVesselDataRegisterService: ExcelFormatVesselDataRegisterService,
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +54,7 @@ export class DialogExportExcelComponent implements OnInit {
 
   public ClickDownloading() {
     console.log('ClickDownloading FORMATO' + this.selectTypeExportExcel);
-    
+
     return Promise.resolve(true)
       .then(
         result => {
@@ -62,14 +65,18 @@ export class DialogExportExcelComponent implements OnInit {
           // Fecha de inicio.
           let dateStart = this.data.dateStartUTC;
           let dateEnd = this.data.dateEndUTC;
-
           let selectUser: User = this.data.selectUser;
+
 
           if (this.selectTypeExportExcel == 'FORMAT_GENERIC') {
             return this.excelService.ExportExcel(this.data.selectUser.id, dateStart, dateEnd, selectUser);
           } else if (this.selectTypeExportExcel == 'DNV_FORMAT') {
             return this.excelFormatDNVService.ExportReporteEntryForUser(this.data.selectUser.id, dateStart, dateEnd, selectUser);
+          } else if (this.selectTypeExportExcel == 'EXPORT_VESSEL_DATA') {
+            return this.excelFormatVesselDataRegisterService.ExportExcel(selectUser.id, dateStart, dateEnd, selectUser);
           }
+
+
         }
       ).then(
         result => {

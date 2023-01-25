@@ -20,6 +20,7 @@ import { DailyReport, GetROBByUser, Speed } from '../../models/daily-report';
 import { ActivityPerformed, ConsumptionMachineMGO, ConsumptionMachineIFO, FilterWithDate, ConsumptionAndBunkering } from '../../models/dashboard';
 
 
+
 // Service 
 import { UserService } from '../../services/user.service';
 import { VoyageService } from '../../services/voyage.service';
@@ -2629,7 +2630,7 @@ export class DashboardComponent implements OnInit {
                         // agregamos la fecha a nuestro arreglo.
                         this.xLabelReport.push(day);
 
-                        let dataExtra = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
+                        let dataExtra: DailyReport[] = []; // Revisar esto deberiamos tener una propiedad con las actividades registradas.
                         // y los ocmentarios registrados.
                         dataExtra.push(report)
 
@@ -4001,7 +4002,7 @@ export class DashboardComponent implements OnInit {
               }
 
             } else if (configIFOorMGOorSPEED === 'SPEED') {
-              result.push('Befourt :    ' + beaufour);
+              result.push('Beaufort :    ' + beaufour);
 
               if (chartPoint.speed.steamingTime > 0) {
                 result.push('T. Time :    ' + this.MathRoundOneDecimal(chartPoint.speed.steamingTime, this.cantDecimal) + ' hrs');

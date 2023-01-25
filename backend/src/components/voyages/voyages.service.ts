@@ -338,7 +338,7 @@ export class VoyagesService {
 
     // Permite consultar si el numero de viaje existe
     // Retorna underfined si el viaje no existe.
-    async ThisVoyageNumberExists(voyageNumber: number, yearVoyage: number,userId: number): Promise<Voyage> {
+    async ThisVoyageNumberExistsInTheYear(voyageNumber: number, yearVoyage: number,userId: number): Promise<Voyage> {
 
         return DummyPromise().then(
             result => {
@@ -368,7 +368,9 @@ export class VoyagesService {
 
                 // No vlaidamos resultado por que tambien puede ser underfine.
                 if (URL_Server.bd === 'MSSQL') {
-                    if (!resultFind && resultFind.length > 0) throw 'NO_REGISTER'
+                    if (!resultFind && resultFind.length > 0){
+                        throw 'NO_REGISTER'
+                    } 
                     return resultFind[0];
                 } else {
 
@@ -423,5 +425,32 @@ export class VoyagesService {
             });
 
 
+    }
+
+
+    // Nos devuelve los ultimos 2 viaje por el filtro de usuario ID
+    async GetLastVoyage(userId:number):Promise<any>{
+        return await
+        this.voyageRepository.createQueryBuilder('voyage')
+
+            .select('voyage.id', 'id')
+            .addSelect('voyage.voyageNumber', 'voyageNumber')
+            .addSelect('voyage.year', 'year')
+            
+            .where('voyage.userId = :userId', { userId: userId })
+            .andWhere('voyage.status = :status', { status: 1 })
+
+            .orderBy('voyage.id', 'DESC')
+            
+            .limit(2)
+            .getRawMany()
+            .then(
+                (result: any) => {
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetLastVoyage';
+
+                    return result;
+                }
+            );
     }
 }

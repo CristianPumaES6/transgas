@@ -1,13 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
+import * as bodyParser from 'body-parser';
 // Express
 import * as express from 'express';
-import { FOLDER_UPLOADS,FOLDER_STATIC, FOLDER_FRONTEND } from './config/path.config';
+import { FOLDER_UPLOADS, FOLDER_STATIC, FOLDER_FRONTEND } from './config/path.config';
 import { join } from 'path';
+import { NodemailerInit } from './assets/nodemailer.assets';
+import { HbsInit } from './assets/hbs.assets';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const options = {
     'origin': '*',
@@ -16,7 +21,10 @@ async function bootstrap() {
     'optionsSuccessStatus': 204,
     'credentials': true,
   };
-  
+
+  // the next two lines did the trick
+  // app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
   // Habilitamos el CORS
   // app.use(cors(options))
   app.enableCors(options);
@@ -27,6 +35,12 @@ async function bootstrap() {
 
   app.use(express.static(join(FOLDER_FRONTEND)));
 
+  // Inicializo el hbs
+  HbsInit(app);
+
+  // Inicializo el serverNodemailer
+  NodemailerInit();
+  
   await app.listen(3000);
 }
 bootstrap();

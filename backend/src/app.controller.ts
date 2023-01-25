@@ -23,6 +23,7 @@ export class AppController {
     private readonly _AppGateway: AppGateway
   ) { }
 
+  // Este servicio es para pruebas sin necesidad de tener un token.
   @Get('pruebas')
   Pruebas(@Body() body: any): Promise<any> {
     return DummyPromise().then(
@@ -62,7 +63,7 @@ export class AppController {
 
   // Guards(jwt)  valida que el token no halla caducado y exista, caso contrario invoca un error.
   @UseGuards(AuthGuard('jwt'))
-  @Get('hello')
+  @Get('testToken')
   getHello(): any {
 
     let version = URL_Server.version;

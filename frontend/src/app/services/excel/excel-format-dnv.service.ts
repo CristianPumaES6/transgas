@@ -6,7 +6,7 @@ import { promise } from 'protractor';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mathRound } from '../../../assets/math/math.assets';
-import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour, FormatYYYYMMDDToHOURS, FormatYYYYMMDDToSTRING, FormatYYYYMMDDUTCToSTRING } from '../../../assets/moment/moment.assets';
+import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour, FormatDateUTCToDateHourUTC, FormatYYYYMMDDToHOURS, FormatYYYYMMDDToSTRING, FormatYYYYMMDDUTCToSTRING } from '../../../assets/moment/moment.assets';
 import { GetFormatDNV, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report';
 import { ActivityPerformed } from '../../models/dashboard';
 import { GetReportVoyagePortDaily } from '../../models/dialog-export-excel';
@@ -612,11 +612,17 @@ export class ExcelFormatDNVService {
 
         listGetReportVoyagePortDaily.forEach(
           (item: GetReportVoyagePortDaily) => {
+            
             let getFormatDNV: GetFormatDNV = new GetFormatDNV();
+            let hora = '';
+
+            if (selectUserId == 10) {
+              hora = '17:00'
+            }
 
             getFormatDNV.reportId = item.dailyReportId;
             getFormatDNV.date = FormatYYYYMMDDUTCToSTRING(item.date);
-            getFormatDNV.time = '09:00';
+            getFormatDNV.time = hora;
 
             // AGREGAR ESTA INFORMACION REVISAR ELIMINAR CORREGIR 
             getFormatDNV.north_degree = item.north_degree;

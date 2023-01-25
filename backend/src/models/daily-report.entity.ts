@@ -221,6 +221,7 @@ export class GetReportVoyagePortDaily {
         public year?: number,
         public voyageId?: number,
         public voyageNumber?: number,
+        
         public portId?: number,
         public portNumber?: number,
         public departurePort?: string,
@@ -236,6 +237,7 @@ export class GetReportVoyagePortDaily {
 
         // Actividades realizada
         public activityPerformed?: string,
+        public typeActivityPerformed?: string,
         //  SpeedStraction ECO_SPEED | FULL_SPEED
         public speedStraction?: string,
         // Observaciones
@@ -298,6 +300,7 @@ export class GetReportVoyagePortDaily {
         this.steamingTime = steamingTime || 0;
 
         this.activityPerformed = activityPerformed || '';
+        this.typeActivityPerformed = typeActivityPerformed || '';
         this.speedStraction = speedStraction || '';
         this.observation = observation || '';
 
@@ -333,6 +336,17 @@ export class GetReportVoyagePortDaily {
 
 }
 
+// Informacion de inicio y fin de combustible de una fecha
+export class InfoFuelStartEndForDate {
+
+    constructor(
+        public infoFuelStart?: GetROBByUser,
+        public infoFuelEnd?: GetROBByUser
+    ) {
+        this.infoFuelStart = infoFuelStart || new GetROBByUser();
+        this.infoFuelEnd = infoFuelEnd || new GetROBByUser();
+    }
+}
 
 export class InfoReport_IFO_AND_MGO {
     constructor(
@@ -344,5 +358,3 @@ export class InfoReport_IFO_AND_MGO {
         this.mgo = [];
     }
 }
-
-

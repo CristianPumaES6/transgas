@@ -18,9 +18,11 @@ La finalidad de este documento es agilizar la subida de datos.
 
 * 3 Desde local levantar el aplicativo usando esa BD.
 
-* 4 Comenzamos a llenar el Excel **FormatDocument v3.**
+* 4 Comenzamos a llenar el Excel **FormatDocument v4.**
+    Si tenemos ya datos registrados, descargamos el documento report data buque
+    - Editamos el documento en excel, tomar en cuenta que si hay un id sera para editar, si no hay id es para hacer un nuevo registro.
 
-* 5 Pegamos el contenido del excel a convertcsv
+* 5 Una vez terminado, copiamos y pegamos el contenido del excel a convertcsv
     - https://www.convertcsv.com/csv-to-json.htm
 
 * 6 Copiamos el JSON generado y lo pegamos en el Postman, apuntando al Servicio
@@ -28,9 +30,9 @@ La finalidad de este documento es agilizar la subida de datos.
 
 * 7 Verificamos el total de consumo debe ser el mismo que el del excel.
 
-* 8 Verificamos el formato fecha y hora.
+* 8 Verificamos el formato de fecha y hora.
 
-* 9 Actualizamos la zona horaria que debe tener el registro.
+* 9 Actualizamos la zona horaria que debe tener el registro. // solo si no queremos que se registre en horario UTC.
 
 * 7 Copiamos la BD y lo pegamos en el servidor.
     - Nos ubicamos en el directorio donde esta nuestra BD.

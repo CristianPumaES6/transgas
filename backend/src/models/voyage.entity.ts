@@ -44,6 +44,9 @@ export class VoyageFilterByYears {
 
 // estructura de excel de importacion de
 export class ImportVoyage {
+    voyageId:number;
+    portId:number;
+    dailyReportId:number;
     userId: number;
     year: number;
     voyageNumber: number;
@@ -55,6 +58,7 @@ export class ImportVoyage {
     hour: string;
     steamingTime: number;
     activityPerformed: string;
+    typeActivityPerformed: string;
     speedStraction:string;
     observation: string;
     distance?: any;
@@ -85,4 +89,8 @@ export class ImportVoyage {
     east_degree :number;
     east_minutes:number;
     east_east_west: string;
+    updatePort: number; // Esto nos dice si el puerto se va actualizar o no
+
+
+    delete_report: boolean;
 }

@@ -68,18 +68,11 @@ export class DailyReportsService {
 
                     
                     return this._dailyReportRepository.find({
-                        where: [
-                            // name && surname && nick && email
-                            {
-                                
+                        where: [{
                             id: id,
                             status: Not(false)
-                            }
-                        ]
-                        });
-
-
-                    
+                        }]
+                    });
                 }
 
             }
@@ -226,8 +219,10 @@ export class DailyReportsService {
                 .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
                 .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
 
-                .innerJoinAndSelect('daily_report.port', 'port')
-                .innerJoinAndSelect('port.voyage', 'voyage')
+                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
+
 
                 .where('daily_report.status = :status', { status: 1 })
                 .andWhere('port.status = :status', { status: 1 })
@@ -258,6 +253,7 @@ export class DailyReportsService {
         // Este arreglo contendra la info del rob del inicio del viaje y cuanto consumio en el rango de fecha.
         let StartEndROB: any[] = [];
 
+    
         // Hacemos where por todos los campos de la entidad
         // Buscamos la info del rob asta antes del inicio de fecha
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -267,8 +263,10 @@ export class DailyReportsService {
             .addSelect(' SUM( daily_report.bunkeringIfo ) ', "total_bunkering_ifo")
             .addSelect(' SUM( daily_report.bunkeringMgo ) ', "total_bunkering_mgo")
 
-            .innerJoinAndSelect('daily_report.port', 'port')
-            .innerJoinAndSelect('port.voyage', 'voyage')
+
+            .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+            .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
             .where('daily_report.status = :status', { status: 1 })
             .andWhere('port.status = :status', { status: 1 })
@@ -301,8 +299,10 @@ export class DailyReportsService {
                         .addSelect(' SUM( daily_report.bunkeringIfo )', "total_bunkering_ifo")
                         .addSelect(' SUM( daily_report.bunkeringMgo )', "total_bunkering_mgo")
 
-                        .innerJoinAndSelect('daily_report.port', 'port')
-                        .innerJoinAndSelect('port.voyage', 'voyage')
+                        .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                        .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
+
 
                         .where('daily_report.status = :status', { status: 1 })
                         .andWhere('port.status = :status', { status: 1 })
@@ -345,8 +345,10 @@ export class DailyReportsService {
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.bunkeringIfo', 'bunkeringIfo')
 
-                .innerJoinAndSelect('daily_report.port', 'port')
-                .innerJoinAndSelect('port.voyage', 'voyage')
+                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
+
 
                 .where('daily_report.status = :status', { status: 1 })
                 .andWhere('port.status = :status', { status: 1 })
@@ -377,8 +379,11 @@ export class DailyReportsService {
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
                 .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
 
-                .innerJoinAndSelect('daily_report.port', 'port')
-                .innerJoinAndSelect('port.voyage', 'voyage')
+
+                .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
+
 
                 .where('daily_report.status = :status', { status: 1 })
                 .andWhere('port.status = :status', { status: 1 })
@@ -398,11 +403,13 @@ export class DailyReportsService {
     }
 
 
-    // Retorna todos los viajes segun filtro.
-    async GetReportVoyagePortDaily(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
+    // Retorna todos los viajes segun filtro de feca o por viaje id
+    async GetReportVoyagePortDaily(userId: number, startDate: Date, endDate: Date, filterByVoyage: number): Promise<GetReportVoyagePortDaily[]> {
 
         // Hacemos where por todos los campos de la entidad
         return await
+
+
             this._dailyReportRepository.createQueryBuilder('daily_report')
 
                 .select('voyage.userId', 'userId')
@@ -421,6 +428,7 @@ export class DailyReportsService {
                 .addSelect('daily_report.hour', 'hour')
                 .addSelect('daily_report.steamingTime', 'steamingTime')
                 .addSelect('daily_report.activityPerformed', 'activityPerformed')
+                .addSelect('daily_report.typeActivityPerformed', 'typeActivityPerformed')
                 .addSelect('daily_report.speedStraction', 'speedStraction')
                 .addSelect('daily_report.observation', 'observation')
 
@@ -452,8 +460,8 @@ export class DailyReportsService {
 
 
 
-                .innerJoin('daily_report.port', 'port')
-                .innerJoin('port.voyage', 'voyage')
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
                 .where('daily_report.status = :status', { status: 1 })
                 .andWhere('port.status = :status', { status: 1 })
@@ -461,8 +469,11 @@ export class DailyReportsService {
 
                 .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
-                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+                .andWhere('(( datetime(daily_report.date) >= datetime(:startDate) AND datetime(daily_report.date) <= datetime(:endDate) ) OR voyage.id = :voyageId)',
+                    { startDate: startDate, endDate: endDate, voyageId: filterByVoyage })
+
+
+                .orderBy('daily_report.date', 'ASC')
                 .getRawMany()
                 .then(
                     (result: any) => {
@@ -518,8 +529,8 @@ export class DailyReportsService {
                 .addSelect('daily_report.bunkeringMgo', 'bunkeringMgo')
 
 
-                .innerJoin('daily_report.port', 'port')
-                .innerJoin('port.voyage', 'voyage')
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
                 .where('daily_report.status = :status', { status: 1 })
                 .andWhere('port.status = :status', { status: 1 })
@@ -555,8 +566,11 @@ export class DailyReportsService {
             .addSelect(' SUM( daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo ) ', "totalIFO")
             .addSelect(' SUM( daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo ) ', "totalMGO")
 
-            .innerJoinAndSelect('daily_report.port', 'port')
-            .innerJoinAndSelect('port.voyage', 'voyage')
+
+
+            .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+            .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
             .where('daily_report.status = :status', { status: 1 })
             .andWhere('port.status = :status', { status: 1 })
@@ -591,8 +605,9 @@ export class DailyReportsService {
                         .addSelect(' daily_report.bunkeringMgo ', "bunkeringMgo")
                         .addSelect(' daily_report.observation ', "observation")
 
-                        .innerJoinAndSelect('daily_report.port', 'port')
-                        .innerJoinAndSelect('port.voyage', 'voyage')
+                        .innerJoinAndSelect('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                        .innerJoinAndSelect('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
                         .where('daily_report.status = :status', { status: 1 })
                         .andWhere('port.status = :status', { status: 1 })
@@ -673,8 +688,8 @@ export class DailyReportsService {
                             .addSelect('daily_report.date', 'date')
 
                             // UNION DE TABLAS
-                            .innerJoin('daily_report.port', 'port')
-                            .innerJoin('port.voyage', 'voyage')
+                            .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                            .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
                             // Where status
                             .where('daily_report.status = :status', { status: 1 })
                             .andWhere('voyage.status = :status', { status: 1 })
@@ -773,8 +788,10 @@ export class DailyReportsService {
                         .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
 
                         // UNION DE TABLAS
-                        .innerJoin('daily_report.port', 'port')
-                        .innerJoin('port.voyage', 'voyage')
+
+                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                        .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
                         .where('daily_report.status = :status', { status: 1 })
                         .andWhere('voyage.status = :status', { status: 1 })
@@ -803,8 +820,6 @@ export class DailyReportsService {
             );
     }
 
-
-
     async GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Promise<InfoReport_IFO_AND_MGO> {
 
         // Si la fecha es null en automatico enviara los ultimos 40 registros.
@@ -826,8 +841,9 @@ export class DailyReportsService {
                             .addSelect('daily_report.date', 'date')
 
                             // UNION DE TABLAS
-                            .innerJoin('daily_report.port', 'port')
-                            .innerJoin('port.voyage', 'voyage')
+                            .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                            .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
                             // Where status
                             .where('daily_report.status = :status', { status: 1 })
                             .andWhere('voyage.status = :status', { status: 1 })
@@ -927,8 +943,9 @@ export class DailyReportsService {
                         .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
 
                         // UNION DE TABLAS
-                        .innerJoin('daily_report.port', 'port')
-                        .innerJoin('port.voyage', 'voyage')
+                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                        .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
                         .where('daily_report.status = :status', { status: 1 })
                         .andWhere('voyage.status = :status', { status: 1 })
@@ -1030,8 +1047,9 @@ export class DailyReportsService {
                         .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
 
                         // UNION DE TABLAS
-                        .innerJoin('daily_report.port', 'port')
-                        .innerJoin('port.voyage', 'voyage')
+                        .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                        .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
                         .where('daily_report.status = :status', { status: 1 })
                         .andWhere('voyage.status = :status', { status: 1 })
@@ -1064,7 +1082,6 @@ export class DailyReportsService {
                     return result_IFO_AND_MGO;
                 });
     }
-
 
     async GetReportDNVByUser(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
 
@@ -1120,8 +1137,9 @@ export class DailyReportsService {
 
 
 
-                .innerJoin('daily_report.port', 'port')
-                .innerJoin('port.voyage', 'voyage')
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
                 .where('daily_report.status = :status', { status: 1 })
                 .andWhere('port.status = :status', { status: 1 })
@@ -1141,7 +1159,34 @@ export class DailyReportsService {
                     }
                 );
     }
+
     async GetReportDNVByUserNOON(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]> {
+
+
+
+        let stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
+
+        // si el usuario es TAUROGAS
+        if (userId == 14) {
+            stringGroupBY = "datetime('daily_report'.'date','+7.999999 hour')";
+        }
+
+        // si el usuario es Huntegas
+        if (userId == 10) {
+            stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+        }
+
+        // CHAVIN NO SE PUDO
+
+        // si el usuario es CARAL
+        if (userId == 21) {
+            stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+        }
+
+        if (userId == 2) {
+            stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+        }
+
 
         // Hacemos where por todos los campos de la entidad
         return await
@@ -1159,7 +1204,7 @@ export class DailyReportsService {
 
 
                 .addSelect('MAX(daily_report.id)', 'dailyReportId')
-                .addSelect("datetime(daily_report.date,'+8.99 hour')", 'date')
+                .addSelect(stringGroupBY, 'date')
                 .addSelect('MAX(daily_report.hour)', 'hour')
 
                 .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
@@ -1193,8 +1238,10 @@ export class DailyReportsService {
                 .addSelect('MAX(daily_report.east_minutes)', 'east_minutes')
                 .addSelect('MAX(daily_report.east_east_west)', 'east_east_west')
 
-                .innerJoin('daily_report.port', 'port')
-                .innerJoin('port.voyage', 'voyage')
+
+                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+                .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+
 
 
                 .where('daily_report.status = :status', { status: 1 })
@@ -1205,7 +1252,7 @@ export class DailyReportsService {
 
                 .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
                 .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
-                .groupBy("strftime('%Y-%m-%d',datetime('daily_report'.'date','+8.999 hour'))")
+                .groupBy("strftime('%Y-%m-%d'," + stringGroupBY + ")")
                 .getRawMany()
                 .then(
                     (result: any) => {
@@ -1215,4 +1262,5 @@ export class DailyReportsService {
                     }
                 );
     }
+
 }

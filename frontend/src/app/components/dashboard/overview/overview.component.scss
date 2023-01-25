@@ -8,12 +8,29 @@
 .card-edit-dev {
     justify-content: center;
     .card {
-        cursor: pointer;
         min-height: 300px;
         width: 420px;
-        .card-title {
-            color: #feb600;
-            text-transform: uppercase;
+        .cont-title {
+            position: relative;
+            .card-title {
+                color: #feb600;
+                text-transform: uppercase;
+            }
+            .buttom_config {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                color: rgb(63, 63, 63);
+                & .icon-cogs {
+                    cursor: pointer;
+                    color: white;
+                    font-size: 12pt;
+                    transition: all 0.3s;
+                    &:hover {
+                        font-size: 16pt;
+                    }
+                }
+            }
         }
         .h5 {
             text-align: center;
@@ -41,17 +58,16 @@
             font-size: 7pt !important;
             text-align: center;
             &.blue-1 {
-              background: $blue-light-1;
+                background: $blue-light-1;
             }
-    
+
             &.blue-2 {
-              background: $blue-light-1;
+                background: $blue-light-1;
             }
-    
+
             &.blue-3 {
-              background: $blue-dark-1;
+                background: $blue-dark-1;
             }
-          }
+        }
     }
-   
 }

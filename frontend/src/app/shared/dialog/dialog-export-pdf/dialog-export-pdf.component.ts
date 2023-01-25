@@ -112,6 +112,8 @@ export class DialogExportPdfComponent implements OnInit {
   // el primer paso esta completado, si es asi el segundo paso se habilita.
   public isFirstCompleted: boolean = false;
 
+  public h2c: any = html2canvas;
+
   // Creamos los View para poder controlar los elementos del html.
   @ViewChild('stepper') private myStepper: MatStepper;
   @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: PdfJsViewerComponent;
@@ -7935,7 +7937,7 @@ export class DialogExportPdfComponent implements OnInit {
 
         let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Ballast');
 
-        return html2canvas(elementlineaSpeed, options);
+        return this.h2c(elementlineaSpeed, options);
       }
     ).then(
       (canvas: any) => {
@@ -7984,7 +7986,7 @@ export class DialogExportPdfComponent implements OnInit {
 
         let elementlineaSpeed: HTMLElement = document.getElementById('dash-line-Overall-Performance-Laden');
 
-        return html2canvas(elementlineaSpeed, options);
+        return this.h2c(elementlineaSpeed, options);
       })
       .then((canvas: any) => {
 

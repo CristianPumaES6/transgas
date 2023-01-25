@@ -13,6 +13,7 @@ import { AuthGuardService } from './auth-guard.service';
 import { DailyReport, GetInfoVoyageROBBunkering, GetROBByUser } from '../models/daily-report';
 import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
 import { InfoReport_IFO_AND_MGO } from '../models/dashboard';
+import { SendMailConfig } from '../models/sendMailConfig';
 
 @Injectable({ providedIn: 'root' })
 export class DailyReportService {
@@ -412,6 +413,39 @@ export class DailyReportService {
             ), catchError((err) => {
                 return this.authGuardService.HandleError(err);
             })
+        );
+    }
+
+    // Retorna el totar por actividad
+    PostSendEmailLastVoyage(userId: number, emails: string): Observable<boolean> {
+        // Armo el request
+        let url: string = this.url + '/voyages/sendEmailLastVoyage';
+        let headers: HttpHeaders = new HttpHeaders(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.userService.GetToken(),
+            });
+
+        let sendMailConfig: SendMailConfig = new SendMailConfig();
+        sendMailConfig.userId = userId;
+        sendMailConfig.emails = emails;
+
+        // Parseo el obj para poder enviarlo en el request
+        let body: string = JSON.stringify(sendMailConfig);
+        let options: any = { headers: headers, responseType: 'json' };
+ 
+        // Mando consulta al API
+        return this.httpClient.post(url, body, options).pipe(
+            map(
+                (response: any) => {
+                    if (response.status && response.status === 200) { 
+                        return response.data;
+                    } else {
+                        throw response.description || response.error || '';
+                    }
+                }
+            ),
+            catchError((err) => this.authGuardService.HandleError(err))
         );
     }
 

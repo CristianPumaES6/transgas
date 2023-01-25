@@ -296,7 +296,7 @@ export const voyage: any = {
     ECO_SPEED: 'Eco',
     FULL_SPEED: 'Full',
     DISTANCE: 'Distance',
-    BEFOURT: 'Befourt',
+    BEAUFORT: 'Beaufort',
     OBSERVATIONS: 'Observations',
     OTHER_IFO: 'Other',
     SAVE_PORT: 'Save Port',
@@ -321,7 +321,7 @@ export const voyage: any = {
     CHECK_HOUR_FIELD: 'Check hour field',
     CHECK_ACTIVITY_FIELD: 'Check activity performed field',
     CHECK_DISTANCE: 'Check distance',
-    CHECK_BEFOURT: 'Check befourt',
+    CHECK_BEAUFORT: 'Check beaufort',
     CHECK_LATITUDE: 'Check latitud',
     CHECK_LONGITUD: 'Check longitud',
     TOTAL_LSFO: 'Total LSFO',
@@ -331,7 +331,7 @@ export const voyage: any = {
     NO_BUNKERING: 'No bunkering',
     DELETE_REPORT: 'Delete Report',
     EDIT_REPORT: 'Edit Report',
-    PLACEHOLDER_BEFOURT: 'Type or select the wind befourt.',
+    PLACEHOLDER_BEAUFORT: 'Type or select the wind beaufort.',
     LONGITUDE: 'Longitude',
     LATITUDE: 'Latitude',
     POSITION: 'Position',
@@ -454,6 +454,8 @@ export const dashboard: any = {
 };
 
 export const dialog: any = {
+    NEW_MODULE: 'New module',
+    NEW_MODULE_DESCRIPTION : 'This action is available in a later version.',
     TYPE_CONSUMPTION: 'Type consumption',
     MORE_INFORMATION: 'More information :',
     VIEW_ALL_VOYAGE: 'See All Voyage',
@@ -487,6 +489,8 @@ export const dialog: any = {
     BUNKERING: 'Bunkering',
     REPORT_INFORMATION_GENERIC: 'The following format has the summary of fuel by activity, in addition to the reports registered by the captain.',
     REPORT_INFORMATION_DNV: 'The following format is the one required to obtain the DNV identity certificate.',
+    REPORT_INFORMATION_FORMAT_GENERIC_LUCIA: 'The following format has a summary of consumption segregated by trips.',
+    REPORT_INFORMATION_EXPORT_VESSEL_DATA: 'The following format exports all the registered information of the ship, allowing to correct and review the entered data. Once the excel file has been corrected, it must be sent to the programmer to update it in the background.',
     ADD_SAILING_NAVIGATION: 'What navigation information do you want to add?',
     IN_BALLAST: 'In Ballast',
     WITH_LADEN: 'With Laden',
@@ -516,7 +520,12 @@ export const dialog: any = {
     DESCRIPTION_COMPONENT_DIALOG_CONFIG_DASHBOARD: 'Within this panel we can configure the options that the system allows us.',
     LABEL_QUANTITY_DECIMAL: 'Decimal quantity',
     TOOLTIP_LABEL_QUANTITY_DECIMAL: 'DECIMAL QUANTITY.- It allows modifying the number of decimals that we wish to observe.',
-    SAVE_CHANGES: 'Save changes'
+    SAVE_CHANGES: 'Save changes',
+    CHECK_EMAILS: 'Check email fiel.',
+    SUCCESS_TEST_SEND_EMAIL: 'The test was sent correctly.',
+    ERROR: 'Error',
+    SUCCESS: 'Success',
+    
 };
 
 export const guards: any = {
