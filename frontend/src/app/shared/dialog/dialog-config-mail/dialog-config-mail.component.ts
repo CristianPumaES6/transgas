@@ -69,6 +69,7 @@ export class DialogConfigMailComponent implements OnInit {
 
       this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE'), this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE_DESCRIPTION'));
      
+      this.loadingService.Close();
  /*      this.dailyReportService.PostSendEmailLastVoyage(this.user.id, this.emails).subscribe(
         (resultSend: boolean) => {
           if (!Boolean(resultSend)) { throw 'ERROR SEND MAIL.' }
