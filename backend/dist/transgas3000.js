@@ -5,6 +5,8 @@ const app_module_1 = require("./app.module");
 const express = require("express");
 const path_config_1 = require("./config/path.config");
 const path_1 = require("path");
+const nodemailer_assets_1 = require("./assets/nodemailer.assets");
+const hbs_assets_1 = require("./assets/hbs.assets");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const options = {
@@ -18,6 +20,8 @@ async function bootstrap() {
     app.use(express.static(path_1.join(path_config_1.FOLDER_UPLOADS)));
     app.use(express.static(path_1.join(path_config_1.FOLDER_STATIC)));
     app.use(express.static(path_1.join(path_config_1.FOLDER_FRONTEND)));
+    hbs_assets_1.HbsInit(app);
+    nodemailer_assets_1.NodemailerInit();
     await app.listen(3000);
 }
 bootstrap();

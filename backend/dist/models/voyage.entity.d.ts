@@ -59,4 +59,5 @@ export declare class ImportVoyage {
     east_minutes: number;
     east_east_west: string;
     updatePort: number;
+    delete_report: boolean;
 }

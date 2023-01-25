@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ObtenerHoraDeDosStringUTC = exports.ConvertMomentUTC = exports.FormatDateSumDays = exports.ConvertDateUTC_To_FORMAT_UTC = exports.FormatDateUTCToDateHour = exports.ConvertMMDDYYYToYYYYMMDD = exports.GetDate = void 0;
+exports.GetHours = exports.ObtenerHoraDeDosStringUTC = exports.ConvertMomentUTC = exports.FormatDateSumDays = exports.ConvertDateUTC_To_FORMAT_UTC = exports.FormatDateUTCToDateHour = exports.ConvertMMDDYYYToYYYYMMDD = exports.GetDate = void 0;
 const moment = require("moment");
 const momentTimezone = require("moment-timezone");
 moment.locale();
@@ -45,4 +45,8 @@ function ObtenerHoraDeDosStringUTC(fechaUTC, fechaUTC2) {
     return result;
 }
 exports.ObtenerHoraDeDosStringUTC = ObtenerHoraDeDosStringUTC;
+function GetHours() {
+    return moment().format('HH mm ss');
+}
+exports.GetHours = GetHours;
 //# sourceMappingURL=moment.assets.js.map
