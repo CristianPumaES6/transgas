@@ -358,5 +358,3 @@ export class InfoReport_IFO_AND_MGO {
         this.mgo = [];
     }
 }
-
-

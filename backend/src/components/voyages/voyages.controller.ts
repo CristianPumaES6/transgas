@@ -15,7 +15,7 @@ import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
-import { FormatExcelLastVoyageService } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
+import { FormatExcelLastVoyageService, GenerateFormatObjForExcelEmail } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { MailLastVoyage, SendMailConfig } from '../../models/sendMailConfig';
 import { SendMailArchiveInfoLastVoyage } from './../../assets/nodemailer.assets'
@@ -858,9 +858,6 @@ export class VoyagesController {
 
         let numeroViaje = 0;
         let numeroAnio = 0;
-        
-        let mailLastVoyage: MailLastVoyage = new MailLastVoyage();
-
         // Empezamos la promesa.
         return DummyPromise().then(
             (resultDummy: Boolean) => {
@@ -930,13 +927,14 @@ export class VoyagesController {
                 );
 
                 // Generamos el excel
-                return this._formatExcelLastVoyageService.GenerateExcelBuffer(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity)
+                return this._formatExcelLastVoyageService.GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity)
             }
         ).then(
-            resultBuffer => {
-                mailLastVoyage.nameBuque = userEntity.name;
+            resultGenerateFormatObjForExcelEmail => {
+
+                let mailLastVoyage: GenerateFormatObjForExcelEmail = resultGenerateFormatObjForExcelEmail;
                 // Enviar archivo mail.
-                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, resultBuffer, mailLastVoyage);
+                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
             }
         ).then(
             result => {
@@ -944,7 +942,7 @@ export class VoyagesController {
                 if (!result) { throw 'ERROR SUPPORT' }
                 // retornamos una Respuesta exitosa.
                 return {
-                    status: HttpStatus.OK, 
+                    status: HttpStatus.OK,
                     message: 'OK',
                     data: result
                 };

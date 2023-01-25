@@ -13,6 +13,7 @@ import { Voyage } from 'src/models/voyage.entity';
 import { Port } from 'src/models/port.entity';
 import { ConvertDateUTC_To_FORMAT_UTC, GetHours, ObtenerHoraDeDosStringUTC } from 'src/assets/moment.assets';
 import moment from 'moment';
+import { MailLastVoyage } from 'src/models/sendMailConfig';
 
 
 @Injectable()
@@ -20,17 +21,13 @@ export class FormatExcelLastVoyageService {
 
 
     // Actualiza un Voyage
-    async GenerateExcelBuffer(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<Buffer> {
 
-        // Hacemos una busqueda por id
-        return await DummyPromise().then(
-            result => {
-                return this.FormatGeneric(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
-            }
-        )
-    }
+    // Mejorar este codigo se esta volviendo un codigo espageti.
+    async GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<GenerateFormatObjForExcelEmail> {
 
-    async FormatGeneric(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<Buffer> {
+        let objGenerateFormatObjForExcelEmail = new GenerateFormatObjForExcelEmail();
+        objGenerateFormatObjForExcelEmail.success = true;
+
 
         // esta variable lo creamos para luego poder reusarlo.
         let workbook: any;
@@ -46,7 +43,9 @@ export class FormatExcelLastVoyageService {
             let worksheet = workbook.addWorksheet('Data Report');
 
             // Generamos la hoja de los reportes generado por el capitan
-            this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
+            return this.GenerarHojaDataReport(worksheet, listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, selectUser);
+        }).then(result => {
+            objGenerateFormatObjForExcelEmail.objMailLastVoyage = result;
 
             // Registramos los cuadros de dashboard.
             this.AddInfoByPortAccordingToTheTravelreport(workbook, 2, 10, new UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate)
@@ -56,7 +55,12 @@ export class FormatExcelLastVoyageService {
         }).then(result => {
             return workbook.xlsx.writeBuffer();
         }).then((result: Buffer) => {
-            return result;
+            if (!result) throw 'ERROR_WRITE_BUFFER_1001'
+
+            objGenerateFormatObjForExcelEmail.buffer = result
+
+
+            return objGenerateFormatObjForExcelEmail;
         });
 
     }
@@ -191,7 +195,7 @@ export class FormatExcelLastVoyageService {
     }
 
     // Generamos la hoja de Data Report
-    private async GenerarHojaDataReport(worksheet: Worksheet, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<boolean> {
+    private async GenerarHojaDataReport(worksheet: Worksheet, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<MailLastVoyage> {
 
         // reset colum
         this.ResetColumn(worksheet);
@@ -254,8 +258,8 @@ export class FormatExcelLastVoyageService {
         infoVessel.date_end = listGetReportVoyagePortDaily[listGetReportVoyagePortDaily.length - 1].date + '';
         infoVessel.ifo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_ifo;
         infoVessel.mgo_start = getInfoFuelStartEndByFilterDate.infoFuelStart.total_mgo;
-
-
+        infoVessel.ifo_end = getInfoFuelStartEndByFilterDate.infoFuelEnd.total_ifo;
+        infoVessel.mgo_end = getInfoFuelStartEndByFilterDate.infoFuelEnd.total_mgo;
 
 
         let posicionDelInfoVessel: PosicionDelosRegistrosNormales = {
@@ -284,9 +288,35 @@ export class FormatExcelLastVoyageService {
 
         /// Filas aprox del cuadro de consumo.
         positionRow += tamanioCosumptionIFO + 2;
-        let tamanioRegisterReport = this.StyleDashReportRegister(worksheet, positionRow, selectUser, listGetReportVoyagePortDaily, posicionDelInfoVessel);
 
-        return true;
+        let objMailLastVoyage: MailLastVoyage = this.StyleDashReportRegister(worksheet, positionRow, selectUser, listGetReportVoyagePortDaily, posicionDelInfoVessel);
+        objMailLastVoyage.nameBuque = selectUser.name;
+        objMailLastVoyage.dateCurrent = infoVessel.date_end;
+        objMailLastVoyage.currentMGO = infoVessel.mgo_end;
+        objMailLastVoyage.currentVLSFO = infoVessel.ifo_end;
+
+
+        objMailLastVoyage.consumptionActivity.ifoResumen.loading.dailyConsumption = selectUser.loadingConsumptionIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.discharge.dailyConsumption = selectUser.dischargeConsumptionIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.ballast.dailyConsumption = selectUser.sailingBallastConsumptionIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.laden.dailyConsumption = selectUser.contractSpeedSailingLadenIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.economical.dailyConsumption = selectUser.contractSpeedSailingEconomicalIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.anchored.dailyConsumption = selectUser.anchoredConsumptionIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.maneuver.dailyConsumption = selectUser.maneuverConsumptionIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.other_act.dailyConsumption = selectUser.otherConsumptionIFO;
+
+
+        objMailLastVoyage.consumptionActivity.mgoResumen.loading.dailyConsumption = selectUser.loadingConsumptionMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.discharge.dailyConsumption = selectUser.dischargeConsumptionMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.ballast.dailyConsumption = selectUser.sailingBallastConsumptionMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.laden.dailyConsumption = selectUser.contractSpeedSailingLadenMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.economical.dailyConsumption = selectUser.contractSpeedSailingEconomicalMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.anchored.dailyConsumption = selectUser.anchoredConsumptionMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.maneuver.dailyConsumption = selectUser.maneuverConsumptionMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.other_act.dailyConsumption = selectUser.otherConsumptionMGO;
+
+        
+        return objMailLastVoyage;
     }
 
     // Esta funcion permite poner un cuadro de leyenda.
@@ -2176,7 +2206,7 @@ export class FormatExcelLastVoyageService {
         }
 
 
-        let itemDelRegistro: GetReportVoyagePortDaily[] = []; 
+        let itemDelRegistro: GetReportVoyagePortDaily[] = [];
         itemReportBefore = listGetReportVoyagePortDaily[0]
         // recorremos todos los reportes.
         listGetReportVoyagePortDaily.forEach(
@@ -2596,7 +2626,7 @@ export class FormatExcelLastVoyageService {
         let redMedium = 'ffa4a4';
         let redLow = 'ffd6d6';
 
-        
+
         this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'TOTAL', 8, black, white, '')
         worksheetPuerto.getCell(this.PositByCell(colum) + positionRow).style = {
             alignment: {
@@ -2632,7 +2662,7 @@ export class FormatExcelLastVoyageService {
             { formula: 'SUM(' + this.PositByCell(colum) + (firshRow) + ':' + this.PositByCell(colum) + (lastRow) + ')' }
             , 8, black, white, '')
         this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
-       this.RuleFormatCeroGris(worksheetPuerto, positionRow, positionColumns[0]);
+        this.RuleFormatCeroGris(worksheetPuerto, positionRow, positionColumns[0]);
 
         // siguiente columna
         colum += 3;
@@ -2917,7 +2947,7 @@ export class FormatExcelLastVoyageService {
 
     }
 
-    private StyleDashReportRegister(worksheet: Worksheet, posit: number, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], posicionDelInfoVessel: PosicionDelosRegistrosNormales): number {
+    private StyleDashReportRegister(worksheet: Worksheet, posit: number, selectUser: UserEntity, listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], posicionDelInfoVessel: PosicionDelosRegistrosNormales): MailLastVoyage {
 
         // Colores amarillo
         let colorYellowTransgas = 'FFCD06';
@@ -2949,6 +2979,10 @@ export class FormatExcelLastVoyageService {
         let positionRow = posit;
 
         let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
+        
+        
+        // Informacion para el envio de email
+        let objMailLastVoyage: MailLastVoyage = new MailLastVoyage(); 
 
         worksheet.getCell('AR' + positionRow).value = textIFOorVLSFOorLSFO + " CONSUMPTION IN MT";
         worksheet.getCell('AR' + positionRow).style = {
@@ -3938,6 +3972,95 @@ export class FormatExcelLastVoyageService {
 
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
+ 
+
+                // Verificamos si hay un consumo de VLSFO para sumar el tiempo y el consumo
+
+                // Sumamaos el total
+                let sumaTotalIFO = (getReportVoyagePortDaily.mplaIfo + getReportVoyagePortDaily.auxIfo + getReportVoyagePortDaily.boilerIfo + getReportVoyagePortDaily.otherIfo);
+
+                // si existe un consumo de IFO se le debe asignar a una tipo de actividad
+                if (
+                    sumaTotalIFO > 0
+                ) {
+
+                    if (getReportVoyagePortDaily.activityPerformed === 'LOADING') {
+                        objMailLastVoyage.consumptionActivity.ifoResumen.loading.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.loading.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'DOWNLOADING') {
+                        objMailLastVoyage.consumptionActivity.ifoResumen.discharge.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.discharge.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'SAILING_IN_BALLAST' && getReportVoyagePortDaily.speedStraction === 'FULL_SPEED') {
+                        objMailLastVoyage.consumptionActivity.ifoResumen.ballast.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.ballast.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'SAILING_WITH_LADEN' && getReportVoyagePortDaily.speedStraction === 'FULL_SPEED') {
+                        objMailLastVoyage.consumptionActivity.ifoResumen.laden.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.laden.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.speedStraction === 'ECO_SPEED') {
+                        objMailLastVoyage.consumptionActivity.ifoResumen.economical.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.economical.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'ANCHORED') {
+                        // empezamos filtro por actividad y que se le sumo a la actividad correspondiente.
+                        objMailLastVoyage.consumptionActivity.ifoResumen.anchored.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.anchored.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'MANEUVER') {
+                        // empezamos filtro por actividad y que se le sumo a la actividad correspondiente.
+                        objMailLastVoyage.consumptionActivity.ifoResumen.maneuver.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.maneuver.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'OTHER_ACT') {
+                        objMailLastVoyage.consumptionActivity.ifoResumen.other_act.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.ifoResumen.other_act.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    }
+
+                }
+
+                // 
+                let sumaTotalMGO = (getReportVoyagePortDaily.mplaMgo + getReportVoyagePortDaily.auxMgo + getReportVoyagePortDaily.boilerMgo + getReportVoyagePortDaily.ppMgo + getReportVoyagePortDaily.giMgo + getReportVoyagePortDaily.otherMgo);
+                // Si existe un consumo de MGO lo registramos.
+                if (
+                    // Consumo mplaIfo
+                    sumaTotalMGO > 0
+                ) {
+                   
+                    if (getReportVoyagePortDaily.activityPerformed === 'LOADING') {
+                        objMailLastVoyage.consumptionActivity.mgoResumen.loading.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.loading.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'DOWNLOADING') {
+                        objMailLastVoyage.consumptionActivity.mgoResumen.discharge.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.discharge.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'SAILING_IN_BALLAST' && getReportVoyagePortDaily.speedStraction === 'FULL_SPEED') {
+                        objMailLastVoyage.consumptionActivity.mgoResumen.ballast.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.ballast.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'SAILING_WITH_LADEN' && getReportVoyagePortDaily.speedStraction === 'FULL_SPEED') {
+                        objMailLastVoyage.consumptionActivity.mgoResumen.laden.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.laden.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.speedStraction === 'ECO_SPEED') {
+                        objMailLastVoyage.consumptionActivity.mgoResumen.economical.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.economical.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'ANCHORED') {
+                        // empezamos filtro por actividad y que se le sumo a la actividad correspondiente.
+                        objMailLastVoyage.consumptionActivity.mgoResumen.anchored.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.anchored.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'MANEUVER') {
+                        // empezamos filtro por actividad y que se le sumo a la actividad correspondiente.
+                        objMailLastVoyage.consumptionActivity.mgoResumen.maneuver.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.maneuver.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    } else if (getReportVoyagePortDaily.activityPerformed === 'OTHER_ACT') {
+                        objMailLastVoyage.consumptionActivity.mgoResumen.other_act.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.other_act.timeActivity += getReportVoyagePortDaily.steamingTime;
+                    }
+                }
+
+                //Sumamos el total de bunkering realizados hasta le momento.
+                if (getReportVoyagePortDaily.bunkeringIfo > 0) {
+                    objMailLastVoyage.bunkeringIFO += getReportVoyagePortDaily.bunkeringIfo;
+                }
+                if (getReportVoyagePortDaily.bunkeringMgo > 0) {
+                    objMailLastVoyage.bunkeringMGO += getReportVoyagePortDaily.bunkeringMgo;
+                }
+ 
+
+
 
 
 
@@ -4048,7 +4171,7 @@ export class FormatExcelLastVoyageService {
 
 
 
-        return positionRow;
+        return objMailLastVoyage;
     }
 
     private MultipleFormateWorksheet(worksheet: Worksheet, positionRow: number, positionColum: number, typeFormat: string) {
@@ -5067,4 +5190,17 @@ export class PosicionDelosRegistrosNormales {
         this.endRow = endRow || 0;
         this.startColum = startColum || 0;
     }
-};  
+};
+
+export class GenerateFormatObjForExcelEmail {
+    constructor(
+        public success?: boolean,
+        public buffer?: Buffer,
+        public objMailLastVoyage?: MailLastVoyage,
+    ) {
+
+        this.success = success || false;
+        this.buffer = buffer || null;
+        this.objMailLastVoyage = objMailLastVoyage || new MailLastVoyage();
+    }
+}
