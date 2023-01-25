@@ -1039,7 +1039,7 @@ export class VoyageComponent implements OnInit {
     this.selectDailyReport = JSON.parse(JSON.stringify(dailyReportFind));
 
     // SOLO PARA EL SEATMERIY
-    if (this.selectUser.id == 19) {
+    if ( this.selectUser.id == 19 || this.selectUser.id == 7  || this.selectUser.id == 15 ||  this.selectUser.id == 23 ) {
 
 
       // Le asignamos la hora lastRecort
@@ -2061,7 +2061,7 @@ export class VoyageComponent implements OnInit {
 
     newDailyReport.steamingTime = this.GenerateTimeOperation();
 
-    if (this.selectUser.id == 19) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7  || this.selectUser.id == 15 ||  this.selectUser.id == 23 ) {
 
       newDailyReport.date = JuntarFechaYHoraUTCToMoment2(newDailyReport.date, newDailyReport.hour);
 
@@ -2282,7 +2282,7 @@ export class VoyageComponent implements OnInit {
 
     dailyReportToSave.steamingTime = this.GenerateTimeOperation();
 
-    if (this.selectUser.id == 19) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7  || this.selectUser.id == 15 ||  this.selectUser.id == 23 ) {
 
       dailyReportToSave.date = JuntarFechaYHoraUTCToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
 
@@ -2651,7 +2651,7 @@ export class VoyageComponent implements OnInit {
         this.databaseService.GetLastReportDailys().then(
           result => {
 
-            if (this.selectUser.id == 19) {
+            if (this.selectUser.id == 19 || this.selectUser.id == 7  || this.selectUser.id == 15 ||  this.selectUser.id == 23 ) {
               this.lastRecordedHour = FormatDateUTCToDateHourUTC(result.date);
             } else {
               this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
@@ -2687,7 +2687,7 @@ export class VoyageComponent implements OnInit {
   private GenerateTimeOperation(): number {
     let lastDateHour: Moment;
 
-    if (this.selectUser.id == 19) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7  || this.selectUser.id == 15 ||  this.selectUser.id == 23 ) {
       let dateSend = this.selectDailyReport.date;
       lastDateHour = ConvertirDateHourToMoment(dateSend, this.selectDailyReport.hour);
 
@@ -2757,7 +2757,7 @@ export class VoyageComponent implements OnInit {
   public FormatDate(fecha: any): string {
     let formatfecha;
     // Esto solo lo pongo para  el usuario seatmerit que trabaraja con horario utc
-    if (this.selectUser.id == 19) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7  || this.selectUser.id == 15 ||  this.selectUser.id == 23 ) {
       formatfecha = stringUTCToDateUTC(fecha);
     } else {
       formatfecha = stringToDate(fecha);
@@ -2821,7 +2821,7 @@ export class VoyageComponent implements OnInit {
     let result = '';
 
     // Esto solo lo pongo para  el usuario seatmerit que trabaraja con horario utc
-    if (this.selectUser.id == 19) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7  || this.selectUser.id == 15 ||  this.selectUser.id == 23 ) {
       result = FormatDateUTCToDateHourUTC(dateUTC);
     } else {
       result = FormatDateUTCToDateHour(dateUTC);
