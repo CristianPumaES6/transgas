@@ -116,7 +116,8 @@ export class VoyageComponent implements OnInit {
     'W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9',
     'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8', 'N9',
     'NW1', 'NW2', 'NW3', 'NW4', 'NW5', 'NW6', 'NW7', 'NW8', 'NW9',
-    'W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9'
+    'W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9',
+    'WN1', 'WN2', 'WN3', 'WN4', 'WN5', 'WN6', 'WN7', 'WN8', 'WN9'
   ];
 
   filteredOptionsSelectBEAUFORT: Observable<string[]>;
