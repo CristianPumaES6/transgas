@@ -40,8 +40,8 @@ export const EnvConfig: EnvConfig = {
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.lowcodetool.com',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-}; */
-
+};
+ */
 
 
 
