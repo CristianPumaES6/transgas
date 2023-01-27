@@ -2065,13 +2065,13 @@ export class VoyageComponent implements OnInit {
 
     if (error) throw 'ERROR POR CAMPOS FORMULARIOS DAILY REPORT';
 
-    newDailyReport.steamingTime = this.GenerateTimeOperation();
 
-    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23) {
-
+    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.roleUser =='SUPPORT') {
+      if(!newDailyReport.steamingTime)   this.GenerateTimeOperation();
       newDailyReport.date = JuntarFechaYHoraUTCToMoment2(newDailyReport.date, newDailyReport.hour);
 
     } else {
+      newDailyReport.steamingTime = this.GenerateTimeOperation();
       newDailyReport.date = ConvertirDateHourToMoment2(newDailyReport.date, newDailyReport.hour);
     }
 
@@ -2288,12 +2288,13 @@ export class VoyageComponent implements OnInit {
 
     dailyReportToSave.steamingTime = this.GenerateTimeOperation();
 
-    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23) {
-
+    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.roleUser =='SUPPORT') {
+      if(!dailyReportToSave.steamingTime)   this.GenerateTimeOperation();
       dailyReportToSave.date = JuntarFechaYHoraUTCToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
 
     } else {
 
+      dailyReportToSave.steamingTime = this.GenerateTimeOperation();
       dailyReportToSave.date = ConvertirDateHourToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
 
     }
