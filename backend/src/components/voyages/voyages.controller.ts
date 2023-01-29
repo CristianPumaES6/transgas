@@ -909,14 +909,14 @@ export class VoyagesController {
                 let endDataROB: GetROBByUser = new GetROBByUser()
 
                 // IFO
-                startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo, 2;
-                startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo, 2;
+                startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo;
+                startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo;
                 startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo, 2;
                 startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo, 2;
 
                 // MGO
-                endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo), 2;
-                endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo), 2;
+                endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo);
+                endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo);
                 endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo, 2;
                 endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo, 2;
 

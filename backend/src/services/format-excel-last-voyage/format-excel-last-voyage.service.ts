@@ -299,8 +299,8 @@ export class FormatExcelLastVoyageService {
         objMailLastVoyage.consumptionActivity.ifoResumen.loading.dailyConsumption = selectUser.loadingConsumptionIFO;
         objMailLastVoyage.consumptionActivity.ifoResumen.discharge.dailyConsumption = selectUser.dischargeConsumptionIFO;
         objMailLastVoyage.consumptionActivity.ifoResumen.ballast.dailyConsumption = selectUser.sailingBallastConsumptionIFO;
-        objMailLastVoyage.consumptionActivity.ifoResumen.laden.dailyConsumption = selectUser.contractSpeedSailingLadenIFO;
-        objMailLastVoyage.consumptionActivity.ifoResumen.economical.dailyConsumption = selectUser.contractSpeedSailingEconomicalIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.laden.dailyConsumption = selectUser.sailingLoadConsumptionIFO;
+        objMailLastVoyage.consumptionActivity.ifoResumen.economical.dailyConsumption = selectUser.sailingEconomicConsumptionIFO;
         objMailLastVoyage.consumptionActivity.ifoResumen.anchored.dailyConsumption = selectUser.anchoredConsumptionIFO;
         objMailLastVoyage.consumptionActivity.ifoResumen.maneuver.dailyConsumption = selectUser.maneuverConsumptionIFO;
         objMailLastVoyage.consumptionActivity.ifoResumen.other_act.dailyConsumption = selectUser.otherConsumptionIFO;
@@ -309,8 +309,8 @@ export class FormatExcelLastVoyageService {
         objMailLastVoyage.consumptionActivity.mgoResumen.loading.dailyConsumption = selectUser.loadingConsumptionMGO;
         objMailLastVoyage.consumptionActivity.mgoResumen.discharge.dailyConsumption = selectUser.dischargeConsumptionMGO;
         objMailLastVoyage.consumptionActivity.mgoResumen.ballast.dailyConsumption = selectUser.sailingBallastConsumptionMGO;
-        objMailLastVoyage.consumptionActivity.mgoResumen.laden.dailyConsumption = selectUser.contractSpeedSailingLadenMGO;
-        objMailLastVoyage.consumptionActivity.mgoResumen.economical.dailyConsumption = selectUser.contractSpeedSailingEconomicalMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.laden.dailyConsumption = selectUser.sailingLoadConsumptionMGO;
+        objMailLastVoyage.consumptionActivity.mgoResumen.economical.dailyConsumption = selectUser.sailingEconomicConsumptionMGO;
         objMailLastVoyage.consumptionActivity.mgoResumen.anchored.dailyConsumption = selectUser.anchoredConsumptionMGO;
         objMailLastVoyage.consumptionActivity.mgoResumen.maneuver.dailyConsumption = selectUser.maneuverConsumptionMGO;
         objMailLastVoyage.consumptionActivity.mgoResumen.other_act.dailyConsumption = selectUser.otherConsumptionMGO;
@@ -3973,7 +3973,7 @@ export class FormatExcelLastVoyageService {
         listGetReportVoyagePortDaily.forEach(
             (getReportVoyagePortDaily, index) => {
  
-
+                
                 // Verificamos si hay un consumo de VLSFO para sumar el tiempo y el consumo
 
                 // Sumamaos el total
@@ -4023,30 +4023,30 @@ export class FormatExcelLastVoyageService {
                 ) {
                    
                     if (getReportVoyagePortDaily.activityPerformed === 'LOADING') {
-                        objMailLastVoyage.consumptionActivity.mgoResumen.loading.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.loading.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.loading.timeActivity += getReportVoyagePortDaily.steamingTime;
                     } else if (getReportVoyagePortDaily.activityPerformed === 'DOWNLOADING') {
-                        objMailLastVoyage.consumptionActivity.mgoResumen.discharge.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.discharge.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.discharge.timeActivity += getReportVoyagePortDaily.steamingTime;
                     } else if (getReportVoyagePortDaily.activityPerformed === 'SAILING_IN_BALLAST' && getReportVoyagePortDaily.speedStraction === 'FULL_SPEED') {
-                        objMailLastVoyage.consumptionActivity.mgoResumen.ballast.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.ballast.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.ballast.timeActivity += getReportVoyagePortDaily.steamingTime;
                     } else if (getReportVoyagePortDaily.activityPerformed === 'SAILING_WITH_LADEN' && getReportVoyagePortDaily.speedStraction === 'FULL_SPEED') {
-                        objMailLastVoyage.consumptionActivity.mgoResumen.laden.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.laden.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.laden.timeActivity += getReportVoyagePortDaily.steamingTime;
                     } else if (getReportVoyagePortDaily.speedStraction === 'ECO_SPEED') {
-                        objMailLastVoyage.consumptionActivity.mgoResumen.economical.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.economical.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.economical.timeActivity += getReportVoyagePortDaily.steamingTime;
                     } else if (getReportVoyagePortDaily.activityPerformed === 'ANCHORED') {
                         // empezamos filtro por actividad y que se le sumo a la actividad correspondiente.
-                        objMailLastVoyage.consumptionActivity.mgoResumen.anchored.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.anchored.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.anchored.timeActivity += getReportVoyagePortDaily.steamingTime;
                     } else if (getReportVoyagePortDaily.activityPerformed === 'MANEUVER') {
                         // empezamos filtro por actividad y que se le sumo a la actividad correspondiente.
-                        objMailLastVoyage.consumptionActivity.mgoResumen.maneuver.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.maneuver.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.maneuver.timeActivity += getReportVoyagePortDaily.steamingTime;
                     } else if (getReportVoyagePortDaily.activityPerformed === 'OTHER_ACT') {
-                        objMailLastVoyage.consumptionActivity.mgoResumen.other_act.consumption += sumaTotalIFO;
+                        objMailLastVoyage.consumptionActivity.mgoResumen.other_act.consumption += sumaTotalMGO;
                         objMailLastVoyage.consumptionActivity.mgoResumen.other_act.timeActivity += getReportVoyagePortDaily.steamingTime;
                     }
                 }
@@ -4077,7 +4077,10 @@ export class FormatExcelLastVoyageService {
                     getReportVoyagePortDaily.hour, '',
                     //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
                     { formula: '(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
+                    
+                    
                     this.translate(getReportVoyagePortDaily.activityPerformed), '', '', '',
+                    //getReportVoyagePortDaily.steamingTime, '', '', '',
 
 
                     getReportVoyagePortDaily.speedStraction, '',

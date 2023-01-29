@@ -66,7 +66,7 @@ export class DailyReportsService {
 
                 } else {
 
-                    
+
                     return this._dailyReportRepository.find({
                         where: [{
                             id: id,
@@ -253,7 +253,7 @@ export class DailyReportsService {
         // Este arreglo contendra la info del rob del inicio del viaje y cuanto consumio en el rango de fecha.
         let StartEndROB: any[] = [];
 
-    
+
         // Hacemos where por todos los campos de la entidad
         // Buscamos la info del rob asta antes del inicio de fecha
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
