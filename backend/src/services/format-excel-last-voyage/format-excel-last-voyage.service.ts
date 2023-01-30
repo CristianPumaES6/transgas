@@ -5201,7 +5201,6 @@ export class GenerateFormatObjForExcelEmail {
         public buffer?: Buffer,
         public objMailLastVoyage?: MailLastVoyage,
     ) {
-
         this.success = success || false;
         this.buffer = buffer || null;
         this.objMailLastVoyage = objMailLastVoyage || new MailLastVoyage();

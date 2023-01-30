@@ -88,15 +88,18 @@
                 </div>
                 <div style="display: block; text-align: center;font-family:sans-serif; ">
 
-
+                    {{#if isVIew_IFO_VLSFO_LSFO}}
                     <span>
                         <strong>
-                            <span style="color:#0855c4; font-size:30px;">VLSFO :
+                            <span style="color:#0855c4; font-size:30px;">{{IFO_VLSFO_LSFO}} :
                             </span>
                             <span style="color:#0855c4; font-size:60px;">{{currentVLSFO}} mt</span>
                         </strong>
                     </span>
+                    {{/if}}
+
                     <span style="padding: 20px;"></span>
+                    {{#if isVIew_MGO}}
                     <span>
                         <strong>
                             <span style="color:#0855c4; font-size:30px;">MGO :
@@ -104,18 +107,19 @@
                             <span style="color:#0855c4; font-size:60px;">{{currentMGO}} mt</span>
                         </strong>
                     </span>
+                    {{/if}}
                 </div>
             </td>
         </tr>
 
-
+        {{#if isVIew_IFO_VLSFO_LSFO}}
         <tr>
             <td
                 style="text-align:center;color:#000;font-family:arial,helvetica;font-size:15px;background:#fff;line-height:30px">
-
+                <br>
                 <a href="https://transgas.web.app/" style="text-decoration:none;color:#000" target="_blank">
                     <span style="font-size:19px;color:#545454">
-                        <b>Information on consumption of mgo by activities.</b>
+                        <b>Information on consumption of {{IFO_VLSFO_LSFO}} by activities.</b>
                     </span>
                 </a>
 
@@ -268,14 +272,16 @@
             </td>
         </tr>
 
+        {{/if}}
 
+        {{#if isVIew_MGO}}
         <tr>
             <td
                 style="text-align:center;color:#000;font-family:arial,helvetica;font-size:15px;background:#fff;line-height:30px">
                 <br>
                 <a href="https://transgas.web.app/" style="text-decoration:none;color:#000" target="_blank">
                     <span style="font-size:19px;color:#545454">
-                        <b>Information on consumption of mgo by activities.</b>
+                        <b>Information on consumption of MGO by activities.</b>
                     </span>
                 </a>
 
@@ -428,6 +434,7 @@
 
             </td>
         </tr>
+        {{/if}}
 
 
         <tr>

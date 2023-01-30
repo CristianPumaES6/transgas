@@ -858,9 +858,14 @@ export class VoyagesController {
 
         let numeroViaje = 0;
         let numeroAnio = 0;
+
+        let textIFOorVLSFOorLSFO = '';
+
+
         // Empezamos la promesa.
         return DummyPromise().then(
             (resultDummy: Boolean) => {
+
                 // Consultaos los ultimpos viajes.
                 return this._usersService.Get(userId);
             }
@@ -868,6 +873,7 @@ export class VoyagesController {
             (resultUser: UserEntity) => {
 
                 userEntity = resultUser;
+
                 // Consultaos los ultimpos viajes.
                 return this._voyagesService.GetLastVoyage(userId);
             }
@@ -932,7 +938,20 @@ export class VoyagesController {
         ).then(
             resultGenerateFormatObjForExcelEmail => {
 
+                // armamos el objeto que enviaremos para el email
                 let mailLastVoyage: GenerateFormatObjForExcelEmail = resultGenerateFormatObjForExcelEmail;
+               
+                // si dice que si consumo IFO O VLSFO O LSFO mostraremos su dato
+                mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO ? 'IFO' : userEntity.isConsumptionLSFO ? 'LSFO' : userEntity.isConsumptionVLSFO ? 'VLSFO' : '';
+                if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
+                    mailLastVoyage.objMailLastVoyage.isVIew_IFO_VLSFO_LSFO = true;
+                }
+
+                // si dice que si consumo mgo mostraremos su dato
+                mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO ? 'MGO' : '';
+                if (mailLastVoyage.objMailLastVoyage.MGO) {
+                    mailLastVoyage.objMailLastVoyage.isVIew_MGO = true;
+                }
                 // Enviar archivo mail.
                 return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
             }

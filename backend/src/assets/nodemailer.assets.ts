@@ -313,7 +313,7 @@ export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: s
 
 
             // Devuelvo el contenido obtenido
-            return HbsConvertHtmlRender('mailSendLastVoyage.html', mailLastVoyage);
+            return HbsConvertHtmlRender('mailSendLastVoyage.hbs', mailLastVoyage);
         }
     ).then(
         (renderHtml: string) => {
