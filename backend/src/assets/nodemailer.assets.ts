@@ -20,6 +20,7 @@ import { MailOptions } from '../models/assets/mailOptions.model';
 import { MailLastVoyage } from 'src/models/sendMailConfig';
 import { ConvertDateUTC_To_FORMAT_UTC } from './moment.assets';
 import { mathRound } from './math.assets';
+import { translateActivity } from './translate.assets';
 
 
 let mailServer;
@@ -243,34 +244,55 @@ export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: s
             mailLastVoyage.bunkeringMGO = mathRound(mailLastVoyage.bunkeringMGO, 2);
 
             // CONSUMO IFO
+            mailLastVoyage.consumptionActivity.ifoResumen.anchored.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.anchored.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.anchored.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.anchored.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.anchored.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.anchored.timeActivity, 2);
-            mailLastVoyage.consumptionActivity.ifoResumen.anchored.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.anchored.dailyConsumption, 2);
+            mailLastVoyage.consumptionActivity.ifoResumen.anchored.dailyConsumptionCharter = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.anchored.dailyConsumptionCharter, 2);
+            if( mailLastVoyage.consumptionActivity.ifoResumen.anchored.timeActivity>1){
+                mailLastVoyage.consumptionActivity.ifoResumen.anchored.dailyConsumption = mathRound((mailLastVoyage.consumptionActivity.ifoResumen.anchored.consumption*24)/mailLastVoyage.consumptionActivity.ifoResumen.anchored.timeActivity, 2);
+            }
 
+            mailLastVoyage.consumptionActivity.ifoResumen.ballast.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.ballast.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.ballast.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.ballast.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.ballast.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.ballast.timeActivity, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.ballast.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.ballast.dailyConsumption, 2);
+            if( mailLastVoyage.consumptionActivity.ifoResumen.ballast.timeActivity>1){
+                mailLastVoyage.consumptionActivity.ifoResumen.ballast.dailyConsumption = mathRound((mailLastVoyage.consumptionActivity.ifoResumen.ballast.consumption*24)/mailLastVoyage.consumptionActivity.ifoResumen.ballast.timeActivity, 2);
+            }
 
+            mailLastVoyage.consumptionActivity.ifoResumen.discharge.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.discharge.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.discharge.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.discharge.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.discharge.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.discharge.timeActivity, 2);
-            mailLastVoyage.consumptionActivity.ifoResumen.discharge.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.discharge.dailyConsumption, 2);
-
+            mailLastVoyage.consumptionActivity.ifoResumen.discharge.dailyConsumptionCharter = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.discharge.dailyConsumptionCharter, 2);
+     if( mailLastVoyage.consumptionActivity.ifoResumen.discharge.timeActivity>1){
+                mailLastVoyage.consumptionActivity.ifoResumen.discharge.dailyConsumption = mathRound((mailLastVoyage.consumptionActivity.ifoResumen.discharge.consumption*24)/mailLastVoyage.consumptionActivity.ifoResumen.ballast.timeActivity, 2);
+            }
+            
+            mailLastVoyage.consumptionActivity.ifoResumen.economical.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.economical.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.economical.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.economical.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.economical.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.economical.timeActivity, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.economical.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.economical.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.ifoResumen.laden.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.laden.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.laden.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.laden.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.laden.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.laden.timeActivity, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.laden.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.laden.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.ifoResumen.loading.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.loading.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.loading.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.loading.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.loading.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.loading.timeActivity, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.loading.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.loading.dailyConsumption, 2);
 
+             
+            mailLastVoyage.consumptionActivity.ifoResumen.maneuver.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.maneuver.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.maneuver.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.maneuver.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.maneuver.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.maneuver.timeActivity, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.maneuver.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.maneuver.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.ifoResumen.other_act.activityName =  translateActivity(mailLastVoyage.consumptionActivity.ifoResumen.other_act.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.ifoResumen.other_act.consumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.other_act.consumption, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.other_act.timeActivity = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.other_act.timeActivity, 2);
             mailLastVoyage.consumptionActivity.ifoResumen.other_act.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.ifoResumen.other_act.dailyConsumption, 2);
@@ -278,34 +300,48 @@ export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: s
 
 
             // CONSUMO MGO 
+            mailLastVoyage.consumptionActivity.mgoResumen.anchored.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.anchored.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.anchored.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.anchored.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.anchored.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.anchored.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.anchored.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.anchored.dailyConsumption, 2);
 
+             
+            mailLastVoyage.consumptionActivity.mgoResumen.ballast.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.ballast.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.ballast.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.ballast.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.ballast.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.ballast.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.ballast.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.ballast.dailyConsumption, 2);
 
+            mailLastVoyage.consumptionActivity.mgoResumen.discharge.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.discharge.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.discharge.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.discharge.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.discharge.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.discharge.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.discharge.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.discharge.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.mgoResumen.economical.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.economical.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.economical.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.economical.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.economical.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.economical.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.economical.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.economical.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.mgoResumen.laden.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.laden.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.laden.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.laden.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.laden.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.laden.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.laden.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.laden.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.mgoResumen.loading.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.loading.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.loading.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.loading.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.loading.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.loading.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.loading.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.loading.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.mgoResumen.maneuver.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.maneuver.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.maneuver.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.maneuver.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.maneuver.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.maneuver.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.maneuver.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.maneuver.dailyConsumption, 2);
 
+            
+            mailLastVoyage.consumptionActivity.mgoResumen.other_act.activityName =  translateActivity(mailLastVoyage.consumptionActivity.mgoResumen.other_act.activityName).toLocaleUpperCase();
             mailLastVoyage.consumptionActivity.mgoResumen.other_act.consumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.other_act.consumption, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.other_act.timeActivity = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.other_act.timeActivity, 2);
             mailLastVoyage.consumptionActivity.mgoResumen.other_act.dailyConsumption = mathRound(mailLastVoyage.consumptionActivity.mgoResumen.other_act.dailyConsumption, 2);
