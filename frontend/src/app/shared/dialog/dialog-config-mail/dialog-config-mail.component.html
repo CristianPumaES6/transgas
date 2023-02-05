@@ -16,8 +16,8 @@
         Save Changes
         <mat-icon class="icon-save"></mat-icon>
     </button>
-    
-    <button mat-button color="secundary" (click)="ClickTest()" matTooltip="">
+
+    <button mat-button color="secundary" (click)="ClickTestSendMail()" [disabled]="!unlockButtonTest" matTooltip="">
         Test Send
         <mat-icon class="icon-save"></mat-icon>
     </button>

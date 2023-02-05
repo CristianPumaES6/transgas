@@ -525,7 +525,7 @@ export const dialog: any = {
     SUCCESS_TEST_SEND_EMAIL: 'The test was sent correctly.',
     ERROR: 'Error',
     SUCCESS: 'Success',
-    
+    SOON_YOU_CONFIRMATION :'Soon you will receive a confirmation.'
 };
 
 export const guards: any = {

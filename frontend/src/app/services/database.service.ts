@@ -20,6 +20,7 @@ import { CantidadRestante } from '../models/loggedUser';
 import { map } from 'rxjs/operators';
 import { NotificationsService } from 'angular2-notifications';
 import { LanguageService } from './language.service';
+import { boolean } from 'mathjs';
 
 
 @Injectable()
@@ -1070,7 +1071,7 @@ export class DatabaseService {
         ).then(
             (results: DailyReport[]) => {
 
-                return results.find(report => report.status)
+                return results.find(report => boolean(report.status))
             }
         );
     }

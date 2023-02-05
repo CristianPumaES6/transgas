@@ -26,7 +26,8 @@ export class DialogConfigMailComponent implements OnInit {
   public user: User;
   public emails: string = "";
   public sendAutomatic = false;
-
+  // Esto habilita para que se bloque el botun de test
+  public unlockButtonTest = true;
 
   constructor(
     // Dialog referencia es el mismo.
@@ -51,12 +52,16 @@ export class DialogConfigMailComponent implements OnInit {
 
 
   public ClickSave() {
-    
+
     this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE'), this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE_DESCRIPTION'));
-     
+
   }
 
-  public ClickTest() {
+  public ClickTestSendMail() {
+
+    // lo desabilitamos
+    this.unlockButtonTest = false;
+
     this.loadingService.Open();
 
     let error: boolean = false;
@@ -65,33 +70,51 @@ export class DialogConfigMailComponent implements OnInit {
       error = true;
     }
 
-    if (!error) {
+    // Iniciamos la promesa
+    Promise.resolve(true).then(
+      () => {
 
-      this.notificationsService.info(this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE'), this.languageService.GetMessage(this.translateCategory, 'NEW_MODULE_DESCRIPTION'));
-     
-      this.loadingService.Close();
- /*      this.dailyReportService.PostSendEmailLastVoyage(this.user.id, this.emails).subscribe(
-        (resultSend: boolean) => {
-          if (!Boolean(resultSend)) { throw 'ERROR SEND MAIL.' }
+        this.loadingService.Close();
+        // ENviamos el mail de prueba
+        return this.dailyReportService.PostSendEmailLastVoyage(this.user.id, this.emails).subscribe(
+          (resultSend: boolean) => {
+            if (!Boolean(resultSend)) { throw 'ERROR SEND MAIL.' }
 
-          this.loadingService.Close();
-          // Muestro notificación
-          this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_TEST_SEND_EMAIL'));
+            console.log('Se envio el correo correctamente')
+            // Muestro notificación
+            this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SUCCESS_TEST_SEND_EMAIL'));
+            // habilitamos el button
+            this.unlockButtonTest = true;
+            this.loadingService.Close();
+            return true;
+          },
+          error => {
+            // Valido si viene un mensaje de error
+            let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR');
 
-        },
-        error => {
-          // Valido si viene un mensaje de error
-          let msg = this.languageService.GetMessage(this.translateCategory, error || 'ERROR');
+            // Muestro notificación
+            this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
 
-          // Muestro notificación
-          this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), msg);
+            console.log('ERROR AL ENVIAR EL CORREO')
+            // Deshabilito el spinner de loading
+            this.loadingService.Close();
+            this.unlockButtonTest = true;
+            return false;
+          });
 
-          // Deshabilito el spinner de loading
-          this.loadingService.Close();
-        });
- */
-    } else {
-      this.loadingService.Close();
-    }
+      }
+    ).then(
+      result => {
+
+        this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), this.languageService.GetMessage(this.translateCategory, 'SOON_YOU_CONFIRMATION'));
+        this.loadingService.Close();
+      }
+    ).catch(
+      result => {
+        this.loadingService.Close();
+      }
+    )
+
+
   }
 }
