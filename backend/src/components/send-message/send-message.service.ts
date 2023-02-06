@@ -25,6 +25,89 @@ export class SendMessageService {
 
     }
 
+    // Registra un nuevo viaje
+    async Create(sendMessageEntity: SendMessageEntity): Promise<SendMessageEntity> {
+
+        // Hacemos where por todos los campos de la entidad
+        return DummyPromise().then(
+            result => {
+
+
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // Buscamos el viaje
+                    return this._sendMessageRepository.query("SP_ @userId='" + sendMessageEntity.userId + "', @year='" + sendMessageEntity.emails + "'");
+                } else {
+
+                    if (sendMessageEntity.id) {
+
+                        return this._sendMessageRepository.find({
+                            where: [
+                                // name && surname && nick && email
+                                {
+                                    userId: sendMessageEntity.userId,
+                                    emails: sendMessageEntity.emails,
+                                    status: true,
+                                }
+                            ],
+                            take: 1,
+                            order: {
+                                id: 'DESC',
+                            }
+                        });
+                    } else {
+                        return true;
+                    }
+
+                }
+
+
+
+            }
+        ).then(
+            (result: SendMessageEntity[]) => {
+                // result length 
+                if (result) {
+                    if (URL_Server.bd === 'MSSQL') {
+                        // Ejecutamos el storeProceude creado.
+                        return this._sendMessageRepository.query(`
+                            SP_ @userId =  ${sendMessageEntity.userId}  ,
+                            @userIdCreated =   ${sendMessageEntity.userIdCreated} ,
+                            @dateCreated = '${sendMessageEntity.dateCreated}',
+                            @userIdUpdated =  ${sendMessageEntity.userIdUpdated ? sendMessageEntity.userIdUpdated : 0} ,
+                            @dateUpdated = '${sendMessageEntity.dateUpdated || ''}' ,
+                            @status = ${sendMessageEntity.status} 
+                            `);
+
+
+                    } else {
+
+                        // No lo validamos por que puede llegar vacio.
+                        return this._sendMessageRepository.save(sendMessageEntity)
+                    }
+
+                };
+
+            }
+        ).then(
+            (resultSave: any) => {
+                // Validamos si encontro al usuario.
+
+                if (!resultSave) throw new Error('No se pudo guardar la configuracion del mail.');
+
+                if (URL_Server.bd === 'MSSQL') {
+                    // MSSQL
+                    if (resultSave.length == 0) throw new Error('No se puedo registrar la configuracion en la BD.');
+                    return resultSave[0];
+                } else {
+                    // SLQITE
+                    return resultSave;
+                }
+            }
+        )
+
+    }
+
 
     async BuscamosLaConfiracionDelBuque(sendMessageEntity: SendMessageEntity): Promise<SendMessageEntity> {
 
@@ -50,16 +133,16 @@ export class SendMessageService {
             (resultFind: SendMessageEntity[]) => {
                 // Validamos si encontro al usuario.
                 if (!resultFind) throw new Error('does_not_exist');
-                if (resultFind && resultFind.length > 0) 
-                
-                {
+                if (resultFind && resultFind.length > 0) {
 
                     let resultSendMessage = resultFind[0];
 
                     return resultSendMessage
+                } else {
+
+                    return <any>{};
                 }
 
-                return <any>{};
             });
 
     }

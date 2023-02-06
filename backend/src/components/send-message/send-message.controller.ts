@@ -13,12 +13,12 @@ import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.e
 import { UserEntity } from '../../models/user.entity';
 import { ConvertDateUTC_To_FORMAT_UTC, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
 import { SendMessageEntity } from 'src/models/send-message.entity';
- 
+
 
 @Controller('send-message')
 export class SendMessageController {
 
-    
+
     constructor(
         private readonly _sendMessageService: SendMessageService,
     ) { }
@@ -82,5 +82,66 @@ export class SendMessageController {
             }
         );
     }
+
+    @Post('saveConfig')
+    async SaveConfig(@Headers() headers, @Body() sendMessageEntity: SendMessageEntity): Promise<any> {
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+                // Validamos que esten llegando los datos necesarios.
+                if (sendMessageEntity && Number(sendMessageEntity.userId) && sendMessageEntity.emails && sendMessageEntity.status) {
+
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                        // NO se hace nada
+                    } else if (sendMessageEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+
+                    if (Number(sendMessageEntity.id) > 0) {
+                        sendMessageEntity.id = Number(sendMessageEntity.id)
+                        sendMessageEntity.dateUpdated = GetDate();
+                        sendMessageEntity.userIdUpdated = headerToken.id;
+                    } else {
+                        delete sendMessageEntity.id;
+                        sendMessageEntity.dateCreated = GetDate();
+                        sendMessageEntity.userIdCreated = headerToken.id;
+                    }
+
+                    sendMessageEntity.status = sendMessageEntity.status
+                    return this._sendMessageService.Create(sendMessageEntity);
+
+                }
+                else throw 'MISSING_FIELS';
+            }
+        ).then(
+            (resultSave: SendMessageEntity) => {
+
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: resultSave
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+
+                // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
+
 
 }
