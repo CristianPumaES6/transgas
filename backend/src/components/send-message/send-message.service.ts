@@ -82,6 +82,10 @@ export class SendMessageService {
 
                     } else {
 
+                        if (result.length > 0) {
+                            sendMessageEntity.id = result[0].id;
+                        }
+                        sendMessageEntity.status = Boolean(sendMessageEntity.status)
                         // No lo validamos por que puede llegar vacio.
                         return this._sendMessageRepository.save(sendMessageEntity)
                     }
@@ -122,9 +126,12 @@ export class SendMessageService {
 
                     return this._sendMessageRepository.find({
                         where: [{
-                            userId: sendMessageEntity.id,
+                            userId: Number(sendMessageEntity.userId),
                             status: Not(false)
-                        }]
+                        }],
+                        order: {
+                            id: 'ASC',
+                        }
                     });
 
                 }
@@ -140,7 +147,7 @@ export class SendMessageService {
                     return resultSendMessage
                 } else {
 
-                    return <any>{};
+                    return new SendMessageEntity();
                 }
 
             });

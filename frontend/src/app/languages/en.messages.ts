@@ -525,7 +525,10 @@ export const dialog: any = {
     SUCCESS_TEST_SEND_EMAIL: 'The test was sent correctly.',
     ERROR: 'Error',
     SUCCESS: 'Success',
-    SOON_YOU_CONFIRMATION :'Soon you will receive a confirmation.'
+    SOON_YOU_CONFIRMATION :'Soon you will receive a confirmation.',
+    ERROR_EMAIL_CLEAR: 'the email field is empty.',
+    ERROR_SAVE_CONFIG_SENDMAIL: 'Failed to save mail delivery settings, contact support.',
+    SUCCESS_SEND_MAIL_SAVE: 'The mail delivery configuration was saved correctly.'
 };
 
 export const guards: any = {

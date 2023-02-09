@@ -93,7 +93,7 @@ export class SendMessageController {
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
-                if (sendMessageEntity && Number(sendMessageEntity.userId) && sendMessageEntity.emails && sendMessageEntity.status) {
+                if (sendMessageEntity && sendMessageEntity.emails && sendMessageEntity.status) {
 
                     if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                         // NO se hace nada
@@ -109,7 +109,8 @@ export class SendMessageController {
                         sendMessageEntity.userIdCreated = headerToken.id;
                     }
 
-                    sendMessageEntity.status = sendMessageEntity.status
+                    sendMessageEntity.status = Boolean(sendMessageEntity.status);
+
                     return this._sendMessageService.Create(sendMessageEntity);
 
                 }
