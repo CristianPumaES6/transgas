@@ -1,0 +1,82 @@
+<div class="az-content-breadcrumb lh-1 mg-b-2 pl-0">
+  <span>dashboard</span>
+  <span>export Excel</span>
+  <span>{{this.data.dateStartUTC}}</span>
+  <span>{{this.data.dateEndUTC}}</span>
+</div>
+
+<mat-horizontal-stepper linear #stepper>
+  <mat-step [completed]="isFirstCompleted" label="Excel options" state="pdfOption">
+
+
+
+    <div class="tx-24 mg-b-0 pl-0">
+
+      <mat-form-field class="w-100">
+        <mat-label>Select Excel Format</mat-label>
+
+        <mat-select [(ngModel)]="selectTypeExportExcel">
+          <mat-option value='DNV_FORMAT'>
+            DNV excel format
+          </mat-option>
+          <mat-option value='FORMAT_GENERIC'>
+            Generic Format
+          </mat-option>
+          <mat-option value='EXPORT_VESSEL_DATA'>
+            Export vessel data register
+          </mat-option>
+          <mat-option value='FORMAT_GENERIC_LUCIA'>
+            Summary by sailing trip (Lucia)
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field>
+
+
+      <div class="az-content p-0">
+
+        <ng-template [ngIf]="selectTypeExportExcel == 'DNV_FORMAT'">
+
+          <h5>
+            {{'REPORT_INFORMATION_DNV' | translateMessage:translateCategory}}
+          </h5>
+        </ng-template>
+        <ng-template [ngIf]="selectTypeExportExcel == 'FORMAT_GENERIC'">
+          <h5>
+            {{'REPORT_INFORMATION_GENERIC' | translateMessage:translateCategory}}
+          </h5>
+        </ng-template>
+        <!--   <ng-template [ngIf]="selectTypeExportExcel == 'FORMAT_GENERIC_LUCIA'">
+          <h5>
+            {{'REPORT_INFORMATION_FORMAT_GENERIC_LUCIA' | translateMessage:translateCategory}}
+          </h5>
+        </ng-template> 
+      -->
+        <ng-template [ngIf]="selectTypeExportExcel == 'EXPORT_VESSEL_DATA'">
+          <h5>
+            {{'REPORT_INFORMATION_EXPORT_VESSEL_DATA' | translateMessage:translateCategory}}
+          </h5>
+        </ng-template>
+
+      </div>
+
+
+    </div>
+
+    <div class="row">
+      <div class="col-6 ">
+
+        <button mat-raised-button color="primary" [disabled]='!selectTypeExportExcel' matStepperNext
+          (click)="ClickDownloading()">
+          {{'DOWNLOAD' | translateMessage:translateCategory}}
+          <span style="font-size: 14pt;" class="icon-archivo-excel"></span>
+        </button>
+
+      </div>
+    </div>
+
+
+  </mat-step>
+  <mat-step label="Generate Format" state="pdfView"></mat-step>
+
+</mat-horizontal-stepper>

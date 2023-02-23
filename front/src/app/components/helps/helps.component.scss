@@ -1,0 +1,139 @@
+$opaci-background: rgba(0, 0, 0, 0.418);
+$color-transgas: #feb600;
+
+.body-full-container {
+  height: 100%;
+  position: relative;
+}
+.chart-wrapper {
+  opacity: 0.25;
+}
+.az-home-slider {
+  .card-columns {
+    .img-opacity {
+      top: 0;
+      opacity: 0.25;
+    }
+  }
+
+  @media only screen and (max-width: 990px) {
+    height: 1420px;
+  }
+}
+.az-home-content {
+  position: fixed;
+  background: $opaci-background;
+  top: 80px;
+  left: 80px;
+  padding: 20px;
+  border-radius: 10px;
+  transition: 0.3s all;
+  @media only screen and (max-width: 990px) {
+    position: absolute;
+    top: 60px;
+    left: 25%;
+  }
+  @media only screen and (max-width: 990px) {
+    position: absolute;
+    top: 60px;
+    left: 10%;
+    width: 80%;
+  }
+}
+// Estructura del container user manual
+.container-user-manual {
+  position: fixed;
+  z-index: 5;
+  right: 20px;
+  top: 180px;
+  padding: 20px;
+  height: auto;
+  max-width: 800px;
+  background: $opaci-background;
+  padding: 10px 10px 20px 20px;
+  border-radius: 10px;
+  transition: 0.3s all;
+  // Selector secundario
+  > div {
+    // Selector desendientes
+    // titulo
+    h2 {
+      text-align: center;
+      color: white;
+    }
+    .container-modules {
+      text-align: center;
+      margin-right: 3px;
+      :last-child {
+        margin-right: 0px;
+      }
+      a {
+        color: white;
+        &:hover {
+          i,
+          h4 {
+            color: $color-transgas;
+          }
+          .text_href {
+            color: $color-transgas;
+            font-weight: bolder;
+          }
+        }
+        i {
+          font-size: 40px;
+          transition: 0.3s all;
+        }
+        h4 {
+          transition: 0.3s all;
+        }
+        
+        ul {
+          margin-top: 5px;
+          border-radius: 5px;
+          background: $opaci-background;
+          padding: 5px 0px 5px 0px;
+          text-align: center;
+          li {
+            list-style: none;
+          }
+        }
+        .text_href {
+          font-weight: normal;
+          transition: 0.3s all;
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1320px) {
+    width: 600px;
+  }
+  @media only screen and (max-width: 1120px) {
+    width: 500px;
+  }
+
+  @media only screen and (max-width: 990px) {
+    position: absolute;
+    z-index: 5;
+    right: 10%;
+    top: 560px;
+    width: 80%;
+    .container-modules {
+      margin-top: 40px;
+    }
+  }
+}
+
+
+
+// 2 seccion
+
+.azDemo,.azUser,.azUser1{
+  
+        iframe {
+          width: 100%;
+          height: 100%;
+        }
+        
+      
+}

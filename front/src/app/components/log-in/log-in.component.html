@@ -1,0 +1,82 @@
+<div class="az-signup-wrapper">
+  <div class="az-column-signup-left">
+    <div class="left-hard">
+      <i><img class="img-peque" src="./../../../assets/icons/logotransgas.png" alt=""></i>
+    </div>
+    <div>
+      <ul class="traductor color-transgas-yellow">
+        <li (click)="ChangeLanguage('ES')">
+          ES
+        </li>
+        <li (click)="ChangeLanguage('EN')">
+          EN
+        </li>
+        <div style="color : #feb600">{{version}}</div>
+
+      </ul>
+    </div>
+  </div><!-- az-column-signup-left -->
+
+
+  <div class="az-column-signup">
+    <h1 class="az-logo color-transgas-blue">{{'TITLE_PRINCIPAL' | translateMessage:translateCategory}}
+
+      <p>{{'SUB_TITLE_PRINCIPAL' | translateMessage:translateCategory}}</p>
+    </h1>
+
+
+    <div class="az-signin-header">
+      <h2 class="h1">{{'WELCOME_LOGIN' | translateMessage:translateCategory}}</h2>
+      <h4>{{'PLEASE_SING_LOGIN' | translateMessage:translateCategory}}</h4>
+
+
+      <div>
+        <div class="form-group">
+
+
+          <div class="row">
+            <div class="col-12">
+              <mat-form-field class="w-100">
+                <input matInput class="w-100" type="text"
+                  placeholder="{{'USERNAME' | translateMessage:translateCategory}}" [(ngModel)]="login.username">
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-12">
+              <mat-form-field class="w-100">
+                <input matInput class="w-100" type="password"
+                  placeholder="{{'PASSWORD' | translateMessage:translateCategory}}" [(ngModel)]="login.password"
+                  (keyup.enter)="Login()">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <button mat-raised-button color="primary" class="w-100" (click)="Login()">
+        {{'BTN_SING_IN' | translateMessage:translateCategory}}</button>
+      <br>
+    </div><!-- az-signin-header -->
+
+    <!--
+  
+      
+    -->
+    <div class="az-signin-footer">
+      <p>
+
+      </p>
+      <p></p>
+      <!-- 
+      <p style="display: none;"><a href="" (click)="OpenForgotPSW()">Forgot password?</a></p>
+      <p>{{'DONT_HAVE_ACCOUNT' | translateMessage:translateCategory}} <a href="#"
+          (click)="OpenSingUP()">{{'CREATE_ACCOUNT' | translateMessage:translateCategory}}</a></p>
+         -->
+    </div><!-- az-signin-footer -->
+
+  </div>
+</div>

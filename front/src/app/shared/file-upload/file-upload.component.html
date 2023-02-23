@@ -1,0 +1,24 @@
+<div class="az-img-user cont-img-upload">
+
+  <img src="{{filename||'../../../../../assets/500x500.png'}}" alt="">
+
+  <ng-template [ngIf]="isOnline">
+    <ng-template [ngIf]="id && (role=='ADMIN' || role=='SUPPORT')">
+      <span *ngIf="!files.length" class="icon-upload-photo icon-upload-center efectOpacity" (click)="onClick()"></span>
+
+      <ul class="icon-upload-center">
+        <li *ngFor="let file of files" [@fadeInOut]="file.state">
+          <mat-progress-bar [value]="file.progress"></mat-progress-bar>
+          <div id="file-label">
+            <span class="icon-refresh" title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry"></span>
+
+          </div>
+        </li>
+      </ul>
+    </ng-template>
+  </ng-template>
+
+</div>
+
+<br />
+<input type="file" id="fileUpload" name="fileUpload" accept="{{accept}}" style="display:none;" />
