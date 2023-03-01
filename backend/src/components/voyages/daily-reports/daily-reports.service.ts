@@ -1187,6 +1187,10 @@ export class DailyReportsService {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
         }
 
+        // buque camila
+        if (userId == 15) {
+            stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
+        }
 
         // Hacemos where por todos los campos de la entidad
         return await
