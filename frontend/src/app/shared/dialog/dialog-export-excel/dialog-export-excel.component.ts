@@ -53,7 +53,7 @@ export class DialogExportExcelComponent implements OnInit {
 
 
   public ClickDownloading() {
-    console.log('ClickDownloading FORMATO' + this.selectTypeExportExcel);
+    console.log('ClickDownloading FORMATO ' + this.selectTypeExportExcel);
 
     return Promise.resolve(true)
       .then(

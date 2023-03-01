@@ -4077,8 +4077,8 @@ export class FormatExcelLastVoyageService {
                     ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), '', '',
                     getReportVoyagePortDaily.hour, '',
                     //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-                    { formula: '(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
-                    
+                    //{ formula: '(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
+                    getReportVoyagePortDaily.steamingTime,'',
                     
                     translateActivity(getReportVoyagePortDaily.activityPerformed), '', '', '',
                     //getReportVoyagePortDaily.steamingTime, '', '', '',

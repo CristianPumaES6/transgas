@@ -340,7 +340,7 @@ export class ExcelFormatVesselDataRegisterService {
         let dataRow = [
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
-          getReportVoyagePortDaily.dailyReportId, 
+          getReportVoyagePortDaily.dailyReportId,
           getReportVoyagePortDaily.year,
           getReportVoyagePortDaily.voyageNumber,
           getReportVoyagePortDaily.portNumber,
@@ -348,7 +348,8 @@ export class ExcelFormatVesselDataRegisterService {
           getReportVoyagePortDaily.arrivalPort,
           getReportVoyagePortDaily.date,
           getReportVoyagePortDaily.hour,
-          { formula: 'IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
+          getReportVoyagePortDaily.steamingTime,
+          //{ formula: 'IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
           //this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), // REVISAR ERROR REVISAR
           getReportVoyagePortDaily.activityPerformed,
           this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.speedStraction), // REVISAR ERROR REVISAR
@@ -1188,7 +1189,7 @@ export class ExcelFormatVesselDataRegisterService {
 
     positionRow += 1;
     worksheet.addRow([
-      'voyageId', 'portId', 'dailyReportId',  'year',//E
+      'voyageId', 'portId', 'dailyReportId', 'year',//E
 
       'voyageNumber',
       'portNumber',
@@ -1230,7 +1231,7 @@ export class ExcelFormatVesselDataRegisterService {
       'north_degree',
       'north_minutes',
       'north_north_south',
-      
+
       'east_degree',
       'east_minutes',
       'east_east_west',
@@ -1238,7 +1239,7 @@ export class ExcelFormatVesselDataRegisterService {
       'userId',
       'updatePort',
       'delete_report'
-      
+
     ]);
     worksheet.getCell('F' + positionRow).style = {
       alignment: {
@@ -2269,7 +2270,7 @@ export class ExcelFormatVesselDataRegisterService {
 
 
 
-   
+
 
 
   // Obtenemos la info de todos los viajes agregado.

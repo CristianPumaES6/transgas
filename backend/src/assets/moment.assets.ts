@@ -41,6 +41,13 @@ export function ConvertDateUTC_To_FORMAT_UTC(dateUTC): string {
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
 
+// este convert retorna con -5 horas para que se registre en e; server
+export function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC): string {
+    let momentDate = moment.utc(dateUTC).subtract(5, 'hours');
+
+    return momentDate.format('YYYY-MM-DD HH:mm:ss');
+}
+
 // Resta una cantidad de dias a una fecha utc.
 export function FormatDateSumDays(dateUTC: any, subtractDays: number): string {
     // Con el formato YYYY MM DD
@@ -57,9 +64,9 @@ export function ConvertMomentUTC(dateUTC): moment.Moment {
     return moment.utc(dateUTC);
 }
 
-export function ObtenerHoraDeDosStringUTC(fechaUTC:string,fechaUTC2:string):number{
+export function ObtenerHoraDeDosStringUTC(fechaUTC: string, fechaUTC2: string): number {
 
-    let result=0;
+    let result = 0;
 
     let fecha1 = moment.utc(fechaUTC);
     let fecha2 = moment.utc(fechaUTC2);
@@ -72,6 +79,6 @@ export function ObtenerHoraDeDosStringUTC(fechaUTC:string,fechaUTC2:string):numb
 }
 
 export function GetHours(): any {
-   return  moment().format('HH mm ss'); 
+    return moment().format('HH mm ss');
 }
 

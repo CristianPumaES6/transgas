@@ -10,7 +10,7 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertDateUTC_To_FORMAT_UTC, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
+import { ConvertDateUTC_To_FORMAT_UTC, ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
@@ -665,8 +665,9 @@ export class VoyagesController {
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
 
-
-                ultimaFecha = ConvertDateUTC_To_FORMAT_UTC(importVoyage.date) + '.000';
+                // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
+                ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
+  
 
                 // A la fecha le redusco 4 horas debido que se tiene esa diferencia
                 // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
@@ -940,7 +941,7 @@ export class VoyagesController {
 
                 // armamos el objeto que enviaremos para el email
                 let mailLastVoyage: GenerateFormatObjForExcelEmail = resultGenerateFormatObjForExcelEmail;
-               
+
                 // si dice que si consumo IFO O VLSFO O LSFO mostraremos su dato
                 mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO ? 'IFO' : userEntity.isConsumptionLSFO ? 'LSFO' : userEntity.isConsumptionVLSFO ? 'VLSFO' : '';
                 if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
