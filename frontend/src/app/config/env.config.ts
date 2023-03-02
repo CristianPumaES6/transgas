@@ -34,14 +34,14 @@ export const EnvConfig: EnvConfig = {
 
 
 // SERVIDOR LINUX - front Firebase
-/* export const EnvConfig: EnvConfig = {
+export const EnvConfig: EnvConfig = {
     API: 'https://transgas.lowcodetool.com',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.lowcodetool.com',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
- */
+
 
 
 
@@ -56,7 +56,7 @@ export const EnvConfig: EnvConfig = {
  */
 
 //CONFIG DEVELOPER LOCAL
-export const EnvConfig: EnvConfig = {
+/*export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
     VERSION: 'v1.9M',
@@ -64,5 +64,5 @@ export const EnvConfig: EnvConfig = {
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
 
-
+*/
 
