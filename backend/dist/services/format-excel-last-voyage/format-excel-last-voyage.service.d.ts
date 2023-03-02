@@ -25,7 +25,6 @@ export declare class FormatExcelLastVoyageService {
     private addBorder;
     private addStyleToBorders;
     SearchPositByCell(letraColum: string): any;
-    private translate;
     private SumaIfo;
     private SumaMgo;
 }

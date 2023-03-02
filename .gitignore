@@ -30,3 +30,4 @@ frontend/e2e/protractor.conf.js
 frontend/e2e/tsconfig.json
 frontend/e2e/src/app.e2e-spec.ts
 frontend/e2e/src/app.po.ts
+frontend/.angular/*

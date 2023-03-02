@@ -9,7 +9,7 @@ class SendMailConfig {
 }
 exports.SendMailConfig = SendMailConfig;
 class MailLastVoyage {
-    constructor(nameBuque, dateCurrent, currentMGO, currentVLSFO, bunkeringIFO, bunkeringMGO, consumptionActivity) {
+    constructor(nameBuque, dateCurrent, currentMGO, currentVLSFO, bunkeringIFO, bunkeringMGO, consumptionActivity, IFO_VLSFO_LSFO, isVIew_IFO_VLSFO_LSFO, MGO, isVIew_MGO) {
         this.nameBuque = nameBuque || '';
         this.dateCurrent = dateCurrent || null;
         this.currentMGO = currentMGO || 0;
@@ -17,6 +17,10 @@ class MailLastVoyage {
         this.consumptionActivity = consumptionActivity || new Consumption_IFO_and_MGO_byActivity();
         this.bunkeringIFO = bunkeringIFO || 0;
         this.bunkeringMGO = bunkeringMGO || 0;
+        this.IFO_VLSFO_LSFO = IFO_VLSFO_LSFO || null;
+        this.isVIew_IFO_VLSFO_LSFO = isVIew_IFO_VLSFO_LSFO || false;
+        this.MGO = MGO || null;
+        this.isVIew_MGO = isVIew_MGO || false;
     }
 }
 exports.MailLastVoyage = MailLastVoyage;

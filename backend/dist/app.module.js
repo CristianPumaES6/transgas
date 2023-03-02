@@ -18,6 +18,7 @@ const auth_module_1 = require("./components/auth/auth.module");
 const voyages_module_1 = require("./components/voyages/voyages.module");
 const app_gateway_1 = require("./app.gateway");
 const format_excel_last_voyage_service_1 = require("./services/format-excel-last-voyage/format-excel-last-voyage.service");
+const send_message_module_1 = require("./components/send-message/send-message.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -33,6 +34,7 @@ AppModule = __decorate([
             auth_module_1.AuthModule,
             voyages_module_1.VoyagesModule,
             app_gateway_1.AppGateway,
+            send_message_module_1.SendMessageModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService,

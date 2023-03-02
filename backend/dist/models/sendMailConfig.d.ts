@@ -11,7 +11,11 @@ export declare class MailLastVoyage {
     bunkeringIFO: number;
     bunkeringMGO: number;
     consumptionActivity: Consumption_IFO_and_MGO_byActivity;
-    constructor(nameBuque?: string, dateCurrent?: string, currentMGO?: number, currentVLSFO?: number, bunkeringIFO?: number, bunkeringMGO?: number, consumptionActivity?: Consumption_IFO_and_MGO_byActivity);
+    IFO_VLSFO_LSFO?: string;
+    isVIew_IFO_VLSFO_LSFO?: boolean;
+    MGO?: string;
+    isVIew_MGO?: boolean;
+    constructor(nameBuque?: string, dateCurrent?: string, currentMGO?: number, currentVLSFO?: number, bunkeringIFO?: number, bunkeringMGO?: number, consumptionActivity?: Consumption_IFO_and_MGO_byActivity, IFO_VLSFO_LSFO?: string, isVIew_IFO_VLSFO_LSFO?: boolean, MGO?: string, isVIew_MGO?: boolean);
 }
 export declare class Consumption_IFO_and_MGO_byActivity {
     ifoResumen?: typeActivityConsumption;

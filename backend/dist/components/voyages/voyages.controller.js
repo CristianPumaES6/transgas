@@ -421,7 +421,7 @@ let VoyagesController = class VoyagesController {
                     }
                     newReport.userId = importVoyage.userId;
                     newReport.portId = existePort.value;
-                    ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC(importVoyage.date) + '.000';
+                    ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
                     if (ultimaFecha.length == 23) {
                         newReport.date = ultimaFecha;
                     }
@@ -558,6 +558,7 @@ let VoyagesController = class VoyagesController {
         let getInfoFuelStartEndByFilterDate;
         let numeroViaje = 0;
         let numeroAnio = 0;
+        let textIFOorVLSFOorLSFO = '';
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             return this._usersService.Get(userId);
         }).then((resultUser) => {
@@ -582,18 +583,26 @@ let VoyagesController = class VoyagesController {
                 throw 'ERROR GetStartEndROByFilterDate';
             let startDataROB = new daily_report_entity_1.GetROBByUser();
             let endDataROB = new daily_report_entity_1.GetROBByUser();
-            startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo, 2;
-            startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo, 2;
+            startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo;
+            startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo;
             startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo, 2;
             startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo, 2;
-            endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo), 2;
-            endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo), 2;
+            endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo);
+            endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo);
             endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo, 2;
             endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo, 2;
             getInfoFuelStartEndByFilterDate = new daily_report_entity_1.InfoFuelStartEndForDate(startDataROB, endDataROB);
             return this._formatExcelLastVoyageService.GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity);
         }).then(resultGenerateFormatObjForExcelEmail => {
             let mailLastVoyage = resultGenerateFormatObjForExcelEmail;
+            mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO ? 'IFO' : userEntity.isConsumptionLSFO ? 'LSFO' : userEntity.isConsumptionVLSFO ? 'VLSFO' : '';
+            if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
+                mailLastVoyage.objMailLastVoyage.isVIew_IFO_VLSFO_LSFO = true;
+            }
+            mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO ? 'MGO' : '';
+            if (mailLastVoyage.objMailLastVoyage.MGO) {
+                mailLastVoyage.objMailLastVoyage.isVIew_MGO = true;
+            }
             return nodemailer_assets_1.SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
         }).then(result => {
             if (!result) {

@@ -736,17 +736,30 @@ let DailyReportsService = class DailyReportsService {
     }
     async GetReportDNVByUserNOON(userId, startDate, endDate) {
         let stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
+        let stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         if (userId == 14) {
             stringGroupBY = "datetime('daily_report'.'date','+7.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+7.999999 hour')";
         }
         if (userId == 10) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
         if (userId == 21) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
         if (userId == 2) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
+        }
+        if (userId == 15) {
+            stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
+        }
+        if (userId == 13) {
+            stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         }
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
             .select('MAX(voyage.userId)', 'userId')
@@ -784,6 +797,19 @@ let DailyReportsService = class DailyReportsService {
             .addSelect('MAX(daily_report.east_degree)', 'east_degree')
             .addSelect('MAX(daily_report.east_minutes)', 'east_minutes')
             .addSelect('MAX(daily_report.east_east_west)', 'east_east_west')
+            .addSelect((subQuery) => {
+            return subQuery.select('SUM(daily_report2.steamingTime)', 'steamingTime')
+                .from(daily_report_entity_1.DailyReport, "daily_report2")
+                .innerJoin('port', 'port2', 'port2.id = daily_report2.portId AND port2.status = 1 AND daily_report2.status = 1')
+                .innerJoin('voyage', 'voyage2', 'voyage2.id = port2.voyageId AND voyage2.status = 1')
+                .where('daily_report2.status = :status', { status: 1 })
+                .andWhere('daily_report2.distance > :distance', { distance: 0 })
+                .andWhere('port2.status = :status', { status: 1 })
+                .andWhere('voyage2.status = :status', { status: 1 })
+                .andWhere("strftime('%Y-%m-%d'," + stringGroupBY + ") = strftime('%Y-%m-%d'," + stringGroupBY_TwoSelect + ")")
+                .andWhere('daily_report2.userId = :userId', { userId: userId })
+                .limit(1);
+        }, "navigatedTime")
             .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
             .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
             .where('daily_report.status = :status', { status: 1 })

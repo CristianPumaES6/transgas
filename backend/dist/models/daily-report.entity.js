@@ -191,7 +191,7 @@ class GetInfoBunkering {
 }
 exports.GetInfoBunkering = GetInfoBunkering;
 class GetReportVoyagePortDaily {
-    constructor(userId, year, voyageId, voyageNumber, portId, portNumber, departurePort, arrivalPort, dailyReportId, date, hour, steamingTime, activityPerformed, typeActivityPerformed, speedStraction, observation, distance, beaufour, mplaIfo, auxIfo, boilerIfo, otherIfo, bunkeringIfo, mplaMgo, auxMgo, boilerMgo, ppMgo, giMgo, otherMgo, bunkeringMgo, north_degree, north_minutes, north_north_south, east_degree, east_minutes, east_east_west) {
+    constructor(userId, year, voyageId, voyageNumber, portId, portNumber, departurePort, arrivalPort, dailyReportId, date, hour, steamingTime, activityPerformed, typeActivityPerformed, speedStraction, observation, distance, beaufour, mplaIfo, auxIfo, boilerIfo, otherIfo, bunkeringIfo, mplaMgo, auxMgo, boilerMgo, ppMgo, giMgo, otherMgo, bunkeringMgo, north_degree, north_minutes, north_north_south, east_degree, east_minutes, east_east_west, navigatedTime) {
         this.userId = userId;
         this.year = year;
         this.voyageId = voyageId;
@@ -228,6 +228,7 @@ class GetReportVoyagePortDaily {
         this.east_degree = east_degree;
         this.east_minutes = east_minutes;
         this.east_east_west = east_east_west;
+        this.navigatedTime = navigatedTime;
         this.userId = userId || 0;
         this.year = year || 0;
         this.voyageId = voyageId || 0;
@@ -264,6 +265,7 @@ class GetReportVoyagePortDaily {
         this.east_degree = east_degree || 0;
         this.east_minutes = east_minutes || 0;
         this.east_east_west = east_east_west || '';
+        this.navigatedTime = navigatedTime || 0;
     }
 }
 exports.GetReportVoyagePortDaily = GetReportVoyagePortDaily;
