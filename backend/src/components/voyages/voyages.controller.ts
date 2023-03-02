@@ -10,7 +10,7 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertDateUTC_To_FORMAT_UTC, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
+import { ConvertDateUTC_To_FORMAT_UTC, ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
@@ -665,8 +665,9 @@ export class VoyagesController {
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
 
-
-                ultimaFecha = ConvertDateUTC_To_FORMAT_UTC(importVoyage.date) + '.000';
+                // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
+                ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
+  
 
                 // A la fecha le redusco 4 horas debido que se tiene esa diferencia
                 // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
@@ -858,9 +859,14 @@ export class VoyagesController {
 
         let numeroViaje = 0;
         let numeroAnio = 0;
+
+        let textIFOorVLSFOorLSFO = '';
+
+
         // Empezamos la promesa.
         return DummyPromise().then(
             (resultDummy: Boolean) => {
+
                 // Consultaos los ultimpos viajes.
                 return this._usersService.Get(userId);
             }
@@ -868,6 +874,7 @@ export class VoyagesController {
             (resultUser: UserEntity) => {
 
                 userEntity = resultUser;
+
                 // Consultaos los ultimpos viajes.
                 return this._voyagesService.GetLastVoyage(userId);
             }
@@ -909,14 +916,14 @@ export class VoyagesController {
                 let endDataROB: GetROBByUser = new GetROBByUser()
 
                 // IFO
-                startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo, 2;
-                startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo, 2;
+                startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo;
+                startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo;
                 startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo, 2;
                 startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo, 2;
 
                 // MGO
-                endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo), 2;
-                endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo), 2;
+                endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo);
+                endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo);
                 endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo, 2;
                 endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo, 2;
 
@@ -932,7 +939,20 @@ export class VoyagesController {
         ).then(
             resultGenerateFormatObjForExcelEmail => {
 
+                // armamos el objeto que enviaremos para el email
                 let mailLastVoyage: GenerateFormatObjForExcelEmail = resultGenerateFormatObjForExcelEmail;
+
+                // si dice que si consumo IFO O VLSFO O LSFO mostraremos su dato
+                mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO ? 'IFO' : userEntity.isConsumptionLSFO ? 'LSFO' : userEntity.isConsumptionVLSFO ? 'VLSFO' : '';
+                if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
+                    mailLastVoyage.objMailLastVoyage.isVIew_IFO_VLSFO_LSFO = true;
+                }
+
+                // si dice que si consumo mgo mostraremos su dato
+                mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO ? 'MGO' : '';
+                if (mailLastVoyage.objMailLastVoyage.MGO) {
+                    mailLastVoyage.objMailLastVoyage.isVIew_MGO = true;
+                }
                 // Enviar archivo mail.
                 return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
             }

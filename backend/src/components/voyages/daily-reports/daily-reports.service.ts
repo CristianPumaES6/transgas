@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DailyReport, GetInfoBunkering, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
-import { Like, Not, Repository } from 'typeorm';
+import { getManager, Like, Not, Repository } from 'typeorm';
 import { URL_Server } from '../../../config/server.config';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { FormatDateSumDays, FormatDateUTCToDateHour, GetDate } from '../../../assets/moment.assets';
@@ -66,7 +66,7 @@ export class DailyReportsService {
 
                 } else {
 
-                    
+
                     return this._dailyReportRepository.find({
                         where: [{
                             id: id,
@@ -253,7 +253,7 @@ export class DailyReportsService {
         // Este arreglo contendra la info del rob del inicio del viaje y cuanto consumio en el rango de fecha.
         let StartEndROB: any[] = [];
 
-    
+
         // Hacemos where por todos los campos de la entidad
         // Buscamos la info del rob asta antes del inicio de fecha
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -1165,15 +1165,20 @@ export class DailyReportsService {
 
 
         let stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
+        let stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
 
         // si el usuario es TAUROGAS
         if (userId == 14) {
             stringGroupBY = "datetime('daily_report'.'date','+7.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+7.999999 hour')";
+      
         }
 
         // si el usuario es Huntegas
         if (userId == 10) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
+      
         }
 
         // CHAVIN NO SE PUDO
@@ -1181,86 +1186,115 @@ export class DailyReportsService {
         // si el usuario es CARAL
         if (userId == 21) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
 
         if (userId == 2) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
+      
+        }
+
+        // buque camila
+        if (userId == 15) {
+            stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
+        }
+
+        // buque LEONARDO
+        if (userId == 13) {
+            stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         }
 
 
-        // Hacemos where por todos los campos de la entidad
-        return await
-            this._dailyReportRepository.createQueryBuilder('daily_report')
+        // Permite obtener en el tiempo de nagacion de las ultimas 24 hrs.
+        return await this._dailyReportRepository.createQueryBuilder('daily_report')
 
-                .select('MAX(voyage.userId)', 'userId')
-                .addSelect('MAX(voyage.year)', 'year')
-                .addSelect('MAX(voyage.id)', 'voyageId')
-                .addSelect('MAX(voyage.voyageNumber)', 'voyageNumber')
+            .select('MAX(voyage.userId)', 'userId')
+            .addSelect('MAX(voyage.year)', 'year')
+            .addSelect('MAX(voyage.id)', 'voyageId')
+            .addSelect('MAX(voyage.voyageNumber)', 'voyageNumber')
 
-                .addSelect('MAX(port.id)', 'portId')
-                .addSelect('MAX(port.portNumber)', 'portNumber')
-                .addSelect('MAX(port.departurePort)', 'departurePort')
-                .addSelect('MAX(port.arrivalPort)', 'arrivalPort')
-
-
-                .addSelect('MAX(daily_report.id)', 'dailyReportId')
-                .addSelect(stringGroupBY, 'date')
-                .addSelect('MAX(daily_report.hour)', 'hour')
-
-                .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
-                .addSelect('MAX(daily_report.activityPerformed)', 'activityPerformed')
-                .addSelect('MAX(daily_report.speedStraction)', 'speedStraction')
-                .addSelect('MAX(daily_report.observation)', 'observation')
-
-                .addSelect('SUM(daily_report.distance)', 'distance')
-                .addSelect('MAX(daily_report.beaufour)', 'beaufour')
-
-                .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
-                .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
-                .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
-                .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
-                .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
-
-                .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
-                .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
-                .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
-                .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
-                .addSelect('SUM(daily_report.giMgo)', 'giMgo')
-                .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
-                .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
-
-                // UBICACION.
-                .addSelect('MAX(daily_report.north_degree)', 'north_degree')
-                .addSelect('MAX(daily_report.north_minutes)', 'north_minutes')
-                .addSelect('MAX(daily_report.north_north_south)', 'north_north_south')
-                // UBICACION
-                .addSelect('MAX(daily_report.east_degree)', 'east_degree')
-                .addSelect('MAX(daily_report.east_minutes)', 'east_minutes')
-                .addSelect('MAX(daily_report.east_east_west)', 'east_east_west')
+            .addSelect('MAX(port.id)', 'portId')
+            .addSelect('MAX(port.portNumber)', 'portNumber')
+            .addSelect('MAX(port.departurePort)', 'departurePort')
+            .addSelect('MAX(port.arrivalPort)', 'arrivalPort')
 
 
-                .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
-                .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
+            .addSelect('MAX(daily_report.id)', 'dailyReportId')
+            .addSelect(stringGroupBY, 'date')
+            .addSelect('MAX(daily_report.hour)', 'hour')
+
+            .addSelect('SUM(daily_report.steamingTime)', 'steamingTime')
+            .addSelect('MAX(daily_report.activityPerformed)', 'activityPerformed')
+            .addSelect('MAX(daily_report.speedStraction)', 'speedStraction')
+            .addSelect('MAX(daily_report.observation)', 'observation')
+
+            .addSelect('SUM(daily_report.distance)', 'distance')
+            .addSelect('MAX(daily_report.beaufour)', 'beaufour')
+
+            .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+            .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+            .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+            .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+            .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+
+            .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+            .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+            .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+            .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+            .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+            .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+            .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+
+            // UBICACION.
+            .addSelect('MAX(daily_report.north_degree)', 'north_degree')
+            .addSelect('MAX(daily_report.north_minutes)', 'north_minutes')
+            .addSelect('MAX(daily_report.north_north_south)', 'north_north_south')
+            // UBICACION
+            .addSelect('MAX(daily_report.east_degree)', 'east_degree')
+            .addSelect('MAX(daily_report.east_minutes)', 'east_minutes')
+            .addSelect('MAX(daily_report.east_east_west)', 'east_east_west')
+            .addSelect((subQuery) => {
+                return subQuery.select('SUM(daily_report2.steamingTime)', 'steamingTime')
+                    .from(DailyReport, "daily_report2")
+                    .innerJoin('port', 'port2', 'port2.id = daily_report2.portId AND port2.status = 1 AND daily_report2.status = 1')
+                    .innerJoin('voyage', 'voyage2', 'voyage2.id = port2.voyageId AND voyage2.status = 1')
+
+                    .where('daily_report2.status = :status', { status: 1 })
+                    .andWhere('daily_report2.distance > :distance', { distance: 0 })
+                    .andWhere('port2.status = :status', { status: 1 })
+                    .andWhere('voyage2.status = :status', { status: 1 })
+                    .andWhere("strftime('%Y-%m-%d'," + stringGroupBY + ") = strftime('%Y-%m-%d'," + stringGroupBY_TwoSelect + ")")
+
+                    .andWhere('daily_report2.userId = :userId', { userId: userId })
+                    .limit(1)
+            }, "navigatedTime")
+
+
+            .innerJoin('port', 'port', 'port.id = daily_report.portId AND port.status = 1 AND daily_report.status = 1')
+            .innerJoin('voyage', 'voyage', 'voyage.id = port.voyageId AND voyage.status = 1')
 
 
 
-                .where('daily_report.status = :status', { status: 1 })
-                .andWhere('port.status = :status', { status: 1 })
-                .andWhere('voyage.status = :status', { status: 1 })
+            .where('daily_report.status = :status', { status: 1 })
+            .andWhere('port.status = :status', { status: 1 })
+            .andWhere('voyage.status = :status', { status: 1 })
 
-                .andWhere('daily_report.userId = :userId', { userId: userId })
+            .andWhere('daily_report.userId = :userId', { userId: userId })
 
-                .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
-                .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
-                .groupBy("strftime('%Y-%m-%d'," + stringGroupBY + ")")
-                .getRawMany()
-                .then(
-                    (result: any) => {
-                        // Verificamos que el resultado no este vacio.
-                        if (!result) throw 'ERROR GetReportVoyagePortDaily';
-                        return result;
-                    }
-                );
+            .andWhere('datetime(daily_report.date) >= datetime(:startDate)', { startDate: startDate })
+            .andWhere('datetime(daily_report.date) <= datetime(:endDate)', { endDate: endDate })
+            .groupBy("strftime('%Y-%m-%d'," + stringGroupBY + ")")
+            .getRawMany()
+            .then(
+                (result: any) => {
+                    // Verificamos que el resultado no este vacio.
+                    if (!result) throw 'ERROR GetReportVoyagePortDaily';
+                    return result;
+                }
+            );
     }
 
 }

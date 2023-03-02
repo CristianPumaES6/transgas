@@ -1,0 +1,461 @@
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="680">
+
+    <tbody>
+        <tr>
+            <td>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="680">
+                    <tbody>
+                        <tr>
+                            <td width="680"> &nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="680">
+                    <tbody>
+                        <tr>
+                            <td height="41" width="680"> <img alt=""></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="680">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="680">
+                    <tbody>
+                        <tr>
+                            <td height="30"
+                                style="font-size:27px;text-align:center;font-family:sans-serif;color:#0a085a;vertical-align:middle"
+                                valign="bottom" width="680">
+
+                                <img alt="Logo"
+                                    src="https://itcperu.com.pe/wp-content/uploads/2022/10/transgas-300x300.png"
+                                    class="CToWUd a6T" data-bit="iit" tabindex="0" width="100px" height="100px" />
+
+                                <br>
+                                <strong>Transgas</strong></span>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="680">
+                    <tbody>
+                        <tr>
+                            <td height="30"
+                                style="font-size:27px;text-align:center;font-family:sans-serif;vertical-align:middle;line-height:50px"
+                                valign="bottom" width="680">
+
+                                <a href="https://transgas.web.app" style="text-decoration:none" target="_blank"
+                                    data-saferedirecturl="https://transgas.web.app">
+                                    <span style="color:#616161;font-size:27 px">
+                                        <strong>ANALYSIS OF CONSUMPTION</strong>
+                                    </span>
+                                </a>
+                                <br>
+                                <span
+                                    style="color: #616161;font-family:sans-serif;font-size:27px;/* background-color:#00b0f4; */">
+                                    <strong>Get voyage analysis in just one click!</strong>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="680">
+                <div style="text-align: center;">
+                    <div style="display: block; color:#0855c4;font-size:25.5px;font-family:sans-serif;">
+                        <b>Vessel : {{nameBuque}}</b>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="display: block; color:#0855c4;font-size:25.5px;font-family:sans-serif;">
+                        <b>Date document : {{dateCurrent}}</b>
+                    </div>
+
+
+                </div>
+                <div style="display: block; text-align: center;font-family:sans-serif; ">
+
+                    {{#if isVIew_IFO_VLSFO_LSFO}}
+                    <span>
+                        <strong>
+                            <span style="color:#0855c4; font-size:30px;">{{IFO_VLSFO_LSFO}} :
+                            </span>
+                            <span style="color:#0855c4; font-size:60px;">{{currentVLSFO}} mt</span>
+                        </strong>
+                    </span>
+                    {{/if}}
+
+                    <span style="padding: 20px;"></span>
+                    {{#if isVIew_MGO}}
+                    <span>
+                        <strong>
+                            <span style="color:#0855c4; font-size:30px;">MGO :
+                            </span>
+                            <span style="color:#0855c4; font-size:60px;">{{currentMGO}} mt</span>
+                        </strong>
+                    </span>
+                    {{/if}}
+                </div>
+            </td>
+        </tr>
+
+        {{#if isVIew_IFO_VLSFO_LSFO}}
+        <tr>
+            <td
+                style="text-align:center;color:#000;font-family:arial,helvetica;font-size:15px;background:#fff;line-height:30px">
+                <br>
+                <a href="https://transgas.web.app/" style="text-decoration:none;color:#000" target="_blank">
+                    <span style="font-size:19px;color:#545454">
+                        <b>Information on consumption of {{IFO_VLSFO_LSFO}} by activities.</b>
+                    </span>
+                </a>
+
+                <div style="align-items: center;display: block;">
+                    <table class="default" cellspacing="0" cellpadding="0" style="margin: auto;">
+
+                        <tr style="
+                        border-color: #155af5!important; color: white;">
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">
+                                ACTIVITY<br>PERFORMED</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">
+                                TIME</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">
+                                CONSUMPTION</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                DAILY<br>CONSUMPTION<br>(MT)</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #001556;">
+                                DAILY<br>CONSUMPTION<br>(MT)<br>(CHARTER)</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.loading.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.loading.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.loading.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.loading.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.loading.dailyConsumptionCharter}}</th>
+                        </tr>
+
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.discharge.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.discharge.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.discharge.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.discharge.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.discharge.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.ballast.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.ballast.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.ballast.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.ballast.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.ballast.dailyConsumptionCharter}}</th>
+                        </tr>
+
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.laden.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.laden.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.laden.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.laden.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.laden.dailyConsumptionCharter}}</th>
+                        </tr>
+
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.economical.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.economical.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.economical.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.economical.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.economical.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.anchored.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.anchored.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.anchored.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.anchored.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.anchored.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.maneuver.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.maneuver.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.maneuver.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.maneuver.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.maneuver.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.other_act.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.other_act.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.other_act.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.other_act.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.ifoResumen.other_act.dailyConsumptionCharter}}</th>
+                        </tr>
+
+
+                    </table>
+                </div>
+
+
+
+
+
+
+            </td>
+        </tr>
+
+        {{/if}}
+
+        {{#if isVIew_MGO}}
+        <tr>
+            <td
+                style="text-align:center;color:#000;font-family:arial,helvetica;font-size:15px;background:#fff;line-height:30px">
+                <br>
+                <a href="https://transgas.web.app/" style="text-decoration:none;color:#000" target="_blank">
+                    <span style="font-size:19px;color:#545454">
+                        <b>Information on consumption of MGO by activities.</b>
+                    </span>
+                </a>
+
+                <div style="align-items: center;display: block;">
+                    <table class="default" cellspacing="0" cellpadding="0" style="margin: auto;">
+
+                        <tr style="
+                        border-color: #155af5!important; color: white;">
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">
+                                ACTIVITY<br>PERFORMED</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">
+                                TIME</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">
+                                CONSUMPTION</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                DAILY<br>CONSUMPTION<br>(MT)</th>
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #001556;">
+                                DAILY<br>CONSUMPTION<br>(MT)<br>(CHARTER)</th>
+                        </tr>
+
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.loading.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.loading.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.loading.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.loading.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.loading.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.discharge.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.discharge.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.discharge.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.discharge.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.discharge.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.ballast.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.ballast.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.ballast.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.ballast.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.ballast.dailyConsumptionCharter}}</th>
+                        </tr>
+
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.laden.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.laden.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.laden.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.laden.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.laden.dailyConsumptionCharter}}</th>
+                        </tr>
+
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.economical.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.economical.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.economical.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.economical.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.economical.dailyConsumptionCharter}}</th>
+                        </tr>
+
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.anchored.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.anchored.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.anchored.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.anchored.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.anchored.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.maneuver.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.maneuver.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.maneuver.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.maneuver.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.maneuver.dailyConsumptionCharter}}</th>
+                        </tr>
+                        <tr style="
+                        border-color: #155af5!important;  color: black
+                        4;">
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.other_act.activityName}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.other_act.timeActivity}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.other_act.consumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.other_act.dailyConsumption}}</th>
+                            <th style="padding: 3px 5px 2px 5px;font-size: 10px;border: 1px solid #155af5!important;">
+                                {{consumptionActivity.mgoResumen.other_act.dailyConsumptionCharter}}</th>
+                        </tr>
+
+
+                    </table>
+                </div>
+
+
+
+
+
+
+            </td>
+        </tr>
+        {{/if}}
+
+
+        <tr>
+            <td height="15" style="background:#fff" width="680"> &nbsp;</td>
+        </tr>
+
+
+
+        <tr>
+            <td height="136"
+                style="text-align:center;color:#9ca6af;font-family:arial,helvetica;font-size:11px;background:#f4f4f4;line-height:16px">
+                Este correo electrónico fue enviado por la Plataforma de Analisis de Transgas.<br> <br> Lima 33, Av La
+                Encalada 995, Lima
+                <br>
+                <span style="color:#02aeee">Contáctanos al (01) 4360999</span><br> ®2022
+                Derechos reservados.<br><a href=""
+                    style="font-family:Arial,Helvetica,sans-serif;color:#00adee;font-weight:bold;text-decoration:none"
+                    target="_blank">
+                    Cancelar
+                    suscripción</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

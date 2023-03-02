@@ -68,20 +68,7 @@ export class ExcelFormatVesselDataRegisterService {
     // Add row with current date
     let subTitleRow = worksheet.addRow(['Date : ' + new Date()]);
 
-
-
-
-    // Add image.
-    /*
-    let logo = workbook.addImage({
-      base64: logoFile.logoBase64,
-      extension: 'png',
-    });
-    worksheet.addImage(logo, 'E1:F3');
-    */
-
-
-
+ 
     // unir celdas
     worksheet.mergeCells('A1:D1');
 
@@ -157,6 +144,8 @@ export class ExcelFormatVesselDataRegisterService {
 
               // Validamos
               if (!result) { throw 'ERROR GER REPORT' };
+              
+              
               // Guardamos los datos en una variable.
               getInfoFuelStartEndByFilterDate = result;
 
@@ -326,7 +315,7 @@ export class ExcelFormatVesselDataRegisterService {
     let positionRow = position;
 
 
-    let tamanioTableReport = this.AddReportTable(worksheet, positionRow, positionColumn, selectUser, textIFOorVLSFOorLSFO);
+    let tamanioTableReport = this.AddReportTable(worksheet, positionRow, positionColumn, selectUser, textIFOorVLSFOorLSFO,getInfoFuelStartEndByFilterDate);
 
     positionRow = tamanioTableReport;
 
@@ -340,7 +329,7 @@ export class ExcelFormatVesselDataRegisterService {
         let dataRow = [
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
-          getReportVoyagePortDaily.dailyReportId, 
+          getReportVoyagePortDaily.dailyReportId,
           getReportVoyagePortDaily.year,
           getReportVoyagePortDaily.voyageNumber,
           getReportVoyagePortDaily.portNumber,
@@ -348,7 +337,8 @@ export class ExcelFormatVesselDataRegisterService {
           getReportVoyagePortDaily.arrivalPort,
           getReportVoyagePortDaily.date,
           getReportVoyagePortDaily.hour,
-          { formula: 'IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
+          getReportVoyagePortDaily.steamingTime,
+          //{ formula: 'IFERROR((I' + positionRow + ' - I' + (positionRow - 1) + ')*24,0)' },
           //this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), // REVISAR ERROR REVISAR
           getReportVoyagePortDaily.activityPerformed,
           this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.speedStraction), // REVISAR ERROR REVISAR
@@ -399,6 +389,17 @@ export class ExcelFormatVesselDataRegisterService {
 
         worksheet.addRow(dataRow);
 
+        if (index == 0) {
+
+          // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
+          
+
+
+          worksheet.getCell('Z' + positionRow).value = <any>{ formula: 'Z' + (positionRow - 2) + '-W' + positionRow + '+Y' + positionRow };
+          worksheet.getCell('AJ' + positionRow).value = <any>{ formula: 'AJ' + (positionRow - 2) + '-AG' + positionRow + '+AI' + positionRow };
+
+          // Agregamos el formadate
+        }
 
       }
 
@@ -953,7 +954,7 @@ export class ExcelFormatVesselDataRegisterService {
     };
   };
 
-  private AddReportTable(worksheet, posit, colum, selectUser: User, textIFOorVLSFOorLSFO: string): number {
+  private AddReportTable(worksheet, posit, colum, selectUser: User, textIFOorVLSFOorLSFO: string, getInfoFuelStartEndByFilterDate:any): number {
     // Nos ubicamos en una posicion para empezar a poner los row
     // this.mergeCellReport(worksheet, position);
 
@@ -1102,8 +1103,9 @@ export class ExcelFormatVesselDataRegisterService {
       }
     };
     worksheet.mergeCells('S' + positionRow, 'W' + positionRow);
-
-    worksheet.getCell('X' + positionRow).value = <any>{ formula: 'AK7' };
+    console.log('ok')
+    console.log(getInfoFuelStartEndByFilterDate.ifo_start)
+    worksheet.getCell('X' + positionRow).value = getInfoFuelStartEndByFilterDate.ifo_start;
     worksheet.getCell('X' + positionRow).style = {
       alignment: {
         horizontal: 'right',
@@ -1158,7 +1160,9 @@ export class ExcelFormatVesselDataRegisterService {
       }
     };
     worksheet.mergeCells('AA' + positionRow, 'AG' + positionRow);
-    worksheet.getCell('AH' + positionRow).value = <any>{ formula: 'AM7' };
+
+    console.log('MGO :'+getInfoFuelStartEndByFilterDate.mgo_start)
+    worksheet.getCell('AH' + positionRow).value = getInfoFuelStartEndByFilterDate.mgo_start;
     worksheet.getCell('AH' + positionRow).style = {
       alignment: {
         horizontal: 'right',
@@ -1188,7 +1192,7 @@ export class ExcelFormatVesselDataRegisterService {
 
     positionRow += 1;
     worksheet.addRow([
-      'voyageId', 'portId', 'dailyReportId',  'year',//E
+      'voyageId', 'portId', 'dailyReportId', 'year',//E
 
       'voyageNumber',
       'portNumber',
@@ -1230,7 +1234,7 @@ export class ExcelFormatVesselDataRegisterService {
       'north_degree',
       'north_minutes',
       'north_north_south',
-      
+
       'east_degree',
       'east_minutes',
       'east_east_west',
@@ -1238,7 +1242,7 @@ export class ExcelFormatVesselDataRegisterService {
       'userId',
       'updatePort',
       'delete_report'
-      
+
     ]);
     worksheet.getCell('F' + positionRow).style = {
       alignment: {
@@ -2269,7 +2273,7 @@ export class ExcelFormatVesselDataRegisterService {
 
 
 
-   
+
 
 
   // Obtenemos la info de todos los viajes agregado.

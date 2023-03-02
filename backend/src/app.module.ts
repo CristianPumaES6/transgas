@@ -17,6 +17,7 @@ import { VoyagesModule } from './components/voyages/voyages.module';
 
 import { AppGateway } from './app.gateway';
 import { FormatExcelLastVoyageService } from './services/format-excel-last-voyage/format-excel-last-voyage.service';
+import { SendMessageModule } from './components/send-message/send-message.module';
 
 @Module({
  
@@ -50,7 +51,8 @@ import { FormatExcelLastVoyageService } from './services/format-excel-last-voyag
     UsersModule,
     AuthModule,
     VoyagesModule,
-    AppGateway,// por mientras queeste desactivado
+    AppGateway,
+    SendMessageModule,// por mientras queeste desactivado
   ],
 
   controllers: [AppController],
