@@ -1642,12 +1642,12 @@
         "affectsGlobalScope": false
       },
       "../src/assets/moment.assets.ts": {
-        "version": "9a278d1b287c624ec401d158c7f2233646b74ae680114bb7ec86bbb858cff609",
-        "signature": "2c3147b353a6f97b46333f70d1f94f797e41157517b54e0207693f0b3bc94d0d",
+        "version": "0bf1f67a838363b6b9031cb7b96079f697ac69e6ee9c55373fd13bfb73710adf",
+        "signature": "e81f1821acbb3748497ea5ab8456bcbc763aff316afc46fe705a9c0878ac6c40",
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "2b313fa0311420f65f1995ac235fa7ea9e92406941e7100c683d42d4965059a7",
+        "version": "f4624b7f520c6eaa10c18769b44ffc0a30b8d381d95f859a9e159482bfa48bee",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3537,8 +3537,8 @@
         "affectsGlobalScope": false
       },
       "../src/config/path.config.ts": {
-        "version": "90a6887ca03b1eb97abb21d8ed2b03dc5714abb5f21fe3dba694ed64db7826e3",
-        "signature": "3a0667761943a987173e813f423559de255a8fa5a9887bf0f3e7d2a56ef89f68",
+        "version": "f13b39a0d0fb425066e17c03a19d90a1178b3bb6e5f56acc0306beb9da2610a2",
+        "signature": "c99b170aa6c6bce87250338b2d03c95e1b76769f3dc995d6d31034786f1a8f4c",
         "affectsGlobalScope": false
       },
       "../node_modules/jwt-decode/index.d.ts": {
@@ -3692,7 +3692,7 @@
         "affectsGlobalScope": false
       },
       "../src/models/daily-report.entity.ts": {
-        "version": "d09b7cdfdd3fd609e2f8e13e2c45b6ed766c9ad58d3e3a8652800ea705a4ea00",
+        "version": "f38cdb59b0d156b6cd22d4dbc70ff15db38813b177aa457e2dc4754e81074295",
         "signature": "051ab26cbf4ca8f8999ff1a21baacf898d72ae4d074d3a705e08aea99fe6a77a",
         "affectsGlobalScope": false
       },
@@ -3702,12 +3702,12 @@
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "8fdce20e49a80c099eff8ccfebc7266098232362ea4b98881fd35c463a74bfdd",
-        "signature": "dc6dad472a0a1e4a523e5d760080de7c4af7eec9f58cc2240379eee6515963e5",
+        "version": "2034094814a0403dceca22023f20b323ce99dd7aafd15c0b1487d7d89a71e105",
+        "signature": "20e81cbf319c951fa00891e0d7bc19693a0531af7c7f7ce5baabc8d6d6737e51",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "cc6e1a238928b8ddbf8c0de769e24b4030f0c85c3d29a4dd0efa6562dbafaf72",
+        "version": "2d09065511ac20649079913e725d7370021db33b0a876429a940f6677f064b72",
         "signature": "9d0dc2289188dd946c2712dc6e6ad5f949339731be2b14e56ec324e5dc32e3c2",
         "affectsGlobalScope": false
       },
@@ -3717,7 +3717,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "46365695ace1954fd636478bf53f94d9d954579ca7b25ea17eb66cc54e082888",
+        "version": "f8d1ce7d7fd5733529d633b467eeada03f9e49a0745ae72f2648fd543185b923",
         "signature": "5a1359fde937a1e0de4a429146da080ec917169edef9644c23a182cc33491561",
         "affectsGlobalScope": false
       },
@@ -3726,14 +3726,54 @@
         "signature": "a8669e593472df912d84f2e679b699e01aa137304ec6734a5e7757633f64b9b3",
         "affectsGlobalScope": false
       },
+      "../src/models/sendmailconfig.ts": {
+        "version": "1d17f1fc461bc2a37fbe3f5e8e3b1fe6d9c00ed49150b79e49379c08bc260a56",
+        "signature": "ab3ff3f00fa478d214798196d38699f946c20415ffab9f8daece932cad930640",
+        "affectsGlobalScope": false
+      },
       "../src/services/format-excel-last-voyage/format-excel-last-voyage.service.ts": {
-        "version": "dca1d068ffb8cb4f7c2c13180619d3668b72d3899968591a4524fd7179e38e96",
-        "signature": "1d2684447baefd0a5d1bf8861169f036dbc8d04db6a3993a2733dbdfa64cbda4",
+        "version": "03f91005ee066626ea30c39bc034225ae9625e13e07bde9ffae42b18aab941b8",
+        "signature": "6ffa752d32c9bd4d49efc62fde75c8e53f3f2b7a6da8cb44bdd76d305f14099c",
+        "affectsGlobalScope": false
+      },
+      "../src/assets/file-manager.assets.ts": {
+        "version": "3377124fa5c9d71056896b658c9a8b7221a6ac50a4d0d0eaf0979effee21f4d7",
+        "signature": "c55074ecf157bc78c6d0a68833ac09171ae5b7f5256e5681c877d1602e923d3f",
+        "affectsGlobalScope": false
+      },
+      "../src/assets/hbs.assets.ts": {
+        "version": "0790ba453a27b3140ed7bd61c29aa81c5dfd8de933f4fde35b4392a2952e878f",
+        "signature": "a7ef0e1639fa0e9f36ac83ace09a0f5db76a691c63560535ff750f32d9e87346",
+        "affectsGlobalScope": false
+      },
+      "../src/models/assets/mailoptions.model.ts": {
+        "version": "1a9ff64700ce31567d0e3e6c6063b0c273e044b090a29803c72234e44b9b2d47",
+        "signature": "50a62b09bded2903b43daeb1efe579c636330a440212ea5c1ee720af25cdba70",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/decimal.js/decimal.d.ts": {
+        "version": "67577c6ac7cc408265b36f54548167d12f419cab47c3567db64d0a990c089e88",
+        "signature": "67577c6ac7cc408265b36f54548167d12f419cab47c3567db64d0a990c089e88",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/mathjs/types/index.d.ts": {
+        "version": "7e0235ebcd6c9fcfe3ef395721b2b1c1ff274622f47f4474c1ff27b9c94d239b",
+        "signature": "7e0235ebcd6c9fcfe3ef395721b2b1c1ff274622f47f4474c1ff27b9c94d239b",
+        "affectsGlobalScope": false
+      },
+      "../src/assets/math.assets.ts": {
+        "version": "1dd2601b1ad9aef7b50e7b27078f2c48b36e43bfc6c980d8d472af6ef96ab4ef",
+        "signature": "87743114964e3c2eda4da3aada1f3fd9c166a684fb6080ee0ad602f0162e2ef1",
+        "affectsGlobalScope": false
+      },
+      "../src/assets/nodemailer.assets.ts": {
+        "version": "7fcc98058a872aa4c419e48185d8c71bee9dbb730c5067cfb16720053a910f7b",
+        "signature": "5ba5f1c9536177fc03d8a7a1f0936eb02cedf7974871e285255802b3489e8c4e",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "a356174df3b83fea6f3c4e59a055e484615947b0f75b39efbf8b580a9626d34c",
-        "signature": "99c3724f6167b333deea3106e0bc9ca7a133ac6063272dc7047bde733e920837",
+        "version": "7d0446f339945556267d4d5ad935f7d71f9c0a17d270a18f08cca2b7909e2744",
+        "signature": "15d541a4cc815630a21bee52982fdd1522cb03b60e8e48cdbe2d8578054eb7ab",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.controller.ts": {
@@ -3747,7 +3787,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.controller.ts": {
-        "version": "c19c6f33b31398656e2f4607036e99c7e3698664a6c85930451cf5fdd25ab827",
+        "version": "3b9442e17f268960b9c2df136f7a1c1839e62c64bdb9faab3c2c59d3b49ef6a3",
         "signature": "c94a2d80751fd9a65e3ba843d59ef8306a444956e3cab18004891025da3a2f80",
         "affectsGlobalScope": false
       },
@@ -3937,12 +3977,12 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "d4baba460d36cad50428e39ab688fcbf9c598800bd20ec53dded269824a06e7d",
+        "version": "d6a00e260a026e692d5441bd418d6c2b5a0f5df1e4fc489c32ff7481631339b1",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
       "../src/transgas3000.ts": {
-        "version": "1a12a9d5f027fcfaf600d8b9fd0bac1a41fb84aa988aed33d87d10212c5e9a0a",
+        "version": "5daa45e7b0ef6af9da0b42abf5b22805aa4b277c918f797fdba3cc66f9b1294c",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
@@ -5371,6 +5411,9 @@
       "../node_modules/jest-diff/build/printdiffs.d.ts": [
         "../node_modules/jest-diff/build/cleanupsemantic.d.ts",
         "../node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../node_modules/mathjs/types/index.d.ts": [
+        "../node_modules/decimal.js/decimal.d.ts"
       ],
       "../node_modules/moment-timezone/index.d.ts": [
         "../node_modules/moment/ts3.1-typings/moment.d.ts"
@@ -7206,12 +7249,41 @@
         "../src/models/loggeduser.ts",
         "../src/models/socketemit.ts"
       ],
+      "../src/assets/file-manager.assets.ts": [
+        "../node_modules/@types/node/ts4.8/fs.d.ts"
+      ],
+      "../src/assets/hbs.assets.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/platform-express/index.d.ts",
+        "../node_modules/@types/express/index.d.ts",
+        "../node_modules/@types/node/ts4.8/path.d.ts",
+        "../src/assets/file-manager.assets.ts",
+        "../src/assets/promises.assets.ts",
+        "../src/config/path.config.ts"
+      ],
       "../src/assets/jwtdecode.assets.ts": [
         "../node_modules/jwt-decode/index.d.ts"
+      ],
+      "../src/assets/math.assets.ts": [
+        "../node_modules/mathjs/types/index.d.ts"
       ],
       "../src/assets/moment.assets.ts": [
         "../node_modules/moment-timezone/index.d.ts",
         "../node_modules/moment/ts3.1-typings/moment.d.ts"
+      ],
+      "../src/assets/nodemailer.assets.ts": [
+        "../node_modules/@nestjs/platform-express/index.d.ts",
+        "../node_modules/@types/node/ts4.8/fs.d.ts",
+        "../node_modules/@types/node/ts4.8/path.d.ts",
+        "../src/assets/file-manager.assets.ts",
+        "../src/assets/hbs.assets.ts",
+        "../src/assets/math.assets.ts",
+        "../src/assets/moment.assets.ts",
+        "../src/assets/promises.assets.ts",
+        "../src/config/path.config.ts",
+        "../src/models/assets/mailoptions.model.ts",
+        "../src/models/sendmailconfig.ts",
+        "../src/models/user.entity.ts"
       ],
       "../src/components/auth/auth.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -7333,6 +7405,7 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/assets/jwtdecode.assets.ts",
         "../src/assets/moment.assets.ts",
+        "../src/assets/nodemailer.assets.ts",
         "../src/assets/promises.assets.ts",
         "../src/components/users/users.service.ts",
         "../src/components/voyages/daily-reports/daily-reports.service.ts",
@@ -7340,6 +7413,7 @@
         "../src/components/voyages/voyages.service.ts",
         "../src/models/daily-report.entity.ts",
         "../src/models/port.entity.ts",
+        "../src/models/sendmailconfig.ts",
         "../src/models/user.entity.ts",
         "../src/models/voyage.entity.ts",
         "../src/services/format-excel-last-voyage/format-excel-last-voyage.service.ts"
@@ -7374,10 +7448,13 @@
       ],
       "../src/main.ts": [
         "../node_modules/@nestjs/core/index.d.ts",
+        "../node_modules/@nestjs/platform-express/index.d.ts",
         "../node_modules/@types/body-parser/index.d.ts",
         "../node_modules/@types/express/index.d.ts",
         "../node_modules/@types/node/ts4.8/path.d.ts",
         "../src/app.module.ts",
+        "../src/assets/hbs.assets.ts",
+        "../src/assets/nodemailer.assets.ts",
         "../src/config/path.config.ts"
       ],
       "../src/middleware/image.middleware.ts": [
@@ -7411,14 +7488,19 @@
         "../src/assets/promises.assets.ts",
         "../src/models/daily-report.entity.ts",
         "../src/models/port.entity.ts",
+        "../src/models/sendmailconfig.ts",
         "../src/models/user.entity.ts",
         "../src/models/voyage.entity.ts"
       ],
       "../src/transgas3000.ts": [
         "../node_modules/@nestjs/core/index.d.ts",
+        "../node_modules/@nestjs/platform-express/index.d.ts",
+        "../node_modules/@types/body-parser/index.d.ts",
         "../node_modules/@types/express/index.d.ts",
         "../node_modules/@types/node/ts4.8/path.d.ts",
         "../src/app.module.ts",
+        "../src/assets/hbs.assets.ts",
+        "../src/assets/nodemailer.assets.ts",
         "../src/config/path.config.ts"
       ]
     },
@@ -8642,6 +8724,9 @@
       "../node_modules/jest-diff/build/printdiffs.d.ts": [
         "../node_modules/jest-diff/build/cleanupsemantic.d.ts",
         "../node_modules/jest-diff/build/types.d.ts"
+      ],
+      "../node_modules/mathjs/types/index.d.ts": [
+        "../node_modules/decimal.js/decimal.d.ts"
       ],
       "../node_modules/moment-timezone/index.d.ts": [
         "../node_modules/moment/ts3.1-typings/moment.d.ts"
@@ -10452,8 +10537,14 @@
       "../src/app.service.ts": [
         "../src/app.gateway.ts"
       ],
+      "../src/assets/hbs.assets.ts": [
+        "../node_modules/@nestjs/platform-express/index.d.ts"
+      ],
       "../src/assets/moment.assets.ts": [
         "../node_modules/moment/ts3.1-typings/moment.d.ts"
+      ],
+      "../src/assets/nodemailer.assets.ts": [
+        "../src/models/sendmailconfig.ts"
       ],
       "../src/components/auth/auth.service.ts": [
         "../node_modules/@nestjs/jwt/index.d.ts",
@@ -10496,7 +10587,7 @@
         "../src/components/voyages/daily-reports/daily-reports.service.ts",
         "../src/components/voyages/ports/ports.service.ts",
         "../src/components/voyages/voyages.service.ts",
-        "../src/models/user.entity.ts",
+        "../src/models/sendmailconfig.ts",
         "../src/models/voyage.entity.ts",
         "../src/services/format-excel-last-voyage/format-excel-last-voyage.service.ts"
       ],
@@ -10519,6 +10610,7 @@
       ],
       "../src/services/format-excel-last-voyage/format-excel-last-voyage.service.ts": [
         "../src/models/daily-report.entity.ts",
+        "../src/models/sendmailconfig.ts",
         "../src/models/user.entity.ts"
       ]
     },

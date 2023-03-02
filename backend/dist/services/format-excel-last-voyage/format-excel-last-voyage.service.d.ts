@@ -1,8 +1,9 @@
+/// <reference types="node" />
 import { GetReportVoyagePortDaily, InfoFuelStartEndForDate } from 'src/models/daily-report.entity';
 import { UserEntity } from 'src/models/user.entity';
+import { MailLastVoyage } from 'src/models/sendMailConfig';
 export declare class FormatExcelLastVoyageService {
-    GenerateExcel(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<any>;
-    FormatGeneric(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<any>;
+    GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<GenerateFormatObjForExcelEmail>;
     private ResetColumn;
     private GenerarHojaDataReport;
     private StyleDashLegend;
@@ -11,7 +12,8 @@ export declare class FormatExcelLastVoyageService {
     private StyleDashSpeed;
     private StyleDashActivity;
     private StyleDashCosumption;
-    private StyleDashSailing;
+    private AddInfoByPortAccordingToTheTravelreport;
+    private cuadroResumentotal;
     private StyleDashReportRegister;
     private MultipleFormateWorksheet;
     private RuleFormatCeroGris;
@@ -47,4 +49,10 @@ export declare class PosicionDelosRegistrosNormales {
     endRow?: number;
     startColum?: number;
     constructor(startRow?: number, endRow?: number, startColum?: number);
+}
+export declare class GenerateFormatObjForExcelEmail {
+    success?: boolean;
+    buffer?: Buffer;
+    objMailLastVoyage?: MailLastVoyage;
+    constructor(success?: boolean, buffer?: Buffer, objMailLastVoyage?: MailLastVoyage);
 }

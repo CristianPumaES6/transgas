@@ -25,7 +25,6 @@ const promises_assets_1 = require("../../assets/promises.assets");
 const jwtDecode_assets_1 = require("../../assets/jwtDecode.assets");
 const voyages_service_1 = require("./voyages.service");
 const voyage_entity_1 = require("../../models/voyage.entity");
-const user_entity_1 = require("../../models/user.entity");
 const moment_assets_1 = require("../../assets/moment.assets");
 const port_entity_1 = require("../../models/port.entity");
 const ports_service_1 = require("./ports/ports.service");
@@ -33,6 +32,8 @@ const daily_report_entity_1 = require("../../models/daily-report.entity");
 const daily_reports_service_1 = require("./daily-reports/daily-reports.service");
 const format_excel_last_voyage_service_1 = require("../../services/format-excel-last-voyage/format-excel-last-voyage.service");
 const users_service_1 = require("../users/users.service");
+const sendMailConfig_1 = require("../../models/sendMailConfig");
+const nodemailer_assets_1 = require("./../../assets/nodemailer.assets");
 let VoyagesController = class VoyagesController {
     constructor(_voyagesService, _portsService, _dailyReportsService, _formatExcelLastVoyageService, _usersService) {
         this._voyagesService = _voyagesService;
@@ -511,7 +512,12 @@ let VoyagesController = class VoyagesController {
                     newReport.east_degree = importVoyage.east_degree || 0;
                     newReport.east_minutes = importVoyage.east_minutes || 0;
                     newReport.east_east_west = importVoyage.east_east_west || '';
-                    newReport.status = true;
+                    if (importVoyage.delete_report) {
+                        newReport.status = false;
+                    }
+                    else {
+                        newReport.status = true;
+                    }
                     if (!importVoyage.dailyReportId) {
                         newReport.userIdCreated = headerToken.id;
                         newReport.dateCreated = moment_assets_1.GetDate();
@@ -543,19 +549,25 @@ let VoyagesController = class VoyagesController {
             return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! ';
         }
     }
-    async SendEmailLastVoyage(user, gmail) {
-        let userId = user.id;
+    async SendEmailLastVoyage(sendMailConfig) {
+        let userId = sendMailConfig.userId;
+        let email = sendMailConfig.emails;
+        let userEntity = null;
         let voyageId = null;
         let listGetReportVoyagePortDaily = [];
         let getInfoFuelStartEndByFilterDate;
+        let numeroViaje = 0;
+        let numeroAnio = 0;
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             return this._usersService.Get(userId);
         }).then((resultUser) => {
-            user = resultUser;
+            userEntity = resultUser;
             return this._voyagesService.GetLastVoyage(userId);
         }).then(result => {
             if (result.length != 2)
                 throw 'ERROR debe de haber mas de 2 viajes.';
+            numeroViaje = result[1].voyageNumber;
+            numeroAnio = result[1].year;
             voyageId = result[1].id;
             return this._dailyReportsService.GetReportVoyagePortDaily(userId, null, null, voyageId);
         }).then(resultGetReportVoyagePortDaily => {
@@ -579,7 +591,27 @@ let VoyagesController = class VoyagesController {
             endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo, 2;
             endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo, 2;
             getInfoFuelStartEndByFilterDate = new daily_report_entity_1.InfoFuelStartEndForDate(startDataROB, endDataROB);
-            return this._formatExcelLastVoyageService.GenerateExcel(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, user);
+            return this._formatExcelLastVoyageService.GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity);
+        }).then(resultGenerateFormatObjForExcelEmail => {
+            let mailLastVoyage = resultGenerateFormatObjForExcelEmail;
+            return nodemailer_assets_1.SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
+        }).then(result => {
+            if (!result) {
+                throw 'ERROR SUPPORT';
+            }
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: result
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
         });
     }
 };
@@ -640,10 +672,10 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], VoyagesController.prototype, "ImportJSONVoyages", null);
 __decorate([
-    common_1.Post('sendEmailLastVoyage/:gmail'),
-    __param(0, common_1.Body()), __param(1, common_1.Param('gmail')),
+    common_1.Post('sendEmailLastVoyage'),
+    __param(0, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_entity_1.UserEntity, Object]),
+    __metadata("design:paramtypes", [sendMailConfig_1.SendMailConfig]),
     __metadata("design:returntype", Promise)
 ], VoyagesController.prototype, "SendEmailLastVoyage", null);
 VoyagesController = __decorate([

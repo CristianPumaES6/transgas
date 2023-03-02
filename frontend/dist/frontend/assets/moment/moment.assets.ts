@@ -46,6 +46,16 @@ export function stringToDate(fechaUTC: any): string {
     return text;
 }
 
+export function stringUTCToDateUTC(fechaUTC: any): string {
+
+    let formatfecha = moment.utc(fechaUTC);
+    //console.log(formatfecha);
+
+    let text = formatfecha.utc().format('MM-DD-YYYY');
+
+    return text;
+}
+
 // obtiene el mes y el año de una fecha.
 export function GetMonthYearFromDate(fechaUTC: any): string {
 
@@ -263,9 +273,9 @@ export function AddOneDayAndConvertYYYYMMDDToSTRING(date: any): string {
 
 
 export function FormatDateUTCToDateHour(dateUTC: any): string {
-    
+
     if (!dateUTC) return '';
-    
+
     if (!validateDate(dateUTC)) return '';
     // Con el formato YYYY MM DD
     let momentDate = moment.utc(dateUTC);
@@ -273,6 +283,19 @@ export function FormatDateUTCToDateHour(dateUTC: any): string {
     let local = momentDate.local();
 
     let format = local.format('MM/DD/YYYY HH:mm');
+
+    return format;
+}
+export function FormatDateUTCToDateHourUTC(dateUTC: any): string {
+
+    if (!dateUTC) return '';
+
+    if (!validateDate(dateUTC)) return '';
+    // Con el formato YYYY MM DD
+    let momentDate = moment.utc(dateUTC);
+
+
+    let format = momentDate.format('MM/DD/YYYY HH:mm');
 
     return format;
 }
@@ -300,8 +323,14 @@ export function ConvertirDateHourToMoment(dateLocal: any, hourLocal: any): momen
 
     return momentLastDaily;
 }
+
+
+
+// RETORNA UN STRING EL OTRO UN MOMMENT
 export function ConvertirDateHourToMoment2(dateLocal: any, hourLocal: any): any {
 
+
+    if (!validateDate(dateLocal)) return '';
 
     let horanormal = dateLocal;
     let horaConverUTC = moment.utc(dateLocal, 'YYYY-MM-DD HH');
@@ -319,6 +348,69 @@ export function ConvertirDateHourToMoment2(dateLocal: any, hourLocal: any): any 
 
     return momentLastDaily;
 }
+// revisar, 
+// ESTA FUNCION junta una fecha y le agrega una hora.
+// revisar como lo esta asiendo.
+export function JuntarFechaYHoraUTCToMoment(dateLocal: any, hourLocal: any): any {
+
+
+    if (!validateDate(dateLocal)) return '';
+
+    let horanormal = dateLocal;
+    let horaConverUTC = moment.utc(dateLocal, 'YYYY-MM-DD');
+
+    let horaConvertFornmat = horaConverUTC.format('YYYY-MM-DD');
+
+
+    // Convertimos el string en formato moment,
+    // Con el formato YYYY MM DD
+    let momentDate = moment(horaConvertFornmat, 'YYYY-MM-DD');
+
+    momentDate.add(hourLocal);
+
+    //  let momentLastDaily = moment(momentDate, 'YYYY-MM-DD HH:mm');
+
+    let momentLastDaily = moment(momentDate, 'YYYY-MM-DD HH:mm').local().format('MM-DD-YYYY HH:mm'); //('YYYY-MM-DD HH:mm:ss');
+
+    let fechaUTCHardcore = momentLastDaily.replace(' ', 'T');
+
+    fechaUTCHardcore += 'Z';
+    return momentLastDaily;
+}
+
+// revisar, 
+// ESTA FUNCION junta una fecha y le agrega una hora.
+// revisar como lo esta asiendo.
+export function JuntarFechaYHoraUTCToMoment2(dateLocal: any, hourLocal: any): any {
+
+
+    if (!validateDate(dateLocal)) return '';
+
+    let horanormal = dateLocal;
+    let horaConverUTC = moment.utc(dateLocal, 'YYYY-MM-DD');
+
+    let horaConvertFornmat = horaConverUTC.format('YYYY-MM-DD');
+
+
+    // Convertimos el string en formato moment,
+    // Con el formato YYYY MM DD
+    let momentDate = moment(horaConvertFornmat, 'YYYY-MM-DD');
+
+    momentDate.add(hourLocal);
+
+    //  let momentLastDaily = moment(momentDate, 'YYYY-MM-DD HH:mm');
+
+    let momentLastDaily = moment(momentDate, 'YYYY-MM-DD HH:mm').local().format('YYYY-MM-DD HH:mm'); //('YYYY-MM-DD HH:mm:ss');
+ 
+    let fechaUTCHardcore = momentLastDaily.replace(' ', 'T');
+
+    fechaUTCHardcore += 'Z';
+    
+    return fechaUTCHardcore;
+}
+
+
+
 
 export function DiferentHourTwoMoment(moment1: moment.Moment, moment2: moment.Moment): number {
 

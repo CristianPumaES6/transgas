@@ -310,6 +310,7 @@ let VoyagesService = class VoyagesService {
         return await this.voyageRepository.createQueryBuilder('voyage')
             .select('voyage.id', 'id')
             .addSelect('voyage.voyageNumber', 'voyageNumber')
+            .addSelect('voyage.year', 'year')
             .where('voyage.userId = :userId', { userId: userId })
             .andWhere('voyage.status = :status', { status: 1 })
             .orderBy('voyage.id', 'DESC')
