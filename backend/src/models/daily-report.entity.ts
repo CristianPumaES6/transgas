@@ -283,6 +283,8 @@ export class GetReportVoyagePortDaily {
         public east_minutes?: number,
         public east_east_west?: string,
 
+        public navigatedTime?: number,
+
 
     ) {
         this.userId = userId || 0;
@@ -332,6 +334,9 @@ export class GetReportVoyagePortDaily {
         this.east_degree = east_degree || 0;
         this.east_minutes = east_minutes || 0;
         this.east_east_west = east_east_west || '';
+
+        
+        this.navigatedTime = navigatedTime || 0;
     }
 
 }

@@ -620,6 +620,11 @@ export class ExcelFormatDNVService {
               hora = '17:00'
             }
 
+        // si es el buque camila el cierre en horario utc es a las 17 hrs hora local 12 del medio dia
+            if (selectUserId == 13) {
+              hora = '17:00'
+            }
+
             getFormatDNV.reportId = item.dailyReportId;
             getFormatDNV.date = FormatYYYYMMDDUTCToSTRING(item.date);
             getFormatDNV.time = hora;
@@ -636,12 +641,9 @@ export class ExcelFormatDNVService {
             getFormatDNV.event = 'Daily';
 
             getFormatDNV.event_time_previous = item.steamingTime;
-            let activitie = item.activityPerformed;
-            if (activitie == "SAILING_IN_BALLAST" || activitie == "SAILING_WITH_LADEN" || activitie == "ECONOMICAL_NAVIGATION") {
-              getFormatDNV.event_time_sailing = item.steamingTime;
-            } else {
-              getFormatDNV.event_time_sailing = 0;
-            }
+ 
+              getFormatDNV.event_time_sailing = item.navigatedTime || 0;
+            
             getFormatDNV.distance = item.distance;
 
             getFormatDNV.machinery_hfo = 0;

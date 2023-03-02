@@ -6,10 +6,12 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GetLastPortAndTotalConsump } from 'src/app/models/port';
+import { SendMessageEntity } from 'src/app/models/send-message';
 import { User } from 'src/app/models/user';
 import { LanguageService } from 'src/app/services/language.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { PortService } from 'src/app/services/port.service';
+import { SendMailService } from 'src/app/services/send-mail.sevice';
 import { UserService } from 'src/app/services/user.service';
 import { DialogConfigMailComponent, IDialogConfigMail } from 'src/app/shared/dialog/dialog-config-mail/dialog-config-mail.component';
 import { mathRound } from 'src/assets/math/math.assets';
@@ -36,11 +38,15 @@ export class OverviewComponent implements OnInit {
   public getLastPortAndTotalConsump: GetLastPortAndTotalConsump[] = [];
 
   public cantDecimal = 2;
+  public sendMessageEntity:SendMessageEntity = new SendMessageEntity();
+
+  public selectUser: User = new User();
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
+    private sendMailService: SendMailService,
     private languageService: LanguageService,
     private notificationsService: NotificationsService,
     private loadingService: LoadingService,
@@ -244,6 +250,7 @@ export class OverviewComponent implements OnInit {
 
     // Armamos los datos que enviaremos al modal.
     let dataDialog: IDialogConfigMail = {
+      userId: user.id,
       user: user,
       mail: mail,
       isActiveAutomaticMessageSend: isActiveAutomaticMessageSend
@@ -260,7 +267,7 @@ export class OverviewComponent implements OnInit {
       (result: number) => {
 
         console.log(result);
-       
+
         if (!result) {
           // Si el resultado es 0 o null no hacemos nada.
         } else {
