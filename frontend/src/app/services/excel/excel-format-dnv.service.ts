@@ -622,7 +622,7 @@ export class ExcelFormatDNVService {
 
         // si es el buque camila el cierre en horario utc es a las 17 hrs hora local 12 del medio dia
             if (selectUserId == 13) {
-              hora = '17:00'
+              hora = '15:00'
             }
 
             getFormatDNV.reportId = item.dailyReportId;
