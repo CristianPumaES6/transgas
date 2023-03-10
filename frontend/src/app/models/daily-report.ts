@@ -384,6 +384,212 @@ export class GetFormatDNV {
 }
 
 
+export class GetFormatDNV_DCS_NOON_FULL {
+
+    constructor(
+        public reportId?: number,
+        public date?: String,
+        public time?: String,
+
+        public north_degree?: number,
+        public north_minutes?: number,
+        public north_north_south?: String,
+
+        public east_degree?: number,
+        public east_minutes?: number,
+        public east_east_west?: String,
+
+        public event?: String,
+
+        public event_time_previous?: number,
+        public event_time_sailing?: number,
+
+        public distance?: number,
+
+        // MP
+        public me_machinery_hfo?: number,
+        public me_machinery_lfo?: number,
+        public me_machinery_mgo?: number,
+        public me_machinery_mdo?: number,
+        public me_machinery_lpg?: number,
+        public me_machinery_lng?: number,
+        public me_machinery_methanol?: number,
+        public me_machinery_ethanol?: number,
+        public me_machinery_other_fuel_consumption?: number,
+        public me_machinery_other_fuel_type?: number,
+        public me_machinery_other_full_emission?: number,
+
+        //AUX
+        public aux_machinery_hfo?: number,
+        public aux_machinery_lfo?: number,
+        public aux_machinery_mgo?: number,
+        public aux_machinery_mdo?: number,
+        public aux_machinery_lpg?: number,
+        public aux_machinery_lng?: number,
+        public aux_machinery_methanol?: number,
+        public aux_machinery_ethanol?: number,
+        public aux_machinery_other_fuel_consumption?: number,
+        public aux_machinery_other_fuel_type?: number,
+        public aux_machinery_other_full_emission?: number,
+
+        // Boiler
+        public boiler_machinery_hfo?: number,
+        public boiler_machinery_lfo?: number,
+        public boiler_machinery_mgo?: number,
+        public boiler_machinery_mdo?: number,
+        public boiler_machinery_lpg?: number,
+        public boiler_machinery_lng?: number,
+        public boiler_machinery_methanol?: number,
+        public boiler_machinery_ethanol?: number,
+        public boiler_machinery_other_fuel_consumption?: number,
+        public boiler_machinery_other_fuel_type?: number,
+        public boiler_machinery_other_full_emission?: number,
+
+        // Gas Innerte
+        public gi_machinery_hfo?: number,
+        public gi_machinery_lfo?: number,
+        public gi_machinery_mgo?: number,
+        public gi_machinery_mdo?: number,
+        public gi_machinery_lpg?: number,
+        public gi_machinery_lng?: number,
+        public gi_machinery_methanol?: number,
+        public gi_machinery_ethanol?: number,
+        public gi_machinery_other_fuel_consumption?: number,
+        public gi_machinery_other_fuel_type?: number,
+        public gi_machinery_other_full_emission?: number,
+
+
+
+        public ifo_other?: number,
+        public mgo_pp?: number,
+        public mgo_other?: number,
+
+
+        /*        public machinery_hfo?: number,
+                public machinery_lfo?: number,
+                public machinery_mgo?: number,
+                public machinery_mdo?: number,
+                public machinery_lpg?: number,
+                public machinery_lng?: number,
+                public machinery_methanol?: number,
+                public machinery_ethanol?: number,
+                public machinery_other_fuel_consumption?: number,
+                public machinery_other_fuel_type?: number,
+                public machinery_other_full_emission?: number,
+        */
+
+        public rob_hfo?: number,
+        public rob_lfo?: number,
+        public rob_mgo?: number,
+        public rob_mdo?: number,
+        public rob_lpg?: number,
+        public rob_lng?: number,
+        public rob_methanol?: number,
+        public rob_ethanol?: number,
+        public rob_other_fuel?: number,
+        public rob_other_fuel_type?: number,
+
+    ) {
+        this.reportId = reportId || 0;
+        this.date = date || '';
+        this.time = time || '';
+
+        this.north_degree = north_degree || 0;
+        this.north_minutes = north_minutes || 0;
+        this.north_north_south = north_north_south || '';
+
+        this.east_degree = east_degree || 0;
+        this.east_minutes = east_minutes || 0;
+        this.east_east_west = east_east_west || '';
+
+        this.event = event || '';
+
+        this.event_time_previous = event_time_previous || 0;
+        this.event_time_sailing = event_time_sailing || 0;
+
+
+        this.distance = distance || 0;
+
+        this.me_machinery_hfo = me_machinery_hfo || 0;
+        this.me_machinery_lfo = me_machinery_lfo || 0;
+        this.me_machinery_mgo = me_machinery_mgo || 0;
+        this.me_machinery_mdo = me_machinery_mdo || 0;
+        this.me_machinery_lpg = me_machinery_lpg || 0;
+        this.me_machinery_methanol = me_machinery_methanol || 0;
+        this.me_machinery_ethanol = me_machinery_ethanol || 0;
+        this.me_machinery_other_fuel_consumption = me_machinery_other_fuel_consumption || 0;
+        this.me_machinery_other_fuel_type = me_machinery_other_fuel_type || 0;
+        this.me_machinery_other_full_emission = me_machinery_other_full_emission || 0;
+
+
+        this.aux_machinery_hfo = aux_machinery_hfo || 0;
+        this.aux_machinery_lfo = aux_machinery_lfo || 0;
+        this.aux_machinery_mgo = aux_machinery_mgo || 0;
+        this.aux_machinery_mdo = aux_machinery_mdo || 0;
+        this.aux_machinery_lpg = aux_machinery_lpg || 0;
+        this.aux_machinery_methanol = aux_machinery_methanol || 0;
+        this.aux_machinery_ethanol = aux_machinery_ethanol || 0;
+        this.aux_machinery_other_fuel_consumption = aux_machinery_other_fuel_consumption || 0;
+        this.aux_machinery_other_fuel_type = aux_machinery_other_fuel_type || 0;
+        this.aux_machinery_other_full_emission = aux_machinery_other_full_emission || 0;
+
+
+        this.boiler_machinery_hfo = boiler_machinery_hfo || 0;
+        this.boiler_machinery_lfo = boiler_machinery_lfo || 0;
+        this.boiler_machinery_mgo = boiler_machinery_mgo || 0;
+        this.boiler_machinery_mdo = boiler_machinery_mdo || 0;
+        this.boiler_machinery_lpg = boiler_machinery_lpg || 0;
+        this.boiler_machinery_methanol = boiler_machinery_methanol || 0;
+        this.boiler_machinery_ethanol = boiler_machinery_ethanol || 0;
+        this.boiler_machinery_other_fuel_consumption = boiler_machinery_other_fuel_consumption || 0;
+        this.boiler_machinery_other_fuel_type = boiler_machinery_other_fuel_type || 0;
+        this.boiler_machinery_other_full_emission = boiler_machinery_other_full_emission || 0;
+
+
+        this.gi_machinery_hfo = gi_machinery_hfo || 0;
+        this.gi_machinery_lfo = gi_machinery_lfo || 0;
+        this.gi_machinery_mgo = gi_machinery_mgo || 0;
+        this.gi_machinery_mdo = gi_machinery_mdo || 0;
+        this.gi_machinery_lpg = gi_machinery_lpg || 0;
+        this.gi_machinery_methanol = gi_machinery_methanol || 0;
+        this.gi_machinery_ethanol = gi_machinery_ethanol || 0;
+        this.gi_machinery_other_fuel_consumption = gi_machinery_other_fuel_consumption || 0;
+        this.gi_machinery_other_fuel_type = gi_machinery_other_fuel_type || 0;
+        this.gi_machinery_other_full_emission = gi_machinery_other_full_emission || 0;
+
+
+        this.ifo_other = ifo_other || 0;
+        this.mgo_pp = mgo_pp || 0;
+        this.mgo_other = mgo_other || 0;
+
+        this.rob_hfo = rob_hfo || 0;
+        this.rob_lfo = rob_lfo || 0;
+        this.rob_mgo = rob_mgo || 0;
+        this.rob_mdo = rob_mdo || 0;
+        this.rob_lpg = rob_lpg || 0;
+        this.rob_lng = rob_lng || 0;
+        this.rob_methanol = rob_methanol || 0;
+        this.rob_ethanol = rob_ethanol || 0;
+        this.rob_other_fuel = rob_other_fuel || 0;
+        this.rob_other_fuel_type = rob_other_fuel_type || 0;
+
+    }
+}
+
+
+export class ListExcelFormatDNV {
+
+    constructor(
+        public GetFormatDNV?: GetFormatDNV[],
+        public GetFormatDNV_DCS_NOON_FULL?: GetFormatDNV_DCS_NOON_FULL[]
+    ) {
+        this.GetFormatDNV = GetFormatDNV || [];
+        this.GetFormatDNV_DCS_NOON_FULL = GetFormatDNV_DCS_NOON_FULL || [];
+    }
+
+}
+
+
 export class TotalConsumptioAndTimeEquiment {
 
     constructor(
