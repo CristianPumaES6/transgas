@@ -577,14 +577,41 @@ export class GetFormatDNV_DCS_NOON_FULL {
 }
 
 
+export class  FormatDNV_Bunker_Report {
+
+    constructor(
+        public bunker_delivery_number?: String,
+        public bunker_delivery_date?: String,
+        public fuel_type?: String,
+
+        public mass?: number,
+        public sulphur_content?: number,
+        public density?: number,
+        public lower_heating_value?: number, 
+
+    ) { 
+        this.bunker_delivery_number = bunker_delivery_number || '';
+        this.bunker_delivery_date = bunker_delivery_date || '';
+        this.fuel_type = fuel_type || '';
+        
+        this.mass = mass || 0;
+        this.sulphur_content = sulphur_content || 0; 
+        this.density = density || 0;
+        this.lower_heating_value = lower_heating_value || 0; 
+
+    }
+}
+
 export class ListExcelFormatDNV {
 
     constructor(
         public GetFormatDNV?: GetFormatDNV[],
-        public GetFormatDNV_DCS_NOON_FULL?: GetFormatDNV_DCS_NOON_FULL[]
+        public GetFormatDNV_DCS_NOON_FULL?: GetFormatDNV_DCS_NOON_FULL[],
+        public FormatDNV_Bunker_Report?: FormatDNV_Bunker_Report[]
     ) {
         this.GetFormatDNV = GetFormatDNV || [];
         this.GetFormatDNV_DCS_NOON_FULL = GetFormatDNV_DCS_NOON_FULL || [];
+        this.FormatDNV_Bunker_Report = FormatDNV_Bunker_Report || [];
     }
 
 }

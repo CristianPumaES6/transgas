@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mathRound } from '../../../assets/math/math.assets';
 import { ConvertMMDDYYYYHHmmToMomment, ConvertMomentUTC, FormatDate, FormatDateUTCToDateHour, FormatDateUTCToDateHourUTC, FormatYYYYMMDDToHOURS, FormatYYYYMMDDToSTRING, FormatYYYYMMDDUTCToSTRING } from '../../../assets/moment/moment.assets';
-import { GetFormatDNV, GetFormatDNV_DCS_NOON_FULL, GetROBByUser, InfoFuelStartEndForDate, ListExcelFormatDNV } from '../../models/daily-report';
+import { FormatDNV_Bunker_Report, GetFormatDNV, GetFormatDNV_DCS_NOON_FULL, GetInfoBunkering, GetROBByUser, InfoFuelStartEndForDate, ListExcelFormatDNV } from '../../models/daily-report';
 import { ActivityPerformed } from '../../models/dashboard';
 import { GetReportVoyagePortDaily } from '../../models/dialog-export-excel';
 import { User } from '../../models/user';
@@ -50,6 +50,7 @@ export class ExcelFormatDNVService {
     let worksheet_DCS_noon_min;
 
     let worksheet_DCS_noon_full;
+    let worksheet_Bunker_report;
     let rowCursor = 1;
 
 
@@ -84,7 +85,7 @@ export class ExcelFormatDNVService {
 
           rowCursor = resultRowFinal + 2;
 
-          return this.AddHeaderTableDNV(worksheet_DCS_noon_min, rowCursor, 0, 'Min')
+          return this.AddHeaderTableDNV(worksheet_DCS_noon_min, rowCursor, 0, 'Min');
         }
       ).then(
         resultRowFinal => {
@@ -117,19 +118,41 @@ export class ExcelFormatDNVService {
               return this.AddValueTableDNV_FULL(worksheet_DCS_noon_full, rowCursor, 0, listExcelFormatDNV.GetFormatDNV_DCS_NOON_FULL)
 
             }).then(
-              result => {
+              resultRowFinal => {
+                // creamos una nueva hoja
+                worksheet_Bunker_report = workbook.addWorksheet("Bunker report");
 
-                // Escribimos el excel
-                workbook.xlsx.writeBuffer().then(
-                  (data) => {
-                    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                    fs.saveAs(blob, 'FORMATO DNV-' + selectUser.name + '.xlsx');
-                  }
-                );
+                // TAMANO DE LA COLUMNA
+                this.setTamanioColum(worksheet_Bunker_report, 'Bunker');
+                rowCursor = 1;
+                return this.AddDashInfoBuque(worksheet_Bunker_report, workbook, selectUser, rowCursor, 0)
 
-                return true;
-              }
-            );
+              }).then(
+                resultRowFinal => {
+                  rowCursor = resultRowFinal + 2;
+
+                  return this.AddBunkerTableDNV(worksheet_Bunker_report, rowCursor, 0, 'Bunker')
+                  //  return this.AddValueTableDNV(worksheet_DCS_noon_full, rowCursor, 0, listExcelFormatDNV.GetFormatDNV_DCS_NOON_FULL)
+                }).then(
+                  resultRowFinal => {
+                    rowCursor = resultRowFinal;
+
+                    return this.AddValueTableBunkerReport(worksheet_Bunker_report, rowCursor, 0, listExcelFormatDNV.FormatDNV_Bunker_Report)
+
+                  }).then(
+                    result => {
+
+                      // Escribimos el excel
+                      workbook.xlsx.writeBuffer().then(
+                        (data) => {
+                          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                          fs.saveAs(blob, 'FORMATO DNV-' + selectUser.name + '.xlsx');
+                        }
+                      );
+
+                      return true;
+                    }
+                  );
   }
 
 
@@ -321,11 +344,26 @@ export class ExcelFormatDNVService {
         { width: 9.2 }
       )
     }
+
     if (is_Full_Min_Bunker == 'Full' || is_Full_Min_Bunker == 'Min') {
       sizeColumns.push({ width: 9.2 })
     }
-    if (is_Full_Min_Bunker == 'Bunker') {
 
+    if (is_Full_Min_Bunker == 'Bunker') {
+      sizeColumns.push(
+        { width: 16.6 },
+        { width: 14.3 },
+        { width: 22.1 },
+        { width: 8.3 },
+        { width: 8.3 },
+        { width: 8.3 },
+        { width: 15 },
+        { width: 8.3 },
+        { width: 8.3 },
+        { width: 8.3 },
+        { width: 8.3 },
+        { width: 8.3 },
+      )
     }
 
 
@@ -1064,6 +1102,106 @@ export class ExcelFormatDNVService {
         }
       );
   }
+  // Agregamos el cuadro de informacion del buque.
+  private AddBunkerTableDNV(worksheet, positRow: number, positCol: number, is_Full_Min_Bunker: string): Promise<number> {
+
+    // Reset
+    let row = positRow;
+    let column = positCol;
+
+    // Le sumo 7 celdas por que la logitud de la leyenda es 7 celdas
+    let positionRow = [row, row];
+    let positionColumn = [column, column];
+
+    return Promise.resolve(true)
+      .then(
+        result => {
+          // Header 1
+          positionColumn = [column, column + 6];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Mandatory data fields', 11, "", "d6dce4", true, true);
+
+          return row;
+        }
+      ).then(
+        resultRow => {
+          // HEADER 2
+          row = resultRow + 1;
+          positionRow = [row, row];
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Bunker Delivery Note Number', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Bunker Delivery Date', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Fuel Type', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Mass', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Sulphur Content', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Density @ 15 °C', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, 'Lower heating value', 11, "", "ffffcc", true, true, "top");
+          column = column + 1;
+
+          // Obtenemos la fila le asignamos el tamaño
+          let getRow = worksheet.getRow(row);
+          getRow.height = 26;
+
+          return row;
+        }
+      ).then(
+        resultRow => {
+
+
+          // HEADER 2
+          row = resultRow + 1;
+          // Reset
+          column = positCol;
+
+          positionRow = [row, row];
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "(BDN No.)", 11, "", "ffffcc", true, false, "top", "left");
+          column = column + 1;
+
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "yyyy-mm-dd", 11, "", "ffffcc", true, false, "top", "left");
+          column = column + 1;
+
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "HFO,LFO,MGO,MDO,LPG,LNG,Methanol,Ethanol", 11, "", "ffffcc", true, false, "top", "left");
+          column = column + 1;
+
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt", 11, "", "ffffcc", true, false, "top", "left");
+          column = column + 1;
+
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "% m/m", 11, "", "ffffcc", true, false, "top", "left");
+          column = column + 1;
+
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt/m³", 11, "", "ffffcc", true, false, "top", "left");
+          column = column + 1;
+
+          positionColumn = [column, column];
+          this.addStyleByColums(worksheet, positionRow, positionColumn, "mt/m³", 11, "", "ffffcc", true, false, "top", "left");
+          column = column + 1;
+
+          let getRow = worksheet.getRow(row);
+          getRow.height = 35;
+
+
+          console.log('FINALIZA CON EL HEADER')
+          return row;
+        }
+      );
+  }
 
 
   private async ArmamosElObjetoParaELFORMATODNV(selectUserId: number, startDate: string, endDate: string, selectUser: User): Promise<ListExcelFormatDNV> {
@@ -1072,7 +1210,8 @@ export class ExcelFormatDNVService {
     let ListGetFormatDNV_DCS_NOON_FULL: GetFormatDNV_DCS_NOON_FULL[] = [];
 
     let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
-    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
+    let listBunker_report: FormatDNV_Bunker_Report[] = [];
+    let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 
     return await Promise.resolve(true).then(
       result => {
@@ -1100,6 +1239,8 @@ export class ExcelFormatDNVService {
 
             let getFormatDNV: GetFormatDNV = new GetFormatDNV();
             let getFormatDNV_DCS_NOON_FULL: GetFormatDNV_DCS_NOON_FULL = new GetFormatDNV_DCS_NOON_FULL();
+            let bunker_reportIfo: FormatDNV_Bunker_Report = new FormatDNV_Bunker_Report();
+            let bunker_reportMgo: FormatDNV_Bunker_Report = new FormatDNV_Bunker_Report();
 
             let hora = '';
             if (selectUserId == 10) {
@@ -1202,13 +1343,35 @@ export class ExcelFormatDNVService {
 
             // Se agrega el objer a la lista del formato DNV
             ListGetFormatDNV_DCS_NOON_FULL.push(getFormatDNV_DCS_NOON_FULL);
+
+
+            if (item.bunkeringIfo != 0) {
+              bunker_reportIfo.bunker_delivery_date = FormatYYYYMMDDUTCToSTRING(item.date);
+              bunker_reportIfo.fuel_type = textIFOorVLSFOorLSFO;
+              bunker_reportIfo.mass = item.bunkeringIfo;
+              bunker_reportIfo.sulphur_content = 1.00;
+              bunker_reportIfo.density = 0.986;
+              bunker_reportIfo.lower_heating_value = 40.78;
+              listBunker_report.push(bunker_reportIfo)
+            }
+
+            if (item.bunkeringMgo != 0) {
+              bunker_reportMgo.bunker_delivery_date = FormatYYYYMMDDUTCToSTRING(item.date);
+              bunker_reportMgo.fuel_type = 'MGO';
+              bunker_reportMgo.mass = item.bunkeringMgo;
+              bunker_reportMgo.sulphur_content = 0.10;
+              bunker_reportMgo.density = 0.859;
+              bunker_reportMgo.lower_heating_value = 42.57;
+              listBunker_report.push(bunker_reportMgo)
+            }
           }
         )
 
 
         return new ListExcelFormatDNV(
           ListGetFormatDNV,
-          ListGetFormatDNV_DCS_NOON_FULL
+          ListGetFormatDNV_DCS_NOON_FULL,
+          listBunker_report
         );
       }
     );
@@ -1647,6 +1810,77 @@ export class ExcelFormatDNVService {
 
         result => {
           // aqui recorrer los reportes
+          return row;
+        }
+      )
+  }
+
+
+  // Agregamos el cuadro de informacion del buque.
+  private AddValueTableBunkerReport(worksheet, positRow: number, positCol: number, listFormatDNV_Bunker_Report: FormatDNV_Bunker_Report[]): Promise<number> {
+
+    console.log('AddValueTableBunkerReport')
+    // Reset
+    let row = positRow;
+    let column = positCol;
+
+    // Le sumo 7 celdas por que la logitud de la leyenda es 7 celdas
+    let positionRow = [row, row];
+    let positionColumn = [column, column];
+    return Promise.resolve(true)
+      .then(
+        result => {
+
+
+          console.log('INICIA RECORRER LIST ADD VALUE')
+          listFormatDNV_Bunker_Report.forEach(
+            (item: FormatDNV_Bunker_Report) => {
+
+              console.log('ADD VALUE')
+              console.log(item)
+              // HEADER 3
+              row = row + 1;
+              // UTC
+              column = positCol;
+              debugger
+              positionRow = [row, row];
+
+
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.bunker_delivery_number, 10, "", "ffffff", true, false, "center", "right", "Arial");
+              column = column + 1;
+
+              console.log('PRIMERO VALUE')
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.bunker_delivery_date, 10, "", "ffffff", true, false, "center", "right", "Arial");
+              column = column + 1;
+
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.fuel_type, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.mass, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.sulphur_content, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.density, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.000');
+              column = column + 1;
+              positionColumn = [column, column];
+              this.addStyleByColums(worksheet, positionRow, positionColumn, item.lower_heating_value, 10, "", "ffffff", true, false, "center", "right", "Arial", '0.00');
+              column = column + 1;
+
+
+              let getRow = worksheet.getRow(row);
+              getRow.height = 15;
+            }
+          )
+
+
           return row;
         }
       )
