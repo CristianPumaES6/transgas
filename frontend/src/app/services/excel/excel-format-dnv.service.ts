@@ -1244,7 +1244,7 @@ export class ExcelFormatDNVService {
 
             let hora = '';
             if (selectUserId == 10) {
-              hora = '17:00'
+              hora = '13:00'
             }
             // si es el buque camila el cierre en horario utc es a las 17 hrs hora local 12 del medio dia
             if (selectUserId == 13) {
