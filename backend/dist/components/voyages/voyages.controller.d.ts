@@ -1,6 +1,7 @@
 import { VoyagesService } from './voyages.service';
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { PortsService } from './ports/ports.service';
+import { DailyReport } from '../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
@@ -20,6 +21,8 @@ export declare class VoyagesController {
     Update(headers: any, id: any, voyage: Voyage): Promise<any>;
     DeletePort(headers: any, id: any): Promise<any>;
     ImportJSONVoyages(headers: any, ImportVoyages: ImportVoyage[]): Promise<any>;
+    ImportVoyagesDeFormatDNV(headers: any, ImportVoyages: ImportVoyage[]): Promise<any>;
+    ImportListDailyReportAgregarOeliminar(headers: any, ImportDailyReport: DailyReport[]): Promise<any>;
     SendEmailLastVoyage(sendMailConfig: SendMailConfig): Promise<any>;
 }
 export declare class Mapping {

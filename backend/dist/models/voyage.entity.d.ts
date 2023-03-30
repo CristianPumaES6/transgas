@@ -34,7 +34,7 @@ export declare class ImportVoyage {
     speedStraction: string;
     observation: string;
     distance?: any;
-    TIEMPO_DE_NAVEGACION?: any;
+    steamingTime2?: any;
     VELOCIDAD: number;
     beaufour: string;
     RPM?: any;

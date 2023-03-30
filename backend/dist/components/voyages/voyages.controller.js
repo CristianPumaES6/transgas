@@ -421,13 +421,18 @@ let VoyagesController = class VoyagesController {
                     }
                     newReport.userId = importVoyage.userId;
                     newReport.portId = existePort.value;
-                    ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
-                    if (ultimaFecha.length == 23) {
-                        newReport.date = ultimaFecha;
+                    if (importVoyage.date.length == 14 || importVoyage.date.length == 13 || importVoyage.date.length == 12 || importVoyage.date.length == 11 || importVoyage.date.length == 15 || importVoyage.date.length == 18) {
+                        ultimaFecha = moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date) + '.000';
+                    }
+                    else if (importVoyage.date.length == 23) {
+                        ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
                     }
                     else {
+                        ultimaFecha = null;
+                        console.log(importVoyage.date);
                         console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
                     }
+                    newReport.date = ultimaFecha;
                     if (importVoyage.hour) {
                         if (importVoyage.hour.length === 4) {
                             newReport.hour = '0' + importVoyage.hour;
@@ -438,6 +443,10 @@ let VoyagesController = class VoyagesController {
                         else {
                             console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
                         }
+                    }
+                    else {
+                        let fechatemporalporhora = moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, 5);
+                        newReport.hour = moment_assets_1.ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora);
                     }
                     newReport.mplaIfo = importVoyage.mplaIfo || 0;
                     newReport.auxIfo = importVoyage.auxIfo || 0;
@@ -450,7 +459,12 @@ let VoyagesController = class VoyagesController {
                     newReport.giMgo = importVoyage.giMgo || 0;
                     newReport.otherMgo = importVoyage.otherMgo || 0;
                     newReport.steamingTime = importVoyage.steamingTime || 0;
-                    newReport.distance = importVoyage.distance || 0;
+                    if (typeof importVoyage.distance === 'number') {
+                        newReport.distance = importVoyage.distance;
+                    }
+                    else {
+                        newReport.distance = 0;
+                    }
                     if (!importVoyage.beaufour) {
                         newReport.beaufour = '';
                     }
@@ -542,6 +556,478 @@ let VoyagesController = class VoyagesController {
                     if (ImportVoyages_1_1 && !ImportVoyages_1_1.done && (_a = ImportVoyages_1.return)) await _a.call(ImportVoyages_1);
                 }
                 finally { if (e_1) throw e_1.error; }
+            }
+            return 'Se registraron los datos correctamente.';
+        }
+        catch (error) {
+            return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! ';
+        }
+    }
+    async ImportVoyagesDeFormatDNV(headers, ImportVoyages) {
+        var e_2, _a;
+        try {
+            let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+            if (!(headerToken.role === 'SUPPORT')) {
+                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+            }
+            let MappingVoyage = [];
+            let MappingPort = [];
+            let ultimaFecha;
+            let secrearaunNuevoReporte = false;
+            try {
+                for (var ImportVoyages_2 = __asyncValues(ImportVoyages), ImportVoyages_2_1; ImportVoyages_2_1 = await ImportVoyages_2.next(), !ImportVoyages_2_1.done;) {
+                    const importVoyage = ImportVoyages_2_1.value;
+                    let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let userId = importVoyage.userId;
+                    if (!existeViaje) {
+                        let voyageExistente;
+                        if (!importVoyage.voyageId) {
+                            voyageExistente = await this._voyagesService.ThisVoyageNumberExistsInTheYear(importVoyage.voyageNumber, importVoyage.year, userId);
+                        }
+                        else {
+                            voyageExistente = await this._voyagesService.Get(importVoyage.voyageId);
+                        }
+                        if (!voyageExistente) {
+                            let newVoyage = new voyage_entity_1.Voyage();
+                            delete newVoyage.id;
+                            newVoyage.userId = importVoyage.userId;
+                            newVoyage.voyageNumber = importVoyage.voyageNumber;
+                            newVoyage.year = importVoyage.year;
+                            newVoyage.userIdCreated = headerToken.id;
+                            newVoyage.dateCreated = moment_assets_1.GetDate();
+                            delete newVoyage.userIdUpdated;
+                            delete newVoyage.dateUpdated;
+                            newVoyage.status = true;
+                            let voyageRegister = await this._voyagesService.Create(newVoyage);
+                            console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
+                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
+                            MappingPort = [];
+                        }
+                        else {
+                            if (voyageExistente.userId != importVoyage.userId)
+                                throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.';
+                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber
+                                || voyageExistente.year != importVoyage.year) {
+                                delete voyageExistente.ports;
+                                voyageExistente.voyageNumber = importVoyage.voyageNumber;
+                                voyageExistente.year = importVoyage.year;
+                                voyageExistente.userIdUpdated = headerToken.id;
+                                voyageExistente.dateUpdated = moment_assets_1.GetDate();
+                                voyageExistente.status = true;
+                                voyageExistente = await this._voyagesService.Update(voyageExistente);
+                            }
+                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id));
+                            MappingPort = [];
+                        }
+                    }
+                    existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    if (!existePort) {
+                        let portExiste;
+                        if (!importVoyage.portId) {
+                            portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value, userId);
+                        }
+                        else {
+                            portExiste = await this._portsService.Get(importVoyage.portId);
+                        }
+                        console.log('portExistet' + portExiste);
+                        if (!portExiste) {
+                            let newPort = new port_entity_1.Port();
+                            delete newPort.id;
+                            newPort.userId = importVoyage.userId;
+                            newPort.voyageId = existeViaje.value;
+                            newPort.departurePort = importVoyage.departurePort;
+                            newPort.arrivalPort = importVoyage.arrivalPort;
+                            newPort.portNumber = importVoyage.portNumber;
+                            if (ultimaFecha) {
+                                newPort.startDate = ultimaFecha;
+                            }
+                            else {
+                                newPort.startDate = null;
+                            }
+                            newPort.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                            newPort.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                            newPort.userIdCreated = headerToken.id;
+                            newPort.dateCreated = moment_assets_1.GetDate();
+                            delete newPort.userIdUpdated;
+                            delete newPort.dateUpdated;
+                            newPort.status = true;
+                            let portRegister = await this._portsService.Create(newPort);
+                            console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
+                            MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
+                        }
+                        else {
+                            console.log('Entro al else de port');
+                            if (portExiste.userId != importVoyage.userId)
+                                throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar';
+                            if ((portExiste.portNumber != importVoyage.portNumber
+                                || portExiste.departurePort != importVoyage.departurePort
+                                || portExiste.arrivalPort != importVoyage.arrivalPort
+                                || portExiste.startIFO != importVoyage.ROB[0]
+                                || portExiste.startMGO != importVoyage.ROB[1])
+                                && importVoyage.updatePort) {
+                                portExiste.voyageId = existeViaje.value;
+                                portExiste.portNumber = importVoyage.portNumber;
+                                portExiste.departurePort = importVoyage.departurePort;
+                                portExiste.arrivalPort = importVoyage.arrivalPort;
+                                if (ultimaFecha) {
+                                    portExiste.startDate = ultimaFecha;
+                                }
+                                else {
+                                    delete portExiste.startDate;
+                                }
+                                portExiste.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                                portExiste.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                                delete portExiste.dailyReports;
+                                portExiste.dateUpdated = moment_assets_1.GetDate();
+                                portExiste.status = true;
+                                console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
+                                portExiste = await this._portsService.Update(portExiste);
+                            }
+                            MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id));
+                        }
+                    }
+                    existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    let newReport = new daily_report_entity_1.DailyReport();
+                    if (importVoyage.dailyReportId) {
+                        newReport.id = Number(importVoyage.dailyReportId);
+                    }
+                    else {
+                        delete newReport.id;
+                    }
+                    newReport.userId = importVoyage.userId;
+                    newReport.portId = existePort.value;
+                    secrearaunNuevoReporte = false;
+                    if (ultimaFecha && importVoyage.steamingTime2 > 0) {
+                        secrearaunNuevoReporte = true;
+                        console.log(importVoyage.steamingTime2);
+                        console.log("fechaAntiguaMasElTiempoDeNavegacion");
+                        console.log(ultimaFecha);
+                        let fechaAntiguaMasElTiempoDeNavegacion = moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras(ultimaFecha, importVoyage.steamingTime2);
+                        console.log("mas horas " + importVoyage.steamingTime2);
+                        console.log(fechaAntiguaMasElTiempoDeNavegacion);
+                        ultimaFecha = fechaAntiguaMasElTiempoDeNavegacion + '.000';
+                        console.log("ultimaFecha");
+                        console.log(ultimaFecha);
+                        if (ultimaFecha.length == 23) {
+                            newReport.date = ultimaFecha;
+                        }
+                        else {
+                            console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
+                        }
+                        newReport.hour = moment_assets_1.ObtenerlasHorasDeUnaFecaUTC(ultimaFecha);
+                        console.log(newReport.hour);
+                        ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(ultimaFecha) + '.000';
+                        newReport.date = ultimaFecha;
+                        newReport.mplaIfo = importVoyage.mplaIfo || 0;
+                        newReport.auxIfo = importVoyage.auxIfo || 0;
+                        newReport.boilerIfo = importVoyage.boilerIfo || 0;
+                        newReport.otherIfo = importVoyage.otherIfo || 0;
+                        newReport.mplaMgo = importVoyage.mplaMgo || 0;
+                        newReport.auxMgo = importVoyage.auxMgo || 0;
+                        newReport.boilerMgo = importVoyage.boilerMgo || 0;
+                        newReport.ppMgo = importVoyage.ppMgo || 0;
+                        newReport.giMgo = importVoyage.giMgo || 0;
+                        newReport.otherMgo = importVoyage.otherMgo || 0;
+                        newReport.steamingTime = importVoyage.steamingTime || 0;
+                        newReport.distance = importVoyage.distance || 0;
+                        if (!importVoyage.beaufour) {
+                            newReport.beaufour = '';
+                        }
+                        else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
+                            newReport.beaufour = 'S1';
+                        }
+                        else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
+                            newReport.beaufour = 'S2';
+                        }
+                        else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
+                            newReport.beaufour = 'S3';
+                        }
+                        else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
+                            newReport.beaufour = 'S4';
+                        }
+                        else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
+                            newReport.beaufour = 'S5';
+                        }
+                        else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
+                            newReport.beaufour = 'S6';
+                        }
+                        else {
+                            newReport.beaufour = importVoyage.beaufour;
+                        }
+                        newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
+                        newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
+                        newReport.observation = importVoyage.observation;
+                        newReport.activityPerformed = importVoyage.activityPerformed;
+                        if (newReport.activityPerformed == 'CARGANDO') {
+                            newReport.activityPerformed = 'LOADING';
+                        }
+                        else if (newReport.activityPerformed == 'DESCARGANDO') {
+                            newReport.activityPerformed = 'DOWNLOADING';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+                            newReport.activityPerformed = 'SAILING_IN_BALLAST';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+                            newReport.activityPerformed = 'SAILING_WITH_LADEN';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+                            newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+                        }
+                        else if (newReport.activityPerformed == 'FONDEADO') {
+                            newReport.activityPerformed = 'ANCHORED';
+                        }
+                        else if (newReport.activityPerformed == 'MANIOBRA') {
+                            newReport.activityPerformed = 'MANEUVER';
+                        }
+                        else if (newReport.activityPerformed == 'OTRAS ACT.') {
+                            newReport.activityPerformed = 'OTHER_ACT';
+                        }
+                        newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+                        newReport.speedStraction = importVoyage.speedStraction;
+                        newReport.observation = importVoyage.observation;
+                        newReport.north_degree = importVoyage.north_degree || 0;
+                        newReport.north_minutes = importVoyage.north_minutes || 0;
+                        newReport.north_north_south = importVoyage.north_north_south || '';
+                        newReport.east_degree = importVoyage.east_degree || 0;
+                        newReport.east_minutes = importVoyage.east_minutes || 0;
+                        newReport.east_east_west = importVoyage.east_east_west || '';
+                        if (importVoyage.delete_report) {
+                            newReport.status = false;
+                        }
+                        else {
+                            newReport.status = true;
+                        }
+                        delete newReport.id;
+                        newReport.userIdCreated = headerToken.id;
+                        newReport.dateCreated = moment_assets_1.GetDate();
+                        delete newReport.userIdUpdated;
+                        delete newReport.dateUpdated;
+                        await this._dailyReportsService.Create(newReport);
+                        console.log('Create' + newReport.date);
+                    }
+                    newReport.id = importVoyage.dailyReportId;
+                    if (importVoyage.dailyReportId) {
+                        newReport.id = Number(importVoyage.dailyReportId);
+                    }
+                    else {
+                        delete newReport.id;
+                    }
+                    ultimaFecha = moment_assets_1.DateDayMonthYear(importVoyage.date) + ' ' + importVoyage.hour + ':00.000';
+                    console.log(ultimaFecha);
+                    ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(ultimaFecha) + '.000';
+                    console.log(ultimaFecha);
+                    if (ultimaFecha.length == 23) {
+                        newReport.date = ultimaFecha;
+                    }
+                    else {
+                        console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
+                    }
+                    if (importVoyage.hour) {
+                        if (importVoyage.hour.length === 4) {
+                            newReport.hour = '0' + importVoyage.hour;
+                        }
+                        else if (importVoyage.hour.length == 5) {
+                            newReport.hour = importVoyage.hour;
+                        }
+                        else {
+                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
+                        }
+                    }
+                    if (secrearaunNuevoReporte) {
+                        newReport.mplaIfo = 0;
+                        newReport.auxIfo = 0;
+                        newReport.boilerIfo = 0;
+                        newReport.otherIfo = 0;
+                        newReport.mplaMgo = 0;
+                        newReport.auxMgo = 0;
+                        newReport.boilerMgo = 0;
+                        newReport.ppMgo = 0;
+                        newReport.giMgo = 0;
+                        newReport.otherMgo = 0;
+                        newReport.steamingTime = 0;
+                        newReport.distance = 0;
+                        newReport.beaufour = '';
+                        newReport.bunkeringIfo = 0;
+                        newReport.bunkeringMgo = 0;
+                        newReport.observation = '';
+                        newReport.activityPerformed = importVoyage.activityPerformed;
+                        if (newReport.activityPerformed == 'CARGANDO') {
+                            newReport.activityPerformed = 'LOADING';
+                        }
+                        else if (newReport.activityPerformed == 'DESCARGANDO') {
+                            newReport.activityPerformed = 'DOWNLOADING';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+                            newReport.activityPerformed = 'SAILING_IN_BALLAST';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+                            newReport.activityPerformed = 'SAILING_WITH_LADEN';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+                            newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+                        }
+                        else if (newReport.activityPerformed == 'FONDEADO') {
+                            newReport.activityPerformed = 'ANCHORED';
+                        }
+                        else if (newReport.activityPerformed == 'MANIOBRA') {
+                            newReport.activityPerformed = 'MANEUVER';
+                        }
+                        else if (newReport.activityPerformed == 'OTRAS ACT.') {
+                            newReport.activityPerformed = 'OTHER_ACT';
+                        }
+                        newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+                        newReport.speedStraction = '';
+                        newReport.observation = '';
+                        newReport.north_degree = importVoyage.north_degree || 0;
+                        newReport.north_minutes = importVoyage.north_minutes || 0;
+                        newReport.north_north_south = importVoyage.north_north_south || '';
+                        newReport.east_degree = importVoyage.east_degree || 0;
+                        newReport.east_minutes = importVoyage.east_minutes || 0;
+                        newReport.east_east_west = importVoyage.east_east_west || '';
+                    }
+                    else {
+                        newReport.mplaIfo = importVoyage.mplaIfo || 0;
+                        newReport.auxIfo = importVoyage.auxIfo || 0;
+                        newReport.boilerIfo = importVoyage.boilerIfo || 0;
+                        newReport.otherIfo = importVoyage.otherIfo || 0;
+                        newReport.mplaMgo = importVoyage.mplaMgo || 0;
+                        newReport.auxMgo = importVoyage.auxMgo || 0;
+                        newReport.boilerMgo = importVoyage.boilerMgo || 0;
+                        newReport.ppMgo = importVoyage.ppMgo || 0;
+                        newReport.giMgo = importVoyage.giMgo || 0;
+                        newReport.otherMgo = importVoyage.otherMgo || 0;
+                        newReport.steamingTime = importVoyage.steamingTime || 0;
+                        newReport.distance = importVoyage.distance || 0;
+                        if (!importVoyage.beaufour) {
+                            newReport.beaufour = '';
+                        }
+                        else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
+                            newReport.beaufour = 'S1';
+                        }
+                        else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
+                            newReport.beaufour = 'S2';
+                        }
+                        else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
+                            newReport.beaufour = 'S3';
+                        }
+                        else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
+                            newReport.beaufour = 'S4';
+                        }
+                        else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
+                            newReport.beaufour = 'S5';
+                        }
+                        else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
+                            newReport.beaufour = 'S6';
+                        }
+                        else {
+                            newReport.beaufour = importVoyage.beaufour;
+                        }
+                        newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
+                        newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
+                        newReport.observation = importVoyage.observation;
+                        newReport.activityPerformed = importVoyage.activityPerformed;
+                        if (newReport.activityPerformed == 'CARGANDO') {
+                            newReport.activityPerformed = 'LOADING';
+                        }
+                        else if (newReport.activityPerformed == 'DESCARGANDO') {
+                            newReport.activityPerformed = 'DOWNLOADING';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+                            newReport.activityPerformed = 'SAILING_IN_BALLAST';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+                            newReport.activityPerformed = 'SAILING_WITH_LADEN';
+                        }
+                        else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+                            newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+                        }
+                        else if (newReport.activityPerformed == 'FONDEADO') {
+                            newReport.activityPerformed = 'ANCHORED';
+                        }
+                        else if (newReport.activityPerformed == 'MANIOBRA') {
+                            newReport.activityPerformed = 'MANEUVER';
+                        }
+                        else if (newReport.activityPerformed == 'OTRAS ACT.') {
+                            newReport.activityPerformed = 'OTHER_ACT';
+                        }
+                        newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+                        newReport.speedStraction = importVoyage.speedStraction;
+                        newReport.observation = importVoyage.observation;
+                        newReport.north_degree = importVoyage.north_degree || 0;
+                        newReport.north_minutes = importVoyage.north_minutes || 0;
+                        newReport.north_north_south = importVoyage.north_north_south || '';
+                        newReport.east_degree = importVoyage.east_degree || 0;
+                        newReport.east_minutes = importVoyage.east_minutes || 0;
+                        newReport.east_east_west = importVoyage.east_east_west || '';
+                    }
+                    if (importVoyage.delete_report) {
+                        newReport.status = false;
+                    }
+                    else {
+                        newReport.status = true;
+                    }
+                    if (!importVoyage.dailyReportId) {
+                        newReport.userIdCreated = headerToken.id;
+                        newReport.dateCreated = moment_assets_1.GetDate();
+                        delete newReport.userIdUpdated;
+                        delete newReport.dateUpdated;
+                        await this._dailyReportsService.Create(newReport);
+                        console.log('Create' + newReport.date);
+                    }
+                    else {
+                        newReport.userIdUpdated = headerToken.id;
+                        newReport.dateUpdated = moment_assets_1.GetDate();
+                        delete newReport.userIdCreated;
+                        delete newReport.dateCreated;
+                        await this._dailyReportsService.Update(newReport);
+                        console.log('Update' + newReport.id);
+                    }
+                }
+            }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
+                try {
+                    if (ImportVoyages_2_1 && !ImportVoyages_2_1.done && (_a = ImportVoyages_2.return)) await _a.call(ImportVoyages_2);
+                }
+                finally { if (e_2) throw e_2.error; }
+            }
+            return 'Se registraron los datos correctamente.';
+        }
+        catch (error) {
+            return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! ';
+        }
+    }
+    async ImportListDailyReportAgregarOeliminar(headers, ImportDailyReport) {
+        var e_3, _a;
+        try {
+            let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+            if (!(headerToken.role === 'SUPPORT')) {
+                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+            }
+            let MappingVoyage = [];
+            let MappingPort = [];
+            let ultimaFecha;
+            try {
+                for (var ImportDailyReport_1 = __asyncValues(ImportDailyReport), ImportDailyReport_1_1; ImportDailyReport_1_1 = await ImportDailyReport_1.next(), !ImportDailyReport_1_1.done;) {
+                    const importDailyReport = ImportDailyReport_1_1.value;
+                    let updateReport = {};
+                    updateReport.id = importDailyReport.id;
+                    updateReport.distance = importDailyReport.distance;
+                    if (!updateReport.id) {
+                    }
+                    else {
+                        await this._dailyReportsService.Update(updateReport);
+                        console.log('Update' + updateReport.id);
+                    }
+                }
+            }
+            catch (e_3_1) { e_3 = { error: e_3_1 }; }
+            finally {
+                try {
+                    if (ImportDailyReport_1_1 && !ImportDailyReport_1_1.done && (_a = ImportDailyReport_1.return)) await _a.call(ImportDailyReport_1);
+                }
+                finally { if (e_3) throw e_3.error; }
             }
             return 'Se registraron los datos correctamente.';
         }
@@ -680,6 +1166,20 @@ __decorate([
     __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], VoyagesController.prototype, "ImportJSONVoyages", null);
+__decorate([
+    common_1.Post('importVoyagesDeFormatDNV'),
+    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:returntype", Promise)
+], VoyagesController.prototype, "ImportVoyagesDeFormatDNV", null);
+__decorate([
+    common_1.Post('ImportListDailyReportAgregarOeliminar'),
+    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:returntype", Promise)
+], VoyagesController.prototype, "ImportListDailyReportAgregarOeliminar", null);
 __decorate([
     common_1.Post('sendEmailLastVoyage'),
     __param(0, common_1.Body()),

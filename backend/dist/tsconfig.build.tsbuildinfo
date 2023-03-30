@@ -1652,12 +1652,12 @@
         "affectsGlobalScope": false
       },
       "../src/assets/moment.assets.ts": {
-        "version": "261f0609725baf59e76e6bde57458bd56e1a59c19f0b6a3761c19e7e300a8820",
-        "signature": "b5ccf41df860719cad46ad060ae61a2162426f996c3200ac36dad7f5539ec268",
+        "version": "63330184bac77a14982bec40071eab079732b01b68a3a56f2e9906bb7e5459d8",
+        "signature": "340a5af9a770ce5094e0ae72244ac7e31ea19d9767006aca1b5a8c0a72d76f53",
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "9093b3b5c811cbcb1382df0d6cd71c800b16436b520b7bb9e5715e63d49c7e05",
+        "version": "c10aeed3dc4954d487ea2abecefec466bf9e1158989df2ebfbc2a18dec887c80",
         "signature": "91b7b132ba3a3b29bccf44924cb2cbac45305d67fb6d17647c8ce0784d23e46d",
         "affectsGlobalScope": false
       },
@@ -3712,8 +3712,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "493baad15c0a1e835464386c160a040849278eec594daccabb6c633da06f9590",
-        "signature": "b90ec066c85a6ce6dcb2c6cbfab904e4e44503445f1df0cdf2ec602b4c389433",
+        "version": "7d24faef0406eb626953aa36144624caede0b44e987bf034ffdfcf5fe5e4de31",
+        "signature": "79f2d7206546b8cda031d2658874ecf7db6ff51b6c0f2c5ef02e32683e9d0c8c",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
@@ -3727,8 +3727,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "79af14d9cb1049b09a0a2e342512dcf56949d335bf905407dd2c3ad9f3e650b6",
-        "signature": "08dc0cb1d3eab557bad72575c43e035ce39a3bb8b173fb25e0681529f2a7eac2",
+        "version": "9d4290e738a97faf3b1b7c5a30bc2b8720df4a3bcd3724442e351f046d4d97ad",
+        "signature": "295d87542e92f470a042db5655a4a6edd75aead8dcd87144ee36057637997474",
         "affectsGlobalScope": false
       },
       "../node_modules/exceljs/index.d.ts": {
@@ -3787,8 +3787,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "5193b231661e227ee7f4c9306cb84156a394f0aa28e716ce2b16ffcbf08e8725",
-        "signature": "3afaf60c08d4a6df33a6bcff1cc46f48b3ed8ed065ae1ea65b408ca316533ab2",
+        "version": "b01bc67e6be793a5b9cfeabc16d978bec7bc4dc9208c12535c2b7d46e1b5c07d",
+        "signature": "35dcfe4c05549c271877a5f8b948fa1ac6cc8350fc79ae16c6870bd5346e12ca",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.controller.ts": {
@@ -10321,6 +10321,7 @@
         "../src/components/voyages/daily-reports/daily-reports.service.ts",
         "../src/components/voyages/ports/ports.service.ts",
         "../src/components/voyages/voyages.service.ts",
+        "../src/models/daily-report.entity.ts",
         "../src/models/sendmailconfig.ts",
         "../src/models/voyage.entity.ts",
         "../src/services/format-excel-last-voyage/format-excel-last-voyage.service.ts"

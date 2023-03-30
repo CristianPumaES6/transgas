@@ -19,4 +19,5 @@ export declare class DailyReportsService {
     GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId: number, startDate: string, endDate: string, typeSummary: string): Promise<InfoReport_IFO_AND_MGO>;
     GetReportDNVByUser(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
     GetReportDNVByUserNOON(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
+    GetReportBuroBerita(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
 }
