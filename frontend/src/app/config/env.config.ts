@@ -27,11 +27,11 @@ export const EnvConfig: EnvConfig = {
     VERSION: 'v1.9M',
     SOCKET: 'http://165.232.153.20:4000',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-}; */
+};
+*/
 
 
-
- 
+ /*
 // SERVIDOR LINUX - front Firebase
  export const EnvConfig: EnvConfig = {
     API: 'https://transgas.lowcodetool.com',
@@ -39,20 +39,23 @@ export const EnvConfig: EnvConfig = {
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.lowcodetool.com',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-}; 
- 
+};  
+ */
 
 // CONFIGURACION PARA test DESARROLLO-server
-/* export const EnvConfig: EnvConfig = {
+/*
+export const EnvConfig: EnvConfig = {
     API: 'https://transgas.esteesel.club',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.esteesel.club',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
- */
-/*
+*/
 
+
+
+ 
 //CONFIG DEVELOPER LOCAL
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
@@ -61,5 +64,4 @@ export const EnvConfig: EnvConfig = {
     SOCKET: 'ws://localhost:4000',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 }; 
-
-*/
+ 
