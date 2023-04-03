@@ -671,14 +671,14 @@ export class VoyagesController {
 
                     ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date) + '.000';
 
-                } else if (importVoyage.date.length == 23) {
+                } else if (importVoyage.date.length == 19) {
                     // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
                     ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
 
                 } else {
                     ultimaFecha = null;
                     console.log(importVoyage.date);
-                    console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
+                    console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR Linea 674 ');
                 }
 
 
@@ -1108,10 +1108,10 @@ export class VoyagesController {
                     console.log(ultimaFecha)
 
 
-                    if (ultimaFecha.length == 23) {
+                    if (ultimaFecha.length == 19) {
                         newReport.date = ultimaFecha;
                     } else {
-                        console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
+                        console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR linea 1111 ');
                     }
 
                     newReport.hour = ObtenerlasHorasDeUnaFecaUTC(ultimaFecha)
@@ -1523,14 +1523,29 @@ export class VoyagesController {
                 
                 updateReport.id = importDailyReport.id;
 
-              //  updateReport.north_degree = importDailyReport.north_degree;
-              //  updateReport.north_minutes= importDailyReport.north_minutes;
-              //  updateReport.north_north_south = importDailyReport.north_north_south;
+                                
+                if(!!importDailyReport.north_degree){
+                    updateReport.north_degree = importDailyReport.north_degree;              
+                }
+                if(!!importDailyReport.north_minutes){
+                    updateReport.north_minutes= importDailyReport.north_minutes;       
+                }
+                if(!!importDailyReport.north_north_south){
+                    updateReport.north_north_south = importDailyReport.north_north_south;
+                }
 
-              //  updateReport.east_degree = importDailyReport.east_degree;
-              //  updateReport.east_minutes= importDailyReport.east_minutes;
-              //  updateReport.east_east_west = importDailyReport.east_east_west;
+                if(!!importDailyReport.east_degree){
+                    updateReport.east_degree = importDailyReport.east_degree;
+                }
+                if(!!importDailyReport.east_minutes){
+                    updateReport.east_minutes= importDailyReport.east_minutes;
+                }
+                if(!!importDailyReport.east_east_west){
+                    updateReport.east_east_west = importDailyReport.east_east_west;
+                }
 
+                            
+              
                 updateReport.distance = importDailyReport.distance;
 
 
