@@ -504,6 +504,7 @@ export class VoyagesController {
                         MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
                         // Reset mapping Port
                         MappingPort = [];
+
                     } else {
                         if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.'
 
@@ -580,8 +581,8 @@ export class VoyagesController {
                             newPort.startDate = null;
                         }
 
-                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                        newPort.startIFO =  <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                        newPort.startMGO =  <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
 
                         // Auditoria.
@@ -671,7 +672,7 @@ export class VoyagesController {
 
                     ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date) + '.000';
 
-                } else if (importVoyage.date.length == 19) {
+                } else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
                     // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
                     ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
 
@@ -718,7 +719,7 @@ export class VoyagesController {
                     } else if (importVoyage.hour.length == 5) {
                         newReport.hour = importVoyage.hour;
                     } else {
-
+                        newReport.hour = importVoyage.hour;
                         console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId)
                     }
                 }else{

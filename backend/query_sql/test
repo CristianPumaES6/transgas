@@ -1,0 +1,32 @@
+
+	UPDATE daily_report
+	SET
+		date =  datetime(date,'-5 hour')
+	WHERE 
+					status = 1 
+					AND userId = 11
+	AND	 id <= 2895 
+
+
+
+
+	UPDATE daily_report
+	SET
+		date =  datetime(date,'-4 hour')
+	WHERE 
+					status = 1 
+					AND userId = 11
+	AND	id <= 6959 AND id >  2895
+
+
+
+
+
+	UPDATE daily_report
+	SET
+		date =  datetime(date,'-4 hour')
+	WHERE 
+					status = 1 
+					AND userId = 11
+					AND id <= 7088
+					AND id >  6959
