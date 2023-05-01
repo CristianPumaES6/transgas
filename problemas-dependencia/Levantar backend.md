@@ -1,38 +1,21 @@
 
 Clonamos el proyecto
 
-entramos al directorio backend
+https://github.com/CristianPumaES6/transgas
+
+branch production
+
+git clone --b production https://github.com/CristianPumaES6/transgas.git
+
+entramos al directorio backend nos ubicamos donde esta el package.json
+y colocamos
 
 npm install
 
-nest start
+entramos a dist y colocamos
+
+node main.js
 
 
-
-
-SUBIR SERVER
-Entramos al putty 
-
-stop al programa
-pm2 stop 0
-
-
-copiamos la BD
-
-generamos el directorio dist.
-
-Cambiamos el archivo 
-server.config.ts
-
-nest start
-
-entramos al branch production
-Pegramos el directorio.
-
-
-copiamos el dist 
-
-
-/
-
+si corre todo ok, podemos poner al pm2
 

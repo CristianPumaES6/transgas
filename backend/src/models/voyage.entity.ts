@@ -3,7 +3,6 @@ import { Port } from './port.entity';
 
 @Entity()
 export class Voyage {
-
     // Id unique.
     @PrimaryGeneratedColumn()
     id: number;
@@ -33,9 +32,8 @@ export class Voyage {
 
     @Column({ nullable: false })
     status: boolean;
-
-
 }
+
 export class VoyageFilterByYears {
     userId: number;
     years: number[];

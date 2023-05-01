@@ -24,7 +24,9 @@ nano env.config.ts
 
 echo "ng build"
 # generamos el build
-ng build --prod
+ng build --prod  
+ng build --configuration production --aot
+
 sed -i "s%https://transgas.codev.site%http://localhost:3000%g" "env.config.ts"
 echo "Firebase deploy"
 

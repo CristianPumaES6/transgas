@@ -25,7 +25,7 @@ nano env.config.ts
 echo "ng build"
 # generamos el build
 ng build --prod
-
+ng build --configuration production --aot
 
 echo "Firebase deploy"
 # Hacemos el deploy

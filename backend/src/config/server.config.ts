@@ -22,6 +22,7 @@ export const URL_Server = {
 
 
 // CONFIGURACION PARA DESARROLLO local
+/*
  export const URL_Server = {
     front: 'http://localhost:3001',
     back: 'http://localhost:3000',
@@ -29,6 +30,7 @@ export const URL_Server = {
     puertoSocket: 4000,
     bd: 'SQLITE', // MSSQL,   SQLITE,   MYSQL
 };
+*/
 
 
 // CONFIGURACION PARA DESARROLLO SERVER
@@ -41,3 +43,13 @@ export const URL_Server = {
     bd: 'SQLITE', // MSSQL,   SQLITE,   MYSQL
 };
 */
+
+
+// SERVIDOR LINUX - FRONT Firebase
+export const URL_Server = {
+    front: 'https://transgas.occard.site',
+    back: 'https://transgas.occard.site',
+    version: 'v2',
+    puertoSocket: 4000,
+    bd: 'SQLITE', // MSSQL, MYSQL
+}; 
