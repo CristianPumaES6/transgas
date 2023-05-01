@@ -1652,12 +1652,12 @@
         "affectsGlobalScope": false
       },
       "../src/assets/moment.assets.ts": {
-        "version": "63330184bac77a14982bec40071eab079732b01b68a3a56f2e9906bb7e5459d8",
+        "version": "b4582dcaf860d0ea517b466efe9f65e3d04b79512b6e45a8fd96f5d0e8c148f9",
         "signature": "340a5af9a770ce5094e0ae72244ac7e31ea19d9767006aca1b5a8c0a72d76f53",
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "c10aeed3dc4954d487ea2abecefec466bf9e1158989df2ebfbc2a18dec887c80",
+        "version": "901f2cbdb90485918fd5b81453c9759956de07a0d019ceb9d788e685b4e67588",
         "signature": "91b7b132ba3a3b29bccf44924cb2cbac45305d67fb6d17647c8ce0784d23e46d",
         "affectsGlobalScope": false
       },
@@ -3712,7 +3712,7 @@
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "7d24faef0406eb626953aa36144624caede0b44e987bf034ffdfcf5fe5e4de31",
+        "version": "cd9e87ea85fd32e7148388de3a5644f478c8321cb59785096992f57551f03231",
         "signature": "79f2d7206546b8cda031d2658874ecf7db6ff51b6c0f2c5ef02e32683e9d0c8c",
         "affectsGlobalScope": false
       },
@@ -3787,7 +3787,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "b01bc67e6be793a5b9cfeabc16d978bec7bc4dc9208c12535c2b7d46e1b5c07d",
+        "version": "cd512f4970bd5494b3de7d88690345f7b89612c18a9c139887d7c2186c0d507f",
         "signature": "35dcfe4c05549c271877a5f8b948fa1ac6cc8350fc79ae16c6870bd5346e12ca",
         "affectsGlobalScope": false
       },

@@ -1,1 +1,0 @@
-{"version":3,"file":"sendMailConfig.js","sourceRoot":"","sources":["../../../../../src/app/models/sendMailConfig.ts"],"names":[],"mappings":"AACA,MAAM,OAAO,cAAc;IAIvB,YACI,MAAc,EACd,MAAc;QAEd,IAAI,CAAC,MAAM,GAAG,MAAM,IAAI,CAAC,CAAC;QAC1B,IAAI,CAAC,MAAM,GAAG,MAAM,IAAI,EAAE,CAAC;IAC/B,CAAC;CAEJ"}

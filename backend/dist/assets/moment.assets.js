@@ -32,7 +32,7 @@ function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC) {
 }
 exports.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL;
 function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC) {
-    let mommentTemporal = moment.utc(dateUTC, "MM/DD/YY HH:mm");
+    let mommentTemporal = moment.utc(dateUTC, "DD/MM/YY HH:mm");
     let momentDate = mommentTemporal.subtract(5, 'hours');
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }

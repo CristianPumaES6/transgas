@@ -424,13 +424,13 @@ let VoyagesController = class VoyagesController {
                     if (importVoyage.date.length == 14 || importVoyage.date.length == 13 || importVoyage.date.length == 12 || importVoyage.date.length == 11 || importVoyage.date.length == 15 || importVoyage.date.length == 18) {
                         ultimaFecha = moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date) + '.000';
                     }
-                    else if (importVoyage.date.length == 23) {
+                    else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
                         ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
                     }
                     else {
                         ultimaFecha = null;
                         console.log(importVoyage.date);
-                        console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
+                        console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR Linea 674 ');
                     }
                     newReport.date = ultimaFecha;
                     if (importVoyage.hour) {
@@ -441,6 +441,7 @@ let VoyagesController = class VoyagesController {
                             newReport.hour = importVoyage.hour;
                         }
                         else {
+                            newReport.hour = importVoyage.hour;
                             console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
                         }
                     }
@@ -709,11 +710,11 @@ let VoyagesController = class VoyagesController {
                         ultimaFecha = fechaAntiguaMasElTiempoDeNavegacion + '.000';
                         console.log("ultimaFecha");
                         console.log(ultimaFecha);
-                        if (ultimaFecha.length == 23) {
+                        if (ultimaFecha.length == 19) {
                             newReport.date = ultimaFecha;
                         }
                         else {
-                            console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
+                            console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR linea 1111 ');
                         }
                         newReport.hour = moment_assets_1.ObtenerlasHorasDeUnaFecaUTC(ultimaFecha);
                         console.log(newReport.hour);
@@ -1013,6 +1014,24 @@ let VoyagesController = class VoyagesController {
                     const importDailyReport = ImportDailyReport_1_1.value;
                     let updateReport = {};
                     updateReport.id = importDailyReport.id;
+                    if (!!importDailyReport.north_degree) {
+                        updateReport.north_degree = importDailyReport.north_degree;
+                    }
+                    if (!!importDailyReport.north_minutes) {
+                        updateReport.north_minutes = importDailyReport.north_minutes;
+                    }
+                    if (!!importDailyReport.north_north_south) {
+                        updateReport.north_north_south = importDailyReport.north_north_south;
+                    }
+                    if (!!importDailyReport.east_degree) {
+                        updateReport.east_degree = importDailyReport.east_degree;
+                    }
+                    if (!!importDailyReport.east_minutes) {
+                        updateReport.east_minutes = importDailyReport.east_minutes;
+                    }
+                    if (!!importDailyReport.east_east_west) {
+                        updateReport.east_east_west = importDailyReport.east_east_west;
+                    }
                     updateReport.distance = importDailyReport.distance;
                     if (!updateReport.id) {
                     }
