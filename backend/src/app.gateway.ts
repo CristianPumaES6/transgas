@@ -73,6 +73,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket
   ): LoggedUser[] {
 
+
+    this.logger.log('EmitConnect');
+
     if (socketEmitModel && socketEmitModel.action == 'REGISTER_CONECTION_USER') {
 
       let IsUserLogeatedExit: LoggedUser = socketEmitModel.data;

@@ -42,6 +42,7 @@ export const EnvConfig: EnvConfig = {
 };  
  */
 
+
 // CONFIGURACION PARA test DESARROLLO-server
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas.occard.site',
@@ -53,13 +54,13 @@ export const EnvConfig: EnvConfig = {
 
 
 
- /*
+ 
 //CONFIG DEVELOPER LOCAL
-export const EnvConfig: EnvConfig = {
+/* export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
     ENV: '',
-    VERSION: 'v1.9M',
+    VERSION: 'v2',
     SOCKET: 'ws://localhost:4000',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-}; 
- */
+};  */
+ 
