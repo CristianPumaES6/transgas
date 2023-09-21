@@ -191,7 +191,7 @@ export class VoyagesService {
                             {
                                 userId: (voyage.userId || ''),
                                 voyageNumber: Like('%' + (voyage.voyageNumber || '') + '%'),
-                                year: Like('%' + (voyage.year || '') + '%'),
+                                year: voyage.year,
                                 status: Not(false)
                             }
                         ],

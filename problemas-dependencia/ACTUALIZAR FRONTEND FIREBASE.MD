@@ -7,5 +7,5 @@ ng build --configuration production --aot
 
 SUBIMOS A FIREBASE
 
-firebase deploy --only hosting:transgas
+    firebase deploy --only hosting:transgas
 
