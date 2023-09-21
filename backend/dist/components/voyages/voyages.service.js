@@ -141,7 +141,7 @@ let VoyagesService = class VoyagesService {
                         {
                             userId: (voyage.userId || ''),
                             voyageNumber: typeorm_3.Like('%' + (voyage.voyageNumber || '') + '%'),
-                            year: typeorm_3.Like('%' + (voyage.year || '') + '%'),
+                            year: voyage.year,
                             status: typeorm_4.Not(false)
                         }
                     ],

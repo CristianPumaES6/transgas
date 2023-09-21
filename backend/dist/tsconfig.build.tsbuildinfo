@@ -2377,7 +2377,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "160b710abad4dafbb62306bc89e6f164318b0de2616a21a7eb9a9a91e33d2ba2",
+        "version": "931a69eb2a51d77e375174b8f295efd711b255272659335d5bbc5a300e8d9a1d",
         "signature": "91b7b132ba3a3b29bccf44924cb2cbac45305d67fb6d17647c8ce0784d23e46d",
         "affectsGlobalScope": false
       },
@@ -4442,7 +4442,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "fd5da496f8f65556325b103532d2ef56a51b77817551f74e9aa9656f24df2585",
+        "version": "e8b1dad522791d85d5f8c70e7dd4250970aeefdda95abf99600ee2055d757c23",
         "signature": "2c3dff5d63c2c8c5571eea024d5fc8ff57cfcf34bb58dcc52da22e21e03320a9",
         "affectsGlobalScope": false
       },

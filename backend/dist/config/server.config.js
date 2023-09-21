@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.URL_Server = void 0;
 exports.URL_Server = {
-    front: 'https://transgas.occard.site',
-    back: 'https://transgas.occard.site',
-    version: 'v2',
+    front: 'https://transgas.web.app',
+    back: 'https://transgas.lowcodetool.com',
+    version: 'v1.9M',
     puertoSocket: 4000,
     bd: 'SQLITE',
 };
