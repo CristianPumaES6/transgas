@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { DummyPromise } from 'src/assets/promises.assets';
+import { DummyPromise } from '../../assets/promises.assets';
 
 import { CellFormulaValue, TableProperties, Workbook, Worksheet } from 'exceljs';
-import { GetReportVoyagePortDaily, InfoFuelStartEndForDate } from 'src/models/daily-report.entity';
+import { GetReportVoyagePortDaily, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
 
 import * as fs from 'fs';
 
 import * as fileSaver from 'file-saver';
-import { UserEntity } from 'src/models/user.entity';
-import { DailyReport } from 'src/models/daily-report.entity';
-import { Voyage } from 'src/models/voyage.entity';
-import { Port } from 'src/models/port.entity';
-import { ConvertDateUTC_To_FORMAT_UTC, GetHours, ObtenerHoraDeDosStringUTC } from 'src/assets/moment.assets';
+import { UserEntity } from '../../models/user.entity';
+import { DailyReport } from '../../models/daily-report.entity';
+import { Voyage } from '../../models/voyage.entity';
+import { Port } from '../../models/port.entity';
+import { ConvertDateUTC_To_FORMAT_UTC, GetHours, ObtenerHoraDeDosStringUTC } from '../../assets/moment.assets';
 import moment from 'moment';
-import { MailLastVoyage } from 'src/models/sendMailConfig';
-import { translateActivity } from 'src/assets/translate.assets';
+import { MailLastVoyage } from '../../models/sendMailConfig';
+import { translateActivity } from '../../assets/translate.assets';
 
 
 @Injectable()

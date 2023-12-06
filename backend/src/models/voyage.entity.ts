@@ -32,6 +32,8 @@ export class Voyage {
 
     @Column({ nullable: false })
     status: boolean;
+
+    SyncStatus: string;
 }
 
 export class VoyageFilterByYears {

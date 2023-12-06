@@ -12,7 +12,7 @@ import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
 import { ConvertDateUTC_To_FORMAT_UTC, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, FormatDateUTCToDateHour, GetDate } from '../../assets/moment.assets';
-import { SendMessageEntity } from 'src/models/send-message.entity';
+import { SendMessageEntity } from '../../models/send-message.entity';
 
 
 @Controller('send-message')

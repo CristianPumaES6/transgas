@@ -15,7 +15,7 @@ import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
-import { FormatExcelLastVoyageService, GenerateFormatObjForExcelEmail } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
+import { FormatExcelLastVoyageService, GenerateFormatObjForExcelEmail } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { MailLastVoyage, SendMailConfig } from '../../models/sendMailConfig';
 import { SendMailArchiveInfoLastVoyage } from './../../assets/nodemailer.assets'
@@ -1713,6 +1713,64 @@ export class VoyagesController {
     }
 
 
+     UpdateData(@Headers() headers, @Body() voyages: Voyage[]): { mensaje: string } {
+        
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        voyages.forEach(
+            async (voyage) => {
+          // Verifica el campo SyncStatus para decidir si es una adición o una actualización
+          if (voyage.SyncStatus === 'added') {
+            
+            if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+
+                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    // NO se hace nada
+                } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+
+                delete voyage.id;
+                // Auditoria.
+                voyage.userIdCreated = headerToken.id;
+                voyage.dateCreated = GetDate();
+                delete voyage.userIdUpdated;
+                delete voyage.dateUpdated;
+                voyage.status = Boolean(voyage.status);
+                // Ejecutamos la funcion que registra en bd.
+                await this._voyagesService.Create(voyage);
+            }
+            else throw 'MISSING_FIELS';
+            
+          } else if (voyage.SyncStatus === 'update') {
+
+              // Validamos los datos del objeto a registar.
+              if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
+                
+                voyage.id = Number(voyage.id);
+
+                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    // No se hace nada
+                } else if (Number(headerToken.id) !== Number(voyage.userId)) throw new Error('ERROR_USERID_FAIL');
+
+                // Auditoria.
+                delete voyage.userIdCreated;
+                delete voyage.dateCreated;
+                voyage.userIdUpdated = headerToken.id;
+                voyage.dateUpdated = GetDate();
+                voyage.status = Boolean(voyage.status);
+                // Ejecutamos la funcion que actualiza el obj en la bd.
+                await this._voyagesService.Update(voyage);
+            } else {
+                // Enviar los datos necesarios.
+                throw 'MISSING_FIELS';
+            }
+          }
+        }
+        );
+    
+        return { mensaje: 'Datos recibidos correctamente' };
+      }
 
 
 

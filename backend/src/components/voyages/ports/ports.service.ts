@@ -4,7 +4,7 @@ import { Port } from '../../../models/port.entity';
 import { Like, Not, Repository } from 'typeorm';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { URL_Server } from '../../../config/server.config';
-import { DailyReport } from 'src/models/daily-report.entity';
+import { DailyReport } from '../../../models/daily-report.entity';
 
 @Injectable()
 export class PortsService {

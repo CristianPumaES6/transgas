@@ -7,8 +7,8 @@ import { FormatDateSumDays, FormatDateUTCToDateHour, GetDate } from '../../asset
 
 
 
-import { SendMessageEntity } from 'src/models/send-message.entity';
-import { UserEntity } from 'src/models/user.entity';
+import { SendMessageEntity } from '../../models/send-message.entity';
+import { UserEntity } from '../../models/user.entity';
 
 @Injectable()
 export class SendMessageService {
