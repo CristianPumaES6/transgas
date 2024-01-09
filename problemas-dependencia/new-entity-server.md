@@ -1,8 +1,8 @@
 # Manual para crear una nueva entidad en la BD.
 
 nest g module components/users
-nest g service components/users
-nest g controller components/users
+nest g service components/oils/bunkerOilToEquipment
+nest g controller components/oils/bunkerOilToEquipment
 nest g class models/user.entity
 
 
