@@ -85,7 +85,7 @@ export class OilsService {
                         where: [
                             // name && surname && nick && email
                             {
-                                id: (oilEntity.id || Like('%' + '%')),
+                                userId: (oilEntity.userId || Like('%' + '%')),
                                 name: Like('%' + (oilEntity.name || '') + '%'),
                                 status: Not(false)
                             }

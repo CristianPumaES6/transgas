@@ -81,7 +81,7 @@ export class OilsController {
             (resultValidate: Boolean) => {
                 // Validamos que el userId sea el mismo que el del sailingAnality
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    oilEntity.userId = null;
+                     // Nose hace nada
                 } else if (oilEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
@@ -112,7 +112,6 @@ export class OilsController {
             }
         );
     }
-
 
     @Post('create')
     Create(@Headers() headers, @Body() oilEntity: OilEntity): Promise<any> {
@@ -167,8 +166,6 @@ export class OilsController {
         );;
     }
 
-    
-
     @Put(':id/update')
     async Update(@Headers() headers, @Param('id') id, @Body() oilEntity: OilEntity): Promise<any> {
 
@@ -182,7 +179,8 @@ export class OilsController {
 
 
                 // Validamos los datos del objeto a registar.
-                if (oilEntity && oilEntity.id && oilEntity.name && headerToken && headerToken.id) {
+                if (oilEntity && oilEntity.name && headerToken && headerToken.id) {
+                    oilEntity.id = Number(id);
 
                     if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
 
@@ -214,7 +212,7 @@ export class OilsController {
             (resultUpdate: OilEntity) => {
 
                 // Validamos el resultado
-                if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE_DETAIL');
+                if (!resultUpdate) throw new Error('TYPEORM_UPDATE_OIL_DETAIL');
 
                 // Retornamos una! Respuesta exitosa.
                 return {
@@ -273,6 +271,15 @@ export class OilsController {
                 result.dateUpdated =  GetDate();
  */
                 // 
+
+
+                
+                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    // No se hace nada
+                } else if (Number(headerToken.id) !== Number(result.userId)) throw new Error('ERROR_USERID_FAIL');
+
+
+                
                 return this._OilsService.Delete(result, headerToken.id);
             }
         ).then(

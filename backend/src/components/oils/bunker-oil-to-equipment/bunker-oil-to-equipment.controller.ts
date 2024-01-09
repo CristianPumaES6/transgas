@@ -37,7 +37,7 @@ export class BunkerOilToEquipmentController {
             (resultValidate: Boolean) => {
                 // Validamos que el userId sea el mismo que el del sailingAnality
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    bunkerOilToEquipmentEntity.userId = null;
+                     // Nose hace nada
                 } else if (bunkerOilToEquipmentEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
