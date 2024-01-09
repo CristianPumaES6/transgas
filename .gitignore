@@ -12,8 +12,7 @@ backend/.prettierrc
 backend/nest-cli.json
 backend/package-lock.json
 backend/README.md
-backend/tsconfig.build.json
-backend/tsconfig.json
+
 
 frontend/.browserslistrc
 frontend/.editorconfig
