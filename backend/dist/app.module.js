@@ -19,6 +19,7 @@ const voyages_module_1 = require("./components/voyages/voyages.module");
 const app_gateway_1 = require("./app.gateway");
 const format_excel_last_voyage_service_1 = require("./services/format-excel-last-voyage/format-excel-last-voyage.service");
 const send_message_module_1 = require("./components/send-message/send-message.module");
+const oils_module_1 = require("./components/oils/oils.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -35,6 +36,7 @@ AppModule = __decorate([
             voyages_module_1.VoyagesModule,
             app_gateway_1.AppGateway,
             send_message_module_1.SendMessageModule,
+            oils_module_1.OilsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService,

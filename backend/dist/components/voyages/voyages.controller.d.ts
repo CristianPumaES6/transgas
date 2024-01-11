@@ -3,7 +3,7 @@ import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.e
 import { PortsService } from './ports/ports.service';
 import { DailyReport } from '../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
-import { FormatExcelLastVoyageService } from 'src/services/format-excel-last-voyage/format-excel-last-voyage.service';
+import { FormatExcelLastVoyageService } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { SendMailConfig } from '../../models/sendMailConfig';
 export declare class VoyagesController {
@@ -24,6 +24,9 @@ export declare class VoyagesController {
     ImportVoyagesDeFormatDNV(headers: any, ImportVoyages: ImportVoyage[]): Promise<any>;
     ImportListDailyReportAgregarOeliminar(headers: any, ImportDailyReport: DailyReport[]): Promise<any>;
     SendEmailLastVoyage(sendMailConfig: SendMailConfig): Promise<any>;
+    UpdateData(headers: any, voyages: Voyage[]): {
+        mensaje: string;
+    };
 }
 export declare class Mapping {
     key?: number;

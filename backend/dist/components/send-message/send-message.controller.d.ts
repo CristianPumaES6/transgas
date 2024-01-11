@@ -1,5 +1,5 @@
 import { SendMessageService } from './send-message.service';
-import { SendMessageEntity } from 'src/models/send-message.entity';
+import { SendMessageEntity } from '../../models/send-message.entity';
 export declare class SendMessageController {
     private readonly _sendMessageService;
     constructor(_sendMessageService: SendMessageService);

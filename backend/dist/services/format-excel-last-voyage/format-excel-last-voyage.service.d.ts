@@ -1,7 +1,7 @@
 /// <reference types="node" />
-import { GetReportVoyagePortDaily, InfoFuelStartEndForDate } from 'src/models/daily-report.entity';
-import { UserEntity } from 'src/models/user.entity';
-import { MailLastVoyage } from 'src/models/sendMailConfig';
+import { GetReportVoyagePortDaily, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
+import { UserEntity } from '../../models/user.entity';
+import { MailLastVoyage } from '../../models/sendMailConfig';
 export declare class FormatExcelLastVoyageService {
     GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily: GetReportVoyagePortDaily[], getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate, selectUser: UserEntity): Promise<GenerateFormatObjForExcelEmail>;
     private ResetColumn;

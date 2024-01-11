@@ -1128,6 +1128,47 @@ let VoyagesController = class VoyagesController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    UpdateData(headers, voyages) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        voyages.forEach(async (voyage) => {
+            if (voyage.SyncStatus === 'added') {
+                if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    }
+                    else if (voyage.userId !== headerToken.id)
+                        throw new Error('ERROR_USERID_FAIL');
+                    delete voyage.id;
+                    voyage.userIdCreated = headerToken.id;
+                    voyage.dateCreated = moment_assets_1.GetDate();
+                    delete voyage.userIdUpdated;
+                    delete voyage.dateUpdated;
+                    voyage.status = Boolean(voyage.status);
+                    await this._voyagesService.Create(voyage);
+                }
+                else
+                    throw 'MISSING_FIELS';
+            }
+            else if (voyage.SyncStatus === 'update') {
+                if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
+                    voyage.id = Number(voyage.id);
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    }
+                    else if (Number(headerToken.id) !== Number(voyage.userId))
+                        throw new Error('ERROR_USERID_FAIL');
+                    delete voyage.userIdCreated;
+                    delete voyage.dateCreated;
+                    voyage.userIdUpdated = headerToken.id;
+                    voyage.dateUpdated = moment_assets_1.GetDate();
+                    voyage.status = Boolean(voyage.status);
+                    await this._voyagesService.Update(voyage);
+                }
+                else {
+                    throw 'MISSING_FIELS';
+                }
+            }
+        });
+        return { mensaje: 'Datos recibidos correctamente' };
+    }
 };
 __decorate([
     common_1.Get('byYears'),
@@ -1206,6 +1247,12 @@ __decorate([
     __metadata("design:paramtypes", [sendMailConfig_1.SendMailConfig]),
     __metadata("design:returntype", Promise)
 ], VoyagesController.prototype, "SendEmailLastVoyage", null);
+__decorate([
+    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:returntype", Object)
+], VoyagesController.prototype, "UpdateData", null);
 VoyagesController = __decorate([
     common_1.Controller('voyages'),
     __metadata("design:paramtypes", [voyages_service_1.VoyagesService,

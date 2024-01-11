@@ -10,6 +10,7 @@ export declare class Voyage {
     userIdUpdated: number;
     dateUpdated: string;
     status: boolean;
+    SyncStatus: string;
 }
 export declare class VoyageFilterByYears {
     userId: number;

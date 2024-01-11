@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppGateway = void 0;
 const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
-const socket_io_1 = require("socket.io");
 const moment_assets_1 = require("./assets/moment.assets");
 const server_config_1 = require("./config/server.config");
 const loggedUser_1 = require("./models/loggedUser");
@@ -116,8 +115,7 @@ __decorate([
     __param(0, websockets_1.MessageBody()),
     __param(1, websockets_1.ConnectedSocket()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socketEmit_1.SocketEmitModel,
-        socket_io_1.Socket]),
+    __metadata("design:paramtypes", [socketEmit_1.SocketEmitModel, Object]),
     __metadata("design:returntype", Array)
 ], AppGateway.prototype, "handleEvent", null);
 AppGateway = __decorate([

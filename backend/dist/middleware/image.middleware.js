@@ -2,14 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EditFileName = exports.ImageFileFilter = void 0;
 const path_1 = require("path");
-const ImageFileFilter = (req, file, callback) => {
+exports.ImageFileFilter = (req, file, callback) => {
     if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
         return callback(new Error('Only image files are allowed!'), false);
     }
     callback(null, true);
 };
-exports.ImageFileFilter = ImageFileFilter;
-const EditFileName = (req, file, callback) => {
+exports.EditFileName = (req, file, callback) => {
     const name = file.originalname.split('.')[0];
     const fileExtName = path_1.extname(file.originalname);
     const randomName = Array(4)
@@ -18,5 +17,4 @@ const EditFileName = (req, file, callback) => {
         .join('');
     callback(null, `${name}-${randomName}${fileExtName}`);
 };
-exports.EditFileName = EditFileName;
 //# sourceMappingURL=image.middleware.js.map

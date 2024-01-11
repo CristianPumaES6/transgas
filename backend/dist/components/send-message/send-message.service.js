@@ -19,7 +19,6 @@ const typeorm_2 = require("typeorm");
 const server_config_1 = require("../../config/server.config");
 const promises_assets_1 = require("../../assets/promises.assets");
 const send_message_entity_1 = require("../../models/send-message.entity");
-const user_entity_1 = require("../../models/user.entity");
 let SendMessageService = class SendMessageService {
     constructor(_sendMessageRepository) {
         this._sendMessageRepository = _sendMessageRepository;
