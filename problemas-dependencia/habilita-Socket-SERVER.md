@@ -1,17 +1,17 @@
 sudo mkdir -p /var/www/socket-transgas.codev.site/
 
 
-sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/socket-transgas.codev.site
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/socket-transgas.occard.site
 
 
-sudo ln -s /etc/nginx/sites-available/socket-transgas.codev.site /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/socket-transgas.occard.site /etc/nginx/sites-enabled/socket-transgas.occard.site
 
 
 
 
 
 server {
-       server_name socket-transgas.codev.site www.socket-transgas.codev.site;
+       server_name socket-transgas.occard.site www.socket-transgas.occard.site;
 
     location / {
         proxy_pass http://localhost:4000;
@@ -25,7 +25,13 @@ server {
 
 }
 
-sudo certbot --nginx -d socket-transgas.codev.site -d www.socket-transgas.codev.site
+
+
+sudo certbot --nginx -d socket-transgas.occard.site -d www.socket-transgas.occard.site
+
+
+
+
   listen 80;
         listen [::]:80;
 
@@ -88,7 +94,7 @@ server {
 
 al final queda asi nuestra conifguracion
 server {
-         server_name socket-transgas.codev.site www.socket-transgas.codev.site;
+         server_name socket-transgas.codev.site;
 
            location /socket.io {
         proxy_pass http://localhost:4000;
@@ -98,16 +104,7 @@ server {
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
-
-    listen 80; # managed by Certbot
-
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/socket-transgas.codev.site/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/socket-transgas.codev.site/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-
+  
 }
 
 

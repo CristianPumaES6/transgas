@@ -5,8 +5,6 @@
 //BD del servidor de transgas real
 scp root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/dbTransgas.sqlite3 ./
 
-
-scp root@165.232.153.20:/var/www/nodejs/transgas/backend/dbTransgas.sqlite3 ./
 ```
 
 
@@ -20,6 +18,7 @@ scp dbTransgas.sqlite3 root@165.232.153.20:/var/www/transgas.codev.site/transgas
 
 
 // actualizar la data del servidor occard
-scp dbTransgas.sqlite3 root@159.203.92.206:/var/www/nodejs/transgas/backend/
+scp dbTransgas.sqlite3 root@161.35.239.148:/root/transgas/backend
+ 
 
 ```
