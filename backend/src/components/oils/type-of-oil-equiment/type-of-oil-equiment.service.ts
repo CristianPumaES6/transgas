@@ -15,7 +15,7 @@ export class TypeOfOilEquipmentService {
     ) { }
 
 
-    async Gets(groupOilEntity: TypeOfOilEquipmentEntity): Promise<TypeOfOilEquipmentEntity[]> {
+    async Gets(typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity): Promise<TypeOfOilEquipmentEntity[]> {
 
         return DummyPromise().then(
             result => {
@@ -36,8 +36,8 @@ export class TypeOfOilEquipmentService {
                         where: [
                             // name && surname && nick && email
                             {
-                                id: (groupOilEntity.id || Like('%' + '%')),
-                                userId: (groupOilEntity.userId || Like('%' + '%')),
+                                id: (typeOfOilEquipmentEntity.id || Like('%' + '%')),
+                                userId: (typeOfOilEquipmentEntity.userId || Like('%' + '%')),
                                 status: Not(false)
                             }
                         ]
