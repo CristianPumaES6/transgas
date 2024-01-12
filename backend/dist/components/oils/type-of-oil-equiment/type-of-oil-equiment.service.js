@@ -23,7 +23,7 @@ let TypeOfOilEquipmentService = class TypeOfOilEquipmentService {
     constructor(_TypeOfOilEquimentEntity) {
         this._TypeOfOilEquimentEntity = _TypeOfOilEquimentEntity;
     }
-    async Gets(groupOilEntity) {
+    async Gets(typeOfOilEquipmentEntity) {
         return promises_assets_1.DummyPromise().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
@@ -32,8 +32,8 @@ let TypeOfOilEquipmentService = class TypeOfOilEquipmentService {
                 return this._TypeOfOilEquimentEntity.find({
                     where: [
                         {
-                            id: (groupOilEntity.id || typeorm_2.Like('%' + '%')),
-                            userId: (groupOilEntity.userId || typeorm_2.Like('%' + '%')),
+                            id: (typeOfOilEquipmentEntity.id || typeorm_2.Like('%' + '%')),
+                            userId: (typeOfOilEquipmentEntity.userId || typeorm_2.Like('%' + '%')),
                             status: typeorm_2.Not(false)
                         }
                     ]

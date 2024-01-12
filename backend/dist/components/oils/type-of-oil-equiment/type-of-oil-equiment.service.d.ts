@@ -3,5 +3,5 @@ import { Repository } from 'typeorm';
 export declare class TypeOfOilEquipmentService {
     private _TypeOfOilEquimentEntity;
     constructor(_TypeOfOilEquimentEntity: Repository<TypeOfOilEquipmentEntity>);
-    Gets(groupOilEntity: TypeOfOilEquipmentEntity): Promise<TypeOfOilEquipmentEntity[]>;
+    Gets(typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity): Promise<TypeOfOilEquipmentEntity[]>;
 }

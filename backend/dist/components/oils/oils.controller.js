@@ -19,9 +19,21 @@ const promises_assets_1 = require("../../assets/promises.assets");
 const oil_entity_1 = require("../../models/oil.entity");
 const jwtDecode_assets_1 = require("../../assets/jwtDecode.assets");
 const moment_assets_1 = require("../../assets/moment.assets");
+const group_oils_entity_1 = require("../../models/group-oils.entity");
+const type_of_oils_equipment_entity_1 = require("../../models/type-of-oils-equipment.entity");
+const consumptionEquipment_entity_1 = require("../../models/consumptionEquipment.entity");
+const buker_oil_to_equipment_entity_1 = require("../../models/buker-oil-to-equipment.entity");
+const group_oils_service_1 = require("./group-oils/group-oils.service");
+const type_of_oil_equiment_service_1 = require("./type-of-oil-equiment/type-of-oil-equiment.service");
+const consumption_equipment_service_1 = require("./consumption-equipment/consumption-equipment/consumption-equipment.service");
+const bunker_oil_to_equipment_service_1 = require("./bunker-oil-to-equipment/bunker-oil-to-equipment.service");
 let OilsController = class OilsController {
-    constructor(_OilsService) {
+    constructor(_OilsService, _GroupOilEntityService, _TypeOfOilEquipmentService, _ConsumptionEquipmentService, _BunkerOilToEquipmentService) {
         this._OilsService = _OilsService;
+        this._GroupOilEntityService = _GroupOilEntityService;
+        this._TypeOfOilEquipmentService = _TypeOfOilEquipmentService;
+        this._ConsumptionEquipmentService = _ConsumptionEquipmentService;
+        this._BunkerOilToEquipmentService = _BunkerOilToEquipmentService;
     }
     async Get(id) {
         return promises_assets_1.DummyPromise().then((resultDummy) => {
@@ -180,6 +192,102 @@ let OilsController = class OilsController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    GetsDataServer(headers, oilEntity) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        let listOils = [];
+        let listGroups = [];
+        let listTypeOfOilEquipment = [];
+        let listConsumptionEquipment = [];
+        let listBunkerOilToEquipment = [];
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (oilEntity) {
+                oilEntity.userId = Number(oilEntity.userId);
+                return true;
+            }
+            else
+                throw new Error('MISSING_FIELS');
+        }).then((resultValidate) => {
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+            }
+            else if (oilEntity.userId !== headerToken.id)
+                throw new Error('ERROR_USERID_FAIL');
+            return this._OilsService.Gets(oilEntity);
+        }).then((Oils) => {
+            listOils = Oils;
+            let groupOilEntity = {};
+            groupOilEntity.id = groupOilEntity.id;
+            return this._GroupOilEntityService.Gets(groupOilEntity);
+        }).then((GroupsOilEntity) => {
+            listGroups = GroupsOilEntity;
+            let typeOfOilEquipmentEntity = {};
+            typeOfOilEquipmentEntity.id = oilEntity.id;
+            return this._TypeOfOilEquipmentService.Gets(typeOfOilEquipmentEntity);
+        }).then((TypesOfOilEquipmentEntity) => {
+            listTypeOfOilEquipment = TypesOfOilEquipmentEntity;
+            let consumptionEquipmentEntity = {};
+            consumptionEquipmentEntity.id = oilEntity.id;
+            return this._ConsumptionEquipmentService.Gets(consumptionEquipmentEntity);
+        }).then((ConsumptionsEquipmentEntity) => {
+            listConsumptionEquipment = ConsumptionsEquipmentEntity;
+            let bunkersOilToEquipmentEntity = {};
+            bunkersOilToEquipmentEntity.id = oilEntity.id;
+            return this._BunkerOilToEquipmentService.Gets(bunkersOilToEquipmentEntity);
+        }).then((BunkersOilToEquipmentEntity) => {
+            listBunkerOilToEquipment = BunkersOilToEquipmentEntity;
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: {
+                    listOils: listOils,
+                    listGroups: listGroups,
+                    listTypeOfOilEquipment: listTypeOfOilEquipment,
+                }
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
+    SaveDataLubricante(headers, oilEntity) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (oilEntity) {
+                console.log('\n\n\n\n\n\----------------------------------------------\n');
+                console.log('----------------------------------------------\n');
+                console.log('----------------------------------------------\n');
+                console.log('----------------------------------------------\n');
+                console.log('----------------------------------------------\n\n\n\n\n');
+                console.log(oilEntity);
+                console.log('\n\n\n\n\n\n----------------------------------------------\n');
+                console.log('----------------------------------------------\n');
+                console.log('----------------------------------------------\n');
+                console.log('----------------------------------------------\n');
+                console.log('----------------------------------------------\n');
+                return true;
+            }
+            else
+                throw 'MISSING_FIELS';
+        }).then((resultCreate) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: resultCreate
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
 };
 __decorate([
     common_1.Get(':id'),
@@ -216,9 +324,27 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "Delete", null);
+__decorate([
+    common_1.Get('dataServer'),
+    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, oil_entity_1.OilEntity]),
+    __metadata("design:returntype", Promise)
+], OilsController.prototype, "GetsDataServer", null);
+__decorate([
+    common_1.Post('saveLubricante'),
+    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], OilsController.prototype, "SaveDataLubricante", null);
 OilsController = __decorate([
     common_1.Controller('oils'),
-    __metadata("design:paramtypes", [oils_service_1.OilsService])
+    __metadata("design:paramtypes", [oils_service_1.OilsService,
+        group_oils_service_1.GroupOilsService,
+        type_of_oil_equiment_service_1.TypeOfOilEquipmentService,
+        consumption_equipment_service_1.ConsumptionEquipmentService,
+        bunker_oil_to_equipment_service_1.BunkerOilToEquipmentService])
 ], OilsController);
 exports.OilsController = OilsController;
 //# sourceMappingURL=oils.controller.js.map
