@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OilsService = void 0;
 const common_1 = require("@nestjs/common");
@@ -22,6 +29,7 @@ const typeorm_4 = require("typeorm");
 const server_config_1 = require("../../config/server.config");
 const promises_assets_1 = require("../../assets/promises.assets");
 const moment_assets_1 = require("../../assets/moment.assets");
+const voyages_controller_1 = require("../voyages/voyages.controller");
 let OilsService = class OilsService {
     constructor(_oilRepository) {
         this._oilRepository = _oilRepository;
@@ -130,6 +138,81 @@ let OilsService = class OilsService {
                 throw new Error('ERROR_TYPEORM_UPDATE_PORT');
             return returnOilEntity;
         });
+    }
+    async SaveList(importOils) {
+        var e_1, _a, e_2, _b, e_3, _c;
+        let MappingOilEntity = [];
+        const addOilEntity = importOils.filter((importOil) => importOil.SyncStatus == 'added');
+        const updOilEntity = importOils.filter((importOil) => importOil.SyncStatus == 'updated');
+        const deleteOilEntity = importOils.filter((importOil) => importOil.SyncStatus == 'deleted');
+        try {
+            for (var addOilEntity_1 = __asyncValues(addOilEntity), addOilEntity_1_1; addOilEntity_1_1 = await addOilEntity_1.next(), !addOilEntity_1_1.done;) {
+                const oil = addOilEntity_1_1.value;
+                let newOil = new oil_entity_1.OilEntity();
+                delete newOil.id;
+                newOil.userId = oil.userId;
+                newOil.name = oil.name;
+                newOil.userIdCreated = oil.id;
+                newOil.dateCreated = moment_assets_1.GetDate();
+                delete newOil.userIdUpdated;
+                delete newOil.dateUpdated;
+                newOil.status = Boolean(oil.status);
+                let registeredGroupOil = await this.Create(newOil);
+                MappingOilEntity.push(new voyages_controller_1.Mapping(oil.id, registeredGroupOil.id));
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (addOilEntity_1_1 && !addOilEntity_1_1.done && (_a = addOilEntity_1.return)) await _a.call(addOilEntity_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        try {
+            for (var updOilEntity_1 = __asyncValues(updOilEntity), updOilEntity_1_1; updOilEntity_1_1 = await updOilEntity_1.next(), !updOilEntity_1_1.done;) {
+                const oil = updOilEntity_1_1.value;
+                let updatedOil = new oil_entity_1.OilEntity();
+                updatedOil.id = oil.id;
+                updatedOil.userId = oil.userId;
+                updatedOil.name = oil.name;
+                updatedOil.userIdCreated = oil.id;
+                updatedOil.dateCreated = oil.dateCreated;
+                updatedOil.userIdUpdated = oil.userIdUpdated;
+                updatedOil.dateUpdated = oil.dateUpdated;
+                updatedOil.status = Boolean(oil.status);
+                await this._oilRepository.save(updatedOil);
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (updOilEntity_1_1 && !updOilEntity_1_1.done && (_b = updOilEntity_1.return)) await _b.call(updOilEntity_1);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        try {
+            for (var deleteOilEntity_1 = __asyncValues(deleteOilEntity), deleteOilEntity_1_1; deleteOilEntity_1_1 = await deleteOilEntity_1.next(), !deleteOilEntity_1_1.done;) {
+                let oil = deleteOilEntity_1_1.value;
+                let deleteOil = new oil_entity_1.OilEntity();
+                deleteOil.id = oil.id;
+                deleteOil.userId = oil.userId;
+                deleteOil.name = oil.name;
+                deleteOil.userIdCreated = oil.id;
+                deleteOil.dateCreated = oil.dateCreated;
+                deleteOil.userIdUpdated = oil.userIdUpdated;
+                deleteOil.dateUpdated = oil.dateUpdated;
+                deleteOil.status = Boolean(oil.status);
+                await this._oilRepository.save(deleteOil);
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (deleteOilEntity_1_1 && !deleteOilEntity_1_1.done && (_c = deleteOilEntity_1.return)) await _c.call(deleteOilEntity_1);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return MappingOilEntity;
     }
 };
 OilsService = __decorate([

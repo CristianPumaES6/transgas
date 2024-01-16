@@ -1,5 +1,6 @@
 import { OilEntity } from '../../models/oil.entity';
 import { Repository } from 'typeorm';
+import { Mapping } from '../voyages/voyages.controller';
 export declare class OilsService {
     private _oilRepository;
     constructor(_oilRepository: Repository<OilEntity>);
@@ -8,4 +9,5 @@ export declare class OilsService {
     Create(oilEntity: OilEntity): Promise<OilEntity>;
     Update(oilEntity: OilEntity): Promise<OilEntity>;
     Delete(oilEntity: OilEntity, usuarioDelete: number): Promise<OilEntity>;
+    SaveList(importOils: OilEntity[]): Promise<Mapping[]>;
 }

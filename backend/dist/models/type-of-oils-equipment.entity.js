@@ -13,6 +13,7 @@ exports.TypeOfOilEquipmentEntity = void 0;
 const typeorm_1 = require("typeorm");
 let TypeOfOilEquipmentEntity = class TypeOfOilEquipmentEntity {
     constructor(id, userId, equipment, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+        this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';

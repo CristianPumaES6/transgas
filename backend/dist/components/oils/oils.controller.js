@@ -185,7 +185,6 @@ let OilsController = class OilsController {
                 message: errorMsg,
             }, common_1.HttpStatus.ACCEPTED);
         });
-        ;
     }
     async Update(headers, id, oilEntity) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
@@ -257,30 +256,36 @@ let OilsController = class OilsController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
-    SaveDataLubricante(headers, oilEntity) {
+    async SaveDataLubricante(headers, saveDateOils) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        let mappingGroupOils = [];
+        let mappingTypeOfOilEquipment = [];
+        let mappingConsumptionEquipment = [];
+        let mappingOil = [];
         return promises_assets_1.DummyPromise().then((resultDummy) => {
-            if (oilEntity) {
-                console.log('\n\n\n\n\n\----------------------------------------------\n');
-                console.log('----------------------------------------------\n');
-                console.log('----------------------------------------------\n');
-                console.log('----------------------------------------------\n');
-                console.log('----------------------------------------------\n\n\n\n\n');
-                console.log(oilEntity);
-                console.log('\n\n\n\n\n\n----------------------------------------------\n');
-                console.log('----------------------------------------------\n');
-                console.log('----------------------------------------------\n');
-                console.log('----------------------------------------------\n');
-                console.log('----------------------------------------------\n');
-                return true;
+            if (saveDateOils) {
+                return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
             }
             else
                 throw 'MISSING_FIELS';
-        }).then((resultCreate) => {
+        }).then((resultMappingGroupOils) => {
+            mappingGroupOils = resultMappingGroupOils;
+            return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+        }).then((resultMappingTypeOfOilEquipment) => {
+            mappingTypeOfOilEquipment = resultMappingTypeOfOilEquipment;
+            return this._ConsumptionEquipmentService.SaveList(mappingGroupOils, saveDateOils.listConsumptionEquipment);
+        }).then((resultConsumptionEquipment) => {
+            mappingConsumptionEquipment = resultConsumptionEquipment;
+            return this._OilsService.SaveList(saveDateOils.listOil);
+        }).then((mappingOil) => {
+            mappingOil = mappingOil;
+            return this._BunkerOilToEquipmentService.SaveList(mappingOil, mappingTypeOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+        }).then((resultConsumptionEquipment) => {
+            mappingConsumptionEquipment = resultConsumptionEquipment;
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultCreate
+                data: true
             };
         }).catch(err => {
             const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
@@ -339,7 +344,7 @@ __decorate([
     common_1.Post('saveModuleOils'),
     __param(0, common_1.Headers()), __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, oil_entity_1.SaveDateOils]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "SaveDataLubricante", null);
 OilsController = __decorate([
