@@ -125,7 +125,7 @@ export class BunkerOilToEquipmentService {
             newBunkerOilToEquipmentEntity.entityEquipmentId = addTypeOfOilEquipment.entityEquipmentId;
             if (searchMappingTypesOfOilEquipment) { addTypeOfOilEquipment.entityEquipmentId = searchMappingTypesOfOilEquipment.value }
             newBunkerOilToEquipmentEntity.entityOilId = addTypeOfOilEquipment.entityOilId;
-            if (searchMappingOils) { newBunkerOilToEquipmentEntity.entityOilId = searchMappingTypesOfOilEquipment.value }
+            if (searchMappingOils) { newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value }
             newBunkerOilToEquipmentEntity.bunker = addTypeOfOilEquipment.bunker;
             newBunkerOilToEquipmentEntity.comment = addTypeOfOilEquipment.comment;
             newBunkerOilToEquipmentEntity.datetime = addTypeOfOilEquipment.datetime;
@@ -157,7 +157,7 @@ export class BunkerOilToEquipmentService {
             newBunkerOilToEquipmentEntity.entityEquipmentId = bunkerOilToEquipment.entityEquipmentId;
             if (searchMappingTypesOfOilEquipment) { newBunkerOilToEquipmentEntity.entityEquipmentId = searchMappingTypesOfOilEquipment.value }
             newBunkerOilToEquipmentEntity.entityOilId = bunkerOilToEquipment.entityOilId;
-            if (searchMappingOils) { newBunkerOilToEquipmentEntity.entityOilId = searchMappingTypesOfOilEquipment.value }
+            if (searchMappingOils) { newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value }
             newBunkerOilToEquipmentEntity.bunker = bunkerOilToEquipment.bunker;
             newBunkerOilToEquipmentEntity.comment = bunkerOilToEquipment.comment;
             newBunkerOilToEquipmentEntity.datetime = bunkerOilToEquipment.datetime;
@@ -185,7 +185,7 @@ export class BunkerOilToEquipmentService {
             newBunkerOilToEquipmentEntity.entityEquipmentId = bunkerOilToEquipment.entityEquipmentId;
             if (searchMappingTypesOfOilEquipment) { newBunkerOilToEquipmentEntity.entityEquipmentId = searchMappingTypesOfOilEquipment.value }
             newBunkerOilToEquipmentEntity.entityOilId = bunkerOilToEquipment.entityOilId;
-            if (searchMappingOils) { newBunkerOilToEquipmentEntity.entityOilId = searchMappingTypesOfOilEquipment.value }
+            if (searchMappingOils) { newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value }
             newBunkerOilToEquipmentEntity.bunker = bunkerOilToEquipment.bunker;
             newBunkerOilToEquipmentEntity.comment = bunkerOilToEquipment.comment;
             newBunkerOilToEquipmentEntity.datetime = bunkerOilToEquipment.datetime;

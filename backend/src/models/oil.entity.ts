@@ -63,7 +63,7 @@ export class SaveDateOils {
     listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
     listBunkerOilToEquipment: BunkerOilToEquipmentEntity[];
-    listOil: OilEntity[];
+    listOils: OilEntity[];
 
 
     constructor(
@@ -79,6 +79,6 @@ export class SaveDateOils {
         this.listTypeOfOilEquipment = listTypeOfOilEquipment || [];
         this.listConsumptionEquipment = listConsumptionEquipment || [];
         this.listBunkerOilToEquipment = listBunkerOilToEquipment || [];
-        this.listOil = listOil || [];
+        this.listOils = listOil || [];
       }
   }

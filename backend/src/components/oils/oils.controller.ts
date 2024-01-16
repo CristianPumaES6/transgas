@@ -440,10 +440,22 @@ export class OilsController {
 
         // Mapping de Id del server con el id del cliente
         let mappingGroupOils: Mapping[] = [];
-        let mappingTypeOfOilEquipment: Mapping[] = [];
-        let mappingConsumptionEquipment: Mapping[] = [];
-        let mappingOil: Mapping[] = [];
-        
+        let mappingTypesOfOilEquipment: Mapping[] = [];
+        let mappingConsumptionsEquipment: Mapping[] = [];
+        let mappingOils: Mapping[] = [];
+        let mappingBunkersOilToEquipment: Mapping[] = [];
+
+
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log(saveDateOils);
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
@@ -460,38 +472,42 @@ export class OilsController {
             }
         ).then(
             (resultMappingTypeOfOilEquipment: Mapping[]) => {
-                mappingTypeOfOilEquipment = resultMappingTypeOfOilEquipment;
+                mappingTypesOfOilEquipment = resultMappingTypeOfOilEquipment;
                 return this._ConsumptionEquipmentService.SaveList(mappingGroupOils, saveDateOils.listConsumptionEquipment);
             }
         ).then(
             (resultConsumptionEquipment: Mapping[]) => {
 
-                mappingConsumptionEquipment = resultConsumptionEquipment;
+                mappingConsumptionsEquipment = resultConsumptionEquipment;
 
-                return this._OilsService.SaveList(saveDateOils.listOil);
+                return this._OilsService.SaveList(saveDateOils.listOils);
           
             }
         ).then(
-            (mappingOil: Mapping[]) => {
+            (resultMappingOil: Mapping[]) => {
 
-                mappingOil = mappingOil; 
+                mappingOils = resultMappingOil; 
 
-                return this._BunkerOilToEquipmentService.SaveList(mappingOil,mappingTypeOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
-          
+                return this._BunkerOilToEquipmentService.SaveList(mappingOils,mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
 
-                 
             }
         ).then(
-            (resultConsumptionEquipment: Mapping[]) => {
+            (resultBunkerOilToEquipment: Mapping[]) => {
 
-                mappingConsumptionEquipment = resultConsumptionEquipment;
+                mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
 
-                
+
                 // retornamos una Respuesta exitosa.
                 return {
                     status: HttpStatus.OK,
                     message: 'OK',
-                    data: true
+                    data: {
+                        mappingGroupOils:mappingGroupOils,
+                        mappingTypesOfOilEquipment:mappingTypesOfOilEquipment,
+                        mappingConsumptionsEquipment:mappingConsumptionsEquipment,
+                        mappingOils:mappingOils,
+                        mappingBunkersOilToEquipment:mappingBunkersOilToEquipment
+                    }
                 };
             }
         ).catch(
