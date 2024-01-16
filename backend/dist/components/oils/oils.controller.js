@@ -266,7 +266,7 @@ let OilsController = class OilsController {
         console.log('--------------------------');
         console.log('--------------------------');
         console.log('--------------------------');
-        console.log(JSON.parse(saveDateOils));
+        console.log(saveDateOils);
         console.log('--------------------------');
         console.log('--------------------------');
         console.log('--------------------------');
