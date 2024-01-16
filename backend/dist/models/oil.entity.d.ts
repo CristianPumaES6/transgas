@@ -20,6 +20,6 @@ export declare class SaveDateOils {
     listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
     listBunkerOilToEquipment: BunkerOilToEquipmentEntity[];
-    listOil: OilEntity[];
+    listOils: OilEntity[];
     constructor(userId?: number, listGroups?: GroupOilEntity[], listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[], listConsumptionEquipment?: ConsumptionEquipmentEntity[], listBunkerOilToEquipment?: BunkerOilToEquipmentEntity[], listOil?: OilEntity[]);
 }

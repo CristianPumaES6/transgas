@@ -95,7 +95,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 }
                 newBunkerOilToEquipmentEntity.entityOilId = addTypeOfOilEquipment.entityOilId;
                 if (searchMappingOils) {
-                    newBunkerOilToEquipmentEntity.entityOilId = searchMappingTypesOfOilEquipment.value;
+                    newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value;
                 }
                 newBunkerOilToEquipmentEntity.bunker = addTypeOfOilEquipment.bunker;
                 newBunkerOilToEquipmentEntity.comment = addTypeOfOilEquipment.comment;
@@ -130,7 +130,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 }
                 newBunkerOilToEquipmentEntity.entityOilId = bunkerOilToEquipment.entityOilId;
                 if (searchMappingOils) {
-                    newBunkerOilToEquipmentEntity.entityOilId = searchMappingTypesOfOilEquipment.value;
+                    newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value;
                 }
                 newBunkerOilToEquipmentEntity.bunker = bunkerOilToEquipment.bunker;
                 newBunkerOilToEquipmentEntity.comment = bunkerOilToEquipment.comment;
@@ -164,7 +164,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 }
                 newBunkerOilToEquipmentEntity.entityOilId = bunkerOilToEquipment.entityOilId;
                 if (searchMappingOils) {
-                    newBunkerOilToEquipmentEntity.entityOilId = searchMappingTypesOfOilEquipment.value;
+                    newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value;
                 }
                 newBunkerOilToEquipmentEntity.bunker = bunkerOilToEquipment.bunker;
                 newBunkerOilToEquipmentEntity.comment = bunkerOilToEquipment.comment;

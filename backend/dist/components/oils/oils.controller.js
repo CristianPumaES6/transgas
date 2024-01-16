@@ -259,9 +259,10 @@ let OilsController = class OilsController {
     async SaveDataLubricante(headers, saveDateOils) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         let mappingGroupOils = [];
-        let mappingTypeOfOilEquipment = [];
-        let mappingConsumptionEquipment = [];
-        let mappingOil = [];
+        let mappingTypesOfOilEquipment = [];
+        let mappingConsumptionsEquipment = [];
+        let mappingOils = [];
+        let mappingBunkersOilToEquipment = [];
         console.log('--------------------------');
         console.log('--------------------------');
         console.log('--------------------------');
@@ -281,20 +282,26 @@ let OilsController = class OilsController {
             mappingGroupOils = resultMappingGroupOils;
             return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
         }).then((resultMappingTypeOfOilEquipment) => {
-            mappingTypeOfOilEquipment = resultMappingTypeOfOilEquipment;
+            mappingTypesOfOilEquipment = resultMappingTypeOfOilEquipment;
             return this._ConsumptionEquipmentService.SaveList(mappingGroupOils, saveDateOils.listConsumptionEquipment);
         }).then((resultConsumptionEquipment) => {
-            mappingConsumptionEquipment = resultConsumptionEquipment;
-            return this._OilsService.SaveList(saveDateOils.listOil);
-        }).then((mappingOil) => {
-            mappingOil = mappingOil;
-            return this._BunkerOilToEquipmentService.SaveList(mappingOil, mappingTypeOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
-        }).then((resultConsumptionEquipment) => {
-            mappingConsumptionEquipment = resultConsumptionEquipment;
+            mappingConsumptionsEquipment = resultConsumptionEquipment;
+            return this._OilsService.SaveList(saveDateOils.listOils);
+        }).then((resultMappingOil) => {
+            mappingOils = resultMappingOil;
+            return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+        }).then((resultBunkerOilToEquipment) => {
+            mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: true
+                data: {
+                    mappingGroupOils: mappingGroupOils,
+                    mappingTypesOfOilEquipment: mappingTypesOfOilEquipment,
+                    mappingConsumptionsEquipment: mappingConsumptionsEquipment,
+                    mappingOils: mappingOils,
+                    mappingBunkersOilToEquipment: mappingBunkersOilToEquipment
+                }
             };
         }).catch(err => {
             const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');

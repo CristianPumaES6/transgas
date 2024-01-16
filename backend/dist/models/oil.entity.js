@@ -68,7 +68,7 @@ class SaveDateOils {
         this.listTypeOfOilEquipment = listTypeOfOilEquipment || [];
         this.listConsumptionEquipment = listConsumptionEquipment || [];
         this.listBunkerOilToEquipment = listBunkerOilToEquipment || [];
-        this.listOil = listOil || [];
+        this.listOils = listOil || [];
     }
 }
 exports.SaveDateOils = SaveDateOils;

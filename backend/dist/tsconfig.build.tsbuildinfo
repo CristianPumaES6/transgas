@@ -3862,8 +3862,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/oil.entity.ts": {
-        "version": "887d18a5386dbe45e15faf2b1cec3ee752896cb26fef522f7d0ef338c95d462f",
-        "signature": "c1ae916788e78026a3bc58c966361fb4faa73fab16151fcccca8879dc8ffcc3a",
+        "version": "5e91cbda3bbcdd1662ad29f519663707df5c61fa393a8a6eb0e8023ca2958235",
+        "signature": "74cc88deaca255f6389691a9abeb1072969f1140c556c659d8e61c688bc2216e",
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.service.ts": {
@@ -3892,12 +3892,12 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts": {
-        "version": "32b21b2a03d11831a692ffb8b049aba78c5090be1135e5876c8ae7369fe4614a",
+        "version": "b96e1b6532ecba936d38c8ddd702fd39fb8d25b7e354abaf38d3e5290874db31",
         "signature": "3cb4f10ad6228da617d49bfb49806635d21140ea427718594f170cdf0a81907a",
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "f586a5d69c77578a8e9969c99f78273ca0f869e86bd09d933b2333b1780980e1",
+        "version": "b62ecec7e741d10d2900205601ba9a2fe9536f2d917fd277761b80cd87b2a93e",
         "signature": "ab1830d6cdbdaed202d841999a40dafe803f3817e6daa609e9d45a2b9f37c0cb",
         "affectsGlobalScope": false
       },
