@@ -262,6 +262,15 @@ let OilsController = class OilsController {
         let mappingTypeOfOilEquipment = [];
         let mappingConsumptionEquipment = [];
         let mappingOil = [];
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log(JSON.parse(saveDateOils));
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (saveDateOils) {
                 return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
