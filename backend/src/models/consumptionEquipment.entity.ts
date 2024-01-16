@@ -66,5 +66,5 @@ export class ConsumptionEquipmentEntity {
         this.status = status || false;
     }
 
-
+    SyncStatus = "";
 }

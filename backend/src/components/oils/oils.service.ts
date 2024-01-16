@@ -17,6 +17,7 @@ import { URL_Server } from '../../config/server.config'
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
 import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
+import { Mapping } from '../voyages/voyages.controller';
 
 @Injectable()
 export class OilsService {
@@ -144,7 +145,7 @@ export class OilsService {
     }
 
 
-    // Actualiza un voyage
+    // Actualiza un aceite
     async Update(oilEntity: OilEntity): Promise<OilEntity> {
 
         return DummyPromise().then
@@ -204,7 +205,7 @@ export class OilsService {
             });
     }
 
-    // Elimina a un voyage por id
+    // Elimina a un aceite por id
     async Delete(oilEntity: OilEntity, usuarioDelete: number): Promise<OilEntity> {
        
        let returnOilEntity:OilEntity;
@@ -235,5 +236,80 @@ export class OilsService {
                 return returnOilEntity;
             }
         )
+    }
+
+    
+    // guarda una lista de aceite.
+    async SaveList( importOils: OilEntity[] ) {
+ 
+
+        let MappingOilEntity: Mapping[] = [];
+        // Filtramos los datos que faltan aggregar y actualizar.
+        const addOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'added');
+        const updOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'updated');
+        const deleteOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'deleted');
+
+
+ 
+        for await (const oil of addOilEntity) {
+            // Armamos al nuevo aceite
+            let newOil = new OilEntity();
+
+            delete newOil.id;
+            newOil.userId = oil.userId;
+            newOil.name = oil.name;
+
+            // Auditoria.
+            newOil.userIdCreated = oil.id;
+            newOil.dateCreated = GetDate();
+            delete newOil.userIdUpdated;
+            delete newOil.dateUpdated;
+            newOil.status = Boolean(oil.status);
+
+            // Registramos grupo de aceite
+            let registeredGroupOil = await this.Create(newOil);
+
+            // Lo agregamos al mapping
+            MappingOilEntity.push(new Mapping(oil.id, registeredGroupOil.id))
+        }
+
+        for await (const oil of updOilEntity) {
+            // Armamos al nuevo aceite
+            let updatedOil = new OilEntity();
+
+            updatedOil.id = oil.id;
+            updatedOil.userId = oil.userId;
+            updatedOil.name = oil.name;
+
+            // Auditoria.
+            updatedOil.userIdCreated = oil.id;
+            updatedOil.dateCreated = oil.dateCreated;
+            updatedOil.userIdUpdated= oil.userIdUpdated;
+            updatedOil.dateUpdated = oil.dateUpdated;
+            updatedOil.status = Boolean(oil.status);
+
+            await  this._oilRepository.save(updatedOil);
+        }
+
+        for await (let oil of deleteOilEntity) {
+            // Armamos al nuevo aceite
+            let deleteOil = new OilEntity();
+
+            deleteOil.id = oil.id;
+            deleteOil.userId = oil.userId;
+            deleteOil.name = oil.name;
+
+            // Auditoria.
+            deleteOil.userIdCreated = oil.id;
+            deleteOil.dateCreated = oil.dateCreated;
+            deleteOil.userIdUpdated= oil.userIdUpdated;
+            deleteOil.dateUpdated = oil.dateUpdated;
+            deleteOil.status = Boolean(oil.status);
+
+            await this._oilRepository.save(deleteOil);
+        }
+
+
+        return MappingOilEntity;
     }
 }

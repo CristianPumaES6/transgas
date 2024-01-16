@@ -1,4 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { GroupOilEntity } from './group-oils.entity';
+import { TypeOfOilEquipmentEntity } from './type-of-oils-equipment.entity';
+import { ConsumptionEquipmentEntity } from './consumptionEquipment.entity';
+import { BunkerOilToEquipmentEntity } from './buker-oil-to-equipment.entity';
 
 @Entity('oil')
 export class OilEntity {
@@ -47,5 +51,34 @@ export class OilEntity {
         this.status = status || false;
     }
 
-
+    SyncStatus = "";
 }
+
+
+
+
+export class SaveDateOils {
+    userId: number;
+    listGroups: GroupOilEntity[];
+    listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
+    listConsumptionEquipment: ConsumptionEquipmentEntity[];
+    listBunkerOilToEquipment: BunkerOilToEquipmentEntity[];
+    listOil: OilEntity[];
+
+
+    constructor(
+        userId?: number,
+        listGroups?: GroupOilEntity[],
+        listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[],
+        listConsumptionEquipment?: ConsumptionEquipmentEntity[],
+        listBunkerOilToEquipment?: BunkerOilToEquipmentEntity[],
+        listOil?: OilEntity[]
+      ) {
+        this.userId = userId || null;
+        this.listGroups = listGroups || [];
+        this.listTypeOfOilEquipment = listTypeOfOilEquipment || [];
+        this.listConsumptionEquipment = listConsumptionEquipment || [];
+        this.listBunkerOilToEquipment = listBunkerOilToEquipment || [];
+        this.listOil = listOil || [];
+      }
+  }

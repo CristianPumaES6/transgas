@@ -54,5 +54,5 @@ export class TypeOfOilEquipmentEntity {
         this.status = status || false;
     }
 
-
+    SyncStatus = "";
 }

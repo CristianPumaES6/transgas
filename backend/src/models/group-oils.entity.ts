@@ -9,7 +9,7 @@ export class GroupOilEntity {
     @Column({ nullable: true })
     userId: number;
     @Column({ nullable: false })
-    name: string;
+    label: string;
  
     // Auditoria
     @Column()
@@ -27,17 +27,17 @@ export class GroupOilEntity {
     constructor(
         id?: number,
         userId?: number,
-        name?: string,
+        label?: string,
 
         userIdCreated?: number,
         dateCreated?: string,
-        userIdUpdated?: number,
-        dateUpdated?: string,
-        status?: boolean,
+            userIdUpdated?: number,
+            dateUpdated?: string,
+            status?: boolean,
     ) {
         this.id = id || null;
         this.userId = userId || null;
-        this.name = name || '';
+        this.label = label || '';
 
         // Auditoria
         this.userIdCreated = userIdCreated || 0;
@@ -47,5 +47,5 @@ export class GroupOilEntity {
         this.status = status || false;
     }
 
-
+    SyncStatus = "";
 }

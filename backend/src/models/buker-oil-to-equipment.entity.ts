@@ -16,7 +16,6 @@ export class BunkerOilToEquipmentEntity {
     bunker: number;
     @Column()
     comment: string;
-
     @Column({ nullable: false })
     datetime: string;
 
@@ -69,5 +68,5 @@ export class BunkerOilToEquipmentEntity {
         this.status = status || false;
     }
 
-
+    SyncStatus = "";
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { OilsService } from './oils.service';
 import { DummyPromise } from '../../assets/promises.assets';
-import { OilEntity } from '../../models/oil.entity';
+import { OilEntity, SaveDateOils } from '../../models/oil.entity';
 import { UserEntity } from '../../models/user.entity';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { GetDate } from '../../assets/moment.assets';
@@ -13,6 +13,7 @@ import { GroupOilsService } from './group-oils/group-oils.service';
 import { TypeOfOilEquipmentService } from './type-of-oil-equiment/type-of-oil-equiment.service';
 import { ConsumptionEquipmentService } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
 import { BunkerOilToEquipmentService } from './bunker-oil-to-equipment/bunker-oil-to-equipment.service';
+import { Mapping } from '../voyages/voyages.controller';
 
 @Controller('oils')
 export class OilsController {
@@ -25,50 +26,6 @@ export class OilsController {
         private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
         private readonly _BunkerOilToEquipmentService: BunkerOilToEquipmentService,
     ) { }
-
-
-    @Get (':id')
-    async Get(@Param('id') id): Promise<any> {
-
-        // Inicio una promesa Dummy.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
-
-                // Validamos que los datos recibidos sean los correctos.
-                if (Number(id)) {
-                    let userId = Number(id);
-                    return this._OilsService.Get(userId);
-                } else {
-                    // caso contrario retornamos un error
-                    throw 'MISSING_FIELS';
-                }
-
-            }
-        ).then(
-            (resultGet: OilEntity) => {
-
-                // retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: resultGet
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
-        );
-    }
 
     @Get()
     Gets(@Headers() headers, @Query() oilEntity: OilEntity): Promise<any> {
@@ -116,6 +73,159 @@ export class OilsController {
                 const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
 
                 // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
+    @Get('loadModuleOils')
+    GetsDataServer(@Headers() headers, @Query() oilEntity: OilEntity): Promise<any> {
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        // lista de la data del aplicativo control de Aceite
+        let listOils : OilEntity[] = [];
+        let listGroups : GroupOilEntity[] = [];
+        let listTypeOfOilEquipment : TypeOfOilEquipmentEntity[] = [];
+        let listConsumptionEquipment : ConsumptionEquipmentEntity[] = [];
+        let listBunkerOilToEquipment : BunkerOilToEquipmentEntity[] = []; 
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then((resultDummy: Boolean) => {
+                // Validamos que los datos sean los necesarios.
+                if (oilEntity) {
+
+                    oilEntity.userId = Number(oilEntity.userId);
+                    return true;
+
+                } else throw new Error('MISSING_FIELS2222');
+
+            }
+        ).then(
+            (resultValidate: Boolean) => {
+                // Validamos que el userId sea el mismo que el del sailingAnality
+                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                     // Nose hace nada
+                } else if (oilEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+
+                let oilEntityFilter:OilEntity = <any>{};
+                oilEntityFilter.userId = oilEntity.userId;
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._OilsService.Gets(oilEntityFilter);
+            }
+        ).then(
+            (Oils: OilEntity[]) => {
+                listOils = Oils;
+                
+                let groupOilEntity:GroupOilEntity = <any>{};
+                groupOilEntity.userId = oilEntity.userId;
+
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._GroupOilEntityService.Gets(groupOilEntity);
+            }
+        ).then(
+            (GroupsOilEntity: GroupOilEntity[]) => {
+                listGroups = GroupsOilEntity;
+
+                let typeOfOilEquipmentEntity:TypeOfOilEquipmentEntity = <any>{};
+                typeOfOilEquipmentEntity.userId = oilEntity.userId;
+
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._TypeOfOilEquipmentService.Gets(typeOfOilEquipmentEntity);
+            }
+        ).then(
+            (TypesOfOilEquipmentEntity: TypeOfOilEquipmentEntity[]) => {
+                listTypeOfOilEquipment= TypesOfOilEquipmentEntity;
+
+                let consumptionEquipmentEntity:ConsumptionEquipmentEntity =  <any>{};
+                consumptionEquipmentEntity.userId = oilEntity.userId;
+
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._ConsumptionEquipmentService.Gets(consumptionEquipmentEntity);
+            }
+        ).then(
+            (ConsumptionsEquipmentEntity: ConsumptionEquipmentEntity[]) => {
+                listConsumptionEquipment= ConsumptionsEquipmentEntity;
+
+
+                let bunkersOilToEquipmentEntity:BunkerOilToEquipmentEntity =  <any>{};
+                bunkersOilToEquipmentEntity.userId = oilEntity.userId;
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._BunkerOilToEquipmentService.Gets(bunkersOilToEquipmentEntity);
+            }
+        ).then(
+            (BunkersOilToEquipmentEntity: BunkerOilToEquipmentEntity[]) => {
+                listBunkerOilToEquipment = BunkersOilToEquipmentEntity;
+
+                // Retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: {
+                        listOils:listOils,
+                        listGroups:listGroups,
+                        listTypeOfOilEquipment:listTypeOfOilEquipment,
+                        listConsumptionEquipment:listConsumptionEquipment,
+                        listBunkerOilToEquipment:listBunkerOilToEquipment
+                    }
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // Caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
+    @Get (':id')
+    async Get(@Param('id') id): Promise<any> {
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+
+                // Validamos que los datos recibidos sean los correctos.
+                if (Number(id)) {
+                    let userId = Number(id);
+                    return this._OilsService.Get(userId);
+                } else {
+                    // caso contrario retornamos un error
+                    throw 'MISSING_FIELS';
+                }
+
+            }
+        ).then(
+            (resultGet: OilEntity) => {
+
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: resultGet
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // caso contrario retornamos un error
                 throw new HttpException({
                     status: HttpStatus.ACCEPTED,
                     error: clientMsg,
@@ -175,7 +285,7 @@ export class OilsController {
                     message: errorMsg,
                 }, HttpStatus.ACCEPTED);
             }
-        );;
+        );
     }
 
     @Put(':id/update')
@@ -321,151 +431,67 @@ export class OilsController {
 
     }
 
-    @Get('dataServer')
-    GetsDataServer(@Headers() headers, @Query() oilEntity: OilEntity): Promise<any> {
+    @Post('saveModuleOils')
+    async SaveDataLubricante(@Headers() headers, @Body() saveDateOils: SaveDateOils): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
         let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // lista de la data del aplicativo control de Aceite
-        let listOils : OilEntity[] = [];
-        let listGroups : GroupOilEntity[] = [];
-        let listTypeOfOilEquipment : TypeOfOilEquipmentEntity[] = [];
-        let listConsumptionEquipment : ConsumptionEquipmentEntity[] = [];
-        let listBunkerOilToEquipment : BunkerOilToEquipmentEntity[] = []; 
-
-        // Inicio una promesa Dummy.
-        return DummyPromise().then((resultDummy: Boolean) => {
-                // Validamos que los datos sean los necesarios.
-                if (oilEntity) {
-
-                    oilEntity.userId = Number(oilEntity.userId);
-                    return true;
-
-                } else throw new Error('MISSING_FIELS');
-
-            }
-        ).then(
-            (resultValidate: Boolean) => {
-                // Validamos que el userId sea el mismo que el del sailingAnality
-                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                     // Nose hace nada
-                } else if (oilEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
-
-                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._OilsService.Gets(oilEntity);
-            }
-        ).then(
-            (Oils: OilEntity[]) => {
-                listOils = Oils;
-
-                
-                let groupOilEntity:GroupOilEntity = <any>{};
-                groupOilEntity.id = groupOilEntity.id;
-                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._GroupOilEntityService.Gets(groupOilEntity);
-            }
-        ).then(
-            (GroupsOilEntity: GroupOilEntity[]) => {
-                listGroups = GroupsOilEntity;
-
-
-                let typeOfOilEquipmentEntity:TypeOfOilEquipmentEntity = <any>{};
-                typeOfOilEquipmentEntity.id = oilEntity.id;
-                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._TypeOfOilEquipmentService.Gets(typeOfOilEquipmentEntity);
-            }
-        ).then(
-            (TypesOfOilEquipmentEntity: TypeOfOilEquipmentEntity[]) => {
-                listTypeOfOilEquipment= TypesOfOilEquipmentEntity;
-
-                let consumptionEquipmentEntity:ConsumptionEquipmentEntity =  <any>{};
-                consumptionEquipmentEntity.id = oilEntity.id;
-                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._ConsumptionEquipmentService.Gets(consumptionEquipmentEntity);
-            }
-        ).then(
-            (ConsumptionsEquipmentEntity: ConsumptionEquipmentEntity[]) => {
-                listConsumptionEquipment= ConsumptionsEquipmentEntity;
-
-
-                let bunkersOilToEquipmentEntity:BunkerOilToEquipmentEntity =  <any>{};
-                bunkersOilToEquipmentEntity.id = oilEntity.id;
-                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._BunkerOilToEquipmentService.Gets(bunkersOilToEquipmentEntity);
-            }
-        ).then(
-            (BunkersOilToEquipmentEntity: BunkerOilToEquipmentEntity[]) => {
-                listBunkerOilToEquipment = BunkersOilToEquipmentEntity;
-
-                // Retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: {
-                        listOils:listOils,
-                        listGroups:listGroups,
-                        listTypeOfOilEquipment:listTypeOfOilEquipment,
-                        
-                    }
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
-        );
-    }
-
-    @Post('saveLubricante')
-    SaveDataLubricante(@Headers() headers, @Body() oilEntity: any): Promise<any> {
-
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
-
+        // Mapping de Id del server con el id del cliente
+        let mappingGroupOils: Mapping[] = [];
+        let mappingTypeOfOilEquipment: Mapping[] = [];
+        let mappingConsumptionEquipment: Mapping[] = [];
+        let mappingOil: Mapping[] = [];
+        
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
-                if (oilEntity) {
-                    console.log('\n\n\n\n\n\----------------------------------------------\n');
-                    console.log('----------------------------------------------\n');
-                    console.log('----------------------------------------------\n');
-                    console.log('----------------------------------------------\n');
-                    console.log('----------------------------------------------\n\n\n\n\n');
-
-                    console.log(oilEntity)
-                                        
-                    console.log('\n\n\n\n\n\n----------------------------------------------\n');
-                    console.log('----------------------------------------------\n');
-                    console.log('----------------------------------------------\n');
-                    console.log('----------------------------------------------\n');
-                    console.log('----------------------------------------------\n');
-
-
+                if (saveDateOils) {
                     // Ejecutamos la funcion que registra en bd.
-                    return true;
+                    return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
                 }
                 else throw 'MISSING_FIELS';
             }
         ).then(
-            (resultCreate: boolean) => {
+            (resultMappingGroupOils: Mapping[]) => {
+                mappingGroupOils = resultMappingGroupOils;
+                return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+            }
+        ).then(
+            (resultMappingTypeOfOilEquipment: Mapping[]) => {
+                mappingTypeOfOilEquipment = resultMappingTypeOfOilEquipment;
+                return this._ConsumptionEquipmentService.SaveList(mappingGroupOils, saveDateOils.listConsumptionEquipment);
+            }
+        ).then(
+            (resultConsumptionEquipment: Mapping[]) => {
 
+                mappingConsumptionEquipment = resultConsumptionEquipment;
+
+                return this._OilsService.SaveList(saveDateOils.listOil);
+          
+            }
+        ).then(
+            (mappingOil: Mapping[]) => {
+
+                mappingOil = mappingOil; 
+
+                return this._BunkerOilToEquipmentService.SaveList(mappingOil,mappingTypeOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+          
+
+                 
+            }
+        ).then(
+            (resultConsumptionEquipment: Mapping[]) => {
+
+                mappingConsumptionEquipment = resultConsumptionEquipment;
+
+                
                 // retornamos una Respuesta exitosa.
                 return {
                     status: HttpStatus.OK,
                     message: 'OK',
-                    data: resultCreate
+                    data: true
                 };
             }
         ).catch(
