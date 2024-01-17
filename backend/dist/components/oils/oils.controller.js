@@ -274,22 +274,47 @@ let OilsController = class OilsController {
         console.log('--------------------------');
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (saveDateOils) {
-                return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
+                if (saveDateOils.listGroups) {
+                    return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
+                }
+                else {
+                    return [];
+                }
             }
             else
                 throw 'MISSING_FIELS';
         }).then((resultMappingGroupOils) => {
             mappingGroupOils = resultMappingGroupOils;
-            return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+            if (saveDateOils.listTypeOfOilEquipment) {
+                return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+            }
+            else {
+                return [];
+            }
         }).then((resultMappingTypeOfOilEquipment) => {
             mappingTypesOfOilEquipment = resultMappingTypeOfOilEquipment;
-            return this._ConsumptionEquipmentService.SaveList(mappingGroupOils, saveDateOils.listConsumptionEquipment);
+            if (saveDateOils.listConsumptionEquipment) {
+                return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, saveDateOils.listConsumptionEquipment);
+            }
+            else {
+                return [];
+            }
         }).then((resultConsumptionEquipment) => {
             mappingConsumptionsEquipment = resultConsumptionEquipment;
-            return this._OilsService.SaveList(saveDateOils.listOils);
+            if (saveDateOils.listOils) {
+                return this._OilsService.SaveList(saveDateOils.listOils);
+            }
+            else {
+                return [];
+            }
         }).then((resultMappingOil) => {
             mappingOils = resultMappingOil;
-            return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+            if (saveDateOils.listBunkerOilToEquipment) {
+                return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+            }
+            else {
+                return [];
+            }
         }).then((resultBunkerOilToEquipment) => {
             mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
             return {

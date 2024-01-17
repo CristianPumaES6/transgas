@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.URL_Server = void 0;
 exports.URL_Server = {
-    front: 'http://localhost:3001',
-    back: 'http://localhost:3000',
+    front: 'https://occard.site',
+    back: 'https://occard.site',
     version: 'v2',
     puertoSocket: 4000,
     bd: 'SQLITE',
