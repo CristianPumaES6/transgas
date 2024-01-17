@@ -9,6 +9,7 @@ export const URL_Server = {
 };
 */
 
+
 /* 
 // SERVIDOR LINUX - FRONT Firebase
  export const URL_Server = {
@@ -20,7 +21,7 @@ export const URL_Server = {
 };
 */ 
 
-
+/*
 // CONFIGURACION PARA DESARROLLO local
 export const URL_Server = {
     front: 'http://localhost:3001',
@@ -29,6 +30,7 @@ export const URL_Server = {
     puertoSocket: 4000,
     bd: 'SQLITE', // MSSQL,   SQLITE,   MYSQL
 };
+*/
 
 
 // CONFIGURACION PARA DESARROLLO SERVER
@@ -42,6 +44,7 @@ export const URL_Server = {
 };
 */
 
+
 /*
 // SERVIDOR LINUX - FRONT Firebase
 export const URL_Server = {
@@ -52,3 +55,14 @@ export const URL_Server = {
     bd: 'SQLITE', // MSSQL, MYSQL
 };
 */
+
+
+// SERVIDOR LINUX - FRONT LINUX
+export const URL_Server = {
+    front: 'https://occard.site',
+    back: 'https://occard.site',
+    version: 'v2',
+    puertoSocket: 4000,
+    bd: 'SQLITE', // MSSQL, MYSQL
+};
+

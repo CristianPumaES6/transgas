@@ -9,6 +9,7 @@ export interface EnvConfig {
     URL_EMPRESA?: string;
 }
 
+
 /*
 // CONFIGURACION PARA AMBIENTES DE WINDOWS
 export const EnvConfig: EnvConfig = {
@@ -31,31 +32,40 @@ export const EnvConfig: EnvConfig = {
 */
 
 
- 
 // SERVIDOR LINUX - front Firebase
-/* export const EnvConfig: EnvConfig = {
+/*
+export const EnvConfig: EnvConfig = {
     API: 'https://transgas.lowcodetool.com',
     ENV: '',
     VERSION: 'v1.9M',
     SOCKET: 'https://socket-transgas.lowcodetool.com',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-};  
+};
 */
 
 
+//SERVIDOR LINUX - front digitalocean
+export const EnvConfig: EnvConfig = {
+    API: 'https://occard.site',
+    ENV: '',
+    VERSION: 'v1.9M',
+    SOCKET: 'https://socket-transgas.occard.site',
+    URL_EMPRESA: 'https://www.transgas.com.pe/'
+};
+
 
 // CONFIGURACION PARA test DESARROLLO-server
-/* export const EnvConfig: EnvConfig = {
-    API: 'https://transgas.occard.site',
+/*
+export const EnvConfig: EnvConfig = {
+    API: 'https://occard.site',
     ENV: '',
     VERSION: 'v2',
     SOCKET: 'https://socket-transgas.occard.site',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-}; */
+};
+*/
 
-
-
- 
+/*
 //CONFIG DEVELOPER LOCAL
 export const EnvConfig: EnvConfig = {
     API: 'http://localhost:3000',
@@ -63,5 +73,5 @@ export const EnvConfig: EnvConfig = {
     VERSION: 'v2',
     SOCKET: 'ws://localhost:4000',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-}; 
- 
+};
+*/
