@@ -100,7 +100,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 newBunkerOilToEquipmentEntity.bunker = addTypeOfOilEquipment.bunker;
                 newBunkerOilToEquipmentEntity.comment = addTypeOfOilEquipment.comment;
                 newBunkerOilToEquipmentEntity.datetime = addTypeOfOilEquipment.datetime;
-                newBunkerOilToEquipmentEntity.userIdCreated = addTypeOfOilEquipment.id;
+                newBunkerOilToEquipmentEntity.userIdCreated = addTypeOfOilEquipment.userIdCreated;
                 newBunkerOilToEquipmentEntity.dateCreated = moment_assets_1.GetDate();
                 delete newBunkerOilToEquipmentEntity.userIdUpdated;
                 delete newBunkerOilToEquipmentEntity.dateUpdated;
@@ -135,7 +135,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 newBunkerOilToEquipmentEntity.bunker = bunkerOilToEquipment.bunker;
                 newBunkerOilToEquipmentEntity.comment = bunkerOilToEquipment.comment;
                 newBunkerOilToEquipmentEntity.datetime = bunkerOilToEquipment.datetime;
-                newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.id;
+                newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.userIdCreated;
                 newBunkerOilToEquipmentEntity.dateCreated = bunkerOilToEquipment.dateCreated;
                 newBunkerOilToEquipmentEntity.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
                 newBunkerOilToEquipmentEntity.dateUpdated = bunkerOilToEquipment.dateUpdated;
@@ -169,7 +169,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 newBunkerOilToEquipmentEntity.bunker = bunkerOilToEquipment.bunker;
                 newBunkerOilToEquipmentEntity.comment = bunkerOilToEquipment.comment;
                 newBunkerOilToEquipmentEntity.datetime = bunkerOilToEquipment.datetime;
-                newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.id;
+                newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.userIdCreated;
                 newBunkerOilToEquipmentEntity.dateCreated = bunkerOilToEquipment.dateCreated;
                 newBunkerOilToEquipmentEntity.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
                 newBunkerOilToEquipmentEntity.dateUpdated = bunkerOilToEquipment.dateUpdated;

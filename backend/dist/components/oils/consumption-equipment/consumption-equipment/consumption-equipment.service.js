@@ -98,7 +98,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 if (searchMappingConsumptionEquipmentEntity) {
                     newConsumptionEquipmentEntity.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
                 }
-                newConsumptionEquipmentEntity.userIdCreated = consumptionEquipment.id;
+                newConsumptionEquipmentEntity.userIdCreated = consumptionEquipment.userIdCreated;
                 newConsumptionEquipmentEntity.dateCreated = moment_assets_1.GetDate();
                 delete newConsumptionEquipmentEntity.userIdUpdated;
                 delete newConsumptionEquipmentEntity.dateUpdated;
@@ -129,7 +129,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 if (searchMappingConsumptionEquipmentEntity) {
                     typeOfOilEquipment.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
                 }
-                typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.id;
+                typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.userIdCreated;
                 typeOfOilEquipment.dateCreated = updateTypeOfOilEquipment.dateCreated;
                 typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
@@ -159,7 +159,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 if (searchMappingConsumptionEquipmentEntity) {
                     typeOfOilEquipment.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
                 }
-                typeOfOilEquipment.userIdCreated = consumptionEquipment.id;
+                typeOfOilEquipment.userIdCreated = consumptionEquipment.userIdCreated;
                 typeOfOilEquipment.dateCreated = consumptionEquipment.dateCreated;
                 typeOfOilEquipment.userIdUpdated = consumptionEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = consumptionEquipment.dateUpdated;

@@ -88,7 +88,7 @@ let GroupOilsService = class GroupOilsService {
                 delete newGroupOilEntity.id;
                 newGroupOilEntity.userId = addGroupOil.userId;
                 newGroupOilEntity.label = addGroupOil.label;
-                newGroupOilEntity.userIdCreated = addGroupOil.id;
+                newGroupOilEntity.userIdCreated = addGroupOil.userIdCreated;
                 newGroupOilEntity.dateCreated = moment_assets_1.GetDate();
                 delete newGroupOilEntity.userIdUpdated;
                 delete newGroupOilEntity.dateUpdated;
@@ -111,7 +111,7 @@ let GroupOilsService = class GroupOilsService {
                 updateGroupOilEntity.id = updateGroupOil.id;
                 updateGroupOilEntity.userId = updateGroupOil.userId;
                 updateGroupOilEntity.label = updateGroupOil.label;
-                updateGroupOilEntity.userIdCreated = updateGroupOil.id;
+                updateGroupOilEntity.userIdCreated = updateGroupOil.userIdCreated;
                 updateGroupOilEntity.dateCreated = updateGroupOil.dateCreated;
                 updateGroupOilEntity.userIdUpdated = updateGroupOil.userIdUpdated;
                 updateGroupOilEntity.dateUpdated = updateGroupOil.dateUpdated;
@@ -133,7 +133,7 @@ let GroupOilsService = class GroupOilsService {
                 deleteGroupOilEntity.id = deleteGroupOil.id;
                 deleteGroupOilEntity.userId = deleteGroupOil.userId;
                 deleteGroupOilEntity.label = deleteGroupOil.label;
-                deleteGroupOilEntity.userIdCreated = deleteGroupOil.id;
+                deleteGroupOilEntity.userIdCreated = deleteGroupOil.userIdCreated;
                 deleteGroupOilEntity.dateCreated = deleteGroupOil.dateCreated;
                 deleteGroupOilEntity.userIdUpdated = deleteGroupOil.userIdUpdated;
                 deleteGroupOilEntity.dateUpdated = deleteGroupOil.dateUpdated;

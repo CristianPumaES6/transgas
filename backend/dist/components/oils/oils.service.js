@@ -152,7 +152,7 @@ let OilsService = class OilsService {
                 delete newOil.id;
                 newOil.userId = oil.userId;
                 newOil.name = oil.name;
-                newOil.userIdCreated = oil.id;
+                newOil.userIdCreated = oil.userIdCreated;
                 newOil.dateCreated = moment_assets_1.GetDate();
                 delete newOil.userIdUpdated;
                 delete newOil.dateUpdated;
@@ -175,7 +175,7 @@ let OilsService = class OilsService {
                 updatedOil.id = oil.id;
                 updatedOil.userId = oil.userId;
                 updatedOil.name = oil.name;
-                updatedOil.userIdCreated = oil.id;
+                updatedOil.userIdCreated = oil.userIdCreated;
                 updatedOil.dateCreated = oil.dateCreated;
                 updatedOil.userIdUpdated = oil.userIdUpdated;
                 updatedOil.dateUpdated = oil.dateUpdated;
@@ -197,7 +197,7 @@ let OilsService = class OilsService {
                 deleteOil.id = oil.id;
                 deleteOil.userId = oil.userId;
                 deleteOil.name = oil.name;
-                deleteOil.userIdCreated = oil.id;
+                deleteOil.userIdCreated = oil.userIdCreated;
                 deleteOil.dateCreated = oil.dateCreated;
                 deleteOil.userIdUpdated = oil.userIdUpdated;
                 deleteOil.dateUpdated = oil.dateUpdated;

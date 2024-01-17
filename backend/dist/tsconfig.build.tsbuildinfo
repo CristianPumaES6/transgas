@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "54e25a11bf066b91b8c8914331db9edca842c7a531ae4bdcd5810f58d0dcbde9",
+        "version": "371def21a7af25be9b42efb4f513f5507260756367366c690dc1ca22b31cbbce",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3867,7 +3867,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.service.ts": {
-        "version": "706d75b975c12cf2e57d4d61b809e61a77d8d9fda26df9127933b45478ecbab9",
+        "version": "bfd9b69905b998595e688ae164d6acb0bcdc9ef68e3c0bc071d38a0a9f8380f5",
         "signature": "a4e90a3c2129db1859b498856f81ad29fda53c584844725b867a4951eaec64f4",
         "affectsGlobalScope": false
       },
@@ -3877,22 +3877,22 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/group-oils/group-oils.service.ts": {
-        "version": "32215dd48b84ca2f212420c1c0d791b3a86fa070ed26bb94e4eb381e0e11def6",
+        "version": "5b9ab511323b97cd3be96b9d9ac93e5fd8e5388cdd41e4d0fe585db2f4cc3651",
         "signature": "a9a03cf862dee114543fa1100d1d1180f65f7928f639e68cf73332945c8eb7f6",
         "affectsGlobalScope": false
       },
       "../src/components/oils/type-of-oil-equiment/type-of-oil-equiment.service.ts": {
-        "version": "9c261698e6611bc09d4fdeb8074b9b0f31dc833d0fa81a1c09d2d905bb409326",
+        "version": "dcc77623244920fd35fff63e2f57d2501962659472d6ed8c84ab9740d595425c",
         "signature": "a4d5a384d4323aa6cb4194ebe306810b53594a54e613e9260ac80aca09c927dc",
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "0255f9a6c88b327348f18aa72b69fba1e4592902a29569e4dd710494af3b5938",
+        "version": "684ea4f861b7e88a4141313e8ddf702972f5193498d2c4c0abaa761f1d280a42",
         "signature": "2238878e00d3378357d36b1db2e2e1c177af688acc3eeb6ab815449076fedcb9",
         "affectsGlobalScope": false
       },
       "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts": {
-        "version": "b96e1b6532ecba936d38c8ddd702fd39fb8d25b7e354abaf38d3e5290874db31",
+        "version": "53dfb64f2430fa574e53b09a7fab9cf597ccee79b87de202202ee383716d7b68",
         "signature": "3cb4f10ad6228da617d49bfb49806635d21140ea427718594f170cdf0a81907a",
         "affectsGlobalScope": false
       },

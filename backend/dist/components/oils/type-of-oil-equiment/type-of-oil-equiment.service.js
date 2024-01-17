@@ -93,7 +93,7 @@ let TypeOfOilEquipmentService = class TypeOfOilEquipmentService {
                 if (searchMappingGroupOils) {
                     newTypeOfOilEquipmentEntity.entityGroupId = searchMappingGroupOils.value;
                 }
-                newTypeOfOilEquipmentEntity.userIdCreated = addTypeOfOilEquipment.id;
+                newTypeOfOilEquipmentEntity.userIdCreated = addTypeOfOilEquipment.userIdCreated;
                 newTypeOfOilEquipmentEntity.dateCreated = moment_assets_1.GetDate();
                 delete newTypeOfOilEquipmentEntity.userIdUpdated;
                 delete newTypeOfOilEquipmentEntity.dateUpdated;
@@ -121,7 +121,7 @@ let TypeOfOilEquipmentService = class TypeOfOilEquipmentService {
                 if (searchMappingGroupOils) {
                     typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value;
                 }
-                typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.id;
+                typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.userIdCreated;
                 typeOfOilEquipment.dateCreated = updateTypeOfOilEquipment.dateCreated;
                 typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
@@ -148,7 +148,7 @@ let TypeOfOilEquipmentService = class TypeOfOilEquipmentService {
                 if (searchMappingGroupOils) {
                     typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value;
                 }
-                typeOfOilEquipment.userIdCreated = deleteTypeOfOilEquipment.id;
+                typeOfOilEquipment.userIdCreated = deleteTypeOfOilEquipment.userIdCreated;
                 typeOfOilEquipment.dateCreated = deleteTypeOfOilEquipment.dateCreated;
                 typeOfOilEquipment.userIdUpdated = deleteTypeOfOilEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = deleteTypeOfOilEquipment.dateUpdated;
