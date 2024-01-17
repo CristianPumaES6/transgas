@@ -21,7 +21,7 @@ export const URL_Server = {
 };
 */ 
 
-/*
+
 // CONFIGURACION PARA DESARROLLO local
 export const URL_Server = {
     front: 'http://localhost:3001',
@@ -30,7 +30,7 @@ export const URL_Server = {
     puertoSocket: 4000,
     bd: 'SQLITE', // MSSQL,   SQLITE,   MYSQL
 };
-*/
+
 
 
 // CONFIGURACION PARA DESARROLLO SERVER
@@ -56,7 +56,7 @@ export const URL_Server = {
 };
 */
 
-
+/*
 // SERVIDOR LINUX - FRONT LINUX
 export const URL_Server = {
     front: 'https://occard.site',
@@ -65,4 +65,4 @@ export const URL_Server = {
     puertoSocket: 4000,
     bd: 'SQLITE', // MSSQL, MYSQL
 };
-
+*/
