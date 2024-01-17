@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "48e2f2723f8f6b82a40f11b775021405a4b07b19dbe79bebcaa00e1d7ada689f",
+        "version": "e3b3d7ebbfa0b7dbb91ff1fdb5aba7c98c6b9535cdde311c1a993f7452217c44",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3857,7 +3857,7 @@
         "affectsGlobalScope": false
       },
       "../src/models/buker-oil-to-equipment.entity.ts": {
-        "version": "635285227ecc600774514a1e913f8b09c34b070102ff5c9412d66148f0a97f3c",
+        "version": "3f0ccd78ad2c5e37ee0e66a53b9d68d5e2133efee06cb104c3e26a899827437a",
         "signature": "56b16611bbceaa608e2d29ee7952283c6a6387af2c44be0077838cd7761716df",
         "affectsGlobalScope": false
       },
@@ -3897,7 +3897,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "4085b8a2c4f6abba759221e9b7dd2dede7f72322b084e91a7ec7d086e6030fb2",
+        "version": "ae25b887525cabe69ecbb1287fad06c1d01232737d88888f0c2aeb2ebd7d0abe",
         "signature": "ab1830d6cdbdaed202d841999a40dafe803f3817e6daa609e9d45a2b9f37c0cb",
         "affectsGlobalScope": false
       },

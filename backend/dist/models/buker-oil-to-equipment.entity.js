@@ -49,7 +49,7 @@ __decorate([
     __metadata("design:type", Number)
 ], BunkerOilToEquipmentEntity.prototype, "bunker", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
 ], BunkerOilToEquipmentEntity.prototype, "comment", void 0);
 __decorate([
