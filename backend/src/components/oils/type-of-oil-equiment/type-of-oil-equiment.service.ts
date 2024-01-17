@@ -121,7 +121,7 @@ export class TypeOfOilEquipmentService {
             if (searchMappingGroupOils) { newTypeOfOilEquipmentEntity.entityGroupId = searchMappingGroupOils.value }
 
             // Auditoria.
-            newTypeOfOilEquipmentEntity.userIdCreated = addTypeOfOilEquipment.id;
+            newTypeOfOilEquipmentEntity.userIdCreated = addTypeOfOilEquipment.userIdCreated;
             newTypeOfOilEquipmentEntity.dateCreated = GetDate();
             delete newTypeOfOilEquipmentEntity.userIdUpdated;
             delete newTypeOfOilEquipmentEntity.dateUpdated;
@@ -146,7 +146,7 @@ export class TypeOfOilEquipmentService {
             if (searchMappingGroupOils) { typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value }
 
             // Auditoria.
-            typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.id;
+            typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.userIdCreated;
             typeOfOilEquipment.dateCreated = updateTypeOfOilEquipment.dateCreated;
             typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
             typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
@@ -170,7 +170,7 @@ export class TypeOfOilEquipmentService {
             if (searchMappingGroupOils) { typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value }
 
             // Auditoria.
-            typeOfOilEquipment.userIdCreated = deleteTypeOfOilEquipment.id;
+            typeOfOilEquipment.userIdCreated = deleteTypeOfOilEquipment.userIdCreated;
             typeOfOilEquipment.dateCreated = deleteTypeOfOilEquipment.dateCreated;
             typeOfOilEquipment.userIdUpdated = deleteTypeOfOilEquipment.userIdUpdated;
             typeOfOilEquipment.dateUpdated = deleteTypeOfOilEquipment.dateUpdated;

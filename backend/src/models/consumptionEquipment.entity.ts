@@ -14,7 +14,7 @@ export class ConsumptionEquipmentEntity {
     amount: number;
     @Column()
     hourConsumption: number;
-    @Column()
+    @Column({ nullable: true })
     observation: string;
     @Column({ nullable: true })
     entityEquipmentId: number;

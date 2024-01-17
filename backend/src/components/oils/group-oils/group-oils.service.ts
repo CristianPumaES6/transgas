@@ -118,7 +118,7 @@ export class GroupOilsService {
             newGroupOilEntity.label = addGroupOil.label;
 
             // Auditoria
-            newGroupOilEntity.userIdCreated = addGroupOil.id;
+            newGroupOilEntity.userIdCreated = addGroupOil.userIdCreated;
             newGroupOilEntity.dateCreated = GetDate();
             delete newGroupOilEntity.userIdUpdated;
             delete newGroupOilEntity.dateUpdated;
@@ -139,7 +139,7 @@ export class GroupOilsService {
             updateGroupOilEntity.label = updateGroupOil.label;
 
             // Auditoria
-            updateGroupOilEntity.userIdCreated = updateGroupOil.id;
+            updateGroupOilEntity.userIdCreated = updateGroupOil.userIdCreated;
             updateGroupOilEntity.dateCreated = updateGroupOil.dateCreated;
             updateGroupOilEntity.userIdUpdated= updateGroupOil.userIdUpdated;
             updateGroupOilEntity.dateUpdated = updateGroupOil.dateUpdated;
@@ -156,7 +156,7 @@ export class GroupOilsService {
             deleteGroupOilEntity.label = deleteGroupOil.label;
 
             // Auditoria.
-            deleteGroupOilEntity.userIdCreated = deleteGroupOil.id;
+            deleteGroupOilEntity.userIdCreated = deleteGroupOil.userIdCreated;
             deleteGroupOilEntity.dateCreated = deleteGroupOil.dateCreated;
             deleteGroupOilEntity.userIdUpdated= deleteGroupOil.userIdUpdated;
             deleteGroupOilEntity.dateUpdated = deleteGroupOil.dateUpdated;

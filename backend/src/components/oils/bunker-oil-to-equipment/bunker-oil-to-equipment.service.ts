@@ -131,7 +131,7 @@ export class BunkerOilToEquipmentService {
             newBunkerOilToEquipmentEntity.datetime = addTypeOfOilEquipment.datetime;
 
             // Auditoria.
-            newBunkerOilToEquipmentEntity.userIdCreated = addTypeOfOilEquipment.id;
+            newBunkerOilToEquipmentEntity.userIdCreated = addTypeOfOilEquipment.userIdCreated;
             newBunkerOilToEquipmentEntity.dateCreated = GetDate();
             delete newBunkerOilToEquipmentEntity.userIdUpdated;
             delete newBunkerOilToEquipmentEntity.dateUpdated;
@@ -163,7 +163,7 @@ export class BunkerOilToEquipmentService {
             newBunkerOilToEquipmentEntity.datetime = bunkerOilToEquipment.datetime;
 
             // Auditoria.
-            newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.id;
+            newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.userIdCreated;
             newBunkerOilToEquipmentEntity.dateCreated = bunkerOilToEquipment.dateCreated;
             newBunkerOilToEquipmentEntity.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
             newBunkerOilToEquipmentEntity.dateUpdated = bunkerOilToEquipment.dateUpdated;
@@ -191,7 +191,7 @@ export class BunkerOilToEquipmentService {
             newBunkerOilToEquipmentEntity.datetime = bunkerOilToEquipment.datetime;
 
             // Auditoria.
-            newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.id;
+            newBunkerOilToEquipmentEntity.userIdCreated = bunkerOilToEquipment.userIdCreated;
             newBunkerOilToEquipmentEntity.dateCreated = bunkerOilToEquipment.dateCreated;
             newBunkerOilToEquipmentEntity.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
             newBunkerOilToEquipmentEntity.dateUpdated = bunkerOilToEquipment.dateUpdated;

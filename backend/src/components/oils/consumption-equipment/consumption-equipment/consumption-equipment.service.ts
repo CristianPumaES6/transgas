@@ -134,7 +134,7 @@ export class ConsumptionEquipmentService {
             if (searchMappingConsumptionEquipmentEntity) { newConsumptionEquipmentEntity.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value }
 
             // Auditoria.
-            newConsumptionEquipmentEntity.userIdCreated = consumptionEquipment.id;
+            newConsumptionEquipmentEntity.userIdCreated = consumptionEquipment.userIdCreated;
             newConsumptionEquipmentEntity.dateCreated = GetDate();
             delete newConsumptionEquipmentEntity.userIdUpdated;
             delete newConsumptionEquipmentEntity.dateUpdated;
@@ -164,7 +164,7 @@ export class ConsumptionEquipmentService {
 
 
             // Auditoria.
-            typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.id;
+            typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.userIdCreated;
             typeOfOilEquipment.dateCreated = updateTypeOfOilEquipment.dateCreated;
             typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
             typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
@@ -190,7 +190,7 @@ export class ConsumptionEquipmentService {
 
 
             // Auditoria.
-            typeOfOilEquipment.userIdCreated = consumptionEquipment.id;
+            typeOfOilEquipment.userIdCreated = consumptionEquipment.userIdCreated;
             typeOfOilEquipment.dateCreated = consumptionEquipment.dateCreated;
             typeOfOilEquipment.userIdUpdated = consumptionEquipment.userIdUpdated;
             typeOfOilEquipment.dateUpdated = consumptionEquipment.dateUpdated;

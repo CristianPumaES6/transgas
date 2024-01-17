@@ -260,7 +260,7 @@ export class OilsService {
             newOil.name = oil.name;
 
             // Auditoria.
-            newOil.userIdCreated = oil.id;
+            newOil.userIdCreated = oil.userIdCreated;
             newOil.dateCreated = GetDate();
             delete newOil.userIdUpdated;
             delete newOil.dateUpdated;
@@ -282,7 +282,7 @@ export class OilsService {
             updatedOil.name = oil.name;
 
             // Auditoria.
-            updatedOil.userIdCreated = oil.id;
+            updatedOil.userIdCreated = oil.userIdCreated;
             updatedOil.dateCreated = oil.dateCreated;
             updatedOil.userIdUpdated= oil.userIdUpdated;
             updatedOil.dateUpdated = oil.dateUpdated;
@@ -300,7 +300,7 @@ export class OilsService {
             deleteOil.name = oil.name;
 
             // Auditoria.
-            deleteOil.userIdCreated = oil.id;
+            deleteOil.userIdCreated = oil.userIdCreated;
             deleteOil.dateCreated = oil.dateCreated;
             deleteOil.userIdUpdated= oil.userIdUpdated;
             deleteOil.dateUpdated = oil.dateUpdated;

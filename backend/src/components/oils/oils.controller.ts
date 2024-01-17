@@ -18,10 +18,10 @@ import { Mapping } from '../voyages/voyages.controller';
 @Controller('oils')
 export class OilsController {
 
-    
+
     constructor(
         private readonly _OilsService: OilsService,
-        private readonly _GroupOilEntityService: GroupOilsService ,
+        private readonly _GroupOilEntityService: GroupOilsService,
         private readonly _TypeOfOilEquipmentService: TypeOfOilEquipmentService,
         private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
         private readonly _BunkerOilToEquipmentService: BunkerOilToEquipmentService,
@@ -50,7 +50,7 @@ export class OilsController {
             (resultValidate: Boolean) => {
                 // Validamos que el userId sea el mismo que el del sailingAnality
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                     // Nose hace nada
+                    // Nose hace nada
                 } else if (oilEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
@@ -90,31 +90,31 @@ export class OilsController {
         let headerToken: UserEntity = JwtDecode(headers.authorization);
 
         // lista de la data del aplicativo control de Aceite
-        let listOils : OilEntity[] = [];
-        let listGroups : GroupOilEntity[] = [];
-        let listTypeOfOilEquipment : TypeOfOilEquipmentEntity[] = [];
-        let listConsumptionEquipment : ConsumptionEquipmentEntity[] = [];
-        let listBunkerOilToEquipment : BunkerOilToEquipmentEntity[] = []; 
+        let listOils: OilEntity[] = [];
+        let listGroups: GroupOilEntity[] = [];
+        let listTypeOfOilEquipment: TypeOfOilEquipmentEntity[] = [];
+        let listConsumptionEquipment: ConsumptionEquipmentEntity[] = [];
+        let listBunkerOilToEquipment: BunkerOilToEquipmentEntity[] = [];
 
         // Inicio una promesa Dummy.
         return DummyPromise().then((resultDummy: Boolean) => {
-                // Validamos que los datos sean los necesarios.
-                if (oilEntity) {
+            // Validamos que los datos sean los necesarios.
+            if (oilEntity) {
 
-                    oilEntity.userId = Number(oilEntity.userId);
-                    return true;
+                oilEntity.userId = Number(oilEntity.userId);
+                return true;
 
-                } else throw new Error('MISSING_FIELS2222');
+            } else throw new Error('MISSING_FIELS2222');
 
-            }
+        }
         ).then(
             (resultValidate: Boolean) => {
                 // Validamos que el userId sea el mismo que el del sailingAnality
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                     // Nose hace nada
+                    // Nose hace nada
                 } else if (oilEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
-                let oilEntityFilter:OilEntity = <any>{};
+                let oilEntityFilter: OilEntity = <any>{};
                 oilEntityFilter.userId = oilEntity.userId;
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
                 return this._OilsService.Gets(oilEntityFilter);
@@ -122,8 +122,8 @@ export class OilsController {
         ).then(
             (Oils: OilEntity[]) => {
                 listOils = Oils;
-                
-                let groupOilEntity:GroupOilEntity = <any>{};
+
+                let groupOilEntity: GroupOilEntity = <any>{};
                 groupOilEntity.userId = oilEntity.userId;
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
@@ -133,7 +133,7 @@ export class OilsController {
             (GroupsOilEntity: GroupOilEntity[]) => {
                 listGroups = GroupsOilEntity;
 
-                let typeOfOilEquipmentEntity:TypeOfOilEquipmentEntity = <any>{};
+                let typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity = <any>{};
                 typeOfOilEquipmentEntity.userId = oilEntity.userId;
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
@@ -141,9 +141,9 @@ export class OilsController {
             }
         ).then(
             (TypesOfOilEquipmentEntity: TypeOfOilEquipmentEntity[]) => {
-                listTypeOfOilEquipment= TypesOfOilEquipmentEntity;
+                listTypeOfOilEquipment = TypesOfOilEquipmentEntity;
 
-                let consumptionEquipmentEntity:ConsumptionEquipmentEntity =  <any>{};
+                let consumptionEquipmentEntity: ConsumptionEquipmentEntity = <any>{};
                 consumptionEquipmentEntity.userId = oilEntity.userId;
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
@@ -151,10 +151,10 @@ export class OilsController {
             }
         ).then(
             (ConsumptionsEquipmentEntity: ConsumptionEquipmentEntity[]) => {
-                listConsumptionEquipment= ConsumptionsEquipmentEntity;
+                listConsumptionEquipment = ConsumptionsEquipmentEntity;
 
 
-                let bunkersOilToEquipmentEntity:BunkerOilToEquipmentEntity =  <any>{};
+                let bunkersOilToEquipmentEntity: BunkerOilToEquipmentEntity = <any>{};
                 bunkersOilToEquipmentEntity.userId = oilEntity.userId;
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
                 return this._BunkerOilToEquipmentService.Gets(bunkersOilToEquipmentEntity);
@@ -168,11 +168,11 @@ export class OilsController {
                     status: HttpStatus.OK,
                     message: 'OK',
                     data: {
-                        listOils:listOils,
-                        listGroups:listGroups,
-                        listTypeOfOilEquipment:listTypeOfOilEquipment,
-                        listConsumptionEquipment:listConsumptionEquipment,
-                        listBunkerOilToEquipment:listBunkerOilToEquipment
+                        listOils: listOils,
+                        listGroups: listGroups,
+                        listTypeOfOilEquipment: listTypeOfOilEquipment,
+                        listConsumptionEquipment: listConsumptionEquipment,
+                        listBunkerOilToEquipment: listBunkerOilToEquipment
                     }
                 };
             }
@@ -192,7 +192,7 @@ export class OilsController {
         );
     }
 
-    @Get (':id')
+    @Get(':id')
     async Get(@Param('id') id): Promise<any> {
 
         // Inicio una promesa Dummy.
@@ -249,7 +249,7 @@ export class OilsController {
 
 
 
-                    delete oilEntity.id; 
+                    delete oilEntity.id;
                     // Auditoria.
                     oilEntity.userIdCreated = headerToken.id;
                     oilEntity.dateCreated = GetDate();
@@ -310,7 +310,7 @@ export class OilsController {
 
 
                     oilEntity.name = oilEntity.name || '';
-         
+
 
                     // Auditoria.
                     delete oilEntity.userIdCreated;
@@ -395,13 +395,13 @@ export class OilsController {
                 // 
 
 
-                
+
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                     // No se hace nada
                 } else if (Number(headerToken.id) !== Number(result.userId)) throw new Error('ERROR_USERID_FAIL');
 
 
-                
+
                 return this._OilsService.Delete(result, headerToken.id);
             }
         ).then(
@@ -460,36 +460,54 @@ export class OilsController {
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
                 if (saveDateOils) {
-                    // Ejecutamos la funcion que registra en bd.
-                    return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
+                    if (saveDateOils.listGroups) {
+                        // Ejecutamos la funcion que registra en bd.
+                        return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
+                    } else {
+                        return [];
+                    }
                 }
                 else throw 'MISSING_FIELS';
             }
         ).then(
             (resultMappingGroupOils: Mapping[]) => {
                 mappingGroupOils = resultMappingGroupOils;
-                return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+
+                if (saveDateOils.listTypeOfOilEquipment) {
+                    return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+                } else {
+                    return [];
+                }
             }
         ).then(
             (resultMappingTypeOfOilEquipment: Mapping[]) => {
                 mappingTypesOfOilEquipment = resultMappingTypeOfOilEquipment;
-                return this._ConsumptionEquipmentService.SaveList(mappingGroupOils, saveDateOils.listConsumptionEquipment);
+
+                if (saveDateOils.listConsumptionEquipment) {
+                    return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, saveDateOils.listConsumptionEquipment);
+                } else {
+                    return [];
+                }
             }
         ).then(
             (resultConsumptionEquipment: Mapping[]) => {
-
                 mappingConsumptionsEquipment = resultConsumptionEquipment;
 
-                return this._OilsService.SaveList(saveDateOils.listOils);
-          
+                if (saveDateOils.listOils) {
+                    return this._OilsService.SaveList(saveDateOils.listOils);
+                } else {
+                    return [];
+                }
             }
         ).then(
             (resultMappingOil: Mapping[]) => {
+                mappingOils = resultMappingOil;
 
-                mappingOils = resultMappingOil; 
-
-                return this._BunkerOilToEquipmentService.SaveList(mappingOils,mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
-
+                if (saveDateOils.listBunkerOilToEquipment) {
+                    return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+                } else {
+                    return [];
+                }
             }
         ).then(
             (resultBunkerOilToEquipment: Mapping[]) => {
@@ -502,11 +520,11 @@ export class OilsController {
                     status: HttpStatus.OK,
                     message: 'OK',
                     data: {
-                        mappingGroupOils:mappingGroupOils,
-                        mappingTypesOfOilEquipment:mappingTypesOfOilEquipment,
-                        mappingConsumptionsEquipment:mappingConsumptionsEquipment,
-                        mappingOils:mappingOils,
-                        mappingBunkersOilToEquipment:mappingBunkersOilToEquipment
+                        mappingGroupOils: mappingGroupOils,
+                        mappingTypesOfOilEquipment: mappingTypesOfOilEquipment,
+                        mappingConsumptionsEquipment: mappingConsumptionsEquipment,
+                        mappingOils: mappingOils,
+                        mappingBunkersOilToEquipment: mappingBunkersOilToEquipment
                     }
                 };
             }
