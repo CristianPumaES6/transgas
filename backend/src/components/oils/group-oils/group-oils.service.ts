@@ -41,7 +41,7 @@ export class GroupOilsService {
                             // name && surname && nick && email
                             {
                                 id: (groupOilEntity.id || Like('%' + '%')),
-                                userId: (groupOilEntity.userId || Like('%' + '%')),
+                                // userId: (groupOilEntity.userId || Like('%' + '%')),
                                 status: Not(false)
                             }
                         ]

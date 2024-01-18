@@ -64,9 +64,6 @@ export class BunkerOilToEquipmentService {
         )
     }
 
-
-
-
     // Registra un nuevo grupo de aceite
     async Create(bunkerOilToEquipment: BunkerOilToEquipmentEntity): Promise<BunkerOilToEquipmentEntity> {
 
@@ -151,8 +148,8 @@ export class BunkerOilToEquipmentService {
 
             // Armamos al nuevo tipo de aceite
             let newBunkerOilToEquipmentEntity = new BunkerOilToEquipmentEntity();
-
-            delete newBunkerOilToEquipmentEntity.id;
+ 
+            newBunkerOilToEquipmentEntity.id = bunkerOilToEquipment.id;
             newBunkerOilToEquipmentEntity.userId = bunkerOilToEquipment.userId;
             newBunkerOilToEquipmentEntity.entityEquipmentId = bunkerOilToEquipment.entityEquipmentId;
             if (searchMappingTypesOfOilEquipment) { newBunkerOilToEquipmentEntity.entityEquipmentId = searchMappingTypesOfOilEquipment.value }
@@ -180,7 +177,7 @@ export class BunkerOilToEquipmentService {
             // Armamos al nuevo tipo de aceite
             let newBunkerOilToEquipmentEntity = new BunkerOilToEquipmentEntity();
 
-            delete newBunkerOilToEquipmentEntity.id;
+            newBunkerOilToEquipmentEntity.id = bunkerOilToEquipment.id;
             newBunkerOilToEquipmentEntity.userId = bunkerOilToEquipment.userId;
             newBunkerOilToEquipmentEntity.entityEquipmentId = bunkerOilToEquipment.entityEquipmentId;
             if (searchMappingTypesOfOilEquipment) { newBunkerOilToEquipmentEntity.entityEquipmentId = searchMappingTypesOfOilEquipment.value }
