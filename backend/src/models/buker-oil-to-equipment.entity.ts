@@ -14,7 +14,7 @@ export class BunkerOilToEquipmentEntity {
     entityOilId: number;
     @Column()
     bunker: number;
-    @Column()
+    @Column({ nullable: true })
     comment: string;
     @Column({ nullable: false })
     datetime: string;

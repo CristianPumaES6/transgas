@@ -391,15 +391,14 @@ export class OilsController {
                 delete result.dateCreated;
                 result.userIdUpdated = headerToken.id;
                 result.dateUpdated =  GetDate();
- */
-                // 
+                */
+//
 
 
 
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                     // No se hace nada
                 } else if (Number(headerToken.id) !== Number(result.userId)) throw new Error('ERROR_USERID_FAIL');
-
 
 
                 return this._OilsService.Delete(result, headerToken.id);
