@@ -122,7 +122,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 let searchMappingTypesOfOilEquipment = mappingKeys_1.searchKey(MappingTypesOfOilEquipment, bunkerOilToEquipment.entityEquipmentId);
                 let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOilToEquipment.entityOilId);
                 let newBunkerOilToEquipmentEntity = new buker_oil_to_equipment_entity_1.BunkerOilToEquipmentEntity();
-                delete newBunkerOilToEquipmentEntity.id;
+                newBunkerOilToEquipmentEntity.id = bunkerOilToEquipment.id;
                 newBunkerOilToEquipmentEntity.userId = bunkerOilToEquipment.userId;
                 newBunkerOilToEquipmentEntity.entityEquipmentId = bunkerOilToEquipment.entityEquipmentId;
                 if (searchMappingTypesOfOilEquipment) {
@@ -156,7 +156,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 let searchMappingTypesOfOilEquipment = mappingKeys_1.searchKey(MappingTypesOfOilEquipment, bunkerOilToEquipment.entityEquipmentId);
                 let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOilToEquipment.entityOilId);
                 let newBunkerOilToEquipmentEntity = new buker_oil_to_equipment_entity_1.BunkerOilToEquipmentEntity();
-                delete newBunkerOilToEquipmentEntity.id;
+                newBunkerOilToEquipmentEntity.id = bunkerOilToEquipment.id;
                 newBunkerOilToEquipmentEntity.userId = bunkerOilToEquipment.userId;
                 newBunkerOilToEquipmentEntity.entityEquipmentId = bunkerOilToEquipment.entityEquipmentId;
                 if (searchMappingTypesOfOilEquipment) {

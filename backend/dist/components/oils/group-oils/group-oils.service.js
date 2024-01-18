@@ -42,7 +42,6 @@ let GroupOilsService = class GroupOilsService {
                     where: [
                         {
                             id: (groupOilEntity.id || typeorm_2.Like('%' + '%')),
-                            userId: (groupOilEntity.userId || typeorm_2.Like('%' + '%')),
                             status: typeorm_2.Not(false)
                         }
                     ]
