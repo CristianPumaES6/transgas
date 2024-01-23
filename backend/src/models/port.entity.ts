@@ -57,6 +57,9 @@ export class Port {
     @Column({ nullable: false })
     status: boolean;
 
+
+    SyncStatus:string;
+
 }
 
 

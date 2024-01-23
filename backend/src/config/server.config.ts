@@ -55,8 +55,8 @@ export const URL_Server = {
     bd: 'SQLITE', // MSSQL, MYSQL
 };
 */
-
-/*
+ 
+/* 
 // SERVIDOR LINUX - FRONT LINUX
 export const URL_Server = {
     front: 'https://occard.site',
@@ -65,4 +65,5 @@ export const URL_Server = {
     puertoSocket: 4000,
     bd: 'SQLITE', // MSSQL, MYSQL
 };
-*/
+ */
+ 

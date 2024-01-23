@@ -129,6 +129,9 @@ export class DailyReport {
     @Column({ nullable: false })
     status: boolean;
 
+
+    SyncStatus :string;
+
 }
 
 

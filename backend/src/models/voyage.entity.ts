@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Port } from './port.entity';
+import { DailyReport } from './daily-report.entity';
 
 @Entity()
 export class Voyage {
@@ -93,4 +94,10 @@ export class ImportVoyage {
 
 
     delete_report: boolean;
+}
+
+export class DataModuleCombustible {
+    voyages:Voyage[];
+    ports:Port[];
+    dailyReports:DailyReport[];
 }

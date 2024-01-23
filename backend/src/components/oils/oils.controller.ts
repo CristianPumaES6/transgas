@@ -13,7 +13,8 @@ import { GroupOilsService } from './group-oils/group-oils.service';
 import { TypeOfOilEquipmentService } from './type-of-oil-equiment/type-of-oil-equiment.service';
 import { ConsumptionEquipmentService } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
 import { BunkerOilToEquipmentService } from './bunker-oil-to-equipment/bunker-oil-to-equipment.service';
-import { Mapping } from '../voyages/voyages.controller';
+import { Mapping } from 'src/assets/mappingKeys';
+
 
 @Controller('oils')
 export class OilsController {
