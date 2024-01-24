@@ -1206,6 +1206,13 @@ export class DailyReportsService {
             stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         }
 
+        // 
+        if (userId == 27) {
+            stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
+        }
+
+        
 
         // Permite obtener en el tiempo de nagacion de las ultimas 24 hrs.
         return await this._dailyReportRepository.createQueryBuilder('daily_report')

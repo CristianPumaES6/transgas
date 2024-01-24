@@ -49,12 +49,12 @@ export function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC): string {
 }
 
 // este convert retorna con -5 horas para que se registre en e; server
-export function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC): string {
+export function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC,addHour:number): string {
 
 
     let mommentTemporal = moment.utc(dateUTC, "DD/MM/YY HH:mm");
 
-    let momentDate = mommentTemporal.subtract(5, 'hours');
+    let momentDate = mommentTemporal.subtract(addHour, 'hours');
 
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
@@ -77,7 +77,9 @@ export function ObtenerlasHorasDeUnaFecaUTC(dateUTC): string {
     return hour;
 }
 export function ConvertDateUTC_masUnaCantidadDeHoras(dateUTC, horas): string {
-    let momentDate = moment.utc(dateUTC).add(horas, 'h');
+
+    
+    let momentDate = moment.utc(dateUTC, "DD/MM/YYYY").add(horas, 'h');
 
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }

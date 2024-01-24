@@ -43,6 +43,7 @@ export const EnvConfig: EnvConfig = {
 };
 */
 
+
 /*
 //SERVIDOR LINUX - front digitalocean
 export const EnvConfig: EnvConfig = {
@@ -54,16 +55,17 @@ export const EnvConfig: EnvConfig = {
 };
 */
 
+
 // CONFIGURACION PARA test DESARROLLO-server
-/*
+/* 
 export const EnvConfig: EnvConfig = {
     API: 'https://occard.site',
     ENV: '',
     VERSION: 'v2',
     SOCKET: 'https://socket-transgas.occard.site',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
-};
-*/
+}; */
+
 
 
 //CONFIG DEVELOPER LOCAL
@@ -74,3 +76,5 @@ export const EnvConfig: EnvConfig = {
     SOCKET: 'ws://localhost:4000',
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
+
+

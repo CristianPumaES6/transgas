@@ -5,8 +5,8 @@ import { Like, Not, Repository } from 'typeorm';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { URL_Server } from '../../../config/server.config';
 import { DailyReport } from '../../../models/daily-report.entity';
-import { GetDate } from 'src/assets/moment.assets';
-import { Mapping, searchKey } from 'src/assets/mappingKeys';
+import { GetDate } from '../../../assets/moment.assets';
+import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
 @Injectable()
 export class PortsService {

@@ -12,8 +12,8 @@ import { DummyPromise } from '../../assets/promises.assets';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity'; // < Suele cambiar.
 import { URL_Server } from '../../config/server.config';
 import { Port } from '../../models/port.entity';
-import { GetDate } from 'src/assets/moment.assets';
-import { Mapping } from 'src/assets/mappingKeys';
+import { GetDate } from '../../assets/moment.assets';
+import { Mapping } from '../../assets/mappingKeys';
 
 
 @Injectable()

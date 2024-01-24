@@ -17,7 +17,7 @@ import { URL_Server } from '../../config/server.config'
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
 import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
-import { Mapping } from 'src/assets/mappingKeys';
+import { Mapping } from '../../assets/mappingKeys';
 
 
 @Injectable()

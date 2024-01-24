@@ -5,15 +5,15 @@ import { OilEntity, SaveDateOils } from '../../models/oil.entity';
 import { UserEntity } from '../../models/user.entity';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { GetDate } from '../../assets/moment.assets';
-import { GroupOilEntity } from 'src/models/group-oils.entity';
-import { TypeOfOilEquipmentEntity } from 'src/models/type-of-oils-equipment.entity';
-import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
-import { BunkerOilToEquipmentEntity } from 'src/models/buker-oil-to-equipment.entity';
+import { GroupOilEntity } from '../../models/group-oils.entity';
+import { TypeOfOilEquipmentEntity } from '../../models/type-of-oils-equipment.entity';
+import { ConsumptionEquipmentEntity } from '../../models/consumptionEquipment.entity';
+import { BunkerOilToEquipmentEntity } from '../../models/buker-oil-to-equipment.entity';
 import { GroupOilsService } from './group-oils/group-oils.service';
 import { TypeOfOilEquipmentService } from './type-of-oil-equiment/type-of-oil-equiment.service';
 import { ConsumptionEquipmentService } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
 import { BunkerOilToEquipmentService } from './bunker-oil-to-equipment/bunker-oil-to-equipment.service';
-import { Mapping } from 'src/assets/mappingKeys';
+import { Mapping } from '../../assets/mappingKeys';
 
 
 @Controller('oils')
