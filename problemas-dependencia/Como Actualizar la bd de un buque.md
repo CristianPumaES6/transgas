@@ -16,11 +16,30 @@ La finalidad de este documento es agilizar la subida de datos.
     - scp root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/dbTransgas.sqlite3 ./
 
 
-* 3 Desde local levantar el aplicativo usando esa BD.
+* 3 Desde local levantar el aplicativo usando la bd del server actualizada.
 
 * 4 Comenzamos a llenar el Excel **FormatDocument v4.**
     Si tenemos ya datos registrados, descargamos el documento report data buque
     - Editamos el documento en excel, tomar en cuenta que si hay un id sera para editar, si no hay id es para hacer un nuevo registro.
+
+    juntar fecha con hora
+
+    
+
+SELECT daily_report.id, datetime(daily_report.date,'-8 hour'), daily_report.date
+FROM daily_report
+INNER JOIN PORT on daily_report.portId = port.id AND port.status =1
+INNER JOIN VOYAGE on port.voyageId = voyage.id AND voyage.status = 1
+where daily_report.status =1
+AND daily_report.userId = 27
+order by daily_report.id asc;
+
+
+
+
+UPDATE daily_report
+set date = SUBSTRING(daily_report.date, 1, 11) || daily_report.hour || ':00'
+where daily_report.userId = 27;
 
 * 5 Una vez terminado, copiamos y pegamos el contenido del excel a convertcsv
     - https://www.convertcsv.com/csv-to-json.htm
