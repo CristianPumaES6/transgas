@@ -97,7 +97,18 @@ export class ImportVoyage {
 }
 
 export class DataModuleCombustible {
-    voyages:Voyage[];
-    ports:Port[];
-    dailyReports:DailyReport[];
+    listVoyages:Voyage[];
+    listPorts:Port[];
+    listDailyReports:DailyReport[];
+    
+
+    constructor(
+        listVoyages?: Voyage[],
+        listPorts?: Port[],
+        listDailyReports?: DailyReport[]
+      ) {
+        this.listVoyages = listVoyages || []; 
+        this.listPorts = listPorts || [];
+        this.listDailyReports = listDailyReports || []; 
+      }
 }

@@ -446,8 +446,8 @@ export class OilsController {
         let mappingBunkersOilToEquipment: Mapping[] = [];
 
 
-        console.log('--------------------------');
-        console.log('--------------------------');
+        console.log('--------------------------'); 
+        console.log('-----------[   saveModuleOils   ]---------------');
         console.log('--------------------------');
         console.log('--------------------------');
         console.log(saveDateOils);

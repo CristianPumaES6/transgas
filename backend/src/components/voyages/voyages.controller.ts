@@ -1789,13 +1789,26 @@ export class VoyagesController {
         let mappingPorts: Mapping[] = [];
         let mappingDailyReports: Mapping[] = [];
 
+
+        
+
+        console.log('--------------------------');
+        console.log('-----------[   saveModuleVoyage   ]---------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log(saveDataModuleCombustible);
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
                 if (saveDataModuleCombustible) {
-                    if (saveDataModuleCombustible.voyages) {
+                    if (saveDataModuleCombustible.listVoyages) {
                         // Ejecutamos la funcion que registra en bd.
-                        return this._voyagesService.SaveList(saveDataModuleCombustible.voyages);
+                        return this._voyagesService.SaveList(saveDataModuleCombustible.listVoyages);
                     } else {
                         return [];
                     }
@@ -1806,8 +1819,8 @@ export class VoyagesController {
             (resultMappingVoyages: Mapping[]) => {
                 mappingVoyages = resultMappingVoyages;
 
-                if (saveDataModuleCombustible.ports) {
-                    return this._portsService.SaveList(mappingVoyages, saveDataModuleCombustible.ports);
+                if (saveDataModuleCombustible.listPorts) {
+                    return this._portsService.SaveList(mappingVoyages, saveDataModuleCombustible.listPorts);
                 } else {
                     return [];
                 }
@@ -1816,8 +1829,8 @@ export class VoyagesController {
             (resultMappingPorts: Mapping[]) => {
                 mappingPorts = resultMappingPorts;
 
-                if (saveDataModuleCombustible.ports) {
-                    return this._portsService.SaveList(mappingPorts, saveDataModuleCombustible.ports);
+                if (saveDataModuleCombustible.listDailyReports) {
+                    return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
                 } else {
                     return [];
                 }
