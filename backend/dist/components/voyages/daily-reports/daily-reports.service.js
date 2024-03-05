@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DailyReportsService = void 0;
 const common_1 = require("@nestjs/common");
@@ -20,6 +27,7 @@ const typeorm_2 = require("typeorm");
 const server_config_1 = require("../../../config/server.config");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const moment_assets_1 = require("../../../assets/moment.assets");
+const mappingKeys_1 = require("../../../assets/mappingKeys");
 let DailyReportsService = class DailyReportsService {
     constructor(_dailyReportRepository) {
         this._dailyReportRepository = _dailyReportRepository;
@@ -760,6 +768,10 @@ let DailyReportsService = class DailyReportsService {
             stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
             stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         }
+        if (userId == 27) {
+            stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
+        }
         return await this._dailyReportRepository.createQueryBuilder('daily_report')
             .select('MAX(voyage.userId)', 'userId')
             .addSelect('MAX(voyage.year)', 'year')
@@ -916,6 +928,174 @@ let DailyReportsService = class DailyReportsService {
                 throw 'ERROR GetReportVoyagePortDaily';
             return result;
         });
+    }
+    async SaveList(MappingPorts, importDailyReport) {
+        var e_1, _a, e_2, _b, e_3, _c;
+        let mappingDailyReports = [];
+        const addDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'added');
+        const updateDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'updated');
+        const deleteDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'deleted');
+        try {
+            for (var addDailyReports_1 = __asyncValues(addDailyReports), addDailyReports_1_1; addDailyReports_1_1 = await addDailyReports_1.next(), !addDailyReports_1_1.done;) {
+                const addDailyReport = addDailyReports_1_1.value;
+                let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, addDailyReport.portId);
+                let newDailyReport = new daily_report_entity_1.DailyReport();
+                delete addDailyReport.id;
+                newDailyReport.userId = addDailyReport.userId;
+                newDailyReport.portId = addDailyReport.portId;
+                if (searchMappingPort) {
+                    newDailyReport.portId = searchMappingPort.value;
+                }
+                newDailyReport.north_degree = addDailyReport.north_degree;
+                newDailyReport.north_minutes = addDailyReport.north_minutes;
+                newDailyReport.north_north_south = addDailyReport.north_north_south;
+                newDailyReport.east_degree = addDailyReport.east_degree;
+                newDailyReport.east_minutes = addDailyReport.east_minutes;
+                newDailyReport.east_east_west = addDailyReport.east_east_west;
+                newDailyReport.activityPerformed = addDailyReport.activityPerformed;
+                newDailyReport.typeActivityPerformed = addDailyReport.typeActivityPerformed;
+                newDailyReport.speedStraction = addDailyReport.speedStraction;
+                newDailyReport.date = addDailyReport.date;
+                newDailyReport.hour = addDailyReport.hour;
+                newDailyReport.bunkeringIfo = addDailyReport.bunkeringIfo;
+                newDailyReport.bunkeringMgo = addDailyReport.bunkeringMgo;
+                newDailyReport.mplaIfo = addDailyReport.mplaIfo;
+                newDailyReport.auxIfo = addDailyReport.auxIfo;
+                newDailyReport.boilerIfo = addDailyReport.boilerIfo;
+                newDailyReport.otherIfo = addDailyReport.otherIfo;
+                newDailyReport.mplaMgo = addDailyReport.mplaMgo;
+                newDailyReport.auxMgo = addDailyReport.auxMgo;
+                newDailyReport.boilerMgo = addDailyReport.boilerMgo;
+                newDailyReport.ppMgo = addDailyReport.ppMgo;
+                newDailyReport.giMgo = addDailyReport.giMgo;
+                newDailyReport.otherMgo = addDailyReport.otherMgo;
+                newDailyReport.steamingTime = addDailyReport.steamingTime;
+                newDailyReport.distance = addDailyReport.distance;
+                newDailyReport.beaufour = addDailyReport.beaufour;
+                newDailyReport.observation = addDailyReport.observation;
+                newDailyReport.userIdCreated = addDailyReport.userIdCreated;
+                newDailyReport.dateCreated = moment_assets_1.GetDate();
+                delete newDailyReport.userIdUpdated;
+                delete newDailyReport.dateUpdated;
+                newDailyReport.status = Boolean(addDailyReport.status);
+                let registers = await this.Create(newDailyReport);
+                MappingPorts.push(new mappingKeys_1.Mapping(addDailyReport.id, registers.id));
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (addDailyReports_1_1 && !addDailyReports_1_1.done && (_a = addDailyReports_1.return)) await _a.call(addDailyReports_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        try {
+            for (var updateDailyReports_1 = __asyncValues(updateDailyReports), updateDailyReports_1_1; updateDailyReports_1_1 = await updateDailyReports_1.next(), !updateDailyReports_1_1.done;) {
+                const dailyReport = updateDailyReports_1_1.value;
+                let updateDailyReport = new daily_report_entity_1.DailyReport();
+                let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, dailyReport.portId);
+                updateDailyReport.id = dailyReport.id;
+                updateDailyReport.userId = dailyReport.userId;
+                updateDailyReport.portId = dailyReport.portId;
+                if (searchMappingPort) {
+                    updateDailyReport.portId = searchMappingPort.value;
+                }
+                updateDailyReport.north_degree = dailyReport.north_degree;
+                updateDailyReport.north_minutes = dailyReport.north_minutes;
+                updateDailyReport.north_north_south = dailyReport.north_north_south;
+                updateDailyReport.east_degree = dailyReport.east_degree;
+                updateDailyReport.east_minutes = dailyReport.east_minutes;
+                updateDailyReport.east_east_west = dailyReport.east_east_west;
+                updateDailyReport.activityPerformed = dailyReport.activityPerformed;
+                updateDailyReport.typeActivityPerformed = dailyReport.typeActivityPerformed;
+                updateDailyReport.speedStraction = dailyReport.speedStraction;
+                updateDailyReport.date = dailyReport.date;
+                updateDailyReport.hour = dailyReport.hour;
+                updateDailyReport.bunkeringIfo = dailyReport.bunkeringIfo;
+                updateDailyReport.bunkeringMgo = dailyReport.bunkeringMgo;
+                updateDailyReport.mplaIfo = dailyReport.mplaIfo;
+                updateDailyReport.auxIfo = dailyReport.auxIfo;
+                updateDailyReport.boilerIfo = dailyReport.boilerIfo;
+                updateDailyReport.otherIfo = dailyReport.otherIfo;
+                updateDailyReport.mplaMgo = dailyReport.mplaMgo;
+                updateDailyReport.auxMgo = dailyReport.auxMgo;
+                updateDailyReport.boilerMgo = dailyReport.boilerMgo;
+                updateDailyReport.ppMgo = dailyReport.ppMgo;
+                updateDailyReport.giMgo = dailyReport.giMgo;
+                updateDailyReport.otherMgo = dailyReport.otherMgo;
+                updateDailyReport.steamingTime = dailyReport.steamingTime;
+                updateDailyReport.distance = dailyReport.distance;
+                updateDailyReport.beaufour = dailyReport.beaufour;
+                updateDailyReport.observation = dailyReport.observation;
+                updateDailyReport.userIdCreated = dailyReport.userIdCreated;
+                updateDailyReport.dateCreated = dailyReport.dateCreated;
+                updateDailyReport.userIdUpdated = dailyReport.userIdUpdated;
+                updateDailyReport.dateUpdated = dailyReport.dateUpdated;
+                updateDailyReport.status = Boolean(dailyReport.status);
+                await this._dailyReportRepository.save(updateDailyReport);
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (updateDailyReports_1_1 && !updateDailyReports_1_1.done && (_b = updateDailyReports_1.return)) await _b.call(updateDailyReports_1);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        try {
+            for (var deleteDailyReports_1 = __asyncValues(deleteDailyReports), deleteDailyReports_1_1; deleteDailyReports_1_1 = await deleteDailyReports_1.next(), !deleteDailyReports_1_1.done;) {
+                let dailyReport = deleteDailyReports_1_1.value;
+                let deletePortEntity = new daily_report_entity_1.DailyReport();
+                let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, dailyReport.portId);
+                deletePortEntity.id = dailyReport.id;
+                deletePortEntity.userId = dailyReport.userId;
+                deletePortEntity.portId = dailyReport.portId;
+                if (searchMappingPort) {
+                    deletePortEntity.portId = searchMappingPort.value;
+                }
+                deletePortEntity.north_degree = dailyReport.north_degree;
+                deletePortEntity.north_minutes = dailyReport.north_minutes;
+                deletePortEntity.north_north_south = dailyReport.north_north_south;
+                deletePortEntity.east_degree = dailyReport.east_degree;
+                deletePortEntity.east_minutes = dailyReport.east_minutes;
+                deletePortEntity.east_east_west = dailyReport.east_east_west;
+                deletePortEntity.activityPerformed = dailyReport.activityPerformed;
+                deletePortEntity.typeActivityPerformed = dailyReport.typeActivityPerformed;
+                deletePortEntity.speedStraction = dailyReport.speedStraction;
+                deletePortEntity.date = dailyReport.date;
+                deletePortEntity.hour = dailyReport.hour;
+                deletePortEntity.bunkeringIfo = dailyReport.bunkeringIfo;
+                deletePortEntity.bunkeringMgo = dailyReport.bunkeringMgo;
+                deletePortEntity.mplaIfo = dailyReport.mplaIfo;
+                deletePortEntity.auxIfo = dailyReport.auxIfo;
+                deletePortEntity.boilerIfo = dailyReport.boilerIfo;
+                deletePortEntity.otherIfo = dailyReport.otherIfo;
+                deletePortEntity.mplaMgo = dailyReport.mplaMgo;
+                deletePortEntity.auxMgo = dailyReport.auxMgo;
+                deletePortEntity.boilerMgo = dailyReport.boilerMgo;
+                deletePortEntity.ppMgo = dailyReport.ppMgo;
+                deletePortEntity.giMgo = dailyReport.giMgo;
+                deletePortEntity.otherMgo = dailyReport.otherMgo;
+                deletePortEntity.steamingTime = dailyReport.steamingTime;
+                deletePortEntity.distance = dailyReport.distance;
+                deletePortEntity.beaufour = dailyReport.beaufour;
+                deletePortEntity.observation = dailyReport.observation;
+                deletePortEntity.userIdCreated = dailyReport.userIdCreated;
+                deletePortEntity.dateCreated = dailyReport.dateCreated;
+                deletePortEntity.userIdUpdated = dailyReport.userIdUpdated;
+                deletePortEntity.dateUpdated = dailyReport.dateUpdated;
+                deletePortEntity.status = Boolean(dailyReport.status);
+                await this._dailyReportRepository.save(deletePortEntity);
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (deleteDailyReports_1_1 && !deleteDailyReports_1_1.done && (_c = deleteDailyReports_1.return)) await _c.call(deleteDailyReports_1);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return MappingPorts;
     }
 };
 DailyReportsService = __decorate([

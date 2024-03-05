@@ -1,6 +1,6 @@
 import { OilEntity } from '../../models/oil.entity';
 import { Repository } from 'typeorm';
-import { Mapping } from '../voyages/voyages.controller';
+import { Mapping } from '../../assets/mappingKeys';
 export declare class OilsService {
     private _oilRepository;
     constructor(_oilRepository: Repository<OilEntity>);

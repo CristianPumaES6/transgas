@@ -17,6 +17,7 @@ export declare class Port {
     userIdUpdated: number;
     dateUpdated: string;
     status: boolean;
+    SyncStatus: string;
 }
 export declare class GetLastPortAndTotalConsump {
     portId: number;

@@ -1,5 +1,6 @@
 import { Port } from '../../../models/port.entity';
 import { Repository } from 'typeorm';
+import { Mapping } from '../../../assets/mappingKeys';
 export declare class PortsService {
     private portRepository;
     constructor(portRepository: Repository<Port>);
@@ -11,4 +12,5 @@ export declare class PortsService {
     Delete(port: Port): Promise<Port>;
     ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number, userId: number): Promise<Port>;
     GetLastPortTotalConsumpByUserId(userId: number): Promise<any[]>;
+    SaveList(MappingVoyages: Mapping[], importPorts: Port[]): Promise<Mapping[]>;
 }

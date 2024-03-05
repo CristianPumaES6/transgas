@@ -29,7 +29,7 @@ const typeorm_4 = require("typeorm");
 const server_config_1 = require("../../config/server.config");
 const promises_assets_1 = require("../../assets/promises.assets");
 const moment_assets_1 = require("../../assets/moment.assets");
-const voyages_controller_1 = require("../voyages/voyages.controller");
+const mappingKeys_1 = require("../../assets/mappingKeys");
 let OilsService = class OilsService {
     constructor(_oilRepository) {
         this._oilRepository = _oilRepository;
@@ -158,7 +158,7 @@ let OilsService = class OilsService {
                 delete newOil.dateUpdated;
                 newOil.status = Boolean(oil.status);
                 let registeredGroupOil = await this.Create(newOil);
-                MappingOilEntity.push(new voyages_controller_1.Mapping(oil.id, registeredGroupOil.id));
+                MappingOilEntity.push(new mappingKeys_1.Mapping(oil.id, registeredGroupOil.id));
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }

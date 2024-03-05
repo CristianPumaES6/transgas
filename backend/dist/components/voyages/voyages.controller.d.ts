@@ -1,5 +1,5 @@
 import { VoyagesService } from './voyages.service';
-import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
+import { DataModuleCombustible, ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport } from '../../models/daily-report.entity';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
@@ -27,10 +27,5 @@ export declare class VoyagesController {
     UpdateData(headers: any, voyages: Voyage[]): {
         mensaje: string;
     };
+    SaveDataVoyage(headers: any, saveDataModuleCombustible: DataModuleCombustible): Promise<any>;
 }
-export declare class Mapping {
-    key?: number;
-    value?: number;
-    constructor(key?: number, value?: number);
-}
-export declare function searchKey(mappings: Mapping[], key: number): Mapping;

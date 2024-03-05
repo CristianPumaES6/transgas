@@ -1,4 +1,5 @@
 import { Port } from './port.entity';
+import { DailyReport } from './daily-report.entity';
 export declare class Voyage {
     id: number;
     ports: Port[];
@@ -61,4 +62,10 @@ export declare class ImportVoyage {
     east_east_west: string;
     updatePort: number;
     delete_report: boolean;
+}
+export declare class DataModuleCombustible {
+    listVoyages: Voyage[];
+    listPorts: Port[];
+    listDailyReports: DailyReport[];
+    constructor(listVoyages?: Voyage[], listPorts?: Port[], listDailyReports?: DailyReport[]);
 }

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ImportVoyage = exports.VoyageFilterByYears = exports.Voyage = void 0;
+exports.DataModuleCombustible = exports.ImportVoyage = exports.VoyageFilterByYears = exports.Voyage = void 0;
 const typeorm_1 = require("typeorm");
 const port_entity_1 = require("./port.entity");
 let Voyage = class Voyage {
@@ -64,4 +64,12 @@ exports.VoyageFilterByYears = VoyageFilterByYears;
 class ImportVoyage {
 }
 exports.ImportVoyage = ImportVoyage;
+class DataModuleCombustible {
+    constructor(listVoyages, listPorts, listDailyReports) {
+        this.listVoyages = listVoyages || [];
+        this.listPorts = listPorts || [];
+        this.listDailyReports = listDailyReports || [];
+    }
+}
+exports.DataModuleCombustible = DataModuleCombustible;
 //# sourceMappingURL=voyage.entity.js.map

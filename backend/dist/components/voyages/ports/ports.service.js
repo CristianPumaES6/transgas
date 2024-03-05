@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PortsService = void 0;
 const common_1 = require("@nestjs/common");
@@ -20,6 +27,8 @@ const typeorm_2 = require("typeorm");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const server_config_1 = require("../../../config/server.config");
 const daily_report_entity_1 = require("../../../models/daily-report.entity");
+const moment_assets_1 = require("../../../assets/moment.assets");
+const mappingKeys_1 = require("../../../assets/mappingKeys");
 let PortsService = class PortsService {
     constructor(portRepository) {
         this.portRepository = portRepository;
@@ -302,6 +311,111 @@ let PortsService = class PortsService {
                 throw 'ERROR GetLastPortTotalConsumpByUserId';
             return result;
         });
+    }
+    async SaveList(MappingVoyages, importPorts) {
+        var e_1, _a, e_2, _b, e_3, _c;
+        let MappingPorts = [];
+        const addPorts = importPorts.filter((port) => port.SyncStatus == 'added');
+        const updatePorts = importPorts.filter((port) => port.SyncStatus == 'updated');
+        const deletePorts = importPorts.filter((port) => port.SyncStatus == 'deleted');
+        try {
+            for (var addPorts_1 = __asyncValues(addPorts), addPorts_1_1; addPorts_1_1 = await addPorts_1.next(), !addPorts_1_1.done;) {
+                const addPort = addPorts_1_1.value;
+                let searchMappingVoyage = mappingKeys_1.searchKey(MappingVoyages, addPort.voyageId);
+                let newPortEntity = new port_entity_1.Port();
+                delete newPortEntity.id;
+                newPortEntity.userId = addPort.userId;
+                newPortEntity.voyageId = addPort.voyageId;
+                if (searchMappingVoyage) {
+                    newPortEntity.voyageId = searchMappingVoyage.value;
+                }
+                newPortEntity.portNumber = addPort.portNumber;
+                newPortEntity.departurePort = addPort.departurePort;
+                newPortEntity.arrivalPort = addPort.arrivalPort;
+                newPortEntity.startDate = addPort.startDate;
+                newPortEntity.startIFO = addPort.startIFO;
+                newPortEntity.startMGO = addPort.startMGO;
+                newPortEntity.userIdCreated = addPort.userIdCreated;
+                newPortEntity.dateCreated = moment_assets_1.GetDate();
+                delete newPortEntity.userIdUpdated;
+                delete newPortEntity.dateUpdated;
+                newPortEntity.status = Boolean(addPort.status);
+                let registers = await this.Create(newPortEntity);
+                MappingPorts.push(new mappingKeys_1.Mapping(addPort.id, registers.id));
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (addPorts_1_1 && !addPorts_1_1.done && (_a = addPorts_1.return)) await _a.call(addPorts_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        try {
+            for (var updatePorts_1 = __asyncValues(updatePorts), updatePorts_1_1; updatePorts_1_1 = await updatePorts_1.next(), !updatePorts_1_1.done;) {
+                const updatePort = updatePorts_1_1.value;
+                let updatePortEntity = new port_entity_1.Port();
+                let searchMappingVoyage = mappingKeys_1.searchKey(MappingVoyages, updatePort.voyageId);
+                updatePortEntity.id = updatePort.id;
+                updatePortEntity.userId = updatePort.userId;
+                updatePortEntity.voyageId = updatePort.voyageId;
+                if (searchMappingVoyage) {
+                    updatePortEntity.voyageId = searchMappingVoyage.value;
+                }
+                updatePortEntity.portNumber = updatePort.portNumber;
+                updatePortEntity.departurePort = updatePort.departurePort;
+                updatePortEntity.arrivalPort = updatePort.arrivalPort;
+                updatePortEntity.startDate = updatePort.startDate;
+                updatePortEntity.startIFO = updatePort.startIFO;
+                updatePortEntity.startMGO = updatePort.startMGO;
+                updatePortEntity.userIdCreated = updatePort.userIdCreated;
+                updatePortEntity.dateCreated = updatePort.dateCreated;
+                updatePortEntity.userIdUpdated = updatePort.userIdUpdated;
+                updatePortEntity.dateUpdated = updatePort.dateUpdated;
+                updatePortEntity.status = Boolean(updatePort.status);
+                await this.portRepository.save(updatePort);
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (updatePorts_1_1 && !updatePorts_1_1.done && (_b = updatePorts_1.return)) await _b.call(updatePorts_1);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        try {
+            for (var deletePorts_1 = __asyncValues(deletePorts), deletePorts_1_1; deletePorts_1_1 = await deletePorts_1.next(), !deletePorts_1_1.done;) {
+                let deletePort = deletePorts_1_1.value;
+                let deletePortEntity = new port_entity_1.Port();
+                let searchMappingVoyage = mappingKeys_1.searchKey(MappingVoyages, deletePort.voyageId);
+                deletePortEntity.id = deletePort.id;
+                deletePortEntity.userId = deletePort.userId;
+                deletePortEntity.voyageId = deletePort.voyageId;
+                if (searchMappingVoyage) {
+                    deletePort.voyageId = searchMappingVoyage.value;
+                }
+                deletePortEntity.portNumber = deletePort.portNumber;
+                deletePortEntity.departurePort = deletePort.departurePort;
+                deletePortEntity.arrivalPort = deletePort.arrivalPort;
+                deletePortEntity.startDate = deletePort.startDate;
+                deletePortEntity.startIFO = deletePort.startIFO;
+                deletePortEntity.startMGO = deletePort.startMGO;
+                deletePortEntity.userIdCreated = deletePort.userIdCreated;
+                deletePortEntity.dateCreated = deletePort.dateCreated;
+                deletePortEntity.userIdUpdated = deletePort.userIdUpdated;
+                deletePortEntity.dateUpdated = deletePort.dateUpdated;
+                deletePortEntity.status = Boolean(deletePort.status);
+                await this.portRepository.save(deletePort);
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (deletePorts_1_1 && !deletePorts_1_1.done && (_c = deletePorts_1.return)) await _c.call(deletePorts_1);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return MappingPorts;
     }
 };
 PortsService = __decorate([

@@ -19,7 +19,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchKey = exports.Mapping = exports.VoyagesController = void 0;
+exports.VoyagesController = void 0;
 const common_1 = require("@nestjs/common");
 const promises_assets_1 = require("../../assets/promises.assets");
 const jwtDecode_assets_1 = require("../../assets/jwtDecode.assets");
@@ -34,6 +34,7 @@ const format_excel_last_voyage_service_1 = require("../../services/format-excel-
 const users_service_1 = require("../users/users.service");
 const sendMailConfig_1 = require("../../models/sendMailConfig");
 const nodemailer_assets_1 = require("./../../assets/nodemailer.assets");
+const mappingKeys_1 = require("../../assets/mappingKeys");
 let VoyagesController = class VoyagesController {
     constructor(_voyagesService, _portsService, _dailyReportsService, _formatExcelLastVoyageService, _usersService) {
         this._voyagesService = _voyagesService;
@@ -301,7 +302,7 @@ let VoyagesController = class VoyagesController {
             try {
                 for (var ImportVoyages_1 = __asyncValues(ImportVoyages), ImportVoyages_1_1; ImportVoyages_1_1 = await ImportVoyages_1.next(), !ImportVoyages_1_1.done;) {
                     const importVoyage = ImportVoyages_1_1.value;
-                    let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let existeViaje = mappingKeys_1.searchKey(MappingVoyage, importVoyage.voyageNumber);
                     let userId = importVoyage.userId;
                     if (!existeViaje) {
                         let voyageExistente;
@@ -324,7 +325,7 @@ let VoyagesController = class VoyagesController {
                             newVoyage.status = true;
                             let voyageRegister = await this._voyagesService.Create(newVoyage);
                             console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
-                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
+                            MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageRegister.id));
                             MappingPort = [];
                         }
                         else {
@@ -340,12 +341,12 @@ let VoyagesController = class VoyagesController {
                                 voyageExistente.status = true;
                                 voyageExistente = await this._voyagesService.Update(voyageExistente);
                             }
-                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id));
+                            MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageExistente.id));
                             MappingPort = [];
                         }
                     }
-                    existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-                    let existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    existeViaje = mappingKeys_1.searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let existePort = mappingKeys_1.searchKey(MappingPort, importVoyage.portNumber);
                     if (!existePort) {
                         let portExiste;
                         if (!importVoyage.portId) {
@@ -378,7 +379,7 @@ let VoyagesController = class VoyagesController {
                             newPort.status = true;
                             let portRegister = await this._portsService.Create(newPort);
                             console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
-                            MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
+                            MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portRegister.id));
                         }
                         else {
                             console.log('Entro al else de port');
@@ -408,10 +409,10 @@ let VoyagesController = class VoyagesController {
                                 console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
                                 portExiste = await this._portsService.Update(portExiste);
                             }
-                            MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id));
+                            MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portExiste.id));
                         }
                     }
-                    existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    existePort = mappingKeys_1.searchKey(MappingPort, importVoyage.portNumber);
                     let newReport = new daily_report_entity_1.DailyReport();
                     if (importVoyage.dailyReportId) {
                         newReport.id = Number(importVoyage.dailyReportId);
@@ -421,11 +422,18 @@ let VoyagesController = class VoyagesController {
                     }
                     newReport.userId = importVoyage.userId;
                     newReport.portId = existePort.value;
+                    let fechaMAs0 = '';
                     if (importVoyage.date.length == 14 || importVoyage.date.length == 13 || importVoyage.date.length == 12 || importVoyage.date.length == 11 || importVoyage.date.length == 15 || importVoyage.date.length == 18) {
-                        ultimaFecha = moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date) + '.000';
+                        ultimaFecha = moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date, 5) + '.000';
                     }
                     else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
                         ultimaFecha = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
+                    }
+                    else if (importVoyage.date.length == 9) {
+                        ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
+                    }
+                    else if (importVoyage.date.length == 10) {
+                        ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
                     }
                     else {
                         ultimaFecha = null;
@@ -449,6 +457,7 @@ let VoyagesController = class VoyagesController {
                         let fechatemporalporhora = moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, 5);
                         newReport.hour = moment_assets_1.ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora);
                     }
+                    newReport.date = moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, -5);
                     newReport.mplaIfo = importVoyage.mplaIfo || 0;
                     newReport.auxIfo = importVoyage.auxIfo || 0;
                     newReport.boilerIfo = importVoyage.boilerIfo || 0;
@@ -578,7 +587,7 @@ let VoyagesController = class VoyagesController {
             try {
                 for (var ImportVoyages_2 = __asyncValues(ImportVoyages), ImportVoyages_2_1; ImportVoyages_2_1 = await ImportVoyages_2.next(), !ImportVoyages_2_1.done;) {
                     const importVoyage = ImportVoyages_2_1.value;
-                    let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let existeViaje = mappingKeys_1.searchKey(MappingVoyage, importVoyage.voyageNumber);
                     let userId = importVoyage.userId;
                     if (!existeViaje) {
                         let voyageExistente;
@@ -601,7 +610,7 @@ let VoyagesController = class VoyagesController {
                             newVoyage.status = true;
                             let voyageRegister = await this._voyagesService.Create(newVoyage);
                             console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
-                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
+                            MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageRegister.id));
                             MappingPort = [];
                         }
                         else {
@@ -617,12 +626,12 @@ let VoyagesController = class VoyagesController {
                                 voyageExistente.status = true;
                                 voyageExistente = await this._voyagesService.Update(voyageExistente);
                             }
-                            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id));
+                            MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageExistente.id));
                             MappingPort = [];
                         }
                     }
-                    existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-                    let existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    existeViaje = mappingKeys_1.searchKey(MappingVoyage, importVoyage.voyageNumber);
+                    let existePort = mappingKeys_1.searchKey(MappingPort, importVoyage.portNumber);
                     if (!existePort) {
                         let portExiste;
                         if (!importVoyage.portId) {
@@ -655,7 +664,7 @@ let VoyagesController = class VoyagesController {
                             newPort.status = true;
                             let portRegister = await this._portsService.Create(newPort);
                             console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
-                            MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
+                            MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portRegister.id));
                         }
                         else {
                             console.log('Entro al else de port');
@@ -685,10 +694,10 @@ let VoyagesController = class VoyagesController {
                                 console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
                                 portExiste = await this._portsService.Update(portExiste);
                             }
-                            MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id));
+                            MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portExiste.id));
                         }
                     }
-                    existePort = searchKey(MappingPort, importVoyage.portNumber);
+                    existePort = mappingKeys_1.searchKey(MappingPort, importVoyage.portNumber);
                     let newReport = new daily_report_entity_1.DailyReport();
                     if (importVoyage.dailyReportId) {
                         newReport.id = Number(importVoyage.dailyReportId);
@@ -1169,6 +1178,60 @@ let VoyagesController = class VoyagesController {
         });
         return { mensaje: 'Datos recibidos correctamente' };
     }
+    async SaveDataVoyage(headers, saveDataModuleCombustible) {
+        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        let mappingVoyages = [];
+        let mappingPorts = [];
+        let mappingDailyReports = [];
+        console.log('--------------------------');
+        console.log('-----------[   saveModuleVoyage   ]---------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log(saveDataModuleCombustible);
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        console.log('--------------------------');
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (saveDataModuleCombustible) {
+                if (saveDataModuleCombustible.listVoyages) {
+                    return this._voyagesService.SaveList(saveDataModuleCombustible.listVoyages);
+                }
+                else {
+                    return [];
+                }
+            }
+            else
+                throw 'MISSING_FIELS';
+        }).then((resultMappingVoyages) => {
+            mappingVoyages = resultMappingVoyages;
+            if (saveDataModuleCombustible.listPorts) {
+                return this._portsService.SaveList(mappingVoyages, saveDataModuleCombustible.listPorts);
+            }
+            else {
+                return [];
+            }
+        }).then((resultMappingPorts) => {
+            mappingPorts = resultMappingPorts;
+            if (saveDataModuleCombustible.listDailyReports) {
+                return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
+            }
+            else {
+                return [];
+            }
+        }).then((resultMappingDailyReports) => {
+            mappingDailyReports = resultMappingDailyReports;
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: {
+                    mappingVoyages: mappingVoyages,
+                    mappingPorts: mappingPorts,
+                    mappingDailyReports: mappingDailyReports
+                }
+            };
+        });
+    }
 };
 __decorate([
     common_1.Get('byYears'),
@@ -1253,6 +1316,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Object)
 ], VoyagesController.prototype, "UpdateData", null);
+__decorate([
+    common_1.Post('saveModuleVoyage'),
+    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, voyage_entity_1.DataModuleCombustible]),
+    __metadata("design:returntype", Promise)
+], VoyagesController.prototype, "SaveDataVoyage", null);
 VoyagesController = __decorate([
     common_1.Controller('voyages'),
     __metadata("design:paramtypes", [voyages_service_1.VoyagesService,
@@ -1262,17 +1332,4 @@ VoyagesController = __decorate([
         users_service_1.UsersService])
 ], VoyagesController);
 exports.VoyagesController = VoyagesController;
-class Mapping {
-    constructor(key, value) {
-        this.key = key;
-        this.value = value;
-        this.key = key || 0;
-        this.value = value || 0;
-    }
-}
-exports.Mapping = Mapping;
-function searchKey(mappings, key) {
-    return mappings.find(mapping => Number(mapping.key) == Number(key));
-}
-exports.searchKey = searchKey;
 //# sourceMappingURL=voyages.controller.js.map

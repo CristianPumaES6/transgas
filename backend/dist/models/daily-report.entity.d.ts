@@ -36,6 +36,7 @@ export declare class DailyReport {
     userIdUpdated: number;
     dateUpdated: string;
     status: boolean;
+    SyncStatus: string;
 }
 export declare class GetROBByUser {
     total_ifo: number;

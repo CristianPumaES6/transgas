@@ -28,6 +28,8 @@ const typeorm_4 = require("typeorm");
 const promises_assets_1 = require("../../assets/promises.assets");
 const voyage_entity_1 = require("../../models/voyage.entity");
 const server_config_1 = require("../../config/server.config");
+const moment_assets_1 = require("../../assets/moment.assets");
+const mappingKeys_1 = require("../../assets/mappingKeys");
 let VoyagesService = class VoyagesService {
     constructor(voyageRepository) {
         this.voyageRepository = voyageRepository;
@@ -321,6 +323,84 @@ let VoyagesService = class VoyagesService {
                 throw 'ERROR GetLastVoyage';
             return result;
         });
+    }
+    async SaveList(importVoyages) {
+        var e_3, _a, e_4, _b, e_5, _c;
+        let MappingVoyages = [];
+        const addVoyages = importVoyages.filter((voyage) => voyage.SyncStatus == 'added');
+        const updateVoyages = importVoyages.filter((voyage) => voyage.SyncStatus == 'updated');
+        const deleteVoyages = importVoyages.filter((voyage) => voyage.SyncStatus == 'deleted');
+        try {
+            for (var addVoyages_1 = __asyncValues(addVoyages), addVoyages_1_1; addVoyages_1_1 = await addVoyages_1.next(), !addVoyages_1_1.done;) {
+                const addVoyage = addVoyages_1_1.value;
+                let newVoyageEntity = new voyage_entity_1.Voyage();
+                delete newVoyageEntity.id;
+                newVoyageEntity.userId = addVoyage.userId;
+                newVoyageEntity.voyageNumber = addVoyage.voyageNumber;
+                newVoyageEntity.year = addVoyage.year;
+                newVoyageEntity.userIdCreated = addVoyage.userIdCreated;
+                newVoyageEntity.dateCreated = moment_assets_1.GetDate();
+                delete newVoyageEntity.userIdUpdated;
+                delete newVoyageEntity.dateUpdated;
+                newVoyageEntity.status = Boolean(addVoyage.status);
+                let registers = await this.Create(newVoyageEntity);
+                MappingVoyages.push(new mappingKeys_1.Mapping(addVoyage.id, registers.id));
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (addVoyages_1_1 && !addVoyages_1_1.done && (_a = addVoyages_1.return)) await _a.call(addVoyages_1);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        try {
+            for (var updateVoyages_1 = __asyncValues(updateVoyages), updateVoyages_1_1; updateVoyages_1_1 = await updateVoyages_1.next(), !updateVoyages_1_1.done;) {
+                const updateVoyage = updateVoyages_1_1.value;
+                let updateVoyageEntity = new voyage_entity_1.Voyage();
+                updateVoyageEntity.id = updateVoyage.id;
+                updateVoyageEntity.userId = updateVoyage.userId;
+                updateVoyageEntity.voyageNumber = updateVoyage.voyageNumber;
+                updateVoyageEntity.year = updateVoyage.year;
+                updateVoyageEntity.userIdCreated = updateVoyage.userIdCreated;
+                updateVoyageEntity.dateCreated = updateVoyage.dateCreated;
+                updateVoyageEntity.userIdUpdated = updateVoyage.userIdUpdated;
+                updateVoyageEntity.dateUpdated = updateVoyage.dateUpdated;
+                updateVoyageEntity.status = Boolean(updateVoyage.status);
+                await this.voyageRepository.save(updateVoyage);
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (updateVoyages_1_1 && !updateVoyages_1_1.done && (_b = updateVoyages_1.return)) await _b.call(updateVoyages_1);
+            }
+            finally { if (e_4) throw e_4.error; }
+        }
+        try {
+            for (var deleteVoyages_1 = __asyncValues(deleteVoyages), deleteVoyages_1_1; deleteVoyages_1_1 = await deleteVoyages_1.next(), !deleteVoyages_1_1.done;) {
+                let deleteVoyage = deleteVoyages_1_1.value;
+                let deleteVoyageEntity = new voyage_entity_1.Voyage();
+                deleteVoyageEntity.id = deleteVoyage.id;
+                deleteVoyageEntity.userId = deleteVoyage.userId;
+                deleteVoyageEntity.voyageNumber = deleteVoyage.voyageNumber;
+                deleteVoyageEntity.year = deleteVoyage.year;
+                deleteVoyageEntity.userIdCreated = deleteVoyage.userIdCreated;
+                deleteVoyageEntity.dateCreated = deleteVoyage.dateCreated;
+                deleteVoyageEntity.userIdUpdated = deleteVoyage.userIdUpdated;
+                deleteVoyageEntity.dateUpdated = deleteVoyage.dateUpdated;
+                deleteVoyageEntity.status = Boolean(deleteVoyage.status);
+                await this.voyageRepository.save(deleteVoyage);
+            }
+        }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        finally {
+            try {
+                if (deleteVoyages_1_1 && !deleteVoyages_1_1.done && (_c = deleteVoyages_1.return)) await _c.call(deleteVoyages_1);
+            }
+            finally { if (e_5) throw e_5.error; }
+        }
+        return MappingVoyages;
     }
 };
 VoyagesService = __decorate([

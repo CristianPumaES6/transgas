@@ -1,5 +1,6 @@
 import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
 import { Repository } from 'typeorm';
+import { Mapping } from 'src/assets/mappingKeys';
 export declare class DailyReportsService {
     private _dailyReportRepository;
     constructor(_dailyReportRepository: Repository<DailyReport>);
@@ -20,4 +21,5 @@ export declare class DailyReportsService {
     GetReportDNVByUser(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
     GetReportDNVByUserNOON(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
     GetReportBuroBerita(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
+    SaveList(MappingPorts: Mapping[], importDailyReport: DailyReport[]): Promise<Mapping[]>;
 }

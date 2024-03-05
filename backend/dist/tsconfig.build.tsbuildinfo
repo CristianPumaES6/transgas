@@ -1657,12 +1657,12 @@
         "affectsGlobalScope": false
       },
       "../src/assets/moment.assets.ts": {
-        "version": "aee9b17a0a7dc04704cd2471a73d529b72a4b8f21f00b2e06d6d9c3cdc3a741b",
-        "signature": "4f4ec87a92df9fb446bc6aea63de76d8d2e07619a5b1a2c4a8937cf9de572fae",
+        "version": "f87957a2448816d644ed1fe4608192635ba19ebe861f0361f8169ec1293ce529",
+        "signature": "60d7cbb3dc7e1d62118360ddcb96cc994a5d5b6ed0643c1ba23c00d743d67594",
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "06fd1e659479ec68d1378b44eca4cd1c54943087af97aba69ea4ad378c9c7a34",
+        "version": "7225b4dc80fecfb71107e0c800e9b51b4eacaca164ae8a59d204e7154883037d",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3707,33 +3707,38 @@
         "affectsGlobalScope": false
       },
       "../src/models/daily-report.entity.ts": {
-        "version": "8d93cdbf5a8f76ca7f47aad3ede035d5961380a3d20645f3e3dab69bdc12c4e4",
-        "signature": "f7b374a8b97654666541f85ae550a4329bda099427d120e21b84f63f6e60749c",
+        "version": "9406eaa0f6198c8690ae38e0d36289260530224220c6447a535675b29aaccd70",
+        "signature": "9fe7830dfb5b961d70c451434be7be2901fe257bf273d9437ed65455d40eba85",
         "affectsGlobalScope": false
       },
       "../src/models/port.entity.ts": {
-        "version": "b0a6951a63fe74c4e311b6874d72bbcb37c5bd5910a8de6ccff080f452b7fce7",
-        "signature": "af2bf359ee7d8717d97d6de0dc61758459c3806a65d35d089c7fdc6bbd4f96bb",
+        "version": "82fd0c47b04742f199d8296fa6b1490281262bd4b668a5d1fb070fb8634edd43",
+        "signature": "66c400806a094af41763d6c49478a8e8779c023d19dbbfbbf05bf1ec003e0a14",
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "1c8d307fefd4208570f85e56932041158046fc403db64eacecd6b4b9adcd1e55",
-        "signature": "bc1995b839d834242a803fc48b75897baa8e0265bc1533115ca9d88dd94b93e7",
+        "version": "93bcd06dc3c8bfbcd7d86b5243feb1841aa10955eef7741494ecee5779cacf1f",
+        "signature": "0d244c189da4583caeb4b1b67bd8e99c4424bbb32c4360e604034a1f8798e801",
+        "affectsGlobalScope": false
+      },
+      "../src/assets/mappingkeys.ts": {
+        "version": "67ff63607631655253e7cc8969fdb8c12f2d89bc9c4a057fadc4cb80a339fe5c",
+        "signature": "826eaedb803fdea911144c433736541f557c2f34e9e420e314895d96f103a452",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.service.ts": {
-        "version": "6a2a17decaac126948b4a90aea78805e10710b6bb6bc6c4953fd62e3fbbae064",
-        "signature": "9d0dc2289188dd946c2712dc6e6ad5f949339731be2b14e56ec324e5dc32e3c2",
+        "version": "6cb43fc63a12d73acb46ba288df2be605fc7f9c7f79ba5526da5f0aa21e8a9f5",
+        "signature": "cddbbd4567c2807562588d377561358c8947cb0021ccf57ba3df7196d25b9f8a",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.service.ts": {
-        "version": "ded58fdcb01459a036ad210c60b09ef5faa21d05dcc3b9b280bdc46fad64aaf7",
-        "signature": "36e9cdda8326439e125984866fb330a12a7eca604f92933ecab8b9af2569b6eb",
+        "version": "a6c153e394227357ad9f5ab4be3e0d343a2fb1aaf6c61f4ed5f63b26d05a812c",
+        "signature": "ddfcbf264718f15f4d74ad318aecbbb5aaab3190eb2fce1ea4d36786787690e1",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "f8f1c8ab07ec5b79e3cf2b8d9c05509b85de1a8ba5ef45e4d20f7c3c9e836637",
-        "signature": "945c8f8dea3d52eb1abc0d63f451127d24bd33bb307991f28126652a764803a9",
+        "version": "7e115e679bd99772266e84def2835bfee0389abf0e1b648dd06a174640d66575",
+        "signature": "c7414e8630a1244df5b005aaa8129c38c7c2e298f85c9a8ad7154cbf875ad296",
         "affectsGlobalScope": false
       },
       "../node_modules/exceljs/index.d.ts": {
@@ -3792,8 +3797,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "192f93ff63711faefd4f4bf3cd9ce4fc661ca9ad27b3c4da56a8a8b0f0f2d876",
-        "signature": "7d68c2593255a04cc202dfb26a8ac12a1c691f9ace2c23d87880d53a6ebabefb",
+        "version": "7dc0600f3dc0b71c717716904ca1638665a9a481844af6dd296c67dfbf6cc414",
+        "signature": "cdff097ca20c08e1ed26894c4afe562c41cf36d95abf65c3c89601fe8be3002d",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/ports/ports.controller.ts": {
@@ -3817,7 +3822,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.module.ts": {
-        "version": "90f5744bdaf24fb875aeec37e5b3adc75d685ae534bb8dae17017bc2126eae57",
+        "version": "1003f99e9bc320f1d2851719ef8b2e02e70d80f20b24fa0799775f778cc21a49",
         "signature": "7276518d39c56063101c621ee1ed21cad7d7a4cdf203d87b93dc884361ff3f3b",
         "affectsGlobalScope": false
       },
@@ -3867,13 +3872,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.service.ts": {
-        "version": "bfd9b69905b998595e688ae164d6acb0bcdc9ef68e3c0bc071d38a0a9f8380f5",
-        "signature": "a4e90a3c2129db1859b498856f81ad29fda53c584844725b867a4951eaec64f4",
-        "affectsGlobalScope": false
-      },
-      "../src/assets/mappingkeys.ts": {
-        "version": "67ff63607631655253e7cc8969fdb8c12f2d89bc9c4a057fadc4cb80a339fe5c",
-        "signature": "826eaedb803fdea911144c433736541f557c2f34e9e420e314895d96f103a452",
+        "version": "faceff1faa9e8a8fa639d41f62b6ac5c518328ab57671ebcde67a4bfea2257c2",
+        "signature": "98a9bd66439ffde8ccb354f30f2502bd42943bbe411bd2a59734fd2508efe32e",
         "affectsGlobalScope": false
       },
       "../src/components/oils/group-oils/group-oils.service.ts": {
@@ -3897,7 +3897,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "784231613f6ee6680d0777465c039fcaf848af9102b27fe17fef19dc22602518",
+        "version": "28a5718d48fb8da96535880bc539d9cf72616effecb5dce7c4c9203b72e1c541",
         "signature": "ab1830d6cdbdaed202d841999a40dafe803f3817e6daa609e9d45a2b9f37c0cb",
         "affectsGlobalScope": false
       },
@@ -7247,6 +7247,7 @@
       "../src/components/oils/oils.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/assets/jwtdecode.assets.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/assets/moment.assets.ts",
         "../src/assets/promises.assets.ts",
         "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts",
@@ -7254,7 +7255,6 @@
         "../src/components/oils/group-oils/group-oils.service.ts",
         "../src/components/oils/oils.service.ts",
         "../src/components/oils/type-of-oil-equiment/type-of-oil-equiment.service.ts",
-        "../src/components/voyages/voyages.controller.ts",
         "../src/models/buker-oil-to-equipment.entity.ts",
         "../src/models/consumptionequipment.entity.ts",
         "../src/models/group-oils.entity.ts",
@@ -7286,9 +7286,9 @@
         "../node_modules/@nestjs/typeorm/index.d.ts",
         "../node_modules/@types/bcrypt/index.d.ts",
         "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/assets/moment.assets.ts",
         "../src/assets/promises.assets.ts",
-        "../src/components/voyages/voyages.controller.ts",
         "../src/config/bcrypt.config.ts",
         "../src/config/server.config.ts",
         "../src/models/oil.entity.ts",
@@ -7393,6 +7393,7 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/typeorm/index.d.ts",
         "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/assets/moment.assets.ts",
         "../src/assets/promises.assets.ts",
         "../src/config/server.config.ts",
@@ -7418,6 +7419,8 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/typeorm/index.d.ts",
         "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
+        "../src/assets/moment.assets.ts",
         "../src/assets/promises.assets.ts",
         "../src/config/server.config.ts",
         "../src/models/daily-report.entity.ts",
@@ -7426,6 +7429,7 @@
       "../src/components/voyages/voyages.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/assets/jwtdecode.assets.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/assets/moment.assets.ts",
         "../src/assets/nodemailer.assets.ts",
         "../src/assets/promises.assets.ts",
@@ -7457,6 +7461,8 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/typeorm/index.d.ts",
         "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
+        "../src/assets/moment.assets.ts",
         "../src/assets/promises.assets.ts",
         "../src/config/server.config.ts",
         "../src/models/port.entity.ts",
@@ -7521,6 +7527,7 @@
       ],
       "../src/models/voyage.entity.ts": [
         "../node_modules/typeorm/index.d.ts",
+        "../src/models/daily-report.entity.ts",
         "../src/models/port.entity.ts"
       ],
       "../src/services/format-excel-last-voyage/format-excel-last-voyage.service.ts": [
@@ -10563,7 +10570,7 @@
       ],
       "../src/components/oils/oils.service.ts": [
         "../node_modules/typeorm/index.d.ts",
-        "../src/components/voyages/voyages.controller.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/models/oil.entity.ts"
       ],
       "../src/components/oils/type-of-oil-equiment/type-of-oil-equiment.controller.ts": [
@@ -10597,6 +10604,7 @@
       ],
       "../src/components/voyages/daily-reports/daily-reports.service.ts": [
         "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/models/daily-report.entity.ts"
       ],
       "../src/components/voyages/ports/ports.controller.ts": [
@@ -10605,6 +10613,7 @@
       ],
       "../src/components/voyages/ports/ports.service.ts": [
         "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/models/port.entity.ts"
       ],
       "../src/components/voyages/voyages.controller.ts": [
@@ -10619,6 +10628,7 @@
       ],
       "../src/components/voyages/voyages.service.ts": [
         "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
         "../src/models/voyage.entity.ts"
       ],
       "../src/models/daily-report.entity.ts": [
@@ -10638,6 +10648,7 @@
         "../src/models/loggeduser.ts"
       ],
       "../src/models/voyage.entity.ts": [
+        "../src/models/daily-report.entity.ts",
         "../src/models/port.entity.ts"
       ],
       "../src/services/format-excel-last-voyage/format-excel-last-voyage.service.ts": [

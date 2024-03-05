@@ -1,5 +1,6 @@
 import { Repository } from 'typeorm';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
+import { Mapping } from '../../assets/mappingKeys';
 export declare class VoyagesService {
     private voyageRepository;
     constructor(voyageRepository: Repository<Voyage>);
@@ -14,4 +15,5 @@ export declare class VoyagesService {
     ThisVoyageNumberExistsInTheYear(voyageNumber: number, yearVoyage: number, userId: number): Promise<Voyage>;
     ThisVoyageIdExists(voyageId: number, userId: number): Promise<Voyage>;
     GetLastVoyage(userId: number): Promise<any>;
+    SaveList(importVoyages: Voyage[]): Promise<Mapping[]>;
 }
