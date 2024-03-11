@@ -1167,6 +1167,12 @@ export class DailyReportsService {
         let stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
         let stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
 
+        //PILARGAS
+        if (userId == 7) {
+            stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
+        }
+
         // si el usuario es TAUROGAS
         if (userId == 14) {
             stringGroupBY = "datetime('daily_report'.'date','+7.999999 hour')";

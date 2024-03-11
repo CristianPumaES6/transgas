@@ -97,16 +97,19 @@ export class ImportVoyage {
 }
 
 export class DataModuleCombustible {
+    userId : number;
     listVoyages:Voyage[];
     listPorts:Port[];
     listDailyReports:DailyReport[];
     
 
     constructor(
+        userId? : number,
         listVoyages?: Voyage[],
         listPorts?: Port[],
         listDailyReports?: DailyReport[]
       ) {
+        this.userId = userId || null;
         this.listVoyages = listVoyages || []; 
         this.listPorts = listPorts || [];
         this.listDailyReports = listDailyReports || []; 
