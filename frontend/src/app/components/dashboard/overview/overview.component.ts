@@ -42,7 +42,7 @@ export class OverviewComponent implements OnInit {
 
   public selectUser: User = new User();
 
-  constructor(
+  constructor (
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
