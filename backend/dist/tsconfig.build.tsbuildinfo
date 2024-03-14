@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "7225b4dc80fecfb71107e0c800e9b51b4eacaca164ae8a59d204e7154883037d",
+        "version": "565fb121124faa767bcae8b89642a996b8f6a752ca91819c7c5822c2abc00fdb",
         "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
         "affectsGlobalScope": false
       },
@@ -3717,8 +3717,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {
-        "version": "93bcd06dc3c8bfbcd7d86b5243feb1841aa10955eef7741494ecee5779cacf1f",
-        "signature": "0d244c189da4583caeb4b1b67bd8e99c4424bbb32c4360e604034a1f8798e801",
+        "version": "a71edd5b4f173b83106dcb06625aa0b6ce7df54f4beaa2637d7c721cf81d89da",
+        "signature": "14a73171781e4e61dc5bcbc67f2d9acc573147a86039450195678584e29203f1",
         "affectsGlobalScope": false
       },
       "../src/assets/mappingkeys.ts": {
@@ -3737,7 +3737,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/daily-reports/daily-reports.service.ts": {
-        "version": "7e115e679bd99772266e84def2835bfee0389abf0e1b648dd06a174640d66575",
+        "version": "89da20191a9f9ed1ac511c938552db0d33e98d63972c5731295c2703a6ef60b5",
         "signature": "c7414e8630a1244df5b005aaa8129c38c7c2e298f85c9a8ad7154cbf875ad296",
         "affectsGlobalScope": false
       },
@@ -3792,8 +3792,8 @@
         "affectsGlobalScope": false
       },
       "../src/assets/nodemailer.assets.ts": {
-        "version": "7e7b2118d369c2be38134c22c405e4f6e5d1bf1623bc0dd047d7695d5dd515b7",
-        "signature": "5ba5f1c9536177fc03d8a7a1f0936eb02cedf7974871e285255802b3489e8c4e",
+        "version": "4170f10dc819e35efd7d2250aebe8e3dc5ab30571745699ecfdf0d1d6eaf48cf",
+        "signature": "72da788c992fcbe0fb92ee8c14d17a940965c805c0dab21b8ed18f5cc1350a88",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
@@ -3852,8 +3852,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/type-of-oils-equipment.entity.ts": {
-        "version": "c4badc608c11a8fb7deee90bc133f77f2c3eb2c47b73c7fc24957a3064db1903",
-        "signature": "2dbc5827932d3fb01aea4dd50807b56dd2b715ddd5b8598587ff561b41c131db",
+        "version": "914b207d427dee81467ad1c897f166321679de9a30149c4425c6df44cd009f7c",
+        "signature": "7ec320c09a839b658748b07ef266c40807a4be0bbeaa2e8ceedaf2c6ada10231",
         "affectsGlobalScope": false
       },
       "../src/models/consumptionequipment.entity.ts": {
@@ -3882,7 +3882,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/type-of-oil-equiment/type-of-oil-equiment.service.ts": {
-        "version": "dcc77623244920fd35fff63e2f57d2501962659472d6ed8c84ab9740d595425c",
+        "version": "a264be40896d516a2904f3e5b71230462e11c4d9f0267472d47235dff14c1dbd",
         "signature": "a4d5a384d4323aa6cb4194ebe306810b53594a54e613e9260ac80aca09c927dc",
         "affectsGlobalScope": false
       },

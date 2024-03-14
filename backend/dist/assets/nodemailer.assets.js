@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SendMailArchiveInfoLastVoyage = exports.SendMailForgotPsw = exports.SendMailHTMLValidate = exports.MailSendSMTP = exports.NodemailerInit = void 0;
+exports.SendMailHTMLLubricante = exports.SendMailArchiveInfoLastVoyage = exports.SendMailForgotPsw = exports.SendMailHTMLValidate = exports.MailSendSMTP = exports.NodemailerInit = void 0;
 const nodemailer = require("nodemailer");
 const promises_assets_1 = require("./promises.assets");
 const hbs_assets_1 = require("./hbs.assets");
@@ -265,4 +265,22 @@ function SendMailArchiveInfoLastVoyage(to, name, title, bufferFile, mailLastVoya
     });
 }
 exports.SendMailArchiveInfoLastVoyage = SendMailArchiveInfoLastVoyage;
+function SendMailHTMLLubricante(to, texto) {
+    let contentHTML = '';
+    return promises_assets_1.DummyPromise().then(result => {
+        return MailSendSMTP(null, to, 'TEST LUBRICANTE' + texto, texto, true);
+    }).then((resultInfo) => {
+        if (!resultInfo)
+            throw 'La funcion MailSendSMTP no funciono como esperabamos.';
+        return resultInfo;
+    }).catch(err => {
+        const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+        const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        throw {
+            error: clientMsg,
+            message: errorMsg,
+        };
+    });
+}
+exports.SendMailHTMLLubricante = SendMailHTMLLubricante;
 //# sourceMappingURL=nodemailer.assets.js.map

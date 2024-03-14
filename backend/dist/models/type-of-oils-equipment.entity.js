@@ -12,11 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TypeOfOilEquipmentEntity = void 0;
 const typeorm_1 = require("typeorm");
 let TypeOfOilEquipmentEntity = class TypeOfOilEquipmentEntity {
-    constructor(id, userId, equipment, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+    constructor(id, userId, equipment, rate, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';
+        this.rate = rate || 0;
         this.entityGroupId = entityGroupId || 0;
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
@@ -37,6 +38,10 @@ __decorate([
     typeorm_1.Column({ nullable: false }),
     __metadata("design:type", String)
 ], TypeOfOilEquipmentEntity.prototype, "equipment", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: false }),
+    __metadata("design:type", Number)
+], TypeOfOilEquipmentEntity.prototype, "rate", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
@@ -63,7 +68,7 @@ __decorate([
 ], TypeOfOilEquipmentEntity.prototype, "status", void 0);
 TypeOfOilEquipmentEntity = __decorate([
     typeorm_1.Entity('typeOfOilEquipment'),
-    __metadata("design:paramtypes", [Number, Number, String, Number, Number, String, Number, String, Boolean])
+    __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, String, Number, String, Boolean])
 ], TypeOfOilEquipmentEntity);
 exports.TypeOfOilEquipmentEntity = TypeOfOilEquipmentEntity;
 //# sourceMappingURL=type-of-oils-equipment.entity.js.map

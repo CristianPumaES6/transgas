@@ -64,8 +64,9 @@ export declare class ImportVoyage {
     delete_report: boolean;
 }
 export declare class DataModuleCombustible {
+    userId: number;
     listVoyages: Voyage[];
     listPorts: Port[];
     listDailyReports: DailyReport[];
-    constructor(listVoyages?: Voyage[], listPorts?: Port[], listDailyReports?: DailyReport[]);
+    constructor(userId?: number, listVoyages?: Voyage[], listPorts?: Port[], listDailyReports?: DailyReport[]);
 }
