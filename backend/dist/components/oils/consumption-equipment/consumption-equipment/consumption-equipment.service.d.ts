@@ -6,5 +6,9 @@ export declare class ConsumptionEquipmentService {
     constructor(_ConsumptionEquipment: Repository<ConsumptionEquipmentEntity>);
     Gets(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity[]>;
     Create(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity>;
-    SaveList(MappingGroupOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<Mapping[]>;
+    SaveList(MappingGroupOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
+}
+export interface SaveListConsumptionEquipmentEntity {
+    MappingConsumptionsEquipment: Mapping[];
+    listConsumosValidarSendMail: any;
 }

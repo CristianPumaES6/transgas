@@ -23,6 +23,7 @@ const group_oils_service_1 = require("./group-oils/group-oils.service");
 const type_of_oil_equiment_service_1 = require("./type-of-oil-equiment/type-of-oil-equiment.service");
 const consumption_equipment_service_1 = require("./consumption-equipment/consumption-equipment/consumption-equipment.service");
 const bunker_oil_to_equipment_service_1 = require("./bunker-oil-to-equipment/bunker-oil-to-equipment.service");
+const nodemailer_assets_1 = require("../../assets/nodemailer.assets");
 let OilsController = class OilsController {
     constructor(_OilsService, _GroupOilEntityService, _TypeOfOilEquipmentService, _ConsumptionEquipmentService, _BunkerOilToEquipmentService) {
         this._OilsService = _OilsService;
@@ -259,6 +260,7 @@ let OilsController = class OilsController {
         let mappingConsumptionsEquipment = [];
         let mappingOils = [];
         let mappingBunkersOilToEquipment = [];
+        let listConsumosValidarSendMail = true;
         console.log('--------------------------');
         console.log('-----------[   saveModuleOils   ]---------------');
         console.log('--------------------------');
@@ -281,6 +283,14 @@ let OilsController = class OilsController {
                 throw 'MISSING_FIELS';
         }).then((resultMappingGroupOils) => {
             mappingGroupOils = resultMappingGroupOils;
+            if (saveDateOils.listOils) {
+                return this._OilsService.SaveList(saveDateOils.listOils);
+            }
+            else {
+                return [];
+            }
+        }).then((resultMappingOil) => {
+            mappingOils = resultMappingOil;
             if (saveDateOils.listTypeOfOilEquipment) {
                 return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
             }
@@ -293,18 +303,14 @@ let OilsController = class OilsController {
                 return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, saveDateOils.listConsumptionEquipment);
             }
             else {
-                return [];
+                return {
+                    MappingConsumptionsEquipment: [],
+                    listConsumosValidarSendMail: false
+                };
             }
         }).then((resultConsumptionEquipment) => {
-            mappingConsumptionsEquipment = resultConsumptionEquipment;
-            if (saveDateOils.listOils) {
-                return this._OilsService.SaveList(saveDateOils.listOils);
-            }
-            else {
-                return [];
-            }
-        }).then((resultMappingOil) => {
-            mappingOils = resultMappingOil;
+            mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
+            listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
             if (saveDateOils.listBunkerOilToEquipment) {
                 return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
             }
@@ -313,6 +319,15 @@ let OilsController = class OilsController {
             }
         }).then((resultBunkerOilToEquipment) => {
             mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
+            if (listConsumosValidarSendMail) {
+                console.log('ENVIARA MENSAJE');
+                return nodemailer_assets_1.SendMailHTMLLubricante('cristian.puma.es6@gmail.com', '');
+            }
+            else {
+                return true;
+            }
+        }).then((resultSendMail) => {
+            console.log(resultSendMail);
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',

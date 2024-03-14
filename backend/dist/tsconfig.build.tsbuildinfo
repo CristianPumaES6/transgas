@@ -3792,7 +3792,7 @@
         "affectsGlobalScope": false
       },
       "../src/assets/nodemailer.assets.ts": {
-        "version": "4170f10dc819e35efd7d2250aebe8e3dc5ab30571745699ecfdf0d1d6eaf48cf",
+        "version": "e5f96acff1cfe2ab5c9b2b8ae505d3dc1c3375a7c7684715524b431241327150",
         "signature": "72da788c992fcbe0fb92ee8c14d17a940965c805c0dab21b8ed18f5cc1350a88",
         "affectsGlobalScope": false
       },
@@ -3882,13 +3882,13 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/type-of-oil-equiment/type-of-oil-equiment.service.ts": {
-        "version": "a264be40896d516a2904f3e5b71230462e11c4d9f0267472d47235dff14c1dbd",
+        "version": "ae7a03f666b98e8da761b792c32c5a01324d93ea9fc7072ae47bd4fdf83ef44a",
         "signature": "a4d5a384d4323aa6cb4194ebe306810b53594a54e613e9260ac80aca09c927dc",
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "684ea4f861b7e88a4141313e8ddf702972f5193498d2c4c0abaa761f1d280a42",
-        "signature": "2238878e00d3378357d36b1db2e2e1c177af688acc3eeb6ab815449076fedcb9",
+        "version": "68a33a07d52e8d59a29e4fdf5541ad4bf28e2ac44c0c5bd1aaf131658a3cfa83",
+        "signature": "e9a91b5ee8c84d496b742fd34b8758806f0d13c16ed93029fa8b05afc0450484",
         "affectsGlobalScope": false
       },
       "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts": {
@@ -3897,7 +3897,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "28a5718d48fb8da96535880bc539d9cf72616effecb5dce7c4c9203b72e1c541",
+        "version": "014f17028b57079bef8a648287cbe8bf1f4551e283b2030c65369108e1bfdeec",
         "signature": "ab1830d6cdbdaed202d841999a40dafe803f3817e6daa609e9d45a2b9f37c0cb",
         "affectsGlobalScope": false
       },
@@ -7249,6 +7249,7 @@
         "../src/assets/jwtdecode.assets.ts",
         "../src/assets/mappingkeys.ts",
         "../src/assets/moment.assets.ts",
+        "../src/assets/nodemailer.assets.ts",
         "../src/assets/promises.assets.ts",
         "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts",

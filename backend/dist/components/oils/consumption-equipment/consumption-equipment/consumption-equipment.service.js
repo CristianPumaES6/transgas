@@ -83,6 +83,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         const addConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'added');
         const updateConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'updated');
         const deleteConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'deleted');
+        let tienequeEnviarUnMensaje = false;
         try {
             for (var addConsumptionEquipment_1 = __asyncValues(addConsumptionEquipment), addConsumptionEquipment_1_1; addConsumptionEquipment_1_1 = await addConsumptionEquipment_1.next(), !addConsumptionEquipment_1_1.done;) {
                 const consumptionEquipment = addConsumptionEquipment_1_1.value;
@@ -104,6 +105,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 delete newConsumptionEquipmentEntity.dateUpdated;
                 newConsumptionEquipmentEntity.status = Boolean(consumptionEquipment.status);
                 let registeredConsumptionEquipmentEntity = await this.Create(newConsumptionEquipmentEntity);
+                tienequeEnviarUnMensaje = true;
                 MappingConsumptionsEquipment.push(new mappingKeys_1.Mapping(newConsumptionEquipmentEntity.id, registeredConsumptionEquipmentEntity.id));
             }
         }
@@ -134,6 +136,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
                 typeOfOilEquipment.status = Boolean(updateTypeOfOilEquipment.status);
+                tienequeEnviarUnMensaje = true;
                 await this._ConsumptionEquipment.save(typeOfOilEquipment);
             }
         }
@@ -164,6 +167,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 typeOfOilEquipment.userIdUpdated = consumptionEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = consumptionEquipment.dateUpdated;
                 typeOfOilEquipment.status = Boolean(consumptionEquipment.status);
+                tienequeEnviarUnMensaje = true;
                 await this._ConsumptionEquipment.save(typeOfOilEquipment);
             }
         }
@@ -174,7 +178,10 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             }
             finally { if (e_3) throw e_3.error; }
         }
-        return MappingConsumptionsEquipment;
+        return {
+            MappingConsumptionsEquipment: MappingConsumptionsEquipment,
+            listConsumosValidarSendMail: tienequeEnviarUnMensaje
+        };
     }
 };
 ConsumptionEquipmentService = __decorate([
