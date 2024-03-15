@@ -91,7 +91,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
                 newBunkerOilToEquipmentEntity.userId = addTypeOfOilEquipment.userId;
                 newBunkerOilToEquipmentEntity.entityEquipmentId = addTypeOfOilEquipment.entityEquipmentId;
                 if (searchMappingTypesOfOilEquipment) {
-                    addTypeOfOilEquipment.entityEquipmentId = searchMappingTypesOfOilEquipment.value;
+                    newBunkerOilToEquipmentEntity.entityEquipmentId = searchMappingTypesOfOilEquipment.value;
                 }
                 newBunkerOilToEquipmentEntity.entityOilId = addTypeOfOilEquipment.entityOilId;
                 if (searchMappingOils) {
