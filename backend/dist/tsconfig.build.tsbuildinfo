@@ -3892,7 +3892,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts": {
-        "version": "869b0552982dbc7631dd971402856777c710dbddc589c23b2b81c82c02af1f9c",
+        "version": "597946b82b36635275f0f0781873d34ff197bd3eff2922d7a308109d754e1efb",
         "signature": "3cb4f10ad6228da617d49bfb49806635d21140ea427718594f170cdf0a81907a",
         "affectsGlobalScope": false
       },

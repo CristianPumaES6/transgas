@@ -83,30 +83,30 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
         let MappingBunkerOilToEquipmentEntity = [];
         try {
             for (var addBunkerOilToEquipmentEntity_1 = __asyncValues(addBunkerOilToEquipmentEntity), addBunkerOilToEquipmentEntity_1_1; addBunkerOilToEquipmentEntity_1_1 = await addBunkerOilToEquipmentEntity_1.next(), !addBunkerOilToEquipmentEntity_1_1.done;) {
-                const addTypeOfOilEquipment = addBunkerOilToEquipmentEntity_1_1.value;
-                let searchMappingTypesOfOilEquipment = mappingKeys_1.searchKey(MappingTypesOfOilEquipment, addTypeOfOilEquipment.entityEquipmentId);
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, addTypeOfOilEquipment.entityOilId);
+                const addBunkerOilToEquipment = addBunkerOilToEquipmentEntity_1_1.value;
+                let searchMappingTypesOfOilEquipment = mappingKeys_1.searchKey(MappingTypesOfOilEquipment, addBunkerOilToEquipment.entityEquipmentId);
+                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, addBunkerOilToEquipment.entityOilId);
                 let newBunkerOilToEquipmentEntity = new buker_oil_to_equipment_entity_1.BunkerOilToEquipmentEntity();
                 delete newBunkerOilToEquipmentEntity.id;
-                newBunkerOilToEquipmentEntity.userId = addTypeOfOilEquipment.userId;
-                newBunkerOilToEquipmentEntity.entityEquipmentId = addTypeOfOilEquipment.entityEquipmentId;
+                newBunkerOilToEquipmentEntity.userId = addBunkerOilToEquipment.userId;
+                newBunkerOilToEquipmentEntity.entityEquipmentId = addBunkerOilToEquipment.entityEquipmentId;
                 if (searchMappingTypesOfOilEquipment) {
                     newBunkerOilToEquipmentEntity.entityEquipmentId = searchMappingTypesOfOilEquipment.value;
                 }
-                newBunkerOilToEquipmentEntity.entityOilId = addTypeOfOilEquipment.entityOilId;
+                newBunkerOilToEquipmentEntity.entityOilId = addBunkerOilToEquipment.entityOilId;
                 if (searchMappingOils) {
                     newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value;
                 }
-                newBunkerOilToEquipmentEntity.bunker = addTypeOfOilEquipment.bunker;
-                newBunkerOilToEquipmentEntity.comment = addTypeOfOilEquipment.comment;
-                newBunkerOilToEquipmentEntity.datetime = addTypeOfOilEquipment.datetime;
-                newBunkerOilToEquipmentEntity.userIdCreated = addTypeOfOilEquipment.userIdCreated;
+                newBunkerOilToEquipmentEntity.bunker = addBunkerOilToEquipment.bunker;
+                newBunkerOilToEquipmentEntity.comment = addBunkerOilToEquipment.comment;
+                newBunkerOilToEquipmentEntity.datetime = addBunkerOilToEquipment.datetime;
+                newBunkerOilToEquipmentEntity.userIdCreated = addBunkerOilToEquipment.userIdCreated;
                 newBunkerOilToEquipmentEntity.dateCreated = moment_assets_1.GetDate();
                 delete newBunkerOilToEquipmentEntity.userIdUpdated;
                 delete newBunkerOilToEquipmentEntity.dateUpdated;
-                newBunkerOilToEquipmentEntity.status = Boolean(addTypeOfOilEquipment.status);
+                newBunkerOilToEquipmentEntity.status = Boolean(addBunkerOilToEquipment.status);
                 let registeredBunkerOilToEquipmentEntity = await this.Create(newBunkerOilToEquipmentEntity);
-                MappingBunkerOilToEquipmentEntity.push(new mappingKeys_1.Mapping(addTypeOfOilEquipment.id, registeredBunkerOilToEquipmentEntity.id));
+                MappingBunkerOilToEquipmentEntity.push(new mappingKeys_1.Mapping(addBunkerOilToEquipment.id, registeredBunkerOilToEquipmentEntity.id));
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -184,7 +184,7 @@ let BunkerOilToEquipmentService = class BunkerOilToEquipmentService {
             }
             finally { if (e_3) throw e_3.error; }
         }
-        return MappingTypesOfOilEquipment;
+        return MappingBunkerOilToEquipmentEntity;
     }
 };
 BunkerOilToEquipmentService = __decorate([
