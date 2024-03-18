@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SendMailHTMLLubricante = exports.SendMailArchiveInfoLastVoyage = exports.SendMailForgotPsw = exports.SendMailHTMLValidate = exports.MailSendSMTP = exports.NodemailerInit = void 0;
+exports.SendMailHTMLOverCosumption = exports.SendMailHTMLLubricante = exports.SendMailArchiveInfoLastVoyage = exports.SendMailForgotPsw = exports.SendMailHTMLValidate = exports.MailSendSMTP = exports.NodemailerInit = void 0;
 const nodemailer = require("nodemailer");
 const promises_assets_1 = require("./promises.assets");
 const hbs_assets_1 = require("./hbs.assets");
@@ -77,7 +77,7 @@ function SendMailHTMLValidate(to, name, token) {
     }).then((renderHtml) => {
         if (!renderHtml)
             throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
-        return MailSendSMTP(null, to, 'Correo de confirmación API SUNAT  ✔ ✔', renderHtml, true);
+        return MailSendSMTP(null, to, 'Correo de confirmación PERFORMANCE  ✔ ✔', renderHtml, true);
     }).then((resultInfo) => {
         if (!resultInfo)
             throw 'La funcion MailSendSMTP no funciono como esperabamos.';
@@ -283,4 +283,30 @@ function SendMailHTMLLubricante(to, texto) {
     });
 }
 exports.SendMailHTMLLubricante = SendMailHTMLLubricante;
+function SendMailHTMLOverCosumption(to, name) {
+    let contentHTML = '';
+    return promises_assets_1.DummyPromise().then(result => {
+        let objRender = {
+            nameBuque: name,
+            dateCurrent: '18 / 03 / 2024'
+        };
+        return hbs_assets_1.HbsConvertHtmlRender('mailOverconsumptionOil.hbs', objRender);
+    }).then((renderHtml) => {
+        if (!renderHtml)
+            throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
+        return MailSendSMTP(null, to, 'Information on lubricant overconsumption.', renderHtml, true);
+    }).then((resultInfo) => {
+        if (!resultInfo)
+            throw 'La funcion MailSendSMTP no funciono como esperabamos.';
+        return resultInfo;
+    }).catch(err => {
+        const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+        const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        throw {
+            error: clientMsg,
+            message: errorMsg,
+        };
+    });
+}
+exports.SendMailHTMLOverCosumption = SendMailHTMLOverCosumption;
 //# sourceMappingURL=nodemailer.assets.js.map

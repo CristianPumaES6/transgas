@@ -3792,8 +3792,8 @@
         "affectsGlobalScope": false
       },
       "../src/assets/nodemailer.assets.ts": {
-        "version": "e5f96acff1cfe2ab5c9b2b8ae505d3dc1c3375a7c7684715524b431241327150",
-        "signature": "72da788c992fcbe0fb92ee8c14d17a940965c805c0dab21b8ed18f5cc1350a88",
+        "version": "d65ef03ec705bc6982dfb3e77b94d4880a6d0781d044455d31198388d6356c5f",
+        "signature": "491acf882d970108d837edcb587117a2cb9a4775796b9835b6edf1ab77898a11",
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
@@ -3897,7 +3897,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "014f17028b57079bef8a648287cbe8bf1f4551e283b2030c65369108e1bfdeec",
+        "version": "ba274cf8091530a8ef2e84be05dc0be6f984758f0eaf4073d0b51ff4b2743875",
         "signature": "ab1830d6cdbdaed202d841999a40dafe803f3817e6daa609e9d45a2b9f37c0cb",
         "affectsGlobalScope": false
       },

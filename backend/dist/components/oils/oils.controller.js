@@ -321,7 +321,7 @@ let OilsController = class OilsController {
             mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
             if (listConsumosValidarSendMail) {
                 console.log('ENVIARA MENSAJE');
-                return nodemailer_assets_1.SendMailHTMLLubricante('cristian.puma.es6@gmail.com', '');
+                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com', 'TEST');
             }
             else {
                 return true;
