@@ -482,7 +482,7 @@
               <mat-form-field>
                 <input matInput type="number"
                   placeholder="{{'TIME_OPERATION' | translateMessage:translateCategory}} (HRS)"
-                  [(ngModel)]="selectDailyReport.steamingTime" [disabled]="roleUser==='SUPPORT' ||( selectUser.id == 19 || selectUser.id == 7 || selectUser.id == 15 || selectUser.id == 23 ||  selectUser.id == 10 || selectUser.id == 8 ) ? false : true">
+                  [(ngModel)]="selectDailyReport.steamingTime" [disabled]="roleUser==='SUPPORT' ||( selectUser.id == 19 || selectUser.id == 7 || selectUser.id == 15 || selectUser.id == 23 ||  selectUser.id == 10 || selectUser.id == 8 || this.selectUser.id == 13) ? false : true">
               </mat-form-field>
             </div>
           </div>
