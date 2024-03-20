@@ -80,39 +80,39 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     async SaveList(MappingGroupOils, consumptionsEquipment) {
         var e_1, _a, e_2, _b, e_3, _c;
         let MappingConsumptionsEquipment = [];
-        const addConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'added');
+        const addConsumptionEquipments = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'added');
         const updateConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'updated');
         const deleteConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'deleted');
         let tienequeEnviarUnMensaje = false;
         try {
-            for (var addConsumptionEquipment_1 = __asyncValues(addConsumptionEquipment), addConsumptionEquipment_1_1; addConsumptionEquipment_1_1 = await addConsumptionEquipment_1.next(), !addConsumptionEquipment_1_1.done;) {
-                const consumptionEquipment = addConsumptionEquipment_1_1.value;
-                let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, consumptionEquipment.entityEquipmentId);
+            for (var addConsumptionEquipments_1 = __asyncValues(addConsumptionEquipments), addConsumptionEquipments_1_1; addConsumptionEquipments_1_1 = await addConsumptionEquipments_1.next(), !addConsumptionEquipments_1_1.done;) {
+                const addConsumptionEquipment = addConsumptionEquipments_1_1.value;
+                let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, addConsumptionEquipment.entityEquipmentId);
                 let newConsumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity.id;
-                newConsumptionEquipmentEntity.userId = consumptionEquipment.userId;
-                newConsumptionEquipmentEntity.date = consumptionEquipment.date;
-                newConsumptionEquipmentEntity.amount = consumptionEquipment.amount;
-                newConsumptionEquipmentEntity.hourConsumption = consumptionEquipment.hourConsumption;
-                newConsumptionEquipmentEntity.observation = consumptionEquipment.observation;
-                newConsumptionEquipmentEntity.entityEquipmentId = consumptionEquipment.entityEquipmentId;
+                newConsumptionEquipmentEntity.userId = addConsumptionEquipment.userId;
+                newConsumptionEquipmentEntity.date = addConsumptionEquipment.date;
+                newConsumptionEquipmentEntity.amount = addConsumptionEquipment.amount;
+                newConsumptionEquipmentEntity.hourConsumption = addConsumptionEquipment.hourConsumption;
+                newConsumptionEquipmentEntity.observation = addConsumptionEquipment.observation;
+                newConsumptionEquipmentEntity.entityEquipmentId = addConsumptionEquipment.entityEquipmentId;
                 if (searchMappingConsumptionEquipmentEntity) {
                     newConsumptionEquipmentEntity.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
                 }
-                newConsumptionEquipmentEntity.userIdCreated = consumptionEquipment.userIdCreated;
+                newConsumptionEquipmentEntity.userIdCreated = addConsumptionEquipment.userIdCreated;
                 newConsumptionEquipmentEntity.dateCreated = moment_assets_1.GetDate();
                 delete newConsumptionEquipmentEntity.userIdUpdated;
                 delete newConsumptionEquipmentEntity.dateUpdated;
-                newConsumptionEquipmentEntity.status = Boolean(consumptionEquipment.status);
+                newConsumptionEquipmentEntity.status = Boolean(addConsumptionEquipment.status);
                 let registeredConsumptionEquipmentEntity = await this.Create(newConsumptionEquipmentEntity);
                 tienequeEnviarUnMensaje = true;
-                MappingConsumptionsEquipment.push(new mappingKeys_1.Mapping(newConsumptionEquipmentEntity.id, registeredConsumptionEquipmentEntity.id));
+                MappingConsumptionsEquipment.push(new mappingKeys_1.Mapping(addConsumptionEquipment.id, registeredConsumptionEquipmentEntity.id));
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (addConsumptionEquipment_1_1 && !addConsumptionEquipment_1_1.done && (_a = addConsumptionEquipment_1.return)) await _a.call(addConsumptionEquipment_1);
+                if (addConsumptionEquipments_1_1 && !addConsumptionEquipments_1_1.done && (_a = addConsumptionEquipments_1.return)) await _a.call(addConsumptionEquipments_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
