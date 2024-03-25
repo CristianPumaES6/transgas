@@ -283,12 +283,13 @@ function SendMailHTMLLubricante(to, texto) {
     });
 }
 exports.SendMailHTMLLubricante = SendMailHTMLLubricante;
-function SendMailHTMLOverCosumption(to, name) {
+function SendMailHTMLOverCosumption(to, name, dateSend, listConsumptionLubricant) {
     let contentHTML = '';
     return promises_assets_1.DummyPromise().then(result => {
         let objRender = {
             nameBuque: name,
-            dateCurrent: '18 / 03 / 2024'
+            dateSend: dateSend,
+            listConsumptionLubricant: listConsumptionLubricant
         };
         return hbs_assets_1.HbsConvertHtmlRender('mailOverconsumptionOil.hbs', objRender);
     }).then((renderHtml) => {

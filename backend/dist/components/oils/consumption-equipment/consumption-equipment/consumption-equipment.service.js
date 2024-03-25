@@ -83,7 +83,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         const addConsumptionEquipments = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'added');
         const updateConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'updated');
         const deleteConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'deleted');
-        let tienequeEnviarUnMensaje = false;
+        let listDeConsumosRegistrados = [];
         try {
             for (var addConsumptionEquipments_1 = __asyncValues(addConsumptionEquipments), addConsumptionEquipments_1_1; addConsumptionEquipments_1_1 = await addConsumptionEquipments_1.next(), !addConsumptionEquipments_1_1.done;) {
                 const addConsumptionEquipment = addConsumptionEquipments_1_1.value;
@@ -105,7 +105,9 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 delete newConsumptionEquipmentEntity.dateUpdated;
                 newConsumptionEquipmentEntity.status = Boolean(addConsumptionEquipment.status);
                 let registeredConsumptionEquipmentEntity = await this.Create(newConsumptionEquipmentEntity);
-                tienequeEnviarUnMensaje = true;
+                if (newConsumptionEquipmentEntity.status) {
+                    listDeConsumosRegistrados.push(registeredConsumptionEquipmentEntity.id);
+                }
                 MappingConsumptionsEquipment.push(new mappingKeys_1.Mapping(addConsumptionEquipment.id, registeredConsumptionEquipmentEntity.id));
             }
         }
@@ -136,7 +138,9 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
                 typeOfOilEquipment.status = Boolean(updateTypeOfOilEquipment.status);
-                tienequeEnviarUnMensaje = true;
+                if (typeOfOilEquipment.status) {
+                    listDeConsumosRegistrados.push(typeOfOilEquipment.id);
+                }
                 await this._ConsumptionEquipment.save(typeOfOilEquipment);
             }
         }
@@ -167,7 +171,6 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 typeOfOilEquipment.userIdUpdated = consumptionEquipment.userIdUpdated;
                 typeOfOilEquipment.dateUpdated = consumptionEquipment.dateUpdated;
                 typeOfOilEquipment.status = Boolean(consumptionEquipment.status);
-                tienequeEnviarUnMensaje = true;
                 await this._ConsumptionEquipment.save(typeOfOilEquipment);
             }
         }
@@ -180,7 +183,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         }
         return {
             MappingConsumptionsEquipment: MappingConsumptionsEquipment,
-            listConsumosValidarSendMail: tienequeEnviarUnMensaje
+            listConsumosValidarSendMail: listDeConsumosRegistrados
         };
     }
 };

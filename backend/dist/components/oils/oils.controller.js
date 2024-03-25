@@ -260,7 +260,7 @@ let OilsController = class OilsController {
         let mappingConsumptionsEquipment = [];
         let mappingOils = [];
         let mappingBunkersOilToEquipment = [];
-        let listConsumosValidarSendMail = true;
+        let listConsumosValidarSendMail = [];
         console.log('--------------------------');
         console.log('-----------[   saveModuleOils   ]---------------');
         console.log('--------------------------');
@@ -305,7 +305,7 @@ let OilsController = class OilsController {
             else {
                 return {
                     MappingConsumptionsEquipment: [],
-                    listConsumosValidarSendMail: false
+                    listConsumosValidarSendMail: []
                 };
             }
         }).then((resultConsumptionEquipment) => {
@@ -319,9 +319,17 @@ let OilsController = class OilsController {
             }
         }).then((resultBunkerOilToEquipment) => {
             mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
-            if (listConsumosValidarSendMail) {
-                console.log('ENVIARA MENSAJE');
-                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com', 'TEST');
+            if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
+                console.log('Se realiza la consulta de consumos registrados');
+                return this._OilsService.ConsultarListaDeConsumosRegistrados(listConsumosValidarSendMail);
+            }
+            else {
+                return [];
+            }
+        }).then((listaDeConsumosRegistrados) => {
+            if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
+                console.log('TODO OK LISTO PARA  ENVIAR CORREO.');
+                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com', headerToken.name, moment_assets_1.GetDate(), listaDeConsumosRegistrados);
             }
             else {
                 return true;

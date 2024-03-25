@@ -10,4 +10,5 @@ export declare class OilsService {
     Update(oilEntity: OilEntity): Promise<OilEntity>;
     Delete(oilEntity: OilEntity, usuarioDelete: number): Promise<OilEntity>;
     SaveList(importOils: OilEntity[]): Promise<Mapping[]>;
+    ConsultarListaDeConsumosRegistrados(ListCONSUMOSId: any[]): Promise<any>;
 }

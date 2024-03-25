@@ -214,6 +214,39 @@ let OilsService = class OilsService {
         }
         return MappingOilEntity;
     }
+    async ConsultarListaDeConsumosRegistrados(ListCONSUMOSId) {
+        let listDeIds = '';
+        return await promises_assets_1.DummyPromise()
+            .then(result => {
+            if (ListCONSUMOSId && ListCONSUMOSId.length) {
+                var listDeID = ListCONSUMOSId.join(',');
+                var queryWhere = 'consumptionEquipment.id in (' + listDeID + ')';
+                return this._oilRepository.createQueryBuilder('oil')
+                    .addSelect('consumptionEquipment.date', 'dateConsumption')
+                    .addSelect('typeOfOilEquipment.equipment', 'equipment')
+                    .addSelect('consumptionEquipment.amount', 'amountConsumption')
+                    .addSelect('oil.name', 'nameOil')
+                    .addSelect('bunkerOilToEquipment.datetime', 'datetimeBunkerOil')
+                    .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
+                    .addSelect('typeOfOilEquipment.rate', 'rate')
+                    .innerJoin('bunkerOilToEquipment', 'bunkerOilToEquipment', 'bunkerOilToEquipment.entityOilId = oil.id AND bunkerOilToEquipment.status = 1 AND oil.status = 1')
+                    .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOilToEquipment.entityEquipmentId AND typeOfOilEquipment.status = 1')
+                    .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
+                    .where(queryWhere, {})
+                    .orderBy('consumptionEquipment.date', 'DESC')
+                    .limit(1000)
+                    .getRawMany();
+            }
+            else {
+                return null;
+            }
+        }).then(resultFind => {
+            if (resultFind) {
+                return resultFind;
+            }
+            return [];
+        });
+    }
 };
 OilsService = __decorate([
     common_1.Injectable(),

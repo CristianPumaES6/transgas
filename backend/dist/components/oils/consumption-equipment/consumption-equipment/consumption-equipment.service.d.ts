@@ -10,5 +10,5 @@ export declare class ConsumptionEquipmentService {
 }
 export interface SaveListConsumptionEquipmentEntity {
     MappingConsumptionsEquipment: Mapping[];
-    listConsumosValidarSendMail: any;
+    listConsumosValidarSendMail: any[];
 }
