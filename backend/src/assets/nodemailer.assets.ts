@@ -151,7 +151,7 @@ export function SendMailHTMLValidate(to: string, name: string, token: string): P
 
             if (!renderHtml) throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
 
-            return MailSendSMTP(null, to, 'Correo de confirmación API SUNAT  ✔ ✔', renderHtml, true);
+            return MailSendSMTP(null, to, 'Correo de confirmación PERFORMANCE  ✔ ✔', renderHtml, true);
         }
     ).then(
         (resultInfo: boolean) => {
@@ -412,6 +412,56 @@ export function SendMailArchiveInfoLastVoyage(to: string, name: string, title: s
     ).then(
         (resultInfo: boolean) => {
             if (!resultInfo) throw 'La funcion MailSendSMTP no funciono como esperabamos.';
+
+            // Hay que validarlo.
+            //resultInfo
+            return resultInfo;
+        }
+    ).catch(
+        err => {
+            // Obtengo mensajes de error
+            const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+            // caso contrario retornamos un error
+            throw {
+                error: clientMsg,
+                message: errorMsg,
+            };
+        }
+    );
+}
+
+// Envio de correo de validacion con plantilla html.
+export function SendMailHTMLOverCosumption(to: string, name: string,dateSend, listConsumptionLubricant:any): Promise<boolean> {
+
+    //variable de contenido
+    let contentHTML: string = '';
+
+    // Inicio una promesa Dummy.
+    return DummyPromise().then(
+        result => {
+
+            let objRender = {
+                nameBuque: name,
+                dateSend: dateSend,
+                listConsumptionLubricant: listConsumptionLubricant
+            }
+
+            console.log(JSON.stringify(listConsumptionLubricant));
+            // Devuelvo el contenido obtenido
+            return HbsConvertHtmlRender('mailOverconsumptionOil.hbs', objRender);
+        }
+    ).then(
+        (renderHtml: string) => {
+
+            if (!renderHtml) throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
+
+            return MailSendSMTP(null, to, 'Information on lubricant overconsumption.', renderHtml, true);
+        }
+    ).then(
+        (resultInfo: boolean) => {
+            if (!resultInfo) throw 'La funcion MailSendSMTP no funciono como esperabamos.'
 
             // Hay que validarlo.
             //resultInfo

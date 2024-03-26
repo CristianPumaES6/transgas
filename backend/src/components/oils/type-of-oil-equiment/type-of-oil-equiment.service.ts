@@ -117,6 +117,8 @@ export class TypeOfOilEquipmentService {
             delete newTypeOfOilEquipmentEntity.id;
             newTypeOfOilEquipmentEntity.userId = addTypeOfOilEquipment.userId;
             newTypeOfOilEquipmentEntity.equipment = addTypeOfOilEquipment.equipment;
+            newTypeOfOilEquipmentEntity.rate = addTypeOfOilEquipment.rate;
+           
             newTypeOfOilEquipmentEntity.entityGroupId = addTypeOfOilEquipment.entityGroupId;
             if (searchMappingGroupOils) { newTypeOfOilEquipmentEntity.entityGroupId = searchMappingGroupOils.value }
 
@@ -141,6 +143,7 @@ export class TypeOfOilEquipmentService {
 
             typeOfOilEquipment.id = updateTypeOfOilEquipment.id;
             typeOfOilEquipment.userId = updateTypeOfOilEquipment.userId;
+            typeOfOilEquipment.rate = updateTypeOfOilEquipment.rate;
             typeOfOilEquipment.equipment = updateTypeOfOilEquipment.equipment;
             typeOfOilEquipment.entityGroupId = updateTypeOfOilEquipment.entityGroupId;
             if (searchMappingGroupOils) { typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value }
@@ -165,6 +168,7 @@ export class TypeOfOilEquipmentService {
 
             typeOfOilEquipment.id = deleteTypeOfOilEquipment.id;
             typeOfOilEquipment.userId = deleteTypeOfOilEquipment.userId;
+            typeOfOilEquipment.rate = deleteTypeOfOilEquipment.rate;
             typeOfOilEquipment.equipment = deleteTypeOfOilEquipment.equipment;
             typeOfOilEquipment.entityGroupId = deleteTypeOfOilEquipment.entityGroupId;
             if (searchMappingGroupOils) { typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value }

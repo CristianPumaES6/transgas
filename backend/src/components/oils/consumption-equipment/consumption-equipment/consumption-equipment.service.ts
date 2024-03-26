@@ -105,46 +105,53 @@ export class ConsumptionEquipmentService {
 
     }
 
+ 
     // guarda una lista de aceite.
-    async SaveList(MappingGroupOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]) {
+    async SaveList(MappingGroupOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity> {
 
 
         let MappingConsumptionsEquipment: Mapping[] = [];
         // FIltramos los datos que faltan aggregar y actualizar.
-        const addConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment: ConsumptionEquipmentEntity) => consumptionEquipment.SyncStatus == 'added');
+        const addConsumptionEquipments = consumptionsEquipment.filter((consumptionEquipment: ConsumptionEquipmentEntity) => consumptionEquipment.SyncStatus == 'added');
         const updateConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment: ConsumptionEquipmentEntity) => consumptionEquipment.SyncStatus == 'updated');
         const deleteConsumptionEquipment = consumptionsEquipment.filter((consumptionEquipment: ConsumptionEquipmentEntity) => consumptionEquipment.SyncStatus == 'deleted');
 
+        let listDeConsumosRegistrados = [];
 
+        for await (const addConsumptionEquipment of addConsumptionEquipments) {
 
-        for await (const consumptionEquipment of addConsumptionEquipment) {
-
-            let searchMappingConsumptionEquipmentEntity = searchKey(MappingGroupOils, consumptionEquipment.entityEquipmentId);
+            let searchMappingConsumptionEquipmentEntity = searchKey(MappingGroupOils, addConsumptionEquipment.entityEquipmentId);
 
             // Armamos al nuevo tipo de aceite
             let newConsumptionEquipmentEntity = new ConsumptionEquipmentEntity();
 
             delete newConsumptionEquipmentEntity.id;
-            newConsumptionEquipmentEntity.userId = consumptionEquipment.userId;
-            newConsumptionEquipmentEntity.date = consumptionEquipment.date;
-            newConsumptionEquipmentEntity.amount = consumptionEquipment.amount;
-            newConsumptionEquipmentEntity.hourConsumption = consumptionEquipment.hourConsumption;
-            newConsumptionEquipmentEntity.observation = consumptionEquipment.observation;
-            newConsumptionEquipmentEntity.entityEquipmentId = consumptionEquipment.entityEquipmentId;
+            newConsumptionEquipmentEntity.userId = addConsumptionEquipment.userId;
+            newConsumptionEquipmentEntity.date = addConsumptionEquipment.date;
+            newConsumptionEquipmentEntity.amount = addConsumptionEquipment.amount;
+            newConsumptionEquipmentEntity.hourConsumption = addConsumptionEquipment.hourConsumption;
+            newConsumptionEquipmentEntity.observation = addConsumptionEquipment.observation;
+            newConsumptionEquipmentEntity.entityEquipmentId = addConsumptionEquipment.entityEquipmentId;
             if (searchMappingConsumptionEquipmentEntity) { newConsumptionEquipmentEntity.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value }
 
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
             // Auditoria.
-            newConsumptionEquipmentEntity.userIdCreated = consumptionEquipment.userIdCreated;
+            newConsumptionEquipmentEntity.userIdCreated = addConsumptionEquipment.userIdCreated;
             newConsumptionEquipmentEntity.dateCreated = GetDate();
             delete newConsumptionEquipmentEntity.userIdUpdated;
             delete newConsumptionEquipmentEntity.dateUpdated;
-            newConsumptionEquipmentEntity.status = Boolean(consumptionEquipment.status);
+            newConsumptionEquipmentEntity.status = Boolean(addConsumptionEquipment.status);
 
             // Registramos grupo de aceite
             let registeredConsumptionEquipmentEntity  = await this.Create(newConsumptionEquipmentEntity);
 
+            if(newConsumptionEquipmentEntity.status){
+                listDeConsumosRegistrados.push(registeredConsumptionEquipmentEntity.id);
+            }
             // Lo agregamos al mapping
-            MappingConsumptionsEquipment.push(new Mapping(newConsumptionEquipmentEntity.id, registeredConsumptionEquipmentEntity.id))
+            MappingConsumptionsEquipment.push(new Mapping(addConsumptionEquipment.id, registeredConsumptionEquipmentEntity.id))
         }
 
         for await (const updateTypeOfOilEquipment of updateConsumptionEquipment) {
@@ -170,6 +177,9 @@ export class ConsumptionEquipmentService {
             typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
             typeOfOilEquipment.status = Boolean(updateTypeOfOilEquipment.status);
 
+            if(typeOfOilEquipment.status){
+                listDeConsumosRegistrados.push(typeOfOilEquipment.id);
+            }
             await this._ConsumptionEquipment.save(typeOfOilEquipment);
         }
 
@@ -195,11 +205,23 @@ export class ConsumptionEquipmentService {
             typeOfOilEquipment.userIdUpdated = consumptionEquipment.userIdUpdated;
             typeOfOilEquipment.dateUpdated = consumptionEquipment.dateUpdated;
             typeOfOilEquipment.status = Boolean(consumptionEquipment.status);
-
+ 
             await this._ConsumptionEquipment.save(typeOfOilEquipment);
         }
 
 
-        return MappingConsumptionsEquipment;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+
+        return {
+            MappingConsumptionsEquipment:MappingConsumptionsEquipment,
+            listConsumosValidarSendMail:listDeConsumosRegistrados
+         } 
     }
+}
+
+export interface SaveListConsumptionEquipmentEntity {
+    MappingConsumptionsEquipment:Mapping[];
+    listConsumosValidarSendMail: any[] ;
 }

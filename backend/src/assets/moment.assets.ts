@@ -34,6 +34,17 @@ export function FormatDateUTCToDateHour(dateUTC: any): string {
     return format;
 }
 
+export function FormatDateUTCToDate(dateUTC: any): string {
+    // Con el formato YYYY MM DD
+    let momentDate = moment.utc(dateUTC);
+
+    let local = momentDate.local();
+
+    let format = local.format('MM/DD/YYYY');
+
+    return format;
+}
+
 
 export function ConvertDateUTC_To_FORMAT_UTC(dateUTC): string {
     let momentDate = moment.utc(dateUTC);

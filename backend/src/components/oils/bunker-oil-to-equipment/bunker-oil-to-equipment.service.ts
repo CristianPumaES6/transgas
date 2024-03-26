@@ -109,36 +109,36 @@ export class BunkerOilToEquipmentService {
 
         let MappingBunkerOilToEquipmentEntity:Mapping[] = [];
 
-        for await (const addTypeOfOilEquipment of addBunkerOilToEquipmentEntity) {
+        for await (const addBunkerOilToEquipment of addBunkerOilToEquipmentEntity) {
 
-            let searchMappingTypesOfOilEquipment = searchKey(MappingTypesOfOilEquipment, addTypeOfOilEquipment.entityEquipmentId);
-            let searchMappingOils = searchKey(MappingOils, addTypeOfOilEquipment.entityOilId);
+            let searchMappingTypesOfOilEquipment = searchKey(MappingTypesOfOilEquipment, addBunkerOilToEquipment.entityEquipmentId);
+            let searchMappingOils = searchKey(MappingOils, addBunkerOilToEquipment.entityOilId);
 
             // Armamos al nuevo tipo de aceite
             let newBunkerOilToEquipmentEntity = new BunkerOilToEquipmentEntity();
 
             delete newBunkerOilToEquipmentEntity.id;
-            newBunkerOilToEquipmentEntity.userId = addTypeOfOilEquipment.userId;
-            newBunkerOilToEquipmentEntity.entityEquipmentId = addTypeOfOilEquipment.entityEquipmentId;
-            if (searchMappingTypesOfOilEquipment) { addTypeOfOilEquipment.entityEquipmentId = searchMappingTypesOfOilEquipment.value }
-            newBunkerOilToEquipmentEntity.entityOilId = addTypeOfOilEquipment.entityOilId;
+            newBunkerOilToEquipmentEntity.userId = addBunkerOilToEquipment.userId;
+            newBunkerOilToEquipmentEntity.entityEquipmentId = addBunkerOilToEquipment.entityEquipmentId;
+            if (searchMappingTypesOfOilEquipment) { newBunkerOilToEquipmentEntity.entityEquipmentId = searchMappingTypesOfOilEquipment.value }
+            newBunkerOilToEquipmentEntity.entityOilId = addBunkerOilToEquipment.entityOilId;
             if (searchMappingOils) { newBunkerOilToEquipmentEntity.entityOilId = searchMappingOils.value }
-            newBunkerOilToEquipmentEntity.bunker = addTypeOfOilEquipment.bunker;
-            newBunkerOilToEquipmentEntity.comment = addTypeOfOilEquipment.comment;
-            newBunkerOilToEquipmentEntity.datetime = addTypeOfOilEquipment.datetime;
+            newBunkerOilToEquipmentEntity.bunker = addBunkerOilToEquipment.bunker;
+            newBunkerOilToEquipmentEntity.comment = addBunkerOilToEquipment.comment;
+            newBunkerOilToEquipmentEntity.datetime = addBunkerOilToEquipment.datetime;
 
             // Auditoria.
-            newBunkerOilToEquipmentEntity.userIdCreated = addTypeOfOilEquipment.userIdCreated;
+            newBunkerOilToEquipmentEntity.userIdCreated = addBunkerOilToEquipment.userIdCreated;
             newBunkerOilToEquipmentEntity.dateCreated = GetDate();
             delete newBunkerOilToEquipmentEntity.userIdUpdated;
             delete newBunkerOilToEquipmentEntity.dateUpdated;
-            newBunkerOilToEquipmentEntity.status = Boolean(addTypeOfOilEquipment.status);
+            newBunkerOilToEquipmentEntity.status = Boolean(addBunkerOilToEquipment.status);
 
             // Registramos grupo de aceite
             let registeredBunkerOilToEquipmentEntity = await this.Create(newBunkerOilToEquipmentEntity);
 
             // Lo agregamos al mapping
-            MappingBunkerOilToEquipmentEntity.push(new Mapping(addTypeOfOilEquipment.id, registeredBunkerOilToEquipmentEntity.id))
+            MappingBunkerOilToEquipmentEntity.push(new Mapping(addBunkerOilToEquipment.id, registeredBunkerOilToEquipmentEntity.id))
         }
 
         for await (const bunkerOilToEquipment of updateBunkerOilToEquipmentEntity) {
@@ -197,7 +197,7 @@ export class BunkerOilToEquipmentService {
             await this._BunkerOilToEquipment.save(bunkerOilToEquipment);
         }
 
-        return MappingTypesOfOilEquipment;
+        return MappingBunkerOilToEquipmentEntity;
     }
 
 }

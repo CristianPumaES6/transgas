@@ -10,6 +10,8 @@ export class TypeOfOilEquipmentEntity {
     userId: number;
     @Column({ nullable: false })
     equipment: string;
+    @Column({ nullable: false })
+    rate: number;
     @Column({ nullable: true })
     entityGroupId: number;
 
@@ -31,6 +33,7 @@ export class TypeOfOilEquipmentEntity {
 
         userId?: number,
         equipment?: string,
+        rate?: number,
         entityGroupId?: number,
 
         userIdCreated?: number,
@@ -38,12 +41,14 @@ export class TypeOfOilEquipmentEntity {
         userIdUpdated?: number,
         dateUpdated?: string,
 
-        status?: boolean
+        status?: boolean,
+        
     ) {
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';
 
+        this.rate = rate || 0;
         this.entityGroupId = entityGroupId || 0;
 
         // Auditoria

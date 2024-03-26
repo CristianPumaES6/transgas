@@ -1,19 +1,20 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { OilsService } from './oils.service';
+import { DailyOilConsumptionData, OilsService } from './oils.service';
 import { DummyPromise } from '../../assets/promises.assets';
 import { OilEntity, SaveDateOils } from '../../models/oil.entity';
 import { UserEntity } from '../../models/user.entity';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
-import { GetDate } from '../../assets/moment.assets';
+import { DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/moment.assets';
 import { GroupOilEntity } from '../../models/group-oils.entity';
 import { TypeOfOilEquipmentEntity } from '../../models/type-of-oils-equipment.entity';
 import { ConsumptionEquipmentEntity } from '../../models/consumptionEquipment.entity';
 import { BunkerOilToEquipmentEntity } from '../../models/buker-oil-to-equipment.entity';
 import { GroupOilsService } from './group-oils/group-oils.service';
 import { TypeOfOilEquipmentService } from './type-of-oil-equiment/type-of-oil-equiment.service';
-import { ConsumptionEquipmentService } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
+import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
 import { BunkerOilToEquipmentService } from './bunker-oil-to-equipment/bunker-oil-to-equipment.service';
 import { Mapping } from '../../assets/mappingKeys';
+import { SendMailHTMLOverCosumption } from 'src/assets/nodemailer.assets';
 
 
 @Controller('oils')
@@ -393,7 +394,7 @@ export class OilsController {
                 result.userIdUpdated = headerToken.id;
                 result.dateUpdated =  GetDate();
                 */
-//
+                //
 
 
 
@@ -444,16 +445,10 @@ export class OilsController {
         let mappingConsumptionsEquipment: Mapping[] = [];
         let mappingOils: Mapping[] = [];
         let mappingBunkersOilToEquipment: Mapping[] = [];
+        let listConsumosValidarSendMail = [];
 
-
-        console.log('--------------------------'); 
+        console.log('--------------------------');
         console.log('-----------[   saveModuleOils   ]---------------');
-        console.log('--------------------------');
-        console.log('--------------------------');
-        console.log(saveDateOils);
-        console.log('--------------------------');
-        console.log('--------------------------');
-        console.log('--------------------------');
         console.log('--------------------------');
 
         return DummyPromise().then(
@@ -471,7 +466,19 @@ export class OilsController {
             }
         ).then(
             (resultMappingGroupOils: Mapping[]) => {
+
                 mappingGroupOils = resultMappingGroupOils;
+
+                if (saveDateOils.listOils) {
+                    return this._OilsService.SaveList(saveDateOils.listOils);
+                } else {
+                    return [];
+                }
+            }
+        ).then(
+            (resultMappingOil: Mapping[]) => {
+
+                mappingOils = resultMappingOil;
 
                 if (saveDateOils.listTypeOfOilEquipment) {
                     return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
@@ -486,22 +493,17 @@ export class OilsController {
                 if (saveDateOils.listConsumptionEquipment) {
                     return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, saveDateOils.listConsumptionEquipment);
                 } else {
-                    return [];
+                    // vacio si no hay nada
+                    return {
+                        MappingConsumptionsEquipment: [],
+                        listConsumosValidarSendMail: []
+                    };
                 }
             }
         ).then(
-            (resultConsumptionEquipment: Mapping[]) => {
-                mappingConsumptionsEquipment = resultConsumptionEquipment;
-
-                if (saveDateOils.listOils) {
-                    return this._OilsService.SaveList(saveDateOils.listOils);
-                } else {
-                    return [];
-                }
-            }
-        ).then(
-            (resultMappingOil: Mapping[]) => {
-                mappingOils = resultMappingOil;
+            (resultConsumptionEquipment: SaveListConsumptionEquipmentEntity) => {
+                mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
+                listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
 
                 if (saveDateOils.listBunkerOilToEquipment) {
                     return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
@@ -513,6 +515,32 @@ export class OilsController {
             (resultBunkerOilToEquipment: Mapping[]) => {
 
                 mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
+
+                // tenemos que enviar un correo lo enviamos
+                if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
+                    console.log('Se realiza la consulta de consumos registrados')
+
+                    return this._OilsService.ConsultarListaDeConsumosRegistrados(listConsumosValidarSendMail);
+           
+                } else {
+                    return [];
+                }
+            }
+        ).then(
+            (listaDeConsumosRegistrados:DailyOilConsumptionData[]) => {
+ 
+
+                // tenemos que enviar un correo lo enviamos
+                if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
+                 
+                    return SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; hcamasca@transgas.com.pe; cpuma@transgas.com.pe',headerToken.name,FormatDateUTCToDate(GetDate()) ,listaDeConsumosRegistrados);
+           
+                } else {
+                    return true;
+                }
+            }
+        ).then(
+                (resultSendMail: boolean) => {
 
 
                 // retornamos una Respuesta exitosa.
