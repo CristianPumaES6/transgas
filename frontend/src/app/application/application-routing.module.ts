@@ -15,6 +15,7 @@ import { IsUpdateServerGuard } from '../guard/is-update-server.guard';
 import { SpeedAnalysisComponent } from '../components/dashboard/speed-analysis/speed-analysis.component';
 import { ConsumptionAnalysisComponent } from '../components/dashboard/consumption-analysis/consumption-analysis.component';
 import { OverviewComponent } from '../components/dashboard/overview/overview.component';
+import { LubricantAnalysisComponent } from '../components/dashboard/lubricant-analysis/lubricant-analysis.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,7 @@ const routes: Routes = [
       { path: 'dashboard/general_analysis', component: DashboardComponent },
       { path: 'dashboard/speed_analysis', component: SpeedAnalysisComponent },
       { path: 'dashboard/consumer_analysis', component: ConsumptionAnalysisComponent },
+      { path: 'dashboard/lubricant_analysis', component: LubricantAnalysisComponent },
       // Modulo de viaje
       { path: 'voyages', component: VoyageComponent },
       // Modulo de Usuario

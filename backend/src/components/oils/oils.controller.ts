@@ -194,6 +194,49 @@ export class OilsController {
         );
     }
 
+    @Get('getDataBuque/:userId')
+    async getDataBuque(@Param('userId') buqueId): Promise<any> {
+
+        // Inicio una promesa Dummy.
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+
+                // Validamos que los datos recibidos sean los correctos.
+                if (Number(buqueId)) {
+                    let userId = Number(buqueId);
+                    return this._OilsService.ConsultarListaDeConsumosPorBuque(buqueId);
+                } else {
+                    // caso contrario retornamos un error
+                    throw 'MISSING_FIELS';
+                }
+
+            }
+        ).then(
+            (resultGet: any) => {
+
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: resultGet
+                };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
     @Get(':id')
     async Get(@Param('id') id): Promise<any> {
 
@@ -237,6 +280,8 @@ export class OilsController {
         );
     }
 
+
+     
     @Post('create')
     Create(@Headers() headers, @Body() oilEntity: OilEntity): Promise<any> {
 

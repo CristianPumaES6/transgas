@@ -16,7 +16,7 @@ import { URL_Server } from '../../config/server.config'
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
-import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
+import { ConvertMMDDYYYToYYYYMMDD, DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/moment.assets';
 import { Mapping } from '../../assets/mappingKeys';
 
 
@@ -313,4 +313,223 @@ export class OilsService {
 
         return MappingOilEntity;
     }
+
+
+
+
+    // Consumos registrados COnsulta Para enviar Mail
+    async ConsultarListaDeConsumosRegistrados(ListCONSUMOSId: any[]): Promise<DailyOilConsumptionData[]> {
+ 
+
+        let listDeIds = '';
+
+        // Inicio de la promesa.
+        return await DummyPromise()
+            .then(
+                result => {
+                    // Solo si la fecha es null, obtenedremos el ultimo registro ingresado
+                    if (ListCONSUMOSId && ListCONSUMOSId.length) {
+
+
+                        var listDeID = ListCONSUMOSId.join(',');
+                        var queryWhere = 'consumptionEquipment.id in ('+listDeID+')';
+                        
+
+                        // Buscamos el ultimo reporte.
+                        return this._oilRepository.createQueryBuilder('oil')
+                            .addSelect('consumptionEquipment.date', 'dateConsumption')
+                            .addSelect('typeOfOilEquipment.equipment', 'equipment')
+                            .addSelect('consumptionEquipment.amount', 'amountConsumption')
+                            .addSelect('oil.name', 'nameOil')
+                            .addSelect('bunkerOilToEquipment.datetime', 'datetimeBunkerOil')
+                            .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
+                            .addSelect('typeOfOilEquipment.rate', 'rate')
+                            .addSelect('consumptionEquipment.observation', 'observation')
+
+                            // UNION DE TABLAS
+                            .innerJoin('bunkerOilToEquipment', 'bunkerOilToEquipment', 'bunkerOilToEquipment.entityOilId = oil.id AND bunkerOilToEquipment.status = 1 AND oil.status = 1')
+                            .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOilToEquipment.entityEquipmentId AND typeOfOilEquipment.status = 1')
+                            .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
+
+                            // Where status
+                            .where(queryWhere, {})
+                            // Filtro por el usuario seleccionado.
+                            .orderBy('consumptionEquipment.date', 'DESC')
+                            .limit(1000)
+                            .getRawMany()
+                    } else {
+                        return null;
+                    }
+                }
+            ).then(
+                resultFind => {
+
+                    let dailyOilConsumptionData: DailyOilConsumptionData[] = [];
+
+                    resultFind.forEach(
+                        item => {
+                            // Fecha de consumo
+                            let date = FormatDateUTCToDate(item.dateConsumption);
+
+                            // Calculamos el rate realizado en las horas
+                            let calcRate = 0;
+                            if(!item.hourConsumption || item.hourConsumption <= 0){
+                                calcRate = item.amountConsumption;
+                            }else {
+                                calcRate = item.amountConsumption/item.hourConsumption;
+                            }
+
+                            // verificamos si el rate es mayor a la hora de trabajo.
+                            if(calcRate > item.rate ){
+
+                                let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == date);
+
+                                if(findDailyOilConsumptionData) {
+                                    findDailyOilConsumptionData.data.push(
+                                        {
+                                            equipment: item.equipment,
+                                            amountConsumption: item.amountConsumption,
+                                            nameOil: item.nameOil,
+                                            datetimeBunkerOil: item.datetimeBunkerOil,
+                                            hourConsumption: item.hourConsumption,
+                                            rate: item.rate,
+                                            calcRate: calcRate
+                                        }
+                                    );
+                                };
+    
+                                if(!findDailyOilConsumptionData) {
+    
+                                    dailyOilConsumptionData.push(
+                                        {
+                                            dateConsumption : date,
+                                            observation : item.observation,
+                                            data: [
+                                                {
+                                                    equipment: item.equipment,
+                                                    amountConsumption: item.amountConsumption,
+                                                    nameOil: item.nameOil,
+                                                    datetimeBunkerOil: item.datetimeBunkerOil,
+                                                    hourConsumption: item.hourConsumption,
+                                                    rate: item.rate,
+                                                    calcRate: calcRate
+                                                }
+                                            ]
+                                        }
+                                    );
+                                };
+                            }
+                            
+
+                        }
+                    );
+
+                    
+
+                    return dailyOilConsumptionData;
+                });
+    }
+ 
+
+    // Consumos registrados COnsulta Para enviar Mail
+    async ConsultarListaDeConsumosPorBuque(buqueId: number): Promise<DailyOilConsumptionData[]> {
+ 
+ 
+
+        // Inicio de la promesa.
+        return await DummyPromise()
+            .then(
+                result => {
+                    // Solo si la fecha es null, obtenedremos el ultimo registro ingresado
+                    if (buqueId && buqueId>0) {
+
+
+                        
+                        var queryWhere = 'consumptionEquipment.userId = '+buqueId;
+                        
+
+                        // Buscamos el ultimo reporte.
+                        return this._oilRepository.createQueryBuilder('oil')
+                            .addSelect('consumptionEquipment.date', 'dateConsumption')
+                            .addSelect('typeOfOilEquipment.equipment', 'equipment')
+                            .addSelect('consumptionEquipment.amount', 'amountConsumption')
+                            .addSelect('oil.name', 'nameOil')
+                            .addSelect('bunkerOilToEquipment.datetime', 'datetimeBunkerOil')
+                            .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
+                            .addSelect('typeOfOilEquipment.rate', 'rate')
+                            .addSelect('consumptionEquipment.observation', 'observation')
+
+                            // UNION DE TABLAS
+                            .innerJoin('bunkerOilToEquipment', 'bunkerOilToEquipment', 'bunkerOilToEquipment.entityOilId = oil.id AND bunkerOilToEquipment.status = 1 AND oil.status = 1')
+                            .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOilToEquipment.entityEquipmentId AND typeOfOilEquipment.status = 1')
+                            .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
+
+                            // Where status
+                            .where(queryWhere, {})
+                            // Filtro por el usuario seleccionado.
+                            .orderBy('consumptionEquipment.date', 'DESC')
+                            .limit(1000)
+                            .getRawMany()
+                    } else {
+                        return [];
+                    }
+                }
+            ).then(
+                resultFind => {
+
+                    let dailyOilConsumptionData: DailyOilConsumptionData[] = [];
+
+                    resultFind.forEach(
+                        item => {
+                            // Fecha de consumo
+                            let date = FormatDateUTCToDate(item.dateConsumption);
+
+                            // Calculamos el rate realizado en las horas
+                            let calcRate = 0;
+                            if(!item.hourConsumption || item.hourConsumption <= 0){
+                                calcRate = item.amountConsumption;
+                            } else {
+                                calcRate = item.amountConsumption/item.hourConsumption;
+                            }
+ 
+                            
+                            dailyOilConsumptionData.push(
+                                {
+                                    dateConsumption : date,
+                                    observation : item.observation,
+                                    data: [
+                                        {
+                                            equipment: item.equipment,
+                                            amountConsumption: item.amountConsumption,
+                                            nameOil: item.nameOil,
+                                            datetimeBunkerOil: item.datetimeBunkerOil,
+                                            hourConsumption: item.hourConsumption,
+                                            rate: item.rate,
+                                            calcRate: calcRate
+                                        }
+                                    ]
+                                }
+                            );
+                        }
+                    );
+
+                    return dailyOilConsumptionData;
+                });
+    }
+}
+
+export interface DailyOilConsumptionData {
+    dateConsumption:string;
+    observation:string;
+    data: DataDailyOilConsumptionData[];
+}
+
+export interface DataDailyOilConsumptionData {
+    equipment: string ;
+    datetimeBunkerOil:string;
+    nameOil: string;
+    amountConsumption: number;
+    hourConsumption: number;
+    calcRate:number;
+    rate:number;
 }
