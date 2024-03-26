@@ -229,6 +229,7 @@ let OilsService = class OilsService {
                     .addSelect('bunkerOilToEquipment.datetime', 'datetimeBunkerOil')
                     .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
                     .addSelect('typeOfOilEquipment.rate', 'rate')
+                    .addSelect('consumptionEquipment.observation', 'observation')
                     .innerJoin('bunkerOilToEquipment', 'bunkerOilToEquipment', 'bunkerOilToEquipment.entityOilId = oil.id AND bunkerOilToEquipment.status = 1 AND oil.status = 1')
                     .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOilToEquipment.entityEquipmentId AND typeOfOilEquipment.status = 1')
                     .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
@@ -241,10 +242,51 @@ let OilsService = class OilsService {
                 return null;
             }
         }).then(resultFind => {
-            if (resultFind) {
-                return resultFind;
-            }
-            return [];
+            let dailyOilConsumptionData = [];
+            resultFind.forEach(item => {
+                let date = moment_assets_1.FormatDateUTCToDate(item.dateConsumption);
+                let calcRate = 0;
+                if (!item.hourConsumption || item.hourConsumption <= 0) {
+                    calcRate = item.amountConsumption;
+                }
+                else {
+                    calcRate = item.amountConsumption / item.hourConsumption;
+                }
+                if (calcRate > item.rate) {
+                    let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == date);
+                    if (findDailyOilConsumptionData) {
+                        findDailyOilConsumptionData.data.push({
+                            equipment: item.equipment,
+                            amountConsumption: item.amountConsumption,
+                            nameOil: item.nameOil,
+                            datetimeBunkerOil: item.datetimeBunkerOil,
+                            hourConsumption: item.hourConsumption,
+                            rate: item.rate,
+                            calcRate: calcRate
+                        });
+                    }
+                    ;
+                    if (!findDailyOilConsumptionData) {
+                        dailyOilConsumptionData.push({
+                            dateConsumption: date,
+                            observation: item.observation,
+                            data: [
+                                {
+                                    equipment: item.equipment,
+                                    amountConsumption: item.amountConsumption,
+                                    nameOil: item.nameOil,
+                                    datetimeBunkerOil: item.datetimeBunkerOil,
+                                    hourConsumption: item.hourConsumption,
+                                    rate: item.rate,
+                                    calcRate: calcRate
+                                }
+                            ]
+                        });
+                    }
+                    ;
+                }
+            });
+            return dailyOilConsumptionData;
         });
     }
 };

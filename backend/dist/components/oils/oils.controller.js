@@ -264,12 +264,6 @@ let OilsController = class OilsController {
         console.log('--------------------------');
         console.log('-----------[   saveModuleOils   ]---------------');
         console.log('--------------------------');
-        console.log('--------------------------');
-        console.log(saveDateOils);
-        console.log('--------------------------');
-        console.log('--------------------------');
-        console.log('--------------------------');
-        console.log('--------------------------');
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (saveDateOils) {
                 if (saveDateOils.listGroups) {
@@ -328,14 +322,12 @@ let OilsController = class OilsController {
             }
         }).then((listaDeConsumosRegistrados) => {
             if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
-                console.log('TODO OK LISTO PARA  ENVIAR CORREO.');
-                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com', headerToken.name, moment_assets_1.GetDate(), listaDeConsumosRegistrados);
+                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; hcamasca@transgas.com.pe; cpuma@transgas.com.pe', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
             }
             else {
                 return true;
             }
         }).then((resultSendMail) => {
-            console.log(resultSendMail);
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',

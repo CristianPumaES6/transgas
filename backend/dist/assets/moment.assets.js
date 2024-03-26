@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetHours = exports.ObtenerHoraDeDosStringUTC = exports.ConvertMomentUTC = exports.FormatDateSumDays = exports.ConvertDateUTC_masUnaCantidadDeHoras = exports.ObtenerlasHorasDeUnaFecaUTC = exports.DateDayMonthYear = exports.ConvertDDMMYYHHMM5HorasLOCAL = exports.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL = exports.ConvertDateUTC_To_FORMAT_UTC = exports.FormatDateUTCToDateHour = exports.ConvertMMDDYYYToYYYYMMDD = exports.GetDate = void 0;
+exports.GetHours = exports.ObtenerHoraDeDosStringUTC = exports.ConvertMomentUTC = exports.FormatDateSumDays = exports.ConvertDateUTC_masUnaCantidadDeHoras = exports.ObtenerlasHorasDeUnaFecaUTC = exports.DateDayMonthYear = exports.ConvertDDMMYYHHMM5HorasLOCAL = exports.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL = exports.ConvertDateUTC_To_FORMAT_UTC = exports.FormatDateUTCToDate = exports.FormatDateUTCToDateHour = exports.ConvertMMDDYYYToYYYYMMDD = exports.GetDate = void 0;
 const moment = require("moment");
 const momentTimezone = require("moment-timezone");
 moment.locale();
@@ -21,6 +21,13 @@ function FormatDateUTCToDateHour(dateUTC) {
     return format;
 }
 exports.FormatDateUTCToDateHour = FormatDateUTCToDateHour;
+function FormatDateUTCToDate(dateUTC) {
+    let momentDate = moment.utc(dateUTC);
+    let local = momentDate.local();
+    let format = local.format('MM/DD/YYYY');
+    return format;
+}
+exports.FormatDateUTCToDate = FormatDateUTCToDate;
 function ConvertDateUTC_To_FORMAT_UTC(dateUTC) {
     let momentDate = moment.utc(dateUTC);
     return momentDate.format('YYYY-MM-DD HH:mm:ss');

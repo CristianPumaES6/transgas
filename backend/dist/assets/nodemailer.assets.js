@@ -291,6 +291,7 @@ function SendMailHTMLOverCosumption(to, name, dateSend, listConsumptionLubricant
             dateSend: dateSend,
             listConsumptionLubricant: listConsumptionLubricant
         };
+        console.log(JSON.stringify(listConsumptionLubricant));
         return hbs_assets_1.HbsConvertHtmlRender('mailOverconsumptionOil.hbs', objRender);
     }).then((renderHtml) => {
         if (!renderHtml)
