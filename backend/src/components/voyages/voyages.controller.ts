@@ -14,7 +14,7 @@ import { ConvertDateUTC_masUnaCantidadDeHoras, ConvertDateUTC_To_FORMAT_UTC, Con
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
-import { DailyReportsService } from './daily-reports/daily-reports.service';
+import { DailyReportsService, SaveListDailyReport } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService, GenerateFormatObjForExcelEmail } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { MailLastVoyage, SendMailConfig } from '../../models/sendMailConfig';
@@ -665,22 +665,22 @@ export class VoyagesController {
                 newReport.portId = existePort.value;
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
-                
-                
+
+
                 let fechaMAs0 = '';
                 // esto es por un excel especial
                 if (importVoyage.date.length == 14 || importVoyage.date.length == 13 || importVoyage.date.length == 12 || importVoyage.date.length == 11 || importVoyage.date.length == 15 || importVoyage.date.length == 18) {
 
-                    ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date,5) + '.000';
+                    ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date, 5) + '.000';
 
                 } else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
                     // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
                     ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
 
                 } else if (importVoyage.date.length == 9) {
-                    ultimaFecha = '0' + importVoyage.date +' '+importVoyage.hour +':00';
+                    ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
                 } else if (importVoyage.date.length == 10) {
-                    ultimaFecha = importVoyage.date +' '+importVoyage.hour +' '+':00';
+                    ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
                 } else {
                     ultimaFecha = null;
                     console.log(importVoyage.date);
@@ -732,8 +732,8 @@ export class VoyagesController {
                     newReport.hour = ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora)
 
                 }
-                
-                newReport.date = <any>ConvertDateUTC_masUnaCantidadDeHoras(newReport.date,-5);
+
+                newReport.date = <any>ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, -5);
                 // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
                 // delete newReport.date;
                 // delete newReport.hour;
@@ -1790,7 +1790,7 @@ export class VoyagesController {
         let mappingDailyReports: Mapping[] = [];
 
 
-        
+
 
         console.log('--------------------------');
         console.log('-----------[   saveModuleVoyage   ]---------------');
@@ -1832,12 +1832,15 @@ export class VoyagesController {
                 if (saveDataModuleCombustible.listDailyReports) {
                     return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
                 } else {
-                    return [];
+                    return {
+                        mappingReport: [],
+                        registeredReportsList: []
+                    }
                 }
             }
         ).then(
-            (resultMappingDailyReports: Mapping[]) => {
-                mappingDailyReports = resultMappingDailyReports;
+            (resultMappingDailyReports: SaveListDailyReport) => {
+                mappingDailyReports = resultMappingDailyReports.mappingReport;
 
                 // retornamos una Respuesta exitosa.
                 return {

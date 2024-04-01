@@ -577,8 +577,8 @@ export class OilsController {
 
                 // tenemos que enviar un correo lo enviamos
                 if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
-                 
-                    return SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; hcamasca@transgas.com.pe; cpuma@transgas.com.pe',headerToken.name,FormatDateUTCToDate(GetDate()) ,listaDeConsumosRegistrados);
+                    //hcamasca@transgas.com.pe; 
+                    return SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; cpuma@transgas.com.pe',headerToken.name,FormatDateUTCToDate(GetDate()) ,listaDeConsumosRegistrados);
            
                 } else {
                     return true;

@@ -1449,7 +1449,7 @@ export class DailyReportsService {
     }
 
 
-    async SaveList( MappingPorts: Mapping[], importDailyReport: DailyReport[] ) {
+    async SaveList( MappingPorts: Mapping[], importDailyReport: DailyReport[] ) : Promise<SaveListDailyReport> {
 
         // Mapping
         let mappingDailyReports: Mapping[] = [];
@@ -1458,13 +1458,16 @@ export class DailyReportsService {
         const updateDailyReports = importDailyReport.filter((dailyReport: DailyReport) => dailyReport.SyncStatus == 'updated');
         const deleteDailyReports = importDailyReport.filter((dailyReport: DailyReport) => dailyReport.SyncStatus == 'deleted');
  
+        let listDeReportesRegistrados = [];
+
         for await (const addDailyReport of addDailyReports) {
+
             let searchMappingPort = searchKey(MappingPorts, addDailyReport.portId);
            
             // Armamos al nuevo aceite
             let newDailyReport = new DailyReport();
 
-            delete addDailyReport.id;
+            delete newDailyReport.id;
             newDailyReport.userId = addDailyReport.userId;
             newDailyReport.portId = addDailyReport.portId;
             if (searchMappingPort) { newDailyReport.portId = searchMappingPort.value }
@@ -1479,7 +1482,9 @@ export class DailyReportsService {
             newDailyReport.activityPerformed= addDailyReport.activityPerformed;
             newDailyReport.typeActivityPerformed= addDailyReport.typeActivityPerformed;
             newDailyReport.speedStraction= addDailyReport.speedStraction;
-
+            console.log('ADD DAILY')
+            console.log(addDailyReport.date);
+            
             newDailyReport.date= addDailyReport.date;
             newDailyReport.hour= addDailyReport.hour;
             newDailyReport.bunkeringIfo= addDailyReport.bunkeringIfo;
@@ -1513,31 +1518,42 @@ export class DailyReportsService {
             // Registramos grupo de aceite
             let registers = await this.Create(newDailyReport);
 
+            
+            // solo si esta activo guardaremos su Id para proximas evaluaciones
+            if(newDailyReport.status){
+                listDeReportesRegistrados.push(registers.id);
+            }
             // Lo agregamos al mapping
-            MappingPorts.push(new Mapping(addDailyReport.id, registers.id))
+            mappingDailyReports.push(new Mapping(addDailyReport.id, registers.id))
         }
 
         for await (const dailyReport of updateDailyReports) {
-            let updateDailyReport = new DailyReport();
+
             let searchMappingPort = searchKey(MappingPorts, dailyReport.portId);
            
+            let updateDailyReport = new DailyReport();
+
             updateDailyReport.id = dailyReport.id;
             updateDailyReport.userId = dailyReport.userId;
+
             updateDailyReport.portId = dailyReport.portId;
             if (searchMappingPort) { updateDailyReport.portId = searchMappingPort.value }
 
-            updateDailyReport.north_degree= dailyReport.north_degree;
-            updateDailyReport.north_minutes= dailyReport.north_minutes;
-            updateDailyReport.north_north_south= dailyReport.north_north_south;
-            updateDailyReport.east_degree= dailyReport.east_degree;
-            updateDailyReport.east_minutes= dailyReport.east_minutes;
-            updateDailyReport.east_east_west= dailyReport.east_east_west;
+            updateDailyReport.north_degree = dailyReport.north_degree;
+            updateDailyReport.north_minutes = dailyReport.north_minutes;
+            updateDailyReport.north_north_south = dailyReport.north_north_south;
+            updateDailyReport.east_degree = dailyReport.east_degree;
+            updateDailyReport.east_minutes = dailyReport.east_minutes;
+            updateDailyReport.east_east_west = dailyReport.east_east_west;
 
             updateDailyReport.activityPerformed= dailyReport.activityPerformed;
             updateDailyReport.typeActivityPerformed= dailyReport.typeActivityPerformed;
             updateDailyReport.speedStraction= dailyReport.speedStraction;
 
             updateDailyReport.date= dailyReport.date;
+
+            console.log('updateDailyReport')
+            console.log(dailyReport.date);
             updateDailyReport.hour= dailyReport.hour;
             updateDailyReport.bunkeringIfo= dailyReport.bunkeringIfo;
             updateDailyReport.bunkeringMgo= dailyReport.bunkeringMgo;
@@ -1558,7 +1574,7 @@ export class DailyReportsService {
             updateDailyReport.distance= dailyReport.distance;
             updateDailyReport.beaufour= dailyReport.beaufour;
             updateDailyReport.observation= dailyReport.observation;
-            
+
             // Auditoria
             updateDailyReport.userIdCreated = dailyReport.userIdCreated;
             updateDailyReport.dateCreated = dailyReport.dateCreated;
@@ -1567,14 +1583,21 @@ export class DailyReportsService {
             updateDailyReport.status = Boolean(dailyReport.status);
 
             await this._dailyReportRepository.save(updateDailyReport);
+            
+            if(updateDailyReport.status) {
+                listDeReportesRegistrados.push(updateDailyReport.id);
+            }
         }
 
         for await (let dailyReport of deleteDailyReports) {
-            let deletePortEntity = new DailyReport();
+
             let searchMappingPort = searchKey(MappingPorts, dailyReport.portId);
+
+            let deletePortEntity = new DailyReport();
 
             deletePortEntity.id = dailyReport.id;
             deletePortEntity.userId = dailyReport.userId;
+
             deletePortEntity.portId = dailyReport.portId;
             if (searchMappingPort) { deletePortEntity.portId = searchMappingPort.value }
 
@@ -1622,8 +1645,15 @@ export class DailyReportsService {
         }
 
 
-        return MappingPorts;
+        return  {
+            mappingReport : mappingDailyReports,
+            registeredReportsList : listDeReportesRegistrados
+        };
     }
+}
 
 
+export interface SaveListDailyReport {
+    mappingReport : Mapping[]; 
+    registeredReportsList: DailyReport[];
 }

@@ -98,6 +98,7 @@ export class TypeOfOilEquipmentService {
     // guarda una lista de aceite.
     async SaveList(MappingGroupOils: Mapping[], typesOfOilEquipmentEntity: TypeOfOilEquipmentEntity[]) {
 
+        // Mapping
         let MappingTypesOfOilEquipment: Mapping[] = [];
 
         // FIltramos los datos que faltan aggregar y actualizar.
@@ -145,6 +146,7 @@ export class TypeOfOilEquipmentService {
             typeOfOilEquipment.userId = updateTypeOfOilEquipment.userId;
             typeOfOilEquipment.rate = updateTypeOfOilEquipment.rate;
             typeOfOilEquipment.equipment = updateTypeOfOilEquipment.equipment;
+            
             typeOfOilEquipment.entityGroupId = updateTypeOfOilEquipment.entityGroupId;
             if (searchMappingGroupOils) { typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value }
 

@@ -423,10 +423,11 @@ export class PortsService {
 
 
     
-    async  SaveList( MappingVoyages: Mapping[], importPorts: Port[] ) {
+    async  SaveList( MappingVoyages: Mapping[], importPorts: Port[] )  {
 
         // Mapping
         let MappingPorts: Mapping[] = [];
+
         // Filtramos los datos que faltan aggregar y actualizar.
         const addPorts = importPorts.filter((port: Port) => port.SyncStatus == 'added');
         const updatePorts = importPorts.filter((port: Port) => port.SyncStatus == 'updated');
@@ -440,6 +441,7 @@ export class PortsService {
 
             delete newPortEntity.id;
             newPortEntity.userId = addPort.userId;
+
             newPortEntity.voyageId = addPort.voyageId;
             if (searchMappingVoyage) { newPortEntity.voyageId = searchMappingVoyage.value }
             
@@ -471,6 +473,7 @@ export class PortsService {
            
             updatePortEntity.id = updatePort.id;
             updatePortEntity.userId = updatePort.userId;
+            
             updatePortEntity.voyageId = updatePort.voyageId;
             if (searchMappingVoyage) { updatePortEntity.voyageId = searchMappingVoyage.value }
             

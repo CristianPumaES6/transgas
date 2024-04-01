@@ -147,6 +147,7 @@ export class ConsumptionEquipmentService {
             // Registramos grupo de aceite
             let registeredConsumptionEquipmentEntity  = await this.Create(newConsumptionEquipmentEntity);
 
+            // solo si esta activo guardaremos su Id para proximas evaluaciones
             if(newConsumptionEquipmentEntity.status){
                 listDeConsumosRegistrados.push(registeredConsumptionEquipmentEntity.id);
             }
@@ -177,6 +178,7 @@ export class ConsumptionEquipmentService {
             typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
             typeOfOilEquipment.status = Boolean(updateTypeOfOilEquipment.status);
 
+            // solo si esta activo guardaremos su Id para proximas evaluaciones
             if(typeOfOilEquipment.status){
                 listDeConsumosRegistrados.push(typeOfOilEquipment.id);
             }
@@ -195,6 +197,7 @@ export class ConsumptionEquipmentService {
             typeOfOilEquipment.amount = consumptionEquipment.amount;
             typeOfOilEquipment.hourConsumption = consumptionEquipment.hourConsumption;
             typeOfOilEquipment.observation = consumptionEquipment.observation;
+            
             typeOfOilEquipment.entityEquipmentId = consumptionEquipment.entityEquipmentId;
             if (searchMappingConsumptionEquipmentEntity) { typeOfOilEquipment.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value }
 
