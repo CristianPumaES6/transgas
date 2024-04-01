@@ -11,6 +11,7 @@ export declare class OilsService {
     Delete(oilEntity: OilEntity, usuarioDelete: number): Promise<OilEntity>;
     SaveList(importOils: OilEntity[]): Promise<Mapping[]>;
     ConsultarListaDeConsumosRegistrados(ListCONSUMOSId: any[]): Promise<DailyOilConsumptionData[]>;
+    ConsultarListaDeConsumosPorBuque(buqueId: number): Promise<DailyOilConsumptionData[]>;
 }
 export interface DailyOilConsumptionData {
     dateConsumption: string;

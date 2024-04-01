@@ -13,6 +13,7 @@ export declare class OilsController {
     constructor(_OilsService: OilsService, _GroupOilEntityService: GroupOilsService, _TypeOfOilEquipmentService: TypeOfOilEquipmentService, _ConsumptionEquipmentService: ConsumptionEquipmentService, _BunkerOilToEquipmentService: BunkerOilToEquipmentService);
     Gets(headers: any, oilEntity: OilEntity): Promise<any>;
     GetsDataServer(headers: any, oilEntity: OilEntity): Promise<any>;
+    getDataBuque(buqueId: any): Promise<any>;
     Get(id: any): Promise<any>;
     Create(headers: any, oilEntity: OilEntity): Promise<any>;
     Update(headers: any, id: any, oilEntity: OilEntity): Promise<any>;

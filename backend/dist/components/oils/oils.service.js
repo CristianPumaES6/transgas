@@ -289,6 +289,61 @@ let OilsService = class OilsService {
             return dailyOilConsumptionData;
         });
     }
+    async ConsultarListaDeConsumosPorBuque(buqueId) {
+        return await promises_assets_1.DummyPromise()
+            .then(result => {
+            if (buqueId && buqueId > 0) {
+                var queryWhere = 'consumptionEquipment.userId = ' + buqueId;
+                return this._oilRepository.createQueryBuilder('oil')
+                    .addSelect('consumptionEquipment.date', 'dateConsumption')
+                    .addSelect('typeOfOilEquipment.equipment', 'equipment')
+                    .addSelect('consumptionEquipment.amount', 'amountConsumption')
+                    .addSelect('oil.name', 'nameOil')
+                    .addSelect('bunkerOilToEquipment.datetime', 'datetimeBunkerOil')
+                    .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
+                    .addSelect('typeOfOilEquipment.rate', 'rate')
+                    .addSelect('consumptionEquipment.observation', 'observation')
+                    .innerJoin('bunkerOilToEquipment', 'bunkerOilToEquipment', 'bunkerOilToEquipment.entityOilId = oil.id AND bunkerOilToEquipment.status = 1 AND oil.status = 1')
+                    .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOilToEquipment.entityEquipmentId AND typeOfOilEquipment.status = 1')
+                    .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
+                    .where(queryWhere, {})
+                    .orderBy('consumptionEquipment.date', 'DESC')
+                    .limit(1000)
+                    .getRawMany();
+            }
+            else {
+                return [];
+            }
+        }).then(resultFind => {
+            let dailyOilConsumptionData = [];
+            resultFind.forEach(item => {
+                let date = moment_assets_1.FormatDateUTCToDate(item.dateConsumption);
+                let calcRate = 0;
+                if (!item.hourConsumption || item.hourConsumption <= 0) {
+                    calcRate = item.amountConsumption;
+                }
+                else {
+                    calcRate = item.amountConsumption / item.hourConsumption;
+                }
+                dailyOilConsumptionData.push({
+                    dateConsumption: date,
+                    observation: item.observation,
+                    data: [
+                        {
+                            equipment: item.equipment,
+                            amountConsumption: item.amountConsumption,
+                            nameOil: item.nameOil,
+                            datetimeBunkerOil: item.datetimeBunkerOil,
+                            hourConsumption: item.hourConsumption,
+                            rate: item.rate,
+                            calcRate: calcRate
+                        }
+                    ]
+                });
+            });
+            return dailyOilConsumptionData;
+        });
+    }
 };
 OilsService = __decorate([
     common_1.Injectable(),

@@ -939,12 +939,13 @@ let DailyReportsService = class DailyReportsService {
         const addDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'added');
         const updateDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'updated');
         const deleteDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'deleted');
+        let listDeReportesRegistrados = [];
         try {
             for (var addDailyReports_1 = __asyncValues(addDailyReports), addDailyReports_1_1; addDailyReports_1_1 = await addDailyReports_1.next(), !addDailyReports_1_1.done;) {
                 const addDailyReport = addDailyReports_1_1.value;
                 let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, addDailyReport.portId);
                 let newDailyReport = new daily_report_entity_1.DailyReport();
-                delete addDailyReport.id;
+                delete newDailyReport.id;
                 newDailyReport.userId = addDailyReport.userId;
                 newDailyReport.portId = addDailyReport.portId;
                 if (searchMappingPort) {
@@ -959,6 +960,8 @@ let DailyReportsService = class DailyReportsService {
                 newDailyReport.activityPerformed = addDailyReport.activityPerformed;
                 newDailyReport.typeActivityPerformed = addDailyReport.typeActivityPerformed;
                 newDailyReport.speedStraction = addDailyReport.speedStraction;
+                console.log('ADD DAILY');
+                console.log(addDailyReport.date);
                 newDailyReport.date = addDailyReport.date;
                 newDailyReport.hour = addDailyReport.hour;
                 newDailyReport.bunkeringIfo = addDailyReport.bunkeringIfo;
@@ -983,7 +986,10 @@ let DailyReportsService = class DailyReportsService {
                 delete newDailyReport.dateUpdated;
                 newDailyReport.status = Boolean(addDailyReport.status);
                 let registers = await this.Create(newDailyReport);
-                MappingPorts.push(new mappingKeys_1.Mapping(addDailyReport.id, registers.id));
+                if (newDailyReport.status) {
+                    listDeReportesRegistrados.push(registers.id);
+                }
+                mappingDailyReports.push(new mappingKeys_1.Mapping(addDailyReport.id, registers.id));
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -996,8 +1002,8 @@ let DailyReportsService = class DailyReportsService {
         try {
             for (var updateDailyReports_1 = __asyncValues(updateDailyReports), updateDailyReports_1_1; updateDailyReports_1_1 = await updateDailyReports_1.next(), !updateDailyReports_1_1.done;) {
                 const dailyReport = updateDailyReports_1_1.value;
-                let updateDailyReport = new daily_report_entity_1.DailyReport();
                 let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, dailyReport.portId);
+                let updateDailyReport = new daily_report_entity_1.DailyReport();
                 updateDailyReport.id = dailyReport.id;
                 updateDailyReport.userId = dailyReport.userId;
                 updateDailyReport.portId = dailyReport.portId;
@@ -1014,6 +1020,8 @@ let DailyReportsService = class DailyReportsService {
                 updateDailyReport.typeActivityPerformed = dailyReport.typeActivityPerformed;
                 updateDailyReport.speedStraction = dailyReport.speedStraction;
                 updateDailyReport.date = dailyReport.date;
+                console.log('updateDailyReport');
+                console.log(dailyReport.date);
                 updateDailyReport.hour = dailyReport.hour;
                 updateDailyReport.bunkeringIfo = dailyReport.bunkeringIfo;
                 updateDailyReport.bunkeringMgo = dailyReport.bunkeringMgo;
@@ -1037,6 +1045,9 @@ let DailyReportsService = class DailyReportsService {
                 updateDailyReport.dateUpdated = dailyReport.dateUpdated;
                 updateDailyReport.status = Boolean(dailyReport.status);
                 await this._dailyReportRepository.save(updateDailyReport);
+                if (updateDailyReport.status) {
+                    listDeReportesRegistrados.push(updateDailyReport.id);
+                }
             }
         }
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
@@ -1049,8 +1060,8 @@ let DailyReportsService = class DailyReportsService {
         try {
             for (var deleteDailyReports_1 = __asyncValues(deleteDailyReports), deleteDailyReports_1_1; deleteDailyReports_1_1 = await deleteDailyReports_1.next(), !deleteDailyReports_1_1.done;) {
                 let dailyReport = deleteDailyReports_1_1.value;
-                let deletePortEntity = new daily_report_entity_1.DailyReport();
                 let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, dailyReport.portId);
+                let deletePortEntity = new daily_report_entity_1.DailyReport();
                 deletePortEntity.id = dailyReport.id;
                 deletePortEntity.userId = dailyReport.userId;
                 deletePortEntity.portId = dailyReport.portId;
@@ -1099,7 +1110,10 @@ let DailyReportsService = class DailyReportsService {
             }
             finally { if (e_3) throw e_3.error; }
         }
-        return MappingPorts;
+        return {
+            mappingReport: mappingDailyReports,
+            registeredReportsList: listDeReportesRegistrados
+        };
     }
 };
 DailyReportsService = __decorate([

@@ -128,6 +128,31 @@ let OilsController = class OilsController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    async getDataBuque(buqueId) {
+        return promises_assets_1.DummyPromise().then((resultDummy) => {
+            if (Number(buqueId)) {
+                let userId = Number(buqueId);
+                return this._OilsService.ConsultarListaDeConsumosPorBuque(buqueId);
+            }
+            else {
+                throw 'MISSING_FIELS';
+            }
+        }).then((resultGet) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: resultGet
+            };
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
     async Get(id) {
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (Number(id)) {
@@ -322,7 +347,7 @@ let OilsController = class OilsController {
             }
         }).then((listaDeConsumosRegistrados) => {
             if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
-                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; hcamasca@transgas.com.pe; cpuma@transgas.com.pe', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
+                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; cpuma@transgas.com.pe', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
             }
             else {
                 return true;
@@ -364,6 +389,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, oil_entity_1.OilEntity]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "GetsDataServer", null);
+__decorate([
+    common_1.Get('getDataBuque/:userId'),
+    __param(0, common_1.Param('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OilsController.prototype, "getDataBuque", null);
 __decorate([
     common_1.Get(':id'),
     __param(0, common_1.Param('id')),

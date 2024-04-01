@@ -1217,10 +1217,13 @@ let VoyagesController = class VoyagesController {
                 return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
             }
             else {
-                return [];
+                return {
+                    mappingReport: [],
+                    registeredReportsList: []
+                };
             }
         }).then((resultMappingDailyReports) => {
-            mappingDailyReports = resultMappingDailyReports;
+            mappingDailyReports = resultMappingDailyReports.mappingReport;
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
