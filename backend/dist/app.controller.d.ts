@@ -21,4 +21,5 @@ export declare class AppController {
     loggedUsers(headers: any, loggedUser: LoggedUser): Promise<any>;
     GetLoggedUsers(headers: any, loggedUser: LoggedUser): Promise<any>;
     EmitConnect(): Promise<any>;
+    ConsultaGeneral(buqueId: any): Promise<import("./app.service").ListUserConsumptionLubricantPerMonth[]>;
 }

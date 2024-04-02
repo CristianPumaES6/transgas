@@ -139,6 +139,12 @@ let AppController = class AppController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    async ConsultaGeneral(buqueId) {
+        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+            let userId = Number(buqueId);
+            return this.appService.ListConsumptionLubricantPerMonth(userId);
+        });
+    }
 };
 __decorate([
     common_1.Get('pruebas'),
@@ -188,6 +194,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "EmitConnect", null);
+__decorate([
+    common_1.Get('ListConsumptionLubricantPerMonth/:userId'),
+    __param(0, common_1.Param('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "ConsultaGeneral", null);
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,

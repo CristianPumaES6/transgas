@@ -32,7 +32,8 @@ OilsModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([oil_entity_1.OilEntity, consumptionEquipment_entity_1.ConsumptionEquipmentEntity, group_oils_entity_1.GroupOilEntity, buker_oil_to_equipment_entity_1.BunkerOilToEquipmentEntity, type_of_oils_equipment_entity_1.TypeOfOilEquipmentEntity]),
         ],
         controllers: [oils_controller_1.OilsController, consumption_equipment_controller_1.ConsumptionEquipmentController, group_oils_controller_1.GroupOilsController, type_of_oil_equiment_controller_1.TypeOfOilEquipmentController, bunker_oil_to_equipment_controller_1.BunkerOilToEquipmentController],
-        providers: [oils_service_1.OilsService, consumption_equipment_service_1.ConsumptionEquipmentService, group_oils_service_1.GroupOilsService, type_of_oil_equiment_service_1.TypeOfOilEquipmentService, bunker_oil_to_equipment_service_1.BunkerOilToEquipmentService]
+        providers: [oils_service_1.OilsService, consumption_equipment_service_1.ConsumptionEquipmentService, group_oils_service_1.GroupOilsService, type_of_oil_equiment_service_1.TypeOfOilEquipmentService, bunker_oil_to_equipment_service_1.BunkerOilToEquipmentService],
+        exports: [consumption_equipment_service_1.ConsumptionEquipmentService]
     })
 ], OilsModule);
 exports.OilsModule = OilsModule;

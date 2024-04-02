@@ -7,8 +7,21 @@ export declare class ConsumptionEquipmentService {
     Gets(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity[]>;
     Create(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity>;
     SaveList(MappingGroupOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
+    getOilConsumptionPerMonth(userId: number): Promise<getOilConsumptionPerMonth[]>;
 }
 export interface SaveListConsumptionEquipmentEntity {
     MappingConsumptionsEquipment: Mapping[];
     listConsumosValidarSendMail: any[];
+}
+export interface getOilConsumptionPerMonth {
+    month: string;
+    entityEquipmentId: number;
+    total_amount: number;
+    total_hourConsumption: number;
+    rate: number;
+    equipment: string;
+    entityGroupId: number;
+    total_bunker: number;
+    last_entityOilId: number;
+    last_oil_name: string;
 }
