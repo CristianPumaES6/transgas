@@ -11,6 +11,7 @@ export declare class AppService {
     ConsumptionLubricantPerMonthPerListUsers(users: any[]): Promise<ListUserConsumptionLubricantPerMonth[]>;
 }
 export interface ListUserConsumptionLubricantPerMonth {
+    userId: number;
     userName: string;
     filename: string;
     getOilConsumptionPerMonth: getOilConsumptionPerMonth[];

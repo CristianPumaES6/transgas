@@ -3527,8 +3527,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "7556e8e3d54387f917f54ad7e8073ae5e5996b8faba0bab2b5218aa08157f464",
-        "signature": "4b644d1ca6cb6ba23452d4ba16116b0d0c146e0913795efd74360fa0027d595c",
+        "version": "9bc3ae0ba801f8e81106dac2a26feae7581b6b9b568dc661e05f167d0288314e",
+        "signature": "ccf2f767be52e10232b4061d3e0f24db44ec16613dbef96e73493c561aaca723",
         "affectsGlobalScope": false
       },
       "../src/components/users/users.service.ts": {
@@ -3537,8 +3537,8 @@
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "2cdbcd574dfe57b4c4b4a8d35de2ce7b934612881d3678c7c807ae3b48146b77",
-        "signature": "a6885da39c29caef1d0602155e73f3efedab7b85ecb3cc34b55dc99e1cf8cd7b",
+        "version": "abf320d50bd18ca4c2daf5b4b56ae7abd7347bbac1273ebc98a7bdf2a1258d8f",
+        "signature": "2028b911e931c69d7381e9e14915911cdcaf456464ea556c7decde10cc3c8a2f",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/jsonwebtoken/index.d.ts": {

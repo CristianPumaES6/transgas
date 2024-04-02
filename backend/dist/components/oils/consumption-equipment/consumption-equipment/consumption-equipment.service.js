@@ -189,65 +189,65 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     async getOilConsumptionPerMonth(userId) {
         const query = `
     SELECT
-      CE.month,
+    CE.year_month,
+    CE.entityEquipmentId,
+    CE.total_amount,
+    CE.total_hourConsumption,
+    CE.rate,
+    CE.equipment,
+    CE.entityGroupId,
+    COALESCE(B.total_bunker, 0) AS total_bunker,
+    B.last_entityOilId,
+    B.last_oil_name
+  FROM
+    (SELECT
+      strftime('%Y-%m', CE.date) AS year_month,
       CE.entityEquipmentId,
-      CE.total_amount,
-      CE.total_hourConsumption,
-      CE.rate,
-      CE.equipment,
-      CE.entityGroupId,
-      COALESCE(B.total_bunker, 0) AS total_bunker,
-      B.last_entityOilId,
-      B.last_oil_name
+      TOE.entityGroupId,
+      SUM(CE.amount) AS total_amount,
+      SUM(CE.hourConsumption) AS total_hourConsumption,
+      TOE.rate,
+      TOE.equipment
     FROM
-      (SELECT
-        strftime('%Y-%m', CE.date) AS month,
-        CE.entityEquipmentId,
-        TOE.entityGroupId,
-        SUM(CE.amount) AS total_amount,
-        SUM(CE.hourConsumption) AS total_hourConsumption,
-        TOE.rate,
-        TOE.equipment
-      FROM
-        consumptionEquipment CE
-        INNER JOIN typeOfOilEquipment TOE ON CE.entityEquipmentId = TOE.id
-      WHERE
-        CE.userId = ? AND
-        CE.status = 1
-      GROUP BY
-        month,
-        CE.entityEquipmentId,
-        TOE.entityGroupId) AS CE
-    LEFT JOIN
-      (SELECT 
-        strftime('%Y-%m', main.datetime) AS month,
-        main.entityEquipmentId,
-        SUM(main.bunker) AS total_bunker,
-        (SELECT sub.entityOilId 
-         FROM bunkerOilToEquipment sub
-         WHERE sub.entityEquipmentId = main.entityEquipmentId
-           AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
-           AND sub.status = 1
-         ORDER BY sub.datetime DESC 
-         LIMIT 1) AS last_entityOilId,
-        (SELECT O.name 
-         FROM bunkerOilToEquipment sub
-         INNER JOIN oil O ON O.id = sub.entityOilId
-         WHERE sub.entityEquipmentId = main.entityEquipmentId
-           AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
-           AND sub.status = 1
-         ORDER BY sub.datetime DESC 
-         LIMIT 1) AS last_oil_name
-      FROM 
-        bunkerOilToEquipment main
-      WHERE main.userId = ? AND
-        main.status = 1
-      GROUP BY 
-        month,
-        main.entityEquipmentId) AS B ON CE.month = B.month AND CE.entityEquipmentId = B.entityEquipmentId
-    ORDER BY
-      CE.month DESC, 
-      CE.entityEquipmentId;
+      consumptionEquipment CE
+      INNER JOIN typeOfOilEquipment TOE ON CE.entityEquipmentId = TOE.id
+    WHERE
+      CE.userId = ? AND
+      CE.status = 1
+    GROUP BY
+      year_month,
+      CE.entityEquipmentId,
+      TOE.entityGroupId) AS CE
+  LEFT JOIN
+    (SELECT 
+      strftime('%Y-%m', main.datetime) AS year_month,
+      main.entityEquipmentId,
+      SUM(main.bunker) AS total_bunker,
+      (SELECT sub.entityOilId 
+       FROM bunkerOilToEquipment sub
+       WHERE sub.entityEquipmentId = main.entityEquipmentId
+         AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
+         AND sub.status = 1
+       ORDER BY sub.datetime DESC 
+       LIMIT 1) AS last_entityOilId,
+      (SELECT O.name 
+       FROM bunkerOilToEquipment sub
+       INNER JOIN oil O ON O.id = sub.entityOilId
+       WHERE sub.entityEquipmentId = main.entityEquipmentId
+         AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
+         AND sub.status = 1
+       ORDER BY sub.datetime DESC 
+       LIMIT 1) AS last_oil_name
+    FROM 
+      bunkerOilToEquipment main
+    WHERE main.userId = ? AND
+      main.status = 1
+    GROUP BY 
+      year_month,
+      main.entityEquipmentId) AS B ON CE.year_month = B.year_month AND CE.entityEquipmentId = B.entityEquipmentId
+  ORDER BY
+    CE.year_month DESC, 
+    CE.entityEquipmentId;
     `;
         return this._ConsumptionEquipment.query(query, [userId, userId]);
     }

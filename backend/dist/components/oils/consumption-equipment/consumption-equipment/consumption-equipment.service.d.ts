@@ -14,7 +14,7 @@ export interface SaveListConsumptionEquipmentEntity {
     listConsumosValidarSendMail: any[];
 }
 export interface getOilConsumptionPerMonth {
-    month: string;
+    year_month: string;
     entityEquipmentId: number;
     total_amount: number;
     total_hourConsumption: number;
