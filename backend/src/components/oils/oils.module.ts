@@ -23,6 +23,7 @@ import { TypeOfOilEquipmentService } from './type-of-oil-equiment/type-of-oil-eq
     TypeOrmModule.forFeature([OilEntity,ConsumptionEquipmentEntity,GroupOilEntity,BunkerOilToEquipmentEntity,TypeOfOilEquipmentEntity]),
   ],
   controllers: [OilsController, ConsumptionEquipmentController, GroupOilsController, TypeOfOilEquipmentController, BunkerOilToEquipmentController],
-  providers: [OilsService, ConsumptionEquipmentService, GroupOilsService, TypeOfOilEquipmentService, BunkerOilToEquipmentService]
+  providers: [OilsService, ConsumptionEquipmentService, GroupOilsService, TypeOfOilEquipmentService, BunkerOilToEquipmentService],
+  exports: [ConsumptionEquipmentService] 
 })
 export class OilsModule {}

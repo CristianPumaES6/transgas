@@ -227,4 +227,15 @@ export class AppController {
 
   }
 
+  @Get('ListConsumptionLubricantPerMonth/:userId')
+  async ConsultaGeneral(@Param('userId') buqueId) {
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+        let userId = Number(buqueId);
+
+        return this.appService.ListConsumptionLubricantPerMonth(userId);
+      }
+    )
+
+  }
 }

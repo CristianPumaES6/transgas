@@ -4,11 +4,17 @@ import { AppGateway } from './app.gateway';
 import { GetDate } from './assets/moment.assets';
 import { LoggedUser } from './models/loggedUser';
 import { SocketEmitModel } from './models/socketEmit';
+import { ConsumptionEquipmentService, getOilConsumptionPerMonth } from './components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service';
+import { DummyPromise } from './assets/promises.assets';
+import { UsersService } from './components/users/users.service';
+import { UserEntity } from './models/user.entity';
 @Injectable()
 export class AppService {
 
   constructor(
    private gateway: AppGateway, // Por mientras que este desactivado.
+   private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
+   private readonly _UsersService: UsersService,
   ) {
   }
 
@@ -24,5 +30,53 @@ export class AppService {
     this.gateway.wss.emit('EmitConnect', socketEmitModel); // Que este desactivado.
     return true;
   }
+
+
+  public ListConsumptionLubricantPerMonth(userid:number){
+
+
+    return DummyPromise().then(
+      result => {
+        return this._UsersService.Gets(<UserEntity>{id:userid});
+      }
+    ).then(
+      result => {
+
+                // No lo validamos por que puede llegar vacio.
+                return this.ConsumptionLubricantPerMonthPerListUsers(result);
+          }
+      );
+
+  }
+
+
+
+    // guarda una lista de aceite.
+    async ConsumptionLubricantPerMonthPerListUsers(users: any[]) {
+
+      let returnDashboardLubricant:ListUserConsumptionLubricantPerMonth[] =[] ;
+    
+      for await (const itemUser of users) {
+        let DashboardListMonthLubricant:ListUserConsumptionLubricantPerMonth= <ListUserConsumptionLubricantPerMonth>{};
+           
+        DashboardListMonthLubricant.userName = itemUser.name;
+        DashboardListMonthLubricant.filename = itemUser.filename;
+        // Registramos grupo de aceite
+        DashboardListMonthLubricant.getOilConsumptionPerMonth = await  this._ConsumptionEquipmentService.getOilConsumptionPerMonth(itemUser.id);
+         
+        returnDashboardLubricant.push(DashboardListMonthLubricant);
+      }
+ 
+      return returnDashboardLubricant;
+  }
+
+
+
+}
+
+export interface ListUserConsumptionLubricantPerMonth {
+  userName: string;
+  filename: string;
+  getOilConsumptionPerMonth: getOilConsumptionPerMonth[];
 
 }
