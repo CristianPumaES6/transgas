@@ -37,7 +37,7 @@ let AppService = class AppService {
     }
     ListConsumptionLubricantPerMonth(userid) {
         return promises_assets_1.DummyPromise().then(result => {
-            return this._UsersService.Gets({ id: userid });
+            return this._UsersService.Gets({ id: userid, role: 'BUQUE' });
         }).then(result => {
             return this.ConsumptionLubricantPerMonthPerListUsers(result);
         });
@@ -49,8 +49,10 @@ let AppService = class AppService {
             for (var users_1 = __asyncValues(users), users_1_1; users_1_1 = await users_1.next(), !users_1_1.done;) {
                 const itemUser = users_1_1.value;
                 let DashboardListMonthLubricant = {};
+                DashboardListMonthLubricant.userId = itemUser.id;
                 DashboardListMonthLubricant.userName = itemUser.name;
                 DashboardListMonthLubricant.filename = itemUser.filename;
+                DashboardListMonthLubricant.role = itemUser.role;
                 DashboardListMonthLubricant.getOilConsumptionPerMonth = await this._ConsumptionEquipmentService.getOilConsumptionPerMonth(itemUser.id);
                 returnDashboardLubricant.push(DashboardListMonthLubricant);
             }

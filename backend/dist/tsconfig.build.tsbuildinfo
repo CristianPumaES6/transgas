@@ -3537,8 +3537,8 @@
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "abf320d50bd18ca4c2daf5b4b56ae7abd7347bbac1273ebc98a7bdf2a1258d8f",
-        "signature": "2028b911e931c69d7381e9e14915911cdcaf456464ea556c7decde10cc3c8a2f",
+        "version": "c3026523654ac05a617f43258921af73ed2264c0427749f3882d881c2b9f1a4d",
+        "signature": "5ac0b53f35b2c2b4907cf846b21ba4ce4e0ba34a1724d194841d35ea91a6c63d",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/jsonwebtoken/index.d.ts": {
@@ -10517,7 +10517,8 @@
       "../src/app.service.ts": [
         "../src/app.gateway.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts",
-        "../src/components/users/users.service.ts"
+        "../src/components/users/users.service.ts",
+        "../src/models/user.entity.ts"
       ],
       "../src/assets/hbs.assets.ts": [
         "../node_modules/@nestjs/platform-express/index.d.ts"
