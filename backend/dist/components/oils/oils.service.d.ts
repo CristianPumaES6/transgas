@@ -19,6 +19,8 @@ export interface DailyOilConsumptionData {
     data: DataDailyOilConsumptionData[];
 }
 export interface DataDailyOilConsumptionData {
+    userId: string;
+    equipmentId: string;
     equipment: string;
     datetimeBunkerOil: string;
     nameOil: string;
