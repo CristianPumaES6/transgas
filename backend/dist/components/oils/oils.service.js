@@ -223,8 +223,8 @@ let OilsService = class OilsService {
                 var queryWhere = 'consumptionEquipment.id in (' + listDeID + ')';
                 return this._oilRepository.createQueryBuilder('oil')
                     .addSelect('consumptionEquipment.date', 'dateConsumption')
-                    .addSelect('typeOfOilEquipment.userId', 'userId')
-                    .addSelect('typeOfOilEquipment.id', 'equipmentId')
+                    .addSelect('typeOfOilEquipment.userId', 'typeOfOilEquipment_userId')
+                    .addSelect('typeOfOilEquipment.id', 'typeOfOilEquipment_id')
                     .addSelect('typeOfOilEquipment.equipment', 'equipment')
                     .addSelect('consumptionEquipment.amount', 'amountConsumption')
                     .addSelect('oil.name', 'nameOil')
@@ -258,8 +258,8 @@ let OilsService = class OilsService {
                     let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == date);
                     if (findDailyOilConsumptionData) {
                         findDailyOilConsumptionData.data.push({
-                            userId: item.userId,
-                            equipmentId: item.equipmentId,
+                            userId: item.typeOfOilEquipment_userId,
+                            equipmentId: item.typeOfOilEquipment_id,
                             equipment: item.equipment,
                             amountConsumption: item.amountConsumption,
                             nameOil: item.nameOil,
@@ -276,8 +276,8 @@ let OilsService = class OilsService {
                             observation: item.observation,
                             data: [
                                 {
-                                    userId: item.userId,
-                                    equipmentId: item.equipmentId,
+                                    userId: item.typeOfOilEquipment_userId,
+                                    equipmentId: item.typeOfOilEquipment_id,
                                     equipment: item.equipment,
                                     amountConsumption: item.amountConsumption,
                                     nameOil: item.nameOil,
@@ -336,8 +336,8 @@ let OilsService = class OilsService {
                     observation: item.observation,
                     data: [
                         {
-                            userId: item.userId,
-                            equipmentId: item.equipmentId,
+                            userId: item.typeOfOilEquipment_userId,
+                            equipmentId: item.typeOfOilEquipment_id,
                             equipment: item.equipment,
                             amountConsumption: item.amountConsumption,
                             nameOil: item.nameOil,
