@@ -30,6 +30,7 @@ const server_config_1 = require("../../config/server.config");
 const promises_assets_1 = require("../../assets/promises.assets");
 const moment_assets_1 = require("../../assets/moment.assets");
 const mappingKeys_1 = require("../../assets/mappingKeys");
+const math_assets_1 = require("../../assets/math.assets");
 let OilsService = class OilsService {
     constructor(_oilRepository) {
         this._oilRepository = _oilRepository;
@@ -252,7 +253,7 @@ let OilsService = class OilsService {
                     calcRate = item.amountConsumption;
                 }
                 else {
-                    calcRate = item.amountConsumption / item.hourConsumption;
+                    calcRate = math_assets_1.mathRound(item.amountConsumption / item.hourConsumption, 2);
                 }
                 if (calcRate > item.rate) {
                     let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == date);

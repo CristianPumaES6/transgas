@@ -278,7 +278,7 @@ function SendMailHTMLOverCosumption(to, name, dateSend, listConsumptionLubricant
     }).then((renderHtml) => {
         if (!renderHtml)
             throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
-        return MailSendSMTP(null, to, 'Information on lubricant overconsumption.', renderHtml, true);
+        return MailSendSMTP(null, to, `Information on oil lubricant consumption ${name}.`, renderHtml, true);
     }).then((resultInfo) => {
         if (!resultInfo)
             throw 'La funcion MailSendSMTP no funciono como esperabamos.';

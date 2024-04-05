@@ -262,8 +262,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                         COALESCE(SUM(ce.amount), 0) AS TotalConsumption,
                         COALESCE(SUM(ce.hourConsumption), 0) AS HourConsumption,
                         CASE 
-                            WHEN COALESCE(SUM(ce.hourConsumption), 0) > 0 THEN (SUM(ce.amount) / SUM(ce.hourConsumption)) 
-                            ELSE NULL 
+                            WHEN COALESCE(SUM(ce.hourConsumption), 0) > 0 THEN ROUND(SUM(ce.amount) / SUM(ce.hourConsumption), 2) 
+                            ELSE 0 
                         END AS Rate,
                         GROUP_CONCAT(ce.observation, '; ') AS Observations,
                         ce.date AS ConsumptionDate,

@@ -3527,7 +3527,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "0eaf4c5e6584aee542e93dee6dd3be2b4d45aaa1f3406f58d0db87987e07a21e",
+        "version": "63f603863446a6978f579bdd189820fd4f955998b07c2d7042be9bf72dc2c5e8",
         "signature": "effa1307829912990af3961dad163b99730386ef9ea7af210db49818b1c6261b",
         "affectsGlobalScope": false
       },
@@ -3822,7 +3822,7 @@
         "affectsGlobalScope": false
       },
       "../src/assets/nodemailer.assets.ts": {
-        "version": "94f26a2f8856aa9f2f2c86e2f7b2f3c312b379d36af1958d431da4c3e3f179ec",
+        "version": "3125cae9966d186a663302df354a216ec795dec0c1a0407f403967422d438ebb",
         "signature": "baff8a54c54e0b8651f31758f05fb53e0306a4d1188c45878f41d61ee1d535bc",
         "affectsGlobalScope": false
       },
@@ -3877,7 +3877,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.service.ts": {
-        "version": "cf6431a679732edf674e4be9386df841fc5782ef4ed729f21cda3202ab4fb43a",
+        "version": "37c2804e39bf5ffb41e9cc848e38adc8b04c01fd91270d36a811f54e19a4ea6b",
         "signature": "6ba2cff967a4333d1cd1a42190659ecaa242119bc2c8160fdb0eaa80b8b3baeb",
         "affectsGlobalScope": false
       },
@@ -7293,6 +7293,7 @@
         "../node_modules/@types/bcrypt/index.d.ts",
         "../node_modules/typeorm/index.d.ts",
         "../src/assets/mappingkeys.ts",
+        "../src/assets/math.assets.ts",
         "../src/assets/moment.assets.ts",
         "../src/assets/promises.assets.ts",
         "../src/config/bcrypt.config.ts",
