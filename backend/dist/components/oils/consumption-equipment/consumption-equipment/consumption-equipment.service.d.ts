@@ -8,6 +8,7 @@ export declare class ConsumptionEquipmentService {
     Create(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity>;
     SaveList(MappingGroupOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
     getOilConsumptionPerMonth(userId: number): Promise<getOilConsumptionPerMonth[]>;
+    consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
 }
 export interface SaveListConsumptionEquipmentEntity {
     MappingConsumptionsEquipment: Mapping[];
@@ -24,4 +25,19 @@ export interface getOilConsumptionPerMonth {
     total_bunker: number;
     last_entityOilId: number;
     last_oil_name: string;
+}
+export interface consultEquipmentConsumptionByMonthUser {
+    typeOfOilEquipmentUserId: string;
+    EquipmentId: number;
+    EquipmentName: string;
+    RateSystems: number;
+    consumptionEquipmentId: number;
+    TotalConsumption: number;
+    HourConsumption: number;
+    Rate: number;
+    Observations: number;
+    ConsumptionDate: string;
+    bunkerOilToEquipmentId: number;
+    TotalBunker: number;
+    BunkerDate: string;
 }

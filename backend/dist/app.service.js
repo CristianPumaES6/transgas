@@ -42,6 +42,15 @@ let AppService = class AppService {
             return this.ConsumptionLubricantPerMonthPerListUsers(result);
         });
     }
+    consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
+        return promises_assets_1.DummyPromise().then(result => {
+            return this._ConsumptionEquipmentService.consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH);
+        }).then(result => {
+            return result;
+        }).catch(result => {
+            return [];
+        });
+    }
     async ConsumptionLubricantPerMonthPerListUsers(users) {
         var e_1, _a;
         let returnDashboardLubricant = [];

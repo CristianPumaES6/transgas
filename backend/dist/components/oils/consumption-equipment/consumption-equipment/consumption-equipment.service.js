@@ -228,7 +228,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
        WHERE sub.entityEquipmentId = main.entityEquipmentId
          AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
          AND sub.status = 1
-       ORDER BY sub.datetime DESC 
+       ORDER BY sub.datetime ASC 
        LIMIT 1) AS last_entityOilId,
       (SELECT O.name 
        FROM bunkerOilToEquipment sub
@@ -236,7 +236,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
        WHERE sub.entityEquipmentId = main.entityEquipmentId
          AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
          AND sub.status = 1
-       ORDER BY sub.datetime DESC 
+       ORDER BY sub.datetime ASC 
        LIMIT 1) AS last_oil_name
     FROM 
       bunkerOilToEquipment main
@@ -246,10 +246,43 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
       year_month,
       main.entityEquipmentId) AS B ON CE.year_month = B.year_month AND CE.entityEquipmentId = B.entityEquipmentId
   ORDER BY
-    CE.year_month DESC, 
+    CE.year_month ASC, 
     CE.entityEquipmentId;
     `;
         return this._ConsumptionEquipment.query(query, [userId, userId]);
+    }
+    async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
+        const query = `
+                    SELECT
+                        toe.userId AS typeOfOilEquipmentUserId,
+                        toe.id AS EquipmentId,
+                        toe.equipment AS EquipmentName,
+                        toe.rate AS RateSystems,
+                        ce.id AS consumptionEquipmentId,
+                        COALESCE(SUM(ce.amount), 0) AS TotalConsumption,
+                        COALESCE(SUM(ce.hourConsumption), 0) AS HourConsumption,
+                        CASE 
+                            WHEN COALESCE(SUM(ce.hourConsumption), 0) > 0 THEN (SUM(ce.amount) / SUM(ce.hourConsumption)) 
+                            ELSE NULL 
+                        END AS Rate,
+                        GROUP_CONCAT(ce.observation, '; ') AS Observations,
+                        ce.date AS ConsumptionDate,
+                        boe.id AS bunkerOilToEquipmentId,
+                        COALESCE(SUM(boe.bunker), 0) AS TotalBunker,
+                        MAX(boe.datetime) AS BunkerDate -- Asumiendo que solo hay un bunkering por día.
+                    FROM typeOfOilEquipment AS toe
+                    LEFT JOIN consumptionEquipment AS ce 
+                        ON toe.id = ce.entityEquipmentId AND ce.userId = ${userId}
+                    LEFT JOIN bunkerOilToEquipment AS boe 
+                        ON toe.id = boe.entityEquipmentId AND boe.userId = ${userId}
+                        AND DATE(ce.date) = DATE(boe.datetime)
+                    WHERE 
+                        toe.id =  ${entityEquipmentId}
+                        AND (strftime('%Y-%m', ce.date) = '${DateYEAR_MONTH}' OR strftime('%Y-%m', boe.datetime) = '${DateYEAR_MONTH}')
+                    GROUP BY toe.id, ce.date, boe.datetime
+                    ORDER BY ce.date, boe.datetime;
+    `;
+        return this._ConsumptionEquipment.query(query, []);
     }
 };
 ConsumptionEquipmentService = __decorate([

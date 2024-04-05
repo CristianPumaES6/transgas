@@ -145,6 +145,14 @@ let AppController = class AppController {
             return this.appService.ListConsumptionLubricantPerMonth(userId);
         });
     }
+    async ConsultEquipmentConsumptionByMonthUser(buqueId, EquipmentId, YEAR_MONTH) {
+        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+            let userId = Number(buqueId);
+            let entityEquipmentId = Number(EquipmentId);
+            let DateYEAR_MONTH = YEAR_MONTH;
+            return this.appService.consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH);
+        });
+    }
 };
 __decorate([
     common_1.Get('pruebas'),
@@ -201,6 +209,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "ConsultaGeneral", null);
+__decorate([
+    common_1.Get('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH'),
+    __param(0, common_1.Param('userId')), __param(1, common_1.Param('EquipmentId')), __param(2, common_1.Param('YEAR_MONTH')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "ConsultEquipmentConsumptionByMonthUser", null);
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,
