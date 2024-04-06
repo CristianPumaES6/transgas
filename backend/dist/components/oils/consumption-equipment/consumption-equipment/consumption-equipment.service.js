@@ -262,7 +262,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                         COALESCE(SUM(ce.amount), 0) AS TotalConsumption,
                         COALESCE(SUM(ce.hourConsumption), 0) AS HourConsumption,
                         CASE 
-                            WHEN COALESCE(SUM(ce.hourConsumption), 0) > 0 THEN ROUND(SUM(ce.amount) / SUM(ce.hourConsumption), 2) 
+                            WHEN COALESCE(SUM(ce.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(ce.amount) AS REAL) / SUM(ce.hourConsumption), 2) 
                             ELSE 0 
                         END AS Rate,
                         GROUP_CONCAT(ce.observation, '; ') AS Observations,
