@@ -12,11 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GroupOilEntity = void 0;
 const typeorm_1 = require("typeorm");
 let GroupOilEntity = class GroupOilEntity {
-    constructor(id, userId, label, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+    constructor(id, userId, label, description, groupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
         this.label = label || '';
+        this.description = description || '';
+        this.groupId = groupId || 0;
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
         this.userIdUpdated = userIdUpdated || 0;
@@ -36,6 +38,14 @@ __decorate([
     typeorm_1.Column({ nullable: false }),
     __metadata("design:type", String)
 ], GroupOilEntity.prototype, "label", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true, default: 0 }),
+    __metadata("design:type", String)
+], GroupOilEntity.prototype, "description", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true, default: 0 }),
+    __metadata("design:type", Number)
+], GroupOilEntity.prototype, "groupId", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
@@ -58,7 +68,7 @@ __decorate([
 ], GroupOilEntity.prototype, "status", void 0);
 GroupOilEntity = __decorate([
     typeorm_1.Entity('groupOil'),
-    __metadata("design:paramtypes", [Number, Number, String, Number, String, Number, String, Boolean])
+    __metadata("design:paramtypes", [Number, Number, String, String, Number, Number, String, Number, String, Boolean])
 ], GroupOilEntity);
 exports.GroupOilEntity = GroupOilEntity;
 //# sourceMappingURL=group-oils.entity.js.map

@@ -12,7 +12,7 @@ let mailServer;
 function NodemailerInit() {
     return promises_assets_1.DummyPromise().then((result) => {
         let email = 'transgasshippinglines@gmail.com';
-        let password = 'ybtfkfmdswtkansn';
+        let password = 'getlsmyuiluiwktq';
         mailServer = nodemailer.createTransport({
             service: 'gmail',
             auth: {

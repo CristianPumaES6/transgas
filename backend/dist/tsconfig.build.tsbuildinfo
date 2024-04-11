@@ -3432,8 +3432,8 @@
         "affectsGlobalScope": false
       },
       "../src/models/group-oils.entity.ts": {
-        "version": "afed89cbf30ed6cb76b441724d1af6b1badc09a16e9fa328cea94b81838e4a6a",
-        "signature": "496fcba416e75f5e6ab959e2a564a4a30a581fd57faeb6b3f8b7fa117c300a05",
+        "version": "9c783aba9ab53d75b27284f26e94e1338a72b3c396d5bb0fba95dc9b41aa3306",
+        "signature": "55f97aa89046f2d677c6c9595467784f2e8f801d627ad66f00e108a75798fe8b",
         "affectsGlobalScope": false
       },
       "../src/models/type-of-oils-equipment.entity.ts": {
@@ -3822,7 +3822,7 @@
         "affectsGlobalScope": false
       },
       "../src/assets/nodemailer.assets.ts": {
-        "version": "3125cae9966d186a663302df354a216ec795dec0c1a0407f403967422d438ebb",
+        "version": "723a268c3f44cd38e8460ca410c5e0b1f99eed8ff8d5990b68367f7135c1b00c",
         "signature": "baff8a54c54e0b8651f31758f05fb53e0306a4d1188c45878f41d61ee1d535bc",
         "affectsGlobalScope": false
       },
