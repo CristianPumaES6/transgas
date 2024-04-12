@@ -8,6 +8,7 @@ const sendMailConfig_1 = require("../models/sendMailConfig");
 const moment_assets_1 = require("./moment.assets");
 const math_assets_1 = require("./math.assets");
 const translate_assets_1 = require("./translate.assets");
+const server_config_1 = require("../config/server.config");
 let mailServer;
 function NodemailerInit() {
     return promises_assets_1.DummyPromise().then((result) => {
@@ -16,8 +17,8 @@ function NodemailerInit() {
         mailServer = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: email,
-                pass: password
+                user: server_config_1.URL_Server.emailNotification,
+                pass: server_config_1.URL_Server.passwordNotification
             }
         });
         return mailServer.verify();

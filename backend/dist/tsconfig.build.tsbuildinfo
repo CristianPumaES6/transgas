@@ -1662,8 +1662,8 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "40ea8224855a8702c6da42fda74093533f3e3c8985ae7951f48cf1dece04c74f",
-        "signature": "cc3c1748ada5972abd77be2514555f0df86e561cea4a232bd5abad381090691c",
+        "version": "6d73e7543b5672e1dd41f29cdd028050cb1b26bddd372f6b5d7f8732d641342a",
+        "signature": "0f180eac61ac0b9d9466f7da403f7495898c3e40be8cea3d70954ff6f0a51c52",
         "affectsGlobalScope": false
       },
       "../src/models/loggeduser.ts": {
@@ -3537,7 +3537,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "53b1517b92e67abdc0ff7ed860624d95b5d9aa7f722bb45a02bc5736fd996e13",
+        "version": "e8f935c4ff6d3195e9c036fe4693ae876e1c88275ef8c86ae1c02b200d4855bc",
         "signature": "7bd64dbc6aed303a211cfd2f0e0241e0f5fc21a7ef523f177e7bb9fbe7765eaf",
         "affectsGlobalScope": false
       },
@@ -3581,18 +3581,8 @@
         "signature": "be819f2bf3bb28d4b2ac31b4135acafbdcb24d0f192db77917681a8a62cd2bbd",
         "affectsGlobalScope": false
       },
-      "../node_modules/decimal.js/decimal.d.ts": {
-        "version": "67577c6ac7cc408265b36f54548167d12f419cab47c3567db64d0a990c089e88",
-        "signature": "67577c6ac7cc408265b36f54548167d12f419cab47c3567db64d0a990c089e88",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/mathjs/types/index.d.ts": {
-        "version": "396913b8f85500b8e02454f3a3e8de6f11607154b16cadab101b62681dd66b2b",
-        "signature": "396913b8f85500b8e02454f3a3e8de6f11607154b16cadab101b62681dd66b2b",
-        "affectsGlobalScope": false
-      },
       "../src/app.controller.ts": {
-        "version": "786c941cb84ca76e399a1a270877ba60d784a3d6f19cadf8d2bbe4b9775de65b",
+        "version": "c9d62f628600df0056b3677625a028735f9a550a6b1c9f4f9709dafdb0bce831",
         "signature": "99b1301476b9c9a5e7f672bbe027f4c3f2113c1d2b01c0f7a0c5df1e4a36141f",
         "affectsGlobalScope": false
       },
@@ -3816,13 +3806,23 @@
         "signature": "50a62b09bded2903b43daeb1efe579c636330a440212ea5c1ee720af25cdba70",
         "affectsGlobalScope": false
       },
+      "../node_modules/decimal.js/decimal.d.ts": {
+        "version": "67577c6ac7cc408265b36f54548167d12f419cab47c3567db64d0a990c089e88",
+        "signature": "67577c6ac7cc408265b36f54548167d12f419cab47c3567db64d0a990c089e88",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/mathjs/types/index.d.ts": {
+        "version": "396913b8f85500b8e02454f3a3e8de6f11607154b16cadab101b62681dd66b2b",
+        "signature": "396913b8f85500b8e02454f3a3e8de6f11607154b16cadab101b62681dd66b2b",
+        "affectsGlobalScope": false
+      },
       "../src/assets/math.assets.ts": {
         "version": "1dd2601b1ad9aef7b50e7b27078f2c48b36e43bfc6c980d8d472af6ef96ab4ef",
         "signature": "87743114964e3c2eda4da3aada1f3fd9c166a684fb6080ee0ad602f0162e2ef1",
         "affectsGlobalScope": false
       },
       "../src/assets/nodemailer.assets.ts": {
-        "version": "723a268c3f44cd38e8460ca410c5e0b1f99eed8ff8d5990b68367f7135c1b00c",
+        "version": "6e58dd902d4af566e533add189df1439b4f4c58e19b13392f1df80fee32c3f34",
         "signature": "baff8a54c54e0b8651f31758f05fb53e0306a4d1188c45878f41d61ee1d535bc",
         "affectsGlobalScope": false
       },
@@ -4102,12 +4102,12 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "d6a00e260a026e692d5441bd418d6c2b5a0f5df1e4fc489c32ff7481631339b1",
+        "version": "87e98f078874a96662bec1f19094244504bd822b5ec7bb931b25540a38324245",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       },
       "../src/transgas3000.ts": {
-        "version": "5daa45e7b0ef6af9da0b42abf5b22805aa4b277c918f797fdba3cc66f9b1294c",
+        "version": "159dd61ed7c00b9b7ff66581c86a90cc17fa8b3ff3aa9a0d170da2dfb28ac74d",
         "signature": "f761c91419d0a89422a0004ef1a92929dd4d2d5e5c16758654d8b0467d1998c6",
         "affectsGlobalScope": false
       }
@@ -7072,7 +7072,6 @@
       "../src/app.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/passport/index.d.ts",
-        "../node_modules/mathjs/types/index.d.ts",
         "../src/app.gateway.ts",
         "../src/app.service.ts",
         "../src/assets/promises.assets.ts",
@@ -7151,6 +7150,7 @@
         "../src/assets/promises.assets.ts",
         "../src/assets/translate.assets.ts",
         "../src/config/path.config.ts",
+        "../src/config/server.config.ts",
         "../src/models/assets/mailoptions.model.ts",
         "../src/models/sendmailconfig.ts",
         "../src/models/user.entity.ts"
@@ -7490,7 +7490,8 @@
         "../src/app.module.ts",
         "../src/assets/hbs.assets.ts",
         "../src/assets/nodemailer.assets.ts",
-        "../src/config/path.config.ts"
+        "../src/config/path.config.ts",
+        "../src/config/server.config.ts"
       ],
       "../src/middleware/image.middleware.ts": [
         "../node_modules/@types/node/ts4.8/path.d.ts"
@@ -7560,7 +7561,8 @@
         "../src/app.module.ts",
         "../src/assets/hbs.assets.ts",
         "../src/assets/nodemailer.assets.ts",
-        "../src/config/path.config.ts"
+        "../src/config/path.config.ts",
+        "../src/config/server.config.ts"
       ]
     },
     "exportedModulesMap": {

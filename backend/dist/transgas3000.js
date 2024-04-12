@@ -7,6 +7,7 @@ const path_config_1 = require("./config/path.config");
 const path_1 = require("path");
 const nodemailer_assets_1 = require("./assets/nodemailer.assets");
 const hbs_assets_1 = require("./assets/hbs.assets");
+const server_config_1 = require("./config/server.config");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const options = {
@@ -22,7 +23,7 @@ async function bootstrap() {
     app.use(express.static(path_1.join(path_config_1.FOLDER_FRONTEND)));
     hbs_assets_1.HbsInit(app);
     nodemailer_assets_1.NodemailerInit();
-    await app.listen(3000);
+    await app.listen(server_config_1.URL_Server.puertoBackend);
 }
 bootstrap();
 //# sourceMappingURL=transgas3000.js.map
