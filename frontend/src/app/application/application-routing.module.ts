@@ -28,7 +28,7 @@ const routes: Routes = [
       { path: 'dashboard/general_analysis', component: DashboardComponent },
       { path: 'dashboard/speed_analysis', component: SpeedAnalysisComponent },
       { path: 'dashboard/consumer_analysis', component: ConsumptionAnalysisComponent },
-      { path: 'dashboard/lubricant_analysis', component: LubricantAnalysisComponent },
+      { path: 'dashboard/oil_lubricant_analysis', component: LubricantAnalysisComponent },
       // Modulo de viaje
       { path: 'voyages', component: VoyageComponent },
       // Modulo de Usuario

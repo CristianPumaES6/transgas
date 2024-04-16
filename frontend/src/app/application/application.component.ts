@@ -442,8 +442,8 @@ export class ApplicationComponent implements OnInit {
       case '/application/dashboard/speed_analysis':
         navLink = 'speed_analysis';
         break;
-      case '/application/dashboard/lubricant_analysis':
-        navLink = 'lubricant_analysis';
+      case '/application/dashboard/oil_lubricant_analysis':
+        navLink = 'oil_lubricant_analysis';
         break;
       case '/application/dashboard/consumer_analysis':
         navLink = 'consumer_analysis';
@@ -490,7 +490,7 @@ export class ApplicationComponent implements OnInit {
       case 'speed_analysis':
         this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
         break;
-      case 'lubricant_analysis':
+      case 'oil_lubricant_analysis':
           this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
         break;
       // Fin dashboard

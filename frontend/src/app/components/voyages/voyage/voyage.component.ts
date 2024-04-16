@@ -1045,7 +1045,7 @@ export class VoyageComponent implements OnInit {
     this.selectDailyReport = JSON.parse(JSON.stringify(dailyReportFind));
 
     // SOLO PARA EL SEATMERIY
-    if ( this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 || this.roleUser =='SUPPORT' ) {
+    if ( this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 || this.selectUser.id == 31 || this.selectUser.id == 30 || this.roleUser =='SUPPORT' ) {
 
 
       // Le asignamos la hora lastRecort
@@ -2066,7 +2066,7 @@ export class VoyageComponent implements OnInit {
     if (error) throw 'ERROR POR CAMPOS FORMULARIOS DAILY REPORT';
 
 
-    if ( this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.selectUser.id == 10  || this.selectUser.id == 8|| this.selectUser.id == 13  || this.roleUser =='SUPPORT' ) {
+    if ( this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 || this.selectUser.id == 31 || this.selectUser.id == 30 || this.roleUser =='SUPPORT' ) {
       if(!newDailyReport.steamingTime)   this.GenerateTimeOperation();
       newDailyReport.date = JuntarFechaYHoraUTCToMoment2(newDailyReport.date, newDailyReport.hour);
 
@@ -2288,7 +2288,7 @@ export class VoyageComponent implements OnInit {
 
     dailyReportToSave.steamingTime = this.GenerateTimeOperation();
 
-    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23  || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 || this.roleUser =='SUPPORT') {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23  || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 || this.selectUser.id == 31 || this.selectUser.id == 30  || this.roleUser =='SUPPORT') {
       if(!dailyReportToSave.steamingTime)   this.GenerateTimeOperation();
       dailyReportToSave.date = JuntarFechaYHoraUTCToMoment2(dailyReportToSave.date, dailyReportToSave.hour);
 
@@ -2658,7 +2658,7 @@ export class VoyageComponent implements OnInit {
         this.databaseService.GetLastReportDailys().then(
           result => {
 
-            if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.selectUser.id == 10 || this.selectUser.id == 13|| this.selectUser.id == 8 ) {
+            if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23 || this.selectUser.id == 10 || this.selectUser.id == 13 || this.selectUser.id == 31 || this.selectUser.id == 30 || this.selectUser.id == 8 ) {
               this.lastRecordedHour = FormatDateUTCToDateHourUTC(result.date);
             } else {
               this.lastRecordedHour = FormatDateUTCToDateHour(result.date);
@@ -2694,7 +2694,7 @@ export class VoyageComponent implements OnInit {
   private GenerateTimeOperation(): number {
     let lastDateHour: Moment;
 
-    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23  || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 ) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23  || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 || this.selectUser.id == 31|| this.selectUser.id == 30 ) {
       let dateSend = this.selectDailyReport.date;
       lastDateHour = ConvertirDateHourToMoment(dateSend, this.selectDailyReport.hour);
 
@@ -2764,7 +2764,7 @@ export class VoyageComponent implements OnInit {
   public FormatDate(fecha: any): string {
     let formatfecha;
     // Esto solo lo pongo para  el usuario seatmerit que trabaraja con horario utc
-    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 ||  this.selectUser.id == 23  || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 ||  this.selectUser.id == 23  || this.selectUser.id == 10  || this.selectUser.id == 8 || this.selectUser.id == 13 || this.selectUser.id == 31 || this.selectUser.id == 30  ) {
       formatfecha = stringUTCToDateUTC(fecha);
     } else {
       formatfecha = stringToDate(fecha);
@@ -2828,7 +2828,7 @@ export class VoyageComponent implements OnInit {
     let result = '';
 
     // Esto solo lo pongo para  el usuario seatmerit que trabaraja con horario utc
-    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23  || this.selectUser.id == 10 || this.selectUser.id == 8|| this.selectUser.id == 13) {
+    if (this.selectUser.id == 19 || this.selectUser.id == 7 || this.selectUser.id == 15 || this.selectUser.id == 23  || this.selectUser.id == 10 || this.selectUser.id == 8 || this.selectUser.id == 13 || this.selectUser.id == 31 || this.selectUser.id == 30  ) {
       result = FormatDateUTCToDateHourUTC(dateUTC);
     } else {
       result = FormatDateUTCToDateHour(dateUTC);
