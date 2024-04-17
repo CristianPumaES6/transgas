@@ -238,4 +238,21 @@ export class AppController {
     )
 
   }
+
+  @Get('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH')
+  async ConsultEquipmentConsumptionByMonthUser(@Param('userId') buqueId, @Param('EquipmentId') EquipmentId, @Param('YEAR_MONTH') YEAR_MONTH) {
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        let userId = Number(buqueId);
+        let entityEquipmentId = Number(EquipmentId);
+        let DateYEAR_MONTH =YEAR_MONTH;
+
+        return this.appService.consultEquipmentConsumptionByMonthUser(userId,entityEquipmentId,DateYEAR_MONTH);
+
+      }
+    )
+  }
+
+  
 }

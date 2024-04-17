@@ -227,68 +227,107 @@ export class ConsumptionEquipmentService {
   async getOilConsumptionPerMonth(userId: number): Promise<getOilConsumptionPerMonth[]> {
     const query = `
     SELECT
-      CE.month,
+    CE.year_month,
+    CE.entityEquipmentId,
+    CE.total_amount,
+    CE.total_hourConsumption,
+    CE.rate,
+    CE.equipment,
+    CE.entityGroupId,
+    COALESCE(B.total_bunker, 0) AS total_bunker,
+    B.last_entityOilId,
+    B.last_oil_name
+  FROM
+    (SELECT
+      strftime('%Y-%m', CE.date) AS year_month,
       CE.entityEquipmentId,
-      CE.total_amount,
-      CE.total_hourConsumption,
-      CE.rate,
-      CE.equipment,
-      CE.entityGroupId,
-      COALESCE(B.total_bunker, 0) AS total_bunker,
-      B.last_entityOilId,
-      B.last_oil_name
+      TOE.entityGroupId,
+      SUM(CE.amount) AS total_amount,
+      SUM(CE.hourConsumption) AS total_hourConsumption,
+      TOE.rate,
+      TOE.equipment
     FROM
-      (SELECT
-        strftime('%Y-%m', CE.date) AS month,
-        CE.entityEquipmentId,
-        TOE.entityGroupId,
-        SUM(CE.amount) AS total_amount,
-        SUM(CE.hourConsumption) AS total_hourConsumption,
-        TOE.rate,
-        TOE.equipment
-      FROM
-        consumptionEquipment CE
-        INNER JOIN typeOfOilEquipment TOE ON CE.entityEquipmentId = TOE.id
-      WHERE
-        CE.userId = ? AND
-        CE.status = 1
-      GROUP BY
-        month,
-        CE.entityEquipmentId,
-        TOE.entityGroupId) AS CE
-    LEFT JOIN
-      (SELECT 
-        strftime('%Y-%m', main.datetime) AS month,
-        main.entityEquipmentId,
-        SUM(main.bunker) AS total_bunker,
-        (SELECT sub.entityOilId 
-         FROM bunkerOilToEquipment sub
-         WHERE sub.entityEquipmentId = main.entityEquipmentId
-           AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
-           AND sub.status = 1
-         ORDER BY sub.datetime DESC 
-         LIMIT 1) AS last_entityOilId,
-        (SELECT O.name 
-         FROM bunkerOilToEquipment sub
-         INNER JOIN oil O ON O.id = sub.entityOilId
-         WHERE sub.entityEquipmentId = main.entityEquipmentId
-           AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
-           AND sub.status = 1
-         ORDER BY sub.datetime DESC 
-         LIMIT 1) AS last_oil_name
-      FROM 
-        bunkerOilToEquipment main
-      WHERE main.userId = ? AND
-        main.status = 1
-      GROUP BY 
-        month,
-        main.entityEquipmentId) AS B ON CE.month = B.month AND CE.entityEquipmentId = B.entityEquipmentId
-    ORDER BY
-      CE.month DESC, 
-      CE.entityEquipmentId;
+      consumptionEquipment CE
+      INNER JOIN typeOfOilEquipment TOE ON CE.entityEquipmentId = TOE.id
+    WHERE
+      CE.userId = ? AND
+      CE.status = 1
+    GROUP BY
+      year_month,
+      CE.entityEquipmentId,
+      TOE.entityGroupId) AS CE
+  LEFT JOIN
+    (SELECT 
+      strftime('%Y-%m', main.datetime) AS year_month,
+      main.entityEquipmentId,
+      SUM(main.bunker) AS total_bunker,
+      (SELECT sub.entityOilId 
+       FROM bunkerOilToEquipment sub
+       WHERE sub.entityEquipmentId = main.entityEquipmentId
+         AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
+         AND sub.status = 1
+       ORDER BY sub.datetime ASC 
+       LIMIT 1) AS last_entityOilId,
+      (SELECT O.name 
+       FROM bunkerOilToEquipment sub
+       INNER JOIN oil O ON O.id = sub.entityOilId
+       WHERE sub.entityEquipmentId = main.entityEquipmentId
+         AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
+         AND sub.status = 1
+       ORDER BY sub.datetime ASC 
+       LIMIT 1) AS last_oil_name
+    FROM 
+      bunkerOilToEquipment main
+    WHERE main.userId = ? AND
+      main.status = 1
+    GROUP BY 
+      year_month,
+      main.entityEquipmentId) AS B ON CE.year_month = B.year_month AND CE.entityEquipmentId = B.entityEquipmentId
+  ORDER BY
+    CE.year_month ASC, 
+    CE.entityEquipmentId;
     `;
 
     return this._ConsumptionEquipment.query(query,  [userId, userId ]);
+  }
+
+
+  
+  
+  async consultEquipmentConsumptionByMonthUser(userId : number, entityEquipmentId: number, DateYEAR_MONTH:string): Promise<consultEquipmentConsumptionByMonthUser[]>  {
+    const query = `
+                    SELECT
+                        toe.userId AS typeOfOilEquipmentUserId,
+                        toe.id AS EquipmentId,
+                        toe.equipment AS EquipmentName,
+                        toe.rate AS RateSystems,
+                        ce.id AS consumptionEquipmentId,
+                        COALESCE(SUM(ce.amount), 0) AS TotalConsumption,
+                        COALESCE(SUM(ce.hourConsumption), 0) AS HourConsumption,
+                        CASE 
+                            WHEN COALESCE(SUM(ce.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(ce.amount) AS REAL) / SUM(ce.hourConsumption), 2) 
+                            ELSE 0 
+                        END AS Rate,
+                        GROUP_CONCAT(ce.observation, '; ') AS Observations,
+                        ce.date AS ConsumptionDate,
+                        boe.id AS bunkerOilToEquipmentId,
+                        COALESCE(SUM(boe.bunker), 0) AS TotalBunker,
+                        MAX(boe.datetime) AS BunkerDate -- Asumiendo que solo hay un bunkering por día.
+                    FROM typeOfOilEquipment AS toe
+                    LEFT JOIN consumptionEquipment AS ce 
+                        ON toe.id = ce.entityEquipmentId AND ce.userId = ${userId}
+                    LEFT JOIN bunkerOilToEquipment AS boe 
+                        ON toe.id = boe.entityEquipmentId AND boe.userId = ${userId}
+                        AND DATE(ce.date) = DATE(boe.datetime)
+                    WHERE 
+                        toe.id =  ${entityEquipmentId}
+                        AND (strftime('%Y-%m', ce.date) = '${DateYEAR_MONTH}' OR strftime('%Y-%m', boe.datetime) = '${DateYEAR_MONTH}')
+                    GROUP BY toe.id, ce.date, boe.datetime
+                    ORDER BY ce.date, boe.datetime;
+    `;
+    
+
+    return this._ConsumptionEquipment.query(query,  []);
   }
 }
 
@@ -299,7 +338,7 @@ export interface SaveListConsumptionEquipmentEntity {
 
 
 export interface getOilConsumptionPerMonth {
-    month: string;
+    year_month: string;
     entityEquipmentId: number;
     total_amount: number;
     total_hourConsumption: number;
@@ -309,4 +348,21 @@ export interface getOilConsumptionPerMonth {
     total_bunker: number;
     last_entityOilId: number;
     last_oil_name: string;
+}
+
+
+export interface consultEquipmentConsumptionByMonthUser {
+    typeOfOilEquipmentUserId: string;
+    EquipmentId: number;
+    EquipmentName: string;
+    RateSystems: number;
+    consumptionEquipmentId: number;
+    TotalConsumption: number;
+    HourConsumption: number;
+    Rate: number;
+    Observations: number;
+    ConsumptionDate: string;
+    bunkerOilToEquipmentId: number;
+    TotalBunker: number;
+    BunkerDate: string;
 }

@@ -12,7 +12,7 @@ export class LubricantAnalysisComponent {
   public selectUserId = 25;
 
   
-  public iframeUrl = 'https://transgas.outsystemscloud.com/Transgas_UI/Dashboard?';
+  public iframeUrl = 'https://cpumavilli96.outsystemscloud.com/Transgas_UI/Dashboard?';
   constructor(private route: ActivatedRoute) { }
 
   ngAfterViewInit(): void {

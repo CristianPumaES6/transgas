@@ -21,6 +21,7 @@ import { MailLastVoyage } from 'src/models/sendMailConfig';
 import { ConvertDateUTC_To_FORMAT_UTC } from './moment.assets';
 import { mathRound } from './math.assets';
 import { translateActivity } from './translate.assets';
+import { URL_Server } from 'src/config/server.config';
 
 
 let mailServer;
@@ -33,14 +34,14 @@ export function NodemailerInit(): Promise<boolean> {
         (result: boolean) => {
 
             let email = 'transgasshippinglines@gmail.com';
-            let password = 'ybtfkfmdswtkansn';
+            let password = 'getlsmyuiluiwktq';
 
             // Create reusable transporter object using the default SMTP transport
             mailServer = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: email, // generated ethereal user
-                    pass: password // generated ethereal password
+                    user: URL_Server.emailNotification, // generated ethereal user
+                    pass: URL_Server.passwordNotification // generated ethereal password
                 }
             });
 
@@ -457,7 +458,7 @@ export function SendMailHTMLOverCosumption(to: string, name: string,dateSend, li
 
             if (!renderHtml) throw 'Error al renderizar- revisar HbsConvertHtmlRender().';
 
-            return MailSendSMTP(null, to, 'Information on lubricant overconsumption.', renderHtml, true);
+            return MailSendSMTP(null, to, `Information on oil lubricant consumption ${name}.`, renderHtml, true);
         }
     ).then(
         (resultInfo: boolean) => {

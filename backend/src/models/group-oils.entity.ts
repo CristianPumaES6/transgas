@@ -8,8 +8,16 @@ export class GroupOilEntity {
 
     @Column({ nullable: true })
     userId: number;
+    
     @Column({ nullable: false })
     label: string;
+
+    @Column({ nullable: true, default: 0 })
+    description: string;
+
+    @Column({ nullable: true, default: 0 })
+    groupId: number;
+ 
  
     // Auditoria
     @Column()
@@ -28,16 +36,20 @@ export class GroupOilEntity {
         id?: number,
         userId?: number,
         label?: string,
+        description?: string,
+        groupId?: number,
 
         userIdCreated?: number,
         dateCreated?: string,
-            userIdUpdated?: number,
-            dateUpdated?: string,
-            status?: boolean,
+        userIdUpdated?: number,
+        dateUpdated?: string,
+        status?: boolean,
     ) {
         this.id = id || null;
         this.userId = userId || null;
         this.label = label || '';
+        this.description = description || '';
+        this.groupId = groupId || 0;
 
         // Auditoria
         this.userIdCreated = userIdCreated || 0;

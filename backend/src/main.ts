@@ -9,6 +9,7 @@ import { join } from 'path';
 import { NodemailerInit } from './assets/nodemailer.assets';
 import { HbsInit } from './assets/hbs.assets';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { URL_Server } from './config/server.config';
 
 async function bootstrap() {
 
@@ -42,6 +43,6 @@ async function bootstrap() {
   // Inicializo el serverNodemailer
   NodemailerInit();
   
-  await app.listen(3000);
+  await app.listen(URL_Server.puertoBackend);
 }
 bootstrap();

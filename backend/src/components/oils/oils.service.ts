@@ -18,6 +18,7 @@ import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
 import { ConvertMMDDYYYToYYYYMMDD, DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/moment.assets';
 import { Mapping } from '../../assets/mappingKeys';
+import { mathRound } from 'src/assets/math.assets';
 
 
 @Injectable()
@@ -315,8 +316,6 @@ export class OilsService {
     }
 
 
-
-
     // Consumos registrados COnsulta Para enviar Mail
     async ConsultarListaDeConsumosRegistrados(ListCONSUMOSId: any[]): Promise<DailyOilConsumptionData[]> {
  
@@ -338,6 +337,8 @@ export class OilsService {
                         // Buscamos el ultimo reporte.
                         return this._oilRepository.createQueryBuilder('oil')
                             .addSelect('consumptionEquipment.date', 'dateConsumption')
+                            .addSelect('typeOfOilEquipment.userId', 'typeOfOilEquipment_userId')
+                            .addSelect('typeOfOilEquipment.id', 'typeOfOilEquipment_id')
                             .addSelect('typeOfOilEquipment.equipment', 'equipment')
                             .addSelect('consumptionEquipment.amount', 'amountConsumption')
                             .addSelect('oil.name', 'nameOil')
@@ -376,7 +377,7 @@ export class OilsService {
                             if(!item.hourConsumption || item.hourConsumption <= 0){
                                 calcRate = item.amountConsumption;
                             }else {
-                                calcRate = item.amountConsumption/item.hourConsumption;
+                                calcRate = mathRound(item.amountConsumption/item.hourConsumption,2) ;
                             }
 
                             // verificamos si el rate es mayor a la hora de trabajo.
@@ -387,6 +388,8 @@ export class OilsService {
                                 if(findDailyOilConsumptionData) {
                                     findDailyOilConsumptionData.data.push(
                                         {
+                                            userId:item.typeOfOilEquipment_userId,
+                                            equipmentId : item.typeOfOilEquipment_id,
                                             equipment: item.equipment,
                                             amountConsumption: item.amountConsumption,
                                             nameOil: item.nameOil,
@@ -406,6 +409,8 @@ export class OilsService {
                                             observation : item.observation,
                                             data: [
                                                 {
+                                                    userId:item.typeOfOilEquipment_userId,
+                                                    equipmentId : item.typeOfOilEquipment_id,
                                                     equipment: item.equipment,
                                                     amountConsumption: item.amountConsumption,
                                                     nameOil: item.nameOil,
@@ -499,6 +504,8 @@ export class OilsService {
                                     observation : item.observation,
                                     data: [
                                         {
+                                            userId:item.typeOfOilEquipment_userId,
+                                            equipmentId : item.typeOfOilEquipment_id,
                                             equipment: item.equipment,
                                             amountConsumption: item.amountConsumption,
                                             nameOil: item.nameOil,
@@ -525,6 +532,8 @@ export interface DailyOilConsumptionData {
 }
 
 export interface DataDailyOilConsumptionData {
+    userId: string ;
+    equipmentId: string ;
     equipment: string ;
     datetimeBunkerOil:string;
     nameOil: string;

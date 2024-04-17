@@ -37,11 +37,10 @@ export class AppService {
 
     return DummyPromise().then(
       result => {
-        return this._UsersService.Gets(<UserEntity>{id:userid});
+        return this._UsersService.Gets(<UserEntity>{id:userid,role:'BUQUE'});
       }
     ).then(
       result => {
-
                 // No lo validamos por que puede llegar vacio.
                 return this.ConsumptionLubricantPerMonthPerListUsers(result);
           }
@@ -50,17 +49,39 @@ export class AppService {
   }
 
 
+  public consultEquipmentConsumptionByMonthUser(userId : number, entityEquipmentId: number, DateYEAR_MONTH:string) {
+
+
+    return DummyPromise().then(
+      result => {
+        return   this._ConsumptionEquipmentService.consultEquipmentConsumptionByMonthUser(userId,entityEquipmentId,DateYEAR_MONTH);
+        }
+      ).then(
+        result => {
+          return result;
+        }
+      ).catch(
+        result => {
+          return [];
+        }
+      );
+
+  }
+
+
 
     // guarda una lista de aceite.
-    async ConsumptionLubricantPerMonthPerListUsers(users: any[]) {
+    async ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[]) {
 
       let returnDashboardLubricant:ListUserConsumptionLubricantPerMonth[] =[] ;
     
       for await (const itemUser of users) {
         let DashboardListMonthLubricant:ListUserConsumptionLubricantPerMonth= <ListUserConsumptionLubricantPerMonth>{};
            
+        DashboardListMonthLubricant.userId = itemUser.id;
         DashboardListMonthLubricant.userName = itemUser.name;
         DashboardListMonthLubricant.filename = itemUser.filename;
+        DashboardListMonthLubricant.role = itemUser.role;
         // Registramos grupo de aceite
         DashboardListMonthLubricant.getOilConsumptionPerMonth = await  this._ConsumptionEquipmentService.getOilConsumptionPerMonth(itemUser.id);
          
@@ -75,8 +96,10 @@ export class AppService {
 }
 
 export interface ListUserConsumptionLubricantPerMonth {
+  userId: number;
   userName: string;
   filename: string;
+  role: string;
   getOilConsumptionPerMonth: getOilConsumptionPerMonth[];
 
 }
