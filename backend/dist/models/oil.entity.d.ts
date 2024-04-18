@@ -1,7 +1,7 @@
 import { GroupOilEntity } from './group-oils.entity';
 import { TypeOfOilEquipmentEntity } from './type-of-oils-equipment.entity';
 import { ConsumptionEquipmentEntity } from './consumptionEquipment.entity';
-import { BunkerOilToEquipmentEntity } from './buker-oil-to-equipment.entity';
+import { BunkerOil } from './buker-oil-to-equipment.entity';
 export declare class OilEntity {
     id: number;
     userId: number;
@@ -19,7 +19,7 @@ export declare class SaveDateOils {
     listGroups: GroupOilEntity[];
     listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
-    listBunkerOilToEquipment: BunkerOilToEquipmentEntity[];
+    listBunkerOilToEquipment: BunkerOil[];
     listOils: OilEntity[];
-    constructor(userId?: number, listGroups?: GroupOilEntity[], listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[], listConsumptionEquipment?: ConsumptionEquipmentEntity[], listBunkerOilToEquipment?: BunkerOilToEquipmentEntity[], listOil?: OilEntity[]);
+    constructor(userId?: number, listGroups?: GroupOilEntity[], listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[], listConsumptionEquipment?: ConsumptionEquipmentEntity[], listBunkerOilToEquipment?: BunkerOil[], listOil?: OilEntity[]);
 }

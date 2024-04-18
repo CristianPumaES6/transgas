@@ -1,7 +1,6 @@
-export declare class BunkerOilToEquipmentEntity {
+export declare class BunkerOil {
     id: number;
     userId: number;
-    entityEquipmentId: number;
     entityOilId: number;
     bunker: number;
     comment: string;
@@ -11,6 +10,6 @@ export declare class BunkerOilToEquipmentEntity {
     userIdUpdated: number;
     dateUpdated: string;
     status: boolean;
-    constructor(id?: number, userId?: number, entityEquipmentId?: number, entityOilId?: number, bunker?: number, comment?: string, datetime?: string, userIdCreated?: number, dateCreated?: string, userIdUpdated?: number, dateUpdated?: string, status?: boolean);
+    constructor(id?: number, userId?: number, entityOilId?: number, bunker?: number, comment?: string, datetime?: string, userIdCreated?: number, dateCreated?: string, userIdUpdated?: number, dateUpdated?: string, status?: boolean);
     SyncStatus: string;
 }

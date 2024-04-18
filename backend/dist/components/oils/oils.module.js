@@ -17,8 +17,8 @@ const consumption_equipment_service_1 = require("./consumption-equipment/consump
 const group_oils_controller_1 = require("./group-oils/group-oils.controller");
 const group_oils_service_1 = require("./group-oils/group-oils.service");
 const type_of_oil_equiment_controller_1 = require("./type-of-oil-equiment/type-of-oil-equiment.controller");
-const bunker_oil_to_equipment_controller_1 = require("./bunker-oil-to-equipment/bunker-oil-to-equipment.controller");
-const bunker_oil_to_equipment_service_1 = require("./bunker-oil-to-equipment/bunker-oil-to-equipment.service");
+const bunker_oil_controller_1 = require("./bunker-oil-to-equipment/bunker-oil.controller");
+const bunker_oil_service_1 = require("./bunker-oil-to-equipment/bunker-oil.service");
 const consumptionEquipment_entity_1 = require("../../models/consumptionEquipment.entity");
 const group_oils_entity_1 = require("../../models/group-oils.entity");
 const buker_oil_to_equipment_entity_1 = require("../../models/buker-oil-to-equipment.entity");
@@ -29,10 +29,10 @@ let OilsModule = class OilsModule {
 OilsModule = __decorate([
     common_1.Module({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([oil_entity_1.OilEntity, consumptionEquipment_entity_1.ConsumptionEquipmentEntity, group_oils_entity_1.GroupOilEntity, buker_oil_to_equipment_entity_1.BunkerOilToEquipmentEntity, type_of_oils_equipment_entity_1.TypeOfOilEquipmentEntity]),
+            typeorm_1.TypeOrmModule.forFeature([oil_entity_1.OilEntity, consumptionEquipment_entity_1.ConsumptionEquipmentEntity, group_oils_entity_1.GroupOilEntity, buker_oil_to_equipment_entity_1.BunkerOil, type_of_oils_equipment_entity_1.TypeOfOilEquipmentEntity]),
         ],
-        controllers: [oils_controller_1.OilsController, consumption_equipment_controller_1.ConsumptionEquipmentController, group_oils_controller_1.GroupOilsController, type_of_oil_equiment_controller_1.TypeOfOilEquipmentController, bunker_oil_to_equipment_controller_1.BunkerOilToEquipmentController],
-        providers: [oils_service_1.OilsService, consumption_equipment_service_1.ConsumptionEquipmentService, group_oils_service_1.GroupOilsService, type_of_oil_equiment_service_1.TypeOfOilEquipmentService, bunker_oil_to_equipment_service_1.BunkerOilToEquipmentService],
+        controllers: [oils_controller_1.OilsController, consumption_equipment_controller_1.ConsumptionEquipmentController, group_oils_controller_1.GroupOilsController, type_of_oil_equiment_controller_1.TypeOfOilEquipmentController, bunker_oil_controller_1.BunkerOilController],
+        providers: [oils_service_1.OilsService, consumption_equipment_service_1.ConsumptionEquipmentService, group_oils_service_1.GroupOilsService, type_of_oil_equiment_service_1.TypeOfOilEquipmentService, bunker_oil_service_1.BunkerOilService],
         exports: [consumption_equipment_service_1.ConsumptionEquipmentService]
     })
 ], OilsModule);

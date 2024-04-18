@@ -22,15 +22,15 @@ const moment_assets_1 = require("../../assets/moment.assets");
 const group_oils_service_1 = require("./group-oils/group-oils.service");
 const type_of_oil_equiment_service_1 = require("./type-of-oil-equiment/type-of-oil-equiment.service");
 const consumption_equipment_service_1 = require("./consumption-equipment/consumption-equipment/consumption-equipment.service");
-const bunker_oil_to_equipment_service_1 = require("./bunker-oil-to-equipment/bunker-oil-to-equipment.service");
+const bunker_oil_service_1 = require("./bunker-oil-to-equipment/bunker-oil.service");
 const nodemailer_assets_1 = require("../../assets/nodemailer.assets");
 let OilsController = class OilsController {
-    constructor(_OilsService, _GroupOilEntityService, _TypeOfOilEquipmentService, _ConsumptionEquipmentService, _BunkerOilToEquipmentService) {
+    constructor(_OilsService, _GroupOilEntityService, _TypeOfOilEquipmentService, _ConsumptionEquipmentService, _BunkerOilService) {
         this._OilsService = _OilsService;
         this._GroupOilEntityService = _GroupOilEntityService;
         this._TypeOfOilEquipmentService = _TypeOfOilEquipmentService;
         this._ConsumptionEquipmentService = _ConsumptionEquipmentService;
-        this._BunkerOilToEquipmentService = _BunkerOilToEquipmentService;
+        this._BunkerOilService = _BunkerOilService;
     }
     Gets(headers, oilEntity) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
@@ -104,7 +104,7 @@ let OilsController = class OilsController {
             listConsumptionEquipment = ConsumptionsEquipmentEntity;
             let bunkersOilToEquipmentEntity = {};
             bunkersOilToEquipmentEntity.userId = oilEntity.userId;
-            return this._BunkerOilToEquipmentService.Gets(bunkersOilToEquipmentEntity);
+            return this._BunkerOilService.Gets(bunkersOilToEquipmentEntity);
         }).then((BunkersOilToEquipmentEntity) => {
             listBunkerOilToEquipment = BunkersOilToEquipmentEntity;
             return {
@@ -287,7 +287,9 @@ let OilsController = class OilsController {
         let mappingBunkersOilToEquipment = [];
         let listConsumosValidarSendMail = [];
         console.log('--------------------------');
-        console.log('-----------[   saveModuleOils   ]---------------');
+        console.log('-----------[   START saveModuleOils   ]---------------');
+        console.log(JSON.stringify(saveDateOils));
+        console.log('-----------[   END saveModuleOils   ]---------------');
         console.log('--------------------------');
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (saveDateOils) {
@@ -331,7 +333,7 @@ let OilsController = class OilsController {
             mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
             listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
             if (saveDateOils.listBunkerOilToEquipment) {
-                return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+                return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
             }
             else {
                 return [];
@@ -347,7 +349,7 @@ let OilsController = class OilsController {
             }
         }).then((listaDeConsumosRegistrados) => {
             if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
-                return nodemailer_assets_1.SendMailHTMLOverCosumption('hcamasca@transgas.com.pe; cristian.puma.es6@gmail.com; cpuma@transgas.com.pe', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
+                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; cpuma@transgas.com.pe', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
             }
             else {
                 return true;
@@ -437,7 +439,7 @@ OilsController = __decorate([
         group_oils_service_1.GroupOilsService,
         type_of_oil_equiment_service_1.TypeOfOilEquipmentService,
         consumption_equipment_service_1.ConsumptionEquipmentService,
-        bunker_oil_to_equipment_service_1.BunkerOilToEquipmentService])
+        bunker_oil_service_1.BunkerOilService])
 ], OilsController);
 exports.OilsController = OilsController;
 //# sourceMappingURL=oils.controller.js.map

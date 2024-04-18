@@ -12,14 +12,14 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BunkerOilToEquipmentController = void 0;
+exports.BunkerOilController = void 0;
 const common_1 = require("@nestjs/common");
 const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const user_entity_1 = require("../../../models/user.entity");
-const bunker_oil_to_equipment_service_1 = require("./bunker-oil-to-equipment.service");
+const bunker_oil_service_1 = require("./bunker-oil.service");
 const buker_oil_to_equipment_entity_1 = require("../../../models/buker-oil-to-equipment.entity");
-let BunkerOilToEquipmentController = class BunkerOilToEquipmentController {
+let BunkerOilController = class BunkerOilController {
     constructor(_BunkerOilToEquipmentService) {
         this._BunkerOilToEquipmentService = _BunkerOilToEquipmentService;
     }
@@ -59,12 +59,12 @@ __decorate([
     common_1.Get(),
     __param(0, common_1.Headers()), __param(1, common_1.Query()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, buker_oil_to_equipment_entity_1.BunkerOilToEquipmentEntity]),
+    __metadata("design:paramtypes", [Object, buker_oil_to_equipment_entity_1.BunkerOil]),
     __metadata("design:returntype", Promise)
-], BunkerOilToEquipmentController.prototype, "Gets", null);
-BunkerOilToEquipmentController = __decorate([
-    common_1.Controller('bunker-oil-to-equipment'),
-    __metadata("design:paramtypes", [bunker_oil_to_equipment_service_1.BunkerOilToEquipmentService])
-], BunkerOilToEquipmentController);
-exports.BunkerOilToEquipmentController = BunkerOilToEquipmentController;
-//# sourceMappingURL=bunker-oil-to-equipment.controller.js.map
+], BunkerOilController.prototype, "Gets", null);
+BunkerOilController = __decorate([
+    common_1.Controller('bunker-oil'),
+    __metadata("design:paramtypes", [bunker_oil_service_1.BunkerOilService])
+], BunkerOilController);
+exports.BunkerOilController = BunkerOilController;
+//# sourceMappingURL=bunker-oil.controller.js.map

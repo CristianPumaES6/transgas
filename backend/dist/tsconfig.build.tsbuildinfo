@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "6d73e7543b5672e1dd41f29cdd028050cb1b26bddd372f6b5d7f8732d641342a",
+        "version": "7fb89592bbbc561ce75e08339f3855fac767b9e08169a62debdbc79a6d890b1e",
         "signature": "0f180eac61ac0b9d9466f7da403f7495898c3e40be8cea3d70954ff6f0a51c52",
         "affectsGlobalScope": false
       },
@@ -3447,13 +3447,13 @@
         "affectsGlobalScope": false
       },
       "../src/models/buker-oil-to-equipment.entity.ts": {
-        "version": "3f0ccd78ad2c5e37ee0e66a53b9d68d5e2133efee06cb104c3e26a899827437a",
-        "signature": "56b16611bbceaa608e2d29ee7952283c6a6387af2c44be0077838cd7761716df",
+        "version": "ee6b31b803693408a8d104f0db4a568a7563cab2e7d67aa397936b96813d38fa",
+        "signature": "1ef12b845b021e97ac16e5400aa2c89b5c69c9baa3e73679ee9e64e543d669ed",
         "affectsGlobalScope": false
       },
       "../src/models/oil.entity.ts": {
-        "version": "5e91cbda3bbcdd1662ad29f519663707df5c61fa393a8a6eb0e8023ca2958235",
-        "signature": "74cc88deaca255f6389691a9abeb1072969f1140c556c659d8e61c688bc2216e",
+        "version": "4ead0a201fc8281644ecad5e7b6ebf49ce010b98a0ad2062c9fbecc590581de5",
+        "signature": "a218b2827205c0eff01257fcccd27c0196e6370fc7118667b52bf604446f58bd",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type.d.ts": {
@@ -3827,7 +3827,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/voyages/voyages.controller.ts": {
-        "version": "2dd744d79cd8e39c1f9d34c0d2b4dca9ed03763d01e0961271e400aead65948c",
+        "version": "02c4da6cfc217c4a6172c5e02602222cf93d1211f5debd44b5419fe25c024f5c",
         "signature": "cdff097ca20c08e1ed26894c4afe562c41cf36d95abf65c3c89601fe8be3002d",
         "affectsGlobalScope": false
       },
@@ -3891,14 +3891,14 @@
         "signature": "a4d5a384d4323aa6cb4194ebe306810b53594a54e613e9260ac80aca09c927dc",
         "affectsGlobalScope": false
       },
-      "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts": {
-        "version": "597946b82b36635275f0f0781873d34ff197bd3eff2922d7a308109d754e1efb",
-        "signature": "3cb4f10ad6228da617d49bfb49806635d21140ea427718594f170cdf0a81907a",
+      "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts": {
+        "version": "00564212171bfb591a50256288a3b1a158e54d49aa39cecdb740c9c1f5d18b32",
+        "signature": "0cbd96d3919a8be7e194f193344d6fbec3f9f5823f1fd47d184f7227925868e5",
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "c3038b6ac558d495ec03fb1ad1dc12bf5446a4251c087cfe9b165017e5e7684a",
-        "signature": "a9a0a8f10146b8015b5c2f38e73d47b67a003af5c41c4bb68e779c3ece6413ff",
+        "version": "a6fcb35d3be72c8e20c93968f0d51db9ab129dee82b991550ed6a25cc6446737",
+        "signature": "ef972d444bfe5153e789919bc18cfba5e418c3d8a77c6bc189083e21b9c97ce0",
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.controller.ts": {
@@ -3916,13 +3916,13 @@
         "signature": "114c720891c7c8dab43c0eb80bb3a4362b34eb7654058894c70bfa3f83f9e726",
         "affectsGlobalScope": false
       },
-      "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.controller.ts": {
-        "version": "8b5cdfb7449deb41ccebc72ec2ddbbaf32419d6f0c0149b5e9cc527fbc6ab660",
-        "signature": "844fc5a1d307d5abc5c8f21988572aae5323f74de72f36fa66e6eeee7fc1d4ff",
+      "../src/components/oils/bunker-oil-to-equipment/bunker-oil.controller.ts": {
+        "version": "fbcec37803e580cc11311ccddb997ca54b9238c230299c9fe8027f64cfeb80ea",
+        "signature": "c76bd4631c370d6484e7343dfafb7fb2f6fc6d26bb7bad44779a1208a87b910b",
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.module.ts": {
-        "version": "265c6a72a309d23195a3823685f1f6bacdd86015419fe6cbe8e829fc1a886ad1",
+        "version": "27840a7697284f5809283a19f7ef07f8b42b1bee1f600dfcf7f2694d896006d2",
         "signature": "51580477572145f7f95ef71d37e47c01d8b55bdf7b9dace183b14c2bd74d675e",
         "affectsGlobalScope": false
       },
@@ -7189,15 +7189,15 @@
         "../src/components/auth/auth.service.ts",
         "../src/models/user.entity.ts"
       ],
-      "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.controller.ts": [
+      "../src/components/oils/bunker-oil-to-equipment/bunker-oil.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/assets/jwtdecode.assets.ts",
         "../src/assets/promises.assets.ts",
-        "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts",
+        "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts",
         "../src/models/buker-oil-to-equipment.entity.ts",
         "../src/models/user.entity.ts"
       ],
-      "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts": [
+      "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/typeorm/index.d.ts",
         "../node_modules/typeorm/index.d.ts",
@@ -7256,7 +7256,7 @@
         "../src/assets/moment.assets.ts",
         "../src/assets/nodemailer.assets.ts",
         "../src/assets/promises.assets.ts",
-        "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts",
+        "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts",
         "../src/components/oils/group-oils/group-oils.service.ts",
         "../src/components/oils/oils.service.ts",
@@ -7271,8 +7271,8 @@
       "../src/components/oils/oils.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/typeorm/index.d.ts",
-        "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.controller.ts",
-        "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts",
+        "../src/components/oils/bunker-oil-to-equipment/bunker-oil.controller.ts",
+        "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.controller.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts",
         "../src/components/oils/group-oils/group-oils.controller.ts",
@@ -10546,11 +10546,11 @@
         "../node_modules/@types/passport-local/index.d.ts",
         "../src/components/auth/auth.service.ts"
       ],
-      "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.controller.ts": [
-        "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts",
+      "../src/components/oils/bunker-oil-to-equipment/bunker-oil.controller.ts": [
+        "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts",
         "../src/models/buker-oil-to-equipment.entity.ts"
       ],
-      "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts": [
+      "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts": [
         "../node_modules/typeorm/index.d.ts",
         "../src/assets/mappingkeys.ts",
         "../src/models/buker-oil-to-equipment.entity.ts"
@@ -10574,7 +10574,7 @@
         "../src/models/group-oils.entity.ts"
       ],
       "../src/components/oils/oils.controller.ts": [
-        "../src/components/oils/bunker-oil-to-equipment/bunker-oil-to-equipment.service.ts",
+        "../src/components/oils/bunker-oil-to-equipment/bunker-oil.service.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service.ts",
         "../src/components/oils/group-oils/group-oils.service.ts",
         "../src/components/oils/oils.service.ts",
