@@ -69,7 +69,7 @@ let OilsController = class OilsController {
         let listGroups = [];
         let listTypeOfOilEquipment = [];
         let listConsumptionEquipment = [];
-        let listBunkerOilToEquipment = [];
+        let listBunkerOil = [];
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (oilEntity) {
                 oilEntity.userId = Number(oilEntity.userId);
@@ -102,11 +102,11 @@ let OilsController = class OilsController {
             return this._ConsumptionEquipmentService.Gets(consumptionEquipmentEntity);
         }).then((ConsumptionsEquipmentEntity) => {
             listConsumptionEquipment = ConsumptionsEquipmentEntity;
-            let bunkersOilToEquipmentEntity = {};
-            bunkersOilToEquipmentEntity.userId = oilEntity.userId;
-            return this._BunkerOilService.Gets(bunkersOilToEquipmentEntity);
-        }).then((BunkersOilToEquipmentEntity) => {
-            listBunkerOilToEquipment = BunkersOilToEquipmentEntity;
+            let bunkersOilEntity = {};
+            bunkersOilEntity.userId = oilEntity.userId;
+            return this._BunkerOilService.Gets(bunkersOilEntity);
+        }).then((bunkersOilEntity) => {
+            listBunkerOil = bunkersOilEntity;
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
@@ -115,7 +115,7 @@ let OilsController = class OilsController {
                     listGroups: listGroups,
                     listTypeOfOilEquipment: listTypeOfOilEquipment,
                     listConsumptionEquipment: listConsumptionEquipment,
-                    listBunkerOilToEquipment: listBunkerOilToEquipment
+                    listBunkerOil: listBunkerOil
                 }
             };
         }).catch(err => {
@@ -284,7 +284,7 @@ let OilsController = class OilsController {
         let mappingTypesOfOilEquipment = [];
         let mappingConsumptionsEquipment = [];
         let mappingOils = [];
-        let mappingBunkersOilToEquipment = [];
+        let mappingBunkersOil = [];
         let listConsumosValidarSendMail = [];
         console.log('--------------------------');
         console.log('-----------[   START saveModuleOils   ]---------------');
@@ -332,14 +332,14 @@ let OilsController = class OilsController {
         }).then((resultConsumptionEquipment) => {
             mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
             listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
-            if (saveDateOils.listBunkerOilToEquipment) {
-                return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+            if (saveDateOils.listBunkerOil) {
+                return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOil);
             }
             else {
                 return [];
             }
-        }).then((resultBunkerOilToEquipment) => {
-            mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
+        }).then((resultBunkerOil) => {
+            mappingBunkersOil = resultBunkerOil;
             if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
                 console.log('Se realiza la consulta de consumos registrados');
                 return this._OilsService.ConsultarListaDeConsumosRegistrados(listConsumosValidarSendMail);
@@ -363,7 +363,7 @@ let OilsController = class OilsController {
                     mappingTypesOfOilEquipment: mappingTypesOfOilEquipment,
                     mappingConsumptionsEquipment: mappingConsumptionsEquipment,
                     mappingOils: mappingOils,
-                    mappingBunkersOilToEquipment: mappingBunkersOilToEquipment
+                    mappingBunkersOil: mappingBunkersOil
                 }
             };
         }).catch(err => {

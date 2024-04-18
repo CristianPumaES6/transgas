@@ -19,7 +19,7 @@ export declare class SaveDateOils {
     listGroups: GroupOilEntity[];
     listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
-    listBunkerOilToEquipment: BunkerOil[];
+    listBunkerOil: BunkerOil[];
     listOils: OilEntity[];
-    constructor(userId?: number, listGroups?: GroupOilEntity[], listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[], listConsumptionEquipment?: ConsumptionEquipmentEntity[], listBunkerOilToEquipment?: BunkerOil[], listOil?: OilEntity[]);
+    constructor(userId?: number, listGroups?: GroupOilEntity[], listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[], listConsumptionEquipment?: ConsumptionEquipmentEntity[], listBunkerOil?: BunkerOil[], listOil?: OilEntity[]);
 }

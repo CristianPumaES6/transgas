@@ -20,14 +20,14 @@ const user_entity_1 = require("../../../models/user.entity");
 const bunker_oil_service_1 = require("./bunker-oil.service");
 const buker_oil_to_equipment_entity_1 = require("../../../models/buker-oil-to-equipment.entity");
 let BunkerOilController = class BunkerOilController {
-    constructor(_BunkerOilToEquipmentService) {
-        this._BunkerOilToEquipmentService = _BunkerOilToEquipmentService;
+    constructor(_BunkerOilService) {
+        this._BunkerOilService = _BunkerOilService;
     }
-    Gets(headers, bunkerOilToEquipmentEntity) {
+    Gets(headers, bunkerOilEntity) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         return promises_assets_1.DummyPromise().then((resultDummy) => {
-            if (bunkerOilToEquipmentEntity) {
-                bunkerOilToEquipmentEntity.userId = Number(bunkerOilToEquipmentEntity.userId);
+            if (bunkerOilEntity) {
+                bunkerOilEntity.userId = Number(bunkerOilEntity.userId);
                 return true;
             }
             else
@@ -35,9 +35,9 @@ let BunkerOilController = class BunkerOilController {
         }).then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
-            else if (bunkerOilToEquipmentEntity.userId !== headerToken.id)
+            else if (bunkerOilEntity.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
-            return this._BunkerOilToEquipmentService.Gets(bunkerOilToEquipmentEntity);
+            return this._BunkerOilService.Gets(bunkerOilEntity);
         }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,

@@ -29,8 +29,8 @@ const server_config_1 = require("../../../config/server.config");
 const buker_oil_to_equipment_entity_1 = require("../../../models/buker-oil-to-equipment.entity");
 const typeorm_2 = require("typeorm");
 let BunkerOilService = class BunkerOilService {
-    constructor(_BunkerOilToEquipment) {
-        this._BunkerOilToEquipment = _BunkerOilToEquipment;
+    constructor(_BunkerOil) {
+        this._BunkerOil = _BunkerOil;
     }
     async Gets(groupOilEntity) {
         return promises_assets_1.DummyPromise().then(result => {
@@ -38,7 +38,7 @@ let BunkerOilService = class BunkerOilService {
                 return null;
             }
             else {
-                return this._BunkerOilToEquipment.find({
+                return this._BunkerOil.find({
                     where: [
                         {
                             id: (groupOilEntity.id || typeorm_2.Like('%' + '%')),
@@ -54,13 +54,13 @@ let BunkerOilService = class BunkerOilService {
             return result;
         });
     }
-    async Create(bunkerOilToEquipment) {
+    async Create(bunkerOil) {
         return promises_assets_1.DummyPromise().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._BunkerOilToEquipment.query("SP_CheckTheLastRecordedTrip @userId='" + bunkerOilToEquipment.userId + "', @year='");
+                return this._BunkerOil.query("SP_CheckTheLastRecordedTrip @userId='" + bunkerOil.userId + "', @year='");
             }
             else {
-                return this._BunkerOilToEquipment.save(bunkerOilToEquipment);
+                return this._BunkerOil.save(bunkerOil);
             }
         }).then((resultSave) => {
             if (!resultSave)
@@ -75,33 +75,33 @@ let BunkerOilService = class BunkerOilService {
             }
         });
     }
-    async SaveList(MappingOils, MappingTypesOfOilEquipment, bunkerOilToEquipmentEntity) {
+    async SaveList(MappingOils, MappingTypesOfOilEquipment, bunkerOilEntity) {
         var e_1, _a, e_2, _b, e_3, _c;
-        const addBunkerOil = bunkerOilToEquipmentEntity.filter((bunkerOilToEquipment) => bunkerOilToEquipment.SyncStatus == 'added');
-        const updateBunkerOil = bunkerOilToEquipmentEntity.filter((bunkerOilToEquipment) => bunkerOilToEquipment.SyncStatus == 'updated');
-        const deleteBunkerOil = bunkerOilToEquipmentEntity.filter((bunkerOilToEquipment) => bunkerOilToEquipment.SyncStatus == 'deleted');
+        const addBunkerOil = bunkerOilEntity.filter((bunkerOil) => bunkerOil.SyncStatus == 'added');
+        const updateBunkerOil = bunkerOilEntity.filter((bunkerOil) => bunkerOil.SyncStatus == 'updated');
+        const deleteBunkerOil = bunkerOilEntity.filter((bunkerOil) => bunkerOil.SyncStatus == 'deleted');
         let MappingBunkerOil = [];
         try {
             for (var addBunkerOil_1 = __asyncValues(addBunkerOil), addBunkerOil_1_1; addBunkerOil_1_1 = await addBunkerOil_1.next(), !addBunkerOil_1_1.done;) {
-                const addBunkerOilToEquipment = addBunkerOil_1_1.value;
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, addBunkerOilToEquipment.entityOilId);
+                const bunkerOil = addBunkerOil_1_1.value;
+                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOil.entityOilId);
                 let newBunkerOil = new buker_oil_to_equipment_entity_1.BunkerOil();
                 delete newBunkerOil.id;
-                newBunkerOil.userId = addBunkerOilToEquipment.userId;
-                newBunkerOil.entityOilId = addBunkerOilToEquipment.entityOilId;
+                newBunkerOil.userId = bunkerOil.userId;
+                newBunkerOil.entityOilId = bunkerOil.entityOilId;
                 if (searchMappingOils) {
-                    newBunkerOil.entityOilId = searchMappingOils.value;
+                    bunkerOil.entityOilId = searchMappingOils.value;
                 }
-                newBunkerOil.bunker = addBunkerOilToEquipment.bunker;
-                newBunkerOil.comment = addBunkerOilToEquipment.comment;
-                newBunkerOil.datetime = addBunkerOilToEquipment.datetime;
-                newBunkerOil.userIdCreated = addBunkerOilToEquipment.userIdCreated;
+                newBunkerOil.bunker = bunkerOil.bunker;
+                newBunkerOil.comment = bunkerOil.comment;
+                newBunkerOil.datetime = bunkerOil.datetime;
+                newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
                 newBunkerOil.dateCreated = moment_assets_1.GetDate();
                 delete newBunkerOil.userIdUpdated;
                 delete newBunkerOil.dateUpdated;
-                newBunkerOil.status = Boolean(addBunkerOilToEquipment.status);
+                newBunkerOil.status = Boolean(bunkerOil.status);
                 let registeredBunkerOil = await this.Create(newBunkerOil);
-                MappingBunkerOil.push(new mappingKeys_1.Mapping(addBunkerOilToEquipment.id, registeredBunkerOil.id));
+                MappingBunkerOil.push(new mappingKeys_1.Mapping(bunkerOil.id, registeredBunkerOil.id));
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -113,24 +113,24 @@ let BunkerOilService = class BunkerOilService {
         }
         try {
             for (var updateBunkerOil_1 = __asyncValues(updateBunkerOil), updateBunkerOil_1_1; updateBunkerOil_1_1 = await updateBunkerOil_1.next(), !updateBunkerOil_1_1.done;) {
-                const bunkerOilToEquipment = updateBunkerOil_1_1.value;
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOilToEquipment.entityOilId);
+                const bunkerOil = updateBunkerOil_1_1.value;
+                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOil.entityOilId);
                 let newBunkerOil = new buker_oil_to_equipment_entity_1.BunkerOil();
-                newBunkerOil.id = bunkerOilToEquipment.id;
-                newBunkerOil.userId = bunkerOilToEquipment.userId;
-                newBunkerOil.entityOilId = bunkerOilToEquipment.entityOilId;
+                newBunkerOil.id = bunkerOil.id;
+                newBunkerOil.userId = bunkerOil.userId;
+                newBunkerOil.entityOilId = bunkerOil.entityOilId;
                 if (searchMappingOils) {
                     newBunkerOil.entityOilId = searchMappingOils.value;
                 }
-                newBunkerOil.bunker = bunkerOilToEquipment.bunker;
-                newBunkerOil.comment = bunkerOilToEquipment.comment;
-                newBunkerOil.datetime = bunkerOilToEquipment.datetime;
-                newBunkerOil.userIdCreated = bunkerOilToEquipment.userIdCreated;
-                newBunkerOil.dateCreated = bunkerOilToEquipment.dateCreated;
-                newBunkerOil.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
-                newBunkerOil.dateUpdated = bunkerOilToEquipment.dateUpdated;
-                newBunkerOil.status = Boolean(bunkerOilToEquipment.status);
-                await this._BunkerOilToEquipment.save(newBunkerOil);
+                newBunkerOil.bunker = bunkerOil.bunker;
+                newBunkerOil.comment = bunkerOil.comment;
+                newBunkerOil.datetime = bunkerOil.datetime;
+                newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
+                newBunkerOil.dateCreated = bunkerOil.dateCreated;
+                newBunkerOil.userIdUpdated = bunkerOil.userIdUpdated;
+                newBunkerOil.dateUpdated = bunkerOil.dateUpdated;
+                newBunkerOil.status = Boolean(bunkerOil.status);
+                await this._BunkerOil.save(newBunkerOil);
             }
         }
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
@@ -142,24 +142,24 @@ let BunkerOilService = class BunkerOilService {
         }
         try {
             for (var deleteBunkerOil_1 = __asyncValues(deleteBunkerOil), deleteBunkerOil_1_1; deleteBunkerOil_1_1 = await deleteBunkerOil_1.next(), !deleteBunkerOil_1_1.done;) {
-                let bunkerOilToEquipment = deleteBunkerOil_1_1.value;
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOilToEquipment.entityOilId);
+                let bunkerOil = deleteBunkerOil_1_1.value;
+                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOil.entityOilId);
                 let newBunkerOil = new buker_oil_to_equipment_entity_1.BunkerOil();
-                newBunkerOil.id = bunkerOilToEquipment.id;
-                newBunkerOil.userId = bunkerOilToEquipment.userId;
-                newBunkerOil.entityOilId = bunkerOilToEquipment.entityOilId;
+                newBunkerOil.id = bunkerOil.id;
+                newBunkerOil.userId = bunkerOil.userId;
+                newBunkerOil.entityOilId = bunkerOil.entityOilId;
                 if (searchMappingOils) {
                     newBunkerOil.entityOilId = searchMappingOils.value;
                 }
-                newBunkerOil.bunker = bunkerOilToEquipment.bunker;
-                newBunkerOil.comment = bunkerOilToEquipment.comment;
-                newBunkerOil.datetime = bunkerOilToEquipment.datetime;
-                newBunkerOil.userIdCreated = bunkerOilToEquipment.userIdCreated;
-                newBunkerOil.dateCreated = bunkerOilToEquipment.dateCreated;
-                newBunkerOil.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
-                newBunkerOil.dateUpdated = bunkerOilToEquipment.dateUpdated;
-                newBunkerOil.status = Boolean(bunkerOilToEquipment.status);
-                await this._BunkerOilToEquipment.save(bunkerOilToEquipment);
+                newBunkerOil.bunker = bunkerOil.bunker;
+                newBunkerOil.comment = bunkerOil.comment;
+                newBunkerOil.datetime = bunkerOil.datetime;
+                newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
+                newBunkerOil.dateCreated = bunkerOil.dateCreated;
+                newBunkerOil.userIdUpdated = bunkerOil.userIdUpdated;
+                newBunkerOil.dateUpdated = bunkerOil.dateUpdated;
+                newBunkerOil.status = Boolean(bunkerOil.status);
+                await this._BunkerOil.save(bunkerOil);
             }
         }
         catch (e_3_1) { e_3 = { error: e_3_1 }; }

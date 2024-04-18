@@ -37,7 +37,7 @@ export interface consultEquipmentConsumptionByMonthUser {
     Rate: number;
     Observations: number;
     ConsumptionDate: string;
-    bunkerOilToEquipmentId: number;
+    bunkerOilId: number;
     TotalBunker: number;
     BunkerDate: string;
 }
