@@ -2,20 +2,20 @@ import { Controller, Get, Headers, HttpException, HttpStatus, Query } from '@nes
 import { JwtDecode } from 'src/assets/jwtDecode.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { UserEntity } from 'src/models/user.entity';
-import { BunkerOilToEquipmentService } from './bunker-oil-to-equipment.service';
-import { BunkerOilToEquipmentEntity } from 'src/models/buker-oil-to-equipment.entity';
+import { BunkerOilService } from './bunker-oil.service';
+import { BunkerOil } from 'src/models/buker-oil-to-equipment.entity';
 
-@Controller('bunker-oil-to-equipment')
-export class BunkerOilToEquipmentController {
+@Controller('bunker-oil')
+export class BunkerOilController {
 
     constructor(
-        private readonly _BunkerOilToEquipmentService: BunkerOilToEquipmentService,
+        private readonly _BunkerOilToEquipmentService: BunkerOilService,
     ) { }
 
 
 
     @Get()
-    Gets(@Headers() headers, @Query() bunkerOilToEquipmentEntity: BunkerOilToEquipmentEntity): Promise<any> {
+    Gets(@Headers() headers, @Query() bunkerOilToEquipmentEntity: BunkerOil): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -44,7 +44,7 @@ export class BunkerOilToEquipmentController {
                 return this._BunkerOilToEquipmentService.Gets(bunkerOilToEquipmentEntity);
             }
         ).then(
-            (results: BunkerOilToEquipmentEntity[]) => {
+            (results: BunkerOil[]) => {
 
                 // Retornamos una Respuesta exitosa.
                 return {

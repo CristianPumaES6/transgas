@@ -1,15 +1,14 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 
-@Entity('bunkerOilToEquipment')
-export class BunkerOilToEquipmentEntity {
+@Entity('bunkerOil')
+export class BunkerOil {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: true })
     userId: number;
-    @Column({ nullable: true })
-    entityEquipmentId: number;
+    
     @Column({ nullable: true })
     entityOilId: number;
     @Column()
@@ -36,7 +35,7 @@ export class BunkerOilToEquipmentEntity {
         id?: number,
 
         userId?: number,
-        entityEquipmentId?: number,
+        
         entityOilId?: number,
 
         bunker?: number,
@@ -52,7 +51,7 @@ export class BunkerOilToEquipmentEntity {
     ) {
         this.id = id || null;
         this.userId = userId || null;
-        this.entityEquipmentId = entityEquipmentId || 0;
+        
         this.entityOilId = entityOilId || 0;
         this.bunker = bunker || 0;
         this.comment = comment || '';

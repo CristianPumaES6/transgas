@@ -8,11 +8,11 @@ import { DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/mom
 import { GroupOilEntity } from '../../models/group-oils.entity';
 import { TypeOfOilEquipmentEntity } from '../../models/type-of-oils-equipment.entity';
 import { ConsumptionEquipmentEntity } from '../../models/consumptionEquipment.entity';
-import { BunkerOilToEquipmentEntity } from '../../models/buker-oil-to-equipment.entity';
+import { BunkerOil } from '../../models/buker-oil-to-equipment.entity';
 import { GroupOilsService } from './group-oils/group-oils.service';
 import { TypeOfOilEquipmentService } from './type-of-oil-equiment/type-of-oil-equiment.service';
 import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
-import { BunkerOilToEquipmentService } from './bunker-oil-to-equipment/bunker-oil-to-equipment.service';
+import { BunkerOilService } from './bunker-oil-to-equipment/bunker-oil.service';
 import { Mapping } from '../../assets/mappingKeys';
 import { SendMailHTMLOverCosumption } from 'src/assets/nodemailer.assets';
 
@@ -26,7 +26,7 @@ export class OilsController {
         private readonly _GroupOilEntityService: GroupOilsService,
         private readonly _TypeOfOilEquipmentService: TypeOfOilEquipmentService,
         private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
-        private readonly _BunkerOilToEquipmentService: BunkerOilToEquipmentService,
+        private readonly _BunkerOilService: BunkerOilService,
     ) { }
 
     @Get()
@@ -96,7 +96,7 @@ export class OilsController {
         let listGroups: GroupOilEntity[] = [];
         let listTypeOfOilEquipment: TypeOfOilEquipmentEntity[] = [];
         let listConsumptionEquipment: ConsumptionEquipmentEntity[] = [];
-        let listBunkerOilToEquipment: BunkerOilToEquipmentEntity[] = [];
+        let listBunkerOilToEquipment: BunkerOil[] = [];
 
         // Inicio una promesa Dummy.
         return DummyPromise().then((resultDummy: Boolean) => {
@@ -156,13 +156,13 @@ export class OilsController {
                 listConsumptionEquipment = ConsumptionsEquipmentEntity;
 
 
-                let bunkersOilToEquipmentEntity: BunkerOilToEquipmentEntity = <any>{};
+                let bunkersOilToEquipmentEntity: BunkerOil = <any>{};
                 bunkersOilToEquipmentEntity.userId = oilEntity.userId;
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._BunkerOilToEquipmentService.Gets(bunkersOilToEquipmentEntity);
+                return this._BunkerOilService.Gets(bunkersOilToEquipmentEntity);
             }
         ).then(
-            (BunkersOilToEquipmentEntity: BunkerOilToEquipmentEntity[]) => {
+            (BunkersOilToEquipmentEntity: BunkerOil[]) => {
                 listBunkerOilToEquipment = BunkersOilToEquipmentEntity;
 
                 // Retornamos una Respuesta exitosa.
@@ -493,7 +493,9 @@ export class OilsController {
         let listConsumosValidarSendMail = [];
 
         console.log('--------------------------');
-        console.log('-----------[   saveModuleOils   ]---------------');
+        console.log('-----------[   START saveModuleOils   ]---------------');
+        console.log(JSON.stringify(saveDateOils))
+        console.log('-----------[   END saveModuleOils   ]---------------');
         console.log('--------------------------');
 
         return DummyPromise().then(
@@ -551,7 +553,7 @@ export class OilsController {
                 listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
 
                 if (saveDateOils.listBunkerOilToEquipment) {
-                    return this._BunkerOilToEquipmentService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+                    return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
                 } else {
                     return [];
                 }

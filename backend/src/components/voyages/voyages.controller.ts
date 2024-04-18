@@ -1793,13 +1793,9 @@ export class VoyagesController {
 
 
         console.log('--------------------------');
-        console.log('-----------[   saveModuleVoyage   ]---------------');
-        console.log('--------------------------');
-        console.log('--------------------------');
-        console.log(saveDataModuleCombustible);
-        console.log('--------------------------');
-        console.log('--------------------------');
-        console.log('--------------------------');
+        console.log('-----------[  START saveModuleVoyage   ]---------------');
+        console.log(JSON.stringify(saveDataModuleCombustible));
+        console.log('-----------[  END saveModuleVoyage   ]---------------');
         console.log('--------------------------');
 
         return DummyPromise().then(

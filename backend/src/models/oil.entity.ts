@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typ
 import { GroupOilEntity } from './group-oils.entity';
 import { TypeOfOilEquipmentEntity } from './type-of-oils-equipment.entity';
 import { ConsumptionEquipmentEntity } from './consumptionEquipment.entity';
-import { BunkerOilToEquipmentEntity } from './buker-oil-to-equipment.entity';
+import { BunkerOil } from './buker-oil-to-equipment.entity';
 
 @Entity('oil')
 export class OilEntity {
@@ -62,7 +62,7 @@ export class SaveDateOils {
     listGroups: GroupOilEntity[];
     listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
-    listBunkerOilToEquipment: BunkerOilToEquipmentEntity[];
+    listBunkerOilToEquipment: BunkerOil[];
     listOils: OilEntity[];
 
 
@@ -71,7 +71,7 @@ export class SaveDateOils {
         listGroups?: GroupOilEntity[],
         listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[],
         listConsumptionEquipment?: ConsumptionEquipmentEntity[],
-        listBunkerOilToEquipment?: BunkerOilToEquipmentEntity[],
+        listBunkerOilToEquipment?: BunkerOil[],
         listOil?: OilEntity[]
       ) {
         this.userId = userId || null;
