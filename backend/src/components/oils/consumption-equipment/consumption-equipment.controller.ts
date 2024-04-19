@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { DummyPromise } from '../../../../assets/promises.assets';
-import { UserEntity } from '../../../../models/user.entity';
-import { JwtDecode } from '../../../../assets/jwtDecode.assets';
-import { GetDate } from '../../../../assets/moment.assets';
+import { DummyPromise } from '../../../assets/promises.assets';
+import { UserEntity } from '../../../models/user.entity';
+import { JwtDecode } from '../../../assets/jwtDecode.assets';
+import { GetDate } from '../../../assets/moment.assets';
 import { ConsumptionEquipmentService } from './consumption-equipment.service';
 import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
-import { Mapping, searchKey } from '../../../../assets/mappingKeys';
+import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
 @Controller('consumption-equipment')
 export class ConsumptionEquipmentController {

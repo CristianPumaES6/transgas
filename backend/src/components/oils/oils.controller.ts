@@ -11,7 +11,7 @@ import { ConsumptionEquipmentEntity } from '../../models/consumptionEquipment.en
 import { BunkerOil } from '../../models/buker-oil.entity';
 import { GroupOilsService } from './group-oils/group-oils.service';
 import { EquipmentSystemService } from './equipment-system/equipment-system.service';
-import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
+import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from './consumption-equipment/consumption-equipment.service';
 import { BunkerOilService } from './bunker-oil/bunker-oil.service';
 import { Mapping } from '../../assets/mappingKeys';
 import { SendMailHTMLOverCosumption } from 'src/assets/nodemailer.assets';
@@ -538,7 +538,7 @@ export class OilsController {
                 mappingTypesOfOilEquipment = resultMappingEquipmentSystem;
 
                 if (saveDateOils.listConsumptionEquipment) {
-                    return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, saveDateOils.listConsumptionEquipment);
+                    return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, mappingOils, saveDateOils.listConsumptionEquipment);
                 } else {
                     // vacio si no hay nada
                     return {

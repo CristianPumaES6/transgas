@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OilEntity } from '../../../../models/oil.entity';
+import { OilEntity } from '../../../models/oil.entity';
 
 // Librerias de TypeOrm
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,13 +10,13 @@ import { Not } from "typeorm";
 
 // Otras librerias. 
 import * as bcrypt from 'bcrypt';
-import { ROUNDS_BCRYPT } from '../../../../config/bcrypt.config';
-import { URL_Server } from '../../../../config/server.config'
+import { ROUNDS_BCRYPT } from '../../../config/bcrypt.config';
+import { URL_Server } from '../../../config/server.config'
 
 // Modelos.
-import { UserEntity } from '../../../../models/user.entity';
-import { DummyPromise } from '../../../../assets/promises.assets';
-import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../../../assets/moment.assets';
+import { UserEntity } from '../../../models/user.entity';
+import { DummyPromise } from '../../../assets/promises.assets';
+import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../../assets/moment.assets';
 import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
 import { Mapping, searchKey } from 'src/assets/mappingKeys';
 

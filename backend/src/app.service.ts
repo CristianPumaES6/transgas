@@ -4,7 +4,7 @@ import { AppGateway } from './app.gateway';
 import { GetDate } from './assets/moment.assets';
 import { LoggedUser } from './models/loggedUser';
 import { SocketEmitModel } from './models/socketEmit';
-import { ConsumptionEquipmentService, getOilConsumptionPerMonth } from './components/oils/consumption-equipment/consumption-equipment/consumption-equipment.service';
+import { ConsumptionEquipmentService, getOilConsumptionPerMonth } from './components/oils/consumption-equipment/consumption-equipment.service';
 import { DummyPromise } from './assets/promises.assets';
 import { UsersService } from './components/users/users.service';
 import { UserEntity } from './models/user.entity';
