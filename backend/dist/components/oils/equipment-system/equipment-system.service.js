@@ -77,13 +77,13 @@ let EquipmentSystemService = class EquipmentSystemService {
     }
     async SaveList(MappingGroupOils, typesOfOilEquipmentEntity) {
         var e_1, _a, e_2, _b, e_3, _c;
-        let MappingTypesOfOilEquipment = [];
-        const addTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'added');
-        const updateTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'updated');
-        const deleteTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'deleted');
+        let MappingEquipmentSystems = [];
+        const addEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'added');
+        const updateEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'updated');
+        const deleteEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'deleted');
         try {
-            for (var addTypesOfOilEquipment_1 = __asyncValues(addTypesOfOilEquipment), addTypesOfOilEquipment_1_1; addTypesOfOilEquipment_1_1 = await addTypesOfOilEquipment_1.next(), !addTypesOfOilEquipment_1_1.done;) {
-                const addEquipmentSystem = addTypesOfOilEquipment_1_1.value;
+            for (var addEquipmentSystems_1 = __asyncValues(addEquipmentSystems), addEquipmentSystems_1_1; addEquipmentSystems_1_1 = await addEquipmentSystems_1.next(), !addEquipmentSystems_1_1.done;) {
+                const addEquipmentSystem = addEquipmentSystems_1_1.value;
                 let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, addEquipmentSystem.entityGroupId);
                 let searchMappingSubGroupOils = mappingKeys_1.searchKey(MappingGroupOils, addEquipmentSystem.entitySubGroupId);
                 let newEquipmentSystemEntity = new equipment_system_entity_1.EquipmentSystemEntity();
@@ -105,19 +105,19 @@ let EquipmentSystemService = class EquipmentSystemService {
                 delete newEquipmentSystemEntity.dateUpdated;
                 newEquipmentSystemEntity.status = Boolean(addEquipmentSystem.status);
                 let registeredGroupOil = await this.Create(newEquipmentSystemEntity);
-                MappingTypesOfOilEquipment.push(new mappingKeys_1.Mapping(addEquipmentSystem.id, registeredGroupOil.id));
+                MappingEquipmentSystems.push(new mappingKeys_1.Mapping(addEquipmentSystem.id, registeredGroupOil.id));
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (addTypesOfOilEquipment_1_1 && !addTypesOfOilEquipment_1_1.done && (_a = addTypesOfOilEquipment_1.return)) await _a.call(addTypesOfOilEquipment_1);
+                if (addEquipmentSystems_1_1 && !addEquipmentSystems_1_1.done && (_a = addEquipmentSystems_1.return)) await _a.call(addEquipmentSystems_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         try {
-            for (var updateTypesOfOilEquipment_1 = __asyncValues(updateTypesOfOilEquipment), updateTypesOfOilEquipment_1_1; updateTypesOfOilEquipment_1_1 = await updateTypesOfOilEquipment_1.next(), !updateTypesOfOilEquipment_1_1.done;) {
-                const updateEquipmentSystem = updateTypesOfOilEquipment_1_1.value;
+            for (var updateEquipmentSystems_1 = __asyncValues(updateEquipmentSystems), updateEquipmentSystems_1_1; updateEquipmentSystems_1_1 = await updateEquipmentSystems_1.next(), !updateEquipmentSystems_1_1.done;) {
+                const updateEquipmentSystem = updateEquipmentSystems_1_1.value;
                 let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, updateEquipmentSystem.entityGroupId);
                 let searchMappingSubGroupOils = mappingKeys_1.searchKey(MappingGroupOils, updateEquipmentSystem.entitySubGroupId);
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
@@ -144,13 +144,13 @@ let EquipmentSystemService = class EquipmentSystemService {
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (updateTypesOfOilEquipment_1_1 && !updateTypesOfOilEquipment_1_1.done && (_b = updateTypesOfOilEquipment_1.return)) await _b.call(updateTypesOfOilEquipment_1);
+                if (updateEquipmentSystems_1_1 && !updateEquipmentSystems_1_1.done && (_b = updateEquipmentSystems_1.return)) await _b.call(updateEquipmentSystems_1);
             }
             finally { if (e_2) throw e_2.error; }
         }
         try {
-            for (var deleteTypesOfOilEquipment_1 = __asyncValues(deleteTypesOfOilEquipment), deleteTypesOfOilEquipment_1_1; deleteTypesOfOilEquipment_1_1 = await deleteTypesOfOilEquipment_1.next(), !deleteTypesOfOilEquipment_1_1.done;) {
-                let deleteEquipmentSystem = deleteTypesOfOilEquipment_1_1.value;
+            for (var deleteEquipmentSystems_1 = __asyncValues(deleteEquipmentSystems), deleteEquipmentSystems_1_1; deleteEquipmentSystems_1_1 = await deleteEquipmentSystems_1.next(), !deleteEquipmentSystems_1_1.done;) {
+                let deleteEquipmentSystem = deleteEquipmentSystems_1_1.value;
                 let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
                 let searchMappingSubGroupOils = mappingKeys_1.searchKey(MappingGroupOils, deleteEquipmentSystem.entitySubGroupId);
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
@@ -177,11 +177,11 @@ let EquipmentSystemService = class EquipmentSystemService {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (deleteTypesOfOilEquipment_1_1 && !deleteTypesOfOilEquipment_1_1.done && (_c = deleteTypesOfOilEquipment_1.return)) await _c.call(deleteTypesOfOilEquipment_1);
+                if (deleteEquipmentSystems_1_1 && !deleteEquipmentSystems_1_1.done && (_c = deleteEquipmentSystems_1.return)) await _c.call(deleteEquipmentSystems_1);
             }
             finally { if (e_3) throw e_3.error; }
         }
-        return MappingTypesOfOilEquipment;
+        return MappingEquipmentSystems;
     }
 };
 EquipmentSystemService = __decorate([

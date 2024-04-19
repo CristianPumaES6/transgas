@@ -222,24 +222,8 @@ let OilsService = class OilsService {
             if (ListCONSUMOSId && ListCONSUMOSId.length) {
                 var listDeID = ListCONSUMOSId.join(',');
                 var queryWhere = 'consumptionEquipment.id in (' + listDeID + ')';
-                return this._oilRepository.createQueryBuilder('oil')
-                    .addSelect('consumptionEquipment.date', 'dateConsumption')
-                    .addSelect('equipmentSystem.userId', 'equipmentSystem_userId')
-                    .addSelect('equipmentSystem.id', 'equipmentSystem_id')
-                    .addSelect('equipmentSystem.equipment', 'equipment')
-                    .addSelect('consumptionEquipment.amount', 'amountConsumption')
-                    .addSelect('oil.name', 'nameOil')
-                    .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
-                    .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                    .addSelect('equipmentSystem.rate', 'rate')
-                    .addSelect('consumptionEquipment.observation', 'observation')
-                    .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
-                    .innerJoin('equipmentSystem', 'equipmentSystem', 'equipmentSystem.id = bunkerOil.entityEquipmentId AND equipmentSystem.status = 1')
-                    .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = equipmentSystem.id AND consumptionEquipment.status = 1')
-                    .where(queryWhere, {})
-                    .orderBy('consumptionEquipment.date', 'DESC')
-                    .limit(1000)
-                    .getRawMany();
+                console.log("REVISAR QUERY DE LOS SOBRES CONSUMOS 77546865988");
+                return [];
             }
             else {
                 return null;

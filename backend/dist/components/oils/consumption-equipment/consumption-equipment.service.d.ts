@@ -6,7 +6,7 @@ export declare class ConsumptionEquipmentService {
     constructor(_ConsumptionEquipment: Repository<ConsumptionEquipmentEntity>);
     Gets(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity[]>;
     Create(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity>;
-    SaveList(MappingGroupOils: Mapping[], MappingOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
+    SaveList(MappingEquipmentOilCompatibility: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
     getOilConsumptionPerMonth(userId: number): Promise<getOilConsumptionPerMonth[]>;
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
 }

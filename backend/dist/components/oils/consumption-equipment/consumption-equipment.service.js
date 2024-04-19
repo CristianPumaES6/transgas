@@ -77,7 +77,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             }
         });
     }
-    async SaveList(MappingGroupOils, MappingOils, consumptionsEquipment) {
+    async SaveList(MappingEquipmentOilCompatibility, consumptionsEquipment) {
         var e_1, _a, e_2, _b, e_3, _c;
         let MappingConsumptionsEquipment = [];
         const addConsumptionEquipments = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'added');
@@ -87,8 +87,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         try {
             for (var addConsumptionEquipments_1 = __asyncValues(addConsumptionEquipments), addConsumptionEquipments_1_1; addConsumptionEquipments_1_1 = await addConsumptionEquipments_1.next(), !addConsumptionEquipments_1_1.done;) {
                 const addConsumptionEquipment = addConsumptionEquipments_1_1.value;
-                let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, addConsumptionEquipment.entityEquipmentId);
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, addConsumptionEquipment.entityOilId);
+                let searchMappingEquipmentOilCompatibility = mappingKeys_1.searchKey(MappingEquipmentOilCompatibility, addConsumptionEquipment.entityEquipmentOilCompatibilityId);
                 let newConsumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity.id;
                 newConsumptionEquipmentEntity.userId = addConsumptionEquipment.userId;
@@ -96,13 +95,9 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 newConsumptionEquipmentEntity.amount = addConsumptionEquipment.amount;
                 newConsumptionEquipmentEntity.hourConsumption = addConsumptionEquipment.hourConsumption;
                 newConsumptionEquipmentEntity.observation = addConsumptionEquipment.observation;
-                newConsumptionEquipmentEntity.entityEquipmentId = addConsumptionEquipment.entityEquipmentId;
-                if (searchMappingConsumptionEquipmentEntity) {
-                    newConsumptionEquipmentEntity.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
-                }
-                newConsumptionEquipmentEntity.entityOilId = addConsumptionEquipment.entityOilId;
-                if (searchMappingOils) {
-                    newConsumptionEquipmentEntity.entityOilId = searchMappingOils.value;
+                newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = addConsumptionEquipment.entityEquipmentOilCompatibilityId;
+                if (searchMappingEquipmentOilCompatibility) {
+                    newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
                 }
                 newConsumptionEquipmentEntity.userIdCreated = addConsumptionEquipment.userIdCreated;
                 newConsumptionEquipmentEntity.dateCreated = moment_assets_1.GetDate();
@@ -126,32 +121,27 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         try {
             for (var updateConsumptionEquipment_1 = __asyncValues(updateConsumptionEquipment), updateConsumptionEquipment_1_1; updateConsumptionEquipment_1_1 = await updateConsumptionEquipment_1.next(), !updateConsumptionEquipment_1_1.done;) {
                 const updateEquipmentSystem = updateConsumptionEquipment_1_1.value;
-                let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, updateEquipmentSystem.entityEquipmentId);
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, updateEquipmentSystem.entityOilId);
-                let equipmentSystem = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
-                equipmentSystem.id = updateEquipmentSystem.id;
-                equipmentSystem.userId = updateEquipmentSystem.userId;
-                equipmentSystem.date = updateEquipmentSystem.date;
-                equipmentSystem.amount = updateEquipmentSystem.amount;
-                equipmentSystem.hourConsumption = updateEquipmentSystem.hourConsumption;
-                equipmentSystem.observation = updateEquipmentSystem.observation;
-                equipmentSystem.entityEquipmentId = updateEquipmentSystem.entityEquipmentId;
-                if (searchMappingConsumptionEquipmentEntity) {
-                    equipmentSystem.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
+                let searchMappingEquipmentOilCompatibility = mappingKeys_1.searchKey(MappingEquipmentOilCompatibility, updateEquipmentSystem.entityEquipmentOilCompatibilityId);
+                let consumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                consumptionEquipmentEntity.id = updateEquipmentSystem.id;
+                consumptionEquipmentEntity.userId = updateEquipmentSystem.userId;
+                consumptionEquipmentEntity.date = updateEquipmentSystem.date;
+                consumptionEquipmentEntity.amount = updateEquipmentSystem.amount;
+                consumptionEquipmentEntity.hourConsumption = updateEquipmentSystem.hourConsumption;
+                consumptionEquipmentEntity.observation = updateEquipmentSystem.observation;
+                consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = updateEquipmentSystem.entityEquipmentOilCompatibilityId;
+                if (searchMappingEquipmentOilCompatibility) {
+                    consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
                 }
-                equipmentSystem.entityOilId = updateEquipmentSystem.entityOilId;
-                if (searchMappingOils) {
-                    equipmentSystem.entityOilId = searchMappingOils.value;
+                consumptionEquipmentEntity.userIdCreated = updateEquipmentSystem.userIdCreated;
+                consumptionEquipmentEntity.dateCreated = updateEquipmentSystem.dateCreated;
+                consumptionEquipmentEntity.userIdUpdated = updateEquipmentSystem.userIdUpdated;
+                consumptionEquipmentEntity.dateUpdated = updateEquipmentSystem.dateUpdated;
+                consumptionEquipmentEntity.status = Boolean(updateEquipmentSystem.status);
+                if (consumptionEquipmentEntity.status) {
+                    listDeConsumosRegistrados.push(consumptionEquipmentEntity.id);
                 }
-                equipmentSystem.userIdCreated = updateEquipmentSystem.userIdCreated;
-                equipmentSystem.dateCreated = updateEquipmentSystem.dateCreated;
-                equipmentSystem.userIdUpdated = updateEquipmentSystem.userIdUpdated;
-                equipmentSystem.dateUpdated = updateEquipmentSystem.dateUpdated;
-                equipmentSystem.status = Boolean(updateEquipmentSystem.status);
-                if (equipmentSystem.status) {
-                    listDeConsumosRegistrados.push(equipmentSystem.id);
-                }
-                await this._ConsumptionEquipment.save(equipmentSystem);
+                await this._ConsumptionEquipment.save(consumptionEquipmentEntity);
             }
         }
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
@@ -163,30 +153,25 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         }
         try {
             for (var deleteConsumptionEquipment_1 = __asyncValues(deleteConsumptionEquipment), deleteConsumptionEquipment_1_1; deleteConsumptionEquipment_1_1 = await deleteConsumptionEquipment_1.next(), !deleteConsumptionEquipment_1_1.done;) {
-                let consumptionEquipment = deleteConsumptionEquipment_1_1.value;
-                let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, consumptionEquipment.entityEquipmentId);
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, consumptionEquipment.entityOilId);
-                let equipmentSystem = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
-                equipmentSystem.id = consumptionEquipment.id;
-                equipmentSystem.userId = consumptionEquipment.userId;
-                equipmentSystem.date = consumptionEquipment.date;
-                equipmentSystem.amount = consumptionEquipment.amount;
-                equipmentSystem.hourConsumption = consumptionEquipment.hourConsumption;
-                equipmentSystem.observation = consumptionEquipment.observation;
-                equipmentSystem.entityEquipmentId = consumptionEquipment.entityEquipmentId;
-                if (searchMappingConsumptionEquipmentEntity) {
-                    equipmentSystem.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
+                let deletConsumptionEquipment = deleteConsumptionEquipment_1_1.value;
+                let searchMappingEquipmentOilCompatibility = mappingKeys_1.searchKey(MappingEquipmentOilCompatibility, deletConsumptionEquipment.entityEquipmentOilCompatibilityId);
+                let consumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                consumptionEquipmentEntity.id = deletConsumptionEquipment.id;
+                consumptionEquipmentEntity.userId = deletConsumptionEquipment.userId;
+                consumptionEquipmentEntity.date = deletConsumptionEquipment.date;
+                consumptionEquipmentEntity.amount = deletConsumptionEquipment.amount;
+                consumptionEquipmentEntity.hourConsumption = deletConsumptionEquipment.hourConsumption;
+                consumptionEquipmentEntity.observation = deletConsumptionEquipment.observation;
+                consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = deletConsumptionEquipment.entityEquipmentOilCompatibilityId;
+                if (searchMappingEquipmentOilCompatibility) {
+                    consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
                 }
-                equipmentSystem.entityOilId = consumptionEquipment.entityOilId;
-                if (searchMappingOils) {
-                    equipmentSystem.entityOilId = searchMappingOils.value;
-                }
-                equipmentSystem.userIdCreated = consumptionEquipment.userIdCreated;
-                equipmentSystem.dateCreated = consumptionEquipment.dateCreated;
-                equipmentSystem.userIdUpdated = consumptionEquipment.userIdUpdated;
-                equipmentSystem.dateUpdated = consumptionEquipment.dateUpdated;
-                equipmentSystem.status = Boolean(consumptionEquipment.status);
-                await this._ConsumptionEquipment.save(equipmentSystem);
+                consumptionEquipmentEntity.userIdCreated = deletConsumptionEquipment.userIdCreated;
+                consumptionEquipmentEntity.dateCreated = deletConsumptionEquipment.dateCreated;
+                consumptionEquipmentEntity.userIdUpdated = deletConsumptionEquipment.userIdUpdated;
+                consumptionEquipmentEntity.dateUpdated = deletConsumptionEquipment.dateUpdated;
+                consumptionEquipmentEntity.status = Boolean(deletConsumptionEquipment.status);
+                await this._ConsumptionEquipment.save(deletConsumptionEquipment);
             }
         }
         catch (e_3_1) { e_3 = { error: e_3_1 }; }

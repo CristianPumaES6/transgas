@@ -75,7 +75,7 @@ let BunkerOilService = class BunkerOilService {
             }
         });
     }
-    async SaveList(MappingOils, MappingTypesOfOilEquipment, bunkerOilEntity) {
+    async SaveList(MappingOils, bunkerOilEntity) {
         var e_1, _a, e_2, _b, e_3, _c;
         const addBunkerOil = bunkerOilEntity.filter((bunkerOil) => bunkerOil.SyncStatus == 'added');
         const updateBunkerOil = bunkerOilEntity.filter((bunkerOil) => bunkerOil.SyncStatus == 'updated');

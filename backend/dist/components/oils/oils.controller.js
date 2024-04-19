@@ -24,13 +24,16 @@ const equipment_system_service_1 = require("./equipment-system/equipment-system.
 const consumption_equipment_service_1 = require("./consumption-equipment/consumption-equipment.service");
 const bunker_oil_service_1 = require("./bunker-oil/bunker-oil.service");
 const nodemailer_assets_1 = require("../../assets/nodemailer.assets");
+const equipment_oil_compatibility_service_1 = require("./equipment-oil-compatibility/equipment-oil-compatibility.service");
+const equipment_oil_compatibility_entity_1 = require("../../models/equipment-oil-compatibility.entity");
 let OilsController = class OilsController {
-    constructor(_OilsService, _GroupOilEntityService, _EquipmentSystemService, _ConsumptionEquipmentService, _BunkerOilService) {
+    constructor(_OilsService, _GroupOilEntityService, _EquipmentSystemService, _ConsumptionEquipmentService, _BunkerOilService, _EquipmentOilCompatibilityService) {
         this._OilsService = _OilsService;
         this._GroupOilEntityService = _GroupOilEntityService;
         this._EquipmentSystemService = _EquipmentSystemService;
         this._ConsumptionEquipmentService = _ConsumptionEquipmentService;
         this._BunkerOilService = _BunkerOilService;
+        this._EquipmentOilCompatibilityService = _EquipmentOilCompatibilityService;
     }
     Gets(headers, oilEntity) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
@@ -70,6 +73,7 @@ let OilsController = class OilsController {
         let listEquipmentSystem = [];
         let listConsumptionEquipment = [];
         let listBunkerOil = [];
+        let listEquipmentOilCompatibilityEntity = [];
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (oilEntity) {
                 oilEntity.userId = Number(oilEntity.userId);
@@ -95,8 +99,8 @@ let OilsController = class OilsController {
             let equipmentSystemEntity = {};
             equipmentSystemEntity.userId = oilEntity.userId;
             return this._EquipmentSystemService.Gets(equipmentSystemEntity);
-        }).then((TypesOfOilEquipmentEntity) => {
-            listEquipmentSystem = TypesOfOilEquipmentEntity;
+        }).then((EquipmentSystemsEntity) => {
+            listEquipmentSystem = EquipmentSystemsEntity;
             let consumptionEquipmentEntity = {};
             consumptionEquipmentEntity.userId = oilEntity.userId;
             return this._ConsumptionEquipmentService.Gets(consumptionEquipmentEntity);
@@ -107,6 +111,11 @@ let OilsController = class OilsController {
             return this._BunkerOilService.Gets(bunkersOilEntity);
         }).then((bunkersOilEntity) => {
             listBunkerOil = bunkersOilEntity;
+            let equipmentOilCompatibility = {};
+            equipmentOilCompatibility.userId = oilEntity.userId;
+            return this._EquipmentOilCompatibilityService.Gets(equipmentOilCompatibility);
+        }).then((equipmentOilCompatibilityEntity) => {
+            listEquipmentOilCompatibilityEntity = equipmentOilCompatibilityEntity;
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
@@ -281,10 +290,11 @@ let OilsController = class OilsController {
     async SaveDataLubricante(headers, saveDateOils) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         let mappingGroupOils = [];
-        let mappingTypesOfOilEquipment = [];
-        let mappingConsumptionsEquipment = [];
         let mappingOils = [];
         let mappingBunkersOil = [];
+        let mappingEquipmentSystems = [];
+        let mappingEquipmentOilCompatibility = [];
+        let mappingConsumptionsEquipment = [];
         let listConsumosValidarSendMail = [];
         console.log('--------------------------');
         console.log('-----------[   START saveModuleOils   ]---------------');
@@ -293,8 +303,8 @@ let OilsController = class OilsController {
         console.log('--------------------------');
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (saveDateOils) {
-                if (saveDateOils.listGroups) {
-                    return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
+                if (saveDateOils.listGroupOilEntity) {
+                    return this._GroupOilEntityService.SaveList(saveDateOils.listGroupOilEntity);
                 }
                 else {
                     return [];
@@ -304,24 +314,40 @@ let OilsController = class OilsController {
                 throw 'MISSING_FIELS';
         }).then((resultMappingGroupOils) => {
             mappingGroupOils = resultMappingGroupOils;
-            if (saveDateOils.listOils) {
-                return this._OilsService.SaveList(saveDateOils.listOils);
+            if (saveDateOils.listOilEntity) {
+                return this._OilsService.SaveList(saveDateOils.listOilEntity);
             }
             else {
                 return [];
             }
         }).then((resultMappingOil) => {
             mappingOils = resultMappingOil;
-            if (saveDateOils.listEquipmentSystem) {
-                return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystem);
+            if (saveDateOils.listBunkerOil) {
+                return this._BunkerOilService.SaveList(mappingOils, saveDateOils.listBunkerOil);
+            }
+            else {
+                return [];
+            }
+        }).then((resultBunkerOil) => {
+            mappingBunkersOil = resultBunkerOil;
+            if (saveDateOils.listEquipmentSystemEntity) {
+                return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystemEntity);
             }
             else {
                 return [];
             }
         }).then((resultMappingEquipmentSystem) => {
-            mappingTypesOfOilEquipment = resultMappingEquipmentSystem;
-            if (saveDateOils.listConsumptionEquipment) {
-                return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, mappingOils, saveDateOils.listConsumptionEquipment);
+            mappingEquipmentSystems = resultMappingEquipmentSystem;
+            if (saveDateOils.listEquipmentOilCompatibilityEntity) {
+                this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibilityEntity);
+            }
+            else {
+                return [];
+            }
+        }).then((resultMappingEquipmentOilCompatibility) => {
+            mappingEquipmentOilCompatibility = resultMappingEquipmentOilCompatibility;
+            if (saveDateOils.listConsumptionEquipmentEntity) {
+                return this._ConsumptionEquipmentService.SaveList(mappingEquipmentOilCompatibility, saveDateOils.listConsumptionEquipmentEntity);
             }
             else {
                 return {
@@ -332,14 +358,6 @@ let OilsController = class OilsController {
         }).then((resultConsumptionEquipment) => {
             mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
             listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
-            if (saveDateOils.listBunkerOil) {
-                return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOil);
-            }
-            else {
-                return [];
-            }
-        }).then((resultBunkerOil) => {
-            mappingBunkersOil = resultBunkerOil;
             if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
                 console.log('Se realiza la consulta de consumos registrados');
                 return this._OilsService.ConsultarListaDeConsumosRegistrados(listConsumosValidarSendMail);
@@ -360,7 +378,7 @@ let OilsController = class OilsController {
                 message: 'OK',
                 data: {
                     mappingGroupOils: mappingGroupOils,
-                    mappingTypesOfOilEquipment: mappingTypesOfOilEquipment,
+                    mappingEquipmentSystems: mappingEquipmentSystems,
                     mappingConsumptionsEquipment: mappingConsumptionsEquipment,
                     mappingOils: mappingOils,
                     mappingBunkersOil: mappingBunkersOil
@@ -439,7 +457,8 @@ OilsController = __decorate([
         group_oils_service_1.GroupOilsService,
         equipment_system_service_1.EquipmentSystemService,
         consumption_equipment_service_1.ConsumptionEquipmentService,
-        bunker_oil_service_1.BunkerOilService])
+        bunker_oil_service_1.BunkerOilService,
+        equipment_oil_compatibility_service_1.EquipmentOilCompatibilityService])
 ], OilsController);
 exports.OilsController = OilsController;
 //# sourceMappingURL=oils.controller.js.map

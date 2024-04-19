@@ -3437,13 +3437,13 @@
         "affectsGlobalScope": false
       },
       "../src/models/equipment-system.entity.ts": {
-        "version": "d34d5648bbcf509499e3b7acf00b615b2ac96cd354c4ff09234cc41d5df82b48",
+        "version": "61e66da31dd0fe82fa1a72c9c674ad96904d6de4ea0d36de3f5f382767235c36",
         "signature": "12040c4f65355338f467543e29d38746ed718246cbd1850f88b3b862463d87d8",
         "affectsGlobalScope": false
       },
       "../src/models/consumptionequipment.entity.ts": {
-        "version": "aa8a2d1f89d8b949150bdca2fc897bc590a67a1f5fc75d3d154c752cb5ac1e98",
-        "signature": "d9e9e4da1f9e16182cd5ac7dbd1d7f18199b331999ea462aaf6fc077e5babc5e",
+        "version": "939d9eb4a60d6d946ae42163c0271c967ee6f1c3583165faa953bf8f2b7b2de0",
+        "signature": "d344f1533bf9c639f5388cb41a118005cc1b51cde82075742e363626572e1d3e",
         "affectsGlobalScope": false
       },
       "../src/models/buker-oil.entity.ts": {
@@ -3451,9 +3451,14 @@
         "signature": "1ef12b845b021e97ac16e5400aa2c89b5c69c9baa3e73679ee9e64e543d669ed",
         "affectsGlobalScope": false
       },
+      "../src/models/equipment-oil-compatibility.entity.ts": {
+        "version": "73967741e1bd140e2a75c0fd416f24665237060bce015eaf8795d6b8b86f161b",
+        "signature": "eadd5f77709e6dba0619dfb628c990e68c8e9fce35acae01e40bd43803de70b9",
+        "affectsGlobalScope": false
+      },
       "../src/models/oil.entity.ts": {
-        "version": "abeab4213207e63c520275edbb2403577e2bd6ccadd7aa327848b9c24aea7c76",
-        "signature": "005fcf0b40f06afe237ca368cc3076aeefe946a0546fef80e4795080671b24b3",
+        "version": "2b0cdf79dcd404bc4234d7c6d4ea10efd4b58dfbbdf935da0bfa9dff0ee7ef34",
+        "signature": "eefd11025fa599135863769302288b82f908ea56a7bc681e3c39a4801ba14b6e",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type.d.ts": {
@@ -3527,8 +3532,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "25b6f277b8580934bbff21c8856ed38f939162ab947354f6a4c7efcea54538cd",
-        "signature": "6432478c9a5721ef41a74889fd2ad5029deb4abe83d55b0aa97b50bb362014a4",
+        "version": "5f2a343da2c5495daa12faaa558e508787bff2d7866e5321c04a305946b68fee",
+        "signature": "be791d46b9e31250326e5a0a6d9067144e37ca509142269888b4e8029e568551",
         "affectsGlobalScope": false
       },
       "../src/components/users/users.service.ts": {
@@ -3877,7 +3882,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.service.ts": {
-        "version": "d59194c8d2bb64d899f0b45cc7820f9ba83f823df18c6695cdcbbc81315856d2",
+        "version": "0fcfd02345ffd72a32cd1042a2b8396f5659a43cb804d926569a369cb2aeba7f",
         "signature": "6ba2cff967a4333d1cd1a42190659ecaa242119bc2c8160fdb0eaa80b8b3baeb",
         "affectsGlobalScope": false
       },
@@ -3887,18 +3892,23 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/equipment-system/equipment-system.service.ts": {
-        "version": "7360273d04a548612c2833b2ee920c3955816bd8afe49f828354d5ad4b4a21f3",
+        "version": "ae2eab54224a8a8903fcffd61672c4d028a71f5aea2e296b25aeefed159d70a7",
         "signature": "e3a39625a12fe37e053ab35592b486b516c51ffef8dca427c24839e3f68e5b8c",
         "affectsGlobalScope": false
       },
       "../src/components/oils/bunker-oil/bunker-oil.service.ts": {
-        "version": "234a8b35ef4054c2f2163d316a1a3ec730c3add02d05dcf830983b1a938e927f",
-        "signature": "962781d0e652060c0fbc84dde229fbdacffe304828f49963a0c376405f4c4b97",
+        "version": "7844e5ba18ce0456284f1489c355ef8b3ab553af5dab2cd68cbd37c113740550",
+        "signature": "674851d4d0277ccda7a300b5e14480b87b2aa3cc64034e5c0f5cd0ed80feb775",
+        "affectsGlobalScope": false
+      },
+      "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.service.ts": {
+        "version": "d41342af3ea74a7691a9ed6fe253b3cd2056d3093e12d195df95d9ca2894e908",
+        "signature": "b0317ab729e6435acd9bcc9f97e0422d736e3c4bcee7f24e108e1b0313a0e421",
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "8a989738a405dec115e401df26c59ae632b166514916b62459de268ee686f7ff",
-        "signature": "f0b0ea0b6e0c61310108635c885515adc5dc4407a09de2e146f6740c63635d5b",
+        "version": "e4da0c2dcab8eccc9599bec5c99eee344c7a6cbe401d4fa4b85d782e3fcfd4b9",
+        "signature": "d511ea085c8da313653427c2d80d2cea54d39a2a1dfcaa9899d8f9df20d4f319",
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment.controller.ts": {
@@ -3921,8 +3931,13 @@
         "signature": "cd7963a936bfcae6bd9ab1334c3148328fc20c254e8264ba4f698be7350dabd9",
         "affectsGlobalScope": false
       },
+      "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.controller.ts": {
+        "version": "dd1b8067981cf1283fd6f865749ac94812a8f3391f5a444014e3aee1ddef4df5",
+        "signature": "a7ceb012e6a01140a6dc99604fb085d77c220b4c5696bd07d6e72836e555ee09",
+        "affectsGlobalScope": false
+      },
       "../src/components/oils/oils.module.ts": {
-        "version": "26373f3248795fe07c147b68686fbbba78629c5b247443acb08fac589828ed80",
+        "version": "c1cad5c764828bf2842d6a2eeed918142cd36846e40f0de5f0217c854a051438",
         "signature": "51580477572145f7f95ef71d37e47c01d8b55bdf7b9dace183b14c2bd74d675e",
         "affectsGlobalScope": false
       },
@@ -7231,6 +7246,24 @@
         "../src/models/oil.entity.ts",
         "../src/models/user.entity.ts"
       ],
+      "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts"
+      ],
+      "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.service.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/typeorm/index.d.ts",
+        "../node_modules/@types/bcrypt/index.d.ts",
+        "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
+        "../src/assets/moment.assets.ts",
+        "../src/assets/promises.assets.ts",
+        "../src/config/bcrypt.config.ts",
+        "../src/config/server.config.ts",
+        "../src/models/consumptionequipment.entity.ts",
+        "../src/models/equipment-oil-compatibility.entity.ts",
+        "../src/models/oil.entity.ts",
+        "../src/models/user.entity.ts"
+      ],
       "../src/components/oils/equipment-system/equipment-system.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/assets/jwtdecode.assets.ts",
@@ -7276,11 +7309,13 @@
         "../src/assets/promises.assets.ts",
         "../src/components/oils/bunker-oil/bunker-oil.service.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment.service.ts",
+        "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.service.ts",
         "../src/components/oils/equipment-system/equipment-system.service.ts",
         "../src/components/oils/group-oils/group-oils.service.ts",
         "../src/components/oils/oils.service.ts",
         "../src/models/buker-oil.entity.ts",
         "../src/models/consumptionequipment.entity.ts",
+        "../src/models/equipment-oil-compatibility.entity.ts",
         "../src/models/equipment-system.entity.ts",
         "../src/models/group-oils.entity.ts",
         "../src/models/oil.entity.ts",
@@ -7293,6 +7328,8 @@
         "../src/components/oils/bunker-oil/bunker-oil.service.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment.controller.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment.service.ts",
+        "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.controller.ts",
+        "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.service.ts",
         "../src/components/oils/equipment-system/equipment-system.controller.ts",
         "../src/components/oils/equipment-system/equipment-system.service.ts",
         "../src/components/oils/group-oils/group-oils.controller.ts",
@@ -7301,6 +7338,7 @@
         "../src/components/oils/oils.service.ts",
         "../src/models/buker-oil.entity.ts",
         "../src/models/consumptionequipment.entity.ts",
+        "../src/models/equipment-oil-compatibility.entity.ts",
         "../src/models/equipment-system.entity.ts",
         "../src/models/group-oils.entity.ts",
         "../src/models/oil.entity.ts"
@@ -7506,6 +7544,9 @@
         "../node_modules/typeorm/index.d.ts",
         "../src/models/port.entity.ts"
       ],
+      "../src/models/equipment-oil-compatibility.entity.ts": [
+        "../node_modules/typeorm/index.d.ts"
+      ],
       "../src/models/equipment-system.entity.ts": [
         "../node_modules/typeorm/index.d.ts"
       ],
@@ -7516,6 +7557,7 @@
         "../node_modules/typeorm/index.d.ts",
         "../src/models/buker-oil.entity.ts",
         "../src/models/consumptionequipment.entity.ts",
+        "../src/models/equipment-oil-compatibility.entity.ts",
         "../src/models/equipment-system.entity.ts",
         "../src/models/group-oils.entity.ts"
       ],
@@ -10564,6 +10606,11 @@
         "../src/assets/mappingkeys.ts",
         "../src/models/consumptionequipment.entity.ts"
       ],
+      "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.service.ts": [
+        "../node_modules/typeorm/index.d.ts",
+        "../src/assets/mappingkeys.ts",
+        "../src/models/equipment-oil-compatibility.entity.ts"
+      ],
       "../src/components/oils/equipment-system/equipment-system.controller.ts": [
         "../src/components/oils/equipment-system/equipment-system.service.ts",
         "../src/models/equipment-system.entity.ts"
@@ -10585,6 +10632,7 @@
       "../src/components/oils/oils.controller.ts": [
         "../src/components/oils/bunker-oil/bunker-oil.service.ts",
         "../src/components/oils/consumption-equipment/consumption-equipment.service.ts",
+        "../src/components/oils/equipment-oil-compatibility/equipment-oil-compatibility.service.ts",
         "../src/components/oils/equipment-system/equipment-system.service.ts",
         "../src/components/oils/group-oils/group-oils.service.ts",
         "../src/components/oils/oils.service.ts",
@@ -10650,6 +10698,7 @@
       "../src/models/oil.entity.ts": [
         "../src/models/buker-oil.entity.ts",
         "../src/models/consumptionequipment.entity.ts",
+        "../src/models/equipment-oil-compatibility.entity.ts",
         "../src/models/equipment-system.entity.ts",
         "../src/models/group-oils.entity.ts"
       ],

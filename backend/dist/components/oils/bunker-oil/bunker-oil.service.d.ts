@@ -6,5 +6,5 @@ export declare class BunkerOilService {
     constructor(_BunkerOil: Repository<BunkerOil>);
     Gets(groupOilEntity: BunkerOil): Promise<BunkerOil[]>;
     Create(bunkerOil: BunkerOil): Promise<BunkerOil>;
-    SaveList(MappingOils: Mapping[], MappingTypesOfOilEquipment: Mapping[], bunkerOilEntity: BunkerOil[]): Promise<Mapping[]>;
+    SaveList(MappingOils: Mapping[], bunkerOilEntity: BunkerOil[]): Promise<Mapping[]>;
 }
