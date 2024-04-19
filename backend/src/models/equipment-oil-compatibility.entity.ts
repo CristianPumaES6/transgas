@@ -1,24 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 
-@Entity('consumptionEquipment')
-export class ConsumptionEquipmentEntity {
-
+@Entity('equipmentOilCompatibility')
+export class EquipmentOilCompatibilityEntity {
+    
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: true })
     userId: number;
-    @Column({ nullable: false })
-    date: string;
-    @Column()
-    amount: number;
-    @Column()
-    hourConsumption: number;
+
     @Column({ nullable: true })
-    observation: string;
-    
-    @Column({ nullable: false })
-    entityEquipmentOilCompatibilityId: number;
+    entityEquipmentId: number;
+    @Column({ nullable: true })
+    entityOilId: number;
 
     // Auditoria
     @Column()
@@ -37,33 +31,30 @@ export class ConsumptionEquipmentEntity {
         id?: number,
 
         userId?: number,
-        date?: string,
-        amount?: number,
-        hourConsumption?: number,
-        observation?: string,
-        entityEquipmentOilCompatibilityId?: number,
 
+        entityEquipmentId?: number,
+        entityOilId?: number,
+    
         userIdCreated?: number,
         dateCreated?: string,
         userIdUpdated?: number,
         dateUpdated?: string,
 
-        status?: boolean
+        status?: boolean,
+        
     ) {
         this.id = id || null;
         this.userId = userId || null;
-        this.date = date || '';
 
-        this.amount = amount || 0;
-        this.hourConsumption = hourConsumption || 0;
-        this.observation = observation || '';
-        this.entityEquipmentOilCompatibilityId = entityEquipmentOilCompatibilityId || 0;
+        this.entityEquipmentId = entityEquipmentId || 0;
+        this.entityOilId = entityOilId || 0;
 
         // Auditoria
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
         this.userIdUpdated = userIdUpdated || 0;
         this.dateUpdated = dateUpdated || '';
+        
         this.status = status || false;
     }
 

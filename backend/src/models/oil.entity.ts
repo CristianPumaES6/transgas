@@ -3,6 +3,7 @@ import { GroupOilEntity } from './group-oils.entity';
 import { EquipmentSystemEntity } from './equipment-system.entity';
 import { ConsumptionEquipmentEntity } from './consumptionEquipment.entity';
 import { BunkerOil } from './buker-oil.entity';
+import { EquipmentOilCompatibilityEntity } from './equipment-oil-compatibility.entity';
 
 @Entity('oil')
 export class OilEntity {
@@ -59,26 +60,29 @@ export class OilEntity {
 
 export class SaveDateOils {
     userId: number;
-    listGroups: GroupOilEntity[];
-    listEquipmentSystem: EquipmentSystemEntity[];
-    listConsumptionEquipment: ConsumptionEquipmentEntity[];
+    listGroupOilEntity: GroupOilEntity[];
+    listEquipmentSystemEntity: EquipmentSystemEntity[];
+    listOilEntity: OilEntity[];
     listBunkerOil: BunkerOil[];
-    listOils: OilEntity[];
+    listEquipmentOilCompatibilityEntity: EquipmentOilCompatibilityEntity[];
+    listConsumptionEquipmentEntity: ConsumptionEquipmentEntity[];
 
 
     constructor(
-        userId?: number,
-        listGroups?: GroupOilEntity[],
-        listEquipmentSystem?: EquipmentSystemEntity[],
-        listConsumptionEquipment?: ConsumptionEquipmentEntity[],
-        listBunkerOil?: BunkerOil[],
-        listOil?: OilEntity[]
+        _userId?: number,
+        _listGroup?: GroupOilEntity[],
+        _listEquipmentSystem?: EquipmentSystemEntity[],
+        _listOil?: OilEntity[],
+        _listBunkerOil?: BunkerOil[],
+        _listEquipmentOilCompatibility?: EquipmentOilCompatibilityEntity[],
+        _listConsumptionEquipment?: ConsumptionEquipmentEntity[]
       ) {
-        this.userId = userId || null;
-        this.listGroups = listGroups || [];
-        this.listEquipmentSystem = listEquipmentSystem || [];
-        this.listConsumptionEquipment = listConsumptionEquipment || [];
-        this.listBunkerOil = listBunkerOil || [];
-        this.listOils = listOil || [];
+        this.userId = _userId || null;
+        this.listGroupOilEntity = _listGroup || [];
+        this.listEquipmentSystemEntity = _listEquipmentSystem || [];
+        this.listOilEntity = _listOil || [];
+        this.listBunkerOil = _listBunkerOil || [];
+        this.listEquipmentOilCompatibilityEntity = _listEquipmentOilCompatibility || [];
+        this.listConsumptionEquipmentEntity = _listConsumptionEquipment || [];
       }
   }

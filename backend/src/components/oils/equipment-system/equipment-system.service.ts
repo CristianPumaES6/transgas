@@ -99,16 +99,16 @@ export class EquipmentSystemService {
     async SaveList(MappingGroupOils: Mapping[], typesOfOilEquipmentEntity: EquipmentSystemEntity[]) {
 
         // Mapping
-        let MappingTypesOfOilEquipment: Mapping[] = [];
+        let MappingEquipmentSystems: Mapping[] = [];
 
         // FIltramos los datos que faltan aggregar y actualizar.
-        const addTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'added');
-        const updateTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'updated');
-        const deleteTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'deleted');
+        const addEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'added');
+        const updateEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'updated');
+        const deleteEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'deleted');
 
 
 
-        for await (const addEquipmentSystem of addTypesOfOilEquipment) {
+        for await (const addEquipmentSystem of addEquipmentSystems) {
 
             let searchMappingGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entityGroupId);
             let searchMappingSubGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entitySubGroupId);
@@ -138,10 +138,10 @@ export class EquipmentSystemService {
             let registeredGroupOil = await this.Create(newEquipmentSystemEntity);
 
             // Lo agregamos al mapping
-            MappingTypesOfOilEquipment.push(new Mapping(addEquipmentSystem.id, registeredGroupOil.id))
+            MappingEquipmentSystems.push(new Mapping(addEquipmentSystem.id, registeredGroupOil.id))
         }
 
-        for await (const updateEquipmentSystem of updateTypesOfOilEquipment) {
+        for await (const updateEquipmentSystem of updateEquipmentSystems) {
             let searchMappingGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entityGroupId);
             let searchMappingSubGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entitySubGroupId);
 
@@ -170,7 +170,7 @@ export class EquipmentSystemService {
 
 
 
-        for await (let deleteEquipmentSystem of deleteTypesOfOilEquipment) {
+        for await (let deleteEquipmentSystem of deleteEquipmentSystems) {
             let searchMappingGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
             let searchMappingSubGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entitySubGroupId);
 
@@ -198,6 +198,6 @@ export class EquipmentSystemService {
         }
 
 
-        return MappingTypesOfOilEquipment;
+        return MappingEquipmentSystems;
     }
 }

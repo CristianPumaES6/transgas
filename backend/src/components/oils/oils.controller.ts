@@ -15,6 +15,7 @@ import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from 
 import { BunkerOilService } from './bunker-oil/bunker-oil.service';
 import { Mapping } from '../../assets/mappingKeys';
 import { SendMailHTMLOverCosumption } from 'src/assets/nodemailer.assets';
+import { EquipmentOilCompatibilityService } from './equipment-oil-compatibility/equipment-oil-compatibility.service';
 
 
 @Controller('oils')
@@ -27,6 +28,7 @@ export class OilsController {
         private readonly _EquipmentSystemService: EquipmentSystemService,
         private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
         private readonly _BunkerOilService: BunkerOilService,
+        private readonly _EquipmentOilCompatibilityService: EquipmentOilCompatibilityService,
     ) { }
 
     @Get()
@@ -142,8 +144,8 @@ export class OilsController {
                 return this._EquipmentSystemService.Gets(equipmentSystemEntity);
             }
         ).then(
-            (TypesOfOilEquipmentEntity: EquipmentSystemEntity[]) => {
-                listEquipmentSystem = TypesOfOilEquipmentEntity;
+            (EquipmentSystemsEntity: EquipmentSystemEntity[]) => {
+                listEquipmentSystem = EquipmentSystemsEntity;
 
                 let consumptionEquipmentEntity: ConsumptionEquipmentEntity = <any>{};
                 consumptionEquipmentEntity.userId = oilEntity.userId;
@@ -486,10 +488,11 @@ export class OilsController {
 
         // Mapping de Id del server con el id del cliente
         let mappingGroupOils: Mapping[] = [];
-        let mappingTypesOfOilEquipment: Mapping[] = [];
-        let mappingConsumptionsEquipment: Mapping[] = [];
         let mappingOils: Mapping[] = [];
         let mappingBunkersOil: Mapping[] = [];
+        let mappingEquipmentSystems: Mapping[] = [];
+        let mappingEquipmentOilCompatibility: Mapping[] = [];
+        let mappingConsumptionsEquipment: Mapping[] = [];
         let listConsumosValidarSendMail = [];
 
         console.log('--------------------------');
@@ -502,9 +505,9 @@ export class OilsController {
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
                 if (saveDateOils) {
-                    if (saveDateOils.listGroups) {
+                    if (saveDateOils.listGroupOilEntity) {
                         // Ejecutamos la funcion que registra en bd.
-                        return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
+                        return this._GroupOilEntityService.SaveList(saveDateOils.listGroupOilEntity);
                     } else {
                         return [];
                     }
@@ -516,8 +519,8 @@ export class OilsController {
 
                 mappingGroupOils = resultMappingGroupOils;
 
-                if (saveDateOils.listOils) {
-                    return this._OilsService.SaveList(saveDateOils.listOils);
+                if (saveDateOils.listOilEntity) {
+                    return this._OilsService.SaveList(saveDateOils.listOilEntity);
                 } else {
                     return [];
                 }
@@ -526,19 +529,38 @@ export class OilsController {
             (resultMappingOil: Mapping[]) => {
 
                 mappingOils = resultMappingOil;
+                if (saveDateOils.listBunkerOil) {
+                    return this._BunkerOilService.SaveList(mappingOils, saveDateOils.listBunkerOil);
+                } else {
+                    return [];
+                }
+            }
+        ).then(
+            (resultBunkerOil: Mapping[]) => {
 
-                if (saveDateOils.listEquipmentSystem) {
-                    return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystem);
+                mappingBunkersOil = resultBunkerOil;
+                if (saveDateOils.listEquipmentSystemEntity) {
+                    return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystemEntity);
                 } else {
                     return [];
                 }
             }
         ).then(
             (resultMappingEquipmentSystem: Mapping[]) => {
-                mappingTypesOfOilEquipment = resultMappingEquipmentSystem;
+                mappingEquipmentSystems = resultMappingEquipmentSystem;
 
-                if (saveDateOils.listConsumptionEquipment) {
-                    return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, mappingOils, saveDateOils.listConsumptionEquipment);
+                if(saveDateOils.listEquipmentOilCompatibilityEntity) {
+                    this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibilityEntity)
+                } else {
+                    return []
+                }
+            }
+        ).then(
+            (resultMappingEquipmentOilCompatibility : Mapping[]) => {
+                mappingEquipmentOilCompatibility = resultMappingEquipmentOilCompatibility;
+
+                if (saveDateOils.listConsumptionEquipmentEntity) {
+                    return this._ConsumptionEquipmentService.SaveList(mappingEquipmentOilCompatibility, saveDateOils.listConsumptionEquipmentEntity);
                 } else {
                     // vacio si no hay nada
                     return {
@@ -552,16 +574,7 @@ export class OilsController {
                 mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
                 listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
 
-                if (saveDateOils.listBunkerOil) {
-                    return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOil);
-                } else {
-                    return [];
-                }
-            }
-        ).then(
-            (resultBunkerOil: Mapping[]) => {
-
-                mappingBunkersOil = resultBunkerOil;
+         
 
                 // tenemos que enviar un correo lo enviamos
                 if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
@@ -596,7 +609,7 @@ export class OilsController {
                     message: 'OK',
                     data: {
                         mappingGroupOils: mappingGroupOils,
-                        mappingTypesOfOilEquipment: mappingTypesOfOilEquipment,
+                        mappingEquipmentSystems: mappingEquipmentSystems,
                         mappingConsumptionsEquipment: mappingConsumptionsEquipment,
                         mappingOils: mappingOils,
                         mappingBunkersOil: mappingBunkersOil

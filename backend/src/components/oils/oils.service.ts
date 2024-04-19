@@ -333,7 +333,8 @@ export class OilsService {
                         var listDeID = ListCONSUMOSId.join(',');
                         var queryWhere = 'consumptionEquipment.id in ('+listDeID+')';
                         
-
+                        console.log("REVISAR QUERY DE LOS SOBRES CONSUMOS 77546865988")
+                        /*
                         // Buscamos el ultimo reporte.
                         return this._oilRepository.createQueryBuilder('oil')
                             .addSelect('consumptionEquipment.date', 'dateConsumption')
@@ -358,6 +359,8 @@ export class OilsService {
                             .orderBy('consumptionEquipment.date', 'DESC')
                             .limit(1000)
                             .getRawMany()
+                        */
+                        return [];
                     } else {
                         return null;
                     }

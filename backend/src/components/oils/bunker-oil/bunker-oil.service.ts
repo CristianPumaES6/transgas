@@ -99,7 +99,7 @@ export class BunkerOilService {
     }
 
     // guarda una lista de aceite.
-    async SaveList(MappingOils: Mapping[], MappingTypesOfOilEquipment: Mapping[], bunkerOilEntity: BunkerOil[]) {
+    async SaveList(MappingOils: Mapping[],  bunkerOilEntity: BunkerOil[]) {
 
 
         // FIltramos los datos que faltan aggregar y actualizar.
