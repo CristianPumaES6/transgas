@@ -4,7 +4,7 @@ import { Mapping, searchKey } from 'src/assets/mappingKeys';
 import { GetDate } from 'src/assets/moment.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { URL_Server } from 'src/config/server.config';
-import {  BunkerOil } from 'src/models/buker-oil-to-equipment.entity';
+import {  BunkerOil } from 'src/models/buker-oil.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()

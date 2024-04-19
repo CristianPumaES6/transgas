@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 import { GroupOilEntity } from './group-oils.entity';
-import { EquipmentSystemEntity } from './type-of-oils-equipment.entity';
+import { EquipmentSystemEntity } from './equipment-system.entity';
 import { ConsumptionEquipmentEntity } from './consumptionEquipment.entity';
-import { BunkerOil } from './buker-oil-to-equipment.entity';
+import { BunkerOil } from './buker-oil.entity';
 
 @Entity('oil')
 export class OilEntity {

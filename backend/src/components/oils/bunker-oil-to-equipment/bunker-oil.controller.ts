@@ -3,7 +3,7 @@ import { JwtDecode } from 'src/assets/jwtDecode.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { UserEntity } from 'src/models/user.entity';
 import { BunkerOilService } from './bunker-oil.service';
-import { BunkerOil } from 'src/models/buker-oil-to-equipment.entity';
+import { BunkerOil } from 'src/models/buker-oil.entity';
 
 @Controller('bunker-oil')
 export class BunkerOilController {

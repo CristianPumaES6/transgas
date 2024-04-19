@@ -7,16 +7,16 @@ import { ConsumptionEquipmentController } from './consumption-equipment/consumpt
 import { ConsumptionEquipmentService } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
 import { GroupOilsController } from './group-oils/group-oils.controller';
 import { GroupOilsService } from './group-oils/group-oils.service';
-import { EquipmentSystemController } from './type-of-oil-equiment/type-of-oil-equiment.controller';
+import { EquipmentSystemController } from './equipment-system/equipment-system.controller';
 
 import { BunkerOilController } from './bunker-oil-to-equipment/bunker-oil.controller';
 import { BunkerOilService } from './bunker-oil-to-equipment/bunker-oil.service';
 import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
 
 import { GroupOilEntity } from 'src/models/group-oils.entity';
-import { BunkerOil } from 'src/models/buker-oil-to-equipment.entity';
-import { EquipmentSystemEntity } from 'src/models/type-of-oils-equipment.entity';
-import { EquipmentSystemService } from './type-of-oil-equiment/type-of-oil-equiment.service';
+import { BunkerOil } from 'src/models/buker-oil.entity';
+import { EquipmentSystemEntity } from 'src/models/equipment-system.entity';
+import { EquipmentSystemService } from './equipment-system/equipment-system.service';
 
 @Module({
   imports: [

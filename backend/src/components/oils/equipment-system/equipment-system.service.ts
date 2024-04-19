@@ -4,7 +4,7 @@ import { Mapping, searchKey } from 'src/assets/mappingKeys';
 import { GetDate } from 'src/assets/moment.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { URL_Server } from 'src/config/server.config';
-import { EquipmentSystemEntity } from 'src/models/type-of-oils-equipment.entity';
+import { EquipmentSystemEntity } from 'src/models/equipment-system.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
