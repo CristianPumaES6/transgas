@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 
-@Entity('typeOfOilEquipment')
-export class TypeOfOilEquipmentEntity {
+@Entity('equipmentSystem')
+export class EquipmentSystemEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -14,6 +14,8 @@ export class TypeOfOilEquipmentEntity {
     rate: number;
     @Column({ nullable: true })
     entityGroupId: number;
+    @Column({ nullable: true })
+    entitySubGroupId: number;
 
     // Auditoria
     @Column()

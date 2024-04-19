@@ -1,21 +1,21 @@
 import { Controller, Get, Headers, HttpException, HttpStatus, Query } from '@nestjs/common';
-import { TypeOfOilEquipmentService } from './type-of-oil-equiment.service';
-import { TypeOfOilEquipmentEntity } from 'src/models/type-of-oils-equipment.entity';
+import { EquipmentSystemService } from './type-of-oil-equiment.service';
+import { EquipmentSystemEntity } from 'src/models/type-of-oils-equipment.entity';
 import { UserEntity } from 'src/models/user.entity';
 import { JwtDecode } from 'src/assets/jwtDecode.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 
 @Controller('type-of-oil-equipment')
-export class TypeOfOilEquipmentController {
+export class EquipmentSystemController {
 
 
     constructor(
-        private readonly _TypeOfOilEquipmentService: TypeOfOilEquipmentService ,
+        private readonly _EquipmentSystemService: EquipmentSystemService ,
     ) { }
 
 
     @Get()
-    Gets(@Headers() headers, @Query() typeOfOilEquimentEntity: TypeOfOilEquipmentEntity): Promise<any> {
+    Gets(@Headers() headers, @Query() equipmentSystemEntity: EquipmentSystemEntity): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -25,9 +25,9 @@ export class TypeOfOilEquipmentController {
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que los datos sean los necesarios.
-                if (typeOfOilEquimentEntity) {
+                if (equipmentSystemEntity) {
 
-                    typeOfOilEquimentEntity.userId = Number(typeOfOilEquimentEntity.userId);
+                    equipmentSystemEntity.userId = Number(equipmentSystemEntity.userId);
                     return true;
 
                 } else throw new Error('MISSING_FIELS');
@@ -38,13 +38,13 @@ export class TypeOfOilEquipmentController {
                 // Validamos que el userId sea el mismo que el del sailingAnality
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                   // Nose hace nada
-                } else if (typeOfOilEquimentEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                } else if (equipmentSystemEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._TypeOfOilEquipmentService.Gets(typeOfOilEquimentEntity);
+                return this._EquipmentSystemService.Gets(equipmentSystemEntity);
             }
         ).then(
-            (results: TypeOfOilEquipmentEntity[]) => {
+            (results: EquipmentSystemEntity[]) => {
 
                 // Retornamos una Respuesta exitosa.
                 return {

@@ -109,13 +109,18 @@ export class GroupOilsService {
 
  
         for await (const addGroupOil of addGroupOils) {
-
+            let searchMappingGroupOils = searchKey(MappingGroupOils, addGroupOil.groupId);
+           
             // Armamos al nuevo aceite
             let newGroupOilEntity = new GroupOilEntity();
 
             delete newGroupOilEntity.id;
             newGroupOilEntity.userId = addGroupOil.userId;
             newGroupOilEntity.label = addGroupOil.label;
+            newGroupOilEntity.description = addGroupOil.description;
+
+            newGroupOilEntity.groupId = addGroupOil.groupId;
+            if (searchMappingGroupOils) { newGroupOilEntity.groupId = searchMappingGroupOils.value }
 
             // Auditoria
             newGroupOilEntity.userIdCreated = addGroupOil.userIdCreated;
@@ -132,11 +137,18 @@ export class GroupOilsService {
         }
 
         for await (const updateGroupOil of updateGroupOils) {
+            let searchMappingGroupOils = searchKey(MappingGroupOils, updateGroupOil.groupId);
             let updateGroupOilEntity = new GroupOilEntity();
 
             updateGroupOilEntity.id = updateGroupOil.id;
             updateGroupOilEntity.userId = updateGroupOil.userId;
             updateGroupOilEntity.label = updateGroupOil.label;
+            updateGroupOilEntity.description = updateGroupOil.description;
+
+            updateGroupOilEntity.groupId = updateGroupOil.groupId;
+            if (searchMappingGroupOils) { updateGroupOilEntity.groupId = searchMappingGroupOils.value }
+
+
 
             // Auditoria
             updateGroupOilEntity.userIdCreated = updateGroupOil.userIdCreated;
@@ -149,11 +161,16 @@ export class GroupOilsService {
         }
 
         for await (let deleteGroupOil of deleteGroupOils) {
+            let searchMappingGroupOils = searchKey(MappingGroupOils, deleteGroupOil.groupId);
             let deleteGroupOilEntity = new GroupOilEntity();
 
             deleteGroupOilEntity.id = deleteGroupOil.id;
             deleteGroupOilEntity.userId = deleteGroupOil.userId;
             deleteGroupOilEntity.label = deleteGroupOil.label;
+            deleteGroupOilEntity.description = deleteGroupOil.description;
+
+            deleteGroupOilEntity.groupId = deleteGroupOil.groupId;
+            if (searchMappingGroupOils) { deleteGroupOilEntity.groupId = searchMappingGroupOils.value }
 
             // Auditoria.
             deleteGroupOilEntity.userIdCreated = deleteGroupOil.userIdCreated;

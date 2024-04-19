@@ -6,11 +6,11 @@ import { UserEntity } from '../../models/user.entity';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/moment.assets';
 import { GroupOilEntity } from '../../models/group-oils.entity';
-import { TypeOfOilEquipmentEntity } from '../../models/type-of-oils-equipment.entity';
+import { EquipmentSystemEntity } from '../../models/type-of-oils-equipment.entity';
 import { ConsumptionEquipmentEntity } from '../../models/consumptionEquipment.entity';
 import { BunkerOil } from '../../models/buker-oil-to-equipment.entity';
 import { GroupOilsService } from './group-oils/group-oils.service';
-import { TypeOfOilEquipmentService } from './type-of-oil-equiment/type-of-oil-equiment.service';
+import { EquipmentSystemService } from './type-of-oil-equiment/type-of-oil-equiment.service';
 import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
 import { BunkerOilService } from './bunker-oil-to-equipment/bunker-oil.service';
 import { Mapping } from '../../assets/mappingKeys';
@@ -24,7 +24,7 @@ export class OilsController {
     constructor(
         private readonly _OilsService: OilsService,
         private readonly _GroupOilEntityService: GroupOilsService,
-        private readonly _TypeOfOilEquipmentService: TypeOfOilEquipmentService,
+        private readonly _EquipmentSystemService: EquipmentSystemService,
         private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
         private readonly _BunkerOilService: BunkerOilService,
     ) { }
@@ -94,7 +94,7 @@ export class OilsController {
         // lista de la data del aplicativo control de Aceite
         let listOils: OilEntity[] = [];
         let listGroups: GroupOilEntity[] = [];
-        let listTypeOfOilEquipment: TypeOfOilEquipmentEntity[] = [];
+        let listEquipmentSystem: EquipmentSystemEntity[] = [];
         let listConsumptionEquipment: ConsumptionEquipmentEntity[] = [];
         let listBunkerOil: BunkerOil[] = [];
 
@@ -135,15 +135,15 @@ export class OilsController {
             (GroupsOilEntity: GroupOilEntity[]) => {
                 listGroups = GroupsOilEntity;
 
-                let typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity = <any>{};
-                typeOfOilEquipmentEntity.userId = oilEntity.userId;
+                let equipmentSystemEntity: EquipmentSystemEntity = <any>{};
+                equipmentSystemEntity.userId = oilEntity.userId;
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._TypeOfOilEquipmentService.Gets(typeOfOilEquipmentEntity);
+                return this._EquipmentSystemService.Gets(equipmentSystemEntity);
             }
         ).then(
-            (TypesOfOilEquipmentEntity: TypeOfOilEquipmentEntity[]) => {
-                listTypeOfOilEquipment = TypesOfOilEquipmentEntity;
+            (TypesOfOilEquipmentEntity: EquipmentSystemEntity[]) => {
+                listEquipmentSystem = TypesOfOilEquipmentEntity;
 
                 let consumptionEquipmentEntity: ConsumptionEquipmentEntity = <any>{};
                 consumptionEquipmentEntity.userId = oilEntity.userId;
@@ -172,7 +172,7 @@ export class OilsController {
                     data: {
                         listOils: listOils,
                         listGroups: listGroups,
-                        listTypeOfOilEquipment: listTypeOfOilEquipment,
+                        listEquipmentSystem: listEquipmentSystem,
                         listConsumptionEquipment: listConsumptionEquipment,
                         listBunkerOil: listBunkerOil
                     }
@@ -527,15 +527,15 @@ export class OilsController {
 
                 mappingOils = resultMappingOil;
 
-                if (saveDateOils.listTypeOfOilEquipment) {
-                    return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+                if (saveDateOils.listEquipmentSystem) {
+                    return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystem);
                 } else {
                     return [];
                 }
             }
         ).then(
-            (resultMappingTypeOfOilEquipment: Mapping[]) => {
-                mappingTypesOfOilEquipment = resultMappingTypeOfOilEquipment;
+            (resultMappingEquipmentSystem: Mapping[]) => {
+                mappingTypesOfOilEquipment = resultMappingEquipmentSystem;
 
                 if (saveDateOils.listConsumptionEquipment) {
                     return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, saveDateOils.listConsumptionEquipment);

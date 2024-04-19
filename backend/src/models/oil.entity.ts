@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 import { GroupOilEntity } from './group-oils.entity';
-import { TypeOfOilEquipmentEntity } from './type-of-oils-equipment.entity';
+import { EquipmentSystemEntity } from './type-of-oils-equipment.entity';
 import { ConsumptionEquipmentEntity } from './consumptionEquipment.entity';
 import { BunkerOil } from './buker-oil-to-equipment.entity';
 
@@ -60,7 +60,7 @@ export class OilEntity {
 export class SaveDateOils {
     userId: number;
     listGroups: GroupOilEntity[];
-    listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
+    listEquipmentSystem: EquipmentSystemEntity[];
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
     listBunkerOil: BunkerOil[];
     listOils: OilEntity[];
@@ -69,14 +69,14 @@ export class SaveDateOils {
     constructor(
         userId?: number,
         listGroups?: GroupOilEntity[],
-        listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[],
+        listEquipmentSystem?: EquipmentSystemEntity[],
         listConsumptionEquipment?: ConsumptionEquipmentEntity[],
         listBunkerOil?: BunkerOil[],
         listOil?: OilEntity[]
       ) {
         this.userId = userId || null;
         this.listGroups = listGroups || [];
-        this.listTypeOfOilEquipment = listTypeOfOilEquipment || [];
+        this.listEquipmentSystem = listEquipmentSystem || [];
         this.listConsumptionEquipment = listConsumptionEquipment || [];
         this.listBunkerOil = listBunkerOil || [];
         this.listOils = listOil || [];

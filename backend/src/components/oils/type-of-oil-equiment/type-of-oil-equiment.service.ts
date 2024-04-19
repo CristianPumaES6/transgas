@@ -4,20 +4,20 @@ import { Mapping, searchKey } from 'src/assets/mappingKeys';
 import { GetDate } from 'src/assets/moment.assets';
 import { DummyPromise } from 'src/assets/promises.assets';
 import { URL_Server } from 'src/config/server.config';
-import { TypeOfOilEquipmentEntity } from 'src/models/type-of-oils-equipment.entity';
+import { EquipmentSystemEntity } from 'src/models/type-of-oils-equipment.entity';
 import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
-export class TypeOfOilEquipmentService {
+export class EquipmentSystemService {
 
 
     constructor(
-        @InjectRepository(TypeOfOilEquipmentEntity)
-        private _TypeOfOilEquimentEntity: Repository<TypeOfOilEquipmentEntity>,
+        @InjectRepository(EquipmentSystemEntity)
+        private _EquipmentSystemEntity: Repository<EquipmentSystemEntity>,
     ) { }
 
 
-    async Gets(typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity): Promise<TypeOfOilEquipmentEntity[]> {
+    async Gets(equipmentSystemEntity: EquipmentSystemEntity): Promise<EquipmentSystemEntity[]> {
 
         return DummyPromise().then(
             result => {
@@ -34,12 +34,12 @@ export class TypeOfOilEquipmentService {
 
                 } else {
 
-                    return this._TypeOfOilEquimentEntity.find({
+                    return this._EquipmentSystemEntity.find({
                         where: [
                             // name && surname && nick && email
                             {
-                                id: (typeOfOilEquipmentEntity.id || Like('%' + '%')),
-                                userId: (typeOfOilEquipmentEntity.userId || Like('%' + '%')),
+                                id: (equipmentSystemEntity.id || Like('%' + '%')),
+                                userId: (equipmentSystemEntity.userId || Like('%' + '%')),
                                 status: Not(false)
                             }
                         ]
@@ -50,7 +50,7 @@ export class TypeOfOilEquipmentService {
 
             }
         ).then(
-            (result: TypeOfOilEquipmentEntity[]) => {
+            (result: EquipmentSystemEntity[]) => {
 
                 if (!result) throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.'
 
@@ -62,7 +62,7 @@ export class TypeOfOilEquipmentService {
 
 
     // Registra un nuevo grupo de aceite
-    async Create(typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity): Promise<TypeOfOilEquipmentEntity> {
+    async Create(equipmentSystemEntity: EquipmentSystemEntity): Promise<EquipmentSystemEntity> {
 
         // Hacemos where por todos los campos de la entidad
         return DummyPromise().then(
@@ -70,10 +70,10 @@ export class TypeOfOilEquipmentService {
 
                 if (URL_Server.bd === 'MSSQL') {
                     // Buscamos el viaje
-                    return this._TypeOfOilEquimentEntity.query("SP_CheckTheLastRecordedTrip @userId='" + typeOfOilEquipmentEntity.userId + "', @year='");
+                    return this._EquipmentSystemEntity.query("SP_CheckTheLastRecordedTrip @userId='" + equipmentSystemEntity.userId + "', @year='");
                 } else {
                     // No lo validamos por que puede llegar vacio.
-                    return this._TypeOfOilEquimentEntity.save(typeOfOilEquipmentEntity);
+                    return this._EquipmentSystemEntity.save(equipmentSystemEntity);
                 }
 
             }
@@ -96,93 +96,105 @@ export class TypeOfOilEquipmentService {
 
 
     // guarda una lista de aceite.
-    async SaveList(MappingGroupOils: Mapping[], typesOfOilEquipmentEntity: TypeOfOilEquipmentEntity[]) {
+    async SaveList(MappingGroupOils: Mapping[], typesOfOilEquipmentEntity: EquipmentSystemEntity[]) {
 
         // Mapping
         let MappingTypesOfOilEquipment: Mapping[] = [];
 
         // FIltramos los datos que faltan aggregar y actualizar.
-        const addTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity) => typeOfOilEquipmentEntity.SyncStatus == 'added');
-        const updateTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity) => typeOfOilEquipmentEntity.SyncStatus == 'updated');
-        const deleteTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((typeOfOilEquipmentEntity: TypeOfOilEquipmentEntity) => typeOfOilEquipmentEntity.SyncStatus == 'deleted');
+        const addTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'added');
+        const updateTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'updated');
+        const deleteTypesOfOilEquipment = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'deleted');
 
 
 
-        for await (const addTypeOfOilEquipment of addTypesOfOilEquipment) {
+        for await (const addEquipmentSystem of addTypesOfOilEquipment) {
 
-            let searchMappingGroupOils = searchKey(MappingGroupOils, addTypeOfOilEquipment.entityGroupId);
+            let searchMappingGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entityGroupId);
+            let searchMappingSubGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entitySubGroupId);
 
             // Armamos al nuevo tipo de aceite
-            let newTypeOfOilEquipmentEntity = new TypeOfOilEquipmentEntity();
+            let newEquipmentSystemEntity = new EquipmentSystemEntity();
 
-            delete newTypeOfOilEquipmentEntity.id;
-            newTypeOfOilEquipmentEntity.userId = addTypeOfOilEquipment.userId;
-            newTypeOfOilEquipmentEntity.equipment = addTypeOfOilEquipment.equipment;
-            newTypeOfOilEquipmentEntity.rate = addTypeOfOilEquipment.rate;
+            delete newEquipmentSystemEntity.id;
+            newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
+            newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
+            newEquipmentSystemEntity.rate = addEquipmentSystem.rate;
            
-            newTypeOfOilEquipmentEntity.entityGroupId = addTypeOfOilEquipment.entityGroupId;
-            if (searchMappingGroupOils) { newTypeOfOilEquipmentEntity.entityGroupId = searchMappingGroupOils.value }
+            newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
+            if (searchMappingGroupOils) { newEquipmentSystemEntity.entityGroupId = searchMappingGroupOils.value }
+
+            newEquipmentSystemEntity.entitySubGroupId = addEquipmentSystem.entitySubGroupId;
+            if (searchMappingSubGroupOils) { newEquipmentSystemEntity.entitySubGroupId = searchMappingSubGroupOils.value }
 
             // Auditoria.
-            newTypeOfOilEquipmentEntity.userIdCreated = addTypeOfOilEquipment.userIdCreated;
-            newTypeOfOilEquipmentEntity.dateCreated = GetDate();
-            delete newTypeOfOilEquipmentEntity.userIdUpdated;
-            delete newTypeOfOilEquipmentEntity.dateUpdated;
-            newTypeOfOilEquipmentEntity.status = Boolean(addTypeOfOilEquipment.status);
+            newEquipmentSystemEntity.userIdCreated = addEquipmentSystem.userIdCreated;
+            newEquipmentSystemEntity.dateCreated = GetDate();
+            delete newEquipmentSystemEntity.userIdUpdated;
+            delete newEquipmentSystemEntity.dateUpdated;
+            newEquipmentSystemEntity.status = Boolean(addEquipmentSystem.status);
 
             // Registramos grupo de aceite
-            let registeredGroupOil = await this.Create(newTypeOfOilEquipmentEntity);
+            let registeredGroupOil = await this.Create(newEquipmentSystemEntity);
 
             // Lo agregamos al mapping
-            MappingTypesOfOilEquipment.push(new Mapping(addTypeOfOilEquipment.id, registeredGroupOil.id))
+            MappingTypesOfOilEquipment.push(new Mapping(addEquipmentSystem.id, registeredGroupOil.id))
         }
 
-        for await (const updateTypeOfOilEquipment of updateTypesOfOilEquipment) {
-            let searchMappingGroupOils = searchKey(MappingGroupOils, updateTypeOfOilEquipment.entityGroupId);
+        for await (const updateEquipmentSystem of updateTypesOfOilEquipment) {
+            let searchMappingGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entityGroupId);
+            let searchMappingSubGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entitySubGroupId);
 
-            let typeOfOilEquipment = new TypeOfOilEquipmentEntity();
+            let equipmentSystem = new EquipmentSystemEntity();
 
-            typeOfOilEquipment.id = updateTypeOfOilEquipment.id;
-            typeOfOilEquipment.userId = updateTypeOfOilEquipment.userId;
-            typeOfOilEquipment.rate = updateTypeOfOilEquipment.rate;
-            typeOfOilEquipment.equipment = updateTypeOfOilEquipment.equipment;
+            equipmentSystem.id = updateEquipmentSystem.id;
+            equipmentSystem.userId = updateEquipmentSystem.userId;
+            equipmentSystem.rate = updateEquipmentSystem.rate;
+            equipmentSystem.equipment = updateEquipmentSystem.equipment;
             
-            typeOfOilEquipment.entityGroupId = updateTypeOfOilEquipment.entityGroupId;
-            if (searchMappingGroupOils) { typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value }
+            equipmentSystem.entityGroupId = updateEquipmentSystem.entityGroupId;
+            if (searchMappingGroupOils) { equipmentSystem.entityGroupId = searchMappingGroupOils.value }
+
+            equipmentSystem.entitySubGroupId = updateEquipmentSystem.entitySubGroupId;
+            if (searchMappingSubGroupOils) { equipmentSystem.entitySubGroupId = searchMappingSubGroupOils.value }
 
             // Auditoria.
-            typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.userIdCreated;
-            typeOfOilEquipment.dateCreated = updateTypeOfOilEquipment.dateCreated;
-            typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
-            typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
-            typeOfOilEquipment.status = Boolean(updateTypeOfOilEquipment.status);
+            equipmentSystem.userIdCreated = updateEquipmentSystem.userIdCreated;
+            equipmentSystem.dateCreated = updateEquipmentSystem.dateCreated;
+            equipmentSystem.userIdUpdated = updateEquipmentSystem.userIdUpdated;
+            equipmentSystem.dateUpdated = updateEquipmentSystem.dateUpdated;
+            equipmentSystem.status = Boolean(updateEquipmentSystem.status);
 
-            await this._TypeOfOilEquimentEntity.save(typeOfOilEquipment);
+            await this._EquipmentSystemEntity.save(equipmentSystem);
         }
 
 
 
-        for await (let deleteTypeOfOilEquipment of deleteTypesOfOilEquipment) {
-            let searchMappingGroupOils = searchKey(MappingGroupOils, deleteTypeOfOilEquipment.entityGroupId);
+        for await (let deleteEquipmentSystem of deleteTypesOfOilEquipment) {
+            let searchMappingGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
+            let searchMappingSubGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entitySubGroupId);
 
-            let typeOfOilEquipment = new TypeOfOilEquipmentEntity();
+            let equipmentSystem = new EquipmentSystemEntity();
 
+            equipmentSystem.id = deleteEquipmentSystem.id;
+            equipmentSystem.userId = deleteEquipmentSystem.userId;
+            equipmentSystem.rate = deleteEquipmentSystem.rate;
+            equipmentSystem.equipment = deleteEquipmentSystem.equipment;
+            
+            equipmentSystem.entityGroupId = deleteEquipmentSystem.entityGroupId;
+            if (searchMappingGroupOils) { equipmentSystem.entityGroupId = searchMappingGroupOils.value }
 
-            typeOfOilEquipment.id = deleteTypeOfOilEquipment.id;
-            typeOfOilEquipment.userId = deleteTypeOfOilEquipment.userId;
-            typeOfOilEquipment.rate = deleteTypeOfOilEquipment.rate;
-            typeOfOilEquipment.equipment = deleteTypeOfOilEquipment.equipment;
-            typeOfOilEquipment.entityGroupId = deleteTypeOfOilEquipment.entityGroupId;
-            if (searchMappingGroupOils) { typeOfOilEquipment.entityGroupId = searchMappingGroupOils.value }
+            equipmentSystem.entitySubGroupId = deleteEquipmentSystem.entitySubGroupId;
+            if (searchMappingSubGroupOils) { equipmentSystem.entitySubGroupId = searchMappingSubGroupOils.value }
 
             // Auditoria.
-            typeOfOilEquipment.userIdCreated = deleteTypeOfOilEquipment.userIdCreated;
-            typeOfOilEquipment.dateCreated = deleteTypeOfOilEquipment.dateCreated;
-            typeOfOilEquipment.userIdUpdated = deleteTypeOfOilEquipment.userIdUpdated;
-            typeOfOilEquipment.dateUpdated = deleteTypeOfOilEquipment.dateUpdated;
-            typeOfOilEquipment.status = Boolean(deleteTypeOfOilEquipment.status);
+            equipmentSystem.userIdCreated = deleteEquipmentSystem.userIdCreated;
+            equipmentSystem.dateCreated = deleteEquipmentSystem.dateCreated;
+            equipmentSystem.userIdUpdated = deleteEquipmentSystem.userIdUpdated;
+            equipmentSystem.dateUpdated = deleteEquipmentSystem.dateUpdated;
+            equipmentSystem.status = Boolean(deleteEquipmentSystem.status);
 
-            await this._TypeOfOilEquimentEntity.save(typeOfOilEquipment);
+            await this._EquipmentSystemEntity.save(equipmentSystem);
         }
 
 
