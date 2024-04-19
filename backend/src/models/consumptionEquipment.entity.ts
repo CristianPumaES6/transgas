@@ -18,6 +18,8 @@ export class ConsumptionEquipmentEntity {
     observation: string;
     @Column({ nullable: true })
     entityEquipmentId: number;
+    @Column({ nullable: true })
+    entityOilId: number;
 
     // Auditoria
     @Column()

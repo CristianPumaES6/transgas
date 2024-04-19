@@ -107,7 +107,7 @@ export class ConsumptionEquipmentService {
 
  
     // guarda una lista de aceite.
-    async SaveList(MappingGroupOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity> {
+    async SaveList(MappingGroupOils: Mapping[], MappingOils: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity> {
 
 
         let MappingConsumptionsEquipment: Mapping[] = [];
@@ -121,6 +121,7 @@ export class ConsumptionEquipmentService {
         for await (const addConsumptionEquipment of addConsumptionEquipments) {
 
             let searchMappingConsumptionEquipmentEntity = searchKey(MappingGroupOils, addConsumptionEquipment.entityEquipmentId);
+            let searchMappingOils = searchKey(MappingOils, addConsumptionEquipment.entityOilId);
 
             // Armamos al nuevo tipo de aceite
             let newConsumptionEquipmentEntity = new ConsumptionEquipmentEntity();
@@ -133,6 +134,8 @@ export class ConsumptionEquipmentService {
             newConsumptionEquipmentEntity.observation = addConsumptionEquipment.observation;
             newConsumptionEquipmentEntity.entityEquipmentId = addConsumptionEquipment.entityEquipmentId;
             if (searchMappingConsumptionEquipmentEntity) { newConsumptionEquipmentEntity.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value }
+            newConsumptionEquipmentEntity.entityOilId = addConsumptionEquipment.entityOilId;
+            if (searchMappingOils) { newConsumptionEquipmentEntity.entityOilId = searchMappingOils.value }
 
             // AQUI VALIDAR MI SOBRE CONSUMO
             // SendMailHTMLLubricante  976873362
@@ -158,6 +161,7 @@ export class ConsumptionEquipmentService {
         for await (const updateEquipmentSystem of updateConsumptionEquipment) {
 
             let searchMappingConsumptionEquipmentEntity = searchKey(MappingGroupOils, updateEquipmentSystem.entityEquipmentId);
+            let searchMappingOils = searchKey(MappingOils, updateEquipmentSystem.entityOilId);
 
             let equipmentSystem = new ConsumptionEquipmentEntity();
 
@@ -167,8 +171,11 @@ export class ConsumptionEquipmentService {
             equipmentSystem.amount = updateEquipmentSystem.amount;
             equipmentSystem.hourConsumption = updateEquipmentSystem.hourConsumption;
             equipmentSystem.observation = updateEquipmentSystem.observation;
+            
             equipmentSystem.entityEquipmentId = updateEquipmentSystem.entityEquipmentId;
             if (searchMappingConsumptionEquipmentEntity) { equipmentSystem.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value }
+            equipmentSystem.entityOilId = updateEquipmentSystem.entityOilId;
+            if (searchMappingOils) { equipmentSystem.entityOilId = searchMappingOils.value }
 
 
             // Auditoria.
@@ -188,6 +195,7 @@ export class ConsumptionEquipmentService {
         for await (let consumptionEquipment of deleteConsumptionEquipment) {
          
             let searchMappingConsumptionEquipmentEntity = searchKey(MappingGroupOils, consumptionEquipment.entityEquipmentId);
+            let searchMappingOils = searchKey(MappingOils, consumptionEquipment.entityOilId);
 
             let equipmentSystem = new ConsumptionEquipmentEntity();
 
@@ -200,6 +208,8 @@ export class ConsumptionEquipmentService {
             
             equipmentSystem.entityEquipmentId = consumptionEquipment.entityEquipmentId;
             if (searchMappingConsumptionEquipmentEntity) { equipmentSystem.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value }
+            equipmentSystem.entityOilId = consumptionEquipment.entityOilId;
+            if (searchMappingOils) { equipmentSystem.entityOilId = searchMappingOils.value }
 
 
             // Auditoria.

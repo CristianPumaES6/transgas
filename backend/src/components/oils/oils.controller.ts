@@ -12,7 +12,7 @@ import { BunkerOil } from '../../models/buker-oil.entity';
 import { GroupOilsService } from './group-oils/group-oils.service';
 import { EquipmentSystemService } from './equipment-system/equipment-system.service';
 import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from './consumption-equipment/consumption-equipment/consumption-equipment.service';
-import { BunkerOilService } from './bunker-oil-to-equipment/bunker-oil.service';
+import { BunkerOilService } from './bunker-oil/bunker-oil.service';
 import { Mapping } from '../../assets/mappingKeys';
 import { SendMailHTMLOverCosumption } from 'src/assets/nodemailer.assets';
 

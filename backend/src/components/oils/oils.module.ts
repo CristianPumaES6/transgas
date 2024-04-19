@@ -9,8 +9,8 @@ import { GroupOilsController } from './group-oils/group-oils.controller';
 import { GroupOilsService } from './group-oils/group-oils.service';
 import { EquipmentSystemController } from './equipment-system/equipment-system.controller';
 
-import { BunkerOilController } from './bunker-oil-to-equipment/bunker-oil.controller';
-import { BunkerOilService } from './bunker-oil-to-equipment/bunker-oil.service';
+import { BunkerOilController } from './bunker-oil/bunker-oil.controller';
+import { BunkerOilService } from './bunker-oil/bunker-oil.service';
 import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
 
 import { GroupOilEntity } from 'src/models/group-oils.entity';
