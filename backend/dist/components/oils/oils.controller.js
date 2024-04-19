@@ -124,7 +124,8 @@ let OilsController = class OilsController {
                     listGroups: listGroups,
                     listEquipmentSystem: listEquipmentSystem,
                     listConsumptionEquipment: listConsumptionEquipment,
-                    listBunkerOil: listBunkerOil
+                    listBunkerOil: listBunkerOil,
+                    listEquipmentOilCompatibility: listEquipmentOilCompatibilityEntity
                 }
             };
         }).catch(err => {

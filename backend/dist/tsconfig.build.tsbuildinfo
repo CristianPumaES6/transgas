@@ -3907,7 +3907,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "e4da0c2dcab8eccc9599bec5c99eee344c7a6cbe401d4fa4b85d782e3fcfd4b9",
+        "version": "0e787dca6092c27ad5fe027a9ddf553a3e2936e477d40cceecd761607ac3e89d",
         "signature": "d511ea085c8da313653427c2d80d2cea54d39a2a1dfcaa9899d8f9df20d4f319",
         "affectsGlobalScope": false
       },
