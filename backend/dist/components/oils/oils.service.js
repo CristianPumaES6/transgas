@@ -224,18 +224,18 @@ let OilsService = class OilsService {
                 var queryWhere = 'consumptionEquipment.id in (' + listDeID + ')';
                 return this._oilRepository.createQueryBuilder('oil')
                     .addSelect('consumptionEquipment.date', 'dateConsumption')
-                    .addSelect('typeOfOilEquipment.userId', 'typeOfOilEquipment_userId')
-                    .addSelect('typeOfOilEquipment.id', 'typeOfOilEquipment_id')
-                    .addSelect('typeOfOilEquipment.equipment', 'equipment')
+                    .addSelect('equipmentSystem.userId', 'equipmentSystem_userId')
+                    .addSelect('equipmentSystem.id', 'equipmentSystem_id')
+                    .addSelect('equipmentSystem.equipment', 'equipment')
                     .addSelect('consumptionEquipment.amount', 'amountConsumption')
                     .addSelect('oil.name', 'nameOil')
                     .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                     .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                    .addSelect('typeOfOilEquipment.rate', 'rate')
+                    .addSelect('equipmentSystem.rate', 'rate')
                     .addSelect('consumptionEquipment.observation', 'observation')
                     .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
-                    .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOil.entityEquipmentId AND typeOfOilEquipment.status = 1')
-                    .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
+                    .innerJoin('equipmentSystem', 'equipmentSystem', 'equipmentSystem.id = bunkerOil.entityEquipmentId AND equipmentSystem.status = 1')
+                    .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = equipmentSystem.id AND consumptionEquipment.status = 1')
                     .where(queryWhere, {})
                     .orderBy('consumptionEquipment.date', 'DESC')
                     .limit(1000)
@@ -259,8 +259,8 @@ let OilsService = class OilsService {
                     let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == date);
                     if (findDailyOilConsumptionData) {
                         findDailyOilConsumptionData.data.push({
-                            userId: item.typeOfOilEquipment_userId,
-                            equipmentId: item.typeOfOilEquipment_id,
+                            userId: item.equipmentSystem_userId,
+                            equipmentId: item.equipmentSystem_id,
                             equipment: item.equipment,
                             amountConsumption: item.amountConsumption,
                             nameOil: item.nameOil,
@@ -277,8 +277,8 @@ let OilsService = class OilsService {
                             observation: item.observation,
                             data: [
                                 {
-                                    userId: item.typeOfOilEquipment_userId,
-                                    equipmentId: item.typeOfOilEquipment_id,
+                                    userId: item.equipmentSystem_userId,
+                                    equipmentId: item.equipmentSystem_id,
                                     equipment: item.equipment,
                                     amountConsumption: item.amountConsumption,
                                     nameOil: item.nameOil,
@@ -303,16 +303,16 @@ let OilsService = class OilsService {
                 var queryWhere = 'consumptionEquipment.userId = ' + buqueId;
                 return this._oilRepository.createQueryBuilder('oil')
                     .addSelect('consumptionEquipment.date', 'dateConsumption')
-                    .addSelect('typeOfOilEquipment.equipment', 'equipment')
+                    .addSelect('equipmentSystem.equipment', 'equipment')
                     .addSelect('consumptionEquipment.amount', 'amountConsumption')
                     .addSelect('oil.name', 'nameOil')
                     .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                     .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                    .addSelect('typeOfOilEquipment.rate', 'rate')
+                    .addSelect('equipmentSystem.rate', 'rate')
                     .addSelect('consumptionEquipment.observation', 'observation')
                     .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
-                    .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOil.entityEquipmentId AND typeOfOilEquipment.status = 1')
-                    .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
+                    .innerJoin('equipmentSystem', 'equipmentSystem', 'equipmentSystem.id = bunkerOil.entityEquipmentId AND equipmentSystem.status = 1')
+                    .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = equipmentSystem.id AND consumptionEquipment.status = 1')
                     .where(queryWhere, {})
                     .orderBy('consumptionEquipment.date', 'DESC')
                     .limit(1000)
@@ -337,8 +337,8 @@ let OilsService = class OilsService {
                     observation: item.observation,
                     data: [
                         {
-                            userId: item.typeOfOilEquipment_userId,
-                            equipmentId: item.typeOfOilEquipment_id,
+                            userId: item.equipmentSystem_userId,
+                            equipmentId: item.equipmentSystem_id,
                             equipment: item.equipment,
                             amountConsumption: item.amountConsumption,
                             nameOil: item.nameOil,

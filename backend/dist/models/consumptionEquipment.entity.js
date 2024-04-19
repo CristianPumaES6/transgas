@@ -57,6 +57,10 @@ __decorate([
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "entityEquipmentId", void 0);
 __decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], ConsumptionEquipmentEntity.prototype, "entityOilId", void 0);
+__decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "userIdCreated", void 0);

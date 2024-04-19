@@ -83,10 +83,16 @@ let GroupOilsService = class GroupOilsService {
         try {
             for (var addGroupOils_1 = __asyncValues(addGroupOils), addGroupOils_1_1; addGroupOils_1_1 = await addGroupOils_1.next(), !addGroupOils_1_1.done;) {
                 const addGroupOil = addGroupOils_1_1.value;
+                let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, addGroupOil.groupId);
                 let newGroupOilEntity = new group_oils_entity_1.GroupOilEntity();
                 delete newGroupOilEntity.id;
                 newGroupOilEntity.userId = addGroupOil.userId;
                 newGroupOilEntity.label = addGroupOil.label;
+                newGroupOilEntity.description = addGroupOil.description;
+                newGroupOilEntity.groupId = addGroupOil.groupId;
+                if (searchMappingGroupOils) {
+                    newGroupOilEntity.groupId = searchMappingGroupOils.value;
+                }
                 newGroupOilEntity.userIdCreated = addGroupOil.userIdCreated;
                 newGroupOilEntity.dateCreated = moment_assets_1.GetDate();
                 delete newGroupOilEntity.userIdUpdated;
@@ -106,10 +112,16 @@ let GroupOilsService = class GroupOilsService {
         try {
             for (var updateGroupOils_1 = __asyncValues(updateGroupOils), updateGroupOils_1_1; updateGroupOils_1_1 = await updateGroupOils_1.next(), !updateGroupOils_1_1.done;) {
                 const updateGroupOil = updateGroupOils_1_1.value;
+                let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, updateGroupOil.groupId);
                 let updateGroupOilEntity = new group_oils_entity_1.GroupOilEntity();
                 updateGroupOilEntity.id = updateGroupOil.id;
                 updateGroupOilEntity.userId = updateGroupOil.userId;
                 updateGroupOilEntity.label = updateGroupOil.label;
+                updateGroupOilEntity.description = updateGroupOil.description;
+                updateGroupOilEntity.groupId = updateGroupOil.groupId;
+                if (searchMappingGroupOils) {
+                    updateGroupOilEntity.groupId = searchMappingGroupOils.value;
+                }
                 updateGroupOilEntity.userIdCreated = updateGroupOil.userIdCreated;
                 updateGroupOilEntity.dateCreated = updateGroupOil.dateCreated;
                 updateGroupOilEntity.userIdUpdated = updateGroupOil.userIdUpdated;
@@ -128,10 +140,16 @@ let GroupOilsService = class GroupOilsService {
         try {
             for (var deleteGroupOils_1 = __asyncValues(deleteGroupOils), deleteGroupOils_1_1; deleteGroupOils_1_1 = await deleteGroupOils_1.next(), !deleteGroupOils_1_1.done;) {
                 let deleteGroupOil = deleteGroupOils_1_1.value;
+                let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, deleteGroupOil.groupId);
                 let deleteGroupOilEntity = new group_oils_entity_1.GroupOilEntity();
                 deleteGroupOilEntity.id = deleteGroupOil.id;
                 deleteGroupOilEntity.userId = deleteGroupOil.userId;
                 deleteGroupOilEntity.label = deleteGroupOil.label;
+                deleteGroupOilEntity.description = deleteGroupOil.description;
+                deleteGroupOilEntity.groupId = deleteGroupOil.groupId;
+                if (searchMappingGroupOils) {
+                    deleteGroupOilEntity.groupId = searchMappingGroupOils.value;
+                }
                 deleteGroupOilEntity.userIdCreated = deleteGroupOil.userIdCreated;
                 deleteGroupOilEntity.dateCreated = deleteGroupOil.dateCreated;
                 deleteGroupOilEntity.userIdUpdated = deleteGroupOil.userIdUpdated;

@@ -20,15 +20,15 @@ const oil_entity_1 = require("../../models/oil.entity");
 const jwtDecode_assets_1 = require("../../assets/jwtDecode.assets");
 const moment_assets_1 = require("../../assets/moment.assets");
 const group_oils_service_1 = require("./group-oils/group-oils.service");
-const type_of_oil_equiment_service_1 = require("./type-of-oil-equiment/type-of-oil-equiment.service");
-const consumption_equipment_service_1 = require("./consumption-equipment/consumption-equipment/consumption-equipment.service");
-const bunker_oil_service_1 = require("./bunker-oil-to-equipment/bunker-oil.service");
+const equipment_system_service_1 = require("./equipment-system/equipment-system.service");
+const consumption_equipment_service_1 = require("./consumption-equipment/consumption-equipment.service");
+const bunker_oil_service_1 = require("./bunker-oil/bunker-oil.service");
 const nodemailer_assets_1 = require("../../assets/nodemailer.assets");
 let OilsController = class OilsController {
-    constructor(_OilsService, _GroupOilEntityService, _TypeOfOilEquipmentService, _ConsumptionEquipmentService, _BunkerOilService) {
+    constructor(_OilsService, _GroupOilEntityService, _EquipmentSystemService, _ConsumptionEquipmentService, _BunkerOilService) {
         this._OilsService = _OilsService;
         this._GroupOilEntityService = _GroupOilEntityService;
-        this._TypeOfOilEquipmentService = _TypeOfOilEquipmentService;
+        this._EquipmentSystemService = _EquipmentSystemService;
         this._ConsumptionEquipmentService = _ConsumptionEquipmentService;
         this._BunkerOilService = _BunkerOilService;
     }
@@ -67,7 +67,7 @@ let OilsController = class OilsController {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         let listOils = [];
         let listGroups = [];
-        let listTypeOfOilEquipment = [];
+        let listEquipmentSystem = [];
         let listConsumptionEquipment = [];
         let listBunkerOil = [];
         return promises_assets_1.DummyPromise().then((resultDummy) => {
@@ -92,11 +92,11 @@ let OilsController = class OilsController {
             return this._GroupOilEntityService.Gets(groupOilEntity);
         }).then((GroupsOilEntity) => {
             listGroups = GroupsOilEntity;
-            let typeOfOilEquipmentEntity = {};
-            typeOfOilEquipmentEntity.userId = oilEntity.userId;
-            return this._TypeOfOilEquipmentService.Gets(typeOfOilEquipmentEntity);
+            let equipmentSystemEntity = {};
+            equipmentSystemEntity.userId = oilEntity.userId;
+            return this._EquipmentSystemService.Gets(equipmentSystemEntity);
         }).then((TypesOfOilEquipmentEntity) => {
-            listTypeOfOilEquipment = TypesOfOilEquipmentEntity;
+            listEquipmentSystem = TypesOfOilEquipmentEntity;
             let consumptionEquipmentEntity = {};
             consumptionEquipmentEntity.userId = oilEntity.userId;
             return this._ConsumptionEquipmentService.Gets(consumptionEquipmentEntity);
@@ -113,7 +113,7 @@ let OilsController = class OilsController {
                 data: {
                     listOils: listOils,
                     listGroups: listGroups,
-                    listTypeOfOilEquipment: listTypeOfOilEquipment,
+                    listEquipmentSystem: listEquipmentSystem,
                     listConsumptionEquipment: listConsumptionEquipment,
                     listBunkerOil: listBunkerOil
                 }
@@ -312,16 +312,16 @@ let OilsController = class OilsController {
             }
         }).then((resultMappingOil) => {
             mappingOils = resultMappingOil;
-            if (saveDateOils.listTypeOfOilEquipment) {
-                return this._TypeOfOilEquipmentService.SaveList(mappingGroupOils, saveDateOils.listTypeOfOilEquipment);
+            if (saveDateOils.listEquipmentSystem) {
+                return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystem);
             }
             else {
                 return [];
             }
-        }).then((resultMappingTypeOfOilEquipment) => {
-            mappingTypesOfOilEquipment = resultMappingTypeOfOilEquipment;
+        }).then((resultMappingEquipmentSystem) => {
+            mappingTypesOfOilEquipment = resultMappingEquipmentSystem;
             if (saveDateOils.listConsumptionEquipment) {
-                return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, saveDateOils.listConsumptionEquipment);
+                return this._ConsumptionEquipmentService.SaveList(mappingTypesOfOilEquipment, mappingOils, saveDateOils.listConsumptionEquipment);
             }
             else {
                 return {
@@ -437,7 +437,7 @@ OilsController = __decorate([
     common_1.Controller('oils'),
     __metadata("design:paramtypes", [oils_service_1.OilsService,
         group_oils_service_1.GroupOilsService,
-        type_of_oil_equiment_service_1.TypeOfOilEquipmentService,
+        equipment_system_service_1.EquipmentSystemService,
         consumption_equipment_service_1.ConsumptionEquipmentService,
         bunker_oil_service_1.BunkerOilService])
 ], OilsController);

@@ -25,11 +25,11 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const typeorm_3 = require("typeorm");
 const typeorm_4 = require("typeorm");
-const server_config_1 = require("../../../../config/server.config");
-const promises_assets_1 = require("../../../../assets/promises.assets");
-const moment_assets_1 = require("../../../../assets/moment.assets");
-const consumptionEquipment_entity_1 = require("../../../../models/consumptionEquipment.entity");
-const mappingKeys_1 = require("../../../../assets/mappingKeys");
+const server_config_1 = require("../../../config/server.config");
+const promises_assets_1 = require("../../../assets/promises.assets");
+const moment_assets_1 = require("../../../assets/moment.assets");
+const consumptionEquipment_entity_1 = require("../../../models/consumptionEquipment.entity");
+const mappingKeys_1 = require("../../../assets/mappingKeys");
 let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     constructor(_ConsumptionEquipment) {
         this._ConsumptionEquipment = _ConsumptionEquipment;
@@ -77,7 +77,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             }
         });
     }
-    async SaveList(MappingGroupOils, consumptionsEquipment) {
+    async SaveList(MappingGroupOils, MappingOils, consumptionsEquipment) {
         var e_1, _a, e_2, _b, e_3, _c;
         let MappingConsumptionsEquipment = [];
         const addConsumptionEquipments = consumptionsEquipment.filter((consumptionEquipment) => consumptionEquipment.SyncStatus == 'added');
@@ -88,6 +88,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             for (var addConsumptionEquipments_1 = __asyncValues(addConsumptionEquipments), addConsumptionEquipments_1_1; addConsumptionEquipments_1_1 = await addConsumptionEquipments_1.next(), !addConsumptionEquipments_1_1.done;) {
                 const addConsumptionEquipment = addConsumptionEquipments_1_1.value;
                 let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, addConsumptionEquipment.entityEquipmentId);
+                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, addConsumptionEquipment.entityOilId);
                 let newConsumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity.id;
                 newConsumptionEquipmentEntity.userId = addConsumptionEquipment.userId;
@@ -98,6 +99,10 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 newConsumptionEquipmentEntity.entityEquipmentId = addConsumptionEquipment.entityEquipmentId;
                 if (searchMappingConsumptionEquipmentEntity) {
                     newConsumptionEquipmentEntity.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
+                }
+                newConsumptionEquipmentEntity.entityOilId = addConsumptionEquipment.entityOilId;
+                if (searchMappingOils) {
+                    newConsumptionEquipmentEntity.entityOilId = searchMappingOils.value;
                 }
                 newConsumptionEquipmentEntity.userIdCreated = addConsumptionEquipment.userIdCreated;
                 newConsumptionEquipmentEntity.dateCreated = moment_assets_1.GetDate();
@@ -120,28 +125,33 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         }
         try {
             for (var updateConsumptionEquipment_1 = __asyncValues(updateConsumptionEquipment), updateConsumptionEquipment_1_1; updateConsumptionEquipment_1_1 = await updateConsumptionEquipment_1.next(), !updateConsumptionEquipment_1_1.done;) {
-                const updateTypeOfOilEquipment = updateConsumptionEquipment_1_1.value;
-                let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, updateTypeOfOilEquipment.entityEquipmentId);
-                let typeOfOilEquipment = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
-                typeOfOilEquipment.id = updateTypeOfOilEquipment.id;
-                typeOfOilEquipment.userId = updateTypeOfOilEquipment.userId;
-                typeOfOilEquipment.date = updateTypeOfOilEquipment.date;
-                typeOfOilEquipment.amount = updateTypeOfOilEquipment.amount;
-                typeOfOilEquipment.hourConsumption = updateTypeOfOilEquipment.hourConsumption;
-                typeOfOilEquipment.observation = updateTypeOfOilEquipment.observation;
-                typeOfOilEquipment.entityEquipmentId = updateTypeOfOilEquipment.entityEquipmentId;
+                const updateEquipmentSystem = updateConsumptionEquipment_1_1.value;
+                let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, updateEquipmentSystem.entityEquipmentId);
+                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, updateEquipmentSystem.entityOilId);
+                let equipmentSystem = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                equipmentSystem.id = updateEquipmentSystem.id;
+                equipmentSystem.userId = updateEquipmentSystem.userId;
+                equipmentSystem.date = updateEquipmentSystem.date;
+                equipmentSystem.amount = updateEquipmentSystem.amount;
+                equipmentSystem.hourConsumption = updateEquipmentSystem.hourConsumption;
+                equipmentSystem.observation = updateEquipmentSystem.observation;
+                equipmentSystem.entityEquipmentId = updateEquipmentSystem.entityEquipmentId;
                 if (searchMappingConsumptionEquipmentEntity) {
-                    typeOfOilEquipment.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
+                    equipmentSystem.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
                 }
-                typeOfOilEquipment.userIdCreated = updateTypeOfOilEquipment.userIdCreated;
-                typeOfOilEquipment.dateCreated = updateTypeOfOilEquipment.dateCreated;
-                typeOfOilEquipment.userIdUpdated = updateTypeOfOilEquipment.userIdUpdated;
-                typeOfOilEquipment.dateUpdated = updateTypeOfOilEquipment.dateUpdated;
-                typeOfOilEquipment.status = Boolean(updateTypeOfOilEquipment.status);
-                if (typeOfOilEquipment.status) {
-                    listDeConsumosRegistrados.push(typeOfOilEquipment.id);
+                equipmentSystem.entityOilId = updateEquipmentSystem.entityOilId;
+                if (searchMappingOils) {
+                    equipmentSystem.entityOilId = searchMappingOils.value;
                 }
-                await this._ConsumptionEquipment.save(typeOfOilEquipment);
+                equipmentSystem.userIdCreated = updateEquipmentSystem.userIdCreated;
+                equipmentSystem.dateCreated = updateEquipmentSystem.dateCreated;
+                equipmentSystem.userIdUpdated = updateEquipmentSystem.userIdUpdated;
+                equipmentSystem.dateUpdated = updateEquipmentSystem.dateUpdated;
+                equipmentSystem.status = Boolean(updateEquipmentSystem.status);
+                if (equipmentSystem.status) {
+                    listDeConsumosRegistrados.push(equipmentSystem.id);
+                }
+                await this._ConsumptionEquipment.save(equipmentSystem);
             }
         }
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
@@ -155,23 +165,28 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             for (var deleteConsumptionEquipment_1 = __asyncValues(deleteConsumptionEquipment), deleteConsumptionEquipment_1_1; deleteConsumptionEquipment_1_1 = await deleteConsumptionEquipment_1.next(), !deleteConsumptionEquipment_1_1.done;) {
                 let consumptionEquipment = deleteConsumptionEquipment_1_1.value;
                 let searchMappingConsumptionEquipmentEntity = mappingKeys_1.searchKey(MappingGroupOils, consumptionEquipment.entityEquipmentId);
-                let typeOfOilEquipment = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
-                typeOfOilEquipment.id = consumptionEquipment.id;
-                typeOfOilEquipment.userId = consumptionEquipment.userId;
-                typeOfOilEquipment.date = consumptionEquipment.date;
-                typeOfOilEquipment.amount = consumptionEquipment.amount;
-                typeOfOilEquipment.hourConsumption = consumptionEquipment.hourConsumption;
-                typeOfOilEquipment.observation = consumptionEquipment.observation;
-                typeOfOilEquipment.entityEquipmentId = consumptionEquipment.entityEquipmentId;
+                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, consumptionEquipment.entityOilId);
+                let equipmentSystem = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                equipmentSystem.id = consumptionEquipment.id;
+                equipmentSystem.userId = consumptionEquipment.userId;
+                equipmentSystem.date = consumptionEquipment.date;
+                equipmentSystem.amount = consumptionEquipment.amount;
+                equipmentSystem.hourConsumption = consumptionEquipment.hourConsumption;
+                equipmentSystem.observation = consumptionEquipment.observation;
+                equipmentSystem.entityEquipmentId = consumptionEquipment.entityEquipmentId;
                 if (searchMappingConsumptionEquipmentEntity) {
-                    typeOfOilEquipment.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
+                    equipmentSystem.entityEquipmentId = searchMappingConsumptionEquipmentEntity.value;
                 }
-                typeOfOilEquipment.userIdCreated = consumptionEquipment.userIdCreated;
-                typeOfOilEquipment.dateCreated = consumptionEquipment.dateCreated;
-                typeOfOilEquipment.userIdUpdated = consumptionEquipment.userIdUpdated;
-                typeOfOilEquipment.dateUpdated = consumptionEquipment.dateUpdated;
-                typeOfOilEquipment.status = Boolean(consumptionEquipment.status);
-                await this._ConsumptionEquipment.save(typeOfOilEquipment);
+                equipmentSystem.entityOilId = consumptionEquipment.entityOilId;
+                if (searchMappingOils) {
+                    equipmentSystem.entityOilId = searchMappingOils.value;
+                }
+                equipmentSystem.userIdCreated = consumptionEquipment.userIdCreated;
+                equipmentSystem.dateCreated = consumptionEquipment.dateCreated;
+                equipmentSystem.userIdUpdated = consumptionEquipment.userIdUpdated;
+                equipmentSystem.dateUpdated = consumptionEquipment.dateUpdated;
+                equipmentSystem.status = Boolean(consumptionEquipment.status);
+                await this._ConsumptionEquipment.save(equipmentSystem);
             }
         }
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
@@ -210,7 +225,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
       TOE.equipment
     FROM
       consumptionEquipment CE
-      INNER JOIN typeOfOilEquipment TOE ON CE.entityEquipmentId = TOE.id
+      INNER JOIN equipmentSystem TOE ON CE.entityEquipmentId = TOE.id
     WHERE
       CE.userId = ? AND
       CE.status = 1
@@ -254,7 +269,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         const query = `
                     SELECT
-                        toe.userId AS typeOfOilEquipmentUserId,
+                        toe.userId AS equipmentSystemUserId,
                         toe.id AS EquipmentId,
                         toe.equipment AS EquipmentName,
                         toe.rate AS RateSystems,
@@ -270,7 +285,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                         boe.id AS bunkerOilId,
                         COALESCE(SUM(boe.bunker), 0) AS TotalBunker,
                         MAX(boe.datetime) AS BunkerDate -- Asumiendo que solo hay un bunkering por día.
-                    FROM typeOfOilEquipment AS toe
+                    FROM equipmentSystem AS toe
                     LEFT JOIN consumptionEquipment AS ce 
                         ON toe.id = ce.entityEquipmentId AND ce.userId = ${userId}
                     LEFT JOIN bunkerOil AS boe 

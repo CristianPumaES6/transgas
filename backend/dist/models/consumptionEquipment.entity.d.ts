@@ -6,6 +6,7 @@ export declare class ConsumptionEquipmentEntity {
     hourConsumption: number;
     observation: string;
     entityEquipmentId: number;
+    entityOilId: number;
     userIdCreated: number;
     dateCreated: string;
     userIdUpdated: number;

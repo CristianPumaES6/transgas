@@ -1,9 +1,10 @@
-export declare class TypeOfOilEquipmentEntity {
+export declare class EquipmentSystemEntity {
     id: number;
     userId: number;
     equipment: string;
     rate: number;
     entityGroupId: number;
+    entitySubGroupId: number;
     userIdCreated: number;
     dateCreated: string;
     userIdUpdated: number;

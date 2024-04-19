@@ -12,22 +12,22 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BunkerOilController = void 0;
+exports.EquipmentSystemController = void 0;
 const common_1 = require("@nestjs/common");
+const equipment_system_service_1 = require("./equipment-system.service");
+const equipment_system_entity_1 = require("../../../models/equipment-system.entity");
+const user_entity_1 = require("../../../models/user.entity");
 const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
-const user_entity_1 = require("../../../models/user.entity");
-const bunker_oil_service_1 = require("./bunker-oil.service");
-const buker_oil_to_equipment_entity_1 = require("../../../models/buker-oil-to-equipment.entity");
-let BunkerOilController = class BunkerOilController {
-    constructor(_BunkerOilService) {
-        this._BunkerOilService = _BunkerOilService;
+let EquipmentSystemController = class EquipmentSystemController {
+    constructor(_EquipmentSystemService) {
+        this._EquipmentSystemService = _EquipmentSystemService;
     }
-    Gets(headers, bunkerOilEntity) {
+    Gets(headers, equipmentSystemEntity) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         return promises_assets_1.DummyPromise().then((resultDummy) => {
-            if (bunkerOilEntity) {
-                bunkerOilEntity.userId = Number(bunkerOilEntity.userId);
+            if (equipmentSystemEntity) {
+                equipmentSystemEntity.userId = Number(equipmentSystemEntity.userId);
                 return true;
             }
             else
@@ -35,9 +35,9 @@ let BunkerOilController = class BunkerOilController {
         }).then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
-            else if (bunkerOilEntity.userId !== headerToken.id)
+            else if (equipmentSystemEntity.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
-            return this._BunkerOilService.Gets(bunkerOilEntity);
+            return this._EquipmentSystemService.Gets(equipmentSystemEntity);
         }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
@@ -59,12 +59,12 @@ __decorate([
     common_1.Get(),
     __param(0, common_1.Headers()), __param(1, common_1.Query()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, buker_oil_to_equipment_entity_1.BunkerOil]),
+    __metadata("design:paramtypes", [Object, equipment_system_entity_1.EquipmentSystemEntity]),
     __metadata("design:returntype", Promise)
-], BunkerOilController.prototype, "Gets", null);
-BunkerOilController = __decorate([
-    common_1.Controller('bunker-oil'),
-    __metadata("design:paramtypes", [bunker_oil_service_1.BunkerOilService])
-], BunkerOilController);
-exports.BunkerOilController = BunkerOilController;
-//# sourceMappingURL=bunker-oil.controller.js.map
+], EquipmentSystemController.prototype, "Gets", null);
+EquipmentSystemController = __decorate([
+    common_1.Controller('type-of-oil-equipment'),
+    __metadata("design:paramtypes", [equipment_system_service_1.EquipmentSystemService])
+], EquipmentSystemController);
+exports.EquipmentSystemController = EquipmentSystemController;
+//# sourceMappingURL=equipment-system.controller.js.map

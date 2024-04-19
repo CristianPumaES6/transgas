@@ -9,17 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BunkerOil = void 0;
+exports.EquipmentSystemEntity = void 0;
 const typeorm_1 = require("typeorm");
-let BunkerOil = class BunkerOil {
-    constructor(id, userId, entityOilId, bunker, comment, datetime, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+let EquipmentSystemEntity = class EquipmentSystemEntity {
+    constructor(id, userId, equipment, rate, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
-        this.entityOilId = entityOilId || 0;
-        this.bunker = bunker || 0;
-        this.comment = comment || '';
-        this.datetime = datetime || '';
+        this.equipment = equipment || '';
+        this.rate = rate || 0;
+        this.entityGroupId = entityGroupId || 0;
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
         this.userIdUpdated = userIdUpdated || 0;
@@ -30,50 +29,50 @@ let BunkerOil = class BunkerOil {
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
-], BunkerOil.prototype, "id", void 0);
+], EquipmentSystemEntity.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], BunkerOil.prototype, "userId", void 0);
-__decorate([
-    typeorm_1.Column({ nullable: true }),
-    __metadata("design:type", Number)
-], BunkerOil.prototype, "entityOilId", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Number)
-], BunkerOil.prototype, "bunker", void 0);
-__decorate([
-    typeorm_1.Column({ nullable: true }),
-    __metadata("design:type", String)
-], BunkerOil.prototype, "comment", void 0);
+], EquipmentSystemEntity.prototype, "userId", void 0);
 __decorate([
     typeorm_1.Column({ nullable: false }),
     __metadata("design:type", String)
-], BunkerOil.prototype, "datetime", void 0);
+], EquipmentSystemEntity.prototype, "equipment", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: false }),
     __metadata("design:type", Number)
-], BunkerOil.prototype, "userIdCreated", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], BunkerOil.prototype, "dateCreated", void 0);
+], EquipmentSystemEntity.prototype, "rate", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], BunkerOil.prototype, "userIdUpdated", void 0);
+], EquipmentSystemEntity.prototype, "entityGroupId", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], EquipmentSystemEntity.prototype, "entitySubGroupId", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], EquipmentSystemEntity.prototype, "userIdCreated", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], EquipmentSystemEntity.prototype, "dateCreated", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], EquipmentSystemEntity.prototype, "userIdUpdated", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
-], BunkerOil.prototype, "dateUpdated", void 0);
+], EquipmentSystemEntity.prototype, "dateUpdated", void 0);
 __decorate([
     typeorm_1.Column({ nullable: false }),
     __metadata("design:type", Boolean)
-], BunkerOil.prototype, "status", void 0);
-BunkerOil = __decorate([
-    typeorm_1.Entity('bunkerOil'),
-    __metadata("design:paramtypes", [Number, Number, Number, Number, String, String, Number, String, Number, String, Boolean])
-], BunkerOil);
-exports.BunkerOil = BunkerOil;
-//# sourceMappingURL=buker-oil-to-equipment.entity.js.map
+], EquipmentSystemEntity.prototype, "status", void 0);
+EquipmentSystemEntity = __decorate([
+    typeorm_1.Entity('equipmentSystem'),
+    __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, String, Number, String, Boolean])
+], EquipmentSystemEntity);
+exports.EquipmentSystemEntity = EquipmentSystemEntity;
+//# sourceMappingURL=equipment-system.entity.js.map

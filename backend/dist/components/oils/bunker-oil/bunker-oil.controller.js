@@ -12,21 +12,22 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConsumptionEquipmentController = void 0;
+exports.BunkerOilController = void 0;
 const common_1 = require("@nestjs/common");
-const promises_assets_1 = require("../../../../assets/promises.assets");
-const jwtDecode_assets_1 = require("../../../../assets/jwtDecode.assets");
-const consumption_equipment_service_1 = require("./consumption-equipment.service");
-const consumptionEquipment_entity_1 = require("../../../../models/consumptionEquipment.entity");
-let ConsumptionEquipmentController = class ConsumptionEquipmentController {
-    constructor(_ConsumptionEquipmentService) {
-        this._ConsumptionEquipmentService = _ConsumptionEquipmentService;
+const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
+const promises_assets_1 = require("../../../assets/promises.assets");
+const user_entity_1 = require("../../../models/user.entity");
+const bunker_oil_service_1 = require("./bunker-oil.service");
+const buker_oil_entity_1 = require("../../../models/buker-oil.entity");
+let BunkerOilController = class BunkerOilController {
+    constructor(_BunkerOilService) {
+        this._BunkerOilService = _BunkerOilService;
     }
-    Gets(headers, consumptionEquipment) {
+    Gets(headers, bunkerOilEntity) {
         let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
         return promises_assets_1.DummyPromise().then((resultDummy) => {
-            if (consumptionEquipment) {
-                consumptionEquipment.userId = Number(consumptionEquipment.userId);
+            if (bunkerOilEntity) {
+                bunkerOilEntity.userId = Number(bunkerOilEntity.userId);
                 return true;
             }
             else
@@ -34,9 +35,9 @@ let ConsumptionEquipmentController = class ConsumptionEquipmentController {
         }).then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
-            else if (consumptionEquipment.userId !== headerToken.id)
+            else if (bunkerOilEntity.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
-            return this._ConsumptionEquipmentService.Gets(consumptionEquipment);
+            return this._BunkerOilService.Gets(bunkerOilEntity);
         }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
@@ -58,12 +59,12 @@ __decorate([
     common_1.Get(),
     __param(0, common_1.Headers()), __param(1, common_1.Query()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, consumptionEquipment_entity_1.ConsumptionEquipmentEntity]),
+    __metadata("design:paramtypes", [Object, buker_oil_entity_1.BunkerOil]),
     __metadata("design:returntype", Promise)
-], ConsumptionEquipmentController.prototype, "Gets", null);
-ConsumptionEquipmentController = __decorate([
-    common_1.Controller('consumption-equipment'),
-    __metadata("design:paramtypes", [consumption_equipment_service_1.ConsumptionEquipmentService])
-], ConsumptionEquipmentController);
-exports.ConsumptionEquipmentController = ConsumptionEquipmentController;
-//# sourceMappingURL=consumption-equipment.controller.js.map
+], BunkerOilController.prototype, "Gets", null);
+BunkerOilController = __decorate([
+    common_1.Controller('bunker-oil'),
+    __metadata("design:paramtypes", [bunker_oil_service_1.BunkerOilService])
+], BunkerOilController);
+exports.BunkerOilController = BunkerOilController;
+//# sourceMappingURL=bunker-oil.controller.js.map

@@ -1,5 +1,5 @@
 import { Mapping } from 'src/assets/mappingKeys';
-import { BunkerOil } from 'src/models/buker-oil-to-equipment.entity';
+import { BunkerOil } from 'src/models/buker-oil.entity';
 import { Repository } from 'typeorm';
 export declare class BunkerOilService {
     private _BunkerOil;

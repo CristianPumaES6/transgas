@@ -62,10 +62,10 @@ OilEntity = __decorate([
 ], OilEntity);
 exports.OilEntity = OilEntity;
 class SaveDateOils {
-    constructor(userId, listGroups, listTypeOfOilEquipment, listConsumptionEquipment, listBunkerOil, listOil) {
+    constructor(userId, listGroups, listEquipmentSystem, listConsumptionEquipment, listBunkerOil, listOil) {
         this.userId = userId || null;
         this.listGroups = listGroups || [];
-        this.listTypeOfOilEquipment = listTypeOfOilEquipment || [];
+        this.listEquipmentSystem = listEquipmentSystem || [];
         this.listConsumptionEquipment = listConsumptionEquipment || [];
         this.listBunkerOil = listBunkerOil || [];
         this.listOils = listOil || [];

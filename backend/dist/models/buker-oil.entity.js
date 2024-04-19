@@ -9,16 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TypeOfOilEquipmentEntity = void 0;
+exports.BunkerOil = void 0;
 const typeorm_1 = require("typeorm");
-let TypeOfOilEquipmentEntity = class TypeOfOilEquipmentEntity {
-    constructor(id, userId, equipment, rate, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+let BunkerOil = class BunkerOil {
+    constructor(id, userId, entityOilId, bunker, comment, datetime, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
-        this.equipment = equipment || '';
-        this.rate = rate || 0;
-        this.entityGroupId = entityGroupId || 0;
+        this.entityOilId = entityOilId || 0;
+        this.bunker = bunker || 0;
+        this.comment = comment || '';
+        this.datetime = datetime || '';
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
         this.userIdUpdated = userIdUpdated || 0;
@@ -29,46 +30,50 @@ let TypeOfOilEquipmentEntity = class TypeOfOilEquipmentEntity {
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
-], TypeOfOilEquipmentEntity.prototype, "id", void 0);
+], BunkerOil.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], TypeOfOilEquipmentEntity.prototype, "userId", void 0);
-__decorate([
-    typeorm_1.Column({ nullable: false }),
-    __metadata("design:type", String)
-], TypeOfOilEquipmentEntity.prototype, "equipment", void 0);
-__decorate([
-    typeorm_1.Column({ nullable: false }),
-    __metadata("design:type", Number)
-], TypeOfOilEquipmentEntity.prototype, "rate", void 0);
+], BunkerOil.prototype, "userId", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], TypeOfOilEquipmentEntity.prototype, "entityGroupId", void 0);
+], BunkerOil.prototype, "entityOilId", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
-], TypeOfOilEquipmentEntity.prototype, "userIdCreated", void 0);
+], BunkerOil.prototype, "bunker", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], BunkerOil.prototype, "comment", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: false }),
+    __metadata("design:type", String)
+], BunkerOil.prototype, "datetime", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], BunkerOil.prototype, "userIdCreated", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
-], TypeOfOilEquipmentEntity.prototype, "dateCreated", void 0);
+], BunkerOil.prototype, "dateCreated", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], TypeOfOilEquipmentEntity.prototype, "userIdUpdated", void 0);
+], BunkerOil.prototype, "userIdUpdated", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
-], TypeOfOilEquipmentEntity.prototype, "dateUpdated", void 0);
+], BunkerOil.prototype, "dateUpdated", void 0);
 __decorate([
     typeorm_1.Column({ nullable: false }),
     __metadata("design:type", Boolean)
-], TypeOfOilEquipmentEntity.prototype, "status", void 0);
-TypeOfOilEquipmentEntity = __decorate([
-    typeorm_1.Entity('typeOfOilEquipment'),
-    __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, String, Number, String, Boolean])
-], TypeOfOilEquipmentEntity);
-exports.TypeOfOilEquipmentEntity = TypeOfOilEquipmentEntity;
-//# sourceMappingURL=type-of-oils-equipment.entity.js.map
+], BunkerOil.prototype, "status", void 0);
+BunkerOil = __decorate([
+    typeorm_1.Entity('bunkerOil'),
+    __metadata("design:paramtypes", [Number, Number, Number, Number, String, String, Number, String, Number, String, Boolean])
+], BunkerOil);
+exports.BunkerOil = BunkerOil;
+//# sourceMappingURL=buker-oil.entity.js.map

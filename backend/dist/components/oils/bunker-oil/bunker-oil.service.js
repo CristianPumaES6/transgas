@@ -26,7 +26,7 @@ const mappingKeys_1 = require("../../../assets/mappingKeys");
 const moment_assets_1 = require("../../../assets/moment.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const server_config_1 = require("../../../config/server.config");
-const buker_oil_to_equipment_entity_1 = require("../../../models/buker-oil-to-equipment.entity");
+const buker_oil_entity_1 = require("../../../models/buker-oil.entity");
 const typeorm_2 = require("typeorm");
 let BunkerOilService = class BunkerOilService {
     constructor(_BunkerOil) {
@@ -85,7 +85,7 @@ let BunkerOilService = class BunkerOilService {
             for (var addBunkerOil_1 = __asyncValues(addBunkerOil), addBunkerOil_1_1; addBunkerOil_1_1 = await addBunkerOil_1.next(), !addBunkerOil_1_1.done;) {
                 const bunkerOil = addBunkerOil_1_1.value;
                 let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOil.entityOilId);
-                let newBunkerOil = new buker_oil_to_equipment_entity_1.BunkerOil();
+                let newBunkerOil = new buker_oil_entity_1.BunkerOil();
                 delete newBunkerOil.id;
                 newBunkerOil.userId = bunkerOil.userId;
                 newBunkerOil.entityOilId = bunkerOil.entityOilId;
@@ -115,7 +115,7 @@ let BunkerOilService = class BunkerOilService {
             for (var updateBunkerOil_1 = __asyncValues(updateBunkerOil), updateBunkerOil_1_1; updateBunkerOil_1_1 = await updateBunkerOil_1.next(), !updateBunkerOil_1_1.done;) {
                 const bunkerOil = updateBunkerOil_1_1.value;
                 let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOil.entityOilId);
-                let newBunkerOil = new buker_oil_to_equipment_entity_1.BunkerOil();
+                let newBunkerOil = new buker_oil_entity_1.BunkerOil();
                 newBunkerOil.id = bunkerOil.id;
                 newBunkerOil.userId = bunkerOil.userId;
                 newBunkerOil.entityOilId = bunkerOil.entityOilId;
@@ -144,7 +144,7 @@ let BunkerOilService = class BunkerOilService {
             for (var deleteBunkerOil_1 = __asyncValues(deleteBunkerOil), deleteBunkerOil_1_1; deleteBunkerOil_1_1 = await deleteBunkerOil_1.next(), !deleteBunkerOil_1_1.done;) {
                 let bunkerOil = deleteBunkerOil_1_1.value;
                 let searchMappingOils = mappingKeys_1.searchKey(MappingOils, bunkerOil.entityOilId);
-                let newBunkerOil = new buker_oil_to_equipment_entity_1.BunkerOil();
+                let newBunkerOil = new buker_oil_entity_1.BunkerOil();
                 newBunkerOil.id = bunkerOil.id;
                 newBunkerOil.userId = bunkerOil.userId;
                 newBunkerOil.entityOilId = bunkerOil.entityOilId;
@@ -174,7 +174,7 @@ let BunkerOilService = class BunkerOilService {
 };
 BunkerOilService = __decorate([
     common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(buker_oil_to_equipment_entity_1.BunkerOil)),
+    __param(0, typeorm_1.InjectRepository(buker_oil_entity_1.BunkerOil)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], BunkerOilService);
 exports.BunkerOilService = BunkerOilService;
