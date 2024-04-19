@@ -262,14 +262,14 @@ export class ConsumptionEquipmentService {
       main.entityEquipmentId,
       SUM(main.bunker) AS total_bunker,
       (SELECT sub.entityOilId 
-       FROM bunkerOilToEquipment sub
+       FROM bunkerOil sub
        WHERE sub.entityEquipmentId = main.entityEquipmentId
          AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
          AND sub.status = 1
        ORDER BY sub.datetime ASC 
        LIMIT 1) AS last_entityOilId,
       (SELECT O.name 
-       FROM bunkerOilToEquipment sub
+       FROM bunkerOil sub
        INNER JOIN oil O ON O.id = sub.entityOilId
        WHERE sub.entityEquipmentId = main.entityEquipmentId
          AND strftime('%Y-%m', sub.datetime) = strftime('%Y-%m', main.datetime)
@@ -277,7 +277,7 @@ export class ConsumptionEquipmentService {
        ORDER BY sub.datetime ASC 
        LIMIT 1) AS last_oil_name
     FROM 
-      bunkerOilToEquipment main
+      bunkerOil main
     WHERE main.userId = ? AND
       main.status = 1
     GROUP BY 
@@ -310,13 +310,13 @@ export class ConsumptionEquipmentService {
                         END AS Rate,
                         GROUP_CONCAT(ce.observation, '; ') AS Observations,
                         ce.date AS ConsumptionDate,
-                        boe.id AS bunkerOilToEquipmentId,
+                        boe.id AS bunkerOilId,
                         COALESCE(SUM(boe.bunker), 0) AS TotalBunker,
                         MAX(boe.datetime) AS BunkerDate -- Asumiendo que solo hay un bunkering por día.
                     FROM typeOfOilEquipment AS toe
                     LEFT JOIN consumptionEquipment AS ce 
                         ON toe.id = ce.entityEquipmentId AND ce.userId = ${userId}
-                    LEFT JOIN bunkerOilToEquipment AS boe 
+                    LEFT JOIN bunkerOil AS boe 
                         ON toe.id = boe.entityEquipmentId AND boe.userId = ${userId}
                         AND DATE(ce.date) = DATE(boe.datetime)
                     WHERE 
@@ -362,7 +362,7 @@ export interface consultEquipmentConsumptionByMonthUser {
     Rate: number;
     Observations: number;
     ConsumptionDate: string;
-    bunkerOilToEquipmentId: number;
+    bunkerOilId: number;
     TotalBunker: number;
     BunkerDate: string;
 }

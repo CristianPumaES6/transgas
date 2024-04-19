@@ -8,7 +8,7 @@ echo "Nos ubicamos en la carpeta frontend.."
 
 
 echo "Eliminamos el directorio dist.."
-# REmovemos el directorio frontend.
+# Renovemos el directorio frontend.
 rm -rf dist
 
 

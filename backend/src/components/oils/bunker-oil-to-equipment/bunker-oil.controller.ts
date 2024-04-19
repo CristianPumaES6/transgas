@@ -9,13 +9,13 @@ import { BunkerOil } from 'src/models/buker-oil-to-equipment.entity';
 export class BunkerOilController {
 
     constructor(
-        private readonly _BunkerOilToEquipmentService: BunkerOilService,
+        private readonly _BunkerOilService: BunkerOilService,
     ) { }
 
 
 
     @Get()
-    Gets(@Headers() headers, @Query() bunkerOilToEquipmentEntity: BunkerOil): Promise<any> {
+    Gets(@Headers() headers, @Query() bunkerOilEntity: BunkerOil): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -25,9 +25,9 @@ export class BunkerOilController {
         return DummyPromise().then(
             (resultDummy: Boolean) => {
                 // Validamos que los datos sean los necesarios.
-                if (bunkerOilToEquipmentEntity) {
+                if (bunkerOilEntity) {
 
-                    bunkerOilToEquipmentEntity.userId = Number(bunkerOilToEquipmentEntity.userId);
+                    bunkerOilEntity.userId = Number(bunkerOilEntity.userId);
                     return true;
 
                 } else throw new Error('MISSING_FIELS');
@@ -38,10 +38,10 @@ export class BunkerOilController {
                 // Validamos que el userId sea el mismo que el del sailingAnality
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                      // Nose hace nada
-                } else if (bunkerOilToEquipmentEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                } else if (bunkerOilEntity.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._BunkerOilToEquipmentService.Gets(bunkerOilToEquipmentEntity);
+                return this._BunkerOilService.Gets(bunkerOilEntity);
             }
         ).then(
             (results: BunkerOil[]) => {

@@ -17,7 +17,7 @@ export class BunkerOilService {
     
     constructor(
         @InjectRepository(BunkerOil)
-        private _BunkerOilToEquipment: Repository<BunkerOil>,
+        private _BunkerOil: Repository<BunkerOil>,
     ) { }
 
 
@@ -38,7 +38,7 @@ export class BunkerOilService {
 
                 } else {
 
-                    return this._BunkerOilToEquipment.find({
+                    return this._BunkerOil.find({
                         where: [
                             // name && surname && nick && email
                             {
@@ -65,7 +65,7 @@ export class BunkerOilService {
     }
 
     // Registra un nuevo grupo de aceite
-    async Create(bunkerOilToEquipment: BunkerOil): Promise<BunkerOil> {
+    async Create(bunkerOil: BunkerOil): Promise<BunkerOil> {
 
         // Hacemos where por todos los campos de la entidad
         return DummyPromise().then(
@@ -73,10 +73,10 @@ export class BunkerOilService {
 
                 if (URL_Server.bd === 'MSSQL') {
                     // Buscamos el viaje
-                    return this._BunkerOilToEquipment.query("SP_CheckTheLastRecordedTrip @userId='" + bunkerOilToEquipment.userId + "', @year='");
+                    return this._BunkerOil.query("SP_CheckTheLastRecordedTrip @userId='" + bunkerOil.userId + "', @year='");
                 } else {
                     // No lo validamos por que puede llegar vacio.
-                    return this._BunkerOilToEquipment.save(bunkerOilToEquipment);
+                    return this._BunkerOil.save(bunkerOil);
                 }
 
             }
@@ -99,93 +99,93 @@ export class BunkerOilService {
     }
 
     // guarda una lista de aceite.
-    async SaveList(MappingOils: Mapping[], MappingTypesOfOilEquipment: Mapping[], bunkerOilToEquipmentEntity: BunkerOil[]) {
+    async SaveList(MappingOils: Mapping[], MappingTypesOfOilEquipment: Mapping[], bunkerOilEntity: BunkerOil[]) {
 
 
         // FIltramos los datos que faltan aggregar y actualizar.
-        const addBunkerOil = bunkerOilToEquipmentEntity.filter((bunkerOilToEquipment: BunkerOil) => bunkerOilToEquipment.SyncStatus == 'added');
-        const updateBunkerOil = bunkerOilToEquipmentEntity.filter((bunkerOilToEquipment: BunkerOil) => bunkerOilToEquipment.SyncStatus == 'updated');
-        const deleteBunkerOil = bunkerOilToEquipmentEntity.filter((bunkerOilToEquipment: BunkerOil) => bunkerOilToEquipment.SyncStatus == 'deleted');
+        const addBunkerOil = bunkerOilEntity.filter((bunkerOil: BunkerOil) => bunkerOil.SyncStatus == 'added');
+        const updateBunkerOil = bunkerOilEntity.filter((bunkerOil: BunkerOil) => bunkerOil.SyncStatus == 'updated');
+        const deleteBunkerOil = bunkerOilEntity.filter((bunkerOil: BunkerOil) => bunkerOil.SyncStatus == 'deleted');
 
         let MappingBunkerOil:Mapping[] = [];
 
-        for await (const addBunkerOilToEquipment of addBunkerOil) {
+        for await (const bunkerOil of addBunkerOil) {
 
-             let searchMappingOils = searchKey(MappingOils, addBunkerOilToEquipment.entityOilId);
+             let searchMappingOils = searchKey(MappingOils, bunkerOil.entityOilId);
 
             // Armamos al nuevo tipo de aceite
             let newBunkerOil = new BunkerOil();
 
             delete newBunkerOil.id;
-            newBunkerOil.userId = addBunkerOilToEquipment.userId;
-            newBunkerOil.entityOilId = addBunkerOilToEquipment.entityOilId;
-            if (searchMappingOils) { newBunkerOil.entityOilId = searchMappingOils.value }
-            newBunkerOil.bunker = addBunkerOilToEquipment.bunker;
-            newBunkerOil.comment = addBunkerOilToEquipment.comment;
-            newBunkerOil.datetime = addBunkerOilToEquipment.datetime;
+            newBunkerOil.userId = bunkerOil.userId;
+            newBunkerOil.entityOilId = bunkerOil.entityOilId;
+            if (searchMappingOils) { bunkerOil.entityOilId = searchMappingOils.value }
+            newBunkerOil.bunker = bunkerOil.bunker;
+            newBunkerOil.comment = bunkerOil.comment;
+            newBunkerOil.datetime = bunkerOil.datetime;
 
             // Auditoria.
-            newBunkerOil.userIdCreated = addBunkerOilToEquipment.userIdCreated;
+            newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
             newBunkerOil.dateCreated = GetDate();
             delete newBunkerOil.userIdUpdated;
             delete newBunkerOil.dateUpdated;
-            newBunkerOil.status = Boolean(addBunkerOilToEquipment.status);
+            newBunkerOil.status = Boolean(bunkerOil.status);
 
             // Registramos grupo de aceite
             let registeredBunkerOil = await this.Create(newBunkerOil);
 
             // Lo agregamos al mapping
-            MappingBunkerOil.push(new Mapping(addBunkerOilToEquipment.id, registeredBunkerOil.id))
+            MappingBunkerOil.push(new Mapping(bunkerOil.id, registeredBunkerOil.id))
         }
 
-        for await (const bunkerOilToEquipment of updateBunkerOil) {
+        for await (const bunkerOil of updateBunkerOil) {
 
-            let searchMappingOils = searchKey(MappingOils, bunkerOilToEquipment.entityOilId);
+            let searchMappingOils = searchKey(MappingOils, bunkerOil.entityOilId);
 
             // Armamos al nuevo tipo de aceite
             let newBunkerOil = new BunkerOil();
  
-            newBunkerOil.id = bunkerOilToEquipment.id;
-            newBunkerOil.userId = bunkerOilToEquipment.userId;
-            newBunkerOil.entityOilId = bunkerOilToEquipment.entityOilId;
+            newBunkerOil.id = bunkerOil.id;
+            newBunkerOil.userId = bunkerOil.userId;
+            newBunkerOil.entityOilId = bunkerOil.entityOilId;
             if (searchMappingOils) { newBunkerOil.entityOilId = searchMappingOils.value }
-            newBunkerOil.bunker = bunkerOilToEquipment.bunker;
-            newBunkerOil.comment = bunkerOilToEquipment.comment;
-            newBunkerOil.datetime = bunkerOilToEquipment.datetime;
+            newBunkerOil.bunker = bunkerOil.bunker;
+            newBunkerOil.comment = bunkerOil.comment;
+            newBunkerOil.datetime = bunkerOil.datetime;
 
             // Auditoria.
-            newBunkerOil.userIdCreated = bunkerOilToEquipment.userIdCreated;
-            newBunkerOil.dateCreated = bunkerOilToEquipment.dateCreated;
-            newBunkerOil.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
-            newBunkerOil.dateUpdated = bunkerOilToEquipment.dateUpdated;
-            newBunkerOil.status = Boolean(bunkerOilToEquipment.status);
+            newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
+            newBunkerOil.dateCreated = bunkerOil.dateCreated;
+            newBunkerOil.userIdUpdated = bunkerOil.userIdUpdated;
+            newBunkerOil.dateUpdated = bunkerOil.dateUpdated;
+            newBunkerOil.status = Boolean(bunkerOil.status);
 
-            await this._BunkerOilToEquipment.save(newBunkerOil);
+            await this._BunkerOil.save(newBunkerOil);
         }
 
-        for await (let bunkerOilToEquipment of deleteBunkerOil) {
+        for await (let bunkerOil of deleteBunkerOil) {
 
-            let searchMappingOils = searchKey(MappingOils, bunkerOilToEquipment.entityOilId);
+            let searchMappingOils = searchKey(MappingOils, bunkerOil.entityOilId);
 
             // Armamos al nuevo tipo de aceite
             let newBunkerOil = new BunkerOil();
 
-            newBunkerOil.id = bunkerOilToEquipment.id;
-            newBunkerOil.userId = bunkerOilToEquipment.userId;
-            newBunkerOil.entityOilId = bunkerOilToEquipment.entityOilId;
+            newBunkerOil.id = bunkerOil.id;
+            newBunkerOil.userId = bunkerOil.userId;
+            newBunkerOil.entityOilId = bunkerOil.entityOilId;
             if (searchMappingOils) { newBunkerOil.entityOilId = searchMappingOils.value }
-            newBunkerOil.bunker = bunkerOilToEquipment.bunker;
-            newBunkerOil.comment = bunkerOilToEquipment.comment;
-            newBunkerOil.datetime = bunkerOilToEquipment.datetime;
+            newBunkerOil.bunker = bunkerOil.bunker;
+            newBunkerOil.comment = bunkerOil.comment;
+            newBunkerOil.datetime = bunkerOil.datetime;
 
             // Auditoria.
-            newBunkerOil.userIdCreated = bunkerOilToEquipment.userIdCreated;
-            newBunkerOil.dateCreated = bunkerOilToEquipment.dateCreated;
-            newBunkerOil.userIdUpdated = bunkerOilToEquipment.userIdUpdated;
-            newBunkerOil.dateUpdated = bunkerOilToEquipment.dateUpdated;
-            newBunkerOil.status = Boolean(bunkerOilToEquipment.status);
+            newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
+            newBunkerOil.dateCreated = bunkerOil.dateCreated;
+            newBunkerOil.userIdUpdated = bunkerOil.userIdUpdated;
+            newBunkerOil.dateUpdated = bunkerOil.dateUpdated;
+            newBunkerOil.status = Boolean(bunkerOil.status);
 
-            await this._BunkerOilToEquipment.save(bunkerOilToEquipment);
+            await this._BunkerOil.save(bunkerOil);
         }
 
         return MappingBunkerOil;

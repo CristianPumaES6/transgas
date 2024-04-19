@@ -96,7 +96,7 @@ export class OilsController {
         let listGroups: GroupOilEntity[] = [];
         let listTypeOfOilEquipment: TypeOfOilEquipmentEntity[] = [];
         let listConsumptionEquipment: ConsumptionEquipmentEntity[] = [];
-        let listBunkerOilToEquipment: BunkerOil[] = [];
+        let listBunkerOil: BunkerOil[] = [];
 
         // Inicio una promesa Dummy.
         return DummyPromise().then((resultDummy: Boolean) => {
@@ -156,14 +156,14 @@ export class OilsController {
                 listConsumptionEquipment = ConsumptionsEquipmentEntity;
 
 
-                let bunkersOilToEquipmentEntity: BunkerOil = <any>{};
-                bunkersOilToEquipmentEntity.userId = oilEntity.userId;
+                let bunkersOilEntity: BunkerOil = <any>{};
+                bunkersOilEntity.userId = oilEntity.userId;
                 // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
-                return this._BunkerOilService.Gets(bunkersOilToEquipmentEntity);
+                return this._BunkerOilService.Gets(bunkersOilEntity);
             }
         ).then(
-            (BunkersOilToEquipmentEntity: BunkerOil[]) => {
-                listBunkerOilToEquipment = BunkersOilToEquipmentEntity;
+            (bunkersOilEntity: BunkerOil[]) => {
+                listBunkerOil = bunkersOilEntity;
 
                 // Retornamos una Respuesta exitosa.
                 return {
@@ -174,7 +174,7 @@ export class OilsController {
                         listGroups: listGroups,
                         listTypeOfOilEquipment: listTypeOfOilEquipment,
                         listConsumptionEquipment: listConsumptionEquipment,
-                        listBunkerOilToEquipment: listBunkerOilToEquipment
+                        listBunkerOil: listBunkerOil
                     }
                 };
             }
@@ -489,7 +489,7 @@ export class OilsController {
         let mappingTypesOfOilEquipment: Mapping[] = [];
         let mappingConsumptionsEquipment: Mapping[] = [];
         let mappingOils: Mapping[] = [];
-        let mappingBunkersOilToEquipment: Mapping[] = [];
+        let mappingBunkersOil: Mapping[] = [];
         let listConsumosValidarSendMail = [];
 
         console.log('--------------------------');
@@ -552,16 +552,16 @@ export class OilsController {
                 mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
                 listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
 
-                if (saveDateOils.listBunkerOilToEquipment) {
-                    return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOilToEquipment);
+                if (saveDateOils.listBunkerOil) {
+                    return this._BunkerOilService.SaveList(mappingOils, mappingTypesOfOilEquipment, saveDateOils.listBunkerOil);
                 } else {
                     return [];
                 }
             }
         ).then(
-            (resultBunkerOilToEquipment: Mapping[]) => {
+            (resultBunkerOil: Mapping[]) => {
 
-                mappingBunkersOilToEquipment = resultBunkerOilToEquipment;
+                mappingBunkersOil = resultBunkerOil;
 
                 // tenemos que enviar un correo lo enviamos
                 if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
@@ -599,7 +599,7 @@ export class OilsController {
                         mappingTypesOfOilEquipment: mappingTypesOfOilEquipment,
                         mappingConsumptionsEquipment: mappingConsumptionsEquipment,
                         mappingOils: mappingOils,
-                        mappingBunkersOilToEquipment: mappingBunkersOilToEquipment
+                        mappingBunkersOil: mappingBunkersOil
                     }
                 };
             }

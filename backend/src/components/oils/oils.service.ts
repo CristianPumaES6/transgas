@@ -342,14 +342,14 @@ export class OilsService {
                             .addSelect('typeOfOilEquipment.equipment', 'equipment')
                             .addSelect('consumptionEquipment.amount', 'amountConsumption')
                             .addSelect('oil.name', 'nameOil')
-                            .addSelect('bunkerOilToEquipment.datetime', 'datetimeBunkerOil')
+                            .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                             .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
                             .addSelect('typeOfOilEquipment.rate', 'rate')
                             .addSelect('consumptionEquipment.observation', 'observation')
 
                             // UNION DE TABLAS
-                            .innerJoin('bunkerOilToEquipment', 'bunkerOilToEquipment', 'bunkerOilToEquipment.entityOilId = oil.id AND bunkerOilToEquipment.status = 1 AND oil.status = 1')
-                            .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOilToEquipment.entityEquipmentId AND typeOfOilEquipment.status = 1')
+                            .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
+                            .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOil.entityEquipmentId AND typeOfOilEquipment.status = 1')
                             .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
 
                             // Where status
@@ -459,14 +459,14 @@ export class OilsService {
                             .addSelect('typeOfOilEquipment.equipment', 'equipment')
                             .addSelect('consumptionEquipment.amount', 'amountConsumption')
                             .addSelect('oil.name', 'nameOil')
-                            .addSelect('bunkerOilToEquipment.datetime', 'datetimeBunkerOil')
+                            .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                             .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
                             .addSelect('typeOfOilEquipment.rate', 'rate')
                             .addSelect('consumptionEquipment.observation', 'observation')
 
                             // UNION DE TABLAS
-                            .innerJoin('bunkerOilToEquipment', 'bunkerOilToEquipment', 'bunkerOilToEquipment.entityOilId = oil.id AND bunkerOilToEquipment.status = 1 AND oil.status = 1')
-                            .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOilToEquipment.entityEquipmentId AND typeOfOilEquipment.status = 1')
+                            .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
+                            .innerJoin('typeOfOilEquipment', 'typeOfOilEquipment', 'typeOfOilEquipment.id = bunkerOil.entityEquipmentId AND typeOfOilEquipment.status = 1')
                             .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = typeOfOilEquipment.id AND consumptionEquipment.status = 1')
 
                             // Where status

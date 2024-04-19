@@ -62,7 +62,7 @@ export class SaveDateOils {
     listGroups: GroupOilEntity[];
     listTypeOfOilEquipment: TypeOfOilEquipmentEntity[];
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
-    listBunkerOilToEquipment: BunkerOil[];
+    listBunkerOil: BunkerOil[];
     listOils: OilEntity[];
 
 
@@ -71,14 +71,14 @@ export class SaveDateOils {
         listGroups?: GroupOilEntity[],
         listTypeOfOilEquipment?: TypeOfOilEquipmentEntity[],
         listConsumptionEquipment?: ConsumptionEquipmentEntity[],
-        listBunkerOilToEquipment?: BunkerOil[],
+        listBunkerOil?: BunkerOil[],
         listOil?: OilEntity[]
       ) {
         this.userId = userId || null;
         this.listGroups = listGroups || [];
         this.listTypeOfOilEquipment = listTypeOfOilEquipment || [];
         this.listConsumptionEquipment = listConsumptionEquipment || [];
-        this.listBunkerOilToEquipment = listBunkerOilToEquipment || [];
+        this.listBunkerOil = listBunkerOil || [];
         this.listOils = listOil || [];
       }
   }
