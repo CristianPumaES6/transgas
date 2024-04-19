@@ -12,10 +12,11 @@ export class EquipmentSystemEntity {
     equipment: string;
     @Column({ nullable: false })
     rate: number;
+    
     @Column({ nullable: true })
-    entityGroupId: number;
-    @Column({ nullable: true })
-    entitySubGroupId: number;
+    entityGroupId: number; // Grupo principal o segundario
+    @Column({ nullable: false })
+    entitySubGroupId: number; // Permite agrupar por un subgrupo (AUX)
 
     // Auditoria
     @Column()
