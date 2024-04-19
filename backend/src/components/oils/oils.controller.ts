@@ -16,6 +16,7 @@ import { BunkerOilService } from './bunker-oil/bunker-oil.service';
 import { Mapping } from '../../assets/mappingKeys';
 import { SendMailHTMLOverCosumption } from 'src/assets/nodemailer.assets';
 import { EquipmentOilCompatibilityService } from './equipment-oil-compatibility/equipment-oil-compatibility.service';
+import { EquipmentOilCompatibilityEntity } from 'src/models/equipment-oil-compatibility.entity';
 
 
 @Controller('oils')
@@ -99,6 +100,7 @@ export class OilsController {
         let listEquipmentSystem: EquipmentSystemEntity[] = [];
         let listConsumptionEquipment: ConsumptionEquipmentEntity[] = [];
         let listBunkerOil: BunkerOil[] = [];
+        let listEquipmentOilCompatibilityEntity: EquipmentOilCompatibilityEntity[] = [];
 
         // Inicio una promesa Dummy.
         return DummyPromise().then((resultDummy: Boolean) => {
@@ -166,6 +168,17 @@ export class OilsController {
         ).then(
             (bunkersOilEntity: BunkerOil[]) => {
                 listBunkerOil = bunkersOilEntity;
+
+
+                let equipmentOilCompatibility: EquipmentOilCompatibilityEntity = <any>{};
+                equipmentOilCompatibility.userId = oilEntity.userId;
+                // Ejecutamos el servicio de obtener todos los reportes diarios segun filtro.
+                return this._EquipmentOilCompatibilityService.Gets(equipmentOilCompatibility);
+            }
+        ).then(
+            (equipmentOilCompatibilityEntity: EquipmentOilCompatibilityEntity[]) => {
+                listEquipmentOilCompatibilityEntity = equipmentOilCompatibilityEntity;
+
 
                 // Retornamos una Respuesta exitosa.
                 return {
