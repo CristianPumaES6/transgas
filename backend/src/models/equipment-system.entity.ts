@@ -13,9 +13,9 @@ export class EquipmentSystemEntity {
     @Column({ nullable: false })
     rate: number;
     
-    @Column({ nullable: true })
-    entityGroupId: number; // Grupo principal o segundario
     @Column({ nullable: false })
+    entityGroupId: number; // Grupo principal o segundario
+    @Column({ nullable: true })
     entitySubGroupId: number; // Permite agrupar por un subgrupo (AUX)
 
     // Auditoria

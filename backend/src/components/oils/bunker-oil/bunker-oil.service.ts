@@ -119,7 +119,7 @@ export class BunkerOilService {
             delete newBunkerOil.id;
             newBunkerOil.userId = bunkerOil.userId;
             newBunkerOil.entityOilId = bunkerOil.entityOilId;
-            if (searchMappingOils) { bunkerOil.entityOilId = searchMappingOils.value }
+            if (searchMappingOils) { newBunkerOil.entityOilId = searchMappingOils.value }
             newBunkerOil.bunker = bunkerOil.bunker;
             newBunkerOil.comment = bunkerOil.comment;
             newBunkerOil.datetime = bunkerOil.datetime;

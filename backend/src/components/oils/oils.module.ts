@@ -19,13 +19,14 @@ import { EquipmentSystemEntity } from 'src/models/equipment-system.entity';
 import { EquipmentSystemService } from './equipment-system/equipment-system.service';
 import { EquipmentOilCompatibilityService } from './equipment-oil-compatibility/equipment-oil-compatibility.service';
 import { EquipmentOilCompatibilityController } from './equipment-oil-compatibility/equipment-oil-compatibility.controller';
+import { EquipmentOilCompatibilityEntity } from 'src/models/equipment-oil-compatibility.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OilEntity,ConsumptionEquipmentEntity,GroupOilEntity,BunkerOil,EquipmentSystemEntity]),
+    TypeOrmModule.forFeature([OilEntity,ConsumptionEquipmentEntity,GroupOilEntity,BunkerOil,EquipmentSystemEntity,EquipmentOilCompatibilityEntity]),
   ],
-  controllers: [OilsController, ConsumptionEquipmentController, GroupOilsController, EquipmentSystemController, BunkerOilController, EquipmentOilCompatibilityController],
-  providers: [OilsService, ConsumptionEquipmentService, GroupOilsService, EquipmentSystemService, BunkerOilService, EquipmentOilCompatibilityService],
+  controllers: [OilsController, ConsumptionEquipmentController, GroupOilsController, EquipmentSystemController, BunkerOilController, EquipmentOilCompatibilityController,EquipmentOilCompatibilityController],
+  providers: [OilsService, ConsumptionEquipmentService, GroupOilsService, EquipmentSystemService, BunkerOilService, EquipmentOilCompatibilityService,EquipmentOilCompatibilityService ],
   exports: [ConsumptionEquipmentService] 
 })
 export class OilsModule {}

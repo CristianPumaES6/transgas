@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { DailyOilConsumptionData, OilsService } from './oils.service';
 import { DummyPromise } from '../../assets/promises.assets';
-import { OilEntity, SaveDateOils } from '../../models/oil.entity';
+import { OilEntity, DataModuleOils } from '../../models/oil.entity';
 import { UserEntity } from '../../models/user.entity';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/moment.assets';
@@ -188,8 +188,9 @@ export class OilsController {
                         listOils: listOils,
                         listGroups: listGroups,
                         listEquipmentSystem: listEquipmentSystem,
-                        listConsumptionEquipment: listConsumptionEquipment,
-                        listBunkerOil: listBunkerOil
+                        listBunkerOil: listBunkerOil,
+                        listEquipmentOilCompatibility: listEquipmentOilCompatibilityEntity,
+                        listConsumptionEquipment: listConsumptionEquipment
                     }
                 };
             }
@@ -493,7 +494,7 @@ export class OilsController {
     }
 
     @Post('saveModuleOils')
-    async SaveDataLubricante(@Headers() headers, @Body() saveDateOils: SaveDateOils): Promise<any> {
+    async SaveDataLubricante(@Headers() headers, @Body() saveDateOils: DataModuleOils): Promise<any> {
 
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
@@ -506,6 +507,7 @@ export class OilsController {
         let mappingEquipmentSystems: Mapping[] = [];
         let mappingEquipmentOilCompatibility: Mapping[] = [];
         let mappingConsumptionsEquipment: Mapping[] = [];
+
         let listConsumosValidarSendMail = [];
 
         console.log('--------------------------');
@@ -518,9 +520,9 @@ export class OilsController {
             (resultDummy: Boolean) => {
                 // Validamos que esten llegando los datos necesarios.
                 if (saveDateOils) {
-                    if (saveDateOils.listGroupOilEntity) {
+                    if (saveDateOils.listGroups) {
                         // Ejecutamos la funcion que registra en bd.
-                        return this._GroupOilEntityService.SaveList(saveDateOils.listGroupOilEntity);
+                        return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
                     } else {
                         return [];
                     }
@@ -532,8 +534,8 @@ export class OilsController {
 
                 mappingGroupOils = resultMappingGroupOils;
 
-                if (saveDateOils.listOilEntity) {
-                    return this._OilsService.SaveList(saveDateOils.listOilEntity);
+                if (saveDateOils.listOils) {
+                    return this._OilsService.SaveList(saveDateOils.listOils);
                 } else {
                     return [];
                 }
@@ -552,8 +554,8 @@ export class OilsController {
             (resultBunkerOil: Mapping[]) => {
 
                 mappingBunkersOil = resultBunkerOil;
-                if (saveDateOils.listEquipmentSystemEntity) {
-                    return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystemEntity);
+                if (saveDateOils.listEquipmentSystem) {
+                    return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystem);
                 } else {
                     return [];
                 }
@@ -562,8 +564,8 @@ export class OilsController {
             (resultMappingEquipmentSystem: Mapping[]) => {
                 mappingEquipmentSystems = resultMappingEquipmentSystem;
 
-                if(saveDateOils.listEquipmentOilCompatibilityEntity) {
-                    this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibilityEntity)
+                if(saveDateOils.listEquipmentOilCompatibility) {
+                    return this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibility)
                 } else {
                     return []
                 }
@@ -572,8 +574,8 @@ export class OilsController {
             (resultMappingEquipmentOilCompatibility : Mapping[]) => {
                 mappingEquipmentOilCompatibility = resultMappingEquipmentOilCompatibility;
 
-                if (saveDateOils.listConsumptionEquipmentEntity) {
-                    return this._ConsumptionEquipmentService.SaveList(mappingEquipmentOilCompatibility, saveDateOils.listConsumptionEquipmentEntity);
+                if (saveDateOils.listConsumptionEquipment) {
+                    return this._ConsumptionEquipmentService.SaveList(mappingEquipmentOilCompatibility, saveDateOils.listConsumptionEquipment);
                 } else {
                     // vacio si no hay nada
                     return {
@@ -625,7 +627,8 @@ export class OilsController {
                         mappingEquipmentSystems: mappingEquipmentSystems,
                         mappingConsumptionsEquipment: mappingConsumptionsEquipment,
                         mappingOils: mappingOils,
-                        mappingBunkersOil: mappingBunkersOil
+                        mappingBunkersOil: mappingBunkersOil,
+                        mappingEquipmentOilCompatibility: mappingEquipmentOilCompatibility
                     }
                 };
             }

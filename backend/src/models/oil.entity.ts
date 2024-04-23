@@ -58,14 +58,14 @@ export class OilEntity {
 
 
 
-export class SaveDateOils {
+export class DataModuleOils {
     userId: number;
-    listGroupOilEntity: GroupOilEntity[];
-    listEquipmentSystemEntity: EquipmentSystemEntity[];
-    listOilEntity: OilEntity[];
+    listGroups: GroupOilEntity[];
+    listEquipmentSystem: EquipmentSystemEntity[];
+    listOils: OilEntity[];
     listBunkerOil: BunkerOil[];
-    listEquipmentOilCompatibilityEntity: EquipmentOilCompatibilityEntity[];
-    listConsumptionEquipmentEntity: ConsumptionEquipmentEntity[];
+    listEquipmentOilCompatibility: EquipmentOilCompatibilityEntity[];
+    listConsumptionEquipment: ConsumptionEquipmentEntity[];
 
 
     constructor(
@@ -78,11 +78,11 @@ export class SaveDateOils {
         _listConsumptionEquipment?: ConsumptionEquipmentEntity[]
       ) {
         this.userId = _userId || null;
-        this.listGroupOilEntity = _listGroup || [];
-        this.listEquipmentSystemEntity = _listEquipmentSystem || [];
-        this.listOilEntity = _listOil || [];
+        this.listGroups = _listGroup || [];
+        this.listEquipmentSystem = _listEquipmentSystem || [];
+        this.listOils = _listOil || [];
         this.listBunkerOil = _listBunkerOil || [];
-        this.listEquipmentOilCompatibilityEntity = _listEquipmentOilCompatibility || [];
-        this.listConsumptionEquipmentEntity = _listConsumptionEquipment || [];
+        this.listEquipmentOilCompatibility = _listEquipmentOilCompatibility || [];
+        this.listConsumptionEquipment = _listConsumptionEquipment || [];
       }
   }

@@ -17,7 +17,7 @@ export class ConsumptionEquipmentEntity {
     @Column({ nullable: true })
     observation: string;
     
-    @Column({ nullable: false })
+    @Column({ nullable: false, default:0 })
     entityEquipmentOilCompatibilityId: number;
 
     // Auditoria

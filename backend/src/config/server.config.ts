@@ -26,16 +26,19 @@ export const URL_Server = {
 
 
 
-/*
+
 // CONFIGURACION PARA DESARROLLO local
-export const URL_Server = {
+/* export const URL_Server = {
     front: 'http://localhost:3001',
     back: 'http://localhost:3000',
     version: 'v2',
     puertoSocket: 4000,
-    bd: 'SQLITE', // MSSQL,   SQLITE,   MYSQL
-};
-*/
+    puertoBackend: 3000,
+    bd: 'SQLITE', // MSSQL, MYSQL
+    emailNotification: 'transgasshippinglines@gmail.com',
+    passwordNotification: 'getlsmyuiluiwktq'
+}; */
+
 
 
 // CONFIGURACION PARA DESARROLLO SERVER
@@ -48,7 +51,7 @@ export const URL_Server = {
     bd: 'SQLITE', // MSSQL, MYSQL
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
-}; 
+};
 
 /*
 // SERVIDOR LINUX - FRONT Firebase
