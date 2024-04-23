@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "abf5a74f00785ab2f1e974b5f00e086bf8b9806969c97428f8fb42c68f28871d",
+        "version": "f8bfb784552fc8fd8593a86ad33a716063ea1f1c83444aef6e2fa8f23a1c5207",
         "signature": "0f180eac61ac0b9d9466f7da403f7495898c3e40be8cea3d70954ff6f0a51c52",
         "affectsGlobalScope": false
       },
@@ -3897,7 +3897,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/bunker-oil/bunker-oil.service.ts": {
-        "version": "7844e5ba18ce0456284f1489c355ef8b3ab553af5dab2cd68cbd37c113740550",
+        "version": "5a3efbc1199b63502a0f06c3ecdb20d848a2f3015fca942f06484462c62c6468",
         "signature": "674851d4d0277ccda7a300b5e14480b87b2aa3cc64034e5c0f5cd0ed80feb775",
         "affectsGlobalScope": false
       },
