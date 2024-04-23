@@ -123,9 +123,9 @@ let OilsController = class OilsController {
                     listOils: listOils,
                     listGroups: listGroups,
                     listEquipmentSystem: listEquipmentSystem,
-                    listConsumptionEquipment: listConsumptionEquipment,
                     listBunkerOil: listBunkerOil,
-                    listEquipmentOilCompatibility: listEquipmentOilCompatibilityEntity
+                    listEquipmentOilCompatibility: listEquipmentOilCompatibilityEntity,
+                    listConsumptionEquipment: listConsumptionEquipment
                 }
             };
         }).catch(err => {
@@ -304,8 +304,8 @@ let OilsController = class OilsController {
         console.log('--------------------------');
         return promises_assets_1.DummyPromise().then((resultDummy) => {
             if (saveDateOils) {
-                if (saveDateOils.listGroupOilEntity) {
-                    return this._GroupOilEntityService.SaveList(saveDateOils.listGroupOilEntity);
+                if (saveDateOils.listGroups) {
+                    return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
                 }
                 else {
                     return [];
@@ -315,8 +315,8 @@ let OilsController = class OilsController {
                 throw 'MISSING_FIELS';
         }).then((resultMappingGroupOils) => {
             mappingGroupOils = resultMappingGroupOils;
-            if (saveDateOils.listOilEntity) {
-                return this._OilsService.SaveList(saveDateOils.listOilEntity);
+            if (saveDateOils.listOils) {
+                return this._OilsService.SaveList(saveDateOils.listOils);
             }
             else {
                 return [];
@@ -331,24 +331,24 @@ let OilsController = class OilsController {
             }
         }).then((resultBunkerOil) => {
             mappingBunkersOil = resultBunkerOil;
-            if (saveDateOils.listEquipmentSystemEntity) {
-                return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystemEntity);
+            if (saveDateOils.listEquipmentSystem) {
+                return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystem);
             }
             else {
                 return [];
             }
         }).then((resultMappingEquipmentSystem) => {
             mappingEquipmentSystems = resultMappingEquipmentSystem;
-            if (saveDateOils.listEquipmentOilCompatibilityEntity) {
-                this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibilityEntity);
+            if (saveDateOils.listEquipmentOilCompatibility) {
+                this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibility);
             }
             else {
                 return [];
             }
         }).then((resultMappingEquipmentOilCompatibility) => {
             mappingEquipmentOilCompatibility = resultMappingEquipmentOilCompatibility;
-            if (saveDateOils.listConsumptionEquipmentEntity) {
-                return this._ConsumptionEquipmentService.SaveList(mappingEquipmentOilCompatibility, saveDateOils.listConsumptionEquipmentEntity);
+            if (saveDateOils.listConsumptionEquipment) {
+                return this._ConsumptionEquipmentService.SaveList(mappingEquipmentOilCompatibility, saveDateOils.listConsumptionEquipment);
             }
             else {
                 return {
@@ -382,7 +382,8 @@ let OilsController = class OilsController {
                     mappingEquipmentSystems: mappingEquipmentSystems,
                     mappingConsumptionsEquipment: mappingConsumptionsEquipment,
                     mappingOils: mappingOils,
-                    mappingBunkersOil: mappingBunkersOil
+                    mappingBunkersOil: mappingBunkersOil,
+                    mappingEquipmentOilCompatibility: mappingEquipmentOilCompatibility
                 }
             };
         }).catch(err => {
@@ -449,7 +450,7 @@ __decorate([
     common_1.Post('saveModuleOils'),
     __param(0, common_1.Headers()), __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, oil_entity_1.SaveDateOils]),
+    __metadata("design:paramtypes", [Object, oil_entity_1.DataModuleOils]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "SaveDataLubricante", null);
 OilsController = __decorate([

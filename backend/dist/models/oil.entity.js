@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SaveDateOils = exports.OilEntity = void 0;
+exports.DataModuleOils = exports.OilEntity = void 0;
 const typeorm_1 = require("typeorm");
 let OilEntity = class OilEntity {
     constructor(id, userId, name, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
@@ -61,16 +61,16 @@ OilEntity = __decorate([
     __metadata("design:paramtypes", [Number, Number, String, Number, String, Number, String, Boolean])
 ], OilEntity);
 exports.OilEntity = OilEntity;
-class SaveDateOils {
+class DataModuleOils {
     constructor(_userId, _listGroup, _listEquipmentSystem, _listOil, _listBunkerOil, _listEquipmentOilCompatibility, _listConsumptionEquipment) {
         this.userId = _userId || null;
-        this.listGroupOilEntity = _listGroup || [];
-        this.listEquipmentSystemEntity = _listEquipmentSystem || [];
-        this.listOilEntity = _listOil || [];
+        this.listGroups = _listGroup || [];
+        this.listEquipmentSystem = _listEquipmentSystem || [];
+        this.listOils = _listOil || [];
         this.listBunkerOil = _listBunkerOil || [];
-        this.listEquipmentOilCompatibilityEntity = _listEquipmentOilCompatibility || [];
-        this.listConsumptionEquipmentEntity = _listConsumptionEquipment || [];
+        this.listEquipmentOilCompatibility = _listEquipmentOilCompatibility || [];
+        this.listConsumptionEquipment = _listConsumptionEquipment || [];
     }
 }
-exports.SaveDateOils = SaveDateOils;
+exports.DataModuleOils = DataModuleOils;
 //# sourceMappingURL=oil.entity.js.map

@@ -15,13 +15,13 @@ export declare class OilEntity {
     constructor(id?: number, userId?: number, name?: string, userIdCreated?: number, dateCreated?: string, userIdUpdated?: number, dateUpdated?: string, status?: boolean);
     SyncStatus: string;
 }
-export declare class SaveDateOils {
+export declare class DataModuleOils {
     userId: number;
-    listGroupOilEntity: GroupOilEntity[];
-    listEquipmentSystemEntity: EquipmentSystemEntity[];
-    listOilEntity: OilEntity[];
+    listGroups: GroupOilEntity[];
+    listEquipmentSystem: EquipmentSystemEntity[];
+    listOils: OilEntity[];
     listBunkerOil: BunkerOil[];
-    listEquipmentOilCompatibilityEntity: EquipmentOilCompatibilityEntity[];
-    listConsumptionEquipmentEntity: ConsumptionEquipmentEntity[];
+    listEquipmentOilCompatibility: EquipmentOilCompatibilityEntity[];
+    listConsumptionEquipment: ConsumptionEquipmentEntity[];
     constructor(_userId?: number, _listGroup?: GroupOilEntity[], _listEquipmentSystem?: EquipmentSystemEntity[], _listOil?: OilEntity[], _listBunkerOil?: BunkerOil[], _listEquipmentOilCompatibility?: EquipmentOilCompatibilityEntity[], _listConsumptionEquipment?: ConsumptionEquipmentEntity[]);
 }
