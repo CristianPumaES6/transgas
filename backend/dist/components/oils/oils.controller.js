@@ -340,7 +340,7 @@ let OilsController = class OilsController {
         }).then((resultMappingEquipmentSystem) => {
             mappingEquipmentSystems = resultMappingEquipmentSystem;
             if (saveDateOils.listEquipmentOilCompatibility) {
-                this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibility);
+                return this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibility);
             }
             else {
                 return [];

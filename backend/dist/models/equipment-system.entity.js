@@ -43,11 +43,11 @@ __decorate([
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "rate", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    typeorm_1.Column({ nullable: false }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "entityGroupId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "entitySubGroupId", void 0);
 __decorate([
