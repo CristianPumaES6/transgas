@@ -221,7 +221,7 @@ let OilsService = class OilsService {
             .then(result => {
             if (ListCONSUMOSId && ListCONSUMOSId.length) {
                 var listDeID = ListCONSUMOSId.join(',');
-                var queryWhere = 'consumptionEquipment.id in (' + listDeID + ')';
+                var queryWhere = 'CE.id in (' + listDeID + ')';
                 const query = `
                         SELECT
                             CE.date AS dateConsumption,
