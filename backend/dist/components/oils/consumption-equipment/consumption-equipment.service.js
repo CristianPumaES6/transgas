@@ -245,7 +245,11 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                     LIMIT 1
                 ) AS LastConsumption ON O.id = LastConsumption.entityOilId
             ) AS lastOilName,
-            GROUP_CONCAT(CE.id) AS consumptionIds -- Lista de IDs de consumo
+            GROUP_CONCAT(CE.id) AS consumptionIds, -- Lista de IDs de consumo
+            CASE 
+                WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 
+                ELSE 0 
+            END AS rate
         FROM
             consumptionEquipment CE
             INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
