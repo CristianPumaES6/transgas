@@ -222,7 +222,29 @@ let OilsService = class OilsService {
             if (ListCONSUMOSId && ListCONSUMOSId.length) {
                 var listDeID = ListCONSUMOSId.join(',');
                 var queryWhere = 'consumptionEquipment.id in (' + listDeID + ')';
-                console.log("REVISAR QUERY DE LOS SOBRES CONSUMOS 77546865988");
+                const query = `
+                        SELECT
+                            CE.date AS dateConsumption,
+                            ES.userId AS equipmentSystem_userId,
+                            ES.id AS equipmentSystem_id,
+                            ES.equipment AS equipment,
+                            CE.amount AS amountConsumption,
+                            O.name AS nameOil,
+                            BO.datetime AS datetimeBunkerOil,
+                            CE.hourConsumption AS hourConsumption,
+                            ES.rate AS rate,
+                            CE.observation AS observation
+                        FROM
+                            consumptionEquipment CE
+                            INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
+                            INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
+                            LEFT JOIN oil O ON O.id = EOC.entityOilId
+                            LEFT JOIN bunkerOil BO ON ES.id = BO.entityOilId
+                        WHERE
+                                CE.status = 1
+                               AND ${queryWhere};
+                        `;
+                return this._oilRepository.query(query, []);
                 return [];
             }
             else {
@@ -278,6 +300,9 @@ let OilsService = class OilsService {
                 }
             });
             return dailyOilConsumptionData;
+        }).catch(result => {
+            console.log(result);
+            return [];
         });
     }
     async ConsultarListaDeConsumosPorBuque(buqueId) {

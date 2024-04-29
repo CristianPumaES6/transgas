@@ -187,38 +187,39 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         };
     }
     async getOilConsumptionPerMonth(userId) {
-        const query = `SELECT
-    EOC.id AS compatibilityId,
-    strftime('%Y-%m', CE.date) AS year_month,
-    ES.id AS equipmentId,
-    ES.equipment AS equipmentName,
-    ES.rate AS rateSystems, -- Agregar la columna del rate del sistema
-    ES.entitySubGroupId AS subgroupId, -- Agregar la columna del subgrupo
-    SUM(CE.amount) AS total_amount,
-    SUM(CE.hourConsumption) AS total_hourConsumption,
-    (
-        SELECT O.name
-        FROM oil O
-        INNER JOIN (
-            SELECT entityOilId
-            FROM consumptionEquipment
-            WHERE entityEquipmentOilCompatibilityId = EOC.id
-            ORDER BY date DESC
-            LIMIT 1
-        ) AS LastConsumption ON O.id = LastConsumption.entityOilId
-    ) AS lastOilName
-FROM
-    consumptionEquipment CE
-    INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
-    INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
-WHERE
-    CE.userId = ? AND
-    CE.status = 1
-GROUP BY
-    year_month,
-    EOC.id,
-    SubgroupId; -- Agregar el subgrupo a la lista de columnas de agrupación
-`;
+        const query = `
+    SELECT
+        EOC.id AS compatibilityId,
+        strftime('%Y-%m', CE.date) AS year_month,
+        ES.id AS equipmentId,
+        ES.equipment AS equipmentName,
+        ES.rate AS rateSystems, -- Agregar la columna del rate del sistema
+        ES.entitySubGroupId AS subgroupId, -- Agregar la columna del subgrupo
+        SUM(CE.amount) AS total_amount,
+        SUM(CE.hourConsumption) AS total_hourConsumption,
+        (
+            SELECT O.name
+            FROM oil O
+            INNER JOIN (
+                SELECT entityOilId
+                FROM consumptionEquipment
+                WHERE entityEquipmentOilCompatibilityId = EOC.id
+                ORDER BY date DESC
+                LIMIT 1
+            ) AS LastConsumption ON O.id = LastConsumption.entityOilId
+        ) AS lastOilName
+    FROM
+        consumptionEquipment CE
+        INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
+        INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
+    WHERE
+        CE.userId = ? AND
+        CE.status = 1
+    GROUP BY
+        year_month,
+        EOC.id,
+        SubgroupId; -- Agregar el subgrupo a la lista de columnas de agrupación
+    `;
         return this._ConsumptionEquipment.query(query, [userId]);
     }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
