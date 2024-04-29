@@ -15,16 +15,15 @@ export interface SaveListConsumptionEquipmentEntity {
     listConsumosValidarSendMail: any[];
 }
 export interface getOilConsumptionPerMonth {
+    compatibilityId: number;
     year_month: string;
-    entityEquipmentId: number;
+    equipmentId: number;
+    equipmentName: string;
+    rateSystems: number;
+    subgroupId: number;
     total_amount: number;
     total_hourConsumption: number;
-    rate: number;
-    equipment: string;
-    entityGroupId: number;
-    total_bunker: number;
-    last_entityOilId: number;
-    last_oil_name: string;
+    LastOilName: string;
 }
 export interface consultEquipmentConsumptionByMonthUser {
     equipmentSystemUserId: string;
