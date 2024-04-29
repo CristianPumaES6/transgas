@@ -219,7 +219,7 @@ GROUP BY
     EOC.id,
     SubgroupId; -- Agregar el subgrupo a la lista de columnas de agrupación
 `;
-        return this._ConsumptionEquipment.query(query, [userId, userId]);
+        return this._ConsumptionEquipment.query(query, [userId]);
     }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         const query = `               
