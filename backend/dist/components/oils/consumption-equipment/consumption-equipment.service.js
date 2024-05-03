@@ -194,7 +194,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         ES.id AS equipmentId,
         ES.equipment AS equipmentName,
         ES.rate AS rateSystems, -- Agregar la columna del rate del sistema
-        ES.entitySubGroupId AS subgroupId, -- Agregar la columna del subgrupo
+        ES.entityGroupId AS subgroupId, -- Agregar la columna del subgrupo
         SUM(CE.amount) AS total_amount,
         SUM(CE.hourConsumption) AS total_hourConsumption,
         (
@@ -231,7 +231,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             ES.id AS equipmentId,
             ES.equipment AS equipmentName,
             ES.rate AS rateSystems,
-            ES.entitySubGroupId AS subgroupId,
+            ES.entityGroupId AS subgroupId,
             SUM(CE.amount) AS total_amount,
             SUM(CE.hourConsumption) AS total_hourConsumption,
             (

@@ -12,12 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EquipmentSystemEntity = void 0;
 const typeorm_1 = require("typeorm");
 let EquipmentSystemEntity = class EquipmentSystemEntity {
-    constructor(id, userId, equipment, rate, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+    constructor(id, userId, equipment, rate, entityFrequencyId, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';
         this.rate = rate || 0;
+        this.entityFrequencyId = entityFrequencyId || 0;
         this.entityGroupId = entityGroupId || 0;
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
@@ -43,13 +44,13 @@ __decorate([
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "rate", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], EquipmentSystemEntity.prototype, "entityGroupId", void 0);
+], EquipmentSystemEntity.prototype, "entityFrequencyId", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], EquipmentSystemEntity.prototype, "entitySubGroupId", void 0);
+], EquipmentSystemEntity.prototype, "entityGroupId", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
@@ -72,7 +73,7 @@ __decorate([
 ], EquipmentSystemEntity.prototype, "status", void 0);
 EquipmentSystemEntity = __decorate([
     typeorm_1.Entity('equipmentSystem'),
-    __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, String, Number, String, Boolean])
+    __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, Number, String, Number, String, Boolean])
 ], EquipmentSystemEntity);
 exports.EquipmentSystemEntity = EquipmentSystemEntity;
 //# sourceMappingURL=equipment-system.entity.js.map

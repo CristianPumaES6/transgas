@@ -85,19 +85,15 @@ let EquipmentSystemService = class EquipmentSystemService {
             for (var addEquipmentSystems_1 = __asyncValues(addEquipmentSystems), addEquipmentSystems_1_1; addEquipmentSystems_1_1 = await addEquipmentSystems_1.next(), !addEquipmentSystems_1_1.done;) {
                 const addEquipmentSystem = addEquipmentSystems_1_1.value;
                 let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, addEquipmentSystem.entityGroupId);
-                let searchMappingSubGroupOils = mappingKeys_1.searchKey(MappingGroupOils, addEquipmentSystem.entitySubGroupId);
                 let newEquipmentSystemEntity = new equipment_system_entity_1.EquipmentSystemEntity();
                 delete newEquipmentSystemEntity.id;
                 newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
                 newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
                 newEquipmentSystemEntity.rate = addEquipmentSystem.rate;
+                newEquipmentSystemEntity.entityFrequencyId = addEquipmentSystem.entityFrequencyId;
                 newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
                 if (searchMappingGroupOils) {
                     newEquipmentSystemEntity.entityGroupId = searchMappingGroupOils.value;
-                }
-                newEquipmentSystemEntity.entitySubGroupId = addEquipmentSystem.entitySubGroupId;
-                if (searchMappingSubGroupOils) {
-                    newEquipmentSystemEntity.entitySubGroupId = searchMappingSubGroupOils.value;
                 }
                 newEquipmentSystemEntity.userIdCreated = addEquipmentSystem.userIdCreated;
                 newEquipmentSystemEntity.dateCreated = moment_assets_1.GetDate();
@@ -119,19 +115,15 @@ let EquipmentSystemService = class EquipmentSystemService {
             for (var updateEquipmentSystems_1 = __asyncValues(updateEquipmentSystems), updateEquipmentSystems_1_1; updateEquipmentSystems_1_1 = await updateEquipmentSystems_1.next(), !updateEquipmentSystems_1_1.done;) {
                 const updateEquipmentSystem = updateEquipmentSystems_1_1.value;
                 let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, updateEquipmentSystem.entityGroupId);
-                let searchMappingSubGroupOils = mappingKeys_1.searchKey(MappingGroupOils, updateEquipmentSystem.entitySubGroupId);
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
                 equipmentSystem.id = updateEquipmentSystem.id;
                 equipmentSystem.userId = updateEquipmentSystem.userId;
                 equipmentSystem.rate = updateEquipmentSystem.rate;
                 equipmentSystem.equipment = updateEquipmentSystem.equipment;
+                equipmentSystem.entityFrequencyId = updateEquipmentSystem.entityFrequencyId;
                 equipmentSystem.entityGroupId = updateEquipmentSystem.entityGroupId;
                 if (searchMappingGroupOils) {
                     equipmentSystem.entityGroupId = searchMappingGroupOils.value;
-                }
-                equipmentSystem.entitySubGroupId = updateEquipmentSystem.entitySubGroupId;
-                if (searchMappingSubGroupOils) {
-                    equipmentSystem.entitySubGroupId = searchMappingSubGroupOils.value;
                 }
                 equipmentSystem.userIdCreated = updateEquipmentSystem.userIdCreated;
                 equipmentSystem.dateCreated = updateEquipmentSystem.dateCreated;
@@ -152,19 +144,15 @@ let EquipmentSystemService = class EquipmentSystemService {
             for (var deleteEquipmentSystems_1 = __asyncValues(deleteEquipmentSystems), deleteEquipmentSystems_1_1; deleteEquipmentSystems_1_1 = await deleteEquipmentSystems_1.next(), !deleteEquipmentSystems_1_1.done;) {
                 let deleteEquipmentSystem = deleteEquipmentSystems_1_1.value;
                 let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
-                let searchMappingSubGroupOils = mappingKeys_1.searchKey(MappingGroupOils, deleteEquipmentSystem.entitySubGroupId);
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
                 equipmentSystem.id = deleteEquipmentSystem.id;
                 equipmentSystem.userId = deleteEquipmentSystem.userId;
                 equipmentSystem.rate = deleteEquipmentSystem.rate;
                 equipmentSystem.equipment = deleteEquipmentSystem.equipment;
+                equipmentSystem.entityFrequencyId = deleteEquipmentSystem.entityFrequencyId;
                 equipmentSystem.entityGroupId = deleteEquipmentSystem.entityGroupId;
                 if (searchMappingGroupOils) {
                     equipmentSystem.entityGroupId = searchMappingGroupOils.value;
-                }
-                equipmentSystem.entitySubGroupId = deleteEquipmentSystem.entitySubGroupId;
-                if (searchMappingSubGroupOils) {
-                    equipmentSystem.entitySubGroupId = searchMappingSubGroupOils.value;
                 }
                 equipmentSystem.userIdCreated = deleteEquipmentSystem.userIdCreated;
                 equipmentSystem.dateCreated = deleteEquipmentSystem.dateCreated;
