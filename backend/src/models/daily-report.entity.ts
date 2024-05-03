@@ -48,7 +48,7 @@ export class DailyReport {
 
     // Fecha de registro
     @Column()
-    date: Date;
+    date: string;
 
     // Hora
     @Column()

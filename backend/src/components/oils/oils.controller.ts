@@ -589,14 +589,12 @@ export class OilsController {
                 mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
                 listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
 
-         
-
                 // tenemos que enviar un correo lo enviamos
                 if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
                     console.log('Se realiza la consulta de consumos registrados')
 
                     return this._OilsService.ConsultarListaDeConsumosRegistrados(listConsumosValidarSendMail);
-           
+
                 } else {
                     return [];
                 }
