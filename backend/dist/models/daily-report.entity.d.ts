@@ -13,7 +13,7 @@ export declare class DailyReport {
     activityPerformed: string;
     typeActivityPerformed: string;
     speedStraction: string;
-    date: Date;
+    date: string;
     hour: string;
     bunkeringIfo: number;
     bunkeringMgo: number;

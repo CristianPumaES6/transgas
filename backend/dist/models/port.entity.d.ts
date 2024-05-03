@@ -9,7 +9,7 @@ export declare class Port {
     portNumber: number;
     departurePort: string;
     arrivalPort: string;
-    startDate: Date;
+    startDate: string;
     startIFO: number;
     startMGO: number;
     userIdCreated: number;

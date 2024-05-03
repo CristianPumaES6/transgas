@@ -52,7 +52,7 @@ __decorate([
 ], Port.prototype, "arrivalPort", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
-    __metadata("design:type", Date)
+    __metadata("design:type", String)
 ], Port.prototype, "startDate", void 0);
 __decorate([
     typeorm_1.Column({ default: 0, nullable: true }),

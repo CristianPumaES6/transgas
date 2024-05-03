@@ -3747,13 +3747,13 @@
         "affectsGlobalScope": false
       },
       "../src/models/daily-report.entity.ts": {
-        "version": "9406eaa0f6198c8690ae38e0d36289260530224220c6447a535675b29aaccd70",
-        "signature": "9fe7830dfb5b961d70c451434be7be2901fe257bf273d9437ed65455d40eba85",
+        "version": "41d0a7cdf20379e9a97684852a57ab075535ca156dd91105e5651067778e4fcd",
+        "signature": "fa375e1214174da63b8bf93dec1ef9470673e92d8b291f551c9f137edb485b8d",
         "affectsGlobalScope": false
       },
       "../src/models/port.entity.ts": {
-        "version": "82fd0c47b04742f199d8296fa6b1490281262bd4b668a5d1fb070fb8634edd43",
-        "signature": "66c400806a094af41763d6c49478a8e8779c023d19dbbfbbf05bf1ec003e0a14",
+        "version": "8e77ccc5611697bc85489f9bdbf1b7f679f97b333a4ef083c1b0a12343863b1f",
+        "signature": "82917c1fa72ffcfd2edcbe69a87b77c47c275a6e4685a2dfa1c5aa6b0b4dd6ed",
         "affectsGlobalScope": false
       },
       "../src/models/voyage.entity.ts": {

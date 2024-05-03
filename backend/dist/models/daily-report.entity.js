@@ -68,7 +68,7 @@ __decorate([
 ], DailyReport.prototype, "speedStraction", void 0);
 __decorate([
     typeorm_1.Column(),
-    __metadata("design:type", Date)
+    __metadata("design:type", String)
 ], DailyReport.prototype, "date", void 0);
 __decorate([
     typeorm_1.Column(),
