@@ -13,10 +13,10 @@ export class EquipmentSystemEntity {
     @Column({ nullable: false })
     rate: number;
     
-    @Column({ nullable: false })
-    entityGroupId: number; // Grupo principal o segundario
     @Column({ nullable: true })
-    entitySubGroupId: number; // Permite agrupar por un subgrupo (AUX)
+    entityFrequencyId: number; // Grupo principal o segundario
+    @Column({ nullable: true })
+    entityGroupId: number; // Permite agrupar por un subgrupo (AUX)
 
     // Auditoria
     @Column()
@@ -37,6 +37,7 @@ export class EquipmentSystemEntity {
         userId?: number,
         equipment?: string,
         rate?: number,
+        entityFrequencyId?: number,
         entityGroupId?: number,
 
         userIdCreated?: number,
@@ -52,6 +53,7 @@ export class EquipmentSystemEntity {
         this.equipment = equipment || '';
 
         this.rate = rate || 0;
+        this.entityFrequencyId = entityFrequencyId || 0;
         this.entityGroupId = entityGroupId || 0;
 
         // Auditoria

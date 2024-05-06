@@ -111,7 +111,6 @@ export class EquipmentSystemService {
         for await (const addEquipmentSystem of addEquipmentSystems) {
 
             let searchMappingGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entityGroupId);
-            let searchMappingSubGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entitySubGroupId);
 
             // Armamos al nuevo tipo de aceite
             let newEquipmentSystemEntity = new EquipmentSystemEntity();
@@ -121,11 +120,10 @@ export class EquipmentSystemService {
             newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
             newEquipmentSystemEntity.rate = addEquipmentSystem.rate;
            
+            newEquipmentSystemEntity.entityFrequencyId = addEquipmentSystem.entityFrequencyId;
+            
             newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
             if (searchMappingGroupOils) { newEquipmentSystemEntity.entityGroupId = searchMappingGroupOils.value }
-
-            newEquipmentSystemEntity.entitySubGroupId = addEquipmentSystem.entitySubGroupId;
-            if (searchMappingSubGroupOils) { newEquipmentSystemEntity.entitySubGroupId = searchMappingSubGroupOils.value }
 
             // Auditoria.
             newEquipmentSystemEntity.userIdCreated = addEquipmentSystem.userIdCreated;
@@ -143,7 +141,6 @@ export class EquipmentSystemService {
 
         for await (const updateEquipmentSystem of updateEquipmentSystems) {
             let searchMappingGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entityGroupId);
-            let searchMappingSubGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entitySubGroupId);
 
             let equipmentSystem = new EquipmentSystemEntity();
 
@@ -152,11 +149,10 @@ export class EquipmentSystemService {
             equipmentSystem.rate = updateEquipmentSystem.rate;
             equipmentSystem.equipment = updateEquipmentSystem.equipment;
             
+            equipmentSystem.entityFrequencyId = updateEquipmentSystem.entityFrequencyId;
+            
             equipmentSystem.entityGroupId = updateEquipmentSystem.entityGroupId;
             if (searchMappingGroupOils) { equipmentSystem.entityGroupId = searchMappingGroupOils.value }
-
-            equipmentSystem.entitySubGroupId = updateEquipmentSystem.entitySubGroupId;
-            if (searchMappingSubGroupOils) { equipmentSystem.entitySubGroupId = searchMappingSubGroupOils.value }
 
             // Auditoria.
             equipmentSystem.userIdCreated = updateEquipmentSystem.userIdCreated;
@@ -171,8 +167,7 @@ export class EquipmentSystemService {
 
 
         for await (let deleteEquipmentSystem of deleteEquipmentSystems) {
-            let searchMappingGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
-            let searchMappingSubGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entitySubGroupId);
+           let searchMappingGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
 
             let equipmentSystem = new EquipmentSystemEntity();
 
@@ -181,11 +176,10 @@ export class EquipmentSystemService {
             equipmentSystem.rate = deleteEquipmentSystem.rate;
             equipmentSystem.equipment = deleteEquipmentSystem.equipment;
             
+            equipmentSystem.entityFrequencyId = deleteEquipmentSystem.entityFrequencyId;
+            
             equipmentSystem.entityGroupId = deleteEquipmentSystem.entityGroupId;
             if (searchMappingGroupOils) { equipmentSystem.entityGroupId = searchMappingGroupOils.value }
-
-            equipmentSystem.entitySubGroupId = deleteEquipmentSystem.entitySubGroupId;
-            if (searchMappingSubGroupOils) { equipmentSystem.entitySubGroupId = searchMappingSubGroupOils.value }
 
             // Auditoria.
             equipmentSystem.userIdCreated = deleteEquipmentSystem.userIdCreated;
