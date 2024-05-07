@@ -120,7 +120,7 @@ export class BunkerOilService {
             newBunkerOil.userId = bunkerOil.userId;
             newBunkerOil.entityOilId = bunkerOil.entityOilId;
             if (searchMappingOils) { newBunkerOil.entityOilId = searchMappingOils.value }
-            newBunkerOil.bunker = bunkerOil.bunker;
+            newBunkerOil.bunker = bunkerOil.bunker  || 0;
             newBunkerOil.comment = bunkerOil.comment;
             newBunkerOil.datetime = bunkerOil.datetime;
 
@@ -149,7 +149,7 @@ export class BunkerOilService {
             newBunkerOil.userId = bunkerOil.userId;
             newBunkerOil.entityOilId = bunkerOil.entityOilId;
             if (searchMappingOils) { newBunkerOil.entityOilId = searchMappingOils.value }
-            newBunkerOil.bunker = bunkerOil.bunker;
+            newBunkerOil.bunker = bunkerOil.bunker || 0;
             newBunkerOil.comment = bunkerOil.comment;
             newBunkerOil.datetime = bunkerOil.datetime;
 
@@ -174,7 +174,7 @@ export class BunkerOilService {
             newBunkerOil.userId = bunkerOil.userId;
             newBunkerOil.entityOilId = bunkerOil.entityOilId;
             if (searchMappingOils) { newBunkerOil.entityOilId = searchMappingOils.value }
-            newBunkerOil.bunker = bunkerOil.bunker;
+            newBunkerOil.bunker = bunkerOil.bunker || 0;
             newBunkerOil.comment = bunkerOil.comment;
             newBunkerOil.datetime = bunkerOil.datetime;
 
