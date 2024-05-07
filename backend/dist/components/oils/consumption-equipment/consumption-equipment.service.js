@@ -92,9 +92,9 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 delete newConsumptionEquipmentEntity.id;
                 newConsumptionEquipmentEntity.userId = addConsumptionEquipment.userId;
                 newConsumptionEquipmentEntity.date = addConsumptionEquipment.date;
-                newConsumptionEquipmentEntity.amount = addConsumptionEquipment.amount;
-                newConsumptionEquipmentEntity.hourConsumption = addConsumptionEquipment.hourConsumption;
-                newConsumptionEquipmentEntity.observation = addConsumptionEquipment.observation;
+                newConsumptionEquipmentEntity.amount = addConsumptionEquipment.amount || 0;
+                newConsumptionEquipmentEntity.hourConsumption = addConsumptionEquipment.hourConsumption || 0;
+                newConsumptionEquipmentEntity.observation = addConsumptionEquipment.observation || '';
                 newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = addConsumptionEquipment.entityEquipmentOilCompatibilityId;
                 if (searchMappingEquipmentOilCompatibility) {
                     newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
@@ -126,9 +126,9 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 consumptionEquipmentEntity.id = updateEquipmentSystem.id;
                 consumptionEquipmentEntity.userId = updateEquipmentSystem.userId;
                 consumptionEquipmentEntity.date = updateEquipmentSystem.date;
-                consumptionEquipmentEntity.amount = updateEquipmentSystem.amount;
-                consumptionEquipmentEntity.hourConsumption = updateEquipmentSystem.hourConsumption;
-                consumptionEquipmentEntity.observation = updateEquipmentSystem.observation;
+                consumptionEquipmentEntity.amount = updateEquipmentSystem.amount || 0;
+                consumptionEquipmentEntity.hourConsumption = updateEquipmentSystem.hourConsumption || 0;
+                consumptionEquipmentEntity.observation = updateEquipmentSystem.observation || '';
                 consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = updateEquipmentSystem.entityEquipmentOilCompatibilityId;
                 if (searchMappingEquipmentOilCompatibility) {
                     consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
@@ -159,9 +159,9 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 consumptionEquipmentEntity.id = deletConsumptionEquipment.id;
                 consumptionEquipmentEntity.userId = deletConsumptionEquipment.userId;
                 consumptionEquipmentEntity.date = deletConsumptionEquipment.date;
-                consumptionEquipmentEntity.amount = deletConsumptionEquipment.amount;
-                consumptionEquipmentEntity.hourConsumption = deletConsumptionEquipment.hourConsumption;
-                consumptionEquipmentEntity.observation = deletConsumptionEquipment.observation;
+                consumptionEquipmentEntity.amount = deletConsumptionEquipment.amount || 0;
+                consumptionEquipmentEntity.hourConsumption = deletConsumptionEquipment.hourConsumption || 0;
+                consumptionEquipmentEntity.observation = deletConsumptionEquipment.observation || '';
                 consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = deletConsumptionEquipment.entityEquipmentOilCompatibilityId;
                 if (searchMappingEquipmentOilCompatibility) {
                     consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;

@@ -89,7 +89,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 delete newEquipmentSystemEntity.id;
                 newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
                 newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
-                newEquipmentSystemEntity.rate = addEquipmentSystem.rate;
+                newEquipmentSystemEntity.rate = addEquipmentSystem.rate || 0;
                 newEquipmentSystemEntity.entityFrequencyId = addEquipmentSystem.entityFrequencyId;
                 newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
                 if (searchMappingGroupOils) {
@@ -118,7 +118,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
                 equipmentSystem.id = updateEquipmentSystem.id;
                 equipmentSystem.userId = updateEquipmentSystem.userId;
-                equipmentSystem.rate = updateEquipmentSystem.rate;
+                equipmentSystem.rate = updateEquipmentSystem.rate || 0;
                 equipmentSystem.equipment = updateEquipmentSystem.equipment;
                 equipmentSystem.entityFrequencyId = updateEquipmentSystem.entityFrequencyId;
                 equipmentSystem.entityGroupId = updateEquipmentSystem.entityGroupId;
@@ -147,7 +147,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
                 equipmentSystem.id = deleteEquipmentSystem.id;
                 equipmentSystem.userId = deleteEquipmentSystem.userId;
-                equipmentSystem.rate = deleteEquipmentSystem.rate;
+                equipmentSystem.rate = deleteEquipmentSystem.rate || 0;
                 equipmentSystem.equipment = deleteEquipmentSystem.equipment;
                 equipmentSystem.entityFrequencyId = deleteEquipmentSystem.entityFrequencyId;
                 equipmentSystem.entityGroupId = deleteEquipmentSystem.entityGroupId;

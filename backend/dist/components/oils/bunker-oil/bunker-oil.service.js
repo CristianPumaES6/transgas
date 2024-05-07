@@ -92,7 +92,7 @@ let BunkerOilService = class BunkerOilService {
                 if (searchMappingOils) {
                     newBunkerOil.entityOilId = searchMappingOils.value;
                 }
-                newBunkerOil.bunker = bunkerOil.bunker;
+                newBunkerOil.bunker = bunkerOil.bunker || 0;
                 newBunkerOil.comment = bunkerOil.comment;
                 newBunkerOil.datetime = bunkerOil.datetime;
                 newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
@@ -122,7 +122,7 @@ let BunkerOilService = class BunkerOilService {
                 if (searchMappingOils) {
                     newBunkerOil.entityOilId = searchMappingOils.value;
                 }
-                newBunkerOil.bunker = bunkerOil.bunker;
+                newBunkerOil.bunker = bunkerOil.bunker || 0;
                 newBunkerOil.comment = bunkerOil.comment;
                 newBunkerOil.datetime = bunkerOil.datetime;
                 newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
@@ -151,7 +151,7 @@ let BunkerOilService = class BunkerOilService {
                 if (searchMappingOils) {
                     newBunkerOil.entityOilId = searchMappingOils.value;
                 }
-                newBunkerOil.bunker = bunkerOil.bunker;
+                newBunkerOil.bunker = bunkerOil.bunker || 0;
                 newBunkerOil.comment = bunkerOil.comment;
                 newBunkerOil.datetime = bunkerOil.datetime;
                 newBunkerOil.userIdCreated = bunkerOil.userIdCreated;
