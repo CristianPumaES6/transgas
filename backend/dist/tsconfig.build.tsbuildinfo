@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "cfc44c24ceaaa3463a34560022d36df911dba4c373c912fc7babe8b753ce185a",
+        "version": "7387bc4fd64fc2ad7644dd6f39f925783c978093134bb46ab78588262b46d59d",
         "signature": "0f180eac61ac0b9d9466f7da403f7495898c3e40be8cea3d70954ff6f0a51c52",
         "affectsGlobalScope": false
       },
@@ -3437,13 +3437,13 @@
         "affectsGlobalScope": false
       },
       "../src/models/equipment-system.entity.ts": {
-        "version": "e25da904bc9b5e2b0b63d6596ec5c36a5cc7a248d4153a6c9557b0b06d6ec8a2",
-        "signature": "c48bc074694a3e41aaa817e73205943c4e62e6b0814509dd55489003a5a91ca5",
+        "version": "0bb079fbf4405f8aab877d0cccc1066f35eba8afc092ca5ee4eaaa79bf423bd0",
+        "signature": "a72a174089debfc8c74989bb99c5bf3ec7b1d49049e33caf8ab5718ca3bca50f",
         "affectsGlobalScope": false
       },
       "../src/models/consumptionequipment.entity.ts": {
-        "version": "939d9eb4a60d6d946ae42163c0271c967ee6f1c3583165faa953bf8f2b7b2de0",
-        "signature": "d344f1533bf9c639f5388cb41a118005cc1b51cde82075742e363626572e1d3e",
+        "version": "aba1988f37e6cb228da3dd9d998d5df56eefaf2d3abb035b319035dc6f81f071",
+        "signature": "6736db41467e0ba52a873eda3b9e5f9765f4d677894f9fb5c07a750fc49acc2f",
         "affectsGlobalScope": false
       },
       "../src/models/buker-oil.entity.ts": {
@@ -3532,7 +3532,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "9cb0d67f6fa4994780d78d6b77b520730f3c6c65624f21c78a3dcc3f658879df",
+        "version": "f612d110d1bac7aaef6e67ae88d1d5163a1a9936f36f440b22f4d4d235890adc",
         "signature": "9bd5b121cd7284e11442d9ee35e4cac070f74bc5633263812d7aadaa61ed3a8f",
         "affectsGlobalScope": false
       },
@@ -3892,7 +3892,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/equipment-system/equipment-system.service.ts": {
-        "version": "e22a2cde07667e07a20cc489a670ae586df4a85a3b262a37c94d6da002bc1b5a",
+        "version": "85d27dd05b36bf6b65dd4c18cc96d4b96c81a42458d6a48160c47277ca543e7b",
         "signature": "e3a39625a12fe37e053ab35592b486b516c51ffef8dca427c24839e3f68e5b8c",
         "affectsGlobalScope": false
       },
@@ -3907,7 +3907,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "df3967dbfba96b4aac43f7ced91712040a96e34280d284f19a6ab0e8ecff17d2",
+        "version": "018a961c5ba6d0dfde0491ca38877d0dd5f1061eb281fb8a70c711c2b5c611ee",
         "signature": "334c3bda944d68f21f03569ee3639fd9073d3a5c1e072ae68fa92686fe43df16",
         "affectsGlobalScope": false
       },

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConsumptionEquipmentEntity = void 0;
 const typeorm_1 = require("typeorm");
 let ConsumptionEquipmentEntity = class ConsumptionEquipmentEntity {
-    constructor(id, userId, date, amount, hourConsumption, observation, entityEquipmentOilCompatibilityId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+    constructor(id, userId, date, amount, hourConsumption, observation, entityEquipmentOilCompatibilityId, consumptionTypeId, entityOilAnalysisId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
@@ -21,6 +21,8 @@ let ConsumptionEquipmentEntity = class ConsumptionEquipmentEntity {
         this.hourConsumption = hourConsumption || 0;
         this.observation = observation || '';
         this.entityEquipmentOilCompatibilityId = entityEquipmentOilCompatibilityId || 0;
+        this.consumptionTypeId = consumptionTypeId || 0;
+        this.entityOilAnalysisId = entityOilAnalysisId || 0;
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
         this.userIdUpdated = userIdUpdated || 0;
@@ -57,6 +59,14 @@ __decorate([
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "entityEquipmentOilCompatibilityId", void 0);
 __decorate([
+    typeorm_1.Column({ nullable: false, default: 0 }),
+    __metadata("design:type", Number)
+], ConsumptionEquipmentEntity.prototype, "consumptionTypeId", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: false, default: 0 }),
+    __metadata("design:type", Number)
+], ConsumptionEquipmentEntity.prototype, "entityOilAnalysisId", void 0);
+__decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "userIdCreated", void 0);
@@ -78,7 +88,7 @@ __decorate([
 ], ConsumptionEquipmentEntity.prototype, "status", void 0);
 ConsumptionEquipmentEntity = __decorate([
     typeorm_1.Entity('consumptionEquipment'),
-    __metadata("design:paramtypes", [Number, Number, String, Number, Number, String, Number, Number, String, Number, String, Boolean])
+    __metadata("design:paramtypes", [Number, Number, String, Number, Number, String, Number, Number, Number, Number, String, Number, String, Boolean])
 ], ConsumptionEquipmentEntity);
 exports.ConsumptionEquipmentEntity = ConsumptionEquipmentEntity;
 //# sourceMappingURL=consumptionEquipment.entity.js.map

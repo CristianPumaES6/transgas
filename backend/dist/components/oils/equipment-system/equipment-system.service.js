@@ -90,7 +90,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
                 newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
                 newEquipmentSystemEntity.rate = addEquipmentSystem.rate || 0;
-                newEquipmentSystemEntity.entityFrequencyId = addEquipmentSystem.entityFrequencyId;
+                newEquipmentSystemEntity.frequencyId = addEquipmentSystem.frequencyId;
                 newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
                 if (searchMappingGroupOils) {
                     newEquipmentSystemEntity.entityGroupId = searchMappingGroupOils.value;
@@ -120,7 +120,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 equipmentSystem.userId = updateEquipmentSystem.userId;
                 equipmentSystem.rate = updateEquipmentSystem.rate || 0;
                 equipmentSystem.equipment = updateEquipmentSystem.equipment;
-                equipmentSystem.entityFrequencyId = updateEquipmentSystem.entityFrequencyId;
+                equipmentSystem.frequencyId = updateEquipmentSystem.frequencyId;
                 equipmentSystem.entityGroupId = updateEquipmentSystem.entityGroupId;
                 if (searchMappingGroupOils) {
                     equipmentSystem.entityGroupId = searchMappingGroupOils.value;
@@ -149,7 +149,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 equipmentSystem.userId = deleteEquipmentSystem.userId;
                 equipmentSystem.rate = deleteEquipmentSystem.rate || 0;
                 equipmentSystem.equipment = deleteEquipmentSystem.equipment;
-                equipmentSystem.entityFrequencyId = deleteEquipmentSystem.entityFrequencyId;
+                equipmentSystem.frequencyId = deleteEquipmentSystem.frequencyId;
                 equipmentSystem.entityGroupId = deleteEquipmentSystem.entityGroupId;
                 if (searchMappingGroupOils) {
                     equipmentSystem.entityGroupId = searchMappingGroupOils.value;

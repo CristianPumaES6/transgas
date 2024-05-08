@@ -99,6 +99,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 if (searchMappingEquipmentOilCompatibility) {
                     newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
                 }
+                newConsumptionEquipmentEntity.consumptionTypeId = addConsumptionEquipment.consumptionTypeId || 0;
+                newConsumptionEquipmentEntity.entityOilAnalysisId = addConsumptionEquipment.entityOilAnalysisId || 0;
                 newConsumptionEquipmentEntity.userIdCreated = addConsumptionEquipment.userIdCreated;
                 newConsumptionEquipmentEntity.dateCreated = moment_assets_1.GetDate();
                 delete newConsumptionEquipmentEntity.userIdUpdated;
@@ -133,6 +135,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 if (searchMappingEquipmentOilCompatibility) {
                     consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
                 }
+                consumptionEquipmentEntity.consumptionTypeId = updateEquipmentSystem.consumptionTypeId || 0;
+                consumptionEquipmentEntity.entityOilAnalysisId = updateEquipmentSystem.entityOilAnalysisId || 0;
                 consumptionEquipmentEntity.userIdCreated = updateEquipmentSystem.userIdCreated;
                 consumptionEquipmentEntity.dateCreated = updateEquipmentSystem.dateCreated;
                 consumptionEquipmentEntity.userIdUpdated = updateEquipmentSystem.userIdUpdated;
@@ -166,6 +170,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 if (searchMappingEquipmentOilCompatibility) {
                     consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
                 }
+                consumptionEquipmentEntity.consumptionTypeId = deletConsumptionEquipment.consumptionTypeId || 0;
+                consumptionEquipmentEntity.entityOilAnalysisId = deletConsumptionEquipment.entityOilAnalysisId || 0;
                 consumptionEquipmentEntity.userIdCreated = deletConsumptionEquipment.userIdCreated;
                 consumptionEquipmentEntity.dateCreated = deletConsumptionEquipment.dateCreated;
                 consumptionEquipmentEntity.userIdUpdated = deletConsumptionEquipment.userIdUpdated;

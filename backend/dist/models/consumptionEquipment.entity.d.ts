@@ -6,11 +6,13 @@ export declare class ConsumptionEquipmentEntity {
     hourConsumption: number;
     observation: string;
     entityEquipmentOilCompatibilityId: number;
+    consumptionTypeId: number;
+    entityOilAnalysisId: number;
     userIdCreated: number;
     dateCreated: string;
     userIdUpdated: number;
     dateUpdated: string;
     status: boolean;
-    constructor(id?: number, userId?: number, date?: string, amount?: number, hourConsumption?: number, observation?: string, entityEquipmentOilCompatibilityId?: number, userIdCreated?: number, dateCreated?: string, userIdUpdated?: number, dateUpdated?: string, status?: boolean);
+    constructor(id?: number, userId?: number, date?: string, amount?: number, hourConsumption?: number, observation?: string, entityEquipmentOilCompatibilityId?: number, consumptionTypeId?: number, entityOilAnalysisId?: number, userIdCreated?: number, dateCreated?: string, userIdUpdated?: number, dateUpdated?: string, status?: boolean);
     SyncStatus: string;
 }

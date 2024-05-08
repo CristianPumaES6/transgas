@@ -12,13 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EquipmentSystemEntity = void 0;
 const typeorm_1 = require("typeorm");
 let EquipmentSystemEntity = class EquipmentSystemEntity {
-    constructor(id, userId, equipment, rate, entityFrequencyId, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+    constructor(id, userId, equipment, rate, frequencyId, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';
         this.rate = rate || 0;
-        this.entityFrequencyId = entityFrequencyId || 0;
+        this.frequencyId = frequencyId || 0;
         this.entityGroupId = entityGroupId || 0;
         this.userIdCreated = userIdCreated || 0;
         this.dateCreated = dateCreated || '';
@@ -46,7 +46,7 @@ __decorate([
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
-], EquipmentSystemEntity.prototype, "entityFrequencyId", void 0);
+], EquipmentSystemEntity.prototype, "frequencyId", void 0);
 __decorate([
     typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
