@@ -135,7 +135,8 @@ export class ConsumptionEquipmentService {
             newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = addConsumptionEquipment.entityEquipmentOilCompatibilityId;
             if (searchMappingEquipmentOilCompatibility) { newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value }
  
-            
+            newConsumptionEquipmentEntity.consumptionTypeId = addConsumptionEquipment.consumptionTypeId || 0;
+            newConsumptionEquipmentEntity.entityOilAnalysisId = addConsumptionEquipment.entityOilAnalysisId || 0;
             // AQUI VALIDAR MI SOBRE CONSUMO
             // SendMailHTMLLubricante  976873362
 
@@ -173,6 +174,9 @@ export class ConsumptionEquipmentService {
             consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = updateEquipmentSystem.entityEquipmentOilCompatibilityId;
             if (searchMappingEquipmentOilCompatibility) { consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value }
  
+            consumptionEquipmentEntity.consumptionTypeId = updateEquipmentSystem.consumptionTypeId || 0;
+            consumptionEquipmentEntity.entityOilAnalysisId = updateEquipmentSystem.entityOilAnalysisId || 0;
+
             // Auditoria.
             consumptionEquipmentEntity.userIdCreated = updateEquipmentSystem.userIdCreated;
             consumptionEquipmentEntity.dateCreated = updateEquipmentSystem.dateCreated;
@@ -204,6 +208,9 @@ export class ConsumptionEquipmentService {
             consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = deletConsumptionEquipment.entityEquipmentOilCompatibilityId;
             if (searchMappingEquipmentOilCompatibility) { consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value }
  
+            consumptionEquipmentEntity.consumptionTypeId = deletConsumptionEquipment.consumptionTypeId || 0;
+            consumptionEquipmentEntity.entityOilAnalysisId = deletConsumptionEquipment.entityOilAnalysisId || 0;
+
             // Auditoria.
             consumptionEquipmentEntity.userIdCreated = deletConsumptionEquipment.userIdCreated;
             consumptionEquipmentEntity.dateCreated = deletConsumptionEquipment.dateCreated;

@@ -20,6 +20,12 @@ export class ConsumptionEquipmentEntity {
     @Column({ nullable: false, default:0 })
     entityEquipmentOilCompatibilityId: number;
 
+    // Tipo de consumo
+    @Column({ nullable: false, default:0 })
+    consumptionTypeId: number;
+    @Column({ nullable: false, default:0 })
+    entityOilAnalysisId: number;
+
     // Auditoria
     @Column()
     userIdCreated: number;
@@ -42,6 +48,8 @@ export class ConsumptionEquipmentEntity {
         hourConsumption?: number,
         observation?: string,
         entityEquipmentOilCompatibilityId?: number,
+        consumptionTypeId?: number,
+        entityOilAnalysisId?: number,
 
         userIdCreated?: number,
         dateCreated?: string,
@@ -58,6 +66,8 @@ export class ConsumptionEquipmentEntity {
         this.hourConsumption = hourConsumption || 0;
         this.observation = observation || '';
         this.entityEquipmentOilCompatibilityId = entityEquipmentOilCompatibilityId || 0;
+        this.consumptionTypeId = consumptionTypeId || 0;
+        this.entityOilAnalysisId = entityOilAnalysisId || 0;
 
         // Auditoria
         this.userIdCreated = userIdCreated || 0;
