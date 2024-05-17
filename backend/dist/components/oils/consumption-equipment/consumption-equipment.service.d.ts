@@ -19,11 +19,14 @@ export interface getOilConsumptionPerMonth {
     year_month: string;
     equipmentId: number;
     equipmentName: string;
+    frequencyId: number;
     rateSystems: number;
-    subgroupId: number;
+    groupId: number;
+    groupName: string;
+    consumptionTypeId: number;
     total_amount: number;
     total_hourConsumption: number;
-    LastOilName: string;
+    lastOilName: string;
 }
 export interface consultEquipmentConsumptionByMonthUser {
     equipmentSystemUserId: string;
