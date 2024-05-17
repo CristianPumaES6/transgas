@@ -236,13 +236,18 @@ export class ConsumptionEquipmentService {
   async getOilConsumptionPerMonth(userId: number): Promise<getOilConsumptionPerMonth[]> {
     
     const query = `
+
+    
+
     SELECT
         EOC.id AS compatibilityId,
         strftime('%Y-%m', CE.date) AS year_month,
         ES.id AS equipmentId,
         ES.equipment AS equipmentName,
-        ES.rate AS rateSystems, -- Agregar la columna del rate del sistema
-        ES.entityGroupId AS subgroupId, -- Agregar la columna del subgrupo
+        ES.rate AS rateSystems,
+        ES.entityGroupId AS groupId,
+        GO.label AS groupName, -- Agregar el tipo de grupo
+        CE.consumptionTypeId, -- Agregar el tipo de consumo
         SUM(CE.amount) AS total_amount,
         SUM(CE.hourConsumption) AS total_hourConsumption,
         (
@@ -260,14 +265,29 @@ export class ConsumptionEquipmentService {
         consumptionEquipment CE
         INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
         INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
+        LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id -- Unir con la tabla groupOil para obtener el tipo
     WHERE
         CE.userId = ? AND
-        CE.status = 1
-    GROUP BY
+        CE.status = 1 
+        --  AND CE.date BETWEEN ? AND ? -- Filtro por rango de fechas
+        GROUP BY
         year_month,
-        EOC.id,
-        SubgroupId; -- Agregar el subgrupo a la lista de columnas de agrupación
-    `;
+        ES.equipment,  -- Agrupar por nombre del equipo
+        ES.id,         -- Agrupar por ID del equipo
+        ES.rate,       -- Asegurarse de incluir la tasa del sistema
+        ES.entityGroupId, -- Agrupar por ID del grupo
+        GO.label,      -- Asegurarse de incluir el nombre del grupo
+        CE.consumptionTypeId, -- Agregar el tipo de consumo a la lista de columnas de agrupación
+        EOC.id         -- Incluir la compatibilidad en la agrupación
+    ORDER BY
+        year_month,
+        equipmentName,
+        CE.consumptionTypeId;
+
+
+
+
+                `;
 
     return this._ConsumptionEquipment.query(query,  [userId ]);
   }
@@ -335,11 +355,14 @@ export interface getOilConsumptionPerMonth {
     year_month: string;
     equipmentId: number;
     equipmentName: string;
+    frequencyId: number;
     rateSystems: number;
-    subgroupId: number;
+    groupId: number;
+    groupName: string;
+    consumptionTypeId: number;
     total_amount: number;
     total_hourConsumption: number; 
-    LastOilName: string;
+    lastOilName: string;
 }
 
 
