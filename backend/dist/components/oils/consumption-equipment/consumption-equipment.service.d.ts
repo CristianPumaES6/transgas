@@ -24,6 +24,7 @@ export interface getOilConsumptionPerMonth {
     groupId: number;
     groupName: string;
     consumptionTypeId: number;
+    consumptionTypeName: string;
     total_amount: number;
     total_hourConsumption: number;
     lastOilName: string;

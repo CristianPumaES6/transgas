@@ -195,7 +195,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     async getOilConsumptionPerMonth(userId) {
         const query = `
 
-    
+
 
     SELECT
         EOC.id AS compatibilityId,
@@ -207,6 +207,12 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         ES.entityGroupId AS groupId,
         GO.label AS groupName, -- Agregar el tipo de grupo
         CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
+        CASE
+            WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
+            WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
+            WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
+            ELSE 'OTHERS'
+        END AS consumptionTypeName, 
         SUM(CE.amount) AS total_amount,
         SUM(CE.hourConsumption) AS total_hourConsumption,
         (
@@ -242,13 +248,10 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         year_month,
         equipmentName,
         CE.consumptionTypeId;
+        
 
 
-
-
-
-
-                `;
+        `;
         return this._ConsumptionEquipment.query(query, [userId]);
     }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
