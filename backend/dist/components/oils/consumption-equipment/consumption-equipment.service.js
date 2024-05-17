@@ -195,17 +195,18 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     async getOilConsumptionPerMonth(userId) {
         const query = `
 
- 
+    
 
     SELECT
         EOC.id AS compatibilityId,
         strftime('%Y-%m', CE.date) AS year_month,
         ES.id AS equipmentId,
         ES.equipment AS equipmentName,
+        ES.frequencyId AS frequencyId,
         ES.rate AS rateSystems,
         ES.entityGroupId AS groupId,
         GO.label AS groupName, -- Agregar el tipo de grupo
-        CE.consumptionTypeId, -- Agregar el tipo de consumo
+        CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
         SUM(CE.amount) AS total_amount,
         SUM(CE.hourConsumption) AS total_hourConsumption,
         (
@@ -227,7 +228,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     WHERE
         CE.userId = ? AND
         CE.status = 1 
-        --  AND CE.date BETWEEN ? AND ? -- Filtro por rango de fechas
+        -- AND CE.date BETWEEN ? AND ? -- Filtro por rango de fechas
         GROUP BY
         year_month,
         ES.equipment,  -- Agrupar por nombre del equipo
@@ -237,10 +238,12 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         GO.label,      -- Asegurarse de incluir el nombre del grupo
         CE.consumptionTypeId, -- Agregar el tipo de consumo a la lista de columnas de agrupación
         EOC.id         -- Incluir la compatibilidad en la agrupación
-    ORDER BY
+        ORDER BY
         year_month,
         equipmentName,
         CE.consumptionTypeId;
+
+
 
 
 
