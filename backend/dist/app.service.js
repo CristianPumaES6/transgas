@@ -35,11 +35,11 @@ let AppService = class AppService {
         this.gateway.wss.emit('EmitConnect', socketEmitModel);
         return true;
     }
-    ListConsumptionLubricantPerMonth(userid) {
+    ListConsumptionLubricantPerMonth(userid, startDate, endDate) {
         return promises_assets_1.DummyPromise().then(result => {
             return this._UsersService.Gets({ id: userid, role: 'BUQUE' });
         }).then(result => {
-            return this.ConsumptionLubricantPerMonthPerListUsers(result);
+            return this.ConsumptionLubricantPerMonthPerListUsers(result, startDate, endDate);
         });
     }
     consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
@@ -51,7 +51,7 @@ let AppService = class AppService {
             return [];
         });
     }
-    async ConsumptionLubricantPerMonthPerListUsers(users) {
+    async ConsumptionLubricantPerMonthPerListUsers(users, startDate, endDate) {
         var e_1, _a;
         let returnDashboardLubricant = [];
         try {
@@ -62,7 +62,7 @@ let AppService = class AppService {
                 DashboardListMonthLubricant.userName = itemUser.name;
                 DashboardListMonthLubricant.filename = itemUser.filename;
                 DashboardListMonthLubricant.role = itemUser.role;
-                DashboardListMonthLubricant.getOilConsumptionPerMonth = await this._ConsumptionEquipmentService.getOilConsumptionPerMonth(itemUser.id);
+                DashboardListMonthLubricant.getOilConsumptionPerMonth = await this._ConsumptionEquipmentService.getOilConsumptionPerMonth(itemUser.id, startDate, endDate);
                 returnDashboardLubricant.push(DashboardListMonthLubricant);
             }
         }

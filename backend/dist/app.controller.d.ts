@@ -21,6 +21,6 @@ export declare class AppController {
     loggedUsers(headers: any, loggedUser: LoggedUser): Promise<any>;
     GetLoggedUsers(headers: any, loggedUser: LoggedUser): Promise<any>;
     EmitConnect(): Promise<any>;
-    ConsultaGeneral(buqueId: any): Promise<import("./app.service").ListUserConsumptionLubricantPerMonth[]>;
+    ConsultaGeneral(buqueId: any, startDate: any, endDate: any): Promise<import("./app.service").ListUserConsumptionLubricantPerMonth[]>;
     ConsultEquipmentConsumptionByMonthUser(buqueId: any, EquipmentId: any, YEAR_MONTH: any): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
 }

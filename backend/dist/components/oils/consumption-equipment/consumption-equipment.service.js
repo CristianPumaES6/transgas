@@ -192,7 +192,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             listConsumosValidarSendMail: listDeConsumosRegistrados
         };
     }
-    async getOilConsumptionPerMonth(userId) {
+    async getOilConsumptionPerMonth(userId, startDate, endDate) {
         const query = `
 
 
