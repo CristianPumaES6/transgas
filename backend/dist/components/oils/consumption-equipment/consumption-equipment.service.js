@@ -277,6 +277,13 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                     LIMIT 1
                 ) AS LastConsumption ON O.id = LastConsumption.entityOilId
             ) AS lastOilName,
+            CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
+            CASE
+                WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
+                WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
+                WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
+                ELSE 'OTHERS'
+            END AS consumptionTypeName,
             GROUP_CONCAT(CE.id) AS consumptionIds, -- Lista de IDs de consumo
             CASE 
                 WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 

@@ -35,6 +35,8 @@ export interface consultEquipmentConsumptionByMonthUser {
     EquipmentName: string;
     RateSystems: number;
     consumptionEquipmentId: number;
+    consumptionTypeId: number;
+    consumptionTypeName: string;
     TotalConsumption: number;
     HourConsumption: number;
     Rate: number;
