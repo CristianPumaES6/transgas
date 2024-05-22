@@ -237,7 +237,7 @@ export class ConsumptionEquipmentService {
     
     const query = `
 
-    
+
 
     SELECT
         EOC.id AS compatibilityId,
@@ -249,6 +249,12 @@ export class ConsumptionEquipmentService {
         ES.entityGroupId AS groupId,
         GO.label AS groupName, -- Agregar el tipo de grupo
         CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
+        CASE
+            WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
+            WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
+            WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
+            ELSE 'OTHERS'
+        END AS consumptionTypeName, 
         SUM(CE.amount) AS total_amount,
         SUM(CE.hourConsumption) AS total_hourConsumption,
         (
@@ -284,13 +290,10 @@ export class ConsumptionEquipmentService {
         year_month,
         equipmentName,
         CE.consumptionTypeId;
+        
 
 
-
-
-
-
-                `;
+        `;
 
     return this._ConsumptionEquipment.query(query,  [userId ]);
   }
@@ -321,6 +324,13 @@ export class ConsumptionEquipmentService {
                     LIMIT 1
                 ) AS LastConsumption ON O.id = LastConsumption.entityOilId
             ) AS lastOilName,
+            CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
+            CASE
+                WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
+                WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
+                WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
+                ELSE 'OTHERS'
+            END AS consumptionTypeName,
             GROUP_CONCAT(CE.id) AS consumptionIds, -- Lista de IDs de consumo
             CASE 
                 WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 
@@ -363,10 +373,11 @@ export interface getOilConsumptionPerMonth {
     groupId: number;
     groupName: string;
     consumptionTypeId: number;
+    consumptionTypeName: string;
     total_amount: number;
     total_hourConsumption: number; 
     lastOilName: string;
-}
+} 
 
 
 export interface consultEquipmentConsumptionByMonthUser {
@@ -375,6 +386,8 @@ export interface consultEquipmentConsumptionByMonthUser {
     EquipmentName: string;
     RateSystems: number;
     consumptionEquipmentId: number;
+    consumptionTypeId: number;
+    consumptionTypeName: string;
     TotalConsumption: number;
     HourConsumption: number;
     Rate: number;

@@ -34,18 +34,17 @@ export class AppService {
 
   public ListConsumptionLubricantPerMonth(userid:number){
 
-
     return DummyPromise().then(
       result => {
         return this._UsersService.Gets(<UserEntity>{id:userid,role:'BUQUE'});
       }
     ).then(
       result => {
-                // No lo validamos por que puede llegar vacio.
-                return this.ConsumptionLubricantPerMonthPerListUsers(result);
-          }
-      );
-
+        // No lo validamos por que puede llegar vacio.
+        return this.ConsumptionLubricantPerMonthPerListUsers(result);
+      }
+    );
+  
   }
 
 
