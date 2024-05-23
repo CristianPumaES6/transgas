@@ -192,7 +192,11 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             listConsumosValidarSendMail: listDeConsumosRegistrados
         };
     }
-    async getOilConsumptionPerMonth(userId, startDate, endDate) {
+    async getOilConsumptionPerMonth(userId, iStartDate, iEndDate) {
+        let startDate = moment_assets_1.Convert_YYYYMMD_To_YYYYMMDD(iStartDate);
+        let endDate = moment_assets_1.Convert_YYYYMMD_To_YYYYMMDD(iEndDate);
+        console.log('--------' + startDate + '--------');
+        console.log('--------' + endDate + '--------');
         const query = `
 
 
@@ -233,7 +237,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id -- Unir con la tabla groupOil para obtener el tipo
     WHERE
         CE.userId = ? AND
-        CE.status = 1 AND 
+        CE.status = 1 AND
         ( ? = '1900-01-01' OR ? = '1900-01-01' OR CE.date BETWEEN ? AND ? ) -- Filtro por rango de fechas
         GROUP BY
         year_month,
@@ -293,7 +297,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             consumptionEquipment CE
             INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
             INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
-        WHERE
+        WHERE 
             CE.userId =  ${userId}
             AND CE.status = 1
             AND strftime('%Y-%m', CE.date) = '${DateYEAR_MONTH}' -- Filtrar por mes específico

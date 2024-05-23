@@ -4,6 +4,7 @@ export declare function ConvertMMDDYYYToYYYYMMDD(dateMMDDYYY: any): Date;
 export declare function FormatDateUTCToDateHour(dateUTC: any): string;
 export declare function FormatDateUTCToDate(dateUTC: any): string;
 export declare function ConvertDateUTC_To_FORMAT_UTC(dateUTC: any): string;
+export declare function Convert_YYYYMMD_To_YYYYMMDD(date: any): string;
 export declare function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC: any): string;
 export declare function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC: any, addHour: number): string;
 export declare function DateDayMonthYear(dateDDMMYYYY: any): string;

@@ -1657,8 +1657,8 @@
         "affectsGlobalScope": false
       },
       "../src/assets/moment.assets.ts": {
-        "version": "e6e7acc528f3a0c4ef4af095095731b009d25d305f9d5c82bb4648ffae4a719d",
-        "signature": "5d574b266b079b34865d85b65b08ac56e04f47e1d270d46bb46bfe0dd445d00f",
+        "version": "39c207417bb929d6ce7892fd6d5c222c2bac7843b8fc022cff5838f94592ff81",
+        "signature": "c424056fbc6e39117768d7338141eee014a9eee0dbd5dd0ba86fc4029ebe0fe3",
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
@@ -3532,8 +3532,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "73d11f2c501c5e52667a3600d8c3d823696b258fbdd91e43dc457acca5612564",
-        "signature": "c215ae78f2ac77fc756c1718e9728458dc4e567d44a2d23abea6d21673f59265",
+        "version": "a7fe0a886a357ed61f27b9b5c3b632b8a1cdf1ebcc31f4bcadb6f5b5a9441d4f",
+        "signature": "863036a6ea47af3b533e77f6121a3aed4485a5748e8856b4242ce348f2e6fe93",
         "affectsGlobalScope": false
       },
       "../src/components/users/users.service.ts": {
