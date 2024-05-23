@@ -53,6 +53,7 @@ export const URL_Server = {
     passwordNotification: 'getlsmyuiluiwktq'
 };
 
+
 /*
 // SERVIDOR LINUX - FRONT Firebase
 export const URL_Server = {
@@ -64,8 +65,9 @@ export const URL_Server = {
     bd: 'SQLITE', // MSSQL, MYSQL
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
-}; 
+};
 */
+
 
 
 /* // SERVIDOR LINUX - FRONT LINUX

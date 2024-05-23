@@ -55,15 +55,16 @@ export const EnvConfig: EnvConfig = {
     URL_EMPRESA: 'https://www.transgas.com.pe/'
 };
 
-// CONFIGURACION PARA test DESARROLLO-server
+
 /*
+// CONFIGURACION PARA test DESARROLLO-server
 export const EnvConfig: EnvConfig = {
     API: 'https://transgas2.esteesel.club',
     ENV: '',
     VERSION: 'v2',
     SOCKET: 'https://socket-transgas2.esteesel.club',
     URL_EMPRESA: 'https://www.transgas.com.pe/',
-}; 
+};
 */
 
 // CONFIGURACION PARA TEST TRANSGAS

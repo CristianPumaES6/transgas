@@ -32,7 +32,7 @@ export class AppService {
   }
 
 
-  public ListConsumptionLubricantPerMonth(userid:number){
+  public ListConsumptionLubricantPerMonth( userid:number, startDate:string, endDate:string ){
 
     return DummyPromise().then(
       result => {
@@ -41,7 +41,7 @@ export class AppService {
     ).then(
       result => {
         // No lo validamos por que puede llegar vacio.
-        return this.ConsumptionLubricantPerMonthPerListUsers(result);
+        return this.ConsumptionLubricantPerMonthPerListUsers( result, startDate, endDate );
       }
     );
   
@@ -70,7 +70,7 @@ export class AppService {
 
 
     // guarda una lista de aceite.
-    async ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[]) {
+    async ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[], startDate:string, endDate:string) {
 
       let returnDashboardLubricant:ListUserConsumptionLubricantPerMonth[] =[] ;
     
@@ -82,7 +82,7 @@ export class AppService {
         DashboardListMonthLubricant.filename = itemUser.filename;
         DashboardListMonthLubricant.role = itemUser.role;
         // Registramos grupo de aceite
-        DashboardListMonthLubricant.getOilConsumptionPerMonth = await  this._ConsumptionEquipmentService.getOilConsumptionPerMonth(itemUser.id);
+        DashboardListMonthLubricant.getOilConsumptionPerMonth = await  this._ConsumptionEquipmentService.getOilConsumptionPerMonth( itemUser.id, startDate, endDate );
          
         returnDashboardLubricant.push(DashboardListMonthLubricant);
       }

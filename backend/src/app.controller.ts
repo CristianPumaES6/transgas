@@ -227,13 +227,17 @@ export class AppController {
 
   }
 
-  @Get('ListConsumptionLubricantPerMonth/:userId')
-  async ConsultaGeneral(@Param('userId') buqueId) {
+  @Get('ListConsumptionLubricantPerMonth/:userId/:startDate/:endDate')
+  async ConsultaGeneral(@Param('userId') buqueId, @Param('startDate') startDate, @Param('endDate') endDate) {
     return await DummyPromise().then(
       (resultDummy: Boolean) => {
         let userId = Number(buqueId);
 
-        return this.appService.ListConsumptionLubricantPerMonth(userId);
+        console.log("buqueId : " + buqueId)
+        console.log("startDate : " + startDate)
+        console.log("endDate : " + endDate)
+
+        return this.appService.ListConsumptionLubricantPerMonth( userId, startDate, endDate );
       }
     )
 
