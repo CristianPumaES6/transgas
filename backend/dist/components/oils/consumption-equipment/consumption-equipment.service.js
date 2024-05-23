@@ -234,7 +234,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     WHERE
         CE.userId = ? AND
         CE.status = 1 AND
-        ( ? = '1900-01-01' OR ? = '1900-01-01' OR DATE(CE.date) BETWEEN ? AND ? ) -- Filtro por rango de fechas
+        ( ( DATE(?) = DATE('1900-01-01') OR DATE(?) = DATE('1900-01-01') ) OR DATE(CE.date) BETWEEN DATE(?) AND DATE(?) ) -- Filtro por rango de fechas
         GROUP BY
         year_month,
         ES.equipment,  -- Agrupar por nombre del equipo

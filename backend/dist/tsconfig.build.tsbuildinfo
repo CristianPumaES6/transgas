@@ -3532,7 +3532,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "f0ad7dcbd8025058593ff652b45bd3563ff72e5fd543e5d11de8325ffc020917",
+        "version": "f9a6d452fff7c4505b7497e888980fb82d1e8c60fd756488fde67cb575098bd5",
         "signature": "c215ae78f2ac77fc756c1718e9728458dc4e567d44a2d23abea6d21673f59265",
         "affectsGlobalScope": false
       },
