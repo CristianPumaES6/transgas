@@ -233,8 +233,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id -- Unir con la tabla groupOil para obtener el tipo
     WHERE
         CE.userId = ? AND
-        CE.status = 1 
-        -- AND CE.date BETWEEN ? AND ? -- Filtro por rango de fechas
+        CE.status = 1 AND 
+        ( ? = '1900-01-01' OR ? = '1900-01-01' OR CE.date BETWEEN ? AND ? ) -- Filtro por rango de fechas
         GROUP BY
         year_month,
         ES.equipment,  -- Agrupar por nombre del equipo
@@ -252,7 +252,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
 
 
         `;
-        return this._ConsumptionEquipment.query(query, [userId]);
+        return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
     }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         const query = `               
