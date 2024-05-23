@@ -192,11 +192,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             listConsumosValidarSendMail: listDeConsumosRegistrados
         };
     }
-    async getOilConsumptionPerMonth(userId, iStartDate, iEndDate) {
-        let startDate = moment_assets_1.Convert_YYYYMMD_To_YYYYMMDD(iStartDate);
-        let endDate = moment_assets_1.Convert_YYYYMMD_To_YYYYMMDD(iEndDate);
-        console.log('--------' + startDate + '--------');
-        console.log('--------' + endDate + '--------');
+    async getOilConsumptionPerMonth(userId, startDate, endDate) {
         const query = `
 
 
@@ -238,7 +234,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     WHERE
         CE.userId = ? AND
         CE.status = 1 AND
-        ( ? = '1900-01-01' OR ? = '1900-01-01' OR CE.date BETWEEN ? AND ? ) -- Filtro por rango de fechas
+        ( ? = '1900-01-01' OR ? = '1900-01-01' OR DATE(CE.date) BETWEEN ? AND ? ) -- Filtro por rango de fechas
         GROUP BY
         year_month,
         ES.equipment,  -- Agrupar por nombre del equipo
