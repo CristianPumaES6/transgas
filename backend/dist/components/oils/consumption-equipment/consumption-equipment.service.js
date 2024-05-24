@@ -307,6 +307,16 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     `;
         return this._ConsumptionEquipment.query(query, []);
     }
+    async GetShips() {
+        const query = `
+        Select  U.id AS Id,
+                U.name AS Name,
+                U.filename AS Filename
+        FROM USER U
+        WHERE U.role = 'BUQUE' AND U.status = 1;
+    `;
+        return this._ConsumptionEquipment.query(query, []);
+    }
 };
 ConsumptionEquipmentService = __decorate([
     common_1.Injectable(),

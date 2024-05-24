@@ -156,6 +156,11 @@ let AppController = class AppController {
             return this.appService.consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH);
         });
     }
+    async GetShips() {
+        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+            return this.appService.GetShips();
+        });
+    }
 };
 __decorate([
     common_1.Get('pruebas'),
@@ -219,6 +224,12 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "ConsultEquipmentConsumptionByMonthUser", null);
+__decorate([
+    common_1.Get('Ships'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetShips", null);
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,

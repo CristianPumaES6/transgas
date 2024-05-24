@@ -51,6 +51,15 @@ let AppService = class AppService {
             return [];
         });
     }
+    GetShips() {
+        return promises_assets_1.DummyPromise().then(result => {
+            return this._ConsumptionEquipmentService.GetShips();
+        }).then(result => {
+            return result;
+        }).catch(result => {
+            return [];
+        });
+    }
     async ConsumptionLubricantPerMonthPerListUsers(users, startDate, endDate) {
         var e_1, _a;
         let returnDashboardLubricant = [];

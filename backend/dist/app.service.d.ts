@@ -10,6 +10,7 @@ export declare class AppService {
     EmitConnect(): boolean;
     ListConsumptionLubricantPerMonth(userid: number, startDate: string, endDate: string): Promise<ListUserConsumptionLubricantPerMonth[]>;
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
+    GetShips(): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[], startDate: string, endDate: string): Promise<ListUserConsumptionLubricantPerMonth[]>;
 }
 export interface ListUserConsumptionLubricantPerMonth {
