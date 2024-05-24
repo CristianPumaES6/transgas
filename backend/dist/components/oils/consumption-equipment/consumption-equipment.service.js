@@ -288,7 +288,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             CASE 
                 WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 
                 ELSE 0 
-            END AS rate
+            END AS rate,
+            GROUP_CONCAT(CE.observation, ', ') AS observation
         FROM
             consumptionEquipment CE
             INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
