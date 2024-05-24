@@ -46,8 +46,7 @@ export class AppService {
     );
   
   }
-
-
+  
   public consultEquipmentConsumptionByMonthUser(userId : number, entityEquipmentId: number, DateYEAR_MONTH:string) {
 
 
@@ -67,6 +66,23 @@ export class AppService {
 
   }
 
+  public GetShips() {
+
+    return DummyPromise().then(
+      result => {
+        return   this._ConsumptionEquipmentService.GetShips();
+        }
+      ).then(
+        result => {
+          return result;
+        }
+      ).catch(
+        result => {
+          return [];
+        }
+      );
+
+  }
 
 
     // guarda una lista de aceite.

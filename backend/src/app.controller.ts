@@ -258,5 +258,17 @@ export class AppController {
     )
   }
 
+
+  @Get('Ships')
+  async GetShips() {
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this.appService.GetShips();
+
+      }
+    )
+  }
+
   
 }
