@@ -52,6 +52,15 @@ export function ConvertDateUTC_To_FORMAT_UTC(dateUTC): string {
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
 
+
+export function Convert_YYYYMMD_To_YYYYMMDD(date): string {
+    
+  let text =  moment(date, ['YYYY-M-D', 'YYYY-MM-DD']).format('YYYY-MM-DD');
+
+    return text;
+}
+
+
 // este convert retorna con -5 horas para que se registre en e; server
 export function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC): string {
     let momentDate = moment.utc(dateUTC).subtract(5, 'hours');

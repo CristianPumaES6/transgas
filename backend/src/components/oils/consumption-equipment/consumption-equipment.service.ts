@@ -16,7 +16,7 @@ import { URL_Server } from '../../../config/server.config'
 // Modelos.
 import { UserEntity } from '../../../models/user.entity';
 import { DummyPromise } from '../../../assets/promises.assets';
-import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../../assets/moment.assets';
+import { ConvertMMDDYYYToYYYYMMDD, Convert_YYYYMMD_To_YYYYMMDD, GetDate } from '../../../assets/moment.assets';
 import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
 import { Mapping, searchKey } from 'src/assets/mappingKeys';
 
@@ -234,7 +234,8 @@ export class ConsumptionEquipmentService {
 
     
   async getOilConsumptionPerMonth(userId: number, startDate:string, endDate:string): Promise<getOilConsumptionPerMonth[]> {
-    
+
+ 
     const query = `
 
 
@@ -275,8 +276,8 @@ export class ConsumptionEquipmentService {
         LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id -- Unir con la tabla groupOil para obtener el tipo
     WHERE
         CE.userId = ? AND
-        CE.status = 1 AND 
-        ( ? = '1900-01-01' OR ? = '1900-01-01' OR CE.date BETWEEN ? AND ? ) -- Filtro por rango de fechas
+        CE.status = 1 AND
+        ( ( DATE(?) = DATE('1900-01-01') OR DATE(?) = DATE('1900-01-01') ) OR DATE(CE.date) BETWEEN DATE(?) AND DATE(?) ) -- Filtro por rango de fechas
         GROUP BY
         year_month,
         ES.equipment,  -- Agrupar por nombre del equipo
@@ -335,12 +336,13 @@ export class ConsumptionEquipmentService {
             CASE 
                 WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 
                 ELSE 0 
-            END AS rate
+            END AS rate,
+            GROUP_CONCAT(CE.observation, ', ') AS observation
         FROM
             consumptionEquipment CE
             INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
             INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
-        WHERE
+        WHERE 
             CE.userId =  ${userId}
             AND CE.status = 1
             AND strftime('%Y-%m', CE.date) = '${DateYEAR_MONTH}' -- Filtrar por mes específico
