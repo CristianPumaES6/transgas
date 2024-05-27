@@ -21,10 +21,12 @@ const promises_assets_1 = require("./assets/promises.assets");
 const loggedUser_1 = require("./models/loggedUser");
 const server_config_1 = require("./config/server.config");
 const app_gateway_1 = require("./app.gateway");
+const consumption_equipment_service_1 = require("./components/oils/consumption-equipment/consumption-equipment.service");
 let AppController = class AppController {
-    constructor(appService, authService, _AppGateway) {
+    constructor(appService, authService, _ConsumptionEquipmentService, _AppGateway) {
         this.appService = appService;
         this.authService = authService;
+        this._ConsumptionEquipmentService = _ConsumptionEquipmentService;
         this._AppGateway = _AppGateway;
     }
     Pruebas(body) {
@@ -161,6 +163,11 @@ let AppController = class AppController {
             return this.appService.GetShips();
         });
     }
+    async GetStatusOilStartEnd(userId, startDate, endDate) {
+        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId, startDate, endDate);
+        });
+    }
 };
 __decorate([
     common_1.Get('pruebas'),
@@ -230,10 +237,18 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetShips", null);
+__decorate([
+    common_1.Get('GetStatusOilStartEndDate/:userId/:startDate/:endDate'),
+    __param(0, common_1.Param('userId')), __param(1, common_1.Param('startDate')), __param(2, common_1.Param('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetStatusOilStartEnd", null);
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,
         auth_service_1.AuthService,
+        consumption_equipment_service_1.ConsumptionEquipmentService,
         app_gateway_1.AppGateway])
 ], AppController);
 exports.AppController = AppController;

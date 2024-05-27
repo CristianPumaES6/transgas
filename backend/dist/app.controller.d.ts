@@ -4,11 +4,13 @@ import { UserEntity } from './models/user.entity';
 import { AuthService } from './components/auth/auth.service';
 import { LoggedUser } from './models/loggedUser';
 import { AppGateway } from './app.gateway';
+import { ConsumptionEquipmentService } from './components/oils/consumption-equipment/consumption-equipment.service';
 export declare class AppController {
     private readonly appService;
     private readonly authService;
+    private readonly _ConsumptionEquipmentService;
     private readonly _AppGateway;
-    constructor(appService: AppService, authService: AuthService, _AppGateway: AppGateway);
+    constructor(appService: AppService, authService: AuthService, _ConsumptionEquipmentService: ConsumptionEquipmentService, _AppGateway: AppGateway);
     Pruebas(body: any): Promise<any>;
     GetVersionPlataform(): any;
     getHello(): any;
@@ -24,4 +26,5 @@ export declare class AppController {
     ConsultaGeneral(buqueId: any, startDate: any, endDate: any): Promise<import("./app.service").ListUserConsumptionLubricantPerMonth[]>;
     ConsultEquipmentConsumptionByMonthUser(buqueId: any, EquipmentId: any, YEAR_MONTH: any): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     GetShips(): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
+    GetStatusOilStartEnd(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
 }

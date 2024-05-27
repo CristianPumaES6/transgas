@@ -3532,8 +3532,8 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "1970f026626bbec77a07e99d27134c32108b751ebf82ffdf18a716e849208d09",
-        "signature": "956e9c388f9949f438df2230052d80a5b12479bb4851c1038ed1f68479c781f2",
+        "version": "99e16dfa72b6446ad48a1f1c891169e38ad80d9771a917fc76e5c30f7122ea6f",
+        "signature": "5d94d017af80e9d1d0803b36b69784b99bf42532dee0469a087c9af15667919c",
         "affectsGlobalScope": false
       },
       "../src/components/users/users.service.ts": {
@@ -3542,7 +3542,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "ba2fc15f11338a4d9ab42007e99dd5b26c5ff578399e7d468eee593660a87828",
+        "version": "0c289c6f18e6373dec346d6ae932a48cfbf974d45bc996d8d1f6fdc643cd5b29",
         "signature": "741401dc0d854521a747039bf8e0cffa137b873a3648ef484e4bb883f96566a0",
         "affectsGlobalScope": false
       },
@@ -3587,8 +3587,8 @@
         "affectsGlobalScope": false
       },
       "../src/app.controller.ts": {
-        "version": "ca9b7a94ae90b158a5e55622eb3bc38ce6f40024a7c14689f796ff4470c7a4a4",
-        "signature": "996ddb3860a725f1c7ce9076e4996792191795f71ae24202bd59671a65b48e52",
+        "version": "7f42e14517c794a604d5b1dca69422891eedfd1476adb2ec42c45771cb5fe650",
+        "signature": "216b033f29d618b5462b896262def795bf863ec2c3dd9b14b3815c772d1a27dc",
         "affectsGlobalScope": false
       },
       "../src/config/path.config.ts": {
@@ -7091,6 +7091,7 @@
         "../src/app.service.ts",
         "../src/assets/promises.assets.ts",
         "../src/components/auth/auth.service.ts",
+        "../src/components/oils/consumption-equipment/consumption-equipment.service.ts",
         "../src/components/users/users.service.ts",
         "../src/config/server.config.ts",
         "../src/models/loggeduser.ts",

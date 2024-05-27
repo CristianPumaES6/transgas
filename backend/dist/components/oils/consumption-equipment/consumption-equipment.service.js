@@ -317,6 +317,93 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     `;
         return this._ConsumptionEquipment.query(query, []);
     }
+    async GetStatusOilStartEnd(userId, startDate, endDate) {
+        const query = `
+    SELECT 
+        O.id AS oilId,
+        O.name AS oilName,
+        -- Cantidad de lubricante inicial
+        (COALESCE((
+            SELECT SUM(BO.bunker)
+            FROM bunkerOil BO
+            WHERE BO.entityOilId = O.id
+            AND BO.datetime < ${startDate}
+            AND BO.userId = ${userId}
+        ), 0) - COALESCE((
+            SELECT SUM(CE.amount)
+            FROM equipmentOilCompatibility EOC
+            INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+            WHERE EOC.entityOilId = O.id
+            AND CE.date < ${startDate}
+            AND EOC.userId = ${userId}
+            AND CE.userId = ${userId}
+            AND CE.status = 1
+        ), 0)) AS initialLubricant,
+
+        -- Suma de consumo en el rango de fechas
+        COALESCE((
+            SELECT SUM(CE.amount)
+            FROM equipmentOilCompatibility EOC
+            INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+            WHERE EOC.entityOilId = O.id
+            AND CE.date BETWEEN ${startDate} AND ${endDate}
+            AND EOC.userId = ${userId}
+            AND CE.userId = ${userId}
+            AND CE.status = 1
+        ), 0) AS totalRangeConsumption,
+
+        -- Suma de bunker en el rango de fechas
+        COALESCE((
+            SELECT SUM(BO.bunker)
+            FROM bunkerOil BO
+            WHERE BO.entityOilId = O.id
+                AND BO.datetime BETWEEN ${startDate} AND ${endDate}
+                AND BO.userId = ${userId}
+        ), 0) AS totalRangeBunker,
+
+        -- Cantidad de lubricante final
+        ((COALESCE((
+            SELECT SUM(BO.bunker)
+            FROM bunkerOil BO
+            WHERE BO.entityOilId = O.id
+                AND BO.datetime < ${startDate}
+                AND BO.userId = ${userId}
+        ), 0) - COALESCE((
+            SELECT SUM(CE.amount)
+            FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+            WHERE EOC.entityOilId = O.id
+                AND CE.date < ${startDate}
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+        ), 0)) + COALESCE((
+            SELECT SUM(BO.bunker)
+            FROM bunkerOil BO
+            WHERE BO.entityOilId = O.id
+                AND BO.userId = ${userId}
+            AND BO.datetime BETWEEN ${startDate} AND ${endDate}
+        ), 0) - COALESCE((
+            SELECT SUM(CE.amount)
+            FROM equipmentOilCompatibility EOC
+            INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+            WHERE EOC.entityOilId = O.id
+                AND CE.date BETWEEN ${startDate} AND ${endDate}
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+        ), 0)) AS finalLubricant
+        
+    FROM 
+        oil O
+    WHERE 
+        O.userId = ${userId}
+        AND O.status = 1
+    ORDER BY 
+        O.id;
+    `;
+        return this._ConsumptionEquipment.query(query, []);
+    }
 };
 ConsumptionEquipmentService = __decorate([
     common_1.Injectable(),
