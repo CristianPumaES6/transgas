@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "6855de9b108f9e04cb305fab40305620d31a4581f956ffc3b9fb21a8c44ebbda",
+        "version": "a0b1d03c4d5c2e3454810d0dc7e973d8c66361d001e359cf3cf6eecf7fab8228",
         "signature": "0f180eac61ac0b9d9466f7da403f7495898c3e40be8cea3d70954ff6f0a51c52",
         "affectsGlobalScope": false
       },
@@ -3532,7 +3532,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/consumption-equipment/consumption-equipment.service.ts": {
-        "version": "290738940852a9a4db1486394e8a344496da47255633532c802d1fc23ce4a827",
+        "version": "e81248df91342246eddc4fdda28b89f19064a357092d78cd8d3f29d2713269f4",
         "signature": "5d94d017af80e9d1d0803b36b69784b99bf42532dee0469a087c9af15667919c",
         "affectsGlobalScope": false
       },
