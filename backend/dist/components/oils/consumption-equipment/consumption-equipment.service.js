@@ -215,6 +215,19 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         END AS consumptionTypeName, 
         SUM(CE.amount) AS total_amount,
         SUM(CE.hourConsumption) AS total_hourConsumption,
+
+        (
+            SELECT O.id
+            FROM oil O
+            INNER JOIN (
+                SELECT entityOilId
+                FROM consumptionEquipment
+                WHERE entityEquipmentOilCompatibilityId = EOC.id
+                ORDER BY date DESC
+                LIMIT 1
+            ) AS LastConsumption ON O.id = LastConsumption.entityOilId
+        ) AS oilId,
+
         (
             SELECT O.name
             FROM oil O
@@ -225,7 +238,32 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 ORDER BY date DESC
                 LIMIT 1
             ) AS LastConsumption ON O.id = LastConsumption.entityOilId
-        ) AS lastOilName
+        ) AS lastOilName,
+
+
+    -- Costo aceite
+    COALESCE((
+        SELECT OP.price
+        FROM oilPriceHistory OP
+        WHERE OP.entityOilId = EOC.entityOilId
+            AND  DATE(CE.date) >= DATE(OP.effectiveDate)
+            AND OP.status = 1
+        ORDER BY OP.effectiveDate DESC
+        LIMIT 1
+    ), 0) AS last_oil_cost,
+
+    -- Calcular el costo total del aceite
+    SUM(CE.amount * COALESCE((
+        SELECT OP.price
+        FROM oilPriceHistory OP
+        WHERE OP.entityOilId = EOC.entityOilId
+            AND DATE(CE.date) >= DATE(OP.effectiveDate)
+            AND OP.status = 1
+        ORDER BY OP.effectiveDate DESC
+        LIMIT 1
+    ), 0)) AS total_cost
+
+
     FROM
         consumptionEquipment CE
         INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
@@ -248,7 +286,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         year_month,
         equipmentName,
         CE.consumptionTypeId;
-        
+
+
 
 
         `;

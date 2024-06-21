@@ -30,6 +30,9 @@ export interface getOilConsumptionPerMonth {
     total_amount: number;
     total_hourConsumption: number;
     lastOilName: string;
+    oilId: number;
+    last_oil_cost: string;
+    total_cost: number;
 }
 export interface consultEquipmentConsumptionByMonthUser {
     equipmentSystemUserId: string;
