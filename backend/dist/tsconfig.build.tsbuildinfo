@@ -1662,7 +1662,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/server.config.ts": {
-        "version": "80b42ece9cb88b7f650ff3437a03aea904b6efe262d9574850d6cdc5b8c1bb24",
+        "version": "f19f1cce05c7c3d8de953245f04627c38f59f6efa0d9b85e662c3ab544af424c",
         "signature": "0f180eac61ac0b9d9466f7da403f7495898c3e40be8cea3d70954ff6f0a51c52",
         "affectsGlobalScope": false
       },
@@ -3907,7 +3907,7 @@
         "affectsGlobalScope": false
       },
       "../src/components/oils/oils.controller.ts": {
-        "version": "197e851013fb992290df681ae47d8fbb12a9075d4a076c55c39e76f1c15d588d",
+        "version": "af47ea2eb76992c2d9b0de6dfeec65d4e9cdc77c70f2907721507f15f537f149",
         "signature": "334c3bda944d68f21f03569ee3639fd9073d3a5c1e072ae68fa92686fe43df16",
         "affectsGlobalScope": false
       },
