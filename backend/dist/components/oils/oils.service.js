@@ -253,7 +253,8 @@ let OilsService = class OilsService {
         }).then(resultFind => {
             let dailyOilConsumptionData = [];
             resultFind.forEach(item => {
-                let date = moment_assets_1.FormatDateUTCToDateYYYYMM(item.dateConsumption);
+                let dateYYYYMM = moment_assets_1.FormatDateUTCToDateYYYYMM(item.dateConsumption);
+                let dateConsumption = moment_assets_1.FormatDateUTCToDate(item.dateConsumption);
                 let calcRate = 0;
                 if (!item.hourConsumption || item.hourConsumption <= 0) {
                     calcRate = item.amountConsumption;
@@ -262,7 +263,7 @@ let OilsService = class OilsService {
                     calcRate = math_assets_1.mathRound(item.amountConsumption / item.hourConsumption, 2);
                 }
                 if (calcRate > item.rate) {
-                    let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == date);
+                    let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
                     if (findDailyOilConsumptionData) {
                         findDailyOilConsumptionData.data.push({
                             userId: item.equipmentSystem_userId,
@@ -279,7 +280,8 @@ let OilsService = class OilsService {
                     ;
                     if (!findDailyOilConsumptionData) {
                         dailyOilConsumptionData.push({
-                            dateConsumption: date,
+                            dateConsumption: dateConsumption,
+                            dateYYYYMM: dateYYYYMM,
                             observation: item.observation,
                             data: [
                                 {
@@ -333,7 +335,8 @@ let OilsService = class OilsService {
         }).then(resultFind => {
             let dailyOilConsumptionData = [];
             resultFind.forEach(item => {
-                let date = moment_assets_1.FormatDateUTCToDate(item.dateConsumption);
+                let dateYYYYMM = moment_assets_1.FormatDateUTCToDateYYYYMM(item.dateConsumption);
+                let dateConsumption = moment_assets_1.FormatDateUTCToDate(item.dateConsumption);
                 let calcRate = 0;
                 if (!item.hourConsumption || item.hourConsumption <= 0) {
                     calcRate = item.amountConsumption;
@@ -342,7 +345,8 @@ let OilsService = class OilsService {
                     calcRate = item.amountConsumption / item.hourConsumption;
                 }
                 dailyOilConsumptionData.push({
-                    dateConsumption: date,
+                    dateConsumption: dateConsumption,
+                    dateYYYYMM: dateYYYYMM,
                     observation: item.observation,
                     data: [
                         {

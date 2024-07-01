@@ -15,6 +15,7 @@ export declare class OilsService {
 }
 export interface DailyOilConsumptionData {
     dateConsumption: string;
+    dateYYYYMM: string;
     observation: string;
     data: DataDailyOilConsumptionData[];
 }
