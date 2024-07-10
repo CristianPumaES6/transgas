@@ -368,7 +368,7 @@ let OilsController = class OilsController {
             }
         }).then((listaDeConsumosRegistrados) => {
             if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
-                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; cpuma@transgas.com.pe; hcamasca@transgas.com.pe; agarcia@transgas.com.pe;', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
+                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; cpuma@transgas.com.pe; hcamasca@transgas.com.pe; agarcia@transgas.com.pe; eviana@transgas.com.pe;', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
             }
             else {
                 return true;
