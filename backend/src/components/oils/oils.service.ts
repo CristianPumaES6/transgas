@@ -16,7 +16,7 @@ import { URL_Server } from '../../config/server.config'
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
-import { ConvertMMDDYYYToYYYYMMDD, DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/moment.assets';
+import { ConvertMMDDYYYToYYYYMMDD, DateDayMonthYear, FormatDateUTCToDate, FormatDateUTCToDateYYYYMM, GetDate } from '../../assets/moment.assets';
 import { Mapping } from '../../assets/mappingKeys';
 import { mathRound } from 'src/assets/math.assets';
 
@@ -398,20 +398,21 @@ export class OilsService {
                     resultFind.forEach(
                         item => {
                             // Fecha de consumo
-                            let date = FormatDateUTCToDate(item.dateConsumption);
+                            let dateYYYYMM = FormatDateUTCToDateYYYYMM(item.dateConsumption);
+                            let dateConsumption = FormatDateUTCToDate(item.dateConsumption);
 
                             // Calculamos el rate realizado en las horas
                             let calcRate = 0;
-                            if(!item.hourConsumption || item.hourConsumption <= 0){
+                            if (!item.hourConsumption || item.hourConsumption <= 0) {
                                 calcRate = item.amountConsumption;
-                            }else {
+                            } else {
                                 calcRate = mathRound(item.amountConsumption/item.hourConsumption,2) ;
                             }
 
                             // verificamos si el rate es mayor a la hora de trabajo.
                             if(calcRate > item.rate ){
 
-                                let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == date);
+                                let findDailyOilConsumptionData= dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
 
                                 if(findDailyOilConsumptionData) {
                                     findDailyOilConsumptionData.data.push(
@@ -433,7 +434,8 @@ export class OilsService {
     
                                     dailyOilConsumptionData.push(
                                         {
-                                            dateConsumption : date,
+                                            dateConsumption : dateConsumption,
+                                            dateYYYYMM : dateYYYYMM,
                                             observation : item.observation,
                                             data: [
                                                 {
@@ -517,8 +519,9 @@ export class OilsService {
 
                     resultFind.forEach(
                         item => {
-                            // Fecha de consumo
-                            let date = FormatDateUTCToDate(item.dateConsumption);
+                            // Fecha de consumo 
+                            let dateYYYYMM = FormatDateUTCToDateYYYYMM(item.dateConsumption);
+                            let dateConsumption = FormatDateUTCToDate(item.dateConsumption);
 
                             // Calculamos el rate realizado en las horas
                             let calcRate = 0;
@@ -531,7 +534,8 @@ export class OilsService {
                             
                             dailyOilConsumptionData.push(
                                 {
-                                    dateConsumption : date,
+                                    dateConsumption : dateConsumption,
+                                    dateYYYYMM : dateYYYYMM,
                                     observation : item.observation,
                                     data: [
                                         {
@@ -558,6 +562,7 @@ export class OilsService {
 
 export interface DailyOilConsumptionData {
     dateConsumption:string;
+    dateYYYYMM: string;
     observation:string;
     data: DataDailyOilConsumptionData[];
 }

@@ -1525,7 +1525,7 @@ export class ExcelService {
           getReportVoyagePortDaily.voyageId,
           getReportVoyagePortDaily.portId,
           getReportVoyagePortDaily.dailyReportId,
-          '', { formula: 'AND( AI' + positionRow + ' <12, AI' + positionRow + ' > 0 )' },
+          '', { formula: 'AND( AI' + positionRow + ' < AU8, AI' + positionRow + ' > 0 )' },
           'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
           getReportVoyagePortDaily.departurePort, '', '', '',
           getReportVoyagePortDaily.arrivalPort, '', '', '',
@@ -1985,7 +1985,7 @@ export class ExcelService {
         {
           type: 'expression',
           priority: 1,
-          formulae: ['AND( AN' + position + ' <12, AN' + position + ' > 0 )'],
+          formulae: ['AND( AN' + position + ' < AU8, AN' + position + ' > 0 )'],
           style: {
             font: { color: { argb: redHard } },
             fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: redMedium } },
@@ -1995,7 +1995,7 @@ export class ExcelService {
         {
           type: 'expression',
           priority: 1,
-          formulae: ['AN' + position + ' >=12'],
+          formulae: ['AN' + position + ' >= AU8'],
           style: {
             font: { color: { argb: greenHard } },
             fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: greenLow } },

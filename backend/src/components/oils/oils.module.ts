@@ -20,10 +20,11 @@ import { EquipmentSystemService } from './equipment-system/equipment-system.serv
 import { EquipmentOilCompatibilityService } from './equipment-oil-compatibility/equipment-oil-compatibility.service';
 import { EquipmentOilCompatibilityController } from './equipment-oil-compatibility/equipment-oil-compatibility.controller';
 import { EquipmentOilCompatibilityEntity } from 'src/models/equipment-oil-compatibility.entity';
+import { OilPriceHistory } from 'src/models/oilPriceHistory.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OilEntity,ConsumptionEquipmentEntity,GroupOilEntity,BunkerOil,EquipmentSystemEntity,EquipmentOilCompatibilityEntity]),
+    TypeOrmModule.forFeature([OilEntity,OilPriceHistory,ConsumptionEquipmentEntity,GroupOilEntity,BunkerOil,EquipmentSystemEntity,EquipmentOilCompatibilityEntity]),
   ],
   controllers: [OilsController, ConsumptionEquipmentController, GroupOilsController, EquipmentSystemController, BunkerOilController, EquipmentOilCompatibilityController,EquipmentOilCompatibilityController],
   providers: [OilsService, ConsumptionEquipmentService, GroupOilsService, EquipmentSystemService, BunkerOilService, EquipmentOilCompatibilityService,EquipmentOilCompatibilityService ],

@@ -14,12 +14,14 @@ import { DummyPromise } from './assets/promises.assets';
 import { LoggedUser } from './models/loggedUser';
 import { URL_Server } from './config/server.config';
 import { AppGateway } from './app.gateway';
+import { ConsumptionEquipmentService } from './components/oils/consumption-equipment/consumption-equipment.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly authService: AuthService,
+    private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
     private readonly _AppGateway: AppGateway
   ) { }
 
@@ -270,5 +272,17 @@ export class AppController {
     )
   }
 
+  @Get('GetStatusOilStartEndDate/:userId/:startDate/:endDate')
+  async GetStatusOilStartEnd(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId,startDate,endDate);
+
+      }
+    );
+
+  }
   
 }

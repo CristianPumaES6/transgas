@@ -31,7 +31,6 @@ export class AppService {
     return true;
   }
 
-
   public ListConsumptionLubricantPerMonth( userid:number, startDate:string, endDate:string ){
 
     return DummyPromise().then(
@@ -84,9 +83,8 @@ export class AppService {
 
   }
 
-
-    // guarda una lista de aceite.
-    async ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[], startDate:string, endDate:string) {
+  // guarda una lista de aceite.
+  public async ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[], startDate:string, endDate:string) {
 
       let returnDashboardLubricant:ListUserConsumptionLubricantPerMonth[] =[] ;
     
@@ -105,7 +103,6 @@ export class AppService {
  
       return returnDashboardLubricant;
   }
-
 
 
 }

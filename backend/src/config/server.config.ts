@@ -26,9 +26,9 @@ export const URL_Server = {
 
 
 
-
+/*
 // CONFIGURACION PARA DESARROLLO local
-/* export const URL_Server = {
+export const URL_Server = {
     front: 'http://localhost:3001',
     back: 'http://localhost:3000',
     version: 'v2',
@@ -37,10 +37,11 @@ export const URL_Server = {
     bd: 'SQLITE', // MSSQL, MYSQL
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
-}; */
+};
+*/
 
 
-
+/* 
 // CONFIGURACION PARA DESARROLLO SERVER
 export const URL_Server = {
     front: 'https://esteesel.club',
@@ -53,8 +54,9 @@ export const URL_Server = {
     passwordNotification: 'getlsmyuiluiwktq'
 };
 
+ */
 
-/*
+
 // SERVIDOR LINUX - FRONT Firebase
 export const URL_Server = {
     front: 'https://transgas2.esteesel.club',
@@ -66,11 +68,10 @@ export const URL_Server = {
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
 };
-*/
 
 
-
-/* // SERVIDOR LINUX - FRONT LINUX
+/*
+// SERVIDOR LINUX - FRONT LINUX
 export const URL_Server = {
     front: 'https://esteesel.club',
     back: 'https://esteesel.club',
@@ -78,5 +79,4 @@ export const URL_Server = {
     puertoSocket: 4000,
     bd: 'SQLITE', // MSSQL, MYSQL
 };
-
- */
+*/

@@ -605,9 +605,11 @@ export class OilsController {
 
                 // tenemos que enviar un correo lo enviamos
                 if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
-                    //--mpineda@transgas.com.pe; hcamasca@transgas.com.pe; hcamasca@transgas.com.pe
-                    return SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; cpuma@transgas.com.pe',headerToken.name,FormatDateUTCToDate(GetDate()) ,listaDeConsumosRegistrados);
-           
+                    // --mpineda@transgas.com.pe; hcamasca@transgas.com.pe; hcamasca@transgas.com.pe
+                    // hcamasca@transgas.com.pe; agarcia@transgas.com.pe;
+                    //'cristian.puma.es6@gmail.com; cpuma@transgas.com.pe; hcamasca@transgas.com.pe; agarcia@transgas.com.pe; eviana@transgas.com.pe;'
+                    return SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com;',headerToken.name,FormatDateUTCToDate(GetDate()) ,listaDeConsumosRegistrados);
+
                 } else {
                     return true;
                 }

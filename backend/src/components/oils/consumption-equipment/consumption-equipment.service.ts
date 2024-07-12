@@ -258,6 +258,19 @@ export class ConsumptionEquipmentService {
         END AS consumptionTypeName, 
         SUM(CE.amount) AS total_amount,
         SUM(CE.hourConsumption) AS total_hourConsumption,
+
+        (
+            SELECT O.id
+            FROM oil O
+            INNER JOIN (
+                SELECT entityOilId
+                FROM consumptionEquipment
+                WHERE entityEquipmentOilCompatibilityId = EOC.id
+                ORDER BY date DESC
+                LIMIT 1
+            ) AS LastConsumption ON O.id = LastConsumption.entityOilId
+        ) AS oilId,
+
         (
             SELECT O.name
             FROM oil O
@@ -268,7 +281,32 @@ export class ConsumptionEquipmentService {
                 ORDER BY date DESC
                 LIMIT 1
             ) AS LastConsumption ON O.id = LastConsumption.entityOilId
-        ) AS lastOilName
+        ) AS lastOilName,
+
+
+    -- Costo aceite
+    COALESCE((
+        SELECT OP.price
+        FROM oilPriceHistory OP
+        WHERE OP.entityOilId = EOC.entityOilId
+            AND  DATE(CE.date) >= DATE(OP.effectiveDate)
+            AND OP.status = 1
+        ORDER BY OP.effectiveDate DESC
+        LIMIT 1
+    ), 0) AS last_oil_cost,
+
+    -- Calcular el costo total del aceite
+    SUM(CE.amount * COALESCE((
+        SELECT OP.price
+        FROM oilPriceHistory OP
+        WHERE OP.entityOilId = EOC.entityOilId
+            AND DATE(CE.date) >= DATE(OP.effectiveDate)
+            AND OP.status = 1
+        ORDER BY OP.effectiveDate DESC
+        LIMIT 1
+    ), 0)) AS total_cost
+
+
     FROM
         consumptionEquipment CE
         INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
@@ -291,7 +329,8 @@ export class ConsumptionEquipmentService {
         year_month,
         equipmentName,
         CE.consumptionTypeId;
-        
+
+
 
 
         `;
@@ -358,7 +397,6 @@ export class ConsumptionEquipmentService {
     return this._ConsumptionEquipment.query(query,  []);
   }
 
-  
   async GetShips(): Promise<consultEquipmentConsumptionByMonthUser[]>  {
 
 
@@ -373,6 +411,101 @@ export class ConsumptionEquipmentService {
 
     return this._ConsumptionEquipment.query(query,  []);
   }
+
+  
+  async GetStatusOilStartEnd(userId: number, startDate:string, endDate:string): Promise<consultEquipmentConsumptionByMonthUser[]>  {
+
+
+    const query = `
+    SELECT 
+            O.id AS oilId,
+            O.name AS oilName,
+            
+            -- Cantidad de lubricante inicial
+            (COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND DATE(BO.datetime) < '${startDate}'
+                AND BO.userId = ${userId}
+            ), 0) - COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) < '${startDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0)) AS initialLubricant,
+
+            -- Suma de consumo en el rango de fechas
+            COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0) AS totalRangeConsumption,
+
+            -- Suma de bunker en el rango de fechas
+            COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
+                AND BO.userId = ${userId}
+            ), 0) AS totalRangeBunker,
+
+            -- Cantidad de lubricante final
+            ((COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND DATE(BO.datetime) < '${startDate}'
+                AND BO.userId = ${userId}
+            ), 0) - COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) < '${startDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0)) + COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND BO.userId = ${userId}
+                AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
+            ), 0) - COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0)) AS finalLubricant
+            
+        FROM 
+            oil O
+        WHERE 
+            O.userId = ${userId}
+            AND O.status = 1
+        ORDER BY 
+            O.id;
+    `;
+    
+
+    return this._ConsumptionEquipment.query(query,  []);
+  }
+  
 }
 
 export interface SaveListConsumptionEquipmentEntity {
@@ -395,6 +528,9 @@ export interface getOilConsumptionPerMonth {
     total_amount: number;
     total_hourConsumption: number; 
     lastOilName: string;
+    oilId: number;
+    last_oil_cost: string,
+    total_cost: number
 } 
 
 
