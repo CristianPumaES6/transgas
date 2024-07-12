@@ -1,9 +1,9 @@
 import { Controller, Get, Headers, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { EquipmentSystemService } from './equipment-system.service';
-import { EquipmentSystemEntity } from 'src/models/equipment-system.entity';
-import { UserEntity } from 'src/models/user.entity';
-import { JwtDecode } from 'src/assets/jwtDecode.assets';
-import { DummyPromise } from 'src/assets/promises.assets';
+import { EquipmentSystemEntity } from '../../../models/equipment-system.entity';
+import { UserEntity } from '../../../models/user.entity';
+import { JwtDecode } from '../../../assets/jwtDecode.assets';
+import { DummyPromise } from '../../../assets/promises.assets';
 
 @Controller('type-of-oil-equipment')
 export class EquipmentSystemController {

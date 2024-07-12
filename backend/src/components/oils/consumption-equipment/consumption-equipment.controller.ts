@@ -4,7 +4,7 @@ import { UserEntity } from '../../../models/user.entity';
 import { JwtDecode } from '../../../assets/jwtDecode.assets';
 import { GetDate } from '../../../assets/moment.assets';
 import { ConsumptionEquipmentService } from './consumption-equipment.service';
-import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
+import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
 import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
 @Controller('consumption-equipment')

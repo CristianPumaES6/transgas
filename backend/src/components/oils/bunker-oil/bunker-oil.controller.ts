@@ -1,9 +1,9 @@
 import { Controller, Get, Headers, HttpException, HttpStatus, Query } from '@nestjs/common';
-import { JwtDecode } from 'src/assets/jwtDecode.assets';
-import { DummyPromise } from 'src/assets/promises.assets';
-import { UserEntity } from 'src/models/user.entity';
+import { JwtDecode } from '../../../assets/jwtDecode.assets';
+import { DummyPromise } from '../../../assets/promises.assets';
+import { UserEntity } from '../../../models/user.entity';
 import { BunkerOilService } from './bunker-oil.service';
-import { BunkerOil } from 'src/models/buker-oil.entity';
+import { BunkerOil } from '../../../models/buker-oil.entity';
 
 @Controller('bunker-oil')
 export class BunkerOilController {

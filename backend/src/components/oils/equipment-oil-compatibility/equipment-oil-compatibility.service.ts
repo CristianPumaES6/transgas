@@ -17,9 +17,9 @@ import { URL_Server } from '../../../config/server.config'
 import { UserEntity } from '../../../models/user.entity';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../../assets/moment.assets';
-import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
-import { Mapping, searchKey } from 'src/assets/mappingKeys';
-import { EquipmentOilCompatibilityEntity } from 'src/models/equipment-oil-compatibility.entity';
+import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
+import { Mapping, searchKey } from '../../../assets/mappingKeys';
+import { EquipmentOilCompatibilityEntity } from '../../../models/equipment-oil-compatibility.entity';
 
 @Injectable()
 export class EquipmentOilCompatibilityService {

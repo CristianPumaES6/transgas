@@ -14,9 +14,9 @@ import { EquipmentSystemService } from './equipment-system/equipment-system.serv
 import { ConsumptionEquipmentService, SaveListConsumptionEquipmentEntity } from './consumption-equipment/consumption-equipment.service';
 import { BunkerOilService } from './bunker-oil/bunker-oil.service';
 import { Mapping } from '../../assets/mappingKeys';
-import { SendMailHTMLOverCosumption } from 'src/assets/nodemailer.assets';
+import { SendMailHTMLOverCosumption } from '../../assets/nodemailer.assets';
 import { EquipmentOilCompatibilityService } from './equipment-oil-compatibility/equipment-oil-compatibility.service';
-import { EquipmentOilCompatibilityEntity } from 'src/models/equipment-oil-compatibility.entity';
+import { EquipmentOilCompatibilityEntity } from '../../models/equipment-oil-compatibility.entity';
 
 
 @Controller('oils')

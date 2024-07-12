@@ -5,7 +5,7 @@ import { getManager, Like, Not, Repository } from 'typeorm';
 import { URL_Server } from '../../../config/server.config';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { FormatDateSumDays, FormatDateUTCToDateHour, GetDate } from '../../../assets/moment.assets';
-import { Mapping, searchKey } from 'src/assets/mappingKeys';
+import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
 @Injectable()
 export class DailyReportsService {

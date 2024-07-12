@@ -17,11 +17,11 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 // Template config
 import { SQLITE_PATH, TEMPLATE_MAIL_PATH } from '../config/path.config';
 import { MailOptions } from '../models/assets/mailOptions.model';
-import { MailLastVoyage } from 'src/models/sendMailConfig';
+import { MailLastVoyage } from '../models/sendMailConfig';
 import { ConvertDateUTC_To_FORMAT_UTC } from './moment.assets';
 import { mathRound } from './math.assets';
 import { translateActivity } from './translate.assets';
-import { URL_Server } from 'src/config/server.config';
+import { URL_Server } from '../config/server.config';
 
 
 let mailServer;

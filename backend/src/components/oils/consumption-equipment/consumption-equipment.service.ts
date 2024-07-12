@@ -17,8 +17,8 @@ import { URL_Server } from '../../../config/server.config'
 import { UserEntity } from '../../../models/user.entity';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { ConvertMMDDYYYToYYYYMMDD, Convert_YYYYMMD_To_YYYYMMDD, GetDate } from '../../../assets/moment.assets';
-import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
-import { Mapping, searchKey } from 'src/assets/mappingKeys';
+import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
+import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
 @Injectable()
 export class ConsumptionEquipmentService {
