@@ -8,17 +8,18 @@ import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { VoyagesService } from './voyages.service';
 
 // Entity
-import { ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
+import { DataModuleCombustible, ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
 import { ConvertDateUTC_masUnaCantidadDeHoras, ConvertDateUTC_To_FORMAT_UTC, ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL, ConvertDDMMYYHHMM5HorasLOCAL, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, DateDayMonthYear, FormatDateUTCToDateHour, GetDate, ObtenerlasHorasDeUnaFecaUTC } from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
-import { DailyReportsService } from './daily-reports/daily-reports.service';
+import { DailyReportsService, SaveListDailyReport } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService, GenerateFormatObjForExcelEmail } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { MailLastVoyage, SendMailConfig } from '../../models/sendMailConfig';
 import { SendMailArchiveInfoLastVoyage } from './../../assets/nodemailer.assets'
+import { Mapping, searchKey } from '../../assets/mappingKeys';
 
 
 @Controller('voyages')
@@ -31,7 +32,6 @@ export class VoyagesController {
         private readonly _formatExcelLastVoyageService: FormatExcelLastVoyageService,
         private readonly _usersService: UsersService,
     ) { }
-
 
     @Get('byYears')
     async GetsByYear(@Headers() headers, @Query() voyageFilterByYears: VoyageFilterByYears): Promise<any> {
@@ -437,7 +437,6 @@ export class VoyagesController {
         );
     }
 
-
     // Registra viajes desde un arreglo del objeto Port.
     @Post('importVoyages')
     async ImportJSONVoyages(@Headers() headers, @Body() ImportVoyages: ImportVoyage[]): Promise<any> {
@@ -581,8 +580,8 @@ export class VoyagesController {
                             newPort.startDate = null;
                         }
 
-                        newPort.startIFO =  <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                        newPort.startMGO =  <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
 
                         // Auditoria.
@@ -667,15 +666,21 @@ export class VoyagesController {
 
                 // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
 
+
+                let fechaMAs0 = '';
                 // esto es por un excel especial
                 if (importVoyage.date.length == 14 || importVoyage.date.length == 13 || importVoyage.date.length == 12 || importVoyage.date.length == 11 || importVoyage.date.length == 15 || importVoyage.date.length == 18) {
 
-                    ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date) + '.000';
+                    ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date, 5) + '.000';
 
                 } else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
                     // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
                     ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
 
+                } else if (importVoyage.date.length == 9) {
+                    ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
+                } else if (importVoyage.date.length == 10) {
+                    ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
                 } else {
                     ultimaFecha = null;
                     console.log(importVoyage.date);
@@ -722,11 +727,13 @@ export class VoyagesController {
                         newReport.hour = importVoyage.hour;
                         console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId)
                     }
-                }else{
-                     let fechatemporalporhora = ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, 5);
-                newReport.hour = ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora)
-               
+                } else {
+                    let fechatemporalporhora = ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, 5);
+                    newReport.hour = ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora)
+
                 }
+
+                newReport.date = <any>ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, -5);
                 // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
                 // delete newReport.date;
                 // delete newReport.hour;
@@ -1515,46 +1522,46 @@ export class VoyagesController {
 
             let ultimaFecha: any;
             for await (const importDailyReport of ImportDailyReport) {
- 
+
 
 
 
                 // Armamos el obj de reporte.
                 let updateReport = <any>{};
-                
+
                 updateReport.id = importDailyReport.id;
 
-                                
-                if(!!importDailyReport.north_degree){
-                    updateReport.north_degree = importDailyReport.north_degree;              
+
+                if (!!importDailyReport.north_degree) {
+                    updateReport.north_degree = importDailyReport.north_degree;
                 }
-                if(!!importDailyReport.north_minutes){
-                    updateReport.north_minutes= importDailyReport.north_minutes;       
+                if (!!importDailyReport.north_minutes) {
+                    updateReport.north_minutes = importDailyReport.north_minutes;
                 }
-                if(!!importDailyReport.north_north_south){
+                if (!!importDailyReport.north_north_south) {
                     updateReport.north_north_south = importDailyReport.north_north_south;
                 }
 
-                if(!!importDailyReport.east_degree){
+                if (!!importDailyReport.east_degree) {
                     updateReport.east_degree = importDailyReport.east_degree;
                 }
-                if(!!importDailyReport.east_minutes){
-                    updateReport.east_minutes= importDailyReport.east_minutes;
+                if (!!importDailyReport.east_minutes) {
+                    updateReport.east_minutes = importDailyReport.east_minutes;
                 }
-                if(!!importDailyReport.east_east_west){
+                if (!!importDailyReport.east_east_west) {
                     updateReport.east_east_west = importDailyReport.east_east_west;
                 }
 
-                            
-              
+
+
                 updateReport.distance = importDailyReport.distance;
 
 
 
                 // Si no tiene un reportId lo creamos
                 if (!updateReport.id) {
- 
-                } else { 
+
+                } else {
                     await this._dailyReportsService.Update(updateReport);
                     console.log('Update' + updateReport.id);
                 }
@@ -1568,7 +1575,6 @@ export class VoyagesController {
             return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! '
         }
     }
-
 
     @Post('sendEmailLastVoyage')
     async SendEmailLastVoyage(@Body() sendMailConfig: SendMailConfig): Promise<any> {
@@ -1712,83 +1718,138 @@ export class VoyagesController {
 
     }
 
+    UpdateData(@Headers() headers, @Body() voyages: Voyage[]): { mensaje: string } {
 
-     UpdateData(@Headers() headers, @Body() voyages: Voyage[]): { mensaje: string } {
-        
         // Le asigno el valor al token desde la cabecera.
         // Lo decodifico con otra libreria por problemas jwt-module.
         let headerToken: UserEntity = JwtDecode(headers.authorization);
 
         voyages.forEach(
             async (voyage) => {
-          // Verifica el campo SyncStatus para decidir si es una adición o una actualización
-          if (voyage.SyncStatus === 'added') {
-            
-            if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+                // Verifica el campo SyncStatus para decidir si es una adición o una actualización
+                if (voyage.SyncStatus === 'added') {
 
-                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    // NO se hace nada
-                } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+                    if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
 
-                delete voyage.id;
-                // Auditoria.
-                voyage.userIdCreated = headerToken.id;
-                voyage.dateCreated = GetDate();
-                delete voyage.userIdUpdated;
-                delete voyage.dateUpdated;
-                voyage.status = Boolean(voyage.status);
-                // Ejecutamos la funcion que registra en bd.
-                await this._voyagesService.Create(voyage);
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            // NO se hace nada
+                        } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
+
+                        delete voyage.id;
+                        // Auditoria.
+                        voyage.userIdCreated = headerToken.id;
+                        voyage.dateCreated = GetDate();
+                        delete voyage.userIdUpdated;
+                        delete voyage.dateUpdated;
+                        voyage.status = Boolean(voyage.status);
+                        // Ejecutamos la funcion que registra en bd.
+                        await this._voyagesService.Create(voyage);
+                    }
+                    else throw 'MISSING_FIELS';
+
+                } else if (voyage.SyncStatus === 'update') {
+
+                    // Validamos los datos del objeto a registar.
+                    if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
+
+                        voyage.id = Number(voyage.id);
+
+                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                            // No se hace nada
+                        } else if (Number(headerToken.id) !== Number(voyage.userId)) throw new Error('ERROR_USERID_FAIL');
+
+                        // Auditoria.
+                        delete voyage.userIdCreated;
+                        delete voyage.dateCreated;
+                        voyage.userIdUpdated = headerToken.id;
+                        voyage.dateUpdated = GetDate();
+                        voyage.status = Boolean(voyage.status);
+                        // Ejecutamos la funcion que actualiza el obj en la bd.
+                        await this._voyagesService.Update(voyage);
+                    } else {
+                        // Enviar los datos necesarios.
+                        throw 'MISSING_FIELS';
+                    }
+                }
             }
-            else throw 'MISSING_FIELS';
-            
-          } else if (voyage.SyncStatus === 'update') {
-
-              // Validamos los datos del objeto a registar.
-              if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
-                
-                voyage.id = Number(voyage.id);
-
-                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    // No se hace nada
-                } else if (Number(headerToken.id) !== Number(voyage.userId)) throw new Error('ERROR_USERID_FAIL');
-
-                // Auditoria.
-                delete voyage.userIdCreated;
-                delete voyage.dateCreated;
-                voyage.userIdUpdated = headerToken.id;
-                voyage.dateUpdated = GetDate();
-                voyage.status = Boolean(voyage.status);
-                // Ejecutamos la funcion que actualiza el obj en la bd.
-                await this._voyagesService.Update(voyage);
-            } else {
-                // Enviar los datos necesarios.
-                throw 'MISSING_FIELS';
-            }
-          }
-        }
         );
-    
+
         return { mensaje: 'Datos recibidos correctamente' };
-      }
-
-
-
-    
-}
-
-export class Mapping {
-    constructor(
-        public key?: number,
-        public value?: number
-    ) {
-        this.key = key || 0;
-        this.value = value || 0;
     }
 
-}
+    @Post('saveModuleVoyage')
+    async SaveDataVoyage(@Headers() headers, @Body() saveDataModuleCombustible: DataModuleCombustible): Promise<any> {
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+
+        // Mapping de Id del server con el id del cliente
+        let mappingVoyages: Mapping[] = [];
+        let mappingPorts: Mapping[] = [];
+        let mappingDailyReports: Mapping[] = [];
 
 
-export function searchKey(mappings: Mapping[], key: number): Mapping {
-    return mappings.find(mapping => Number(mapping.key) == Number(key));
+
+
+        console.log('--------------------------');
+        console.log('-----------[  START saveModuleVoyage   ]---------------');
+        console.log(JSON.stringify(saveDataModuleCombustible));
+        console.log('-----------[  END saveModuleVoyage   ]---------------');
+        console.log('--------------------------');
+
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+                // Validamos que esten llegando los datos necesarios.
+                if (saveDataModuleCombustible) {
+                    if (saveDataModuleCombustible.listVoyages) {
+                        // Ejecutamos la funcion que registra en bd.
+                        return this._voyagesService.SaveList(saveDataModuleCombustible.listVoyages);
+                    } else {
+                        return [];
+                    }
+                }
+                else throw 'MISSING_FIELS';
+            }
+        ).then(
+            (resultMappingVoyages: Mapping[]) => {
+                mappingVoyages = resultMappingVoyages;
+
+                if (saveDataModuleCombustible.listPorts) {
+                    return this._portsService.SaveList(mappingVoyages, saveDataModuleCombustible.listPorts);
+                } else {
+                    return [];
+                }
+            }
+        ).then(
+            (resultMappingPorts: Mapping[]) => {
+                mappingPorts = resultMappingPorts;
+
+                if (saveDataModuleCombustible.listDailyReports) {
+                    return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
+                } else {
+                    return {
+                        mappingReport: [],
+                        registeredReportsList: []
+                    }
+                }
+            }
+        ).then(
+            (resultMappingDailyReports: SaveListDailyReport) => {
+                mappingDailyReports = resultMappingDailyReports.mappingReport;
+
+                // retornamos una Respuesta exitosa.
+                return {
+                    status: HttpStatus.OK,
+                    message: 'OK',
+                    data: {
+                        mappingVoyages: mappingVoyages,
+                        mappingPorts: mappingPorts,
+                        mappingDailyReports: mappingDailyReports
+                    }
+                };
+            }
+        );
+    }
+
 }

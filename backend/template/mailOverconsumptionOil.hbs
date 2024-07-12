@@ -1,0 +1,185 @@
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 680px;">
+
+    <tbody>
+        
+        <tr>
+            <td width="100%">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td height="30"
+                                style="font-size:27px;text-align:center;font-family:sans-serif;color:#0a085a;vertical-align:middle"
+                                valign="bottom" width="100%">
+
+                                <img alt="Logo"
+                                    src="https://itcperu.com.pe/wp-content/uploads/2022/10/transgas-300x300.png"
+                                    class="CToWUd a6T" data-bit="iit" tabindex="0" width="100px" height="100px" />
+
+                                <br>
+                                <strong>Transgas</strong></span>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td height="30"
+                                style="font-size:27px;text-align:center;font-family:sans-serif;vertical-align:middle;line-height:50px"
+                                valign="bottom" width="100%">
+
+                                <a href="https://transgas.web.app" style="text-decoration:none" target="_blank"
+                                    data-saferedirecturl="https://transgas.web.app">
+                                    <span style="color:#616161;font-size:27 px">
+                                        <strong>ANALYSIS OF CONSUMPTION</strong>
+                                    </span>
+                                </a>
+                                <br>
+                                <span
+                                    style="color: #616161;font-family:sans-serif;font-size:27px;/* background-color:#00b0f4; */">
+                                    <strong>Get voyage analysis in just one click!</strong>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="100%">
+                <div style="text-align: center;">
+                    <div style="display: block; color:#0855c4;font-size:25.5px;font-family:sans-serif;">
+                        <b>VESSEL : {{nameBuque}}</b>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="display: block; color:#0855c4;font-size:25.5px;font-family:sans-serif;">
+                        <b>DATE SENT TO THE SERVER : {{dateSend}}</b>
+                    </div>
+
+
+                </div>
+
+            </td>
+        </tr>
+
+
+        <tr>
+            <td
+                style="text-align:center;color:#000;font-family:arial,helvetica;font-size:15px;background:#fff;line-height:30px">
+                <br>
+                <span style="text-decoration:none;color:#000" target="_blank">
+                    <span style="font-size:19px;color:#545454">
+                        <b>Information on lubricant overconsumption.</b>
+                    </span>
+                </span>
+
+                <div style="align-items: center;display: block;">
+                    <table class="default" cellspacing="0" cellpadding="0" style="margin: auto;">
+
+                        <tr style="border-color: #155af5!important; color: white;">
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #375f9a;">
+                                DATE </th>
+
+
+                            <th
+                                style="line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                SYSTEM</th>
+
+                                <th
+                                style="width:150px; line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                LUBRICANT
+                            </th>
+                            <th
+                                style="width:80px; line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                CONSUMP.<br>AMOUNT
+                            </th>
+                            <th
+                                style="width:50px; line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                RATE
+                            </th>
+
+
+                            <th
+                                style="width:50px; line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                TRIAL
+                            </th>
+
+
+                            <th
+                                style="width:100px; line-height: 11px;padding: 5px 5px;font-size: 12px;border: 1px solid #155af5!important;background: #0040d8;">
+                                MORE  INFORMATION
+                            </th>
+                        </tr>
+                        
+                        {{#each listConsumptionLubricant}}
+                            {{#each data}}
+                                <tr style="height: 17.8px;border: 1px solid #155af5!important; color: black4;">
+                                    <th style="line-height: normal; padding: 3px 5px 2px 5px; font-size: 10px; border: 1px solid #155af5!important;">
+                                        {{../dateConsumption}}
+                                    </th>
+                                    <th style="line-height: normal; padding: 3px 5px 2px 5px; font-size: 10px; border: 1px solid #155af5!important;">
+                                        {{equipment}}
+                                    </th>
+                                    <th style="line-height: normal; padding: 3px 5px 2px 5px; font-size: 10px; border: 1px solid #155af5!important;">
+                                        {{nameOil}}
+                                    </th>
+                                    <th style="line-height: normal; padding: 3px 5px 2px 5px; font-size: 10px; border: 1px solid #155af5!important;">
+                                        {{amountConsumption}} ltrs in {{hourConsumption}} hrs
+                                    </th>
+                                    <th style="line-height: normal; padding: 3px 5px 2px 5px; font-size: 10px; border: 1px solid #155af5!important;background: #ff7c7c;">
+                                        {{calcRate}} l/hour
+                                    </th>
+                                    <th style="line-height: normal; padding: 3px 5px 2px 5px; font-size: 10px; border: 1px solid #155af5!important;">
+                                        {{rate}} l/hour
+                                    </th>
+                                    <th style="line-height: normal; padding: 3px 5px 2px 5px; font-size: 10px; border: 1px solid #155af5!important;">
+                                        {{../observation}} 
+                                        <a href="https://transgas.outsystemscloud.com/Transgas_UI/Dashboard2?BuqueId={{userId}}&EquipmentId={{equipmentId}}&Date={{../dateYYYYMM}}"> See more >></a>
+                                    </th>
+                                </tr>
+                            {{/each}}
+                        {{/each}}
+
+                    </table>
+                </div>
+
+
+
+
+
+
+            </td>
+        </tr>
+
+
+
+
+
+
+        <tr>
+            <td height="15" style="background:#fff" width="680"> &nbsp;</td>
+        </tr>
+
+
+
+        <tr>
+            <td height="136"
+                style="text-align:center;color:#9ca6af;font-family:arial,helvetica;font-size:11px;background:#f4f4f4;line-height:16px">
+               This email was sent by the Transgas Analysis Platform.<br><br>Lima 33, Av La Encalada 995
+                <br>
+                <span style="color:#02aeee">Contact us at (01) 4360999</span><br> ®2024 All rights reserved.<br><a href=""
+                    style="font-family:Arial,Helvetica,sans-serif;color:#00adee;font-weight:bold;text-decoration:none"
+                    target="_blank">
+                    Unsubscribe</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

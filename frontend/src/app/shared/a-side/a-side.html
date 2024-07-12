@@ -7,7 +7,7 @@
     </a>
     <nav class="nav">
       <a href="#" class="nav-link"
-        [ngClass]="{'active' : navLink === 'dashboard'|| navLink === 'overview' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
+        [ngClass]="{'active' : navLink === 'dashboard'|| navLink === 'overview' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis' || navLink === 'oil_lubricant_analysis' }"
         (click)="selectNavLink('dashboard')" matTooltip="Dashboard">
         <i class="icon-menu-dashboard"></i>
       </a>
@@ -54,7 +54,7 @@
 
       <ng-template [ngIf]="isOpenSubMenu || !isOpenSubMenu">
         <a id="asideDashboard" href="#" class="az-iconbar-pane show"
-          [ngClass]="{'active' : navLink === 'dashboard' || navLink === 'overview' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis'}"
+          [ngClass]="{'active' : navLink === 'dashboard' || navLink === 'overview' || navLink === 'general_analysis' || navLink === 'consumer_analysis' || navLink === 'speed_analysis' || navLink === 'oil_lubricant_analysis'}"
           (click)="selectNavLink('dashboard')">
           <h6 class="az-iconbar-title">{{'DASHBOARD' | translateMessage:translateCategory}}</h6>
 
@@ -84,6 +84,9 @@
                 (click)="selectNavLink('speed_analysis')">Speed Analysis</a>
 
             </ng-template>
+
+                <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'oil_lubricant_analysis'}"
+                (click)="selectNavLink('oil_lubricant_analysis')">Oil Lubricant Analysis</a>
 
           </nav>
 

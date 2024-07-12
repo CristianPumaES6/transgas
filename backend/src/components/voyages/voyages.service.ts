@@ -12,6 +12,8 @@ import { DummyPromise } from '../../assets/promises.assets';
 import { Voyage, VoyageFilterByYears } from '../../models/voyage.entity'; // < Suele cambiar.
 import { URL_Server } from '../../config/server.config';
 import { Port } from '../../models/port.entity';
+import { GetDate } from '../../assets/moment.assets';
+import { Mapping } from '../../assets/mappingKeys';
 
 
 @Injectable()
@@ -452,5 +454,80 @@ export class VoyagesService {
                     return result;
                 }
             );
+    }
+
+    async  SaveList( importVoyages: Voyage[] ) {
+
+        // Mapping
+        let MappingVoyages: Mapping[] = [];
+        // Filtramos los datos que faltan aggregar y actualizar.
+        const addVoyages = importVoyages.filter((voyage: Voyage) => voyage.SyncStatus == 'added');
+        const updateVoyages = importVoyages.filter((voyage: Voyage) => voyage.SyncStatus == 'updated');
+        const deleteVoyages = importVoyages.filter((voyage: Voyage) => voyage.SyncStatus == 'deleted');
+
+
+ 
+        for await (const addVoyage of addVoyages) {
+
+            // Armamos al nuevo aceite
+            let newVoyageEntity = new Voyage();
+
+            delete newVoyageEntity.id;
+            newVoyageEntity.userId = addVoyage.userId;
+            newVoyageEntity.voyageNumber = addVoyage.voyageNumber;
+            newVoyageEntity.year = addVoyage.year;
+ 
+            // Auditoria
+            newVoyageEntity.userIdCreated = addVoyage.userIdCreated;
+            newVoyageEntity.dateCreated = GetDate();
+            delete newVoyageEntity.userIdUpdated;
+            delete newVoyageEntity.dateUpdated;
+            newVoyageEntity.status = Boolean(addVoyage.status);
+
+            // Registramos grupo de aceite
+            let registers = await this.Create(newVoyageEntity);
+
+            // Lo agregamos al mapping
+            MappingVoyages.push(new Mapping(addVoyage.id, registers.id))
+        }
+
+        for await (const updateVoyage of updateVoyages) {
+            let updateVoyageEntity = new Voyage();
+
+            updateVoyageEntity.id = updateVoyage.id;
+            updateVoyageEntity.userId = updateVoyage.userId;
+            updateVoyageEntity.voyageNumber = updateVoyage.voyageNumber;
+            updateVoyageEntity.year = updateVoyage.year;
+
+            // Auditoria
+            updateVoyageEntity.userIdCreated = updateVoyage.userIdCreated;
+            updateVoyageEntity.dateCreated = updateVoyage.dateCreated;
+            updateVoyageEntity.userIdUpdated= updateVoyage.userIdUpdated;
+            updateVoyageEntity.dateUpdated = updateVoyage.dateUpdated;
+            updateVoyageEntity.status = Boolean(updateVoyage.status);
+
+            await this.voyageRepository.save(updateVoyage);
+        }
+
+        for await (let deleteVoyage of deleteVoyages) {
+            let deleteVoyageEntity = new Voyage();
+
+            deleteVoyageEntity.id = deleteVoyage.id;
+            deleteVoyageEntity.userId = deleteVoyage.userId;
+            deleteVoyageEntity.voyageNumber = deleteVoyage.voyageNumber;
+            deleteVoyageEntity.year = deleteVoyage.year;
+
+            // Auditoria.
+            deleteVoyageEntity.userIdCreated = deleteVoyage.userIdCreated;
+            deleteVoyageEntity.dateCreated = deleteVoyage.dateCreated;
+            deleteVoyageEntity.userIdUpdated= deleteVoyage.userIdUpdated;
+            deleteVoyageEntity.dateUpdated = deleteVoyage.dateUpdated;
+            deleteVoyageEntity.status = Boolean(deleteVoyage.status);
+
+            await this.voyageRepository.save(deleteVoyage);
+        }
+
+
+        return MappingVoyages;
     }
 }

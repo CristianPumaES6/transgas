@@ -33,6 +33,7 @@ import { ConsumptionAnalysisComponent } from '../components/dashboard/consumptio
 import { DialogConfigDashboardComponent } from '../shared/dialog/dialog-config-dashboard/dialog-config-dashboard.component';
 import { OverviewComponent } from '../components/dashboard/overview/overview.component';
 import { DialogConfigMailComponent } from '../shared/dialog/dialog-config-mail/dialog-config-mail.component';
+import { LubricantAnalysisComponent } from '../components/dashboard/lubricant-analysis/lubricant-analysis.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { DialogConfigMailComponent } from '../shared/dialog/dialog-config-mail/d
     ConsumptionAnalysisComponent,
     DialogConfigDashboardComponent,
     OverviewComponent,
-    DialogConfigMailComponent
+    DialogConfigMailComponent,
+    LubricantAnalysisComponent
   ],
   imports: [
     GlobalModule,

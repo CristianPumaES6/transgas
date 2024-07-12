@@ -5,6 +5,8 @@ import { Like, Not, Repository } from 'typeorm';
 import { DummyPromise } from '../../../assets/promises.assets';
 import { URL_Server } from '../../../config/server.config';
 import { DailyReport } from '../../../models/daily-report.entity';
+import { GetDate } from '../../../assets/moment.assets';
+import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
 @Injectable()
 export class PortsService {
@@ -416,5 +418,109 @@ export class PortsService {
                     return result;
                 }
             );
+    }
+
+
+
+    
+    async  SaveList( MappingVoyages: Mapping[], importPorts: Port[] )  {
+
+        // Mapping
+        let MappingPorts: Mapping[] = [];
+
+        // Filtramos los datos que faltan aggregar y actualizar.
+        const addPorts = importPorts.filter((port: Port) => port.SyncStatus == 'added');
+        const updatePorts = importPorts.filter((port: Port) => port.SyncStatus == 'updated');
+        const deletePorts = importPorts.filter((port: Port) => port.SyncStatus == 'deleted');
+ 
+        for await (const addPort of addPorts) {
+            let searchMappingVoyage = searchKey(MappingVoyages, addPort.voyageId);
+           
+            // Armamos al nuevo aceite
+            let newPortEntity = new Port();
+
+            delete newPortEntity.id;
+            newPortEntity.userId = addPort.userId;
+
+            newPortEntity.voyageId = addPort.voyageId;
+            if (searchMappingVoyage) { newPortEntity.voyageId = searchMappingVoyage.value }
+            
+            newPortEntity.portNumber = addPort.portNumber;
+            newPortEntity.departurePort = addPort.departurePort;
+            newPortEntity.arrivalPort = addPort.arrivalPort;
+            newPortEntity.startDate = addPort.startDate;
+            newPortEntity.startIFO = addPort.startIFO;
+            newPortEntity.startMGO = addPort.startMGO;
+            
+
+            // Auditoria
+            newPortEntity.userIdCreated = addPort.userIdCreated;
+            newPortEntity.dateCreated = GetDate();
+            delete newPortEntity.userIdUpdated;
+            delete newPortEntity.dateUpdated;
+            newPortEntity.status = Boolean(addPort.status);
+
+            // Registramos grupo de aceite
+            let registers = await this.Create(newPortEntity);
+
+            // Lo agregamos al mapping
+            MappingPorts.push(new Mapping(addPort.id, registers.id))
+        }
+
+        for await (const updatePort of updatePorts) {
+            let updatePortEntity = new Port();
+            let searchMappingVoyage = searchKey(MappingVoyages, updatePort.voyageId);
+           
+            updatePortEntity.id = updatePort.id;
+            updatePortEntity.userId = updatePort.userId;
+            
+            updatePortEntity.voyageId = updatePort.voyageId;
+            if (searchMappingVoyage) { updatePortEntity.voyageId = searchMappingVoyage.value }
+            
+            updatePortEntity.portNumber = updatePort.portNumber;
+            updatePortEntity.departurePort = updatePort.departurePort;
+            updatePortEntity.arrivalPort = updatePort.arrivalPort;
+            updatePortEntity.startDate = updatePort.startDate;
+            updatePortEntity.startIFO = updatePort.startIFO;
+            updatePortEntity.startMGO = updatePort.startMGO;
+            
+            // Auditoria
+            updatePortEntity.userIdCreated = updatePort.userIdCreated;
+            updatePortEntity.dateCreated = updatePort.dateCreated;
+            updatePortEntity.userIdUpdated= updatePort.userIdUpdated;
+            updatePortEntity.dateUpdated = updatePort.dateUpdated;
+            updatePortEntity.status = Boolean(updatePort.status);
+
+            await this.portRepository.save(updatePort);
+        }
+
+        for await (let deletePort of deletePorts) {
+            let deletePortEntity = new Port();
+            let searchMappingVoyage = searchKey(MappingVoyages, deletePort.voyageId);
+           
+            deletePortEntity.id = deletePort.id;
+            deletePortEntity.userId = deletePort.userId;
+            deletePortEntity.voyageId = deletePort.voyageId;
+            if (searchMappingVoyage) { deletePort.voyageId = searchMappingVoyage.value }
+            
+            deletePortEntity.portNumber = deletePort.portNumber;
+            deletePortEntity.departurePort = deletePort.departurePort;
+            deletePortEntity.arrivalPort = deletePort.arrivalPort;
+            deletePortEntity.startDate = deletePort.startDate;
+            deletePortEntity.startIFO = deletePort.startIFO;
+            deletePortEntity.startMGO = deletePort.startMGO;
+
+            // Auditoria.
+            deletePortEntity.userIdCreated = deletePort.userIdCreated;
+            deletePortEntity.dateCreated = deletePort.dateCreated;
+            deletePortEntity.userIdUpdated= deletePort.userIdUpdated;
+            deletePortEntity.dateUpdated = deletePort.dateUpdated;
+            deletePortEntity.status = Boolean(deletePort.status);
+
+            await this.portRepository.save(deletePort);
+        }
+
+
+        return MappingPorts;
     }
 }

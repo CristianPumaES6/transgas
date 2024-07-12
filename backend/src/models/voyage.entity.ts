@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Port } from './port.entity';
+import { DailyReport } from './daily-report.entity';
 
 @Entity()
 export class Voyage {
@@ -93,4 +94,24 @@ export class ImportVoyage {
 
 
     delete_report: boolean;
+}
+
+export class DataModuleCombustible {
+    userId : number;
+    listVoyages:Voyage[];
+    listPorts:Port[];
+    listDailyReports:DailyReport[];
+    
+
+    constructor(
+        userId? : number,
+        listVoyages?: Voyage[],
+        listPorts?: Port[],
+        listDailyReports?: DailyReport[]
+      ) {
+        this.userId = userId || null;
+        this.listVoyages = listVoyages || []; 
+        this.listPorts = listPorts || [];
+        this.listDailyReports = listDailyReports || []; 
+      }
 }

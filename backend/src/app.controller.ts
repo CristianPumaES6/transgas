@@ -14,12 +14,14 @@ import { DummyPromise } from './assets/promises.assets';
 import { LoggedUser } from './models/loggedUser';
 import { URL_Server } from './config/server.config';
 import { AppGateway } from './app.gateway';
+import { ConsumptionEquipmentService } from './components/oils/consumption-equipment/consumption-equipment.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly authService: AuthService,
+    private readonly _ConsumptionEquipmentService: ConsumptionEquipmentService,
     private readonly _AppGateway: AppGateway
   ) { }
 
@@ -227,4 +229,60 @@ export class AppController {
 
   }
 
+  @Get('ListConsumptionLubricantPerMonth/:userId/:startDate/:endDate')
+  async ConsultaGeneral(@Param('userId') buqueId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+        let userId = Number(buqueId);
+
+        console.log("buqueId : " + buqueId)
+        console.log("startDate : " + startDate)
+        console.log("endDate : " + endDate)
+
+        return this.appService.ListConsumptionLubricantPerMonth( userId, startDate, endDate );
+      }
+    )
+
+  }
+
+  @Get('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH')
+  async ConsultEquipmentConsumptionByMonthUser(@Param('userId') buqueId, @Param('EquipmentId') EquipmentId, @Param('YEAR_MONTH') YEAR_MONTH) {
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        let userId = Number(buqueId);
+        let entityEquipmentId = Number(EquipmentId);
+        let DateYEAR_MONTH =YEAR_MONTH;
+
+        return this.appService.consultEquipmentConsumptionByMonthUser(userId,entityEquipmentId,DateYEAR_MONTH);
+
+      }
+    )
+  }
+
+
+  @Get('Ships')
+  async GetShips() {
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this.appService.GetShips();
+
+      }
+    )
+  }
+
+  @Get('GetStatusOilStartEndDate/:userId/:startDate/:endDate')
+  async GetStatusOilStartEnd(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId,startDate,endDate);
+
+      }
+    );
+
+  }
+  
 }

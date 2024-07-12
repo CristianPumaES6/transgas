@@ -22,7 +22,7 @@ import { UsersModule } from '../users/users.module';
     DailyReportsModule,
     UsersModule
   ],
-  providers: [VoyagesService,FormatExcelLastVoyageService],
+  providers: [VoyagesService, FormatExcelLastVoyageService],
   controllers: [VoyagesController]
 })
 export class VoyagesModule {}

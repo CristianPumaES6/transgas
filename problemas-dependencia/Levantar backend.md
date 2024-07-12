@@ -5,7 +5,7 @@ https://github.com/CristianPumaES6/transgas
 
 branch production
 
-git clone --b production https://github.com/CristianPumaES6/transgas.git
+git clone -b production https://github.com/CristianPumaES6/transgas.git
 
 entramos al directorio backend nos ubicamos donde esta el package.json
 y colocamos

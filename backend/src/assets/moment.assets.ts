@@ -34,12 +34,42 @@ export function FormatDateUTCToDateHour(dateUTC: any): string {
     return format;
 }
 
+export function FormatDateUTCToDate(dateUTC: any): string {
+    // Con el formato YYYY MM DD
+    let momentDate = moment.utc(dateUTC);
+
+    let local = momentDate.local();
+
+    let format = local.format('MM/DD/YYYY');
+
+    return format;
+}
+
+export function FormatDateUTCToDateYYYYMM(dateUTC: any): string {
+    // Con el formato YYYY MM DD
+    let momentDate = moment.utc(dateUTC);
+
+    let local = momentDate.local();
+
+    let format = local.format('YYYY-MM');
+
+    return format;
+}
 
 export function ConvertDateUTC_To_FORMAT_UTC(dateUTC): string {
     let momentDate = moment.utc(dateUTC);
 
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
+
+
+export function Convert_YYYYMMD_To_YYYYMMDD(date): string {
+    
+  let text =  moment(date, ['YYYY-M-D', 'YYYY-MM-DD']).format('YYYY-MM-DD');
+
+    return text;
+}
+
 
 // este convert retorna con -5 horas para que se registre en e; server
 export function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC): string {
@@ -49,12 +79,12 @@ export function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC): string {
 }
 
 // este convert retorna con -5 horas para que se registre en e; server
-export function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC): string {
+export function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC,addHour:number): string {
 
 
     let mommentTemporal = moment.utc(dateUTC, "DD/MM/YY HH:mm");
 
-    let momentDate = mommentTemporal.subtract(5, 'hours');
+    let momentDate = mommentTemporal.subtract(addHour, 'hours');
 
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
@@ -77,7 +107,9 @@ export function ObtenerlasHorasDeUnaFecaUTC(dateUTC): string {
     return hour;
 }
 export function ConvertDateUTC_masUnaCantidadDeHoras(dateUTC, horas): string {
-    let momentDate = moment.utc(dateUTC).add(horas, 'h');
+
+    
+    let momentDate = moment.utc(dateUTC, "DD/MM/YYYY").add(horas, 'h');
 
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
