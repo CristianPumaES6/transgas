@@ -36,10 +36,10 @@ export class UserEntity {
     // CONFIG DE DATOS PARA EL CUADRO DEL DASHBOARD
 
     // Velocidad minima
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     minSpeed: number;
     // Velocidad maxima
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     maxSpeed: number;
 
     // El Buque usa este tipo de combustible?
@@ -53,13 +53,13 @@ export class UserEntity {
     isConsumptionMGO: boolean;
 
     // Maximo de consumo para los cuadros de los dashboard.
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     maxIFOConsumption: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     maxMGOConsumption: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     minIFOConsumption: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     minMGOConsumption: number;
 
 
@@ -91,56 +91,56 @@ export class UserEntity {
     // --------------PERFORMANCE MGO-------------------------------
 
     // Cofiguracion de consumo de navegacion por contrato.
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     contractSpeedSailingBallastMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     contractSpeedSailingLadenMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     contractSpeedSailingEconomicalMGO: number;
 
     // Consumo por contrato
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8, default: 0 })
     loadingConsumptionMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     dischargeConsumptionMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8, default: 0 })
     sailingBallastConsumptionMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     sailingLoadConsumptionMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     sailingEconomicConsumptionMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     anchoredConsumptionMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     maneuverConsumptionMGO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8, default: 0 })
     otherConsumptionMGO: number;
 
     //Performance IFO
     // Cofiguracion de consumo de navegacion por contrato.
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     contractSpeedSailingBallastIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     contractSpeedSailingLadenIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     contractSpeedSailingEconomicalIFO: number;
 
     // Consumo por contrato
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     loadingConsumptionIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     dischargeConsumptionIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     sailingBallastConsumptionIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     sailingLoadConsumptionIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8, default: 0 })
     sailingEconomicConsumptionIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     anchoredConsumptionIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8, default: 0 })
     maneuverConsumptionIFO: number;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 8,  default: 0 })
     otherConsumptionIFO: number;
 
     // Configuracion DASHBOARD
@@ -160,26 +160,26 @@ export class UserEntity {
     isDisplayVesselPerformanceMGO: boolean;
 
 
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentME_MGO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentAE_MGO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentBOILER_MGO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentIG_MGO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentPP_MGO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentOther_MGO: number;
 
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentME_IFO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentAE_IFO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentBOILER_IFO: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8} )
     consumptionEquipmentOther_IFO: number;
 
 

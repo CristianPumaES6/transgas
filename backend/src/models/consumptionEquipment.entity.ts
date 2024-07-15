@@ -10,9 +10,9 @@ export class ConsumptionEquipmentEntity {
     userId: number;
     @Column({ nullable: false })
     date: string;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8})
     amount: number;
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 8})
     hourConsumption: number;
     @Column({ nullable: true })
     observation: string;

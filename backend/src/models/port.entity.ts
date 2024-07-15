@@ -38,9 +38,9 @@ export class Port {
 
     @Column({ nullable: true })
     startDate: string;
-    @Column({ default: 0, nullable: true })
+    @Column({ type: 'decimal', precision: 10, scale: 8, default: 0, nullable: true })
     startIFO: number;
-    @Column({ default: 0, nullable: true })
+    @Column({ type: 'decimal', precision: 10, scale: 8, default: 0, nullable: true })
     startMGO: number;
 
     // Auditoria
