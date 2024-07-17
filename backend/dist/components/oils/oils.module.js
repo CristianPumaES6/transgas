@@ -30,8 +30,9 @@ const equipment_oil_compatibility_entity_1 = require("../../models/equipment-oil
 const oilPriceHistory_entity_1 = require("../../models/oilPriceHistory.entity");
 let OilsModule = class OilsModule {
 };
-OilsModule = __decorate([
-    common_1.Module({
+exports.OilsModule = OilsModule;
+exports.OilsModule = OilsModule = __decorate([
+    (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([oil_entity_1.OilEntity, oilPriceHistory_entity_1.OilPriceHistory, consumptionEquipment_entity_1.ConsumptionEquipmentEntity, group_oils_entity_1.GroupOilEntity, buker_oil_entity_1.BunkerOil, equipment_system_entity_1.EquipmentSystemEntity, equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity]),
         ],
@@ -40,5 +41,4 @@ OilsModule = __decorate([
         exports: [consumption_equipment_service_1.ConsumptionEquipmentService]
     })
 ], OilsModule);
-exports.OilsModule = OilsModule;
 //# sourceMappingURL=oils.module.js.map

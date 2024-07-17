@@ -1,5 +1,5 @@
 import { ConsumptionEquipmentService } from './consumption-equipment.service';
-import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
+import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
 export declare class ConsumptionEquipmentController {
     private readonly _ConsumptionEquipmentService;
     constructor(_ConsumptionEquipmentService: ConsumptionEquipmentService);

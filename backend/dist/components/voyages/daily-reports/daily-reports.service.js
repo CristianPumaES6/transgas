@@ -33,7 +33,7 @@ let DailyReportsService = class DailyReportsService {
         this._dailyReportRepository = _dailyReportRepository;
     }
     async Create(dailyReport) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._dailyReportRepository.query(` EXEC SP_CreateNewDailyReport @userId = ${dailyReport.userId} ,@portId = ${dailyReport.portId} ,@activityPerformed = '${dailyReport.activityPerformed}' ,@speedStraction = '${dailyReport.speedStraction}' ,@date ='${dailyReport.date}' ,@hour = '${dailyReport.hour}' ,@bunkeringIfo = ${dailyReport.bunkeringIfo} ,@bunkeringMgo = ${dailyReport.bunkeringMgo} ,@mplaIfo  = ${dailyReport.mplaIfo} ,@auxIfo  = ${dailyReport.auxIfo} ,@boilerIfo  = ${dailyReport.boilerIfo} ,@otherIfo = ${dailyReport.otherIfo} ,@mplaMgo = ${dailyReport.mplaMgo} ,@auxMgo   = ${dailyReport.auxMgo} ,@boilerMgo   = ${dailyReport.boilerMgo} ,@ppMgo = ${dailyReport.ppMgo} ,@giMgo = ${dailyReport.giMgo} ,@otherMgo  = ${dailyReport.otherMgo} ,@steamingTime  = ${dailyReport.steamingTime} ,@distance =${dailyReport.distance} ,@beaufour = '${dailyReport.beaufour}' ,@observation ='${dailyReport.observation}'  ,@userIdCreated = ${dailyReport.userIdCreated} ,@dateCreated = '${dailyReport.dateCreated}' ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} ,@dateUpdated = '${dailyReport.dateUpdated || null}' ,@status = ${dailyReport.status}
                     `);
@@ -57,7 +57,7 @@ let DailyReportsService = class DailyReportsService {
         });
     }
     async Get(id) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._dailyReportRepository.query(`
                      EXEC SP_BuscarReportePorId 
@@ -84,9 +84,9 @@ let DailyReportsService = class DailyReportsService {
         return await this._dailyReportRepository.find({
             where: [
                 {
-                    userId: typeorm_2.Like('%' + (dailyReport.userId || '') + '%'),
-                    portId: typeorm_2.Like('%' + dailyReport.portId + '%'),
-                    status: typeorm_2.Not(false)
+                    userId: (0, typeorm_2.Like)('%' + (dailyReport.userId || '') + '%'),
+                    portId: (0, typeorm_2.Like)('%' + dailyReport.portId + '%'),
+                    status: (0, typeorm_2.Not)(false)
                 }
             ],
             order: {
@@ -98,7 +98,7 @@ let DailyReportsService = class DailyReportsService {
         });
     }
     async Update(dailyReport) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this.Get(dailyReport.id);
         }).then(resultFind => {
             if (!resultFind)
@@ -111,7 +111,7 @@ let DailyReportsService = class DailyReportsService {
                         ,@portId = ${dailyReport.portId} 
                         ,@activityPerformed = '${dailyReport.activityPerformed}' 
                         ,@speedStraction = '${dailyReport.speedStraction}' 
-                        ,@date ='${dailyReport.date ? moment_assets_1.FormatDateUTCToDateHour(dailyReport.date) : ''}' 
+                        ,@date ='${dailyReport.date ? (0, moment_assets_1.FormatDateUTCToDateHour)(dailyReport.date) : ''}' 
                         ,@hour = '${dailyReport.hour}' 
                         ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
                         ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
@@ -146,13 +146,13 @@ let DailyReportsService = class DailyReportsService {
         });
     }
     async Delete(dailyReport, usuarioDelete) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this.Get(dailyReport.id);
         }).then(resultFind => {
             if (!resultFind)
                 throw new Error('does_not_exist');
             resultFind.userIdUpdated = usuarioDelete;
-            resultFind.dateUpdated = moment_assets_1.GetDate();
+            resultFind.dateUpdated = (0, moment_assets_1.GetDate)();
             resultFind.status = false;
             return this.Update(resultFind);
         }).then(resultSave => {
@@ -448,7 +448,7 @@ let DailyReportsService = class DailyReportsService {
         let startDateRegister = startDate == 'null' ? null : startDate;
         let endDateRegister = endDate == 'null' ? null : endDate;
         let cantUltimosDias = 40;
-        return await promises_assets_1.DummyPromise()
+        return await (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (!startDateRegister && !endDateRegister) {
                 return this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -471,7 +471,7 @@ let DailyReportsService = class DailyReportsService {
         }).then(resultFind => {
             if (resultFind) {
                 endDateRegister = resultFind[0].date;
-                startDateRegister = moment_assets_1.FormatDateSumDays(endDateRegister, cantUltimosDias);
+                startDateRegister = (0, moment_assets_1.FormatDateSumDays)(endDateRegister, cantUltimosDias);
             }
             return true;
         }).then(result => {
@@ -540,7 +540,7 @@ let DailyReportsService = class DailyReportsService {
         let endDateRegister = endDate == 'null' ? null : endDate;
         let cantUltimosDias = 40;
         let result_IFO_AND_MGO = new daily_report_entity_1.InfoReport_IFO_AND_MGO();
-        return await promises_assets_1.DummyPromise()
+        return await (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (!startDateRegister && !endDateRegister) {
                 return this._dailyReportRepository.createQueryBuilder('daily_report')
@@ -563,7 +563,7 @@ let DailyReportsService = class DailyReportsService {
         }).then(resultFind => {
             if (resultFind) {
                 endDateRegister = resultFind[0].date;
-                startDateRegister = moment_assets_1.FormatDateSumDays(endDateRegister, cantUltimosDias);
+                startDateRegister = (0, moment_assets_1.FormatDateSumDays)(endDateRegister, cantUltimosDias);
             }
             return true;
         }).then(result => {
@@ -934,16 +934,18 @@ let DailyReportsService = class DailyReportsService {
         });
     }
     async SaveList(MappingPorts, importDailyReport) {
-        var e_1, _a, e_2, _b, e_3, _c;
+        var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j;
         let mappingDailyReports = [];
         const addDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'added');
         const updateDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'updated');
         const deleteDailyReports = importDailyReport.filter((dailyReport) => dailyReport.SyncStatus == 'deleted');
         let listDeReportesRegistrados = [];
         try {
-            for (var addDailyReports_1 = __asyncValues(addDailyReports), addDailyReports_1_1; addDailyReports_1_1 = await addDailyReports_1.next(), !addDailyReports_1_1.done;) {
-                const addDailyReport = addDailyReports_1_1.value;
-                let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, addDailyReport.portId);
+            for (var _k = true, addDailyReports_1 = __asyncValues(addDailyReports), addDailyReports_1_1; addDailyReports_1_1 = await addDailyReports_1.next(), _a = addDailyReports_1_1.done, !_a; _k = true) {
+                _c = addDailyReports_1_1.value;
+                _k = false;
+                const addDailyReport = _c;
+                let searchMappingPort = (0, mappingKeys_1.searchKey)(MappingPorts, addDailyReport.portId);
                 let newDailyReport = new daily_report_entity_1.DailyReport();
                 delete newDailyReport.id;
                 newDailyReport.userId = addDailyReport.userId;
@@ -981,7 +983,7 @@ let DailyReportsService = class DailyReportsService {
                 newDailyReport.beaufour = addDailyReport.beaufour;
                 newDailyReport.observation = addDailyReport.observation;
                 newDailyReport.userIdCreated = addDailyReport.userIdCreated;
-                newDailyReport.dateCreated = moment_assets_1.GetDate();
+                newDailyReport.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newDailyReport.userIdUpdated;
                 delete newDailyReport.dateUpdated;
                 newDailyReport.status = Boolean(addDailyReport.status);
@@ -995,14 +997,16 @@ let DailyReportsService = class DailyReportsService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (addDailyReports_1_1 && !addDailyReports_1_1.done && (_a = addDailyReports_1.return)) await _a.call(addDailyReports_1);
+                if (!_k && !_a && (_b = addDailyReports_1.return)) await _b.call(addDailyReports_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         try {
-            for (var updateDailyReports_1 = __asyncValues(updateDailyReports), updateDailyReports_1_1; updateDailyReports_1_1 = await updateDailyReports_1.next(), !updateDailyReports_1_1.done;) {
-                const dailyReport = updateDailyReports_1_1.value;
-                let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, dailyReport.portId);
+            for (var _l = true, updateDailyReports_1 = __asyncValues(updateDailyReports), updateDailyReports_1_1; updateDailyReports_1_1 = await updateDailyReports_1.next(), _d = updateDailyReports_1_1.done, !_d; _l = true) {
+                _f = updateDailyReports_1_1.value;
+                _l = false;
+                const dailyReport = _f;
+                let searchMappingPort = (0, mappingKeys_1.searchKey)(MappingPorts, dailyReport.portId);
                 let updateDailyReport = new daily_report_entity_1.DailyReport();
                 updateDailyReport.id = dailyReport.id;
                 updateDailyReport.userId = dailyReport.userId;
@@ -1053,14 +1057,16 @@ let DailyReportsService = class DailyReportsService {
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (updateDailyReports_1_1 && !updateDailyReports_1_1.done && (_b = updateDailyReports_1.return)) await _b.call(updateDailyReports_1);
+                if (!_l && !_d && (_e = updateDailyReports_1.return)) await _e.call(updateDailyReports_1);
             }
             finally { if (e_2) throw e_2.error; }
         }
         try {
-            for (var deleteDailyReports_1 = __asyncValues(deleteDailyReports), deleteDailyReports_1_1; deleteDailyReports_1_1 = await deleteDailyReports_1.next(), !deleteDailyReports_1_1.done;) {
-                let dailyReport = deleteDailyReports_1_1.value;
-                let searchMappingPort = mappingKeys_1.searchKey(MappingPorts, dailyReport.portId);
+            for (var _m = true, deleteDailyReports_1 = __asyncValues(deleteDailyReports), deleteDailyReports_1_1; deleteDailyReports_1_1 = await deleteDailyReports_1.next(), _g = deleteDailyReports_1_1.done, !_g; _m = true) {
+                _j = deleteDailyReports_1_1.value;
+                _m = false;
+                let dailyReport = _j;
+                let searchMappingPort = (0, mappingKeys_1.searchKey)(MappingPorts, dailyReport.portId);
                 let deletePortEntity = new daily_report_entity_1.DailyReport();
                 deletePortEntity.id = dailyReport.id;
                 deletePortEntity.userId = dailyReport.userId;
@@ -1106,7 +1112,7 @@ let DailyReportsService = class DailyReportsService {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (deleteDailyReports_1_1 && !deleteDailyReports_1_1.done && (_c = deleteDailyReports_1.return)) await _c.call(deleteDailyReports_1);
+                if (!_m && !_g && (_h = deleteDailyReports_1.return)) await _h.call(deleteDailyReports_1);
             }
             finally { if (e_3) throw e_3.error; }
         }
@@ -1116,10 +1122,10 @@ let DailyReportsService = class DailyReportsService {
         };
     }
 };
-DailyReportsService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(daily_report_entity_1.DailyReport)),
+exports.DailyReportsService = DailyReportsService;
+exports.DailyReportsService = DailyReportsService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(daily_report_entity_1.DailyReport)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], DailyReportsService);
-exports.DailyReportsService = DailyReportsService;
 //# sourceMappingURL=daily-reports.service.js.map

@@ -35,7 +35,7 @@ let VoyagesService = class VoyagesService {
         this.voyageRepository = voyageRepository;
     }
     async Create(voyage) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.voyageRepository.query("SP_CheckTheLastRecordedTrip @userId='" + voyage.userId + "', @year='" + voyage.year + "'");
             }
@@ -91,7 +91,7 @@ let VoyagesService = class VoyagesService {
         });
     }
     async Get(id) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.voyageRepository.query(`EXEC SP_ObtenerViajePorId @voyageId=${id || 0}`);
             }
@@ -99,7 +99,7 @@ let VoyagesService = class VoyagesService {
                 return this.voyageRepository.find({
                     where: [{
                             id: id,
-                            status: typeorm_4.Not(false)
+                            status: (0, typeorm_4.Not)(false)
                         }]
                 });
             }
@@ -116,10 +116,10 @@ let VoyagesService = class VoyagesService {
         return await this.voyageRepository.find({
             where: [
                 {
-                    userId: typeorm_3.Like('%' + (voyage.userId || '') + '%'),
-                    voyageNumber: typeorm_3.Like('%' + (voyage.voyageNumber || '') + '%'),
-                    year: typeorm_3.Like('%' + (voyage.year || '') + '%'),
-                    status: typeorm_4.Not(false)
+                    userId: (0, typeorm_3.Like)('%' + (voyage.userId || '') + '%'),
+                    voyageNumber: (0, typeorm_3.Like)('%' + (voyage.voyageNumber || '') + '%'),
+                    year: (0, typeorm_3.Like)('%' + (voyage.year || '') + '%'),
+                    status: (0, typeorm_4.Not)(false)
                 }
             ],
             take: 5,
@@ -132,7 +132,7 @@ let VoyagesService = class VoyagesService {
         });
     }
     async GetsDetails(voyage, page = 1) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd == 'MSSQL') {
                 return this.InfoVoyage(voyage.userId);
             }
@@ -142,9 +142,9 @@ let VoyagesService = class VoyagesService {
                     where: [
                         {
                             userId: (voyage.userId || ''),
-                            voyageNumber: typeorm_3.Like('%' + (voyage.voyageNumber || '') + '%'),
+                            voyageNumber: (0, typeorm_3.Like)('%' + (voyage.voyageNumber || '') + '%'),
                             year: voyage.year,
-                            status: typeorm_4.Not(false)
+                            status: (0, typeorm_4.Not)(false)
                         }
                     ],
                     take: 5,
@@ -161,20 +161,24 @@ let VoyagesService = class VoyagesService {
         });
     }
     async InfoVoyage(userId) {
-        var e_1, _a, e_2, _b;
+        var _a, e_1, _b, _c, _d, e_2, _e, _f;
         let voyages = [];
         if (server_config_1.URL_Server.bd === 'MSSQL') {
             voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}`);
         }
         let viajesConPuerto = [];
         try {
-            for (var voyages_1 = __asyncValues(voyages), voyages_1_1; voyages_1_1 = await voyages_1.next(), !voyages_1_1.done;) {
-                let voyage = voyages_1_1.value;
+            for (var _g = true, voyages_1 = __asyncValues(voyages), voyages_1_1; voyages_1_1 = await voyages_1.next(), _a = voyages_1_1.done, !_a; _g = true) {
+                _c = voyages_1_1.value;
+                _g = false;
+                let voyage = _c;
                 let puertos = await this.voyageRepository.query(`EXEC SP_ObtenerLosPuertoDeUnViaje @userId=${userId || 0}, @voyageId=${voyage.id || 0}`);
                 let puertosConReportes = [];
                 try {
-                    for (var puertos_1 = (e_2 = void 0, __asyncValues(puertos)), puertos_1_1; puertos_1_1 = await puertos_1.next(), !puertos_1_1.done;) {
-                        let puerto = puertos_1_1.value;
+                    for (var _h = true, puertos_1 = (e_2 = void 0, __asyncValues(puertos)), puertos_1_1; puertos_1_1 = await puertos_1.next(), _d = puertos_1_1.done, !_d; _h = true) {
+                        _f = puertos_1_1.value;
+                        _h = false;
+                        let puerto = _f;
                         let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @portId=${puerto.id || 0}`);
                         puerto.dailyReports = reportes;
                         puertosConReportes.push(puerto);
@@ -183,7 +187,7 @@ let VoyagesService = class VoyagesService {
                 catch (e_2_1) { e_2 = { error: e_2_1 }; }
                 finally {
                     try {
-                        if (puertos_1_1 && !puertos_1_1.done && (_b = puertos_1.return)) await _b.call(puertos_1);
+                        if (!_h && !_d && (_e = puertos_1.return)) await _e.call(puertos_1);
                     }
                     finally { if (e_2) throw e_2.error; }
                 }
@@ -194,7 +198,7 @@ let VoyagesService = class VoyagesService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (voyages_1_1 && !voyages_1_1.done && (_a = voyages_1.return)) await _a.call(voyages_1);
+                if (!_g && !_a && (_b = voyages_1.return)) await _b.call(voyages_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
@@ -206,8 +210,8 @@ let VoyagesService = class VoyagesService {
             where: [
                 {
                     userId: voyageFilterByYears.userId,
-                    year: typeorm_2.In(voyageFilterByYears.years),
-                    status: typeorm_4.Not(false)
+                    year: (0, typeorm_2.In)(voyageFilterByYears.years),
+                    status: (0, typeorm_4.Not)(false)
                 }
             ],
             order: {
@@ -233,7 +237,7 @@ let VoyagesService = class VoyagesService {
         });
     }
     async Delete(voyage) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd == 'MSSQL') {
                 return this.voyageRepository.query(`EXEC SP_DeleteVoyageById @voyageId=${voyage.id || 0} `);
             }
@@ -253,7 +257,7 @@ let VoyagesService = class VoyagesService {
         });
     }
     async ThisVoyageNumberExistsInTheYear(voyageNumber, yearVoyage, userId) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @voyageNumber='" + voyageNumber + "', @yearVoyage='" + yearVoyage + "'");
             }
@@ -282,7 +286,7 @@ let VoyagesService = class VoyagesService {
         });
     }
     async ThisVoyageIdExists(voyageId, userId) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @id='" + voyageId + "', @userId='" + userId + "'");
             }
@@ -325,21 +329,23 @@ let VoyagesService = class VoyagesService {
         });
     }
     async SaveList(importVoyages) {
-        var e_3, _a, e_4, _b, e_5, _c;
+        var _a, e_3, _b, _c, _d, e_4, _e, _f, _g, e_5, _h, _j;
         let MappingVoyages = [];
         const addVoyages = importVoyages.filter((voyage) => voyage.SyncStatus == 'added');
         const updateVoyages = importVoyages.filter((voyage) => voyage.SyncStatus == 'updated');
         const deleteVoyages = importVoyages.filter((voyage) => voyage.SyncStatus == 'deleted');
         try {
-            for (var addVoyages_1 = __asyncValues(addVoyages), addVoyages_1_1; addVoyages_1_1 = await addVoyages_1.next(), !addVoyages_1_1.done;) {
-                const addVoyage = addVoyages_1_1.value;
+            for (var _k = true, addVoyages_1 = __asyncValues(addVoyages), addVoyages_1_1; addVoyages_1_1 = await addVoyages_1.next(), _a = addVoyages_1_1.done, !_a; _k = true) {
+                _c = addVoyages_1_1.value;
+                _k = false;
+                const addVoyage = _c;
                 let newVoyageEntity = new voyage_entity_1.Voyage();
                 delete newVoyageEntity.id;
                 newVoyageEntity.userId = addVoyage.userId;
                 newVoyageEntity.voyageNumber = addVoyage.voyageNumber;
                 newVoyageEntity.year = addVoyage.year;
                 newVoyageEntity.userIdCreated = addVoyage.userIdCreated;
-                newVoyageEntity.dateCreated = moment_assets_1.GetDate();
+                newVoyageEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newVoyageEntity.userIdUpdated;
                 delete newVoyageEntity.dateUpdated;
                 newVoyageEntity.status = Boolean(addVoyage.status);
@@ -350,13 +356,15 @@ let VoyagesService = class VoyagesService {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (addVoyages_1_1 && !addVoyages_1_1.done && (_a = addVoyages_1.return)) await _a.call(addVoyages_1);
+                if (!_k && !_a && (_b = addVoyages_1.return)) await _b.call(addVoyages_1);
             }
             finally { if (e_3) throw e_3.error; }
         }
         try {
-            for (var updateVoyages_1 = __asyncValues(updateVoyages), updateVoyages_1_1; updateVoyages_1_1 = await updateVoyages_1.next(), !updateVoyages_1_1.done;) {
-                const updateVoyage = updateVoyages_1_1.value;
+            for (var _l = true, updateVoyages_1 = __asyncValues(updateVoyages), updateVoyages_1_1; updateVoyages_1_1 = await updateVoyages_1.next(), _d = updateVoyages_1_1.done, !_d; _l = true) {
+                _f = updateVoyages_1_1.value;
+                _l = false;
+                const updateVoyage = _f;
                 let updateVoyageEntity = new voyage_entity_1.Voyage();
                 updateVoyageEntity.id = updateVoyage.id;
                 updateVoyageEntity.userId = updateVoyage.userId;
@@ -373,13 +381,15 @@ let VoyagesService = class VoyagesService {
         catch (e_4_1) { e_4 = { error: e_4_1 }; }
         finally {
             try {
-                if (updateVoyages_1_1 && !updateVoyages_1_1.done && (_b = updateVoyages_1.return)) await _b.call(updateVoyages_1);
+                if (!_l && !_d && (_e = updateVoyages_1.return)) await _e.call(updateVoyages_1);
             }
             finally { if (e_4) throw e_4.error; }
         }
         try {
-            for (var deleteVoyages_1 = __asyncValues(deleteVoyages), deleteVoyages_1_1; deleteVoyages_1_1 = await deleteVoyages_1.next(), !deleteVoyages_1_1.done;) {
-                let deleteVoyage = deleteVoyages_1_1.value;
+            for (var _m = true, deleteVoyages_1 = __asyncValues(deleteVoyages), deleteVoyages_1_1; deleteVoyages_1_1 = await deleteVoyages_1.next(), _g = deleteVoyages_1_1.done, !_g; _m = true) {
+                _j = deleteVoyages_1_1.value;
+                _m = false;
+                let deleteVoyage = _j;
                 let deleteVoyageEntity = new voyage_entity_1.Voyage();
                 deleteVoyageEntity.id = deleteVoyage.id;
                 deleteVoyageEntity.userId = deleteVoyage.userId;
@@ -396,17 +406,17 @@ let VoyagesService = class VoyagesService {
         catch (e_5_1) { e_5 = { error: e_5_1 }; }
         finally {
             try {
-                if (deleteVoyages_1_1 && !deleteVoyages_1_1.done && (_c = deleteVoyages_1.return)) await _c.call(deleteVoyages_1);
+                if (!_m && !_g && (_h = deleteVoyages_1.return)) await _h.call(deleteVoyages_1);
             }
             finally { if (e_5) throw e_5.error; }
         }
         return MappingVoyages;
     }
 };
-VoyagesService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(voyage_entity_1.Voyage)),
+exports.VoyagesService = VoyagesService;
+exports.VoyagesService = VoyagesService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(voyage_entity_1.Voyage)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], VoyagesService);
-exports.VoyagesService = VoyagesService;
 //# sourceMappingURL=voyages.service.js.map

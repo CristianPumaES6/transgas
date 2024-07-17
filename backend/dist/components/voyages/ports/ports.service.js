@@ -34,7 +34,7 @@ let PortsService = class PortsService {
         this.portRepository = portRepository;
     }
     async Create(port) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`SP_CheckTheLastPortTrip @userId='${port.userId}', @voyageId='${port.voyageId}'`);
             }
@@ -94,7 +94,7 @@ let PortsService = class PortsService {
         });
     }
     async Get(id) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                   EXEC SP_BuscarPuertoPorId  @portId = ${id}
@@ -104,7 +104,7 @@ let PortsService = class PortsService {
                 return this.portRepository.findOne({
                     where: [{
                             id: id,
-                            status: typeorm_2.Not(false)
+                            status: (0, typeorm_2.Not)(false)
                         }]
                 });
             }
@@ -124,12 +124,12 @@ let PortsService = class PortsService {
         return await this.portRepository.find({
             where: [
                 {
-                    userId: typeorm_2.Like('%' + (port.userId || '') + '%'),
-                    voyageId: typeorm_2.Like('%' + (port.voyageId || '') + '%'),
-                    portNumber: typeorm_2.Like('%' + (port.portNumber || '') + '%'),
-                    departurePort: typeorm_2.Like('%' + port.departurePort + '%'),
-                    arrivalPort: typeorm_2.Like('%' + port.arrivalPort + '%'),
-                    status: typeorm_2.Not(false)
+                    userId: (0, typeorm_2.Like)('%' + (port.userId || '') + '%'),
+                    voyageId: (0, typeorm_2.Like)('%' + (port.voyageId || '') + '%'),
+                    portNumber: (0, typeorm_2.Like)('%' + (port.portNumber || '') + '%'),
+                    departurePort: (0, typeorm_2.Like)('%' + port.departurePort + '%'),
+                    arrivalPort: (0, typeorm_2.Like)('%' + port.arrivalPort + '%'),
+                    status: (0, typeorm_2.Not)(false)
                 }
             ]
         }).then((result) => {
@@ -141,12 +141,12 @@ let PortsService = class PortsService {
             relations: ['dailyReports'],
             where: [
                 {
-                    userId: typeorm_2.Like('%' + (port.userId || '') + '%'),
-                    voyageId: typeorm_2.Like('%' + (port.voyageId || '') + '%'),
-                    portNumber: typeorm_2.Like('%' + (port.portNumber || '') + '%'),
-                    departurePort: typeorm_2.Like('%' + port.departurePort + '%'),
-                    arrivalPort: typeorm_2.Like('%' + port.arrivalPort + '%'),
-                    status: typeorm_2.Not(false)
+                    userId: (0, typeorm_2.Like)('%' + (port.userId || '') + '%'),
+                    voyageId: (0, typeorm_2.Like)('%' + (port.voyageId || '') + '%'),
+                    portNumber: (0, typeorm_2.Like)('%' + (port.portNumber || '') + '%'),
+                    departurePort: (0, typeorm_2.Like)('%' + port.departurePort + '%'),
+                    arrivalPort: (0, typeorm_2.Like)('%' + port.arrivalPort + '%'),
+                    status: (0, typeorm_2.Not)(false)
                 }
             ]
         }).then((result) => {
@@ -154,7 +154,7 @@ let PortsService = class PortsService {
         });
     }
     async Update(port) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                   EXEC SP_BuscarPuertoPorId  @portId = ${port.id}
@@ -204,7 +204,7 @@ let PortsService = class PortsService {
     }
     async Delete(port) {
         port.status = false;
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                       EXEC SP_UpdatePort
@@ -242,7 +242,7 @@ let PortsService = class PortsService {
     }
     async ThereIsThisPortInTheVoyage(portNumber, voyageId, userId) {
         let portSearch;
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                         SP_ThereIsThisPortInTheVoyage 
@@ -276,7 +276,7 @@ let PortsService = class PortsService {
         });
     }
     async GetLastPortTotalConsumpByUserId(userId) {
-        return await promises_assets_1.DummyPromise()
+        return await (0, promises_assets_1.DummyPromise)()
             .then(result => {
             return this.portRepository.createQueryBuilder('port')
                 .select('port.id', 'portId')
@@ -313,15 +313,17 @@ let PortsService = class PortsService {
         });
     }
     async SaveList(MappingVoyages, importPorts) {
-        var e_1, _a, e_2, _b, e_3, _c;
+        var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j;
         let MappingPorts = [];
         const addPorts = importPorts.filter((port) => port.SyncStatus == 'added');
         const updatePorts = importPorts.filter((port) => port.SyncStatus == 'updated');
         const deletePorts = importPorts.filter((port) => port.SyncStatus == 'deleted');
         try {
-            for (var addPorts_1 = __asyncValues(addPorts), addPorts_1_1; addPorts_1_1 = await addPorts_1.next(), !addPorts_1_1.done;) {
-                const addPort = addPorts_1_1.value;
-                let searchMappingVoyage = mappingKeys_1.searchKey(MappingVoyages, addPort.voyageId);
+            for (var _k = true, addPorts_1 = __asyncValues(addPorts), addPorts_1_1; addPorts_1_1 = await addPorts_1.next(), _a = addPorts_1_1.done, !_a; _k = true) {
+                _c = addPorts_1_1.value;
+                _k = false;
+                const addPort = _c;
+                let searchMappingVoyage = (0, mappingKeys_1.searchKey)(MappingVoyages, addPort.voyageId);
                 let newPortEntity = new port_entity_1.Port();
                 delete newPortEntity.id;
                 newPortEntity.userId = addPort.userId;
@@ -336,7 +338,7 @@ let PortsService = class PortsService {
                 newPortEntity.startIFO = addPort.startIFO;
                 newPortEntity.startMGO = addPort.startMGO;
                 newPortEntity.userIdCreated = addPort.userIdCreated;
-                newPortEntity.dateCreated = moment_assets_1.GetDate();
+                newPortEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newPortEntity.userIdUpdated;
                 delete newPortEntity.dateUpdated;
                 newPortEntity.status = Boolean(addPort.status);
@@ -347,15 +349,17 @@ let PortsService = class PortsService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (addPorts_1_1 && !addPorts_1_1.done && (_a = addPorts_1.return)) await _a.call(addPorts_1);
+                if (!_k && !_a && (_b = addPorts_1.return)) await _b.call(addPorts_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         try {
-            for (var updatePorts_1 = __asyncValues(updatePorts), updatePorts_1_1; updatePorts_1_1 = await updatePorts_1.next(), !updatePorts_1_1.done;) {
-                const updatePort = updatePorts_1_1.value;
+            for (var _l = true, updatePorts_1 = __asyncValues(updatePorts), updatePorts_1_1; updatePorts_1_1 = await updatePorts_1.next(), _d = updatePorts_1_1.done, !_d; _l = true) {
+                _f = updatePorts_1_1.value;
+                _l = false;
+                const updatePort = _f;
                 let updatePortEntity = new port_entity_1.Port();
-                let searchMappingVoyage = mappingKeys_1.searchKey(MappingVoyages, updatePort.voyageId);
+                let searchMappingVoyage = (0, mappingKeys_1.searchKey)(MappingVoyages, updatePort.voyageId);
                 updatePortEntity.id = updatePort.id;
                 updatePortEntity.userId = updatePort.userId;
                 updatePortEntity.voyageId = updatePort.voyageId;
@@ -379,15 +383,17 @@ let PortsService = class PortsService {
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (updatePorts_1_1 && !updatePorts_1_1.done && (_b = updatePorts_1.return)) await _b.call(updatePorts_1);
+                if (!_l && !_d && (_e = updatePorts_1.return)) await _e.call(updatePorts_1);
             }
             finally { if (e_2) throw e_2.error; }
         }
         try {
-            for (var deletePorts_1 = __asyncValues(deletePorts), deletePorts_1_1; deletePorts_1_1 = await deletePorts_1.next(), !deletePorts_1_1.done;) {
-                let deletePort = deletePorts_1_1.value;
+            for (var _m = true, deletePorts_1 = __asyncValues(deletePorts), deletePorts_1_1; deletePorts_1_1 = await deletePorts_1.next(), _g = deletePorts_1_1.done, !_g; _m = true) {
+                _j = deletePorts_1_1.value;
+                _m = false;
+                let deletePort = _j;
                 let deletePortEntity = new port_entity_1.Port();
-                let searchMappingVoyage = mappingKeys_1.searchKey(MappingVoyages, deletePort.voyageId);
+                let searchMappingVoyage = (0, mappingKeys_1.searchKey)(MappingVoyages, deletePort.voyageId);
                 deletePortEntity.id = deletePort.id;
                 deletePortEntity.userId = deletePort.userId;
                 deletePortEntity.voyageId = deletePort.voyageId;
@@ -411,17 +417,17 @@ let PortsService = class PortsService {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (deletePorts_1_1 && !deletePorts_1_1.done && (_c = deletePorts_1.return)) await _c.call(deletePorts_1);
+                if (!_m && !_g && (_h = deletePorts_1.return)) await _h.call(deletePorts_1);
             }
             finally { if (e_3) throw e_3.error; }
         }
         return MappingPorts;
     }
 };
-PortsService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(port_entity_1.Port)),
+exports.PortsService = PortsService;
+exports.PortsService = PortsService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(port_entity_1.Port)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], PortsService);
-exports.PortsService = PortsService;
 //# sourceMappingURL=ports.service.js.map

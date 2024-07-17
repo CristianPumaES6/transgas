@@ -30,65 +30,65 @@ let ConsumptionEquipmentEntity = class ConsumptionEquipmentEntity {
         this.status = status || false;
     }
 };
+exports.ConsumptionEquipmentEntity = ConsumptionEquipmentEntity;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], ConsumptionEquipmentEntity.prototype, "date", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "amount", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "hourConsumption", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], ConsumptionEquipmentEntity.prototype, "observation", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false, default: 0 }),
+    (0, typeorm_1.Column)({ nullable: false, default: 0 }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "entityEquipmentOilCompatibilityId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false, default: 0 }),
+    (0, typeorm_1.Column)({ nullable: false, default: 0 }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "consumptionTypeId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false, default: 0 }),
+    (0, typeorm_1.Column)({ nullable: false, default: 0 }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "entityOilAnalysisId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], ConsumptionEquipmentEntity.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], ConsumptionEquipmentEntity.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], ConsumptionEquipmentEntity.prototype, "status", void 0);
-ConsumptionEquipmentEntity = __decorate([
-    typeorm_1.Entity('consumptionEquipment'),
+exports.ConsumptionEquipmentEntity = ConsumptionEquipmentEntity = __decorate([
+    (0, typeorm_1.Entity)('consumptionEquipment'),
     __metadata("design:paramtypes", [Number, Number, String, Number, Number, String, Number, Number, Number, Number, String, Number, String, Boolean])
 ], ConsumptionEquipmentEntity);
-exports.ConsumptionEquipmentEntity = ConsumptionEquipmentEntity;
 //# sourceMappingURL=consumptionEquipment.entity.js.map

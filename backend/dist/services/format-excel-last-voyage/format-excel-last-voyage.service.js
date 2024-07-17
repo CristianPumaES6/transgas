@@ -20,7 +20,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         let objGenerateFormatObjForExcelEmail = new GenerateFormatObjForExcelEmail();
         objGenerateFormatObjForExcelEmail.success = true;
         let workbook;
-        return await promises_assets_1.DummyPromise().then(result => {
+        return await (0, promises_assets_1.DummyPromise)().then(result => {
             workbook = new exceljs_1.Workbook();
             workbook.creator = 'transgas.web.app';
             let worksheet = workbook.addWorksheet('Data Report');
@@ -28,7 +28,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         }).then(result => {
             objGenerateFormatObjForExcelEmail.objMailLastVoyage = result;
             this.AddInfoByPortAccordingToTheTravelreport(workbook, 2, 10, new user_entity_1.UserEntity(), listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate);
-            return workbook.xlsx.writeFile(moment_assets_1.GetHours() + '.xlsx');
+            return workbook.xlsx.writeFile((0, moment_assets_1.GetHours)() + '.xlsx');
         }).then(result => {
             return workbook.xlsx.writeBuffer();
         }).then((result) => {
@@ -395,7 +395,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionColumns = [colum, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'START DATE', 8, black, white, '');
         positionColumns = [colum + 5, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC(date_start) + ' GMT', 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC)(date_start) + ' GMT', 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, ifo_start, 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -410,7 +410,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'CONSUMPTION', 8, black, white, '');
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('LOADING').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('LOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, {
             formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
@@ -431,7 +431,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('DOWNLOADING').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('DOWNLOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, {
             formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
@@ -456,7 +456,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('SAILING_IN_BALLAST').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('SAILING_IN_BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, {
             formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
@@ -481,7 +481,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('SAILING_WITH_LADEN').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('SAILING_WITH_LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, {
             formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
@@ -506,7 +506,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('ANCHORED').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('ANCHORED').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, {
             formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
@@ -531,7 +531,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('MANEUVER').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('MANEUVER').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, {
             formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
@@ -556,7 +556,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum + 7, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('OTHER_ACT').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('OTHER_ACT').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, {
             formula: 'SUMIFS($AZ$' + startRowReport + ':$AZ$' + endRowReport +
@@ -610,7 +610,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionColumns = [colum, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, 'END DATE', 8, black, white, '');
         positionColumns = [colum + 5, colum + 9];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC(date_end) + ' GMT', 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC)(date_end) + ' GMT', 8, black, white, '');
         positionColumns = [colum + 10, colum + 11];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: this.PositByCell(positionColumns[0]) + (posit - 11) + '-' + this.PositByCell(positionColumns[0]) + (posit - 3) + '+' + this.PositByCell(positionColumns[0]) + (posit - 2) }, 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -706,7 +706,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 1];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('BALLAST').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 2, colum + 2];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingBallastIFO : selectUser.contractSpeedSailingBallastMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -750,7 +750,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 1];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('LADEN').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 2, colum + 2];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.contractSpeedSailingLadenIFO : selectUser.contractSpeedSailingLadenMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -839,7 +839,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('LOADING').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('LOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.loadingConsumptionIFO : selectUser.loadingConsumptionMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -863,7 +863,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('DOWNLOADING').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('DOWNLOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.dischargeConsumptionIFO : selectUser.dischargeConsumptionMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -887,7 +887,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('BALLAST').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.sailingBallastConsumptionIFO : selectUser.sailingBallastConsumptionMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -911,7 +911,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('LADEN').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.sailingLoadConsumptionIFO : selectUser.sailingLoadConsumptionMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -935,7 +935,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('ECONOMICAL').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('ECONOMICAL').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.sailingEconomicConsumptionIFO : selectUser.sailingEconomicConsumptionMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -959,7 +959,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('ANCHORED').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('ANCHORED').toUpperCase(), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.anchoredConsumptionIFO : selectUser.anchoredConsumptionMGO), 8, black, white, '');
@@ -984,7 +984,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('MANEUVER').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('MANEUVER').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.maneuverConsumptionIFO : selectUser.maneuverConsumptionMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -1008,7 +1008,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         posit += 1;
         positionRows = [posit, posit];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('OTHER').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('OTHER').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 4];
         this.addStyleByColums(worksheet, positionRows, positionColumns, Number(isIFOorMGO == 'IFO' ? selectUser.otherConsumptionIFO : selectUser.otherConsumptionMGO), 8, black, white, '');
         this.RuleFormatCeroGris(worksheet, posit, positionColumns[0]);
@@ -1083,7 +1083,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 2;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('LOADING').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('LOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1120,7 +1120,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 1;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('DOWNLOADING').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('DOWNLOADING').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1157,7 +1157,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 1;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('BALLAST').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('BALLAST').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1194,7 +1194,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 1;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('LADEN').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('LADEN').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1231,7 +1231,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 1;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('ECONOMICAL').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('ECONOMICAL').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1268,7 +1268,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 1;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('ANCHORED').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('ANCHORED').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1305,7 +1305,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 1;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('MANEUVER').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('MANEUVER').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1342,7 +1342,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         positionRow += 1;
         positionRows = [positionRow, positionRow];
         positionColumns = [colum, colum + 2];
-        this.addStyleByColums(worksheet, positionRows, positionColumns, translate_assets_1.translateActivity('OTHER_ACT').toUpperCase(), 8, black, white, '');
+        this.addStyleByColums(worksheet, positionRows, positionColumns, (0, translate_assets_1.translateActivity)('OTHER_ACT').toUpperCase(), 8, black, white, '');
         positionColumns = [colum + 3, colum + 5];
         this.addStyleByColums(worksheet, positionRows, positionColumns, { formula: 'SUMIFS($U$' + startRowReport + ':$U$' + endRowReport + ',$W$' + startRowReport + ':$W$' + endRowReport + ',' + this.PositByCell(colum) + positionRow + ',' + (isIFOorMGO == 'IFO' ? '$AZ$' + startRowReport + ':$AZ$' + endRowReport + ',">0"' : '$BT$' + startRowReport + ':$BT$' + endRowReport + ',">0"') + ')', result: 0.14 }, 8, black, white, '');
         this.MultipleFormateWorksheet(worksheet, positionRows[0], positionColumns[0], 'TOTAL_TIME');
@@ -1480,7 +1480,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
                 this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, 'DATE :', 8, black, white, '');
                 colum += 3;
                 positionColumns = [colum, colum + 5];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC(itemReportBefore.date) + " GMT", 8, black, white, '');
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC)(itemReportBefore.date) + " GMT", 8, black, white, '');
                 positionRow += 1;
                 colum = columReset + 1;
                 positionRows = [positionRow, positionRow];
@@ -1677,13 +1677,13 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
                 colum = columReset + 1;
                 positionRows = [positionRow, positionRow];
                 positionColumns = [colum, colum + 4];
-                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), 8, black, white, '');
+                this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC)(getReportVoyagePortDaily.date), 8, black, white, '');
                 this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
                 colum += 5;
                 positionColumns = [colum, colum + 5];
                 this.addStyleByColums(worksheetPuerto, positionRows, positionColumns, getReportVoyagePortDaily.typeActivityPerformed == 'REPORT_AT_08_00' ?
                     getReportVoyagePortDaily.north_degree + 'º' + getReportVoyagePortDaily.north_minutes + "'" + getReportVoyagePortDaily.north_north_south + " / " + getReportVoyagePortDaily.east_degree + 'º' + getReportVoyagePortDaily.east_minutes + "'" + getReportVoyagePortDaily.east_east_west :
-                    translate_assets_1.translateActivity(getReportVoyagePortDaily.activityPerformed), 8, black, white, '');
+                    (0, translate_assets_1.translateActivity)(getReportVoyagePortDaily.activityPerformed), 8, black, white, '');
                 this.addBorder(worksheetPuerto, positionRow, colum, 'thin', blueHard3, '');
                 colum += 6;
                 positionColumns = [colum, colum + 2];
@@ -1706,7 +1706,7 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
                 this.addBorder(worksheetPuerto, positionRow, colum, 'thin', black, '');
                 lastRow = positionRow;
             }
-            worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = moment_assets_1.ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date) + ' GMT';
+            worksheetPuerto.getCell(this.PositByCell(refreshFecha.colum) + refreshFecha.row).value = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC)(getReportVoyagePortDaily.date) + ' GMT';
             itemReportBefore = getReportVoyagePortDaily;
             existeUnValorAnterior = !itemReportBefore ? false : true;
             contadorDeItemPorPuerto++;
@@ -3059,10 +3059,10 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
                 'V' + getReportVoyagePortDaily.voyageNumber + '-' + getReportVoyagePortDaily.year, '',
                 getReportVoyagePortDaily.departurePort, '', '', '',
                 getReportVoyagePortDaily.arrivalPort, '', '', '',
-                moment_assets_1.ConvertDateUTC_To_FORMAT_UTC(getReportVoyagePortDaily.date), '', '',
+                (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC)(getReportVoyagePortDaily.date), '', '',
                 getReportVoyagePortDaily.hour, '',
                 getReportVoyagePortDaily.steamingTime, '',
-                translate_assets_1.translateActivity(getReportVoyagePortDaily.activityPerformed), '', '', '',
+                (0, translate_assets_1.translateActivity)(getReportVoyagePortDaily.activityPerformed), '', '', '',
                 getReportVoyagePortDaily.speedStraction, '',
                 getReportVoyagePortDaily.observation, '', '', '', '', '', '',
                 getReportVoyagePortDaily.distance, '',
@@ -3783,10 +3783,10 @@ let FormatExcelLastVoyageService = class FormatExcelLastVoyageService {
         return mgo;
     }
 };
-FormatExcelLastVoyageService = __decorate([
-    common_1.Injectable()
-], FormatExcelLastVoyageService);
 exports.FormatExcelLastVoyageService = FormatExcelLastVoyageService;
+exports.FormatExcelLastVoyageService = FormatExcelLastVoyageService = __decorate([
+    (0, common_1.Injectable)()
+], FormatExcelLastVoyageService);
 class InfoVessel {
     constructor(date_start, hour_start, ifo_start, mgo_start, date_end, hour_end, ifo_end, mgo_end, totalBunkeringIFO, totalBunkeringMGO, totalConsumptIFO, totalConsumptMGO) {
         this.date_start = date_start;

@@ -36,14 +36,14 @@ let AppService = class AppService {
         return true;
     }
     ListConsumptionLubricantPerMonth(userid, startDate, endDate) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this._UsersService.Gets({ id: userid, role: 'BUQUE' });
         }).then(result => {
             return this.ConsumptionLubricantPerMonthPerListUsers(result, startDate, endDate);
         });
     }
     consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this._ConsumptionEquipmentService.consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH);
         }).then(result => {
             return result;
@@ -52,7 +52,7 @@ let AppService = class AppService {
         });
     }
     GetShips() {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this._ConsumptionEquipmentService.GetShips();
         }).then(result => {
             return result;
@@ -61,11 +61,13 @@ let AppService = class AppService {
         });
     }
     async ConsumptionLubricantPerMonthPerListUsers(users, startDate, endDate) {
-        var e_1, _a;
+        var _a, e_1, _b, _c;
         let returnDashboardLubricant = [];
         try {
-            for (var users_1 = __asyncValues(users), users_1_1; users_1_1 = await users_1.next(), !users_1_1.done;) {
-                const itemUser = users_1_1.value;
+            for (var _d = true, users_1 = __asyncValues(users), users_1_1; users_1_1 = await users_1.next(), _a = users_1_1.done, !_a; _d = true) {
+                _c = users_1_1.value;
+                _d = false;
+                const itemUser = _c;
                 let DashboardListMonthLubricant = {};
                 DashboardListMonthLubricant.userId = itemUser.id;
                 DashboardListMonthLubricant.userName = itemUser.name;
@@ -78,18 +80,18 @@ let AppService = class AppService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (users_1_1 && !users_1_1.done && (_a = users_1.return)) await _a.call(users_1);
+                if (!_d && !_a && (_b = users_1.return)) await _b.call(users_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         return returnDashboardLubricant;
     }
 };
-AppService = __decorate([
-    common_1.Injectable(),
+exports.AppService = AppService;
+exports.AppService = AppService = __decorate([
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [app_gateway_1.AppGateway,
         consumption_equipment_service_1.ConsumptionEquipmentService,
         users_service_1.UsersService])
 ], AppService);
-exports.AppService = AppService;
 //# sourceMappingURL=app.service.js.map

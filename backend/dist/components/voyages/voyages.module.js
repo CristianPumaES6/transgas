@@ -18,8 +18,9 @@ const format_excel_last_voyage_service_1 = require("../../services/format-excel-
 const users_module_1 = require("../users/users.module");
 let VoyagesModule = class VoyagesModule {
 };
-VoyagesModule = __decorate([
-    common_1.Module({
+exports.VoyagesModule = VoyagesModule;
+exports.VoyagesModule = VoyagesModule = __decorate([
+    (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([voyage_entity_1.Voyage]),
             ports_module_1.PortsModule,
@@ -30,5 +31,4 @@ VoyagesModule = __decorate([
         controllers: [voyages_controller_1.VoyagesController]
     })
 ], VoyagesModule);
-exports.VoyagesModule = VoyagesModule;
 //# sourceMappingURL=voyages.module.js.map

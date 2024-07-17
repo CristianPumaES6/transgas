@@ -28,7 +28,6 @@ const typeorm_4 = require("typeorm");
 const server_config_1 = require("../../../config/server.config");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const moment_assets_1 = require("../../../assets/moment.assets");
-const consumptionEquipment_entity_1 = require("../../../models/consumptionEquipment.entity");
 const mappingKeys_1 = require("../../../assets/mappingKeys");
 const equipment_oil_compatibility_entity_1 = require("../../../models/equipment-oil-compatibility.entity");
 let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
@@ -36,7 +35,7 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         this._EquipmentOilCompatibilityEntity = _EquipmentOilCompatibilityEntity;
     }
     async Gets(equipmentOilCompatibility) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -44,9 +43,9 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
                 return this._EquipmentOilCompatibilityEntity.find({
                     where: [
                         {
-                            id: (equipmentOilCompatibility.id || typeorm_3.Like('%' + '%')),
-                            userId: (equipmentOilCompatibility.userId || typeorm_3.Like('%' + '%')),
-                            status: typeorm_4.Not(false)
+                            id: (equipmentOilCompatibility.id || (0, typeorm_3.Like)('%' + '%')),
+                            userId: (equipmentOilCompatibility.userId || (0, typeorm_3.Like)('%' + '%')),
+                            status: (0, typeorm_4.Not)(false)
                         }
                     ]
                 });
@@ -58,7 +57,7 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         });
     }
     async Create(equipmentOilCompatibility) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._EquipmentOilCompatibilityEntity.query("SP_CheckTheLastRecordedTrip @userId='" + equipmentOilCompatibility.userId + "', @year='");
             }
@@ -79,17 +78,19 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         });
     }
     async SaveList(MappingOils, MappingEquipmentSystems, equipmentOilCompatibilitys) {
-        var e_1, _a, e_2, _b, e_3, _c;
+        var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j;
         let MappingConsumptionsEquipment = [];
         const addEquipmentOilCompatibilitys = equipmentOilCompatibilitys.filter((equipmentOilCompatibility) => equipmentOilCompatibility.SyncStatus == 'added');
         const updateEquipmentOilCompatibilitys = equipmentOilCompatibilitys.filter((equipmentOilCompatibility) => equipmentOilCompatibility.SyncStatus == 'updated');
         const deleteEquipmentOilCompatibilitys = equipmentOilCompatibilitys.filter((equipmentOilCompatibility) => equipmentOilCompatibility.SyncStatus == 'deleted');
         let listDeConsumosRegistrados = [];
         try {
-            for (var addEquipmentOilCompatibilitys_1 = __asyncValues(addEquipmentOilCompatibilitys), addEquipmentOilCompatibilitys_1_1; addEquipmentOilCompatibilitys_1_1 = await addEquipmentOilCompatibilitys_1.next(), !addEquipmentOilCompatibilitys_1_1.done;) {
-                const addEquipmentOilCompatibility = addEquipmentOilCompatibilitys_1_1.value;
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, addEquipmentOilCompatibility.entityOilId);
-                let searchMappingEquipmentSystems = mappingKeys_1.searchKey(MappingEquipmentSystems, addEquipmentOilCompatibility.entityEquipmentId);
+            for (var _k = true, addEquipmentOilCompatibilitys_1 = __asyncValues(addEquipmentOilCompatibilitys), addEquipmentOilCompatibilitys_1_1; addEquipmentOilCompatibilitys_1_1 = await addEquipmentOilCompatibilitys_1.next(), _a = addEquipmentOilCompatibilitys_1_1.done, !_a; _k = true) {
+                _c = addEquipmentOilCompatibilitys_1_1.value;
+                _k = false;
+                const addEquipmentOilCompatibility = _c;
+                let searchMappingOils = (0, mappingKeys_1.searchKey)(MappingOils, addEquipmentOilCompatibility.entityOilId);
+                let searchMappingEquipmentSystems = (0, mappingKeys_1.searchKey)(MappingEquipmentSystems, addEquipmentOilCompatibility.entityEquipmentId);
                 let newEquipmentOilCompatibilityEntity = new equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity();
                 delete newEquipmentOilCompatibilityEntity.id;
                 newEquipmentOilCompatibilityEntity.userId = addEquipmentOilCompatibility.userId;
@@ -102,7 +103,7 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
                     newEquipmentOilCompatibilityEntity.entityEquipmentId = searchMappingEquipmentSystems.value;
                 }
                 newEquipmentOilCompatibilityEntity.userIdCreated = addEquipmentOilCompatibility.userIdCreated;
-                newEquipmentOilCompatibilityEntity.dateCreated = moment_assets_1.GetDate();
+                newEquipmentOilCompatibilityEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newEquipmentOilCompatibilityEntity.userIdUpdated;
                 delete newEquipmentOilCompatibilityEntity.dateUpdated;
                 newEquipmentOilCompatibilityEntity.status = Boolean(addEquipmentOilCompatibility.status);
@@ -113,15 +114,17 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (addEquipmentOilCompatibilitys_1_1 && !addEquipmentOilCompatibilitys_1_1.done && (_a = addEquipmentOilCompatibilitys_1.return)) await _a.call(addEquipmentOilCompatibilitys_1);
+                if (!_k && !_a && (_b = addEquipmentOilCompatibilitys_1.return)) await _b.call(addEquipmentOilCompatibilitys_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         try {
-            for (var updateEquipmentOilCompatibilitys_1 = __asyncValues(updateEquipmentOilCompatibilitys), updateEquipmentOilCompatibilitys_1_1; updateEquipmentOilCompatibilitys_1_1 = await updateEquipmentOilCompatibilitys_1.next(), !updateEquipmentOilCompatibilitys_1_1.done;) {
-                const updateEquipmentOilCompatibility = updateEquipmentOilCompatibilitys_1_1.value;
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, updateEquipmentOilCompatibility.entityOilId);
-                let searchMappingEquipmentSystems = mappingKeys_1.searchKey(MappingEquipmentSystems, updateEquipmentOilCompatibility.entityEquipmentId);
+            for (var _l = true, updateEquipmentOilCompatibilitys_1 = __asyncValues(updateEquipmentOilCompatibilitys), updateEquipmentOilCompatibilitys_1_1; updateEquipmentOilCompatibilitys_1_1 = await updateEquipmentOilCompatibilitys_1.next(), _d = updateEquipmentOilCompatibilitys_1_1.done, !_d; _l = true) {
+                _f = updateEquipmentOilCompatibilitys_1_1.value;
+                _l = false;
+                const updateEquipmentOilCompatibility = _f;
+                let searchMappingOils = (0, mappingKeys_1.searchKey)(MappingOils, updateEquipmentOilCompatibility.entityOilId);
+                let searchMappingEquipmentSystems = (0, mappingKeys_1.searchKey)(MappingEquipmentSystems, updateEquipmentOilCompatibility.entityEquipmentId);
                 let equipmentOilCompatibility = new equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity();
                 equipmentOilCompatibility.id = updateEquipmentOilCompatibility.id;
                 equipmentOilCompatibility.userId = updateEquipmentOilCompatibility.userId;
@@ -147,15 +150,17 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (updateEquipmentOilCompatibilitys_1_1 && !updateEquipmentOilCompatibilitys_1_1.done && (_b = updateEquipmentOilCompatibilitys_1.return)) await _b.call(updateEquipmentOilCompatibilitys_1);
+                if (!_l && !_d && (_e = updateEquipmentOilCompatibilitys_1.return)) await _e.call(updateEquipmentOilCompatibilitys_1);
             }
             finally { if (e_2) throw e_2.error; }
         }
         try {
-            for (var deleteEquipmentOilCompatibilitys_1 = __asyncValues(deleteEquipmentOilCompatibilitys), deleteEquipmentOilCompatibilitys_1_1; deleteEquipmentOilCompatibilitys_1_1 = await deleteEquipmentOilCompatibilitys_1.next(), !deleteEquipmentOilCompatibilitys_1_1.done;) {
-                let deleteEquipmentOilCompatibility = deleteEquipmentOilCompatibilitys_1_1.value;
-                let searchMappingOils = mappingKeys_1.searchKey(MappingOils, deleteEquipmentOilCompatibility.entityOilId);
-                let searchMappingEquipmentSystems = mappingKeys_1.searchKey(MappingEquipmentSystems, deleteEquipmentOilCompatibility.entityEquipmentId);
+            for (var _m = true, deleteEquipmentOilCompatibilitys_1 = __asyncValues(deleteEquipmentOilCompatibilitys), deleteEquipmentOilCompatibilitys_1_1; deleteEquipmentOilCompatibilitys_1_1 = await deleteEquipmentOilCompatibilitys_1.next(), _g = deleteEquipmentOilCompatibilitys_1_1.done, !_g; _m = true) {
+                _j = deleteEquipmentOilCompatibilitys_1_1.value;
+                _m = false;
+                let deleteEquipmentOilCompatibility = _j;
+                let searchMappingOils = (0, mappingKeys_1.searchKey)(MappingOils, deleteEquipmentOilCompatibility.entityOilId);
+                let searchMappingEquipmentSystems = (0, mappingKeys_1.searchKey)(MappingEquipmentSystems, deleteEquipmentOilCompatibility.entityEquipmentId);
                 let equipmentOilCompatibility = new equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity();
                 equipmentOilCompatibility.id = deleteEquipmentOilCompatibility.id;
                 equipmentOilCompatibility.userId = deleteEquipmentOilCompatibility.userId;
@@ -178,17 +183,17 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (deleteEquipmentOilCompatibilitys_1_1 && !deleteEquipmentOilCompatibilitys_1_1.done && (_c = deleteEquipmentOilCompatibilitys_1.return)) await _c.call(deleteEquipmentOilCompatibilitys_1);
+                if (!_m && !_g && (_h = deleteEquipmentOilCompatibilitys_1.return)) await _h.call(deleteEquipmentOilCompatibilitys_1);
             }
             finally { if (e_3) throw e_3.error; }
         }
         return MappingConsumptionsEquipment;
     }
 };
-EquipmentOilCompatibilityService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity)),
+exports.EquipmentOilCompatibilityService = EquipmentOilCompatibilityService;
+exports.EquipmentOilCompatibilityService = EquipmentOilCompatibilityService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], EquipmentOilCompatibilityService);
-exports.EquipmentOilCompatibilityService = EquipmentOilCompatibilityService;
 //# sourceMappingURL=equipment-oil-compatibility.service.js.map

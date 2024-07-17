@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { GetReportVoyagePortDaily, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
 import { UserEntity } from '../../models/user.entity';
 import { MailLastVoyage } from '../../models/sendMailConfig';

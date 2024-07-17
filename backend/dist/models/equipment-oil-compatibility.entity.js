@@ -25,45 +25,45 @@ let EquipmentOilCompatibilityEntity = class EquipmentOilCompatibilityEntity {
         this.status = status || false;
     }
 };
+exports.EquipmentOilCompatibilityEntity = EquipmentOilCompatibilityEntity;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], EquipmentOilCompatibilityEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentOilCompatibilityEntity.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentOilCompatibilityEntity.prototype, "entityEquipmentId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentOilCompatibilityEntity.prototype, "entityOilId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], EquipmentOilCompatibilityEntity.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], EquipmentOilCompatibilityEntity.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentOilCompatibilityEntity.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], EquipmentOilCompatibilityEntity.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], EquipmentOilCompatibilityEntity.prototype, "status", void 0);
-EquipmentOilCompatibilityEntity = __decorate([
-    typeorm_1.Entity('equipmentOilCompatibility'),
+exports.EquipmentOilCompatibilityEntity = EquipmentOilCompatibilityEntity = __decorate([
+    (0, typeorm_1.Entity)('equipmentOilCompatibility'),
     __metadata("design:paramtypes", [Number, Number, Number, Number, Number, String, Number, String, Boolean])
 ], EquipmentOilCompatibilityEntity);
-exports.EquipmentOilCompatibilityEntity = EquipmentOilCompatibilityEntity;
 //# sourceMappingURL=equipment-oil-compatibility.entity.js.map

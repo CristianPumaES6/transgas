@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchKey = exports.Mapping = void 0;
+exports.Mapping = void 0;
+exports.searchKey = searchKey;
 class Mapping {
     constructor(key, value) {
         this.key = key;
@@ -13,5 +14,4 @@ exports.Mapping = Mapping;
 function searchKey(mappings, key) {
     return mappings.find(mapping => Number(mapping.key) == Number(key));
 }
-exports.searchKey = searchKey;
 //# sourceMappingURL=mappingKeys.js.map

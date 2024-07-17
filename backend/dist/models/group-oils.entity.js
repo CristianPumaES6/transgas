@@ -26,49 +26,49 @@ let GroupOilEntity = class GroupOilEntity {
         this.status = status || false;
     }
 };
+exports.GroupOilEntity = GroupOilEntity;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], GroupOilEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], GroupOilEntity.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], GroupOilEntity.prototype, "label", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, default: 0 }),
+    (0, typeorm_1.Column)({ nullable: true, default: 0 }),
     __metadata("design:type", String)
 ], GroupOilEntity.prototype, "description", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, default: 0 }),
+    (0, typeorm_1.Column)({ nullable: true, default: 0 }),
     __metadata("design:type", Number)
 ], GroupOilEntity.prototype, "groupId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], GroupOilEntity.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], GroupOilEntity.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], GroupOilEntity.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], GroupOilEntity.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], GroupOilEntity.prototype, "status", void 0);
-GroupOilEntity = __decorate([
-    typeorm_1.Entity('groupOil'),
+exports.GroupOilEntity = GroupOilEntity = __decorate([
+    (0, typeorm_1.Entity)('groupOil'),
     __metadata("design:paramtypes", [Number, Number, String, String, Number, Number, String, Number, String, Boolean])
 ], GroupOilEntity);
-exports.GroupOilEntity = GroupOilEntity;
 //# sourceMappingURL=group-oils.entity.js.map

@@ -27,53 +27,53 @@ let EquipmentSystemEntity = class EquipmentSystemEntity {
         this.status = status || false;
     }
 };
+exports.EquipmentSystemEntity = EquipmentSystemEntity;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], EquipmentSystemEntity.prototype, "equipment", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, nullable: false }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "rate", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "frequencyId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "entityGroupId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], EquipmentSystemEntity.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], EquipmentSystemEntity.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], EquipmentSystemEntity.prototype, "status", void 0);
-EquipmentSystemEntity = __decorate([
-    typeorm_1.Entity('equipmentSystem'),
+exports.EquipmentSystemEntity = EquipmentSystemEntity = __decorate([
+    (0, typeorm_1.Entity)('equipmentSystem'),
     __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, Number, String, Number, String, Boolean])
 ], EquipmentSystemEntity);
-exports.EquipmentSystemEntity = EquipmentSystemEntity;
 //# sourceMappingURL=equipment-system.entity.js.map

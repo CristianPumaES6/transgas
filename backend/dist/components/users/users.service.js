@@ -29,7 +29,7 @@ let UsersService = class UsersService {
         this.userRepository = userRepository;
     }
     async Get(id) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`SP_BuscarUsuarioPorId @userId= ${id}`);
             }
@@ -37,7 +37,7 @@ let UsersService = class UsersService {
                 return this.userRepository.find({
                     where: {
                         id: id,
-                        status: typeorm_4.Not(false)
+                        status: (0, typeorm_4.Not)(false)
                     }
                 });
             }
@@ -50,7 +50,7 @@ let UsersService = class UsersService {
         });
     }
     async Gets(user) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
                     `);
@@ -59,11 +59,11 @@ let UsersService = class UsersService {
                 return this.userRepository.find({
                     where: [
                         {
-                            id: (user.id || typeorm_3.Like('%' + '%')),
-                            nick: typeorm_3.Like('%' + (user.nick || '') + '%'),
-                            name: typeorm_3.Like('%' + (user.name || '') + '%'),
-                            role: typeorm_3.Like('%' + (user.role || '') + '%'),
-                            status: typeorm_4.Not(false)
+                            id: (user.id || (0, typeorm_3.Like)('%' + '%')),
+                            nick: (0, typeorm_3.Like)('%' + (user.nick || '') + '%'),
+                            name: (0, typeorm_3.Like)('%' + (user.name || '') + '%'),
+                            role: (0, typeorm_3.Like)('%' + (user.role || '') + '%'),
+                            status: (0, typeorm_4.Not)(false)
                         }
                     ]
                 });
@@ -78,7 +78,7 @@ let UsersService = class UsersService {
         });
     }
     async CreateUserNickUnique(user) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
                     EXEC SP_GETEmailEstaEnUso @userId = 0, @nick = '${user.nick || ''}' 
@@ -89,7 +89,7 @@ let UsersService = class UsersService {
                     where: [
                         {
                             nick: user.nick,
-                            status: typeorm_4.Not(false)
+                            status: (0, typeorm_4.Not)(false)
                         }
                     ]
                 });
@@ -196,7 +196,7 @@ let UsersService = class UsersService {
     }
     async UpdateUserNickUnique(user) {
         let contraseniaOld = '';
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
                         EXEC SP_BuscarUsuarioPorId
@@ -224,9 +224,9 @@ let UsersService = class UsersService {
                 return this.userRepository.find({
                     where: [
                         {
-                            id: typeorm_4.Not(user.id),
+                            id: (0, typeorm_4.Not)(user.id),
                             nick: user.nick,
-                            status: typeorm_4.Not(false)
+                            status: (0, typeorm_4.Not)(false)
                         }
                     ]
                 });
@@ -342,7 +342,7 @@ let UsersService = class UsersService {
     }
     async Delete(userId, deleteUserId) {
         let user = new user_entity_1.UserEntity();
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`SP_BuscarUsuarioPorId @userId= ${userId}`);
             }
@@ -359,7 +359,7 @@ let UsersService = class UsersService {
             user = resultFind[0];
             user.status = false;
             user.userIdUpdated = deleteUserId;
-            user.dateUpdated = moment_assets_1.GetDate();
+            user.dateUpdated = (0, moment_assets_1.GetDate)();
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
 
@@ -448,7 +448,7 @@ let UsersService = class UsersService {
         });
     }
     async GetUserByNick(nick) {
-        return await promises_assets_1.DummyPromise().then(result => {
+        return await (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
                         EXEC SP_GetUserByNick
@@ -459,7 +459,7 @@ let UsersService = class UsersService {
                 return this.userRepository.find({
                     where: [
                         { nick: nick,
-                            status: typeorm_4.Not(false)
+                            status: (0, typeorm_4.Not)(false)
                         }
                     ]
                 });
@@ -472,7 +472,7 @@ let UsersService = class UsersService {
     }
     async UpdateImageUser(id, newFilename) {
         let urlImage = server_config_1.URL_Server.back + '/' + newFilename;
-        return await promises_assets_1.DummyPromise().then(result => {
+        return await (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
                         EXEC SP_UpdateImageUser @id = ${id} ,@urlImage = '${urlImage}'
@@ -488,10 +488,10 @@ let UsersService = class UsersService {
         });
     }
 };
-UsersService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(user_entity_1.UserEntity)),
+exports.UsersService = UsersService;
+exports.UsersService = UsersService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], UsersService);
-exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

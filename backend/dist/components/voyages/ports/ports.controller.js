@@ -24,7 +24,7 @@ let PortsController = class PortsController {
         this._portsService = _portsService;
     }
     GetLastPortAndTotalConsump(userId) {
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             return this._portsService.GetLastPortTotalConsumpByUserId(userId);
         }).then((results) => {
             let getLastPortAndTotalConsump = new port_entity_1.GetLastPortAndTotalConsump();
@@ -67,8 +67,8 @@ let PortsController = class PortsController {
         });
     }
     async GetsDetail(headers, port) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId) {
                 port.userId = Number(port.userId);
                 return true;
@@ -98,8 +98,8 @@ let PortsController = class PortsController {
         });
     }
     async Get(headers, id) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 let portId = Number(id);
                 return this._portsService.Get(portId);
@@ -129,8 +129,8 @@ let PortsController = class PortsController {
         });
     }
     async Gets(headers, port) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId) {
                 port.userId = Number(port.userId);
                 return true;
@@ -160,8 +160,8 @@ let PortsController = class PortsController {
         });
     }
     async CreatePort(headers, port) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId && Number(port.portNumber) && port.departurePort && headerToken && headerToken.id) {
                 if (headerToken.role !== 'ADMIN' && headerToken.role !== 'SUPPORT') {
                     if (Number(headerToken.id) !== Number(port.userId))
@@ -169,7 +169,7 @@ let PortsController = class PortsController {
                 }
                 delete port.id;
                 port.userIdCreated = headerToken.id;
-                port.dateCreated = moment_assets_1.GetDate();
+                port.dateCreated = (0, moment_assets_1.GetDate)();
                 delete port.userIdUpdated;
                 delete port.dateUpdated;
                 port.status = Boolean(port.status);
@@ -195,8 +195,8 @@ let PortsController = class PortsController {
         ;
     }
     async Update(headers, id, port) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId && port.portNumber && port.departurePort && headerToken && headerToken.id) {
                 if (headerToken.role === 'BUQUE') {
                     if (Number(headerToken.id) !== Number(port.userId))
@@ -205,7 +205,7 @@ let PortsController = class PortsController {
                 delete port.userIdCreated;
                 delete port.dateCreated;
                 port.userIdUpdated = headerToken.id;
-                port.dateUpdated = moment_assets_1.GetDate();
+                port.dateUpdated = (0, moment_assets_1.GetDate)();
                 port.status = Boolean(port.status);
                 return this._portsService.Update(port);
             }
@@ -231,8 +231,8 @@ let PortsController = class PortsController {
         });
     }
     async Delete(headers, id) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 return this._portsService.Get(id);
             }
@@ -249,7 +249,7 @@ let PortsController = class PortsController {
             delete result.userIdCreated;
             delete result.dateCreated;
             result.userIdUpdated = headerToken.id;
-            result.dateUpdated = moment_assets_1.GetDate();
+            result.dateUpdated = (0, moment_assets_1.GetDate)();
             return this._portsService.Delete(result);
         }).then((resultDelete) => {
             return {
@@ -268,58 +268,65 @@ let PortsController = class PortsController {
         });
     }
 };
+exports.PortsController = PortsController;
 __decorate([
-    common_1.Get('getLastPortAndTotalConsump/:userId'),
-    __param(0, common_1.Param('userId')),
+    (0, common_1.Get)('getLastPortAndTotalConsump/:userId'),
+    __param(0, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PortsController.prototype, "GetLastPortAndTotalConsump", null);
 __decorate([
-    common_1.Get('detail'),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)('detail'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, port_entity_1.Port]),
     __metadata("design:returntype", Promise)
 ], PortsController.prototype, "GetsDetail", null);
 __decorate([
-    common_1.Get(':id'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], PortsController.prototype, "Get", null);
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, port_entity_1.Port]),
     __metadata("design:returntype", Promise)
 ], PortsController.prototype, "Gets", null);
 __decorate([
-    common_1.Post('create'),
-    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    (0, common_1.Post)('create'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, port_entity_1.Port]),
     __metadata("design:returntype", Promise)
 ], PortsController.prototype, "CreatePort", null);
 __decorate([
-    common_1.Put(':id/update'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')), __param(2, common_1.Body()),
+    (0, common_1.Put)(':id/update'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, port_entity_1.Port]),
     __metadata("design:returntype", Promise)
 ], PortsController.prototype, "Update", null);
 __decorate([
-    common_1.Delete(':id/delete'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')),
+    (0, common_1.Delete)(':id/delete'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], PortsController.prototype, "Delete", null);
-PortsController = __decorate([
-    common_1.Controller('ports'),
+exports.PortsController = PortsController = __decorate([
+    (0, common_1.Controller)('ports'),
     __metadata("design:paramtypes", [ports_service_1.PortsService])
 ], PortsController);
-exports.PortsController = PortsController;
 //# sourceMappingURL=ports.controller.js.map

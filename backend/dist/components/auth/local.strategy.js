@@ -15,13 +15,13 @@ const passport_1 = require("@nestjs/passport");
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const promises_assets_1 = require("../../assets/promises.assets");
-let LocalStrategy = class LocalStrategy extends passport_1.PassportStrategy(passport_local_1.Strategy) {
+let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)(passport_local_1.Strategy) {
     constructor(authService) {
         super();
         this.authService = authService;
     }
     async validate(username, password) {
-        return await promises_assets_1.DummyPromise().then(result => {
+        return await (0, promises_assets_1.DummyPromise)().then(result => {
             if (!result)
                 throw Error('Revisar la funcion DummyPromise(); no retorna lo esperado.');
             return this.authService.validateLogin(username, password);
@@ -36,9 +36,9 @@ let LocalStrategy = class LocalStrategy extends passport_1.PassportStrategy(pass
         });
     }
 };
-LocalStrategy = __decorate([
-    common_1.Injectable(),
+exports.LocalStrategy = LocalStrategy;
+exports.LocalStrategy = LocalStrategy = __decorate([
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], LocalStrategy);
-exports.LocalStrategy = LocalStrategy;
 //# sourceMappingURL=local.strategy.js.map

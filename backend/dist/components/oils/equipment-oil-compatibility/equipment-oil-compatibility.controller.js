@@ -10,8 +10,8 @@ exports.EquipmentOilCompatibilityController = void 0;
 const common_1 = require("@nestjs/common");
 let EquipmentOilCompatibilityController = class EquipmentOilCompatibilityController {
 };
-EquipmentOilCompatibilityController = __decorate([
-    common_1.Controller('equipment-oil-compatibility')
-], EquipmentOilCompatibilityController);
 exports.EquipmentOilCompatibilityController = EquipmentOilCompatibilityController;
+exports.EquipmentOilCompatibilityController = EquipmentOilCompatibilityController = __decorate([
+    (0, common_1.Controller)('equipment-oil-compatibility')
+], EquipmentOilCompatibilityController);
 //# sourceMappingURL=equipment-oil-compatibility.controller.js.map

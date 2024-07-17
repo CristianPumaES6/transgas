@@ -25,7 +25,6 @@ const consumption_equipment_service_1 = require("./consumption-equipment/consump
 const bunker_oil_service_1 = require("./bunker-oil/bunker-oil.service");
 const nodemailer_assets_1 = require("../../assets/nodemailer.assets");
 const equipment_oil_compatibility_service_1 = require("./equipment-oil-compatibility/equipment-oil-compatibility.service");
-const equipment_oil_compatibility_entity_1 = require("../../models/equipment-oil-compatibility.entity");
 let OilsController = class OilsController {
     constructor(_OilsService, _GroupOilEntityService, _EquipmentSystemService, _ConsumptionEquipmentService, _BunkerOilService, _EquipmentOilCompatibilityService) {
         this._OilsService = _OilsService;
@@ -36,8 +35,8 @@ let OilsController = class OilsController {
         this._EquipmentOilCompatibilityService = _EquipmentOilCompatibilityService;
     }
     Gets(headers, oilEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity) {
                 oilEntity.userId = Number(oilEntity.userId);
                 return true;
@@ -67,14 +66,14 @@ let OilsController = class OilsController {
         });
     }
     GetsDataServer(headers, oilEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         let listOils = [];
         let listGroups = [];
         let listEquipmentSystem = [];
         let listConsumptionEquipment = [];
         let listBunkerOil = [];
         let listEquipmentOilCompatibilityEntity = [];
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity) {
                 oilEntity.userId = Number(oilEntity.userId);
                 return true;
@@ -139,7 +138,7 @@ let OilsController = class OilsController {
         });
     }
     async getDataBuque(buqueId) {
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(buqueId)) {
                 let userId = Number(buqueId);
                 return this._OilsService.ConsultarListaDeConsumosPorBuque(buqueId);
@@ -164,7 +163,7 @@ let OilsController = class OilsController {
         });
     }
     async Get(id) {
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 let userId = Number(id);
                 return this._OilsService.Get(userId);
@@ -189,12 +188,12 @@ let OilsController = class OilsController {
         });
     }
     Create(headers, oilEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity && oilEntity.userId && oilEntity.name) {
                 delete oilEntity.id;
                 oilEntity.userIdCreated = headerToken.id;
-                oilEntity.dateCreated = moment_assets_1.GetDate();
+                oilEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete oilEntity.userIdUpdated;
                 delete oilEntity.dateUpdated;
                 oilEntity.status = Boolean(oilEntity.status);
@@ -219,8 +218,8 @@ let OilsController = class OilsController {
         });
     }
     async Update(headers, id, oilEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity && oilEntity.name && headerToken && headerToken.id) {
                 oilEntity.id = Number(id);
                 if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
@@ -231,7 +230,7 @@ let OilsController = class OilsController {
                 delete oilEntity.userIdCreated;
                 delete oilEntity.dateCreated;
                 oilEntity.userIdUpdated = headerToken.id;
-                oilEntity.dateUpdated = moment_assets_1.GetDate();
+                oilEntity.dateUpdated = (0, moment_assets_1.GetDate)();
                 oilEntity.status = Boolean(oilEntity.status);
                 return this._OilsService.Update(oilEntity);
             }
@@ -257,8 +256,8 @@ let OilsController = class OilsController {
         });
     }
     async Delete(headers, id) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 return this._OilsService.Get(id);
             }
@@ -289,7 +288,7 @@ let OilsController = class OilsController {
         });
     }
     async SaveDataLubricante(headers, saveDateOils) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         let mappingGroupOils = [];
         let mappingOils = [];
         let mappingBunkersOil = [];
@@ -302,7 +301,7 @@ let OilsController = class OilsController {
         console.log(JSON.stringify(saveDateOils));
         console.log('-----------[   END saveModuleOils   ]---------------');
         console.log('--------------------------');
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (saveDateOils) {
                 if (saveDateOils.listGroups) {
                     return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
@@ -368,7 +367,7 @@ let OilsController = class OilsController {
             }
         }).then((listaDeConsumosRegistrados) => {
             if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
-                return nodemailer_assets_1.SendMailHTMLOverCosumption('cristian.puma.es6@gmail.com; cpuma@transgas.com.pe; hcamasca@transgas.com.pe; agarcia@transgas.com.pe; eviana@transgas.com.pe;', headerToken.name, moment_assets_1.FormatDateUTCToDate(moment_assets_1.GetDate()), listaDeConsumosRegistrados);
+                return (0, nodemailer_assets_1.SendMailHTMLOverCosumption)('cristian.puma.es6@gmail.com;', headerToken.name, (0, moment_assets_1.FormatDateUTCToDate)((0, moment_assets_1.GetDate)()), listaDeConsumosRegistrados);
             }
             else {
                 return true;
@@ -397,64 +396,72 @@ let OilsController = class OilsController {
         });
     }
 };
+exports.OilsController = OilsController;
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, oil_entity_1.OilEntity]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "Gets", null);
 __decorate([
-    common_1.Get('loadModuleOils'),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)('loadModuleOils'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, oil_entity_1.OilEntity]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "GetsDataServer", null);
 __decorate([
-    common_1.Get('getDataBuque/:userId'),
-    __param(0, common_1.Param('userId')),
+    (0, common_1.Get)('getDataBuque/:userId'),
+    __param(0, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "getDataBuque", null);
 __decorate([
-    common_1.Get(':id'),
-    __param(0, common_1.Param('id')),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "Get", null);
 __decorate([
-    common_1.Post('create'),
-    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    (0, common_1.Post)('create'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, oil_entity_1.OilEntity]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "Create", null);
 __decorate([
-    common_1.Put(':id/update'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')), __param(2, common_1.Body()),
+    (0, common_1.Put)(':id/update'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, oil_entity_1.OilEntity]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "Update", null);
 __decorate([
-    common_1.Delete(':id/delete'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')),
+    (0, common_1.Delete)(':id/delete'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "Delete", null);
 __decorate([
-    common_1.Post('saveModuleOils'),
-    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    (0, common_1.Post)('saveModuleOils'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, oil_entity_1.DataModuleOils]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "SaveDataLubricante", null);
-OilsController = __decorate([
-    common_1.Controller('oils'),
+exports.OilsController = OilsController = __decorate([
+    (0, common_1.Controller)('oils'),
     __metadata("design:paramtypes", [oils_service_1.OilsService,
         group_oils_service_1.GroupOilsService,
         equipment_system_service_1.EquipmentSystemService,
@@ -462,5 +469,4 @@ OilsController = __decorate([
         bunker_oil_service_1.BunkerOilService,
         equipment_oil_compatibility_service_1.EquipmentOilCompatibilityService])
 ], OilsController);
-exports.OilsController = OilsController;
 //# sourceMappingURL=oils.controller.js.map

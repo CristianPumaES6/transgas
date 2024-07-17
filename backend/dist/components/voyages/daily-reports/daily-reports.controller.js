@@ -24,7 +24,7 @@ let DailyReportsController = class DailyReportsController {
         this._dailyReportsService = _dailyReportsService;
     }
     async Get(id) {
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 let userId = Number(id);
                 return this._dailyReportsService.Get(userId);
@@ -49,8 +49,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     Gets(headers, dailyReport) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (dailyReport) {
                 dailyReport.userId = Number(dailyReport.userId);
                 return true;
@@ -81,8 +81,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     Create(headers, dailyReport) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id
                 && (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                     && dailyReport.speedStraction)
@@ -109,7 +109,7 @@ let DailyReportsController = class DailyReportsController {
                 dailyReport.steamingTime = dailyReport.steamingTime || 0;
                 dailyReport.distance = dailyReport.distance || 0;
                 dailyReport.userIdCreated = headerToken.id;
-                dailyReport.dateCreated = moment_assets_1.GetDate();
+                dailyReport.dateCreated = (0, moment_assets_1.GetDate)();
                 delete dailyReport.userIdUpdated;
                 delete dailyReport.dateUpdated;
                 dailyReport.status = Boolean(dailyReport.status);
@@ -135,8 +135,8 @@ let DailyReportsController = class DailyReportsController {
         ;
     }
     async Update(headers, id, dailyReport) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id
                 && (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
                     && dailyReport.speedStraction)
@@ -164,7 +164,7 @@ let DailyReportsController = class DailyReportsController {
                 delete dailyReport.userIdCreated;
                 delete dailyReport.dateCreated;
                 dailyReport.userIdUpdated = headerToken.id;
-                dailyReport.dateUpdated = moment_assets_1.GetDate();
+                dailyReport.dateUpdated = (0, moment_assets_1.GetDate)();
                 dailyReport.status = Boolean(dailyReport.status);
                 return this._dailyReportsService.Update(dailyReport);
             }
@@ -190,8 +190,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     async Delete(headers, id) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 return this._dailyReportsService.Get(id);
             }
@@ -218,8 +218,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetROBByBuque(headers, userId) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -250,8 +250,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetStartEndROByFilterDate(headers, userId, startDate, endDate) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -282,8 +282,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetBunkeringByBuque(headers, userId) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -314,8 +314,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetInfoVoyageROBAndBunkeringByBuqueAndDate(headers, userId, startDate, endDate) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -346,8 +346,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetReportVoyagePortDaily(headers, userId, startDate, endDate) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -378,8 +378,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetReportByUser(headers, userId) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -412,8 +412,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetTotalByActivityFilterByUserIdAndDateAndType(headers, userId, startDate, endDate, filter) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -444,8 +444,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetTotalConsumerByActivityFilterByUserIdAndDateAndType(headers, userId, startDate, endDate, typeSummary) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -476,8 +476,8 @@ let DailyReportsController = class DailyReportsController {
         });
     }
     GetReportDNVByUser(headers, userId, startDate, endDate) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (userId) {
                 return true;
             }
@@ -508,107 +508,135 @@ let DailyReportsController = class DailyReportsController {
         });
     }
 };
+exports.DailyReportsController = DailyReportsController;
 __decorate([
-    common_1.Get(':id'),
-    __param(0, common_1.Param('id')),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "Get", null);
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, daily_report_entity_1.DailyReport]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "Gets", null);
 __decorate([
-    common_1.Post('create'),
-    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    (0, common_1.Post)('create'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, daily_report_entity_1.DailyReport]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "Create", null);
 __decorate([
-    common_1.Put(':id/update'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')), __param(2, common_1.Body()),
+    (0, common_1.Put)(':id/update'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, daily_report_entity_1.DailyReport]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "Update", null);
 __decorate([
-    common_1.Delete(':id/delete'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')),
+    (0, common_1.Delete)(':id/delete'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "Delete", null);
 __decorate([
-    common_1.Get('get-rob/:userId'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')),
+    (0, common_1.Get)('get-rob/:userId'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetROBByBuque", null);
 __decorate([
-    common_1.Get('get-start-end-rob/:userId/:startDate/:endDate'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')), __param(2, common_1.Param('startDate')), __param(3, common_1.Param('endDate')),
+    (0, common_1.Get)('get-start-end-rob/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
+    __param(2, (0, common_1.Param)('startDate')),
+    __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Date, Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetStartEndROByFilterDate", null);
 __decorate([
-    common_1.Get('get-bunkering/:userId'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')),
+    (0, common_1.Get)('get-bunkering/:userId'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetBunkeringByBuque", null);
 __decorate([
-    common_1.Get('get-info-voyage-rob-bunkering/:userId/:startDate/:endDate'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')), __param(2, common_1.Param('startDate')), __param(3, common_1.Param('endDate')),
+    (0, common_1.Get)('get-info-voyage-rob-bunkering/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
+    __param(2, (0, common_1.Param)('startDate')),
+    __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Date, Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetInfoVoyageROBAndBunkeringByBuqueAndDate", null);
 __decorate([
-    common_1.Get('get-report-voyage-port-daily/:userId/:startDate/:endDate'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')), __param(2, common_1.Param('startDate')), __param(3, common_1.Param('endDate')),
+    (0, common_1.Get)('get-report-voyage-port-daily/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
+    __param(2, (0, common_1.Param)('startDate')),
+    __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Date, Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetReportVoyagePortDaily", null);
 __decorate([
-    common_1.Get('get-report-by-user/:userId'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')),
+    (0, common_1.Get)('get-report-by-user/:userId'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetReportByUser", null);
 __decorate([
-    common_1.Get('get-total-by-activity/:userId/:startDate/:endDate/:filter'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')), __param(2, common_1.Param('startDate')), __param(3, common_1.Param('endDate')), __param(4, common_1.Param('filter')),
+    (0, common_1.Get)('get-total-by-activity/:userId/:startDate/:endDate/:filter'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
+    __param(2, (0, common_1.Param)('startDate')),
+    __param(3, (0, common_1.Param)('endDate')),
+    __param(4, (0, common_1.Param)('filter')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetTotalByActivityFilterByUserIdAndDateAndType", null);
 __decorate([
-    common_1.Get('get-total-consumption-by-activity/:userId/:startDate/:endDate/:typeSummary'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')), __param(2, common_1.Param('startDate')), __param(3, common_1.Param('endDate')), __param(4, common_1.Param('typeSummary')),
+    (0, common_1.Get)('get-total-consumption-by-activity/:userId/:startDate/:endDate/:typeSummary'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
+    __param(2, (0, common_1.Param)('startDate')),
+    __param(3, (0, common_1.Param)('endDate')),
+    __param(4, (0, common_1.Param)('typeSummary')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetTotalConsumerByActivityFilterByUserIdAndDateAndType", null);
 __decorate([
-    common_1.Get('get-report-dnv-by-user/:userId/:startDate/:endDate'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('userId')), __param(2, common_1.Param('startDate')), __param(3, common_1.Param('endDate')),
+    (0, common_1.Get)('get-report-dnv-by-user/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('userId')),
+    __param(2, (0, common_1.Param)('startDate')),
+    __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Date, Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetReportDNVByUser", null);
-DailyReportsController = __decorate([
-    common_1.Controller('daily-reports'),
+exports.DailyReportsController = DailyReportsController = __decorate([
+    (0, common_1.Controller)('daily-reports'),
     __metadata("design:paramtypes", [daily_reports_service_1.DailyReportsService])
 ], DailyReportsController);
-exports.DailyReportsController = DailyReportsController;
 //# sourceMappingURL=daily-reports.controller.js.map

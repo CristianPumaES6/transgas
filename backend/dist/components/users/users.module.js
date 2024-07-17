@@ -16,8 +16,9 @@ const platform_express_1 = require("@nestjs/platform-express");
 const path_config_1 = require("../../config/path.config");
 let UsersModule = class UsersModule {
 };
-UsersModule = __decorate([
-    common_1.Module({
+exports.UsersModule = UsersModule;
+exports.UsersModule = UsersModule = __decorate([
+    (0, common_1.Module)({
         providers: [users_service_1.UsersService],
         controllers: [users_controller_1.UsersController],
         imports: [
@@ -29,5 +30,4 @@ UsersModule = __decorate([
         exports: [users_service_1.UsersService],
     })
 ], UsersModule);
-exports.UsersModule = UsersModule;
 //# sourceMappingURL=users.module.js.map

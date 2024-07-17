@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReadFileContent = void 0;
+exports.ReadFileContent = ReadFileContent;
 const fs = require("fs");
 function ReadFileContent(fileName, encode, safe) {
     return new Promise(function (resolve, reject) {
@@ -25,5 +25,4 @@ function ReadFileContent(fileName, encode, safe) {
         }
     });
 }
-exports.ReadFileContent = ReadFileContent;
 //# sourceMappingURL=file-manager.assets.js.map

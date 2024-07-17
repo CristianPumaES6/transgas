@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.translateActivity = void 0;
+exports.translateActivity = translateActivity;
 function translateActivity(text) {
     switch (text) {
         case 'LOADING':
@@ -43,5 +43,4 @@ function translateActivity(text) {
             break;
     }
 }
-exports.translateActivity = translateActivity;
 //# sourceMappingURL=translate.assets.js.map

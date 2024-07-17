@@ -16,7 +16,6 @@ exports.EquipmentSystemController = void 0;
 const common_1 = require("@nestjs/common");
 const equipment_system_service_1 = require("./equipment-system.service");
 const equipment_system_entity_1 = require("../../../models/equipment-system.entity");
-const user_entity_1 = require("../../../models/user.entity");
 const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
 let EquipmentSystemController = class EquipmentSystemController {
@@ -24,8 +23,8 @@ let EquipmentSystemController = class EquipmentSystemController {
         this._EquipmentSystemService = _EquipmentSystemService;
     }
     Gets(headers, equipmentSystemEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (equipmentSystemEntity) {
                 equipmentSystemEntity.userId = Number(equipmentSystemEntity.userId);
                 return true;
@@ -55,16 +54,17 @@ let EquipmentSystemController = class EquipmentSystemController {
         });
     }
 };
+exports.EquipmentSystemController = EquipmentSystemController;
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, equipment_system_entity_1.EquipmentSystemEntity]),
     __metadata("design:returntype", Promise)
 ], EquipmentSystemController.prototype, "Gets", null);
-EquipmentSystemController = __decorate([
-    common_1.Controller('type-of-oil-equipment'),
+exports.EquipmentSystemController = EquipmentSystemController = __decorate([
+    (0, common_1.Controller)('type-of-oil-equipment'),
     __metadata("design:paramtypes", [equipment_system_service_1.EquipmentSystemService])
 ], EquipmentSystemController);
-exports.EquipmentSystemController = EquipmentSystemController;
 //# sourceMappingURL=equipment-system.controller.js.map

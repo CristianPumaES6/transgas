@@ -86,301 +86,301 @@ let UserEntity = class UserEntity {
         this.status = status || false;
     }
 };
+exports.UserEntity = UserEntity;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "imo", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "nick", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "name", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "filename", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "password", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "language", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "role", void 0);
 __decorate([
-    typeorm_1.Column({ default: '' }),
+    (0, typeorm_1.Column)({ default: '' }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "years", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "minSpeed", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maxSpeed", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isConsumptionLSFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: false }),
+    (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isConsumptionVLSFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maxIFOConsumption", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maxMGOConsumption", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "minIFOConsumption", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "minMGOConsumption", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isMEMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isAEMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isBoilerMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isIGMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isPowerPMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isOtherMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isMEIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isAEIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isBoilerIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isOtherIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingBallastMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingLadenMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingEconomicalMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "loadingConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "dischargeConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingBallastConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingLoadConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingEconomicConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "anchoredConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maneuverConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "otherConsumptionMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingBallastIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingLadenIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingEconomicalIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "loadingConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "dischargeConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingBallastConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingLoadConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingEconomicConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "anchoredConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maneuverConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "otherConsumptionIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayLSFOConsumption", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayMGOConsumption", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayAverageSpeed", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayDataMGO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayDataLSFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayVesselPerformanceLSFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayVesselPerformanceMGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentME_MGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentAE_MGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentBOILER_MGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentIG_MGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentPP_MGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentOther_MGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentME_IFO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentAE_IFO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentBOILER_IFO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentOther_IFO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], UserEntity.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "status", void 0);
-UserEntity = __decorate([
-    typeorm_1.Entity('user'),
+exports.UserEntity = UserEntity = __decorate([
+    (0, typeorm_1.Entity)('user'),
     __metadata("design:paramtypes", [Number, String, String, String, String, String, String, String, Number, Number, Boolean, Boolean, Boolean, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, Number, String, Number, String, Boolean])
 ], UserEntity);
-exports.UserEntity = UserEntity;
 //# sourceMappingURL=user.entity.js.map

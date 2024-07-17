@@ -36,7 +36,7 @@ let OilsService = class OilsService {
         this._oilRepository = _oilRepository;
     }
     async Get(id) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._oilRepository.query(`
                      EXEC SP_BuscarReportePorId 
@@ -60,7 +60,7 @@ let OilsService = class OilsService {
         });
     }
     async Gets(oilEntity) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -68,9 +68,9 @@ let OilsService = class OilsService {
                 return this._oilRepository.find({
                     where: [
                         {
-                            userId: (oilEntity.userId || typeorm_3.Like('%' + '%')),
-                            name: typeorm_3.Like('%' + (oilEntity.name || '') + '%'),
-                            status: typeorm_4.Not(false)
+                            userId: (oilEntity.userId || (0, typeorm_3.Like)('%' + '%')),
+                            name: (0, typeorm_3.Like)('%' + (oilEntity.name || '') + '%'),
+                            status: (0, typeorm_4.Not)(false)
                         }
                     ]
                 });
@@ -82,7 +82,7 @@ let OilsService = class OilsService {
         });
     }
     async Create(oilEntity) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return;
             }
@@ -103,7 +103,7 @@ let OilsService = class OilsService {
         });
     }
     async Update(oilEntity) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this.Get(oilEntity.id);
         }).then(resultFind => {
             if (!resultFind)
@@ -124,13 +124,13 @@ let OilsService = class OilsService {
     }
     async Delete(oilEntity, usuarioDelete) {
         let returnOilEntity;
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this.Get(oilEntity.id);
         }).then(resultFind => {
             if (!resultFind)
                 throw new Error('does_not_exist');
             resultFind.userIdUpdated = usuarioDelete;
-            resultFind.dateUpdated = moment_assets_1.GetDate();
+            resultFind.dateUpdated = (0, moment_assets_1.GetDate)();
             resultFind.status = false;
             returnOilEntity = resultFind;
             return this.Update(resultFind);
@@ -141,20 +141,22 @@ let OilsService = class OilsService {
         });
     }
     async SaveList(importOils) {
-        var e_1, _a, e_2, _b, e_3, _c;
+        var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j;
         let MappingOilEntity = [];
         const addOilEntity = importOils.filter((importOil) => importOil.SyncStatus == 'added');
         const updOilEntity = importOils.filter((importOil) => importOil.SyncStatus == 'updated');
         const deleteOilEntity = importOils.filter((importOil) => importOil.SyncStatus == 'deleted');
         try {
-            for (var addOilEntity_1 = __asyncValues(addOilEntity), addOilEntity_1_1; addOilEntity_1_1 = await addOilEntity_1.next(), !addOilEntity_1_1.done;) {
-                const oil = addOilEntity_1_1.value;
+            for (var _k = true, addOilEntity_1 = __asyncValues(addOilEntity), addOilEntity_1_1; addOilEntity_1_1 = await addOilEntity_1.next(), _a = addOilEntity_1_1.done, !_a; _k = true) {
+                _c = addOilEntity_1_1.value;
+                _k = false;
+                const oil = _c;
                 let newOil = new oil_entity_1.OilEntity();
                 delete newOil.id;
                 newOil.userId = oil.userId;
                 newOil.name = oil.name;
                 newOil.userIdCreated = oil.userIdCreated;
-                newOil.dateCreated = moment_assets_1.GetDate();
+                newOil.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newOil.userIdUpdated;
                 delete newOil.dateUpdated;
                 newOil.status = Boolean(oil.status);
@@ -165,13 +167,15 @@ let OilsService = class OilsService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (addOilEntity_1_1 && !addOilEntity_1_1.done && (_a = addOilEntity_1.return)) await _a.call(addOilEntity_1);
+                if (!_k && !_a && (_b = addOilEntity_1.return)) await _b.call(addOilEntity_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         try {
-            for (var updOilEntity_1 = __asyncValues(updOilEntity), updOilEntity_1_1; updOilEntity_1_1 = await updOilEntity_1.next(), !updOilEntity_1_1.done;) {
-                const oil = updOilEntity_1_1.value;
+            for (var _l = true, updOilEntity_1 = __asyncValues(updOilEntity), updOilEntity_1_1; updOilEntity_1_1 = await updOilEntity_1.next(), _d = updOilEntity_1_1.done, !_d; _l = true) {
+                _f = updOilEntity_1_1.value;
+                _l = false;
+                const oil = _f;
                 let updatedOil = new oil_entity_1.OilEntity();
                 updatedOil.id = oil.id;
                 updatedOil.userId = oil.userId;
@@ -187,13 +191,15 @@ let OilsService = class OilsService {
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (updOilEntity_1_1 && !updOilEntity_1_1.done && (_b = updOilEntity_1.return)) await _b.call(updOilEntity_1);
+                if (!_l && !_d && (_e = updOilEntity_1.return)) await _e.call(updOilEntity_1);
             }
             finally { if (e_2) throw e_2.error; }
         }
         try {
-            for (var deleteOilEntity_1 = __asyncValues(deleteOilEntity), deleteOilEntity_1_1; deleteOilEntity_1_1 = await deleteOilEntity_1.next(), !deleteOilEntity_1_1.done;) {
-                let oil = deleteOilEntity_1_1.value;
+            for (var _m = true, deleteOilEntity_1 = __asyncValues(deleteOilEntity), deleteOilEntity_1_1; deleteOilEntity_1_1 = await deleteOilEntity_1.next(), _g = deleteOilEntity_1_1.done, !_g; _m = true) {
+                _j = deleteOilEntity_1_1.value;
+                _m = false;
+                let oil = _j;
                 let deleteOil = new oil_entity_1.OilEntity();
                 deleteOil.id = oil.id;
                 deleteOil.userId = oil.userId;
@@ -209,7 +215,7 @@ let OilsService = class OilsService {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (deleteOilEntity_1_1 && !deleteOilEntity_1_1.done && (_c = deleteOilEntity_1.return)) await _c.call(deleteOilEntity_1);
+                if (!_m && !_g && (_h = deleteOilEntity_1.return)) await _h.call(deleteOilEntity_1);
             }
             finally { if (e_3) throw e_3.error; }
         }
@@ -217,7 +223,7 @@ let OilsService = class OilsService {
     }
     async ConsultarListaDeConsumosRegistrados(ListCONSUMOSId) {
         let listDeIds = '';
-        return await promises_assets_1.DummyPromise()
+        return await (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (ListCONSUMOSId && ListCONSUMOSId.length) {
                 var listDeID = ListCONSUMOSId.join(',');
@@ -253,14 +259,14 @@ let OilsService = class OilsService {
         }).then(resultFind => {
             let dailyOilConsumptionData = [];
             resultFind.forEach(item => {
-                let dateYYYYMM = moment_assets_1.FormatDateUTCToDateYYYYMM(item.dateConsumption);
-                let dateConsumption = moment_assets_1.FormatDateUTCToDate(item.dateConsumption);
+                let dateYYYYMM = (0, moment_assets_1.FormatDateUTCToDateYYYYMM)(item.dateConsumption);
+                let dateConsumption = (0, moment_assets_1.FormatDateUTCToDate)(item.dateConsumption);
                 let calcRate = 0;
                 if (!item.hourConsumption || item.hourConsumption <= 0) {
                     calcRate = item.amountConsumption;
                 }
                 else {
-                    calcRate = math_assets_1.mathRound(item.amountConsumption / item.hourConsumption, 2);
+                    calcRate = (0, math_assets_1.mathRound)(item.amountConsumption / item.hourConsumption, 2);
                 }
                 if (calcRate > item.rate) {
                     let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
@@ -308,7 +314,7 @@ let OilsService = class OilsService {
         });
     }
     async ConsultarListaDeConsumosPorBuque(buqueId) {
-        return await promises_assets_1.DummyPromise()
+        return await (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (buqueId && buqueId > 0) {
                 var queryWhere = 'consumptionEquipment.userId = ' + buqueId;
@@ -335,8 +341,8 @@ let OilsService = class OilsService {
         }).then(resultFind => {
             let dailyOilConsumptionData = [];
             resultFind.forEach(item => {
-                let dateYYYYMM = moment_assets_1.FormatDateUTCToDateYYYYMM(item.dateConsumption);
-                let dateConsumption = moment_assets_1.FormatDateUTCToDate(item.dateConsumption);
+                let dateYYYYMM = (0, moment_assets_1.FormatDateUTCToDateYYYYMM)(item.dateConsumption);
+                let dateConsumption = (0, moment_assets_1.FormatDateUTCToDate)(item.dateConsumption);
                 let calcRate = 0;
                 if (!item.hourConsumption || item.hourConsumption <= 0) {
                     calcRate = item.amountConsumption;
@@ -367,10 +373,10 @@ let OilsService = class OilsService {
         });
     }
 };
-OilsService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(oil_entity_1.OilEntity)),
+exports.OilsService = OilsService;
+exports.OilsService = OilsService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(oil_entity_1.OilEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], OilsService);
-exports.OilsService = OilsService;
 //# sourceMappingURL=oils.service.js.map

@@ -1,5 +1,5 @@
-import { Mapping } from 'src/assets/mappingKeys';
-import { EquipmentSystemEntity } from 'src/models/equipment-system.entity';
+import { Mapping } from '../../../assets/mappingKeys';
+import { EquipmentSystemEntity } from '../../../models/equipment-system.entity';
 import { Repository } from 'typeorm';
 export declare class EquipmentSystemService {
     private _EquipmentSystemEntity;

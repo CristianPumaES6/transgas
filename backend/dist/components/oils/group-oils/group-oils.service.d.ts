@@ -1,5 +1,5 @@
-import { Mapping } from 'src/assets/mappingKeys';
-import { GroupOilEntity } from 'src/models/group-oils.entity';
+import { Mapping } from '../../../assets/mappingKeys';
+import { GroupOilEntity } from '../../../models/group-oils.entity';
 import { Repository } from 'typeorm';
 export declare class GroupOilsService {
     private _groupOilRepository;

@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
-import { Mapping } from 'src/assets/mappingKeys';
-import { EquipmentOilCompatibilityEntity } from 'src/models/equipment-oil-compatibility.entity';
+import { Mapping } from '../../../assets/mappingKeys';
+import { EquipmentOilCompatibilityEntity } from '../../../models/equipment-oil-compatibility.entity';
 export declare class EquipmentOilCompatibilityService {
     private _EquipmentOilCompatibilityEntity;
     constructor(_EquipmentOilCompatibilityEntity: Repository<EquipmentOilCompatibilityEntity>);

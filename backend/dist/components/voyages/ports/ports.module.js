@@ -14,8 +14,9 @@ const typeorm_1 = require("@nestjs/typeorm");
 const port_entity_1 = require("../../../models/port.entity");
 let PortsModule = class PortsModule {
 };
-PortsModule = __decorate([
-    common_1.Module({
+exports.PortsModule = PortsModule;
+exports.PortsModule = PortsModule = __decorate([
+    (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([port_entity_1.Port]),
         ],
@@ -24,5 +25,4 @@ PortsModule = __decorate([
         exports: [ports_service_1.PortsService]
     })
 ], PortsModule);
-exports.PortsModule = PortsModule;
 //# sourceMappingURL=ports.module.js.map

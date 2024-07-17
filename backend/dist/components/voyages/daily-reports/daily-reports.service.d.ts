@@ -1,6 +1,6 @@
 import { DailyReport, GetInfoVoyageROBBunkering, GetReportVoyagePortDaily, GetROBByUser, InfoReport_IFO_AND_MGO } from '../../../models/daily-report.entity';
 import { Repository } from 'typeorm';
-import { Mapping } from 'src/assets/mappingKeys';
+import { Mapping } from '../../../assets/mappingKeys';
 export declare class DailyReportsService {
     private _dailyReportRepository;
     constructor(_dailyReportRepository: Repository<DailyReport>);

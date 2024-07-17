@@ -11,10 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppGateway = void 0;
 const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
+const socket_io_1 = require("socket.io");
 const moment_assets_1 = require("./assets/moment.assets");
 const server_config_1 = require("./config/server.config");
 const loggedUser_1 = require("./models/loggedUser");
@@ -40,7 +42,7 @@ let AppGateway = class AppGateway {
                 return (logeate.clientId === client.id && logeate.isActive == true);
             });
             if (userDisconnect) {
-                userDisconnect.lastConnection = moment_assets_1.GetDate();
+                userDisconnect.lastConnection = (0, moment_assets_1.GetDate)();
                 userDisconnect.isActive = false;
                 this.UpdateUserLogeated(userDisconnect);
             }
@@ -70,7 +72,7 @@ let AppGateway = class AppGateway {
         });
         if (isUserExit) {
             isUserExit.userName = loggedUser.userName || isUserExit.userName;
-            isUserExit.lastConnection = moment_assets_1.GetDate();
+            isUserExit.lastConnection = (0, moment_assets_1.GetDate)();
             isUserExit.isActive = true;
             this.UpdateUserLogeated(isUserExit);
         }
@@ -80,8 +82,8 @@ let AppGateway = class AppGateway {
         return true;
     }
     AddUserLogeated(loggedUser) {
-        loggedUser.firstConnection = moment_assets_1.GetDate();
-        loggedUser.lastConnection = moment_assets_1.GetDate();
+        loggedUser.firstConnection = (0, moment_assets_1.GetDate)();
+        loggedUser.lastConnection = (0, moment_assets_1.GetDate)();
         loggedUser.isActive = true;
         this.loggedUsers.push(loggedUser);
         return true;
@@ -106,20 +108,20 @@ let AppGateway = class AppGateway {
         return this.loggedUsers;
     }
 };
+exports.AppGateway = AppGateway;
 __decorate([
-    websockets_1.WebSocketServer(),
+    (0, websockets_1.WebSocketServer)(),
     __metadata("design:type", Object)
 ], AppGateway.prototype, "wss", void 0);
 __decorate([
-    websockets_1.SubscribeMessage('EmitConnect'),
-    __param(0, websockets_1.MessageBody()),
-    __param(1, websockets_1.ConnectedSocket()),
+    (0, websockets_1.SubscribeMessage)('EmitConnect'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socketEmit_1.SocketEmitModel, Object]),
+    __metadata("design:paramtypes", [socketEmit_1.SocketEmitModel, typeof (_a = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _a : Object]),
     __metadata("design:returntype", Array)
 ], AppGateway.prototype, "handleEvent", null);
-AppGateway = __decorate([
-    websockets_1.WebSocketGateway(server_config_1.URL_Server.puertoSocket, { transport: ['websocket'] })
+exports.AppGateway = AppGateway = __decorate([
+    (0, websockets_1.WebSocketGateway)(server_config_1.URL_Server.puertoSocket, { transport: ['websocket'] })
 ], AppGateway);
-exports.AppGateway = AppGateway;
 //# sourceMappingURL=app.gateway.js.map

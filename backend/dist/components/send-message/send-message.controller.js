@@ -25,8 +25,8 @@ let SendMessageController = class SendMessageController {
         this._sendMessageService = _sendMessageService;
     }
     async GetConfigSendMail(headers, sendMessageEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (sendMessageEntity) {
                 if (!sendMessageEntity.userId) {
                     throw new Error('MISSING_FIELS');
@@ -60,8 +60,8 @@ let SendMessageController = class SendMessageController {
         });
     }
     async SaveConfig(headers, sendMessageEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (sendMessageEntity && sendMessageEntity.emails && sendMessageEntity.status) {
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 }
@@ -69,12 +69,12 @@ let SendMessageController = class SendMessageController {
                     throw new Error('ERROR_USERID_FAIL');
                 if (Number(sendMessageEntity.id) > 0) {
                     sendMessageEntity.id = Number(sendMessageEntity.id);
-                    sendMessageEntity.dateUpdated = moment_assets_1.GetDate();
+                    sendMessageEntity.dateUpdated = (0, moment_assets_1.GetDate)();
                     sendMessageEntity.userIdUpdated = headerToken.id;
                 }
                 else {
                     delete sendMessageEntity.id;
-                    sendMessageEntity.dateCreated = moment_assets_1.GetDate();
+                    sendMessageEntity.dateCreated = (0, moment_assets_1.GetDate)();
                     sendMessageEntity.userIdCreated = headerToken.id;
                 }
                 sendMessageEntity.status = Boolean(sendMessageEntity.status);
@@ -99,23 +99,25 @@ let SendMessageController = class SendMessageController {
         });
     }
 };
+exports.SendMessageController = SendMessageController;
 __decorate([
-    common_2.Get('configSendMail'),
-    __param(0, common_2.Headers()), __param(1, common_2.Query()),
+    (0, common_2.Get)('configSendMail'),
+    __param(0, (0, common_2.Headers)()),
+    __param(1, (0, common_2.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, send_message_entity_1.SendMessageEntity]),
     __metadata("design:returntype", Promise)
 ], SendMessageController.prototype, "GetConfigSendMail", null);
 __decorate([
-    common_2.Post('saveConfig'),
-    __param(0, common_2.Headers()), __param(1, common_2.Body()),
+    (0, common_2.Post)('saveConfig'),
+    __param(0, (0, common_2.Headers)()),
+    __param(1, (0, common_2.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, send_message_entity_1.SendMessageEntity]),
     __metadata("design:returntype", Promise)
 ], SendMessageController.prototype, "SaveConfig", null);
-SendMessageController = __decorate([
-    common_1.Controller('send-message'),
+exports.SendMessageController = SendMessageController = __decorate([
+    (0, common_1.Controller)('send-message'),
     __metadata("design:paramtypes", [send_message_service_1.SendMessageService])
 ], SendMessageController);
-exports.SendMessageController = SendMessageController;
 //# sourceMappingURL=send-message.controller.js.map

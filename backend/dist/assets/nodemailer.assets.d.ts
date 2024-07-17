@@ -1,5 +1,4 @@
-/// <reference types="node" />
-import { MailLastVoyage } from 'src/models/sendMailConfig';
+import { MailLastVoyage } from '../models/sendMailConfig';
 export declare function NodemailerInit(): Promise<boolean>;
 export declare function MailSendSMTP(from: string, to: string, subject: string, body: string, htmlBody?: boolean, cc?: string, bcc?: string, attachments?: any): Promise<any>;
 export declare function SendMailHTMLValidate(to: string, name: string, token: string): Promise<boolean>;

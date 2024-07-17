@@ -14,8 +14,9 @@ const typeorm_1 = require("@nestjs/typeorm");
 const send_message_entity_1 = require("../../models/send-message.entity");
 let SendMessageModule = class SendMessageModule {
 };
-SendMessageModule = __decorate([
-    common_1.Module({
+exports.SendMessageModule = SendMessageModule;
+exports.SendMessageModule = SendMessageModule = __decorate([
+    (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([send_message_entity_1.SendMessageEntity]),
         ],
@@ -23,5 +24,4 @@ SendMessageModule = __decorate([
         controllers: [send_message_controller_1.SendMessageController]
     })
 ], SendMessageModule);
-exports.SendMessageModule = SendMessageModule;
 //# sourceMappingURL=send-message.module.js.map

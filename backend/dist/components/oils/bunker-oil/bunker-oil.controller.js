@@ -16,7 +16,6 @@ exports.BunkerOilController = void 0;
 const common_1 = require("@nestjs/common");
 const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
-const user_entity_1 = require("../../../models/user.entity");
 const bunker_oil_service_1 = require("./bunker-oil.service");
 const buker_oil_entity_1 = require("../../../models/buker-oil.entity");
 let BunkerOilController = class BunkerOilController {
@@ -24,8 +23,8 @@ let BunkerOilController = class BunkerOilController {
         this._BunkerOilService = _BunkerOilService;
     }
     Gets(headers, bunkerOilEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (bunkerOilEntity) {
                 bunkerOilEntity.userId = Number(bunkerOilEntity.userId);
                 return true;
@@ -55,16 +54,17 @@ let BunkerOilController = class BunkerOilController {
         });
     }
 };
+exports.BunkerOilController = BunkerOilController;
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, buker_oil_entity_1.BunkerOil]),
     __metadata("design:returntype", Promise)
 ], BunkerOilController.prototype, "Gets", null);
-BunkerOilController = __decorate([
-    common_1.Controller('bunker-oil'),
+exports.BunkerOilController = BunkerOilController = __decorate([
+    (0, common_1.Controller)('bunker-oil'),
     __metadata("design:paramtypes", [bunker_oil_service_1.BunkerOilService])
 ], BunkerOilController);
-exports.BunkerOilController = BunkerOilController;
 //# sourceMappingURL=bunker-oil.controller.js.map

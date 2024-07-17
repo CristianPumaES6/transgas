@@ -48,17 +48,17 @@ let AuthService = class AuthService {
             password: user.password,
             role: user.role
         };
-        return await promises_assets_1.DummyPromise().then(result => {
+        return await (0, promises_assets_1.DummyPromise)().then(result => {
             if (!result)
                 throw ('Error en la respuesta del DummyPromise.');
             return this.jwtService.sign(payload);
         });
     }
 };
-AuthService = __decorate([
-    common_1.Injectable(),
+exports.AuthService = AuthService;
+exports.AuthService = AuthService = __decorate([
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
         jwt_1.JwtService])
 ], AuthService);
-exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

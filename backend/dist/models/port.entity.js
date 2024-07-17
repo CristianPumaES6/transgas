@@ -15,77 +15,77 @@ const daily_report_entity_1 = require("./daily-report.entity");
 const voyage_entity_1 = require("./voyage.entity");
 let Port = class Port {
 };
+exports.Port = Port;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], Port.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Port.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Port.prototype, "voyageId", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => voyage_entity_1.Voyage, voyage => voyage.id),
+    (0, typeorm_1.ManyToOne)(type => voyage_entity_1.Voyage, voyage => voyage.id),
     __metadata("design:type", voyage_entity_1.Voyage)
 ], Port.prototype, "voyage", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => daily_report_entity_1.DailyReport, dailyReport => dailyReport.port, {
+    (0, typeorm_1.OneToMany)(type => daily_report_entity_1.DailyReport, dailyReport => dailyReport.port, {
         eager: true,
         cascade: true
     }),
     __metadata("design:type", Array)
 ], Port.prototype, "dailyReports", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Port.prototype, "portNumber", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Port.prototype, "departurePort", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Port.prototype, "arrivalPort", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Port.prototype, "startDate", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], Port.prototype, "startIFO", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], Port.prototype, "startMGO", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Port.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Port.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], Port.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Port.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], Port.prototype, "status", void 0);
-Port = __decorate([
-    typeorm_1.Entity()
+exports.Port = Port = __decorate([
+    (0, typeorm_1.Entity)()
 ], Port);
-exports.Port = Port;
 class GetLastPortAndTotalConsump {
     constructor(portId, userId, departurePort, arrivalPort, startDate, startIFO, startMGO, lastDate, bunkeringIfo, bunkeringMgo, mplaIfo, auxIfo, boilerIfo, otherIfo, mplaMgo, auxMgo, boilerMgo, ppMgo, giMgo, otherMgo, distance) {
         this.portId = portId || 0;

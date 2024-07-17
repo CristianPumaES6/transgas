@@ -30,7 +30,7 @@ let AppController = class AppController {
         this._AppGateway = _AppGateway;
     }
     Pruebas(body) {
-        return promises_assets_1.DummyPromise().then((result) => {
+        return (0, promises_assets_1.DummyPromise)().then((result) => {
             return 'PRUEBA :)';
         }).catch(err => {
             const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
@@ -58,7 +58,7 @@ let AppController = class AppController {
     }
     async login(req) {
         const user = req.user;
-        return await promises_assets_1.DummyPromise().then(result => {
+        return await (0, promises_assets_1.DummyPromise)().then(result => {
             if (!result)
                 throw Error('Error DummyPromise()');
             if (!user)
@@ -85,7 +85,7 @@ let AppController = class AppController {
         ;
     }
     async loggedUsers(headers, loggedUser) {
-        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             return this._AppGateway.IsUserLogeatedExit(loggedUser);
         }).then((results) => {
             return {
@@ -104,7 +104,7 @@ let AppController = class AppController {
         });
     }
     async GetLoggedUsers(headers, loggedUser) {
-        return await promises_assets_1.DummyPromise().then(result => {
+        return await (0, promises_assets_1.DummyPromise)().then(result => {
             return this._AppGateway.GetLoggedUsers();
         }).then((resultLoggedUsers) => {
             return {
@@ -123,7 +123,7 @@ let AppController = class AppController {
         });
     }
     async EmitConnect() {
-        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             return this.appService.EmitConnect();
         }).then((resultEmitConnect) => {
             return {
@@ -142,7 +142,7 @@ let AppController = class AppController {
         });
     }
     async ConsultaGeneral(buqueId, startDate, endDate) {
-        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             let userId = Number(buqueId);
             console.log("buqueId : " + buqueId);
             console.log("startDate : " + startDate);
@@ -151,7 +151,7 @@ let AppController = class AppController {
         });
     }
     async ConsultEquipmentConsumptionByMonthUser(buqueId, EquipmentId, YEAR_MONTH) {
-        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             let userId = Number(buqueId);
             let entityEquipmentId = Number(EquipmentId);
             let DateYEAR_MONTH = YEAR_MONTH;
@@ -159,97 +159,105 @@ let AppController = class AppController {
         });
     }
     async GetShips() {
-        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             return this.appService.GetShips();
         });
     }
     async GetStatusOilStartEnd(userId, startDate, endDate) {
-        return await promises_assets_1.DummyPromise().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId, startDate, endDate);
         });
     }
 };
+exports.AppController = AppController;
 __decorate([
-    common_1.Get('pruebas'),
-    __param(0, common_1.Body()),
+    (0, common_1.Get)('pruebas'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "Pruebas", null);
 __decorate([
-    common_1.Get('platform-version'),
+    (0, common_1.Get)('platform-version'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Object)
 ], AppController.prototype, "GetVersionPlataform", null);
 __decorate([
-    common_1.UseGuards(passport_1.AuthGuard('jwt')),
-    common_1.Get('testToken'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)('testToken'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Object)
 ], AppController.prototype, "getHello", null);
 __decorate([
-    common_1.UseGuards(passport_1.AuthGuard('local')),
-    common_1.Post('auth/login'),
-    __param(0, common_1.Request()),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('local')),
+    (0, common_1.Post)('auth/login'),
+    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "login", null);
 __decorate([
-    common_1.Post('loggedUsers'),
-    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    (0, common_1.Post)('loggedUsers'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, loggedUser_1.LoggedUser]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "loggedUsers", null);
 __decorate([
-    common_1.Get('loggedUsers'),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)('loggedUsers'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, loggedUser_1.LoggedUser]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetLoggedUsers", null);
 __decorate([
-    common_1.Post('emitConnect'),
+    (0, common_1.Post)('emitConnect'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "EmitConnect", null);
 __decorate([
-    common_1.Get('ListConsumptionLubricantPerMonth/:userId/:startDate/:endDate'),
-    __param(0, common_1.Param('userId')), __param(1, common_1.Param('startDate')), __param(2, common_1.Param('endDate')),
+    (0, common_1.Get)('ListConsumptionLubricantPerMonth/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "ConsultaGeneral", null);
 __decorate([
-    common_1.Get('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH'),
-    __param(0, common_1.Param('userId')), __param(1, common_1.Param('EquipmentId')), __param(2, common_1.Param('YEAR_MONTH')),
+    (0, common_1.Get)('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('EquipmentId')),
+    __param(2, (0, common_1.Param)('YEAR_MONTH')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "ConsultEquipmentConsumptionByMonthUser", null);
 __decorate([
-    common_1.Get('Ships'),
+    (0, common_1.Get)('Ships'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetShips", null);
 __decorate([
-    common_1.Get('GetStatusOilStartEndDate/:userId/:startDate/:endDate'),
-    __param(0, common_1.Param('userId')), __param(1, common_1.Param('startDate')), __param(2, common_1.Param('endDate')),
+    (0, common_1.Get)('GetStatusOilStartEndDate/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetStatusOilStartEnd", null);
-AppController = __decorate([
-    common_1.Controller(),
+exports.AppController = AppController = __decorate([
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService,
         auth_service_1.AuthService,
         consumption_equipment_service_1.ConsumptionEquipmentService,
         app_gateway_1.AppGateway])
 ], AppController);
-exports.AppController = AppController;
 //# sourceMappingURL=app.controller.js.map

@@ -24,43 +24,43 @@ let OilEntity = class OilEntity {
         this.status = status || false;
     }
 };
+exports.OilEntity = OilEntity;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], OilEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], OilEntity.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], OilEntity.prototype, "name", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], OilEntity.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], OilEntity.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], OilEntity.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], OilEntity.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], OilEntity.prototype, "status", void 0);
-OilEntity = __decorate([
-    typeorm_1.Entity('oil'),
+exports.OilEntity = OilEntity = __decorate([
+    (0, typeorm_1.Entity)('oil'),
     __metadata("design:paramtypes", [Number, Number, String, Number, String, Number, String, Boolean])
 ], OilEntity);
-exports.OilEntity = OilEntity;
 class DataModuleOils {
     constructor(_userId, _listGroup, _listEquipmentSystem, _listOil, _listBunkerOil, _listEquipmentOilCompatibility, _listConsumptionEquipment) {
         this.userId = _userId || null;

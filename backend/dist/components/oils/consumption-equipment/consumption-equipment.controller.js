@@ -23,8 +23,8 @@ let ConsumptionEquipmentController = class ConsumptionEquipmentController {
         this._ConsumptionEquipmentService = _ConsumptionEquipmentService;
     }
     Gets(headers, consumptionEquipment) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (consumptionEquipment) {
                 consumptionEquipment.userId = Number(consumptionEquipment.userId);
                 return true;
@@ -54,16 +54,17 @@ let ConsumptionEquipmentController = class ConsumptionEquipmentController {
         });
     }
 };
+exports.ConsumptionEquipmentController = ConsumptionEquipmentController;
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, consumptionEquipment_entity_1.ConsumptionEquipmentEntity]),
     __metadata("design:returntype", Promise)
 ], ConsumptionEquipmentController.prototype, "Gets", null);
-ConsumptionEquipmentController = __decorate([
-    common_1.Controller('consumption-equipment'),
+exports.ConsumptionEquipmentController = ConsumptionEquipmentController = __decorate([
+    (0, common_1.Controller)('consumption-equipment'),
     __metadata("design:paramtypes", [consumption_equipment_service_1.ConsumptionEquipmentService])
 ], ConsumptionEquipmentController);
-exports.ConsumptionEquipmentController = ConsumptionEquipmentController;
 //# sourceMappingURL=consumption-equipment.controller.js.map

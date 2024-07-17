@@ -26,53 +26,53 @@ let SendMessageEntity = class SendMessageEntity {
         this.status = status || false;
     }
 };
+exports.SendMessageEntity = SendMessageEntity;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], SendMessageEntity.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], SendMessageEntity.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], SendMessageEntity.prototype, "emails", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], SendMessageEntity.prototype, "typeSend", void 0);
 __decorate([
-    typeorm_1.Column("varchar", { length: 2000 }),
+    (0, typeorm_1.Column)("varchar", { length: 2000 }),
     __metadata("design:type", String)
 ], SendMessageEntity.prototype, "html", void 0);
 __decorate([
-    typeorm_1.Column({ default: true }),
+    (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], SendMessageEntity.prototype, "sendAutomatic", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], SendMessageEntity.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], SendMessageEntity.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], SendMessageEntity.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], SendMessageEntity.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], SendMessageEntity.prototype, "status", void 0);
-SendMessageEntity = __decorate([
-    typeorm_1.Entity(),
+exports.SendMessageEntity = SendMessageEntity = __decorate([
+    (0, typeorm_1.Entity)(),
     __metadata("design:paramtypes", [Number, Number, String, String, String, Boolean, Number, String, Number, String, Boolean])
 ], SendMessageEntity);
-exports.SendMessageEntity = SendMessageEntity;
 //# sourceMappingURL=send-message.entity.js.map

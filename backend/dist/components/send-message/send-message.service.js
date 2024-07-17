@@ -27,7 +27,7 @@ let SendMessageService = class SendMessageService {
         return await false;
     }
     async Create(sendMessageEntity) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._sendMessageRepository.query("SP_ @userId='" + sendMessageEntity.userId + "', @year='" + sendMessageEntity.emails + "'");
             }
@@ -86,14 +86,14 @@ let SendMessageService = class SendMessageService {
         });
     }
     async BuscamosLaConfiracionDelBuque(sendMessageEntity) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
             }
             else {
                 return this._sendMessageRepository.find({
                     where: [{
                             userId: Number(sendMessageEntity.userId),
-                            status: typeorm_2.Not(false)
+                            status: (0, typeorm_2.Not)(false)
                         }],
                     order: {
                         id: 'ASC',
@@ -113,10 +113,10 @@ let SendMessageService = class SendMessageService {
         });
     }
 };
-SendMessageService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(send_message_entity_1.SendMessageEntity)),
+exports.SendMessageService = SendMessageService;
+exports.SendMessageService = SendMessageService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(send_message_entity_1.SendMessageEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], SendMessageService);
-exports.SendMessageService = SendMessageService;
 //# sourceMappingURL=send-message.service.js.map

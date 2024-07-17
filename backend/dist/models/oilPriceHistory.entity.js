@@ -27,53 +27,53 @@ let OilPriceHistory = class OilPriceHistory {
         this.status = status || false;
     }
 };
+exports.OilPriceHistory = OilPriceHistory;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "entityOilId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, nullable: true }),
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "price", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], OilPriceHistory.prototype, "typeCurrency", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], OilPriceHistory.prototype, "effectiveDate", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], OilPriceHistory.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], OilPriceHistory.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], OilPriceHistory.prototype, "status", void 0);
-OilPriceHistory = __decorate([
-    typeorm_1.Entity('oilPriceHistory'),
+exports.OilPriceHistory = OilPriceHistory = __decorate([
+    (0, typeorm_1.Entity)('oilPriceHistory'),
     __metadata("design:paramtypes", [Number, Number, Number, Number, String, String, Number, String, Number, String, Boolean])
 ], OilPriceHistory);
-exports.OilPriceHistory = OilPriceHistory;
 //# sourceMappingURL=oilPriceHistory.entity.js.map

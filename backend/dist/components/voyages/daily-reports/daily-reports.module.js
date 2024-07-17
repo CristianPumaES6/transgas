@@ -14,8 +14,9 @@ const typeorm_1 = require("@nestjs/typeorm");
 const daily_report_entity_1 = require("../../../models/daily-report.entity");
 let DailyReportsModule = class DailyReportsModule {
 };
-DailyReportsModule = __decorate([
-    common_1.Module({
+exports.DailyReportsModule = DailyReportsModule;
+exports.DailyReportsModule = DailyReportsModule = __decorate([
+    (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([daily_report_entity_1.DailyReport]),
         ],
@@ -24,5 +25,4 @@ DailyReportsModule = __decorate([
         exports: [daily_reports_service_1.DailyReportsService]
     })
 ], DailyReportsModule);
-exports.DailyReportsModule = DailyReportsModule;
 //# sourceMappingURL=daily-reports.module.js.map

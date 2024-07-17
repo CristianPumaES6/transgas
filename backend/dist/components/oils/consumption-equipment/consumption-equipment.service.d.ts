@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
-import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
-import { Mapping } from 'src/assets/mappingKeys';
+import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
+import { Mapping } from '../../../assets/mappingKeys';
 export declare class ConsumptionEquipmentService {
     private _ConsumptionEquipment;
     constructor(_ConsumptionEquipment: Repository<ConsumptionEquipmentEntity>);

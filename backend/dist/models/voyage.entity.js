@@ -14,50 +14,50 @@ const typeorm_1 = require("typeorm");
 const port_entity_1 = require("./port.entity");
 let Voyage = class Voyage {
 };
+exports.Voyage = Voyage;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], Voyage.prototype, "id", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => port_entity_1.Port, port => port.voyage),
+    (0, typeorm_1.OneToMany)(type => port_entity_1.Port, port => port.voyage),
     __metadata("design:type", Array)
 ], Voyage.prototype, "ports", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Voyage.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Voyage.prototype, "voyageNumber", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Voyage.prototype, "year", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Voyage.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Voyage.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], Voyage.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Voyage.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], Voyage.prototype, "status", void 0);
-Voyage = __decorate([
-    typeorm_1.Entity()
+exports.Voyage = Voyage = __decorate([
+    (0, typeorm_1.Entity)()
 ], Voyage);
-exports.Voyage = Voyage;
 class VoyageFilterByYears {
 }
 exports.VoyageFilterByYears = VoyageFilterByYears;

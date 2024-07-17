@@ -20,11 +20,11 @@ async function bootstrap() {
     };
     app.use(bodyParser.json({ limit: '50mb' }));
     app.enableCors(options);
-    app.use(express.static(path_1.join(path_config_1.FOLDER_UPLOADS)));
-    app.use(express.static(path_1.join(path_config_1.FOLDER_STATIC)));
-    app.use(express.static(path_1.join(path_config_1.FOLDER_FRONTEND)));
-    hbs_assets_1.HbsInit(app);
-    nodemailer_assets_1.NodemailerInit();
+    app.use(express.static((0, path_1.join)(path_config_1.FOLDER_UPLOADS)));
+    app.use(express.static((0, path_1.join)(path_config_1.FOLDER_STATIC)));
+    app.use(express.static((0, path_1.join)(path_config_1.FOLDER_FRONTEND)));
+    (0, hbs_assets_1.HbsInit)(app);
+    (0, nodemailer_assets_1.NodemailerInit)();
     await app.listen(server_config_1.URL_Server.puertoBackend);
 }
 bootstrap();

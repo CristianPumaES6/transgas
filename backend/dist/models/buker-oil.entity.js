@@ -27,53 +27,53 @@ let BunkerOil = class BunkerOil {
         this.status = status || false;
     }
 };
+exports.BunkerOil = BunkerOil;
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "id", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "entityOilId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "bunker", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], BunkerOil.prototype, "comment", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], BunkerOil.prototype, "datetime", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "userIdCreated", void 0);
 __decorate([
-    typeorm_1.Column(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], BunkerOil.prototype, "dateCreated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "userIdUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], BunkerOil.prototype, "dateUpdated", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Boolean)
 ], BunkerOil.prototype, "status", void 0);
-BunkerOil = __decorate([
-    typeorm_1.Entity('bunkerOil'),
+exports.BunkerOil = BunkerOil = __decorate([
+    (0, typeorm_1.Entity)('bunkerOil'),
     __metadata("design:paramtypes", [Number, Number, Number, Number, String, String, Number, String, Number, String, Boolean])
 ], BunkerOil);
-exports.BunkerOil = BunkerOil;
 //# sourceMappingURL=buker-oil.entity.js.map

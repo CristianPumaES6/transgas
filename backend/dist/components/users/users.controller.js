@@ -28,8 +28,8 @@ let UsersController = class UsersController {
         this._usersService = _usersService;
     }
     async Get(headers, id) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((result) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((result) => {
             let userId = Number(id);
             if (userId && headerToken.id) {
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
@@ -60,8 +60,8 @@ let UsersController = class UsersController {
         });
     }
     async Gets(headers, user) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (headerToken && (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') && user) {
                 return this._usersService.Gets(user);
             }
@@ -90,8 +90,8 @@ let UsersController = class UsersController {
         });
     }
     async Create(headers, user) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -156,7 +156,7 @@ let UsersController = class UsersController {
                 user.consumptionEquipmentBOILER_IFO = user.consumptionEquipmentBOILER_IFO || 0;
                 user.consumptionEquipmentOther_IFO = user.consumptionEquipmentOther_IFO || 0;
                 user.userIdCreated = headerToken.id;
-                user.dateCreated = moment_assets_1.GetDate();
+                user.dateCreated = (0, moment_assets_1.GetDate)();
                 delete user.userIdUpdated;
                 delete user.dateUpdated;
                 user.status = Boolean(user.status);
@@ -182,8 +182,8 @@ let UsersController = class UsersController {
         });
     }
     async UpdateUser(headers, id, user) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -251,7 +251,7 @@ let UsersController = class UsersController {
                 delete user.userIdCreated;
                 delete user.dateCreated;
                 user.userIdUpdated = headerToken.id;
-                user.dateUpdated = moment_assets_1.GetDate();
+                user.dateUpdated = (0, moment_assets_1.GetDate)();
                 user.status = Boolean(user.status);
                 return this._usersService.UpdateUserNickUnique(user);
             }
@@ -275,8 +275,8 @@ let UsersController = class UsersController {
         });
     }
     async delete(headers, id) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -303,8 +303,8 @@ let UsersController = class UsersController {
         });
     }
     async UploadImagePerfil(headers, id, file) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -331,58 +331,66 @@ let UsersController = class UsersController {
         });
     }
 };
+exports.UsersController = UsersController;
 __decorate([
-    common_1.Get(':id'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "Get", null);
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, user_entity_1.UserEntity]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "Gets", null);
 __decorate([
-    common_1.Post('create'),
-    __param(0, common_1.Headers()), __param(1, common_1.Body()),
+    (0, common_1.Post)('create'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, user_entity_1.UserEntity]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "Create", null);
 __decorate([
-    common_1.Put(':id/update'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')), __param(2, common_1.Body()),
+    (0, common_1.Put)(':id/update'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, user_entity_1.UserEntity]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "UpdateUser", null);
 __decorate([
-    common_1.Delete(':id/delete'),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')),
+    (0, common_1.Delete)(':id/delete'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "delete", null);
 __decorate([
-    common_1.Post(':id/image'),
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('image', {
-        storage: multer_1.diskStorage({
+    (0, common_1.Post)(':id/image'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', {
+        storage: (0, multer_1.diskStorage)({
             destination: path_config_1.FOLDER_UPLOADS,
             filename: image_middleware_1.EditFileName,
         }),
         fileFilter: image_middleware_1.ImageFileFilter
     })),
-    __param(0, common_1.Headers()), __param(1, common_1.Param('id')), __param(2, common_1.UploadedFile()),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "UploadImagePerfil", null);
-UsersController = __decorate([
-    common_1.Controller('users'),
+exports.UsersController = UsersController = __decorate([
+    (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);
-exports.UsersController = UsersController;
 //# sourceMappingURL=users.controller.js.map

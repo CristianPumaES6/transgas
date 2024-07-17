@@ -33,7 +33,7 @@ let GroupOilsService = class GroupOilsService {
         this._groupOilRepository = _groupOilRepository;
     }
     async Gets(groupOilEntity) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -41,8 +41,8 @@ let GroupOilsService = class GroupOilsService {
                 return this._groupOilRepository.find({
                     where: [
                         {
-                            id: (groupOilEntity.id || typeorm_2.Like('%' + '%')),
-                            status: typeorm_2.Not(false)
+                            id: (groupOilEntity.id || (0, typeorm_2.Like)('%' + '%')),
+                            status: (0, typeorm_2.Not)(false)
                         }
                     ]
                 });
@@ -54,7 +54,7 @@ let GroupOilsService = class GroupOilsService {
         });
     }
     async Create(groupOilEntity) {
-        return promises_assets_1.DummyPromise().then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._groupOilRepository.query("SP_CheckTheLastRecordedTrip @userId='" + groupOilEntity.userId + "', @year='");
             }
@@ -75,15 +75,17 @@ let GroupOilsService = class GroupOilsService {
         });
     }
     async SaveList(importGroupOils) {
-        var e_1, _a, e_2, _b, e_3, _c;
+        var _a, e_1, _b, _c, _d, e_2, _e, _f, _g, e_3, _h, _j;
         let MappingGroupOils = [];
         const addGroupOils = importGroupOils.filter((groupOilEntity) => groupOilEntity.SyncStatus == 'added');
         const updateGroupOils = importGroupOils.filter((groupOilEntity) => groupOilEntity.SyncStatus == 'updated');
         const deleteGroupOils = importGroupOils.filter((groupOilEntity) => groupOilEntity.SyncStatus == 'deleted');
         try {
-            for (var addGroupOils_1 = __asyncValues(addGroupOils), addGroupOils_1_1; addGroupOils_1_1 = await addGroupOils_1.next(), !addGroupOils_1_1.done;) {
-                const addGroupOil = addGroupOils_1_1.value;
-                let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, addGroupOil.groupId);
+            for (var _k = true, addGroupOils_1 = __asyncValues(addGroupOils), addGroupOils_1_1; addGroupOils_1_1 = await addGroupOils_1.next(), _a = addGroupOils_1_1.done, !_a; _k = true) {
+                _c = addGroupOils_1_1.value;
+                _k = false;
+                const addGroupOil = _c;
+                let searchMappingGroupOils = (0, mappingKeys_1.searchKey)(MappingGroupOils, addGroupOil.groupId);
                 let newGroupOilEntity = new group_oils_entity_1.GroupOilEntity();
                 delete newGroupOilEntity.id;
                 newGroupOilEntity.userId = addGroupOil.userId;
@@ -94,7 +96,7 @@ let GroupOilsService = class GroupOilsService {
                     newGroupOilEntity.groupId = searchMappingGroupOils.value;
                 }
                 newGroupOilEntity.userIdCreated = addGroupOil.userIdCreated;
-                newGroupOilEntity.dateCreated = moment_assets_1.GetDate();
+                newGroupOilEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newGroupOilEntity.userIdUpdated;
                 delete newGroupOilEntity.dateUpdated;
                 newGroupOilEntity.status = Boolean(addGroupOil.status);
@@ -105,14 +107,16 @@ let GroupOilsService = class GroupOilsService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (addGroupOils_1_1 && !addGroupOils_1_1.done && (_a = addGroupOils_1.return)) await _a.call(addGroupOils_1);
+                if (!_k && !_a && (_b = addGroupOils_1.return)) await _b.call(addGroupOils_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         try {
-            for (var updateGroupOils_1 = __asyncValues(updateGroupOils), updateGroupOils_1_1; updateGroupOils_1_1 = await updateGroupOils_1.next(), !updateGroupOils_1_1.done;) {
-                const updateGroupOil = updateGroupOils_1_1.value;
-                let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, updateGroupOil.groupId);
+            for (var _l = true, updateGroupOils_1 = __asyncValues(updateGroupOils), updateGroupOils_1_1; updateGroupOils_1_1 = await updateGroupOils_1.next(), _d = updateGroupOils_1_1.done, !_d; _l = true) {
+                _f = updateGroupOils_1_1.value;
+                _l = false;
+                const updateGroupOil = _f;
+                let searchMappingGroupOils = (0, mappingKeys_1.searchKey)(MappingGroupOils, updateGroupOil.groupId);
                 let updateGroupOilEntity = new group_oils_entity_1.GroupOilEntity();
                 updateGroupOilEntity.id = updateGroupOil.id;
                 updateGroupOilEntity.userId = updateGroupOil.userId;
@@ -133,14 +137,16 @@ let GroupOilsService = class GroupOilsService {
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (updateGroupOils_1_1 && !updateGroupOils_1_1.done && (_b = updateGroupOils_1.return)) await _b.call(updateGroupOils_1);
+                if (!_l && !_d && (_e = updateGroupOils_1.return)) await _e.call(updateGroupOils_1);
             }
             finally { if (e_2) throw e_2.error; }
         }
         try {
-            for (var deleteGroupOils_1 = __asyncValues(deleteGroupOils), deleteGroupOils_1_1; deleteGroupOils_1_1 = await deleteGroupOils_1.next(), !deleteGroupOils_1_1.done;) {
-                let deleteGroupOil = deleteGroupOils_1_1.value;
-                let searchMappingGroupOils = mappingKeys_1.searchKey(MappingGroupOils, deleteGroupOil.groupId);
+            for (var _m = true, deleteGroupOils_1 = __asyncValues(deleteGroupOils), deleteGroupOils_1_1; deleteGroupOils_1_1 = await deleteGroupOils_1.next(), _g = deleteGroupOils_1_1.done, !_g; _m = true) {
+                _j = deleteGroupOils_1_1.value;
+                _m = false;
+                let deleteGroupOil = _j;
+                let searchMappingGroupOils = (0, mappingKeys_1.searchKey)(MappingGroupOils, deleteGroupOil.groupId);
                 let deleteGroupOilEntity = new group_oils_entity_1.GroupOilEntity();
                 deleteGroupOilEntity.id = deleteGroupOil.id;
                 deleteGroupOilEntity.userId = deleteGroupOil.userId;
@@ -161,17 +167,17 @@ let GroupOilsService = class GroupOilsService {
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
-                if (deleteGroupOils_1_1 && !deleteGroupOils_1_1.done && (_c = deleteGroupOils_1.return)) await _c.call(deleteGroupOils_1);
+                if (!_m && !_g && (_h = deleteGroupOils_1.return)) await _h.call(deleteGroupOils_1);
             }
             finally { if (e_3) throw e_3.error; }
         }
         return MappingGroupOils;
     }
 };
-GroupOilsService = __decorate([
-    common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(group_oils_entity_1.GroupOilEntity)),
+exports.GroupOilsService = GroupOilsService;
+exports.GroupOilsService = GroupOilsService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(group_oils_entity_1.GroupOilEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], GroupOilsService);
-exports.GroupOilsService = GroupOilsService;
 //# sourceMappingURL=group-oils.service.js.map

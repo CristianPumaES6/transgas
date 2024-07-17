@@ -18,14 +18,13 @@ const jwtDecode_assets_1 = require("../../../assets/jwtDecode.assets");
 const promises_assets_1 = require("../../../assets/promises.assets");
 const group_oils_entity_1 = require("../../../models/group-oils.entity");
 const group_oils_service_1 = require("./group-oils.service");
-const user_entity_1 = require("../../../models/user.entity");
 let GroupOilsController = class GroupOilsController {
     constructor(_GroupOilEntityService) {
         this._GroupOilEntityService = _GroupOilEntityService;
     }
     Gets(headers, groupOilEntity) {
-        let headerToken = jwtDecode_assets_1.JwtDecode(headers.authorization);
-        return promises_assets_1.DummyPromise().then((resultDummy) => {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (groupOilEntity) {
                 groupOilEntity.userId = Number(groupOilEntity.userId);
                 return true;
@@ -55,16 +54,17 @@ let GroupOilsController = class GroupOilsController {
         });
     }
 };
+exports.GroupOilsController = GroupOilsController;
 __decorate([
-    common_1.Get(),
-    __param(0, common_1.Headers()), __param(1, common_1.Query()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, group_oils_entity_1.GroupOilEntity]),
     __metadata("design:returntype", Promise)
 ], GroupOilsController.prototype, "Gets", null);
-GroupOilsController = __decorate([
-    common_1.Controller('group-oils'),
+exports.GroupOilsController = GroupOilsController = __decorate([
+    (0, common_1.Controller)('group-oils'),
     __metadata("design:paramtypes", [group_oils_service_1.GroupOilsService])
 ], GroupOilsController);
-exports.GroupOilsController = GroupOilsController;
 //# sourceMappingURL=group-oils.controller.js.map

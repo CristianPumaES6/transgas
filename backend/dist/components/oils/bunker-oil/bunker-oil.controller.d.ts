@@ -1,5 +1,5 @@
 import { BunkerOilService } from './bunker-oil.service';
-import { BunkerOil } from 'src/models/buker-oil.entity';
+import { BunkerOil } from '../../../models/buker-oil.entity';
 export declare class BunkerOilController {
     private readonly _BunkerOilService;
     constructor(_BunkerOilService: BunkerOilService);
