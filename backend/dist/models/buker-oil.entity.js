@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "entityOilId", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], BunkerOil.prototype, "bunker", void 0);
 __decorate([

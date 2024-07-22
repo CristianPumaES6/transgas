@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", String)
 ], EquipmentSystemEntity.prototype, "equipment", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, nullable: false }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "rate", void 0);
 __decorate([

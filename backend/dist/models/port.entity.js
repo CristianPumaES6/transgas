@@ -56,11 +56,11 @@ __decorate([
     __metadata("design:type", String)
 ], Port.prototype, "startDate", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], Port.prototype, "startIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], Port.prototype, "startMGO", void 0);
 __decorate([

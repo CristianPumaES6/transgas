@@ -124,11 +124,11 @@ __decorate([
     __metadata("design:type", String)
 ], UserEntity.prototype, "years", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "minSpeed", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maxSpeed", void 0);
 __decorate([
@@ -148,19 +148,19 @@ __decorate([
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maxIFOConsumption", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maxMGOConsumption", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "minIFOConsumption", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "minMGOConsumption", void 0);
 __decorate([
@@ -204,91 +204,91 @@ __decorate([
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isOtherIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingBallastMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingLadenMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingEconomicalMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "loadingConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "dischargeConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingBallastConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingLoadConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingEconomicConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "anchoredConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maneuverConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "otherConsumptionMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingBallastIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingLadenIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "contractSpeedSailingEconomicalIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "loadingConsumptionIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "dischargeConsumptionIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingBallastConsumptionIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingLoadConsumptionIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "sailingEconomicConsumptionIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "anchoredConsumptionIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "maneuverConsumptionIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "otherConsumptionIFO", void 0);
 __decorate([
@@ -320,43 +320,43 @@ __decorate([
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isDisplayVesselPerformanceMGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentME_MGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentAE_MGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentBOILER_MGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentIG_MGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentPP_MGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentOther_MGO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentME_IFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentAE_IFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentBOILER_IFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], UserEntity.prototype, "consumptionEquipmentOther_IFO", void 0);
 __decorate([

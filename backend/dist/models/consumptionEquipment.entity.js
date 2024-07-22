@@ -44,11 +44,11 @@ __decorate([
     __metadata("design:type", String)
 ], ConsumptionEquipmentEntity.prototype, "date", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "amount", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], ConsumptionEquipmentEntity.prototype, "hourConsumption", void 0);
 __decorate([

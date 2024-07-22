@@ -32,11 +32,11 @@ __decorate([
     __metadata("design:type", port_entity_1.Port)
 ], DailyReport.prototype, "port", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 6, default: '', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "north_degree", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 6, default: '', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "north_minutes", void 0);
 __decorate([
@@ -44,11 +44,11 @@ __decorate([
     __metadata("design:type", String)
 ], DailyReport.prototype, "north_north_south", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 6, default: '', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "east_degree", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 6, default: '', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "east_minutes", void 0);
 __decorate([
@@ -76,59 +76,59 @@ __decorate([
     __metadata("design:type", String)
 ], DailyReport.prototype, "hour", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "bunkeringIfo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "bunkeringMgo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "mplaIfo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "auxIfo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "boilerIfo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "otherIfo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "mplaMgo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "auxMgo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "boilerMgo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "ppMgo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "giMgo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "otherMgo", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "steamingTime", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 8, default: 0 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0 }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "distance", void 0);
 __decorate([
