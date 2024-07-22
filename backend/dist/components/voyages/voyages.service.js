@@ -134,7 +134,7 @@ let VoyagesService = class VoyagesService {
     async GetsDetails(voyage, page = 1) {
         return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd == 'MSSQL') {
-                return this.InfoVoyage(voyage.userId);
+                return this.InfoVoyage(voyage.userId, voyage.year);
             }
             else {
                 return this.voyageRepository.find({
@@ -160,11 +160,11 @@ let VoyagesService = class VoyagesService {
             throw result;
         });
     }
-    async InfoVoyage(userId) {
+    async InfoVoyage(userId, year) {
         var _a, e_1, _b, _c, _d, e_2, _e, _f;
         let voyages = [];
         if (server_config_1.URL_Server.bd === 'MSSQL') {
-            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}`);
+            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}, @year=${year || 0}`);
         }
         let viajesConPuerto = [];
         try {
@@ -179,7 +179,7 @@ let VoyagesService = class VoyagesService {
                         _f = puertos_1_1.value;
                         _h = false;
                         let puerto = _f;
-                        let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @portId=${puerto.id || 0}`);
+                        let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @userId=${userId || 0},@portId=${puerto.id || 0}`);
                         puerto.dailyReports = reportes;
                         puertosConReportes.push(puerto);
                     }
