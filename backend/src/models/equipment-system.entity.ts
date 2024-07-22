@@ -10,7 +10,8 @@ export class EquipmentSystemEntity {
     userId: number;
     @Column({ nullable: false })
     equipment: string;
-    @Column({ type: 'decimal', precision: 10, scale: 8, nullable: false })
+
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false })
     rate: number;
     
     @Column({ nullable: true })

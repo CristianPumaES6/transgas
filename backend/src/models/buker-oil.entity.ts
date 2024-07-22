@@ -11,7 +11,8 @@ export class BunkerOil {
     
     @Column({ nullable: true })
     entityOilId: number;
-    @Column({ type: 'decimal', precision: 10, scale: 8})
+
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     bunker: number;
     @Column({ nullable: true })
     comment: string;
