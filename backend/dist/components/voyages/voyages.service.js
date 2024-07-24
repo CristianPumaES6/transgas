@@ -163,7 +163,7 @@ let VoyagesService = class VoyagesService {
     async InfoVoyage(userId, year) {
         var _a, e_1, _b, _c, _d, e_2, _e, _f;
         let voyages = [];
-        if (server_config_1.URL_Server.bd === 'MSSQL') {
+        if (server_config_1.URL_Server.bd === 'MSSQL2') {
             voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}, @year=${year || 0}`);
         }
         let viajesConPuerto = [];
