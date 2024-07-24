@@ -133,7 +133,7 @@ let VoyagesService = class VoyagesService {
     }
     async GetsDetails(voyage, page = 1) {
         return (0, promises_assets_1.DummyPromise)().then(result => {
-            if (server_config_1.URL_Server.bd == 'MSSQL') {
+            if (server_config_1.URL_Server.bd == 'MSSQL2') {
                 return this.InfoVoyage(voyage.userId, voyage.year);
             }
             else {
