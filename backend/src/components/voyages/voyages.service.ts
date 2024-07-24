@@ -178,13 +178,13 @@ export class VoyagesService {
 
 
     // Retorna todos los viajes segun filtro.
-    async GetsDetails(voyage: Voyage, page: number = 1): Promise<Voyage[]> {
+    async GetsDetails( voyage: Voyage, page: number = 1 ): Promise<Voyage[]> {
 
         return DummyPromise().then(
             result => {
 
-                if (URL_Server.bd == 'MSSQL') {
-                    return this.InfoVoyage(voyage.userId)
+                if (URL_Server.bd == 'MSSQL2') {
+                    return this.InfoVoyage( voyage.userId, voyage.year )
                 } else {
                     return this.voyageRepository.find({
                         relations: ["ports"],
@@ -219,12 +219,12 @@ export class VoyagesService {
 
     }
 
-    private async InfoVoyage(userId: number): Promise<Voyage[]> {
+    private async InfoVoyage(userId: number,year: number): Promise<Voyage[]> {
 
         let voyages: Voyage[] = [];
 
-        if (URL_Server.bd === 'MSSQL') {
-            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}`);
+        if (URL_Server.bd === 'MSSQL2') {
+            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}, @year=${year||0}`);
         }
 
         let viajesConPuerto: Voyage[] = [];
@@ -235,7 +235,7 @@ export class VoyagesService {
             let puertos: Port[] = await this.voyageRepository.query(`EXEC SP_ObtenerLosPuertoDeUnViaje @userId=${userId || 0}, @voyageId=${voyage.id || 0}`);
             let puertosConReportes: Port[] = [];
             for await (let puerto of puertos) {
-                let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @portId=${puerto.id || 0}`);
+                let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @userId=${userId || 0},@portId=${puerto.id || 0}`);
                 puerto.dailyReports = reportes;
 
                 puertosConReportes.push(puerto)
@@ -244,7 +244,7 @@ export class VoyagesService {
 
 
             voyage.ports = puertosConReportes;
-            viajesConPuerto.push(voyage)
+            viajesConPuerto.push(voyage);
 
         }
 
