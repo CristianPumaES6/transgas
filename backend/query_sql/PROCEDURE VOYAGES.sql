@@ -13,11 +13,10 @@ BEGIN
 	 ORDER BY voyage.voyageNumber DESC
 END
 
-GO 
+GO
+
 /*
-
 EXEC SP_ObtenerLosPuertoDeUnViaje @userId=2
-
 */
 CREATE OR ALTER PROCEDURE  SP_ObtenerLosPuertoDeUnViaje
 	 @userId int,
@@ -36,11 +35,25 @@ END
 GO 
 
 
+/*
+Crear los reportes
+*/
+CREATE PROCEDURE SP_ObtenerLosReportesDelPuerto
+	@userId int,
+	@portId int
+AS
+BEGIN
+	 SELECT   * FROM daily_report
+	 WHERE 
+		daily_report.userId = @userId 
+		AND daily_report.portId = @portId
+		AND daily_report.status = 1
+
+	 ORDER BY daily_report.id DESC
+END
 
 /*
-
 EXEC SP_DeleteVoyageById @voyageId=2
-
 */
 CREATE OR ALTER PROCEDURE  SP_DeleteVoyageById
  	 @voyageId int

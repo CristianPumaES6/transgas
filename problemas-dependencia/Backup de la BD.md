@@ -7,6 +7,7 @@ scp root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/dbTransgas
 
 
 
+
 //BD DE OCCARD
 scp root@161.35.239.148:/root/transgas/backend/dbTransgas.sqlite3 ./
 ```
