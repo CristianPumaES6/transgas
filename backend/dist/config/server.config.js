@@ -7,7 +7,7 @@ exports.URL_Server = {
     version: 'v2',
     puertoSocket: 4000,
     puertoBackend: 3000,
-    bd: 'MSSQL2',
+    bd: 'SQLITE',
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
 };

@@ -12,6 +12,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const path_1 = require("path");
+const path_config_1 = require("./config/path.config");
 const users_module_1 = require("./components/users/users.module");
 const auth_module_1 = require("./components/auth/auth.module");
 const voyages_module_1 = require("./components/voyages/voyages.module");
@@ -26,21 +27,10 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forRoot({
-                type: 'mssql',
-                host: '4.227.179.75',
-                port: 1433,
-                username: 'User_sa',
-                password: 'Server_Admin',
-                database: 'FuelOilPlatformDB',
+                type: 'sqlite',
+                database: (0, path_1.join)(path_config_1.SQLITE_PATH, 'dbTransgas.sqlite3'),
                 entities: [(0, path_1.join)(__dirname, '**/**.entity{.ts,.js}')],
                 synchronize: true,
-                options: {
-                    encrypt: false,
-                    enableArithAbort: true,
-                },
-                extra: {
-                    trustServerCertificate: true,
-                }
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
