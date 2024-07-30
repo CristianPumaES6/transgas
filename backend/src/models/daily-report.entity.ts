@@ -20,16 +20,19 @@ export class DailyReport {
     port: Port;
 
 
-    @Column({ default: '', nullable: true })
+ 
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true })
     north_degree: number;
-    @Column({ default: '', nullable: true })
+
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true })
     north_minutes: number;
     @Column({ default: '', nullable: true })
     north_north_south: string;
 
-    @Column({ default: '', nullable: true })
+
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true })
     east_degree: number;
-    @Column({ default: '', nullable: true })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true })
     east_minutes: number;
     @Column({ default: '', nullable: true })
     east_east_west: string;
@@ -55,56 +58,56 @@ export class DailyReport {
     hour: string;
 
     // Recarga de IFO
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     bunkeringIfo: number;
 
     // Recarga de MGO
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     bunkeringMgo: number;
 
     // robIfo
     // @Column()
     // robIfo: string;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     mplaIfo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     auxIfo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     boilerIfo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     otherIfo: number;
     // -- Fin Ifo --
 
     // robMgo
     // @Column()
     // robMgo: string;
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     mplaMgo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     auxMgo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     boilerMgo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     ppMgo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     giMgo: number;
 
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     otherMgo: number;
     // Fin MGO
 
     // Tempo navegando
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     steamingTime: number;
     // Distancia
-    @Column({ default: 0 })
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
     distance: number;
     // beaufour
     @Column()

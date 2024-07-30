@@ -100,6 +100,7 @@ export class VoyagesController {
         // Lo decodifico con otra libreria por problemas jwt-module.
         let headerToken: UserEntity = JwtDecode(headers.authorization);
 
+
         // Inicio una promesa Dummy.
         return DummyPromise().then(
             (resultDummy: Boolean) => {

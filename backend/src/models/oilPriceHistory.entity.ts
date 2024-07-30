@@ -17,7 +17,8 @@ export class OilPriceHistory {
     @Column({ nullable: true })
     entityOilId : number;
  
-    @Column({ nullable: true })
+
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: true })
     price  : number;
 
     @Column({ nullable: true })

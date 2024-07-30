@@ -1,9 +1,9 @@
 import { Controller, Get, Headers, HttpException, HttpStatus, Query } from '@nestjs/common';
-import { JwtDecode } from 'src/assets/jwtDecode.assets';
-import { DummyPromise } from 'src/assets/promises.assets';
-import { GroupOilEntity } from 'src/models/group-oils.entity';
+import { JwtDecode } from '../../../assets/jwtDecode.assets';
+import { DummyPromise } from '../../../assets/promises.assets';
+import { GroupOilEntity } from '../../../models/group-oils.entity';
 import { GroupOilsService } from './group-oils.service';
-import { UserEntity } from 'src/models/user.entity';
+import { UserEntity } from '../../../models/user.entity';
 
 @Controller('group-oils')
 export class GroupOilsController {
