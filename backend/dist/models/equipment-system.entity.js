@@ -12,12 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EquipmentSystemEntity = void 0;
 const typeorm_1 = require("typeorm");
 let EquipmentSystemEntity = class EquipmentSystemEntity {
-    constructor(id, userId, equipment, rate, frequencyId, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
+    constructor(id, userId, equipment, rate, lubUsedDuringMaintenance, frequencyId, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
         this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';
         this.rate = rate || 0;
+        this.lubUsedDuringMaintenance = lubUsedDuringMaintenance || 0;
         this.frequencyId = frequencyId || 0;
         this.entityGroupId = entityGroupId || 0;
         this.userIdCreated = userIdCreated || 0;
@@ -44,6 +45,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "rate", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false }),
+    __metadata("design:type", Number)
+], EquipmentSystemEntity.prototype, "lubUsedDuringMaintenance", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
@@ -74,6 +79,6 @@ __decorate([
 ], EquipmentSystemEntity.prototype, "status", void 0);
 exports.EquipmentSystemEntity = EquipmentSystemEntity = __decorate([
     (0, typeorm_1.Entity)('equipmentSystem'),
-    __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, Number, String, Number, String, Boolean])
+    __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number, Number, Number, String, Number, String, Boolean])
 ], EquipmentSystemEntity);
 //# sourceMappingURL=equipment-system.entity.js.map
