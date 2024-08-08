@@ -16,6 +16,7 @@ exports.FormatDateSumDays = FormatDateSumDays;
 exports.ConvertMomentUTC = ConvertMomentUTC;
 exports.ObtenerHoraDeDosStringUTC = ObtenerHoraDeDosStringUTC;
 exports.GetHours = GetHours;
+exports.ConvertDDMMYYYYToUTC = ConvertDDMMYYYYToUTC;
 const moment = require("moment");
 const momentTimezone = require("moment-timezone");
 moment.locale();
@@ -96,5 +97,9 @@ function ObtenerHoraDeDosStringUTC(fechaUTC, fechaUTC2) {
 }
 function GetHours() {
     return moment().format('HH mm ss');
+}
+function ConvertDDMMYYYYToUTC(dateDDMMYYYY) {
+    let momentDate = moment(dateDDMMYYYY, 'DD/MM/YYYY');
+    return moment(momentDate, 'YYYY-MM-DD HH:mm').utc().format('YYYY-MM-DDTHH:mm:ssZ');
 }
 //# sourceMappingURL=moment.assets.js.map

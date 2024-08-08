@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DataModuleOils = exports.OilEntity = void 0;
+exports.ImportExcelLubricanteDiario = exports.DataModuleOils = exports.OilEntity = void 0;
 const typeorm_1 = require("typeorm");
 let OilEntity = class OilEntity {
     constructor(id, userId, name, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
@@ -73,4 +73,7 @@ class DataModuleOils {
     }
 }
 exports.DataModuleOils = DataModuleOils;
+class ImportExcelLubricanteDiario {
+}
+exports.ImportExcelLubricanteDiario = ImportExcelLubricanteDiario;
 //# sourceMappingURL=oil.entity.js.map

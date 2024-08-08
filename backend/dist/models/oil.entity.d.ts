@@ -25,3 +25,20 @@ export declare class DataModuleOils {
     listConsumptionEquipment: ConsumptionEquipmentEntity[];
     constructor(_userId?: number, _listGroup?: GroupOilEntity[], _listEquipmentSystem?: EquipmentSystemEntity[], _listOil?: OilEntity[], _listBunkerOil?: BunkerOil[], _listEquipmentOilCompatibility?: EquipmentOilCompatibilityEntity[], _listConsumptionEquipment?: ConsumptionEquipmentEntity[]);
 }
+export declare class ImportExcelLubricanteDiario {
+    USER_ID: number;
+    DATE: string;
+    IDENT_ME1: number;
+    IDENT_ME2: number;
+    IDENT_AUX1: number;
+    IDENT_AUX2: number;
+    IDENT_AUX3: number;
+    HOUR_ME: number;
+    HOUR_AUX1: number;
+    HOUR_AUX2: number;
+    HOUR_AUX3: number;
+    LUB_ME2: number;
+    LUB_AUX1: number;
+    LUB_AUX2: number;
+    LUB_AUX3: number;
+}

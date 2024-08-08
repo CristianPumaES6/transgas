@@ -1,5 +1,5 @@
 import { OilsService } from './oils.service';
-import { OilEntity, DataModuleOils } from '../../models/oil.entity';
+import { OilEntity, DataModuleOils, ImportExcelLubricanteDiario } from '../../models/oil.entity';
 import { GroupOilsService } from './group-oils/group-oils.service';
 import { EquipmentSystemService } from './equipment-system/equipment-system.service';
 import { ConsumptionEquipmentService } from './consumption-equipment/consumption-equipment.service';
@@ -21,4 +21,5 @@ export declare class OilsController {
     Update(headers: any, id: any, oilEntity: OilEntity): Promise<any>;
     Delete(headers: any, id: any): Promise<any>;
     SaveDataLubricante(headers: any, saveDateOils: DataModuleOils): Promise<any>;
+    ImportDataMasive(headers: any, saveDataOils: ImportExcelLubricanteDiario[]): Promise<any>;
 }

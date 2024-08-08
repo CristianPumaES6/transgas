@@ -395,6 +395,29 @@ let OilsController = class OilsController {
             }, common_1.HttpStatus.ACCEPTED);
         });
     }
+    async ImportDataMasive(headers, saveDataOils) {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            if (saveDataOils) {
+                if (saveDataOils.length) {
+                    return this._ConsumptionEquipmentService.ImportExcelLubricantDiario(headerToken, saveDataOils);
+                }
+                else {
+                    return [];
+                }
+            }
+            else
+                throw 'MISSING_FIELS';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
 };
 exports.OilsController = OilsController;
 __decorate([
@@ -460,6 +483,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, oil_entity_1.DataModuleOils]),
     __metadata("design:returntype", Promise)
 ], OilsController.prototype, "SaveDataLubricante", null);
+__decorate([
+    (0, common_1.Post)('importDataMasive'),
+    __param(0, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:returntype", Promise)
+], OilsController.prototype, "ImportDataMasive", null);
 exports.OilsController = OilsController = __decorate([
     (0, common_1.Controller)('oils'),
     __metadata("design:paramtypes", [oils_service_1.OilsService,

@@ -450,6 +450,105 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     `;
         return this._ConsumptionEquipment.query(query, []);
     }
+    async ImportExcelLubricantDiario(userEntity, ImportExcelLubricantDiaries) {
+        var _a, e_4, _b, _c;
+        let MappingOilEntity = [];
+        try {
+            for (var _d = true, ImportExcelLubricantDiaries_1 = __asyncValues(ImportExcelLubricantDiaries), ImportExcelLubricantDiaries_1_1; ImportExcelLubricantDiaries_1_1 = await ImportExcelLubricantDiaries_1.next(), _a = ImportExcelLubricantDiaries_1_1.done, !_a; _d = true) {
+                _c = ImportExcelLubricantDiaries_1_1.value;
+                _d = false;
+                const lubricantDialy = _c;
+                let newConsumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                delete newConsumptionEquipmentEntity.id;
+                newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
+                newConsumptionEquipmentEntity.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity.amount = 0;
+                newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
+                newConsumptionEquipmentEntity.observation = '';
+                newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME1;
+                newConsumptionEquipmentEntity.consumptionTypeId = 1;
+                newConsumptionEquipmentEntity.entityOilAnalysisId = 0;
+                newConsumptionEquipmentEntity.userIdCreated = userEntity.id;
+                newConsumptionEquipmentEntity.dateCreated = (0, moment_assets_1.GetDate)();
+                delete newConsumptionEquipmentEntity.userIdUpdated;
+                delete newConsumptionEquipmentEntity.dateUpdated;
+                newConsumptionEquipmentEntity.status = Boolean(true);
+                await this.Create(newConsumptionEquipmentEntity);
+                let newConsumptionEquipmentEntity2 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                delete newConsumptionEquipmentEntity2.id;
+                newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
+                newConsumptionEquipmentEntity2.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME2 || 0;
+                newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
+                newConsumptionEquipmentEntity2.observation = '';
+                newConsumptionEquipmentEntity2.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME2;
+                newConsumptionEquipmentEntity2.consumptionTypeId = 1;
+                newConsumptionEquipmentEntity2.entityOilAnalysisId = 0;
+                newConsumptionEquipmentEntity2.userIdCreated = userEntity.id;
+                newConsumptionEquipmentEntity2.dateCreated = (0, moment_assets_1.GetDate)();
+                delete newConsumptionEquipmentEntity2.userIdUpdated;
+                delete newConsumptionEquipmentEntity2.dateUpdated;
+                newConsumptionEquipmentEntity2.status = Boolean(true);
+                await this.Create(newConsumptionEquipmentEntity2);
+                let newConsumptionEquipmentEntity3 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                delete newConsumptionEquipmentEntity3.id;
+                newConsumptionEquipmentEntity3.userId = lubricantDialy.USER_ID;
+                newConsumptionEquipmentEntity3.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity3.amount = lubricantDialy.LUB_AUX1 || 0;
+                newConsumptionEquipmentEntity3.hourConsumption = lubricantDialy.HOUR_AUX1 || 0;
+                newConsumptionEquipmentEntity3.observation = '';
+                newConsumptionEquipmentEntity3.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX1;
+                newConsumptionEquipmentEntity3.consumptionTypeId = 1;
+                newConsumptionEquipmentEntity3.entityOilAnalysisId = 0;
+                newConsumptionEquipmentEntity3.userIdCreated = userEntity.id;
+                newConsumptionEquipmentEntity3.dateCreated = (0, moment_assets_1.GetDate)();
+                delete newConsumptionEquipmentEntity3.userIdUpdated;
+                delete newConsumptionEquipmentEntity3.dateUpdated;
+                newConsumptionEquipmentEntity3.status = Boolean(true);
+                await this.Create(newConsumptionEquipmentEntity3);
+                let newConsumptionEquipmentEntity4 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                delete newConsumptionEquipmentEntity4.id;
+                newConsumptionEquipmentEntity4.userId = lubricantDialy.USER_ID;
+                newConsumptionEquipmentEntity4.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity4.amount = lubricantDialy.LUB_AUX2 || 0;
+                newConsumptionEquipmentEntity4.hourConsumption = lubricantDialy.HOUR_AUX2 || 0;
+                newConsumptionEquipmentEntity4.observation = '';
+                newConsumptionEquipmentEntity4.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX2;
+                newConsumptionEquipmentEntity4.consumptionTypeId = 1;
+                newConsumptionEquipmentEntity4.entityOilAnalysisId = 0;
+                newConsumptionEquipmentEntity4.userIdCreated = userEntity.id;
+                newConsumptionEquipmentEntity4.dateCreated = (0, moment_assets_1.GetDate)();
+                delete newConsumptionEquipmentEntity4.userIdUpdated;
+                delete newConsumptionEquipmentEntity4.dateUpdated;
+                newConsumptionEquipmentEntity4.status = Boolean(true);
+                await this.Create(newConsumptionEquipmentEntity4);
+                let newConsumptionEquipmentEntity5 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                delete newConsumptionEquipmentEntity5.id;
+                newConsumptionEquipmentEntity5.userId = lubricantDialy.USER_ID;
+                newConsumptionEquipmentEntity5.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity5.amount = lubricantDialy.LUB_AUX3 || 0;
+                newConsumptionEquipmentEntity5.hourConsumption = lubricantDialy.HOUR_AUX3 || 0;
+                newConsumptionEquipmentEntity5.observation = '';
+                newConsumptionEquipmentEntity5.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX3;
+                newConsumptionEquipmentEntity5.consumptionTypeId = 1;
+                newConsumptionEquipmentEntity5.entityOilAnalysisId = 0;
+                newConsumptionEquipmentEntity5.userIdCreated = userEntity.id;
+                newConsumptionEquipmentEntity5.dateCreated = (0, moment_assets_1.GetDate)();
+                delete newConsumptionEquipmentEntity5.userIdUpdated;
+                delete newConsumptionEquipmentEntity5.dateUpdated;
+                newConsumptionEquipmentEntity5.status = Boolean(true);
+                await this.Create(newConsumptionEquipmentEntity5);
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (!_d && !_a && (_b = ImportExcelLubricantDiaries_1.return)) await _b.call(ImportExcelLubricantDiaries_1);
+            }
+            finally { if (e_4) throw e_4.error; }
+        }
+        return MappingOilEntity;
+    }
 };
 exports.ConsumptionEquipmentService = ConsumptionEquipmentService;
 exports.ConsumptionEquipmentService = ConsumptionEquipmentService = __decorate([

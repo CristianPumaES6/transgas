@@ -1,4 +1,6 @@
+import { ImportExcelLubricanteDiario } from '../../../models/oil.entity';
 import { Repository } from 'typeorm';
+import { UserEntity } from '../../../models/user.entity';
 import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
 import { Mapping } from '../../../assets/mappingKeys';
 export declare class ConsumptionEquipmentService {
@@ -11,6 +13,7 @@ export declare class ConsumptionEquipmentService {
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetShips(): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetStatusOilStartEnd(userId: number, startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
+    ImportExcelLubricantDiario(userEntity: UserEntity, ImportExcelLubricantDiaries: ImportExcelLubricanteDiario[]): Promise<Mapping[]>;
 }
 export interface SaveListConsumptionEquipmentEntity {
     MappingConsumptionsEquipment: Mapping[];
