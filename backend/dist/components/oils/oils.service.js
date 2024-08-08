@@ -68,7 +68,6 @@ let OilsService = class OilsService {
                 return this._oilRepository.find({
                     where: [
                         {
-                            userId: (oilEntity.userId || (0, typeorm_3.Like)('%' + '%')),
                             name: (0, typeorm_3.Like)('%' + (oilEntity.name || '') + '%'),
                             status: (0, typeorm_4.Not)(false)
                         }
