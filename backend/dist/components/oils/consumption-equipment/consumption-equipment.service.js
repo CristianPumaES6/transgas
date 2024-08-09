@@ -443,8 +443,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         FROM 
             oil O
         WHERE 
-            O.userId = ${userId}
-            AND O.status = 1
+            -- O.userId = ${userId} AND
+            O.status = 1
         ORDER BY 
             O.id;
     `;
