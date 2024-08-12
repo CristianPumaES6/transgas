@@ -375,7 +375,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND DATE(BO.datetime) < '${startDate}'
                 AND BO.userId = ${userId}
-                BO.status = true
+                AND BO.status = true
             ), 0) - COALESCE((
                 SELECT SUM(CE.amount)
                 FROM equipmentOilCompatibility EOC
