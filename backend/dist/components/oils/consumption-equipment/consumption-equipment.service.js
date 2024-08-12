@@ -375,6 +375,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND DATE(BO.datetime) < '${startDate}'
                 AND BO.userId = ${userId}
+                BO.status = true
             ), 0) - COALESCE((
                 SELECT SUM(CE.amount)
                 FROM equipmentOilCompatibility EOC
@@ -405,6 +406,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
                 AND BO.userId = ${userId}
+                AND BO.status = 1
             ), 0) AS totalRangeBunker,
 
             -- Cantidad de lubricante final
@@ -414,6 +416,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND DATE(BO.datetime) < '${startDate}'
                 AND BO.userId = ${userId}
+                AND BO.status = 1
             ), 0) - COALESCE((
                 SELECT SUM(CE.amount)
                 FROM equipmentOilCompatibility EOC
@@ -429,6 +432,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND BO.userId = ${userId}
                 AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
+                AND BO.status = 1
             ), 0) - COALESCE((
                 SELECT SUM(CE.amount)
                 FROM equipmentOilCompatibility EOC
