@@ -285,4 +285,18 @@ export class AppController {
 
   }
   
+
+  @Get('GetInfoAllVessel/:startDate/:endDate')
+  async GetInfoAllVessel(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+
+        return this._ConsumptionEquipmentService.GetInfoAllVessel(startDate,endDate);
+
+      }
+    );
+
+  }
+
 }
