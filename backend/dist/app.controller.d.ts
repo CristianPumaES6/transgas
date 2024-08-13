@@ -27,4 +27,5 @@ export declare class AppController {
     ConsultEquipmentConsumptionByMonthUser(buqueId: any, EquipmentId: any, YEAR_MONTH: any): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     GetShips(): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     GetStatusOilStartEnd(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
+    GetInfoAllVessel(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
 }

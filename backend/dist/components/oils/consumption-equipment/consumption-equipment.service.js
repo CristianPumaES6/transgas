@@ -454,6 +454,275 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     `;
         return this._ConsumptionEquipment.query(query, []);
     }
+    async GetInfoAllVessel(startDate, endDate) {
+        const query = `
+    
+    
+
+    SELECT 
+    O.id AS oilId,
+    O.name AS oilName,
+    BO.userId,  -- Este es el ID del buque que se utilizará para la agrupación
+
+    -- Cantidad de lubricante inicial por buque
+    (COALESCE((
+        SELECT SUM(BO1.bunker)
+        FROM bunkerOil BO1
+        WHERE BO1.entityOilId = O.id
+        AND DATE(BO1.datetime) < '${startDate}'
+        AND BO1.userId = BO.userId
+        AND BO1.status = 1
+    ), 0) - COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) < '${startDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0)) AS initialLubricant,
+
+    -- Suma de consumo en el rango de fechas por buque
+    COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0) AS totalRangeConsumption,
+
+    -- Suma de bunker en el rango de fechas por buque
+    COALESCE((
+        SELECT SUM(BO2.bunker)
+        FROM bunkerOil BO2
+        WHERE BO2.entityOilId = O.id
+        AND DATE(BO2.datetime) BETWEEN '${startDate}' AND '${endDate}'
+        AND BO2.userId = BO.userId
+        AND BO2.status = 1
+    ), 0) AS totalRangeBunker,
+
+    -- Cantidad de lubricante final por buque
+    ((COALESCE((
+        SELECT SUM(BO3.bunker)
+        FROM bunkerOil BO3
+        WHERE BO3.entityOilId = O.id
+        AND DATE(BO3.datetime) < '${startDate}'
+        AND BO3.userId = BO.userId
+        AND BO3.status = 1
+    ), 0) - COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) < '${startDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0)) + COALESCE((
+        SELECT SUM(BO4.bunker)
+        FROM bunkerOil BO4
+        WHERE BO4.entityOilId = O.id
+        AND BO4.userId = BO.userId
+        AND DATE(BO4.datetime) BETWEEN '${startDate}' AND '${endDate}'
+        AND BO4.status = 1
+    ), 0) - COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0)) AS finalLubricant,
+
+    -- Suma total de la distancia navegada
+    COALESCE((
+        SELECT SUM(DR.distance)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalDistance,
+
+    -- Suma total del steaming time
+    COALESCE((
+        SELECT SUM(DR.steamingTime)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.distance > 0
+        AND DR.status = 1
+    ), 0) AS totalSteamingTime,
+
+    -- Consumo total por columna de equipos
+    COALESCE((
+        SELECT SUM(DR.mplaIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalMplaIfo,
+
+    COALESCE((
+        SELECT SUM(DR.auxIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalAuxIfo,
+
+    COALESCE((
+        SELECT SUM(DR.boilerIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBoilerIfo,
+
+    COALESCE((
+        SELECT SUM(DR.otherIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalOtherIfo,
+
+    COALESCE((
+        SELECT SUM(DR.mplaMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalMplaMgo,
+
+    COALESCE((
+        SELECT SUM(DR.auxMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalAuxMgo,
+
+    COALESCE((
+        SELECT SUM(DR.boilerMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBoilerMgo,
+
+    COALESCE((
+        SELECT SUM(DR.ppMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalPpMgo,
+
+    COALESCE((
+        SELECT SUM(DR.giMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalGiMgo,
+
+    COALESCE((
+        SELECT SUM(DR.otherMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalOtherMgo,
+
+    -- Suma total del bunkering
+    COALESCE((
+        SELECT SUM(DR.bunkeringIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBunkeringIfo,
+
+    COALESCE((
+        SELECT SUM(DR.bunkeringMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBunkeringMgo,
+    
+
+    COALESCE((
+        SELECT SUM(DR.bunkeringIfo) - (SUM(DR.mplaIfo) + SUM(DR.auxIfo) + SUM(DR.boilerIfo) + SUM(DR.otherIfo) )
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) < '${startDate}'
+        AND DR.status = 1
+    ), 0) AS totalStartIFO ,
+
+    COALESCE((
+        SELECT SUM(DR.bunkeringMgo) - (SUM(DR.mplaMgo) + SUM(DR.auxMgo) + SUM(DR.boilerMgo) + SUM(DR.ppMgo) + SUM(DR.giMgo) + SUM(DR.otherMgo) )
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) < '${startDate}'
+        AND DR.status = 1
+    ), 0) AS totalStartMGO 
+
+FROM 
+    oil O
+INNER JOIN bunkerOil BO ON O.id = BO.entityOilId
+WHERE 
+    O.status = 1
+GROUP BY 
+    O.id, BO.userId
+ORDER BY 
+    O.id, BO.userId;
+
+
+ 
+
+
+    `;
+        return this._ConsumptionEquipment.query(query, []);
+    }
     async ImportExcelLubricantDiario(userEntity, ImportExcelLubricantDiaries) {
         var _a, e_4, _b, _c;
         let MappingOilEntity = [];

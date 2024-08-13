@@ -13,6 +13,7 @@ export declare class ConsumptionEquipmentService {
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetShips(): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetStatusOilStartEnd(userId: number, startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
+    GetInfoAllVessel(startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
     ImportExcelLubricantDiario(userEntity: UserEntity, ImportExcelLubricantDiaries: ImportExcelLubricanteDiario[]): Promise<Mapping[]>;
 }
 export interface SaveListConsumptionEquipmentEntity {
