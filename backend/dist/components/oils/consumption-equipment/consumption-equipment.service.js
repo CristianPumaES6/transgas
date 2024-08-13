@@ -463,6 +463,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     O.id AS oilId,
     O.name AS oilName,
     BO.userId,  -- Este es el ID del buque que se utilizará para la agrupación
+    U.name As uName,
+    U.filename aFilename,
 
     -- Cantidad de lubricante inicial por buque
     (COALESCE((
@@ -708,11 +710,13 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
 
 FROM 
     oil O
-INNER JOIN bunkerOil BO ON O.id = BO.entityOilId
+    INNER JOIN bunkerOil BO ON O.id = BO.entityOilId
+    INNER JOIN user U ON BO.userId = U.id
+
 WHERE 
     O.status = 1
 GROUP BY 
-    O.id, BO.userId
+    O.id, BO.userId, U.name, U.filename
 ORDER BY 
     O.id, BO.userId;
 
