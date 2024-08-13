@@ -50,7 +50,7 @@ export const URL_Server = {
     version: 'v2',
     puertoSocket: 4000,
     puertoBackend: 3000,
-    bd: 'MSSQL2', // MSSQL, MYSQL
+    bd: 'SQLITE', // MSSQL, MYSQL, MSSQL2
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
 };
