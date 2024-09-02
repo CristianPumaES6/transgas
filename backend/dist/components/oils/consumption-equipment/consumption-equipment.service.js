@@ -739,7 +739,7 @@ ORDER BY
                 delete newConsumptionEquipmentEntity.id;
                 newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
                 newConsumptionEquipmentEntity.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
-                newConsumptionEquipmentEntity.amount = 0;
+                newConsumptionEquipmentEntity.amount = lubricantDialy.LUB_ME;
                 newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity.observation = '';
                 newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME1;
@@ -755,7 +755,7 @@ ORDER BY
                 delete newConsumptionEquipmentEntity2.id;
                 newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
                 newConsumptionEquipmentEntity2.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
-                newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME2 || 0;
+                newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
                 newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity2.observation = '';
                 newConsumptionEquipmentEntity2.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME2;
@@ -799,22 +799,6 @@ ORDER BY
                 delete newConsumptionEquipmentEntity4.dateUpdated;
                 newConsumptionEquipmentEntity4.status = Boolean(true);
                 await this.Create(newConsumptionEquipmentEntity4);
-                let newConsumptionEquipmentEntity5 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
-                delete newConsumptionEquipmentEntity5.id;
-                newConsumptionEquipmentEntity5.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity5.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
-                newConsumptionEquipmentEntity5.amount = lubricantDialy.LUB_AUX3 || 0;
-                newConsumptionEquipmentEntity5.hourConsumption = lubricantDialy.HOUR_AUX3 || 0;
-                newConsumptionEquipmentEntity5.observation = '';
-                newConsumptionEquipmentEntity5.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX3;
-                newConsumptionEquipmentEntity5.consumptionTypeId = 1;
-                newConsumptionEquipmentEntity5.entityOilAnalysisId = 0;
-                newConsumptionEquipmentEntity5.userIdCreated = userEntity.id;
-                newConsumptionEquipmentEntity5.dateCreated = (0, moment_assets_1.GetDate)();
-                delete newConsumptionEquipmentEntity5.userIdUpdated;
-                delete newConsumptionEquipmentEntity5.dateUpdated;
-                newConsumptionEquipmentEntity5.status = Boolean(true);
-                await this.Create(newConsumptionEquipmentEntity5);
             }
         }
         catch (e_4_1) { e_4 = { error: e_4_1 }; }
