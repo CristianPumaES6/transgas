@@ -802,7 +802,7 @@ ORDER BY
             delete newConsumptionEquipmentEntity.id;
             newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
             newConsumptionEquipmentEntity.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
-            newConsumptionEquipmentEntity.amount = 0;
+            newConsumptionEquipmentEntity.amount = lubricantDialy.LUB_ME;
             newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
             newConsumptionEquipmentEntity.observation =  '';
             newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME1;
@@ -828,7 +828,7 @@ ORDER BY
             delete newConsumptionEquipmentEntity2.id;
             newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
             newConsumptionEquipmentEntity2.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
-            newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME2 || 0;
+            newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
             newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
             newConsumptionEquipmentEntity2.observation =  '';
             newConsumptionEquipmentEntity2.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME2;
@@ -905,7 +905,7 @@ ORDER BY
             await this.Create(newConsumptionEquipmentEntity4);
             
 
-
+            /*
             // Armamos al nuevo tipo de aceite
             let newConsumptionEquipmentEntity5 = new ConsumptionEquipmentEntity();
 
@@ -930,6 +930,31 @@ ORDER BY
             newConsumptionEquipmentEntity5.status = Boolean(true);
 
             await this.Create(newConsumptionEquipmentEntity5);
+            */
+/* 
+            let newConsumptionEquipmentEntity6 = new ConsumptionEquipmentEntity();
+
+            delete newConsumptionEquipmentEntity6.id;
+            newConsumptionEquipmentEntity6.userId = lubricantDialy.USER_ID;
+            newConsumptionEquipmentEntity6.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+            newConsumptionEquipmentEntity6.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
+            newConsumptionEquipmentEntity6.hourConsumption = lubricantDialy.HOUR_ME || 0;
+            newConsumptionEquipmentEntity6.observation =  '';
+            newConsumptionEquipmentEntity6.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME2;
+ 
+            newConsumptionEquipmentEntity6.consumptionTypeId = 1;
+            newConsumptionEquipmentEntity6.entityOilAnalysisId = 0;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+            // Auditoria.
+            newConsumptionEquipmentEntity6.userIdCreated = userEntity.id;
+            newConsumptionEquipmentEntity6.dateCreated = GetDate();
+            delete newConsumptionEquipmentEntity6.userIdUpdated;
+            delete newConsumptionEquipmentEntity6.dateUpdated;
+            newConsumptionEquipmentEntity6.status = Boolean(true);
+
+            await this.Create(newConsumptionEquipmentEntity6); */
         }
 
 

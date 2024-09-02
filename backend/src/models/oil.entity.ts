@@ -99,8 +99,9 @@ export class DataModuleOils {
     HOUR_AUX1: number;
     HOUR_AUX2: number;
     HOUR_AUX3: number;
-    LUB_ME2: number;
+    LUB_ME: number;
     LUB_AUX1: number;
     LUB_AUX2: number;
     LUB_AUX3: number;
+    LUB_ME_CYLINDER: number;
   }

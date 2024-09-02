@@ -291,7 +291,7 @@ export class AppController {
 
     return await DummyPromise().then(
       (resultDummy: Boolean) => {
-
+        
         return this._ConsumptionEquipmentService.GetInfoAllVessel(startDate,endDate);
 
       }
