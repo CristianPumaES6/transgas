@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OilEntity } from '../../../models/oil.entity';
+import { ImportExcelLubricanteDiario, OilEntity } from '../../../models/oil.entity';
 
 // Librerias de TypeOrm
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,7 +16,7 @@ import { URL_Server } from '../../../config/server.config'
 // Modelos.
 import { UserEntity } from '../../../models/user.entity';
 import { DummyPromise } from '../../../assets/promises.assets';
-import { ConvertMMDDYYYToYYYYMMDD, Convert_YYYYMMD_To_YYYYMMDD, GetDate } from '../../../assets/moment.assets';
+import { ConvertDDMMYYYYToUTC, ConvertMMDDYYYToYYYYMMDD, Convert_YYYYMMD_To_YYYYMMDD, GetDate } from '../../../assets/moment.assets';
 import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
 import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
@@ -428,6 +428,7 @@ export class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND DATE(BO.datetime) < '${startDate}'
                 AND BO.userId = ${userId}
+                AND BO.status = true
             ), 0) - COALESCE((
                 SELECT SUM(CE.amount)
                 FROM equipmentOilCompatibility EOC
@@ -458,6 +459,7 @@ export class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
                 AND BO.userId = ${userId}
+                AND BO.status = 1
             ), 0) AS totalRangeBunker,
 
             -- Cantidad de lubricante final
@@ -467,6 +469,7 @@ export class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND DATE(BO.datetime) < '${startDate}'
                 AND BO.userId = ${userId}
+                AND BO.status = 1
             ), 0) - COALESCE((
                 SELECT SUM(CE.amount)
                 FROM equipmentOilCompatibility EOC
@@ -482,6 +485,7 @@ export class ConsumptionEquipmentService {
                 WHERE BO.entityOilId = O.id
                 AND BO.userId = ${userId}
                 AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
+                AND BO.status = 1
             ), 0) - COALESCE((
                 SELECT SUM(CE.amount)
                 FROM equipmentOilCompatibility EOC
@@ -496,8 +500,8 @@ export class ConsumptionEquipmentService {
         FROM 
             oil O
         WHERE 
-            O.userId = ${userId}
-            AND O.status = 1
+            -- O.userId = ${userId} AND
+            O.status = 1
         ORDER BY 
             O.id;
     `;
@@ -506,6 +510,456 @@ export class ConsumptionEquipmentService {
     return this._ConsumptionEquipment.query(query,  []);
   }
   
+  async GetInfoAllVessel( startDate:string, endDate:string): Promise<consultEquipmentConsumptionByMonthUser[]>  {
+
+
+    const query = `
+    
+    
+
+    SELECT 
+    O.id AS oilId,
+    O.name AS oilName,
+    BO.userId,  -- Este es el ID del buque que se utilizará para la agrupación
+    U.name As uName,
+    U.filename aFilename,
+
+    -- Cantidad de lubricante inicial por buque
+    (COALESCE((
+        SELECT SUM(BO1.bunker)
+        FROM bunkerOil BO1
+        WHERE BO1.entityOilId = O.id
+        AND DATE(BO1.datetime) < '${startDate}'
+        AND BO1.userId = BO.userId
+        AND BO1.status = 1
+    ), 0) - COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) < '${startDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0)) AS initialLubricant,
+
+    -- Suma de consumo en el rango de fechas por buque
+    COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0) AS totalRangeConsumption,
+
+    -- Suma de bunker en el rango de fechas por buque
+    COALESCE((
+        SELECT SUM(BO2.bunker)
+        FROM bunkerOil BO2
+        WHERE BO2.entityOilId = O.id
+        AND DATE(BO2.datetime) BETWEEN '${startDate}' AND '${endDate}'
+        AND BO2.userId = BO.userId
+        AND BO2.status = 1
+    ), 0) AS totalRangeBunker,
+
+    -- Cantidad de lubricante final por buque
+    ((COALESCE((
+        SELECT SUM(BO3.bunker)
+        FROM bunkerOil BO3
+        WHERE BO3.entityOilId = O.id
+        AND DATE(BO3.datetime) < '${startDate}'
+        AND BO3.userId = BO.userId
+        AND BO3.status = 1
+    ), 0) - COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) < '${startDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0)) + COALESCE((
+        SELECT SUM(BO4.bunker)
+        FROM bunkerOil BO4
+        WHERE BO4.entityOilId = O.id
+        AND BO4.userId = BO.userId
+        AND DATE(BO4.datetime) BETWEEN '${startDate}' AND '${endDate}'
+        AND BO4.status = 1
+    ), 0) - COALESCE((
+        SELECT SUM(CE.amount)
+        FROM equipmentOilCompatibility EOC
+        INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+        WHERE EOC.entityOilId = O.id
+        AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND EOC.userId = BO.userId
+        AND CE.userId = BO.userId
+        AND CE.status = 1
+    ), 0)) AS finalLubricant,
+
+    -- Suma total de la distancia navegada
+    COALESCE((
+        SELECT SUM(DR.distance)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalDistance,
+
+    -- Suma total del steaming time
+    COALESCE((
+        SELECT SUM(DR.steamingTime)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.distance > 0
+        AND DR.status = 1
+    ), 0) AS totalSteamingTime,
+
+    -- Consumo total por columna de equipos
+    COALESCE((
+        SELECT SUM(DR.mplaIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalMplaIfo,
+
+    COALESCE((
+        SELECT SUM(DR.auxIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalAuxIfo,
+
+    COALESCE((
+        SELECT SUM(DR.boilerIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBoilerIfo,
+
+    COALESCE((
+        SELECT SUM(DR.otherIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalOtherIfo,
+
+    COALESCE((
+        SELECT SUM(DR.mplaMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalMplaMgo,
+
+    COALESCE((
+        SELECT SUM(DR.auxMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalAuxMgo,
+
+    COALESCE((
+        SELECT SUM(DR.boilerMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBoilerMgo,
+
+    COALESCE((
+        SELECT SUM(DR.ppMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalPpMgo,
+
+    COALESCE((
+        SELECT SUM(DR.giMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalGiMgo,
+
+    COALESCE((
+        SELECT SUM(DR.otherMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalOtherMgo,
+
+    -- Suma total del bunkering
+    COALESCE((
+        SELECT SUM(DR.bunkeringIfo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBunkeringIfo,
+
+    COALESCE((
+        SELECT SUM(DR.bunkeringMgo)
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) BETWEEN '${startDate}' AND '${endDate}'
+        AND DR.status = 1
+    ), 0) AS totalBunkeringMgo,
+    
+
+    COALESCE((
+        SELECT SUM(DR.bunkeringIfo) - (SUM(DR.mplaIfo) + SUM(DR.auxIfo) + SUM(DR.boilerIfo) + SUM(DR.otherIfo) )
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) < '${startDate}'
+        AND DR.status = 1
+    ), 0) AS totalStartIFO ,
+
+    COALESCE((
+        SELECT SUM(DR.bunkeringMgo) - (SUM(DR.mplaMgo) + SUM(DR.auxMgo) + SUM(DR.boilerMgo) + SUM(DR.ppMgo) + SUM(DR.giMgo) + SUM(DR.otherMgo) )
+        FROM daily_report DR
+        INNER JOIN port P ON DR.portId = P.id AND P.status = 1
+        INNER JOIN voyage V ON P.voyageId = V.id AND V.status = 1
+        WHERE DR.userId = BO.userId
+        AND DATE(DR.date) < '${startDate}'
+        AND DR.status = 1
+    ), 0) AS totalStartMGO 
+
+FROM 
+    oil O
+    INNER JOIN bunkerOil BO ON O.id = BO.entityOilId
+    INNER JOIN user U ON BO.userId = U.id
+
+WHERE 
+    O.status = 1
+GROUP BY 
+    O.id, BO.userId, U.name, U.filename
+ORDER BY 
+    O.id, BO.userId;
+
+
+ 
+
+
+    `;
+    
+
+    return this._ConsumptionEquipment.query(query,  []);
+  }
+
+  
+    // guarda una lista de aceite.
+    async ImportExcelLubricantDiario( userEntity:UserEntity,  ImportExcelLubricantDiaries: ImportExcelLubricanteDiario[] ) {
+ 
+        let MappingOilEntity: Mapping[] = [];
+
+        for await (const lubricantDialy of ImportExcelLubricantDiaries) {
+ 
+            // Armamos al nuevo tipo de aceite
+            let newConsumptionEquipmentEntity = new ConsumptionEquipmentEntity();
+
+            delete newConsumptionEquipmentEntity.id;
+            newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
+            newConsumptionEquipmentEntity.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+            newConsumptionEquipmentEntity.amount = lubricantDialy.LUB_ME;
+            newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
+            newConsumptionEquipmentEntity.observation =  '';
+            newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME1;
+ 
+            newConsumptionEquipmentEntity.consumptionTypeId = 1;
+            newConsumptionEquipmentEntity.entityOilAnalysisId = 0;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+            // Auditoria.
+            newConsumptionEquipmentEntity.userIdCreated = userEntity.id;
+            newConsumptionEquipmentEntity.dateCreated = GetDate();
+            delete newConsumptionEquipmentEntity.userIdUpdated;
+            delete newConsumptionEquipmentEntity.dateUpdated;
+            newConsumptionEquipmentEntity.status = Boolean(true);
+
+            await this.Create(newConsumptionEquipmentEntity);
+
+            
+            // Armamos al nuevo tipo de aceite
+            let newConsumptionEquipmentEntity2 = new ConsumptionEquipmentEntity();
+
+            delete newConsumptionEquipmentEntity2.id;
+            newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
+            newConsumptionEquipmentEntity2.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+            newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
+            newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
+            newConsumptionEquipmentEntity2.observation =  '';
+            newConsumptionEquipmentEntity2.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME2;
+ 
+            newConsumptionEquipmentEntity2.consumptionTypeId = 1;
+            newConsumptionEquipmentEntity2.entityOilAnalysisId = 0;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+            // Auditoria.
+            newConsumptionEquipmentEntity2.userIdCreated = userEntity.id;
+            newConsumptionEquipmentEntity2.dateCreated = GetDate();
+            delete newConsumptionEquipmentEntity2.userIdUpdated;
+            delete newConsumptionEquipmentEntity2.dateUpdated;
+            newConsumptionEquipmentEntity2.status = Boolean(true);
+
+            await this.Create(newConsumptionEquipmentEntity2);
+ 
+            
+            // Armamos al nuevo tipo de aceite
+            let newConsumptionEquipmentEntity3 = new ConsumptionEquipmentEntity();
+
+            delete newConsumptionEquipmentEntity3.id;
+            newConsumptionEquipmentEntity3.userId = lubricantDialy.USER_ID;
+            newConsumptionEquipmentEntity3.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+            newConsumptionEquipmentEntity3.amount = lubricantDialy.LUB_AUX1 || 0;
+            newConsumptionEquipmentEntity3.hourConsumption = lubricantDialy.HOUR_AUX1 || 0;
+            newConsumptionEquipmentEntity3.observation =  '';
+            newConsumptionEquipmentEntity3.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX1;
+ 
+            newConsumptionEquipmentEntity3.consumptionTypeId = 1;
+            newConsumptionEquipmentEntity3.entityOilAnalysisId = 0;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+            // Auditoria.
+            newConsumptionEquipmentEntity3.userIdCreated = userEntity.id;
+            newConsumptionEquipmentEntity3.dateCreated = GetDate();
+            delete newConsumptionEquipmentEntity3.userIdUpdated;
+            delete newConsumptionEquipmentEntity3.dateUpdated;
+            newConsumptionEquipmentEntity3.status = Boolean(true);
+
+            await this.Create(newConsumptionEquipmentEntity3);
+
+            
+
+
+
+
+            
+            // Armamos al nuevo tipo de aceite
+            let newConsumptionEquipmentEntity4 = new ConsumptionEquipmentEntity();
+
+            delete newConsumptionEquipmentEntity4.id;
+            newConsumptionEquipmentEntity4.userId = lubricantDialy.USER_ID;
+            newConsumptionEquipmentEntity4.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+            newConsumptionEquipmentEntity4.amount =lubricantDialy.LUB_AUX2 || 0;
+            newConsumptionEquipmentEntity4.hourConsumption = lubricantDialy.HOUR_AUX2 || 0;
+            newConsumptionEquipmentEntity4.observation =  '';
+            newConsumptionEquipmentEntity4.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX2;
+ 
+            newConsumptionEquipmentEntity4.consumptionTypeId = 1;
+            newConsumptionEquipmentEntity4.entityOilAnalysisId = 0;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+            // Auditoria.
+            newConsumptionEquipmentEntity4.userIdCreated = userEntity.id;
+            newConsumptionEquipmentEntity4.dateCreated = GetDate();
+            delete newConsumptionEquipmentEntity4.userIdUpdated;
+            delete newConsumptionEquipmentEntity4.dateUpdated;
+            newConsumptionEquipmentEntity4.status = Boolean(true);
+
+            await this.Create(newConsumptionEquipmentEntity4);
+            
+
+            /*
+            // Armamos al nuevo tipo de aceite
+            let newConsumptionEquipmentEntity5 = new ConsumptionEquipmentEntity();
+
+            delete newConsumptionEquipmentEntity5.id;
+            newConsumptionEquipmentEntity5.userId = lubricantDialy.USER_ID;
+            newConsumptionEquipmentEntity5.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+            newConsumptionEquipmentEntity5.amount = lubricantDialy.LUB_AUX3 || 0;
+            newConsumptionEquipmentEntity5.hourConsumption = lubricantDialy.HOUR_AUX3 || 0;
+            newConsumptionEquipmentEntity5.observation =  '';
+            newConsumptionEquipmentEntity5.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX3;
+ 
+            newConsumptionEquipmentEntity5.consumptionTypeId = 1;
+            newConsumptionEquipmentEntity5.entityOilAnalysisId = 0;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+            // Auditoria.
+            newConsumptionEquipmentEntity5.userIdCreated = userEntity.id;
+            newConsumptionEquipmentEntity5.dateCreated = GetDate();
+            delete newConsumptionEquipmentEntity5.userIdUpdated;
+            delete newConsumptionEquipmentEntity5.dateUpdated;
+            newConsumptionEquipmentEntity5.status = Boolean(true);
+
+            await this.Create(newConsumptionEquipmentEntity5);
+            */
+/* 
+            let newConsumptionEquipmentEntity6 = new ConsumptionEquipmentEntity();
+
+            delete newConsumptionEquipmentEntity6.id;
+            newConsumptionEquipmentEntity6.userId = lubricantDialy.USER_ID;
+            newConsumptionEquipmentEntity6.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+            newConsumptionEquipmentEntity6.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
+            newConsumptionEquipmentEntity6.hourConsumption = lubricantDialy.HOUR_ME || 0;
+            newConsumptionEquipmentEntity6.observation =  '';
+            newConsumptionEquipmentEntity6.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME2;
+ 
+            newConsumptionEquipmentEntity6.consumptionTypeId = 1;
+            newConsumptionEquipmentEntity6.entityOilAnalysisId = 0;
+            // AQUI VALIDAR MI SOBRE CONSUMO
+            // SendMailHTMLLubricante  976873362
+
+            // Auditoria.
+            newConsumptionEquipmentEntity6.userIdCreated = userEntity.id;
+            newConsumptionEquipmentEntity6.dateCreated = GetDate();
+            delete newConsumptionEquipmentEntity6.userIdUpdated;
+            delete newConsumptionEquipmentEntity6.dateUpdated;
+            newConsumptionEquipmentEntity6.status = Boolean(true);
+
+            await this.Create(newConsumptionEquipmentEntity6); */
+        }
+
+
+        return MappingOilEntity;
+    }
 }
 
 export interface SaveListConsumptionEquipmentEntity {

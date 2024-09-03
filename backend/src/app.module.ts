@@ -22,16 +22,16 @@ import { OilsModule } from './components/oils/oils.module';
 
 @Module({
  
-//   imports: [
-//     TypeOrmModule.forRoot({
-//       type: 'sqlite',
-//       database: join(SQLITE_PATH, 'dbTransgas.sqlite3'),
-//       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
-//       synchronize: true,
-//     }),  
+   imports: [
+     TypeOrmModule.forRoot({
+       type: 'sqlite',
+       database: join(SQLITE_PATH, 'dbTransgas.sqlite3'),
+       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
+       synchronize: true,
+     }),  
 
 
-             imports: [
+            /* imports: [
                TypeOrmModule.forRoot({
                  type: 'mssql',
                  host: '4.227.179.75',
@@ -39,16 +39,17 @@ import { OilsModule } from './components/oils/oils.module';
                  username: 'User_sa',
                  password: 'Server_Admin',
                  database: 'FuelOilPlatformDB',
-                 entities: [join(__dirname, '**/**.entity{.ts,.js}')],
-                 synchronize: true,
-                 options: {
-                   encrypt: false,
-                   enableArithAbort: true,
-                 },
-                 extra:{
-                   trustServerCertificate: true,
-                 }
-               }),
+                 entities: [join(__dirname, '**/
+                 //**.entity{.ts,.js}')],
+            //     synchronize: true,
+            //     options: {
+            //       encrypt: false,
+            //       enableArithAbort: true,
+            //     },
+            //     extra:{
+            //       trustServerCertificate: true,
+            //     }
+            //   }),
     UsersModule,
     AuthModule,
     VoyagesModule,

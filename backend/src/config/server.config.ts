@@ -44,32 +44,31 @@ export const URL_Server = {
 
 
 // CONFIGURACION PARA DESARROLLO SERVER
-export const URL_Server = {
+/*export const URL_Server = {
     front: 'https://esteesel.club',
     back: 'https://esteesel.club',
     version: 'v2',
     puertoSocket: 4000,
     puertoBackend: 3000,
-    bd: 'MSSQL2', // MSSQL, MYSQL
+    bd: 'SQLITE', // MSSQL, MYSQL, MSSQL2
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
-};
+};*/
 
 
 
 
 // SERVIDOR LINUX - FRONT Firebase
-/* export const URL_Server = {
+ export const URL_Server = {
     front: 'https://transgas2.esteesel.club',
     back: 'https://transgas2.esteesel.club',
     version: 'v2',
-    puertoSocket: 4000,
-    puertoBackend: 3000,
+    puertoSocket: 4002,
+    puertoBackend: 3002,
     bd: 'SQLITE', // MSSQL, MYSQL
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
-}; */
-
+}; 
 
 /*
 // SERVIDOR LINUX - FRONT LINUX

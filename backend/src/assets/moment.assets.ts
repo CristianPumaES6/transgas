@@ -148,3 +148,11 @@ export function GetHours(): any {
     return moment().format('HH mm ss');
 }
 
+
+export function ConvertDDMMYYYYToUTC(dateDDMMYYYY): string {
+
+    let momentDate = moment(dateDDMMYYYY, 'DD/MM/YYYY');
+
+    return moment(momentDate, 'YYYY-MM-DD HH:mm').utc().format('YYYY-MM-DDTHH:mm:ssZ');
+
+}

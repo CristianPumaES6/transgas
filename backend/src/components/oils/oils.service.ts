@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OilEntity } from '../../models/oil.entity';
+import { ImportExcelLubricanteDiario, OilEntity } from '../../models/oil.entity';
 
 // Librerias de TypeOrm
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,9 +16,10 @@ import { URL_Server } from '../../config/server.config'
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
-import { ConvertMMDDYYYToYYYYMMDD, DateDayMonthYear, FormatDateUTCToDate, FormatDateUTCToDateYYYYMM, GetDate } from '../../assets/moment.assets';
+import { ConvertDDMMYYYYToUTC, ConvertMMDDYYYToYYYYMMDD, DateDayMonthYear, FormatDateUTCToDate, FormatDateUTCToDateYYYYMM, GetDate } from '../../assets/moment.assets';
 import { Mapping } from '../../assets/mappingKeys';
 import { mathRound } from '../../assets/math.assets';
+import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
 
 
 @Injectable()
@@ -87,8 +88,7 @@ export class OilsService {
                     return this._oilRepository.find({
                         where: [
                             // name && surname && nick && email
-                            {
-                                userId: (oilEntity.userId || Like('%' + '%')),
+                            { 
                                 name: Like('%' + (oilEntity.name || '') + '%'),
                                 status: Not(false)
                             }
@@ -558,6 +558,9 @@ export class OilsService {
                     return dailyOilConsumptionData;
                 });
     }
+
+
+        
 }
 
 export interface DailyOilConsumptionData {

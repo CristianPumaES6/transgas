@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { DailyOilConsumptionData, OilsService } from './oils.service';
 import { DummyPromise } from '../../assets/promises.assets';
-import { OilEntity, DataModuleOils } from '../../models/oil.entity';
+import { OilEntity, DataModuleOils, ImportExcelLubricanteDiario } from '../../models/oil.entity';
 import { UserEntity } from '../../models/user.entity';
 import { JwtDecode } from '../../assets/jwtDecode.assets';
 import { DateDayMonthYear, FormatDateUTCToDate, GetDate } from '../../assets/moment.assets';
@@ -631,6 +631,47 @@ export class OilsController {
                         mappingEquipmentOilCompatibility: mappingEquipmentOilCompatibility
                     }
                 };
+            }
+        ).catch(
+            err => {
+                // Obtengo mensajes de error
+                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+
+                // caso contrario retornamos un error
+                throw new HttpException({
+                    status: HttpStatus.ACCEPTED,
+                    error: clientMsg,
+                    message: errorMsg,
+                }, HttpStatus.ACCEPTED);
+            }
+        );
+    }
+
+
+
+    
+    @Post('importDataMasive')
+    async ImportDataMasive(@Headers() headers, @Body() saveDataOils: ImportExcelLubricanteDiario[]): Promise<any> {
+
+        // Le asigno el valor al token desde la cabecera.
+        // Lo decodifico con otra libreria por problemas jwt-module.
+        let headerToken: UserEntity = JwtDecode(headers.authorization);
+ 
+        return DummyPromise().then(
+            (resultDummy: Boolean) => {
+                // Validamos que esten llegando los datos necesarios.
+                if (saveDataOils) {
+                    if (saveDataOils.length) {
+
+                        
+                         
+                        return this._ConsumptionEquipmentService.ImportExcelLubricantDiario(headerToken,saveDataOils);
+                    } else {
+                        return [];
+                    }
+                }
+                else throw 'MISSING_FIELS';
             }
         ).catch(
             err => {

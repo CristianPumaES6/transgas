@@ -119,6 +119,7 @@ export class EquipmentSystemService {
             newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
             newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
             newEquipmentSystemEntity.rate = addEquipmentSystem.rate  || 0;
+            newEquipmentSystemEntity.lubUsedDuringMaintenance = addEquipmentSystem.lubUsedDuringMaintenance  || 0;
             newEquipmentSystemEntity.frequencyId = addEquipmentSystem.frequencyId;
             
             newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
@@ -146,6 +147,7 @@ export class EquipmentSystemService {
             equipmentSystem.id = updateEquipmentSystem.id;
             equipmentSystem.userId = updateEquipmentSystem.userId;
             equipmentSystem.rate = updateEquipmentSystem.rate  || 0;
+            equipmentSystem.lubUsedDuringMaintenance = updateEquipmentSystem.lubUsedDuringMaintenance  || 0;
             equipmentSystem.equipment = updateEquipmentSystem.equipment;
             equipmentSystem.frequencyId = updateEquipmentSystem.frequencyId;
             
@@ -172,6 +174,7 @@ export class EquipmentSystemService {
             equipmentSystem.id = deleteEquipmentSystem.id;
             equipmentSystem.userId = deleteEquipmentSystem.userId;
             equipmentSystem.rate = deleteEquipmentSystem.rate  || 0;
+            equipmentSystem.lubUsedDuringMaintenance = deleteEquipmentSystem.lubUsedDuringMaintenance  || 0;
             equipmentSystem.equipment = deleteEquipmentSystem.equipment;
             equipmentSystem.frequencyId = deleteEquipmentSystem.frequencyId;
             

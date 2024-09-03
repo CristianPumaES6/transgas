@@ -432,3 +432,13 @@ export function FormatYYYYMMDDToHOURS(date: any): string {
 
     return result;
 }
+
+
+
+export function ConvertDDMMYYYYToUTC(dateDDMMYYYY): string {
+
+    let momentDate = moment(dateDDMMYYYY, 'DD/MM/YYYY');
+
+    return moment(momentDate, 'YYYY-MM-DD HH:mm').utc().format('YYYY-MM-DDTHH:mm:ssZ');
+
+}

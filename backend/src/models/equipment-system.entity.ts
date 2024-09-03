@@ -14,6 +14,9 @@ export class EquipmentSystemEntity {
     @Column({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false })
     rate: number;
     
+    @Column({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false })
+    lubUsedDuringMaintenance: number;
+    
     @Column({ nullable: true })
     frequencyId: number; // Grupo principal o segundario
     @Column({ nullable: true })
@@ -38,6 +41,7 @@ export class EquipmentSystemEntity {
         userId?: number,
         equipment?: string,
         rate?: number,
+        lubUsedDuringMaintenance?: number,
         frequencyId?: number,
         entityGroupId?: number,
 
@@ -54,6 +58,7 @@ export class EquipmentSystemEntity {
         this.equipment = equipment || '';
 
         this.rate = rate || 0;
+        this.lubUsedDuringMaintenance = lubUsedDuringMaintenance || 0;
         this.frequencyId = frequencyId || 0;
         this.entityGroupId = entityGroupId || 0;
 
