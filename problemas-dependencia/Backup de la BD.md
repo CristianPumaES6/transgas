@@ -17,6 +17,8 @@ Consultar a la nave, diferencias en consumos diarios con cierre de mes.
 
 # Actualizar datos del servidor
 
+/transgas2 
+scp dbTransgas.sqlite3 root@161.35.239.148:/root/transgas2/transgas/backend/.
 
 ```javascript
 // Tenemos que saber cual es la ubicacion del directorio y donde esta la BD, Local.
