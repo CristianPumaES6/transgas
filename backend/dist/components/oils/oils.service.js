@@ -237,7 +237,7 @@ let OilsService = class OilsService {
                             O.name AS nameOil,
                             BO.datetime AS datetimeBunkerOil,
                             CE.hourConsumption AS hourConsumption,
-                            ES.rate AS rate,
+                            ES.trialDay AS trialDay,
                             CE.observation AS observation
                         FROM
                             consumptionEquipment CE
@@ -267,7 +267,7 @@ let OilsService = class OilsService {
                 else {
                     calcRate = (0, math_assets_1.mathRound)(item.amountConsumption / item.hourConsumption, 2);
                 }
-                if (calcRate > item.rate) {
+                if (calcRate > item.trialDay) {
                     let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
                     if (findDailyOilConsumptionData) {
                         findDailyOilConsumptionData.data.push({
@@ -278,7 +278,7 @@ let OilsService = class OilsService {
                             nameOil: item.nameOil,
                             datetimeBunkerOil: item.datetimeBunkerOil,
                             hourConsumption: item.hourConsumption,
-                            rate: item.rate,
+                            trialDay: item.trialDay,
                             calcRate: calcRate
                         });
                     }
@@ -297,7 +297,7 @@ let OilsService = class OilsService {
                                     nameOil: item.nameOil,
                                     datetimeBunkerOil: item.datetimeBunkerOil,
                                     hourConsumption: item.hourConsumption,
-                                    rate: item.rate,
+                                    trialDay: item.trialDay,
                                     calcRate: calcRate
                                 }
                             ]
@@ -324,7 +324,7 @@ let OilsService = class OilsService {
                     .addSelect('oil.name', 'nameOil')
                     .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                     .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                    .addSelect('equipmentSystem.rate', 'rate')
+                    .addSelect('equipmentSystem.trialDay', 'trialDay')
                     .addSelect('consumptionEquipment.observation', 'observation')
                     .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
                     .innerJoin('equipmentSystem', 'equipmentSystem', 'equipmentSystem.id = bunkerOil.entityEquipmentId AND equipmentSystem.status = 1')
@@ -362,7 +362,7 @@ let OilsService = class OilsService {
                             nameOil: item.nameOil,
                             datetimeBunkerOil: item.datetimeBunkerOil,
                             hourConsumption: item.hourConsumption,
-                            rate: item.rate,
+                            trialDay: item.trialDay,
                             calcRate: calcRate
                         }
                     ]

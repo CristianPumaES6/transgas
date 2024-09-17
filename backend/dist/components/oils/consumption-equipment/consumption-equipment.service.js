@@ -209,7 +209,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         ES.id AS equipmentId,
         ES.equipment AS equipmentName,
         ES.frequencyId AS frequencyId,
-        ES.rate AS rateSystems,
+        ES.trialDay AS rateSystems,
         ES.entityGroupId AS groupId,
         GO.label AS groupName, -- Agregar el tipo de grupo
         CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
@@ -283,7 +283,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         year_month,
         ES.equipment,  -- Agrupar por nombre del equipo
         ES.id,         -- Agrupar por ID del equipo
-        ES.rate,       -- Asegurarse de incluir la tasa del sistema
+        ES.trialDay,       -- Asegurarse de incluir la tasa del sistema
         ES.entityGroupId, -- Agrupar por ID del grupo
         GO.label,      -- Asegurarse de incluir el nombre del grupo
         CE.consumptionTypeId, -- Agregar el tipo de consumo a la lista de columnas de agrupación
@@ -299,6 +299,10 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         `;
         return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
     }
+    async QueryGetTask(userId, ETM_OilAnalysis_Oid) {
+        const query = `EXEC ConsultaMantenimientoPorBD @dbName = 'TMS_Pilargas', @tareaId = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1';`;
+        return this._ConsumptionEquipment.query(query, []);
+    }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         const query = `               
         SELECT
@@ -307,7 +311,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             strftime('%Y-%m-%d', CE.date) AS consumption_date, -- Agregar la fecha de consumo
             ES.id AS equipmentId,
             ES.equipment AS equipmentName,
-            ES.rate AS rateSystems,
+            ES.trialDay AS rateSystems,
             ES.entityGroupId AS subgroupId,
             SUM(CE.amount) AS total_amount,
             SUM(CE.hourConsumption) AS total_hourConsumption,
@@ -333,7 +337,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
             CASE 
                 WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 
                 ELSE 0 
-            END AS rate,
+            END AS trialDay,
             GROUP_CONCAT(CE.observation, ', ') AS observation
         FROM
             consumptionEquipment CE

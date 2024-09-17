@@ -9,6 +9,7 @@ export declare class AppService {
     constructor(gateway: AppGateway, _ConsumptionEquipmentService: ConsumptionEquipmentService, _UsersService: UsersService);
     EmitConnect(): boolean;
     ListConsumptionLubricantPerMonth(userid: number, startDate: string, endDate: string): Promise<ListUserConsumptionLubricantPerMonth[]>;
+    GetOilAnalysis(buqueId: number, ETM_OilAnalysis_Oid: string): Promise<void>;
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     GetShips(): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[], startDate: string, endDate: string): Promise<ListUserConsumptionLubricantPerMonth[]>;

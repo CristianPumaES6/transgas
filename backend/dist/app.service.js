@@ -42,6 +42,11 @@ let AppService = class AppService {
             return this.ConsumptionLubricantPerMonthPerListUsers(result, startDate, endDate);
         });
     }
+    GetOilAnalysis(buqueId, ETM_OilAnalysis_Oid) {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
+            this._ConsumptionEquipmentService.QueryGetTask(buqueId, ETM_OilAnalysis_Oid);
+        });
+    }
     consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         return (0, promises_assets_1.DummyPromise)().then(result => {
             return this._ConsumptionEquipmentService.consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH);

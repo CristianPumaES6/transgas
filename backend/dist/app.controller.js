@@ -150,6 +150,12 @@ let AppController = class AppController {
             return this.appService.ListConsumptionLubricantPerMonth(userId, startDate, endDate);
         });
     }
+    async GetOilAnalysis(buqueId, ETM_OilAnalysis_Oid) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            let buque = Number(buqueId);
+            return this.appService.GetOilAnalysis(buque, ETM_OilAnalysis_Oid);
+        });
+    }
     async ConsultEquipmentConsumptionByMonthUser(buqueId, EquipmentId, YEAR_MONTH) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             let userId = Number(buqueId);
@@ -234,6 +240,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "ConsultaGeneral", null);
+__decorate([
+    (0, common_1.Get)('GetOilAnalysis/:userId/:ETM_OilAnalysis_Oid'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('ETM_OilAnalysis_Oid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetOilAnalysis", null);
 __decorate([
     (0, common_1.Get)('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH'),
     __param(0, (0, common_1.Param)('userId')),
