@@ -10,7 +10,7 @@ export declare class ConsumptionEquipmentService {
     Create(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity>;
     SaveList(MappingEquipmentOilCompatibility: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
     getOilConsumptionPerMonth(userId: number, startDate: string, endDate: string): Promise<getOilConsumptionPerMonth[]>;
-    QueryGetTask(userId: number, ETM_OilAnalysis_Oid: string): Promise<getOilConsumptionPerMonth[]>;
+    QueryGetTask(userId: number, ETM_OilAnalysis_Oid: string): Promise<QueryGetTask[]>;
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetShips(): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetStatusOilStartEnd(userId: number, startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
@@ -20,6 +20,15 @@ export declare class ConsumptionEquipmentService {
 export interface SaveListConsumptionEquipmentEntity {
     MappingConsumptionsEquipment: Mapping[];
     listConsumosValidarSendMail: any[];
+}
+export interface QueryGetTask {
+    ELM_Oid: string;
+    ELM_Codigo: string;
+    ETM_Oid: string;
+    ETM_Descripcion: string;
+    FechaProgramacion: string;
+    FechaEjecucion: string;
+    EstaTerminado: string;
 }
 export interface getOilConsumptionPerMonth {
     compatibilityId: number;

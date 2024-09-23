@@ -300,7 +300,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
     }
     async QueryGetTask(userId, ETM_OilAnalysis_Oid) {
-        const query = `EXEC ConsultaMantenimientoPorBD @dbName = 'TMS_Pilargas', @tareaId = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1';`;
+        const query = `ConsultaMantenimientoPorBD  @dbName = 'TMS_Pilargas',  @tareaId = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1'; `;
         return this._ConsumptionEquipment.query(query, []);
     }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {

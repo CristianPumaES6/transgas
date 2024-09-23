@@ -44,7 +44,11 @@ let AppService = class AppService {
     }
     GetOilAnalysis(buqueId, ETM_OilAnalysis_Oid) {
         return (0, promises_assets_1.DummyPromise)().then(result => {
-            this._ConsumptionEquipmentService.QueryGetTask(buqueId, ETM_OilAnalysis_Oid);
+            return this._ConsumptionEquipmentService.QueryGetTask(buqueId, ETM_OilAnalysis_Oid);
+        }).then(result => {
+            return result;
+        }).catch(result => {
+            return [];
         });
     }
     consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
