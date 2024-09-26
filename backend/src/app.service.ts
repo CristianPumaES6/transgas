@@ -4,7 +4,7 @@ import { AppGateway } from './app.gateway';
 import { GetDate } from './assets/moment.assets';
 import { LoggedUser } from './models/loggedUser';
 import { SocketEmitModel } from './models/socketEmit';
-import { ConsumptionEquipmentService, getOilConsumptionPerMonth } from './components/oils/consumption-equipment/consumption-equipment.service';
+import { ConsumptionEquipmentService, getOilConsumptionPerMonth, QueryViewFileAnalysisOil } from './components/oils/consumption-equipment/consumption-equipment.service';
 import { DummyPromise } from './assets/promises.assets';
 import { UsersService } from './components/users/users.service';
 import { UserEntity } from './models/user.entity';
@@ -45,9 +45,50 @@ export class AppService {
     );
   
   }
-  
-  public consultEquipmentConsumptionByMonthUser(userId : number, entityEquipmentId: number, DateYEAR_MONTH:string) {
 
+  public GetOilAnalysis( buqueId:number, ETM_OilAnalysis_Oid:string){
+
+    return DummyPromise().then(
+      result => {
+  
+       return  this._ConsumptionEquipmentService.QueryGetTask( buqueId, ETM_OilAnalysis_Oid ); 
+         
+      }
+    ).then(
+      result => {
+        return result;
+      }
+    ).catch(
+      result => {
+        return [];
+      }
+    );
+  
+  }
+
+
+  
+  public ViewFileAnalysisOil( buqueId:number, ETM_OilAnalysis_Oid:string){
+
+    return DummyPromise().then(
+      result => {
+  
+       return  this._ConsumptionEquipmentService.ViewFileAnalysisOil( buqueId, ETM_OilAnalysis_Oid ); 
+         
+      }
+    ).then(
+     ( result:QueryViewFileAnalysisOil[] )=> {
+        return result;
+      }
+    ).catch(
+      result => {
+        return [];
+      }
+    );
+  
+  }
+
+  public consultEquipmentConsumptionByMonthUser(userId : number, entityEquipmentId: number, DateYEAR_MONTH:string) {
 
     return DummyPromise().then(
       result => {

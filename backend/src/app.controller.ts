@@ -15,6 +15,11 @@ import { LoggedUser } from './models/loggedUser';
 import { URL_Server } from './config/server.config';
 import { AppGateway } from './app.gateway';
 import { ConsumptionEquipmentService } from './components/oils/consumption-equipment/consumption-equipment.service';
+import { Response } from 'express'; // Asegúrate de que esto esté correcto
+import { isBuffer } from 'util';
+
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Controller()
 export class AppController {
@@ -244,6 +249,74 @@ export class AppController {
     )
 
   }
+
+
+  @Get('GetOilAnalysis/:userId/:ETM_OilAnalysis_Oid')
+  async GetOilAnalysis(@Param('userId') buqueId, @Param('ETM_OilAnalysis_Oid') ETM_OilAnalysis_Oid) {
+    
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+        
+        let buque = Number(buqueId);
+
+        return this.appService.GetOilAnalysis( buque, ETM_OilAnalysis_Oid );
+      }
+    );
+
+  }
+
+
+
+  @Get('ViewFileAnalysisOil/:userId/:tmOid')
+  async ViewFileAnalysis(@Param('userId') buqueId, @Param('ETM_OilAnalysis_Oid') ETM_OilAnalysis_Oid, @Res() res: Response) {
+    
+    return await DummyPromise().then(
+      (resultDummy: Boolean) => {
+        
+        let buque = Number(buqueId);
+
+        return this.appService.ViewFileAnalysisOil( buque, ETM_OilAnalysis_Oid );
+      }
+    ).then(
+      resutlViewFileAnalysisOil => {
+
+        let pdfHex = resutlViewFileAnalysisOil[0].Content;
+
+        // Verifica que pdfHex tenga un valor válido
+        if (!pdfHex || pdfHex.length === 0) {
+          return res.status(HttpStatus.NOT_FOUND).send('Archivo no encontrado');
+      }
+
+      // Convierte la cadena hexadecimal a un Buffer
+      const bufferContent2 = Buffer.from(pdfHex, 'base64');
+
+
+
+        // Guardar el PDF en el sistema de archivos
+        const filePath = path.join(__dirname, 'uploads', 'archivo.pdf'); // Asegúrate de que el directorio 'uploads' exista
+        fs.writeFileSync(filePath, bufferContent2);
+        console.log('PDF guardado en:', filePath);
+
+
+        // Configura los encabezados de respuesta
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'inline; filename="archivo.pdf"',
+        });
+
+        // Envía el buffer como respuesta
+        return res.send(bufferContent2);
+
+
+ 
+      }
+    ).catch(err=>{
+
+      res.status(HttpStatus.NOT_FOUND).send('Archivo no encontrado');
+    });
+
+  }
+
 
   @Get('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH')
   async ConsultEquipmentConsumptionByMonthUser(@Param('userId') buqueId, @Param('EquipmentId') EquipmentId, @Param('YEAR_MONTH') YEAR_MONTH) {

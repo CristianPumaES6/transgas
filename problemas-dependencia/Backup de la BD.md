@@ -23,8 +23,8 @@ scp dbTransgas.sqlite3 root@161.35.239.148:/root/transgas2/transgas/backend/.
 ```javascript
 // Tenemos que saber cual es la ubicacion del directorio y donde esta la BD, Local.
 scp dbTransgas.sqlite3 root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/
-
-
+scp root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/dbTransgas.sqlite3 ./
+scp dbTransgas.sqlite3 root@165.232.153.20:/var/www/transgas.codev.site/transgas/backend/.
 // actualizar la data del servidor occard
 scp dbTransgas.sqlite3 root@161.35.239.148:/root/transgas/backend
 ```

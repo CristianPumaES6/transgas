@@ -246,7 +246,7 @@ export class ConsumptionEquipmentService {
         ES.id AS equipmentId,
         ES.equipment AS equipmentName,
         ES.frequencyId AS frequencyId,
-        ES.rate AS rateSystems,
+        ES.trialDay AS rateSystems,
         ES.entityGroupId AS groupId,
         GO.label AS groupName, -- Agregar el tipo de grupo
         CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
@@ -320,7 +320,7 @@ export class ConsumptionEquipmentService {
         year_month,
         ES.equipment,  -- Agrupar por nombre del equipo
         ES.id,         -- Agrupar por ID del equipo
-        ES.rate,       -- Asegurarse de incluir la tasa del sistema
+        ES.trialDay,       -- Asegurarse de incluir la tasa del sistema
         ES.entityGroupId, -- Agrupar por ID del grupo
         GO.label,      -- Asegurarse de incluir el nombre del grupo
         CE.consumptionTypeId, -- Agregar el tipo de consumo a la lista de columnas de agrupación
@@ -337,8 +337,26 @@ export class ConsumptionEquipmentService {
 
     return this._ConsumptionEquipment.query(query,  [userId,startDate,endDate,startDate,endDate]);
   }
+    
+  async QueryGetTask(userId: number, ETM_OilAnalysis_Oid:string): Promise<QueryGetTask[]> {
 
+ 
 
+    const query = `ConsultaMantenimientoPorBD  @dbName = 'TMS_Pilargas',  @tareaId = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1'; `;
+
+    return this._ConsumptionEquipment.query(query, []);
+
+ 
+
+  }
+
+    async ViewFileAnalysisOil(buqueId:number, ETM_OilAnalysis_Oid:string): Promise<QueryViewFileAnalysisOil[]> {
+
+        const query = `SP_ViewFileAnalysisOil @nameBaseDatos = 'TMS_Pilargas', @OidTarea = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1';`;
+        
+        return this._ConsumptionEquipment.query(query, []);
+
+    }
   
   
   async consultEquipmentConsumptionByMonthUser(userId : number, entityEquipmentId: number, DateYEAR_MONTH:string): Promise<consultEquipmentConsumptionByMonthUser[]>  {
@@ -349,7 +367,7 @@ export class ConsumptionEquipmentService {
             strftime('%Y-%m-%d', CE.date) AS consumption_date, -- Agregar la fecha de consumo
             ES.id AS equipmentId,
             ES.equipment AS equipmentName,
-            ES.rate AS rateSystems,
+            ES.trialDay AS rateSystems,
             ES.entityGroupId AS subgroupId,
             SUM(CE.amount) AS total_amount,
             SUM(CE.hourConsumption) AS total_hourConsumption,
@@ -375,7 +393,7 @@ export class ConsumptionEquipmentService {
             CASE 
                 WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 
                 ELSE 0 
-            END AS rate,
+            END AS trialDay,
             GROUP_CONCAT(CE.observation, ', ') AS observation
         FROM
             consumptionEquipment CE
@@ -966,6 +984,23 @@ export interface SaveListConsumptionEquipmentEntity {
     MappingConsumptionsEquipment:Mapping[];
     listConsumosValidarSendMail: any[] ;
 }
+
+
+export interface QueryGetTask {
+    ELM_Oid:string;
+    ELM_Codigo:string;
+    ETM_Oid: string;
+    ETM_Descripcion: string;
+    FechaProgramacion: string;
+    FechaEjecucion: string;
+    EstaTerminado: string; 
+} 
+
+
+export interface QueryViewFileAnalysisOil {
+    Filename:string;
+    Content:string;
+} 
 
 
 export interface getOilConsumptionPerMonth {

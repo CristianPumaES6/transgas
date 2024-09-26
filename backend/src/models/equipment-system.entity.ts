@@ -12,11 +12,14 @@ export class EquipmentSystemEntity {
     equipment: string;
 
     @Column({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false })
-    rate: number;
+    trialDay: number;
     
     @Column({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false })
-    lubUsedDuringMaintenance: number;
-    
+    lubUsedDuringMaintenance: number; // Cantidad de uso de mantenimiento
+ 
+    @Column({ nullable: true })
+    ETM_OilAnalysis_Oid: string;
+
     @Column({ nullable: true })
     frequencyId: number; // Grupo principal o segundario
     @Column({ nullable: true })
@@ -40,8 +43,9 @@ export class EquipmentSystemEntity {
 
         userId?: number,
         equipment?: string,
-        rate?: number,
+        trialDay?: number,
         lubUsedDuringMaintenance?: number,
+        ETM_OilAnalysis_Oid?: string,
         frequencyId?: number,
         entityGroupId?: number,
 
@@ -56,9 +60,9 @@ export class EquipmentSystemEntity {
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';
-
-        this.rate = rate || 0;
+        this.trialDay = trialDay || 0;
         this.lubUsedDuringMaintenance = lubUsedDuringMaintenance || 0;
+        this.ETM_OilAnalysis_Oid = ETM_OilAnalysis_Oid || '';
         this.frequencyId = frequencyId || 0;
         this.entityGroupId = entityGroupId || 0;
 

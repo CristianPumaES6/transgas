@@ -146,7 +146,6 @@ export class OilsService {
         );
     }
 
-
     // Actualiza un aceite
     async Update(oilEntity: OilEntity): Promise<OilEntity> {
 
@@ -343,7 +342,7 @@ export class OilsService {
                             O.name AS nameOil,
                             BO.datetime AS datetimeBunkerOil,
                             CE.hourConsumption AS hourConsumption,
-                            ES.rate AS rate,
+                            ES.trialDay AS trialDay,
                             CE.observation AS observation
                         FROM
                             consumptionEquipment CE
@@ -370,7 +369,7 @@ export class OilsService {
                             .addSelect('oil.name', 'nameOil')
                             .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                             .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                            .addSelect('equipmentSystem.rate', 'rate')
+                            .addSelect('equipmentSystem.trialDay', 'trialDay')
                             .addSelect('consumptionEquipment.observation', 'observation')
 
                             // UNION DE TABLAS
@@ -401,7 +400,7 @@ export class OilsService {
                             let dateYYYYMM = FormatDateUTCToDateYYYYMM(item.dateConsumption);
                             let dateConsumption = FormatDateUTCToDate(item.dateConsumption);
 
-                            // Calculamos el rate realizado en las horas
+                            // Calculamos el trialDay realizado en las horas
                             let calcRate = 0;
                             if (!item.hourConsumption || item.hourConsumption <= 0) {
                                 calcRate = item.amountConsumption;
@@ -409,8 +408,8 @@ export class OilsService {
                                 calcRate = mathRound(item.amountConsumption/item.hourConsumption,2) ;
                             }
 
-                            // verificamos si el rate es mayor a la hora de trabajo.
-                            if(calcRate > item.rate ){
+                            // verificamos si el trialDay es mayor a la hora de trabajo.
+                            if(calcRate > item.trialDay ){
 
                                 let findDailyOilConsumptionData= dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
 
@@ -424,7 +423,7 @@ export class OilsService {
                                             nameOil: item.nameOil,
                                             datetimeBunkerOil: item.datetimeBunkerOil,
                                             hourConsumption: item.hourConsumption,
-                                            rate: item.rate,
+                                            trialDay: item.trialDay,
                                             calcRate: calcRate
                                         }
                                     );
@@ -446,7 +445,7 @@ export class OilsService {
                                                     nameOil: item.nameOil,
                                                     datetimeBunkerOil: item.datetimeBunkerOil,
                                                     hourConsumption: item.hourConsumption,
-                                                    rate: item.rate,
+                                                    trialDay: item.trialDay,
                                                     calcRate: calcRate
                                                 }
                                             ]
@@ -494,7 +493,7 @@ export class OilsService {
                             .addSelect('oil.name', 'nameOil')
                             .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                             .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                            .addSelect('equipmentSystem.rate', 'rate')
+                            .addSelect('equipmentSystem.trialDay', 'trialDay')
                             .addSelect('consumptionEquipment.observation', 'observation')
 
                             // UNION DE TABLAS
@@ -546,7 +545,7 @@ export class OilsService {
                                             nameOil: item.nameOil,
                                             datetimeBunkerOil: item.datetimeBunkerOil,
                                             hourConsumption: item.hourConsumption,
-                                            rate: item.rate,
+                                            trialDay: item.trialDay,
                                             calcRate: calcRate
                                         }
                                     ]
@@ -579,5 +578,5 @@ export interface DataDailyOilConsumptionData {
     amountConsumption: number;
     hourConsumption: number;
     calcRate:number;
-    rate:number;
+    trialDay:number;
 }
