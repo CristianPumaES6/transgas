@@ -51,6 +51,24 @@ let AppService = class AppService {
             return [];
         });
     }
+    SaveFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid) {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
+            return this._ConsumptionEquipmentService.ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid);
+        }).then((result) => {
+            return result;
+        }).catch(result => {
+            return [];
+        });
+    }
+    ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid) {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
+            return this._ConsumptionEquipmentService.ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid);
+        }).then((result) => {
+            return result;
+        }).catch(result => {
+            return [];
+        });
+    }
     consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         return (0, promises_assets_1.DummyPromise)().then(result => {
             return this._ConsumptionEquipmentService.consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH);

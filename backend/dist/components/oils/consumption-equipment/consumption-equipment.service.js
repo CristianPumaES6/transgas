@@ -303,6 +303,10 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         const query = `ConsultaMantenimientoPorBD  @dbName = 'TMS_Pilargas',  @tareaId = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1'; `;
         return this._ConsumptionEquipment.query(query, []);
     }
+    async ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid) {
+        const query = `SP_ViewFileAnalysisOil @nameBaseDatos = 'TMS_Pilargas', @OidTarea = '4DDECDC0-BD7C-4CB4-A190-CD5FA37C1B35';`;
+        return this._ConsumptionEquipment.query(query, []);
+    }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         const query = `               
         SELECT

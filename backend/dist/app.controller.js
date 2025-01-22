@@ -22,6 +22,8 @@ const loggedUser_1 = require("./models/loggedUser");
 const server_config_1 = require("./config/server.config");
 const app_gateway_1 = require("./app.gateway");
 const consumption_equipment_service_1 = require("./components/oils/consumption-equipment/consumption-equipment.service");
+const fs = require("fs");
+const path = require("path");
 let AppController = class AppController {
     constructor(appService, authService, _ConsumptionEquipmentService, _AppGateway) {
         this.appService = appService;
@@ -156,6 +158,33 @@ let AppController = class AppController {
             return this.appService.GetOilAnalysis(buque, ETM_OilAnalysis_Oid);
         });
     }
+    async ViewFileAnalysis(buqueId, ETM_OilAnalysis_Oid, res) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            let buque = Number(buqueId);
+            return this.appService.ViewFileAnalysisOil(buque, ETM_OilAnalysis_Oid);
+        }).then(resutlViewFileAnalysisOil => {
+            let fileAnalysisOil = resutlViewFileAnalysisOil[0];
+            let pdfBuffer = fileAnalysisOil.Content;
+            const uploadsDir = path.join(__dirname, '..', 'uploads');
+            const filePath = path.join(uploadsDir, fileAnalysisOil.Filename);
+            if (!fs.existsSync(uploadsDir)) {
+                fs.mkdirSync(uploadsDir, { recursive: true });
+            }
+            if (!Buffer.isBuffer(pdfBuffer)) {
+                console.error('Error: El contenido no es un Buffer.');
+                return;
+            }
+            return fs.writeFileSync(filePath, pdfBuffer, 'binary');
+        }).then(result => {
+            res.set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': 'inline; filename="archivo.pdf"',
+            });
+            return res.send('ok');
+        }).catch(err => {
+            res.status(common_1.HttpStatus.NOT_FOUND).send('Archivo no encontrado');
+        });
+    }
     async ConsultEquipmentConsumptionByMonthUser(buqueId, EquipmentId, YEAR_MONTH) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             let userId = Number(buqueId);
@@ -248,6 +277,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetOilAnalysis", null);
+__decorate([
+    (0, common_1.Get)('ViewFileAnalysisOil/:userId/:tmOid'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('ETM_OilAnalysis_Oid')),
+    __param(2, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "ViewFileAnalysis", null);
 __decorate([
     (0, common_1.Get)('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH'),
     __param(0, (0, common_1.Param)('userId')),

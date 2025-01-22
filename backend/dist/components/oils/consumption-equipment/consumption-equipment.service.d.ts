@@ -11,6 +11,7 @@ export declare class ConsumptionEquipmentService {
     SaveList(MappingEquipmentOilCompatibility: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
     getOilConsumptionPerMonth(userId: number, startDate: string, endDate: string): Promise<getOilConsumptionPerMonth[]>;
     QueryGetTask(userId: number, ETM_OilAnalysis_Oid: string): Promise<QueryGetTask[]>;
+    ViewFileAnalysisOil(buqueId: number, ETM_OilAnalysis_Oid: string): Promise<QueryViewFileAnalysisOil[]>;
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetShips(): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetStatusOilStartEnd(userId: number, startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
@@ -29,6 +30,10 @@ export interface QueryGetTask {
     FechaProgramacion: string;
     FechaEjecucion: string;
     EstaTerminado: string;
+}
+export interface QueryViewFileAnalysisOil {
+    Filename: string;
+    Content: string;
 }
 export interface getOilConsumptionPerMonth {
     compatibilityId: number;
