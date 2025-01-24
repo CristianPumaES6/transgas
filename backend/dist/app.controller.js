@@ -146,6 +146,7 @@ let AppController = class AppController {
     async ConsultaGeneral(buqueId, startDate, endDate) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             let userId = Number(buqueId);
+            console.log('ListConsumptionLubricantPerMonth');
             console.log("buqueId : " + buqueId);
             console.log("startDate : " + startDate);
             console.log("endDate : " + endDate);
@@ -187,6 +188,10 @@ let AppController = class AppController {
     }
     async ConsultEquipmentConsumptionByMonthUser(buqueId, EquipmentId, YEAR_MONTH) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            console.log('ConsultEquipmentConsumptionByMonthUser/:userId/:EquipmentId/:YEAR_MONTH');
+            console.log('userID:' + buqueId);
+            console.log('EquipmentId:' + EquipmentId);
+            console.log('YEAR_MONTH:' + YEAR_MONTH);
             let userId = Number(buqueId);
             let entityEquipmentId = Number(EquipmentId);
             let DateYEAR_MONTH = YEAR_MONTH;
@@ -200,6 +205,10 @@ let AppController = class AppController {
     }
     async GetStatusOilStartEnd(userId, startDate, endDate) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            console.log('GetStatusOilStartEndDate/:userId/:startDate/:endDate');
+            console.log('userId:' + userId);
+            console.log('startDate:' + startDate);
+            console.log('endDate:' + endDate);
             return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId, startDate, endDate);
         });
     }

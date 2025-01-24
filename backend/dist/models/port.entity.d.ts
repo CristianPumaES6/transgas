@@ -12,6 +12,8 @@ export declare class Port {
     startDate: string;
     startIFO: number;
     startMGO: number;
+    dateETA: string;
+    historyDateETA: string;
     userIdCreated: number;
     dateCreated: string;
     userIdUpdated: number;

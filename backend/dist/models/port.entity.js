@@ -64,6 +64,14 @@ __decorate([
     __metadata("design:type", Number)
 ], Port.prototype, "startMGO", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Port.prototype, "dateETA", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Port.prototype, "historyDateETA", void 0);
+__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Port.prototype, "userIdCreated", void 0);
