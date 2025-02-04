@@ -17,6 +17,7 @@ const daily_reports_module_1 = require("./daily-reports/daily-reports.module");
 const format_excel_last_voyage_service_1 = require("../../services/format-excel-last-voyage/format-excel-last-voyage.service");
 const users_module_1 = require("../users/users.module");
 const dailyReportSummary_entity_1 = require("../../models/dailyReportSummary.entity");
+const daily_report_summary_service_1 = require("./daily-report-summary/daily-report-summary.service");
 let VoyagesModule = class VoyagesModule {
 };
 exports.VoyagesModule = VoyagesModule;
@@ -26,10 +27,10 @@ exports.VoyagesModule = VoyagesModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([voyage_entity_1.Voyage, dailyReportSummary_entity_1.DailyReportSummary]),
             ports_module_1.PortsModule,
             daily_reports_module_1.DailyReportsModule,
-            users_module_1.UsersModule
+            users_module_1.UsersModule,
         ],
-        providers: [voyages_service_1.VoyagesService, format_excel_last_voyage_service_1.FormatExcelLastVoyageService],
-        controllers: [voyages_controller_1.VoyagesController]
+        providers: [voyages_service_1.VoyagesService, format_excel_last_voyage_service_1.FormatExcelLastVoyageService, daily_report_summary_service_1.DailyReportSummaryService],
+        controllers: [voyages_controller_1.VoyagesController],
     })
 ], VoyagesModule);
 //# sourceMappingURL=voyages.module.js.map

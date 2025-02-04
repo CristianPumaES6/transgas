@@ -17,11 +17,9 @@ let SendMessageModule = class SendMessageModule {
 exports.SendMessageModule = SendMessageModule;
 exports.SendMessageModule = SendMessageModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            typeorm_1.TypeOrmModule.forFeature([send_message_entity_1.SendMessageEntity]),
-        ],
+        imports: [typeorm_1.TypeOrmModule.forFeature([send_message_entity_1.SendMessageEntity])],
         providers: [send_message_service_1.SendMessageService],
-        controllers: [send_message_controller_1.SendMessageController]
+        controllers: [send_message_controller_1.SendMessageController],
     })
 ], SendMessageModule);
 //# sourceMappingURL=send-message.module.js.map

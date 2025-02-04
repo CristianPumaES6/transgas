@@ -29,7 +29,8 @@ let UsersService = class UsersService {
         this.userRepository = userRepository;
     }
     async Get(id) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`SP_BuscarUsuarioPorId @userId= ${id}`);
             }
@@ -37,11 +38,12 @@ let UsersService = class UsersService {
                 return this.userRepository.find({
                     where: {
                         id: id,
-                        status: (0, typeorm_4.Not)(false)
-                    }
+                        status: (0, typeorm_4.Not)(false),
+                    },
                 });
             }
-        }).then(resultFind => {
+        })
+            .then(resultFind => {
             if (!resultFind || resultFind.length == 0)
                 throw 'NO_REGISTER';
             let usuario = resultFind[0];
@@ -50,25 +52,28 @@ let UsersService = class UsersService {
         });
     }
     async Gets(user) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.userRepository.query(`EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
+                return this.userRepository.query(`EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick ||
+                    ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
                     `);
             }
             else {
                 return this.userRepository.find({
                     where: [
                         {
-                            id: (user.id || (0, typeorm_3.Like)('%' + '%')),
+                            id: user.id || (0, typeorm_3.Like)('%' + '%'),
                             nick: (0, typeorm_3.Like)('%' + (user.nick || '') + '%'),
                             name: (0, typeorm_3.Like)('%' + (user.name || '') + '%'),
                             role: (0, typeorm_3.Like)('%' + (user.role || '') + '%'),
-                            status: (0, typeorm_4.Not)(false)
-                        }
-                    ]
+                            status: (0, typeorm_4.Not)(false),
+                        },
+                    ],
                 });
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR USUARIO.';
             result.forEach(user => {
@@ -78,10 +83,12 @@ let UsersService = class UsersService {
         });
     }
     async CreateUserNickUnique(user) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
-                    EXEC SP_GETEmailEstaEnUso @userId = 0, @nick = '${user.nick || ''}' 
+                    EXEC SP_GETEmailEstaEnUso @userId = 0, @nick = '${user.nick ||
+                    ''}' 
                     `);
             }
             else {
@@ -89,16 +96,18 @@ let UsersService = class UsersService {
                     where: [
                         {
                             nick: user.nick,
-                            status: (0, typeorm_4.Not)(false)
-                        }
-                    ]
+                            status: (0, typeorm_4.Not)(false),
+                        },
+                    ],
                 });
             }
-        }).then(resultFind => {
+        })
+            .then(resultFind => {
             if (resultFind && resultFind.length > 0)
                 throw 'REPEAT_NICK';
             return bcrypt.hash(user.password, bcrypt_config_1.ROUNDS_BCRYPT);
-        }).then(password => {
+        })
+            .then(password => {
             user.password = password;
             delete user.id;
             user.years = JSON.stringify(user.years);
@@ -132,45 +141,80 @@ let UsersService = class UsersService {
                     ,@isAEIFO   = ${user.isAEIFO || 0}
                     ,@isBoilerIFO   = ${user.isBoilerIFO || 0}
                     ,@isOtherIFO   = ${user.isOtherIFO || 0}
-                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO || 0}
-                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO || 0}
-                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO || 0}
-                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO || 0}
-                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO || 0}
-                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO || 0}
-                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO || 0}
-                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO || 0}
-                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO || 0}
-                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO || 0}
+                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO ||
+                    0}
+                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO ||
+                    0}
+                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO ||
+                    0}
+                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO ||
+                    0}
+                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO ||
+                    0}
+                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO ||
+                    0}
+                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO ||
+                    0}
+                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO ||
+                    0}
+                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO ||
+                    0}
+                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO ||
+                    0}
                     ,@otherConsumptionMGO   = ${user.otherConsumptionMGO || 0}
-                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO || 0}
-                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO || 0}
-                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO || 0}
-                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO || 0}
-                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO || 0}
-                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO || 0}
-                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO || 0}
-                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO || 0}
-                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO || 0}
-                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO || 0}
+                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO ||
+                    0}
+                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO ||
+                    0}
+                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO ||
+                    0}
+                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO ||
+                    0}
+                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO ||
+                    0}
+                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO ||
+                    0}
+                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO ||
+                    0}
+                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO ||
+                    0}
+                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO ||
+                    0}
+                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO ||
+                    0}
                     ,@otherConsumptionIFO   = ${user.otherConsumptionIFO || 0}
-                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption || 0}
-                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption || 0}
-                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed || 0}
+                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption ||
+                    0}
+                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption ||
+                    0}
+                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed ||
+                    0}
                     ,@isDisplayDataMGO   = ${user.isDisplayDataMGO || 0}
                     ,@isDisplayDataLSFO   = ${user.isDisplayDataLSFO || 0}
-                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO || 0}
-                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO || 0}
-                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO || 0}
-                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO || 0}
-                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO || 0}
-                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO || 0}
-                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO || 0}
-                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO || 0}
-                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO || 0}
-                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
-                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
-                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
+                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO ||
+                    0}
+                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO ||
+                    0}
+                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO ||
+                    0}
+                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO ||
+                    0}
+                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO ||
+                    0}
+                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO ||
+                    0}
+                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO ||
+                    0}
+                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO ||
+                    0}
+                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO ||
+                    0}
+                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO ||
+                    0}
+                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO ||
+                    0}
+                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO ||
+                    0}
                     ,@userIdCreated   = ${user.userIdCreated || 0}
                     ,@dateCreated   = '${user.dateCreated || ''}'
                     ,@userIdUpdated   = ${user.userIdUpdated || 0}
@@ -181,7 +225,8 @@ let UsersService = class UsersService {
             else {
                 return this.userRepository.save(user);
             }
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el viaje en la BD.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -196,7 +241,8 @@ let UsersService = class UsersService {
     }
     async UpdateUserNickUnique(user) {
         let contraseniaOld = '';
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
                         EXEC SP_BuscarUsuarioPorId
@@ -206,18 +252,20 @@ let UsersService = class UsersService {
             else {
                 return this.userRepository.find({
                     where: [
-                        { id: user.id }
-                    ]
+                        { id: user.id },
+                    ],
                 });
             }
-        }).then(resultFind => {
+        })
+            .then(resultFind => {
             if (!resultFind || resultFind.length == 0)
                 throw new Error('user_does_not_exist');
             let userfind = resultFind[0];
             contraseniaOld = userfind.password;
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
-                EXEC SP_GETEmailEstaEnUso @userId = ${user.id || 0}, @nick = '${user.nick || ''}' 
+                EXEC SP_GETEmailEstaEnUso @userId = ${user.id ||
+                    0}, @nick = '${user.nick || ''}' 
                 `);
             }
             else {
@@ -226,12 +274,13 @@ let UsersService = class UsersService {
                         {
                             id: (0, typeorm_4.Not)(user.id),
                             nick: user.nick,
-                            status: (0, typeorm_4.Not)(false)
-                        }
-                    ]
+                            status: (0, typeorm_4.Not)(false),
+                        },
+                    ],
                 });
             }
-        }).then(result => {
+        })
+            .then(result => {
             if (!result)
                 throw 'REPEAT NICK ERROR:22323';
             if (result && result.length > 0)
@@ -242,7 +291,8 @@ let UsersService = class UsersService {
             else {
                 return contraseniaOld;
             }
-        }).then((password) => {
+        })
+            .then((password) => {
             if (!password)
                 throw new Error('Revisar User.service la funcion hash o el retun no, respondio como se esperaba.');
             user.password = password;
@@ -279,45 +329,80 @@ let UsersService = class UsersService {
                     ,@isAEIFO   = ${user.isAEIFO || 0}
                     ,@isBoilerIFO   = ${user.isBoilerIFO || 0}
                     ,@isOtherIFO   = ${user.isOtherIFO || 0}
-                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO || 0}
-                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO || 0}
-                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO || 0}
-                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO || 0}
-                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO || 0}
-                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO || 0}
-                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO || 0}
-                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO || 0}
-                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO || 0}
-                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO || 0}
+                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO ||
+                    0}
+                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO ||
+                    0}
+                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO ||
+                    0}
+                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO ||
+                    0}
+                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO ||
+                    0}
+                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO ||
+                    0}
+                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO ||
+                    0}
+                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO ||
+                    0}
+                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO ||
+                    0}
+                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO ||
+                    0}
                     ,@otherConsumptionMGO   = ${user.otherConsumptionMGO || 0}
-                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO || 0}
-                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO || 0}
-                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO || 0}
-                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO || 0}
-                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO || 0}
-                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO || 0}
-                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO || 0}
-                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO || 0}
-                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO || 0}
-                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO || 0}
+                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO ||
+                    0}
+                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO ||
+                    0}
+                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO ||
+                    0}
+                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO ||
+                    0}
+                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO ||
+                    0}
+                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO ||
+                    0}
+                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO ||
+                    0}
+                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO ||
+                    0}
+                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO ||
+                    0}
+                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO ||
+                    0}
                     ,@otherConsumptionIFO   = ${user.otherConsumptionIFO || 0}
-                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption || 0}
-                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption || 0}
-                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed || 0}
+                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption ||
+                    0}
+                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption ||
+                    0}
+                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed ||
+                    0}
                     ,@isDisplayDataMGO   = ${user.isDisplayDataMGO || 0}
                     ,@isDisplayDataLSFO   = ${user.isDisplayDataLSFO || 0}
-                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO || 0}
-                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO || 0}
-                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO || 0}
-                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO || 0}
-                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO || 0}
-                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO || 0}
-                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO || 0}
-                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO || 0}
-                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO || 0}
-                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
-                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
-                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
+                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO ||
+                    0}
+                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO ||
+                    0}
+                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO ||
+                    0}
+                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO ||
+                    0}
+                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO ||
+                    0}
+                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO ||
+                    0}
+                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO ||
+                    0}
+                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO ||
+                    0}
+                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO ||
+                    0}
+                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO ||
+                    0}
+                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO ||
+                    0}
+                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO ||
+                    0}
                     ,@userIdUpdated   = ${user.userIdUpdated || 0}
                     ,@dateUpdated   = '${user.dateUpdated || ''}'
                     ,@status   = ${user.status || 0}
@@ -327,7 +412,8 @@ let UsersService = class UsersService {
             else {
                 return this.userRepository.update(user.id, user);
             }
-        }).then(resultUpdate => {
+        })
+            .then(resultUpdate => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 if (!resultUpdate || !resultUpdate.length)
                     throw new Error('userRepository.update no respondio como esperabamos.');
@@ -342,18 +428,20 @@ let UsersService = class UsersService {
     }
     async Delete(userId, deleteUserId) {
         let user = new user_entity_1.UserEntity();
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`SP_BuscarUsuarioPorId @userId= ${userId}`);
             }
             else {
                 return this.userRepository.find({
                     where: [
-                        { id: userId }
-                    ]
+                        { id: userId },
+                    ],
                 });
             }
-        }).then(resultFind => {
+        })
+            .then(resultFind => {
             if (!resultFind || resultFind.length == 0)
                 throw new Error('user_does_not_exist');
             user = resultFind[0];
@@ -392,45 +480,73 @@ let UsersService = class UsersService {
                 ,@isAEIFO   = ${user.isAEIFO || 0}
                 ,@isBoilerIFO   = ${user.isBoilerIFO || 0}
                 ,@isOtherIFO   = ${user.isOtherIFO || 0}
-                ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO || 0}
-                ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO || 0}
-                ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO || 0}
+                ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO ||
+                    0}
+                ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO ||
+                    0}
+                ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO ||
+                    0}
                 ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO || 0}
-                ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO || 0}
-                ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO || 0}
-                ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO || 0}
-                ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO || 0}
+                ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO ||
+                    0}
+                ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO ||
+                    0}
+                ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO ||
+                    0}
+                ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO ||
+                    0}
                 ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO || 0}
                 ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO || 0}
                 ,@otherConsumptionMGO   = ${user.otherConsumptionMGO || 0}
-                ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO || 0}
-                ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO || 0}
-                ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO || 0}
+                ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO ||
+                    0}
+                ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO ||
+                    0}
+                ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO ||
+                    0}
                 ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO || 0}
-                ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO || 0}
-                ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO || 0}
-                ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO || 0}
-                ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO || 0}
+                ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO ||
+                    0}
+                ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO ||
+                    0}
+                ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO ||
+                    0}
+                ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO ||
+                    0}
                 ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO || 0}
                 ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO || 0}
                 ,@otherConsumptionIFO   = ${user.otherConsumptionIFO || 0}
-                ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption || 0}
-                ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption || 0}
+                ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption ||
+                    0}
+                ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption ||
+                    0}
                 ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed || 0}
                 ,@isDisplayDataMGO   = ${user.isDisplayDataMGO || 0}
                 ,@isDisplayDataLSFO   = ${user.isDisplayDataLSFO || 0}
-                ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO || 0}
-                ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO || 0}
-                ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO || 0}
-                ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO || 0}
-                ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO || 0}
-                ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO || 0}
-                ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO || 0}
-                ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO || 0}
-                ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO || 0}
-                ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
-                ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
-                ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
+                ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO ||
+                    0}
+                ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO ||
+                    0}
+                ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO ||
+                    0}
+                ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO ||
+                    0}
+                ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO ||
+                    0}
+                ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO ||
+                    0}
+                ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO ||
+                    0}
+                ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO ||
+                    0}
+                ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO ||
+                    0}
+                ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO ||
+                    0}
+                ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO ||
+                    0}
+                ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO ||
+                    0}
                 ,@userIdUpdated   = ${user.userIdUpdated || 0}
                 ,@dateUpdated   = '${user.dateUpdated || ''}'
                 ,@status   = ${user.status || 0}
@@ -440,7 +556,8 @@ let UsersService = class UsersService {
             else {
                 return this.userRepository.update(user.id, user);
             }
-        }).then(resultSave => {
+        })
+            .then(resultSave => {
             if (!resultSave)
                 throw new Error('error_user_save');
             user.password = '';
@@ -448,7 +565,8 @@ let UsersService = class UsersService {
         });
     }
     async GetUserByNick(nick) {
-        return await (0, promises_assets_1.DummyPromise)().then(result => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
                         EXEC SP_GetUserByNick
@@ -458,13 +576,12 @@ let UsersService = class UsersService {
             else {
                 return this.userRepository.find({
                     where: [
-                        { nick: nick,
-                            status: (0, typeorm_4.Not)(false)
-                        }
-                    ]
+                        { nick: nick, status: (0, typeorm_4.Not)(false) },
+                    ],
                 });
             }
-        }).then((resultUser) => {
+        })
+            .then((resultUser) => {
             if (!resultUser || (resultUser && !resultUser.length))
                 throw new Error('user_was_not_found');
             return resultUser[0];
@@ -472,7 +589,8 @@ let UsersService = class UsersService {
     }
     async UpdateImageUser(id, newFilename) {
         let urlImage = server_config_1.URL_Server.back + '/' + newFilename;
-        return await (0, promises_assets_1.DummyPromise)().then(result => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
                         EXEC SP_UpdateImageUser @id = ${id} ,@urlImage = '${urlImage}'
@@ -481,7 +599,8 @@ let UsersService = class UsersService {
             else {
                 return this.userRepository.update(id, { filename: urlImage });
             }
-        }).then(resultUpdate => {
+        })
+            .then(resultUpdate => {
             if (!resultUpdate)
                 throw new Error('userRepository.update no respondio como esperabamos.');
             return urlImage;

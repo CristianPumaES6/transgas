@@ -32,11 +32,15 @@ let AppController = class AppController {
         this._AppGateway = _AppGateway;
     }
     Pruebas(body) {
-        return (0, promises_assets_1.DummyPromise)().then((result) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((result) => {
             return 'PRUEBA :)';
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -48,56 +52,65 @@ let AppController = class AppController {
         let version = server_config_1.URL_Server.version;
         return {
             status: common_1.HttpStatus.OK,
-            data: version
+            data: version,
         };
     }
     getHello() {
         let version = server_config_1.URL_Server.version;
         return {
             status: common_1.HttpStatus.OK,
-            data: version
+            data: version,
         };
     }
     async login(req) {
         const user = req.user;
-        return await (0, promises_assets_1.DummyPromise)().then(result => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (!result)
                 throw Error('Error DummyPromise()');
             if (!user)
                 throw Error('No tiene dato el objUser');
             return this.authService.generateTokenForGuards(user);
-        }).then((resultGenerateToken) => {
+        })
+            .then((resultGenerateToken) => {
             if (!resultGenerateToken)
                 throw Error('Revisar la funcion this.authService.generateTokenForGuards(req.user);');
             return {
                 status: common_1.HttpStatus.CREATED,
                 message: 'OK',
                 data: user,
-                token: resultGenerateToken
+                token: resultGenerateToken,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
                 message: errorMsg,
             }, common_1.HttpStatus.ACCEPTED);
         });
-        ;
     }
     async loggedUsers(headers, loggedUser) {
-        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             return this._AppGateway.IsUserLogeatedExit(loggedUser);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK REGISTER',
                 data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -106,17 +119,22 @@ let AppController = class AppController {
         });
     }
     async GetLoggedUsers(headers, loggedUser) {
-        return await (0, promises_assets_1.DummyPromise)().then(result => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             return this._AppGateway.GetLoggedUsers();
-        }).then((resultLoggedUsers) => {
+        })
+            .then((resultLoggedUsers) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK REGISTER',
                 data: resultLoggedUsers,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -125,17 +143,22 @@ let AppController = class AppController {
         });
     }
     async EmitConnect() {
-        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             return this.appService.EmitConnect();
-        }).then((resultEmitConnect) => {
+        })
+            .then((resultEmitConnect) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'Send Emit Connect',
                 data: resultEmitConnect,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -147,9 +170,9 @@ let AppController = class AppController {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             let userId = Number(buqueId);
             console.log('ListConsumptionLubricantPerMonth');
-            console.log("buqueId : " + buqueId);
-            console.log("startDate : " + startDate);
-            console.log("endDate : " + endDate);
+            console.log('buqueId : ' + buqueId);
+            console.log('startDate : ' + startDate);
+            console.log('endDate : ' + endDate);
             return this.appService.ListConsumptionLubricantPerMonth(userId, startDate, endDate);
         });
     }
@@ -160,10 +183,12 @@ let AppController = class AppController {
         });
     }
     async ViewFileAnalysis(buqueId, ETM_OilAnalysis_Oid, res) {
-        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             let buque = Number(buqueId);
             return this.appService.ViewFileAnalysisOil(buque, ETM_OilAnalysis_Oid);
-        }).then(resutlViewFileAnalysisOil => {
+        })
+            .then(resutlViewFileAnalysisOil => {
             let fileAnalysisOil = resutlViewFileAnalysisOil[0];
             let pdfBuffer = fileAnalysisOil.Content;
             const uploadsDir = path.join(__dirname, '..', 'uploads');
@@ -176,13 +201,15 @@ let AppController = class AppController {
                 return;
             }
             return fs.writeFileSync(filePath, pdfBuffer, 'binary');
-        }).then(result => {
+        })
+            .then(result => {
             res.set({
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': 'inline; filename="archivo.pdf"',
             });
             return res.send('ok');
-        }).catch(err => {
+        })
+            .catch(err => {
             res.status(common_1.HttpStatus.NOT_FOUND).send('Archivo no encontrado');
         });
     }

@@ -13,7 +13,7 @@ exports.OilPriceHistory = void 0;
 const typeorm_1 = require("typeorm");
 let OilPriceHistory = class OilPriceHistory {
     constructor(id, userId, entityOilId, price, typeCurrency, effectiveDate, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
-        this.SyncStatus = "";
+        this.SyncStatus = '';
         this.id = id || null;
         this.userId = userId || null;
         this.entityOilId = entityOilId || null;
@@ -41,7 +41,13 @@ __decorate([
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "entityOilId", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: true }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 18,
+        scale: 8,
+        default: 0,
+        nullable: true,
+    }),
     __metadata("design:type", Number)
 ], OilPriceHistory.prototype, "price", void 0);
 __decorate([

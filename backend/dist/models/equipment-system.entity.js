@@ -13,7 +13,7 @@ exports.EquipmentSystemEntity = void 0;
 const typeorm_1 = require("typeorm");
 let EquipmentSystemEntity = class EquipmentSystemEntity {
     constructor(id, userId, equipment, trialDay, lubUsedDuringMaintenance, ETM_OilAnalysis_Oid, frequencyId, entityGroupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
-        this.SyncStatus = "";
+        this.SyncStatus = '';
         this.id = id || null;
         this.userId = userId || null;
         this.equipment = equipment || '';
@@ -43,11 +43,23 @@ __decorate([
     __metadata("design:type", String)
 ], EquipmentSystemEntity.prototype, "equipment", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 18,
+        scale: 8,
+        default: 0,
+        nullable: false,
+    }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "trialDay", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: false }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 18,
+        scale: 8,
+        default: 0,
+        nullable: false,
+    }),
     __metadata("design:type", Number)
 ], EquipmentSystemEntity.prototype, "lubUsedDuringMaintenance", void 0);
 __decorate([

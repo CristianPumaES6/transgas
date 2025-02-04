@@ -23,15 +23,19 @@ let DailyReportSummaryController = class DailyReportSummaryController {
     }
     Gets(headers, dailyReportSummary) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: ''
+                data: '',
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,

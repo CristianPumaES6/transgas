@@ -24,7 +24,8 @@ let DailyReportsController = class DailyReportsController {
         this._dailyReportsService = _dailyReportsService;
     }
     async Get(id) {
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (Number(id)) {
                 let userId = Number(id);
                 return this._dailyReportsService.Get(userId);
@@ -32,15 +33,19 @@ let DailyReportsController = class DailyReportsController {
             else {
                 throw 'MISSING_FIELS';
             }
-        }).then((resultGet) => {
+        })
+            .then((resultGet) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultGet
+                data: resultGet,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -50,29 +55,35 @@ let DailyReportsController = class DailyReportsController {
     }
     Gets(headers, dailyReport) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (dailyReport) {
                 dailyReport.userId = Number(dailyReport.userId);
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 dailyReport.userId = null;
             }
             else if (dailyReport.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
             return this._dailyReportsService.Gets(dailyReport);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -82,13 +93,24 @@ let DailyReportsController = class DailyReportsController {
     }
     Create(headers, dailyReport) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id
-                && (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
-                    && dailyReport.speedStraction)
-                    ||
-                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION')
-                            && !dailyReport.speedStraction))) {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
+            if (dailyReport &&
+                dailyReport.userId &&
+                dailyReport.portId &&
+                dailyReport.date &&
+                dailyReport.hour &&
+                dailyReport.activityPerformed &&
+                headerToken &&
+                headerToken.id &&
+                (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' ||
+                    dailyReport.activityPerformed === 'SAILING_WITH_LADEN' ||
+                    dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') &&
+                    dailyReport.speedStraction) ||
+                    (dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' &&
+                        dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' &&
+                        dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION' &&
+                        !dailyReport.speedStraction))) {
                 if (headerToken.role === 'BUQUE') {
                     if (Number(headerToken.id) !== Number(dailyReport.userId))
                         throw new Error('ERROR_USERID_FAIL');
@@ -117,32 +139,46 @@ let DailyReportsController = class DailyReportsController {
             }
             else
                 throw 'MISSING_FIELS';
-        }).then((resultCreate) => {
+        })
+            .then((resultCreate) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultCreate
+                data: resultCreate,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
                 message: errorMsg,
             }, common_1.HttpStatus.ACCEPTED);
         });
-        ;
     }
     async Update(headers, id, dailyReport) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            if (dailyReport && dailyReport.userId && dailyReport.portId && dailyReport.date && dailyReport.hour && dailyReport.activityPerformed && headerToken && headerToken.id
-                && (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' || dailyReport.activityPerformed === 'SAILING_WITH_LADEN' || dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION')
-                    && dailyReport.speedStraction)
-                    ||
-                        ((dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' && dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' && dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION')
-                            && !dailyReport.speedStraction))) {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
+            if (dailyReport &&
+                dailyReport.userId &&
+                dailyReport.portId &&
+                dailyReport.date &&
+                dailyReport.hour &&
+                dailyReport.activityPerformed &&
+                headerToken &&
+                headerToken.id &&
+                (((dailyReport.activityPerformed === 'SAILING_IN_BALLAST' ||
+                    dailyReport.activityPerformed === 'SAILING_WITH_LADEN' ||
+                    dailyReport.activityPerformed === 'ECONOMICAL_NAVIGATION') &&
+                    dailyReport.speedStraction) ||
+                    (dailyReport.activityPerformed !== 'SAILING_IN_BALLAST' &&
+                        dailyReport.activityPerformed !== 'SAILING_WITH_LADEN' &&
+                        dailyReport.activityPerformed !== 'ECONOMICAL_NAVIGATION' &&
+                        !dailyReport.speedStraction))) {
                 if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
                 }
                 else if (Number(headerToken.id) !== Number(dailyReport.userId))
@@ -171,17 +207,21 @@ let DailyReportsController = class DailyReportsController {
             else {
                 throw 'MISSING_FIELS';
             }
-        }).then((resultUpdate) => {
+        })
+            .then((resultUpdate) => {
             if (!resultUpdate)
                 throw new Error('TYPEORM_UPDATE_VOYAGE_DETAIL');
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultUpdate
+                data: resultUpdate,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -191,25 +231,31 @@ let DailyReportsController = class DailyReportsController {
     }
     async Delete(headers, id) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (Number(id)) {
                 return this._dailyReportsService.Get(id);
             }
             else {
                 throw new Error('MISSING_FIELS');
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             result.status = false;
             return this._dailyReportsService.Delete(result, headerToken.id);
-        }).then((resultDelete) => {
+        })
+            .then((resultDelete) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultDelete
+                data: resultDelete,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -219,29 +265,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetROBByBuque(headers, userId) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetROBByUser(userId);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -251,29 +304,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetStartEndROByFilterDate(headers, userId, startDate, endDate) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetStartEndROByFilterDate(startDate, endDate, userId);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -283,29 +343,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetBunkeringByBuque(headers, userId) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetBunkeringByUserIFO(userId);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -315,29 +382,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetInfoVoyageROBAndBunkeringByBuqueAndDate(headers, userId, startDate, endDate) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetInfoVoyageROBAndBunkeringByBuqueAndDate(startDate, endDate, userId);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -347,29 +421,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetReportVoyagePortDaily(headers, userId, startDate, endDate) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetReportVoyagePortDaily(userId, startDate, endDate, null);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -379,31 +460,38 @@ let DailyReportsController = class DailyReportsController {
     }
     GetReportByUser(headers, userId) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else {
                 throw new Error('MISSING_FIELS');
             }
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id)) {
                 throw new Error('ERROR_USERID_FAIL');
             }
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetReportByUser(userId);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -413,29 +501,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetTotalByActivityFilterByUserIdAndDateAndType(headers, userId, startDate, endDate, filter) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetTotalByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, filter);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -445,29 +540,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetTotalConsumerByActivityFilterByUserIdAndDateAndType(headers, userId, startDate, endDate, typeSummary) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetTotalConsumptionByActivityFilterByUserIdAndDateAndType(userId, startDate, endDate, typeSummary);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -477,29 +579,36 @@ let DailyReportsController = class DailyReportsController {
     }
     GetReportDNVByUser(headers, userId, startDate, endDate) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (userId) {
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 return true;
             }
             else if (Number(userId) !== Number(headerToken.id))
                 throw new Error('ERROR_USERID_FAIL');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._dailyReportsService.GetReportDNVByUserNOON(userId, startDate, endDate);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -564,7 +673,8 @@ __decorate([
     __param(2, (0, common_1.Param)('startDate')),
     __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Date, Date]),
+    __metadata("design:paramtypes", [Object, Number, Date,
+        Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetStartEndROByFilterDate", null);
 __decorate([
@@ -582,7 +692,8 @@ __decorate([
     __param(2, (0, common_1.Param)('startDate')),
     __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Date, Date]),
+    __metadata("design:paramtypes", [Object, Number, Date,
+        Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetInfoVoyageROBAndBunkeringByBuqueAndDate", null);
 __decorate([
@@ -592,7 +703,8 @@ __decorate([
     __param(2, (0, common_1.Param)('startDate')),
     __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Date, Date]),
+    __metadata("design:paramtypes", [Object, Number, Date,
+        Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetReportVoyagePortDaily", null);
 __decorate([
@@ -632,7 +744,8 @@ __decorate([
     __param(2, (0, common_1.Param)('startDate')),
     __param(3, (0, common_1.Param)('endDate')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Date, Date]),
+    __metadata("design:paramtypes", [Object, Number, Date,
+        Date]),
     __metadata("design:returntype", Promise)
 ], DailyReportsController.prototype, "GetReportDNVByUser", null);
 exports.DailyReportsController = DailyReportsController = __decorate([

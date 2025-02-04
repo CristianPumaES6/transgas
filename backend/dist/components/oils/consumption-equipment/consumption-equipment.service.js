@@ -35,7 +35,8 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         this._ConsumptionEquipment = _ConsumptionEquipment;
     }
     async Gets(consumptionEquipment) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -43,28 +44,33 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 return this._ConsumptionEquipment.find({
                     where: [
                         {
-                            id: (consumptionEquipment.id || (0, typeorm_3.Like)('%' + '%')),
-                            userId: (consumptionEquipment.userId || (0, typeorm_3.Like)('%' + '%')),
-                            status: (0, typeorm_4.Not)(false)
-                        }
-                    ]
+                            id: consumptionEquipment.id || (0, typeorm_3.Like)('%' + '%'),
+                            userId: consumptionEquipment.userId || (0, typeorm_3.Like)('%' + '%'),
+                            status: (0, typeorm_4.Not)(false),
+                        },
+                    ],
                 });
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.';
             return result;
         });
     }
     async Create(consumptionEquipment) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._ConsumptionEquipment.query("SP_CheckTheLastRecordedTrip @userId='" + consumptionEquipment.userId + "', @year='");
+                return this._ConsumptionEquipment.query("SP_CheckTheLastRecordedTrip @userId='" +
+                    consumptionEquipment.userId +
+                    "', @year='");
             }
             else {
                 return this._ConsumptionEquipment.save(consumptionEquipment);
             }
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el consumo por equipo.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -94,16 +100,24 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 delete newConsumptionEquipmentEntity.id;
                 newConsumptionEquipmentEntity.userId = addConsumptionEquipment.userId;
                 newConsumptionEquipmentEntity.date = addConsumptionEquipment.date;
-                newConsumptionEquipmentEntity.amount = addConsumptionEquipment.amount || 0;
-                newConsumptionEquipmentEntity.hourConsumption = addConsumptionEquipment.hourConsumption || 0;
-                newConsumptionEquipmentEntity.observation = addConsumptionEquipment.observation || '';
-                newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = addConsumptionEquipment.entityEquipmentOilCompatibilityId;
+                newConsumptionEquipmentEntity.amount =
+                    addConsumptionEquipment.amount || 0;
+                newConsumptionEquipmentEntity.hourConsumption =
+                    addConsumptionEquipment.hourConsumption || 0;
+                newConsumptionEquipmentEntity.observation =
+                    addConsumptionEquipment.observation || '';
+                newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId =
+                    addConsumptionEquipment.entityEquipmentOilCompatibilityId;
                 if (searchMappingEquipmentOilCompatibility) {
-                    newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
+                    newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId =
+                        searchMappingEquipmentOilCompatibility.value;
                 }
-                newConsumptionEquipmentEntity.consumptionTypeId = addConsumptionEquipment.consumptionTypeId || 0;
-                newConsumptionEquipmentEntity.entityOilAnalysisId = addConsumptionEquipment.entityOilAnalysisId || 0;
-                newConsumptionEquipmentEntity.userIdCreated = addConsumptionEquipment.userIdCreated;
+                newConsumptionEquipmentEntity.consumptionTypeId =
+                    addConsumptionEquipment.consumptionTypeId || 0;
+                newConsumptionEquipmentEntity.entityOilAnalysisId =
+                    addConsumptionEquipment.entityOilAnalysisId || 0;
+                newConsumptionEquipmentEntity.userIdCreated =
+                    addConsumptionEquipment.userIdCreated;
                 newConsumptionEquipmentEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newConsumptionEquipmentEntity.userIdUpdated;
                 delete newConsumptionEquipmentEntity.dateUpdated;
@@ -133,18 +147,28 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 consumptionEquipmentEntity.userId = updateEquipmentSystem.userId;
                 consumptionEquipmentEntity.date = updateEquipmentSystem.date;
                 consumptionEquipmentEntity.amount = updateEquipmentSystem.amount || 0;
-                consumptionEquipmentEntity.hourConsumption = updateEquipmentSystem.hourConsumption || 0;
-                consumptionEquipmentEntity.observation = updateEquipmentSystem.observation || '';
-                consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = updateEquipmentSystem.entityEquipmentOilCompatibilityId;
+                consumptionEquipmentEntity.hourConsumption =
+                    updateEquipmentSystem.hourConsumption || 0;
+                consumptionEquipmentEntity.observation =
+                    updateEquipmentSystem.observation || '';
+                consumptionEquipmentEntity.entityEquipmentOilCompatibilityId =
+                    updateEquipmentSystem.entityEquipmentOilCompatibilityId;
                 if (searchMappingEquipmentOilCompatibility) {
-                    consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
+                    consumptionEquipmentEntity.entityEquipmentOilCompatibilityId =
+                        searchMappingEquipmentOilCompatibility.value;
                 }
-                consumptionEquipmentEntity.consumptionTypeId = updateEquipmentSystem.consumptionTypeId || 0;
-                consumptionEquipmentEntity.entityOilAnalysisId = updateEquipmentSystem.entityOilAnalysisId || 0;
-                consumptionEquipmentEntity.userIdCreated = updateEquipmentSystem.userIdCreated;
-                consumptionEquipmentEntity.dateCreated = updateEquipmentSystem.dateCreated;
-                consumptionEquipmentEntity.userIdUpdated = updateEquipmentSystem.userIdUpdated;
-                consumptionEquipmentEntity.dateUpdated = updateEquipmentSystem.dateUpdated;
+                consumptionEquipmentEntity.consumptionTypeId =
+                    updateEquipmentSystem.consumptionTypeId || 0;
+                consumptionEquipmentEntity.entityOilAnalysisId =
+                    updateEquipmentSystem.entityOilAnalysisId || 0;
+                consumptionEquipmentEntity.userIdCreated =
+                    updateEquipmentSystem.userIdCreated;
+                consumptionEquipmentEntity.dateCreated =
+                    updateEquipmentSystem.dateCreated;
+                consumptionEquipmentEntity.userIdUpdated =
+                    updateEquipmentSystem.userIdUpdated;
+                consumptionEquipmentEntity.dateUpdated =
+                    updateEquipmentSystem.dateUpdated;
                 consumptionEquipmentEntity.status = Boolean(updateEquipmentSystem.status);
                 if (consumptionEquipmentEntity.status) {
                     listDeConsumosRegistrados.push(consumptionEquipmentEntity.id);
@@ -170,18 +194,28 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 consumptionEquipmentEntity.userId = deletConsumptionEquipment.userId;
                 consumptionEquipmentEntity.date = deletConsumptionEquipment.date;
                 consumptionEquipmentEntity.amount = deletConsumptionEquipment.amount || 0;
-                consumptionEquipmentEntity.hourConsumption = deletConsumptionEquipment.hourConsumption || 0;
-                consumptionEquipmentEntity.observation = deletConsumptionEquipment.observation || '';
-                consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = deletConsumptionEquipment.entityEquipmentOilCompatibilityId;
+                consumptionEquipmentEntity.hourConsumption =
+                    deletConsumptionEquipment.hourConsumption || 0;
+                consumptionEquipmentEntity.observation =
+                    deletConsumptionEquipment.observation || '';
+                consumptionEquipmentEntity.entityEquipmentOilCompatibilityId =
+                    deletConsumptionEquipment.entityEquipmentOilCompatibilityId;
                 if (searchMappingEquipmentOilCompatibility) {
-                    consumptionEquipmentEntity.entityEquipmentOilCompatibilityId = searchMappingEquipmentOilCompatibility.value;
+                    consumptionEquipmentEntity.entityEquipmentOilCompatibilityId =
+                        searchMappingEquipmentOilCompatibility.value;
                 }
-                consumptionEquipmentEntity.consumptionTypeId = deletConsumptionEquipment.consumptionTypeId || 0;
-                consumptionEquipmentEntity.entityOilAnalysisId = deletConsumptionEquipment.entityOilAnalysisId || 0;
-                consumptionEquipmentEntity.userIdCreated = deletConsumptionEquipment.userIdCreated;
-                consumptionEquipmentEntity.dateCreated = deletConsumptionEquipment.dateCreated;
-                consumptionEquipmentEntity.userIdUpdated = deletConsumptionEquipment.userIdUpdated;
-                consumptionEquipmentEntity.dateUpdated = deletConsumptionEquipment.dateUpdated;
+                consumptionEquipmentEntity.consumptionTypeId =
+                    deletConsumptionEquipment.consumptionTypeId || 0;
+                consumptionEquipmentEntity.entityOilAnalysisId =
+                    deletConsumptionEquipment.entityOilAnalysisId || 0;
+                consumptionEquipmentEntity.userIdCreated =
+                    deletConsumptionEquipment.userIdCreated;
+                consumptionEquipmentEntity.dateCreated =
+                    deletConsumptionEquipment.dateCreated;
+                consumptionEquipmentEntity.userIdUpdated =
+                    deletConsumptionEquipment.userIdUpdated;
+                consumptionEquipmentEntity.dateUpdated =
+                    deletConsumptionEquipment.dateUpdated;
                 consumptionEquipmentEntity.status = Boolean(deletConsumptionEquipment.status);
                 await this._ConsumptionEquipment.save(deletConsumptionEquipment);
             }
@@ -195,7 +229,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         }
         return {
             MappingConsumptionsEquipment: MappingConsumptionsEquipment,
-            listConsumosValidarSendMail: listDeConsumosRegistrados
+            listConsumosValidarSendMail: listDeConsumosRegistrados,
         };
     }
     async getOilConsumptionPerMonth(userId, startDate, endDate) {
@@ -297,7 +331,13 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
 
 
         `;
-        return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
+        return this._ConsumptionEquipment.query(query, [
+            userId,
+            startDate,
+            endDate,
+            startDate,
+            endDate,
+        ]);
     }
     async QueryGetTask(userId, ETM_OilAnalysis_Oid) {
         const query = `ConsultaMantenimientoPorBD  @dbName = 'TMS_Pilargas',  @tareaId = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1'; `;
@@ -748,9 +788,11 @@ ORDER BY
                 newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
                 newConsumptionEquipmentEntity.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity.amount = lubricantDialy.LUB_ME;
-                newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
+                newConsumptionEquipmentEntity.hourConsumption =
+                    lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity.observation = '';
-                newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME1;
+                newConsumptionEquipmentEntity.entityEquipmentOilCompatibilityId =
+                    lubricantDialy.IDENT_ME1;
                 newConsumptionEquipmentEntity.consumptionTypeId = 1;
                 newConsumptionEquipmentEntity.entityOilAnalysisId = 0;
                 newConsumptionEquipmentEntity.userIdCreated = userEntity.id;
@@ -763,10 +805,13 @@ ORDER BY
                 delete newConsumptionEquipmentEntity2.id;
                 newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
                 newConsumptionEquipmentEntity2.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
-                newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
-                newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
+                newConsumptionEquipmentEntity2.amount =
+                    lubricantDialy.LUB_ME_CYLINDER || 0;
+                newConsumptionEquipmentEntity2.hourConsumption =
+                    lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity2.observation = '';
-                newConsumptionEquipmentEntity2.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_ME2;
+                newConsumptionEquipmentEntity2.entityEquipmentOilCompatibilityId =
+                    lubricantDialy.IDENT_ME2;
                 newConsumptionEquipmentEntity2.consumptionTypeId = 1;
                 newConsumptionEquipmentEntity2.entityOilAnalysisId = 0;
                 newConsumptionEquipmentEntity2.userIdCreated = userEntity.id;
@@ -780,9 +825,11 @@ ORDER BY
                 newConsumptionEquipmentEntity3.userId = lubricantDialy.USER_ID;
                 newConsumptionEquipmentEntity3.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity3.amount = lubricantDialy.LUB_AUX1 || 0;
-                newConsumptionEquipmentEntity3.hourConsumption = lubricantDialy.HOUR_AUX1 || 0;
+                newConsumptionEquipmentEntity3.hourConsumption =
+                    lubricantDialy.HOUR_AUX1 || 0;
                 newConsumptionEquipmentEntity3.observation = '';
-                newConsumptionEquipmentEntity3.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX1;
+                newConsumptionEquipmentEntity3.entityEquipmentOilCompatibilityId =
+                    lubricantDialy.IDENT_AUX1;
                 newConsumptionEquipmentEntity3.consumptionTypeId = 1;
                 newConsumptionEquipmentEntity3.entityOilAnalysisId = 0;
                 newConsumptionEquipmentEntity3.userIdCreated = userEntity.id;
@@ -796,9 +843,11 @@ ORDER BY
                 newConsumptionEquipmentEntity4.userId = lubricantDialy.USER_ID;
                 newConsumptionEquipmentEntity4.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity4.amount = lubricantDialy.LUB_AUX2 || 0;
-                newConsumptionEquipmentEntity4.hourConsumption = lubricantDialy.HOUR_AUX2 || 0;
+                newConsumptionEquipmentEntity4.hourConsumption =
+                    lubricantDialy.HOUR_AUX2 || 0;
                 newConsumptionEquipmentEntity4.observation = '';
-                newConsumptionEquipmentEntity4.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX2;
+                newConsumptionEquipmentEntity4.entityEquipmentOilCompatibilityId =
+                    lubricantDialy.IDENT_AUX2;
                 newConsumptionEquipmentEntity4.consumptionTypeId = 1;
                 newConsumptionEquipmentEntity4.entityOilAnalysisId = 0;
                 newConsumptionEquipmentEntity4.userIdCreated = userEntity.id;

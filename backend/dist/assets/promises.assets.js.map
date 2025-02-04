@@ -1,1 +1,1 @@
-{"version":3,"file":"promises.assets.js","sourceRoot":"","sources":["../../src/assets/promises.assets.ts"],"names":[],"mappings":";;AAAA,oCAKC;AALD,SAAgB,YAAY;IAExB,OAAO,IAAI,OAAO,CAAC,UAAU,OAAO,EAAE,MAAM;QACxC,OAAO,CAAC,IAAI,CAAC,CAAC;IAClB,CAAC,CAAC,CAAC;AACP,CAAC"}
+{"version":3,"file":"promises.assets.js","sourceRoot":"","sources":["../../src/assets/promises.assets.ts"],"names":[],"mappings":";;AAAA,oCAKC;AALD,SAAgB,YAAY;IAE1B,OAAO,IAAI,OAAO,CAAC,UAAS,OAAO,EAAE,MAAM;QACzC,OAAO,CAAC,IAAI,CAAC,CAAC;IAChB,CAAC,CAAC,CAAC;AACL,CAAC"}

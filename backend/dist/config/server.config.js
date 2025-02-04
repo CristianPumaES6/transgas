@@ -9,6 +9,6 @@ exports.URL_Server = {
     puertoBackend: 2000,
     bd: 'MSSQL2',
     emailNotification: 'transgasshippinglines@gmail.com',
-    passwordNotification: 'getlsmyuiluiwktq'
+    passwordNotification: 'getlsmyuiluiwktq',
 };
 //# sourceMappingURL=server.config.js.map

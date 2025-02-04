@@ -26,32 +26,40 @@ let SendMessageController = class SendMessageController {
     }
     async GetConfigSendMail(headers, sendMessageEntity) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (sendMessageEntity) {
                 if (!sendMessageEntity.userId) {
                     throw new Error('MISSING_FIELS');
                 }
                 else {
-                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') {
+                    if (headerToken.role == 'ADMIN' ||
+                        headerToken.role == 'SUPPORT' ||
+                        headerToken.role == 'OWNER') {
                     }
-                    else if ((Number(sendMessageEntity.userId) !== Number(headerToken.id)))
+                    else if (Number(sendMessageEntity.userId) !== Number(headerToken.id))
                         throw new Error('ERROR_USERID_FAIL');
                     return true;
                 }
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             return this._sendMessageService.BuscamosLaConfiracionDelBuque(sendMessageEntity);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_2.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_2.HttpException({
                 status: common_2.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -61,8 +69,11 @@ let SendMessageController = class SendMessageController {
     }
     async SaveConfig(headers, sendMessageEntity) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            if (sendMessageEntity && sendMessageEntity.emails && sendMessageEntity.status) {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
+            if (sendMessageEntity &&
+                sendMessageEntity.emails &&
+                sendMessageEntity.status) {
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 }
                 else if (sendMessageEntity.userId !== headerToken.id)
@@ -82,15 +93,19 @@ let SendMessageController = class SendMessageController {
             }
             else
                 throw 'MISSING_FIELS';
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             return {
                 status: common_2.HttpStatus.OK,
                 message: 'OK',
-                data: resultSave
+                data: resultSave,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_2.HttpException({
                 status: common_2.HttpStatus.ACCEPTED,
                 error: clientMsg,

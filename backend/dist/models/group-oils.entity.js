@@ -13,7 +13,7 @@ exports.GroupOilEntity = void 0;
 const typeorm_1 = require("typeorm");
 let GroupOilEntity = class GroupOilEntity {
     constructor(id, userId, label, description, groupId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
-        this.SyncStatus = "";
+        this.SyncStatus = '';
         this.id = id || null;
         this.userId = userId || null;
         this.label = label || '';

@@ -35,43 +35,53 @@ const users_service_1 = require("../users/users.service");
 const sendMailConfig_1 = require("../../models/sendMailConfig");
 const nodemailer_assets_1 = require("./../../assets/nodemailer.assets");
 const mappingKeys_1 = require("../../assets/mappingKeys");
+const daily_report_summary_service_1 = require("./daily-report-summary/daily-report-summary.service");
 let VoyagesController = class VoyagesController {
-    constructor(_voyagesService, _portsService, _dailyReportsService, _formatExcelLastVoyageService, _usersService) {
+    constructor(_voyagesService, _portsService, _dailyReportsService, _dailyReportSummaryService, _formatExcelLastVoyageService, _usersService) {
         this._voyagesService = _voyagesService;
         this._portsService = _portsService;
         this._dailyReportsService = _dailyReportsService;
+        this._dailyReportSummaryService = _dailyReportSummaryService;
         this._formatExcelLastVoyageService = _formatExcelLastVoyageService;
         this._usersService = _usersService;
     }
     async GetsByYear(headers, voyageFilterByYears) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (voyageFilterByYears) {
                 if (!voyageFilterByYears.userId) {
                     throw new Error('MISSING_FIELS');
                 }
                 else {
-                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') {
+                    if (headerToken.role == 'ADMIN' ||
+                        headerToken.role == 'SUPPORT' ||
+                        headerToken.role == 'OWNER') {
                     }
-                    else if ((Number(voyageFilterByYears.userId) !== Number(headerToken.id)))
+                    else if (Number(voyageFilterByYears.userId) !== Number(headerToken.id))
                         throw new Error('ERROR_USERID_FAIL');
                     return true;
                 }
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
+        })
+            .then((resultValidate) => {
             voyageFilterByYears.years = JSON.parse('' + voyageFilterByYears.years);
             return this._voyagesService.GetsByYears(voyageFilterByYears);
-        }).then((results) => {
+        })
+            .then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: results,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -82,75 +92,8 @@ let VoyagesController = class VoyagesController {
     async GetsDetail(headers, voyage, page) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         let voyageDetail;
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            if (voyage) {
-                if (!voyage.userId) {
-                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                        return true;
-                    }
-                    else
-                        throw new Error('MISSING_FIELS');
-                }
-                else {
-                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    }
-                    else if ((Number(voyage.userId) !== Number(headerToken.id)))
-                        throw new Error('ERROR_USERID_FAIL');
-                    return true;
-                }
-            }
-            else
-                throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
-            return this._voyagesService.GetsDetails(voyage, page);
-        }).then((result) => {
-            voyageDetail = result;
-            return this._voyagesService.InfoUltimos5ResumenViaje(voyage.userId);
-        }).then((resultsDailyReportSummary) => {
-            return {
-                status: common_1.HttpStatus.OK,
-                message: 'OK',
-                data: voyageDetail,
-                lastReportSummary: resultsDailyReportSummary
-            };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-            throw new common_1.HttpException({
-                status: common_1.HttpStatus.ACCEPTED,
-                error: clientMsg,
-                message: errorMsg,
-            }, common_1.HttpStatus.ACCEPTED);
-        });
-    }
-    async Get(id) {
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            if (Number(id)) {
-                let voyageId = Number(id);
-                return this._voyagesService.Get(voyageId);
-            }
-            else {
-                throw 'MISSING_FIELS';
-            }
-        }).then((resultGet) => {
-            return {
-                status: common_1.HttpStatus.OK,
-                message: 'OK',
-                data: resultGet
-            };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-            throw new common_1.HttpException({
-                status: common_1.HttpStatus.ACCEPTED,
-                error: clientMsg,
-                message: errorMsg,
-            }, common_1.HttpStatus.ACCEPTED);
-        });
-    }
-    async Gets(headers, voyage, page) {
-        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (voyage) {
                 if (!voyage.userId) {
                     if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
@@ -169,17 +112,102 @@ let VoyagesController = class VoyagesController {
             }
             else
                 throw new Error('MISSING_FIELS');
-        }).then((resultValidate) => {
-            return this._voyagesService.Gets(voyage, page);
-        }).then((results) => {
+        })
+            .then((resultValidate) => {
+            return this._voyagesService.GetsDetails(voyage, page);
+        })
+            .then((result) => {
+            voyageDetail = result;
+            return this._voyagesService.InfoUltimos5ResumenViaje(voyage.userId);
+        })
+            .then((resultsDailyReportSummary) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: voyageDetail,
+                lastReportSummary: resultsDailyReportSummary,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
+    async Get(id) {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
+            if (Number(id)) {
+                let voyageId = Number(id);
+                return this._voyagesService.Get(voyageId);
+            }
+            else {
+                throw 'MISSING_FIELS';
+            }
+        })
+            .then((resultGet) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: resultGet,
+            };
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            throw new common_1.HttpException({
+                status: common_1.HttpStatus.ACCEPTED,
+                error: clientMsg,
+                message: errorMsg,
+            }, common_1.HttpStatus.ACCEPTED);
+        });
+    }
+    async Gets(headers, voyage, page) {
+        let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
+            if (voyage) {
+                if (!voyage.userId) {
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                        return true;
+                    }
+                    else
+                        throw new Error('MISSING_FIELS');
+                }
+                else {
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+                    }
+                    else if (Number(voyage.userId) !== Number(headerToken.id))
+                        throw new Error('ERROR_USERID_FAIL');
+                    return true;
+                }
+            }
+            else
+                throw new Error('MISSING_FIELS');
+        })
+            .then((resultValidate) => {
+            return this._voyagesService.Gets(voyage, page);
+        })
+            .then((results) => {
+            return {
+                status: common_1.HttpStatus.OK,
+                message: 'OK',
+                data: results,
+            };
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -189,8 +217,14 @@ let VoyagesController = class VoyagesController {
     }
     async CreateVoyage(headers, voyage) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
+            if (voyage &&
+                Number(voyage.userId) &&
+                Number(voyage.voyageNumber) &&
+                Number(voyage.year) &&
+                headerToken &&
+                headerToken.id) {
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 }
                 else if (voyage.userId !== headerToken.id)
@@ -205,15 +239,19 @@ let VoyagesController = class VoyagesController {
             }
             else
                 throw 'MISSING_FIELS';
-        }).then((resultCreate) => {
+        })
+            .then((resultCreate) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultCreate
+                data: resultCreate,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -223,8 +261,14 @@ let VoyagesController = class VoyagesController {
     }
     async Update(headers, id, voyage) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
+            if (voyage &&
+                voyage.userId &&
+                voyage.voyageNumber &&
+                voyage.year &&
+                headerToken &&
+                headerToken.id) {
                 voyage.id = Number(id);
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 }
@@ -240,17 +284,21 @@ let VoyagesController = class VoyagesController {
             else {
                 throw 'MISSING_FIELS';
             }
-        }).then((resultUpdate) => {
+        })
+            .then((resultUpdate) => {
             if (!resultUpdate)
                 throw new Error('TYPEORM_UPDATE_VOYAGE');
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultUpdate
+                data: resultUpdate,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -260,14 +308,16 @@ let VoyagesController = class VoyagesController {
     }
     async DeletePort(headers, id) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (Number(id)) {
                 return this._voyagesService.Get(id);
             }
             else {
                 throw new Error('MISSING_FIELS');
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
             else if (Number(headerToken.id) !== Number(result.userId))
@@ -278,15 +328,19 @@ let VoyagesController = class VoyagesController {
             result.userIdUpdated = headerToken.id;
             result.dateUpdated = (0, moment_assets_1.GetDate)();
             return this._voyagesService.Delete(result);
-        }).then((resultDelete) => {
+        })
+            .then((resultDelete) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultDelete
+                data: resultDelete,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -331,15 +385,18 @@ let VoyagesController = class VoyagesController {
                             delete newVoyage.dateUpdated;
                             newVoyage.status = true;
                             let voyageRegister = await this._voyagesService.Create(newVoyage);
-                            console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
+                            console.log('Se CREO EL VIAJE NUMERO ' +
+                                newVoyage.voyageNumber +
+                                '   con id :' +
+                                newVoyage.id);
                             MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageRegister.id));
                             MappingPort = [];
                         }
                         else {
                             if (voyageExistente.userId != importVoyage.userId)
                                 throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.';
-                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber
-                                || voyageExistente.year != importVoyage.year) {
+                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber ||
+                                voyageExistente.year != importVoyage.year) {
                                 delete voyageExistente.ports;
                                 voyageExistente.voyageNumber = importVoyage.voyageNumber;
                                 voyageExistente.year = importVoyage.year;
@@ -377,27 +434,36 @@ let VoyagesController = class VoyagesController {
                             else {
                                 newPort.startDate = null;
                             }
-                            newPort.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                            newPort.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                            newPort.startIFO =
+                                importVoyage.ROB[0] +
+                                    importVoyage.TOTAL[0] -
+                                    importVoyage.bunkeringIfo;
+                            newPort.startMGO =
+                                importVoyage.ROB[1] +
+                                    importVoyage.TOTAL[1] -
+                                    importVoyage.bunkeringMgo;
                             newPort.userIdCreated = headerToken.id;
                             newPort.dateCreated = (0, moment_assets_1.GetDate)();
                             delete newPort.userIdUpdated;
                             delete newPort.dateUpdated;
                             newPort.status = true;
                             let portRegister = await this._portsService.Create(newPort);
-                            console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
+                            console.log('Se CREO EL PUERTO NUMERO ' +
+                                portRegister.portNumber +
+                                '   con id :' +
+                                portRegister.id);
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portRegister.id));
                         }
                         else {
                             console.log('Entro al else de port');
                             if (portExiste.userId != importVoyage.userId)
                                 throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar';
-                            if ((portExiste.portNumber != importVoyage.portNumber
-                                || portExiste.departurePort != importVoyage.departurePort
-                                || portExiste.arrivalPort != importVoyage.arrivalPort
-                                || portExiste.startIFO != importVoyage.ROB[0]
-                                || portExiste.startMGO != importVoyage.ROB[1])
-                                && importVoyage.updatePort) {
+                            if ((portExiste.portNumber != importVoyage.portNumber ||
+                                portExiste.departurePort != importVoyage.departurePort ||
+                                portExiste.arrivalPort != importVoyage.arrivalPort ||
+                                portExiste.startIFO != importVoyage.ROB[0] ||
+                                portExiste.startMGO != importVoyage.ROB[1]) &&
+                                importVoyage.updatePort) {
                                 portExiste.voyageId = existeViaje.value;
                                 portExiste.portNumber = importVoyage.portNumber;
                                 portExiste.departurePort = importVoyage.departurePort;
@@ -408,12 +474,21 @@ let VoyagesController = class VoyagesController {
                                 else {
                                     delete portExiste.startDate;
                                 }
-                                portExiste.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                                portExiste.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                                portExiste.startIFO =
+                                    importVoyage.ROB[0] +
+                                        importVoyage.TOTAL[0] -
+                                        importVoyage.bunkeringIfo;
+                                portExiste.startMGO =
+                                    importVoyage.ROB[1] +
+                                        importVoyage.TOTAL[1] -
+                                        importVoyage.bunkeringMgo;
                                 delete portExiste.dailyReports;
                                 portExiste.dateUpdated = (0, moment_assets_1.GetDate)();
                                 portExiste.status = true;
-                                console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
+                                console.log('Se actualizo el PUERTO NUMERO ' +
+                                    portExiste.portNumber +
+                                    '   con id :' +
+                                    portExiste.id);
                                 portExiste = await this._portsService.Update(portExiste);
                             }
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portExiste.id));
@@ -430,17 +505,28 @@ let VoyagesController = class VoyagesController {
                     newReport.userId = importVoyage.userId;
                     newReport.portId = existePort.value;
                     let fechaMAs0 = '';
-                    if (importVoyage.date.length == 14 || importVoyage.date.length == 13 || importVoyage.date.length == 12 || importVoyage.date.length == 11 || importVoyage.date.length == 15 || importVoyage.date.length == 18) {
-                        ultimaFecha = (0, moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL)(importVoyage.date, 5) + '.000';
+                    if (importVoyage.date.length == 14 ||
+                        importVoyage.date.length == 13 ||
+                        importVoyage.date.length == 12 ||
+                        importVoyage.date.length == 11 ||
+                        importVoyage.date.length == 15 ||
+                        importVoyage.date.length == 18) {
+                        ultimaFecha =
+                            (0, moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL)(importVoyage.date, 5) + '.000';
                     }
-                    else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
-                        ultimaFecha = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(importVoyage.date) + '.000';
+                    else if (importVoyage.date.length == 19 ||
+                        importVoyage.date.length == 23) {
+                        ultimaFecha =
+                            (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(importVoyage.date) +
+                                '.000';
                     }
                     else if (importVoyage.date.length == 9) {
-                        ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
+                        ultimaFecha =
+                            '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
                     }
                     else if (importVoyage.date.length == 10) {
-                        ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
+                        ultimaFecha =
+                            importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
                     }
                     else {
                         ultimaFecha = null;
@@ -457,14 +543,15 @@ let VoyagesController = class VoyagesController {
                         }
                         else {
                             newReport.hour = importVoyage.hour;
-                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
+                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' +
+                                importVoyage.dailyReportId);
                         }
                     }
                     else {
                         let fechatemporalporhora = (0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, 5);
                         newReport.hour = (0, moment_assets_1.ObtenerlasHorasDeUnaFecaUTC)(fechatemporalporhora);
                     }
-                    newReport.date = (0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, -5);
+                    newReport.date = ((0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, -5));
                     newReport.mplaIfo = importVoyage.mplaIfo || 0;
                     newReport.auxIfo = importVoyage.auxIfo || 0;
                     newReport.boilerIfo = importVoyage.boilerIfo || 0;
@@ -485,22 +572,76 @@ let VoyagesController = class VoyagesController {
                     if (!importVoyage.beaufour) {
                         newReport.beaufour = '';
                     }
-                    else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
+                    else if (importVoyage.beaufour === 's1' ||
+                        importVoyage.beaufour === 'S1' ||
+                        importVoyage.beaufour === 's 1' ||
+                        importVoyage.beaufour == 'S 1' ||
+                        importVoyage.beaufour === '1s' ||
+                        importVoyage.beaufour === '1S' ||
+                        importVoyage.beaufour === '1 s' ||
+                        importVoyage.beaufour == '1 S' ||
+                        importVoyage.beaufour == '1.00' ||
+                        importVoyage.beaufour == '1') {
                         newReport.beaufour = 'S1';
                     }
-                    else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
+                    else if (importVoyage.beaufour === 's2' ||
+                        importVoyage.beaufour === 'S2' ||
+                        importVoyage.beaufour === 's 2' ||
+                        importVoyage.beaufour == 'S 2' ||
+                        importVoyage.beaufour === '2s' ||
+                        importVoyage.beaufour === '2S' ||
+                        importVoyage.beaufour === '2 s' ||
+                        importVoyage.beaufour == '2 S' ||
+                        importVoyage.beaufour == '2.00' ||
+                        importVoyage.beaufour == '2') {
                         newReport.beaufour = 'S2';
                     }
-                    else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
+                    else if (importVoyage.beaufour === 's3' ||
+                        importVoyage.beaufour === 'S3' ||
+                        importVoyage.beaufour === 's 3' ||
+                        importVoyage.beaufour == 'S 3' ||
+                        importVoyage.beaufour === '3s' ||
+                        importVoyage.beaufour === '3S' ||
+                        importVoyage.beaufour === '3 s' ||
+                        importVoyage.beaufour == '3 S' ||
+                        importVoyage.beaufour == '3.00' ||
+                        importVoyage.beaufour == '3') {
                         newReport.beaufour = 'S3';
                     }
-                    else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
+                    else if (importVoyage.beaufour === 's4' ||
+                        importVoyage.beaufour === 'S4' ||
+                        importVoyage.beaufour === 's 4' ||
+                        importVoyage.beaufour == 'S 4' ||
+                        importVoyage.beaufour === '4s' ||
+                        importVoyage.beaufour === '4S' ||
+                        importVoyage.beaufour === '4 s' ||
+                        importVoyage.beaufour == '4 S' ||
+                        importVoyage.beaufour == '4.00' ||
+                        importVoyage.beaufour == '4') {
                         newReport.beaufour = 'S4';
                     }
-                    else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
+                    else if (importVoyage.beaufour === 's5' ||
+                        importVoyage.beaufour === 'S5' ||
+                        importVoyage.beaufour === 's 5' ||
+                        importVoyage.beaufour == 'S 5' ||
+                        importVoyage.beaufour === '5s' ||
+                        importVoyage.beaufour === '5S' ||
+                        importVoyage.beaufour === '5 s' ||
+                        importVoyage.beaufour == '5 S' ||
+                        importVoyage.beaufour == '5.00' ||
+                        importVoyage.beaufour == '5') {
                         newReport.beaufour = 'S5';
                     }
-                    else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
+                    else if (importVoyage.beaufour === 's6' ||
+                        importVoyage.beaufour === 'S6' ||
+                        importVoyage.beaufour === 's 6' ||
+                        importVoyage.beaufour == 'S 6' ||
+                        importVoyage.beaufour === '6s' ||
+                        importVoyage.beaufour === '6S' ||
+                        importVoyage.beaufour === '6 s' ||
+                        importVoyage.beaufour == '6 S' ||
+                        importVoyage.beaufour == '6.00' ||
+                        importVoyage.beaufour == '6') {
                         newReport.beaufour = 'S6';
                     }
                     else {
@@ -618,15 +759,18 @@ let VoyagesController = class VoyagesController {
                             delete newVoyage.dateUpdated;
                             newVoyage.status = true;
                             let voyageRegister = await this._voyagesService.Create(newVoyage);
-                            console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
+                            console.log('Se CREO EL VIAJE NUMERO ' +
+                                newVoyage.voyageNumber +
+                                '   con id :' +
+                                newVoyage.id);
                             MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageRegister.id));
                             MappingPort = [];
                         }
                         else {
                             if (voyageExistente.userId != importVoyage.userId)
                                 throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.';
-                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber
-                                || voyageExistente.year != importVoyage.year) {
+                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber ||
+                                voyageExistente.year != importVoyage.year) {
                                 delete voyageExistente.ports;
                                 voyageExistente.voyageNumber = importVoyage.voyageNumber;
                                 voyageExistente.year = importVoyage.year;
@@ -664,27 +808,36 @@ let VoyagesController = class VoyagesController {
                             else {
                                 newPort.startDate = null;
                             }
-                            newPort.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                            newPort.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                            newPort.startIFO =
+                                importVoyage.ROB[0] +
+                                    importVoyage.TOTAL[0] -
+                                    importVoyage.bunkeringIfo;
+                            newPort.startMGO =
+                                importVoyage.ROB[1] +
+                                    importVoyage.TOTAL[1] -
+                                    importVoyage.bunkeringMgo;
                             newPort.userIdCreated = headerToken.id;
                             newPort.dateCreated = (0, moment_assets_1.GetDate)();
                             delete newPort.userIdUpdated;
                             delete newPort.dateUpdated;
                             newPort.status = true;
                             let portRegister = await this._portsService.Create(newPort);
-                            console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
+                            console.log('Se CREO EL PUERTO NUMERO ' +
+                                portRegister.portNumber +
+                                '   con id :' +
+                                portRegister.id);
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portRegister.id));
                         }
                         else {
                             console.log('Entro al else de port');
                             if (portExiste.userId != importVoyage.userId)
                                 throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar';
-                            if ((portExiste.portNumber != importVoyage.portNumber
-                                || portExiste.departurePort != importVoyage.departurePort
-                                || portExiste.arrivalPort != importVoyage.arrivalPort
-                                || portExiste.startIFO != importVoyage.ROB[0]
-                                || portExiste.startMGO != importVoyage.ROB[1])
-                                && importVoyage.updatePort) {
+                            if ((portExiste.portNumber != importVoyage.portNumber ||
+                                portExiste.departurePort != importVoyage.departurePort ||
+                                portExiste.arrivalPort != importVoyage.arrivalPort ||
+                                portExiste.startIFO != importVoyage.ROB[0] ||
+                                portExiste.startMGO != importVoyage.ROB[1]) &&
+                                importVoyage.updatePort) {
                                 portExiste.voyageId = existeViaje.value;
                                 portExiste.portNumber = importVoyage.portNumber;
                                 portExiste.departurePort = importVoyage.departurePort;
@@ -695,12 +848,21 @@ let VoyagesController = class VoyagesController {
                                 else {
                                     delete portExiste.startDate;
                                 }
-                                portExiste.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                                portExiste.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                                portExiste.startIFO =
+                                    importVoyage.ROB[0] +
+                                        importVoyage.TOTAL[0] -
+                                        importVoyage.bunkeringIfo;
+                                portExiste.startMGO =
+                                    importVoyage.ROB[1] +
+                                        importVoyage.TOTAL[1] -
+                                        importVoyage.bunkeringMgo;
                                 delete portExiste.dailyReports;
                                 portExiste.dateUpdated = (0, moment_assets_1.GetDate)();
                                 portExiste.status = true;
-                                console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
+                                console.log('Se actualizo el PUERTO NUMERO ' +
+                                    portExiste.portNumber +
+                                    '   con id :' +
+                                    portExiste.id);
                                 portExiste = await this._portsService.Update(portExiste);
                             }
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portExiste.id));
@@ -720,13 +882,13 @@ let VoyagesController = class VoyagesController {
                     if (ultimaFecha && importVoyage.steamingTime2 > 0) {
                         secrearaunNuevoReporte = true;
                         console.log(importVoyage.steamingTime2);
-                        console.log("fechaAntiguaMasElTiempoDeNavegacion");
+                        console.log('fechaAntiguaMasElTiempoDeNavegacion');
                         console.log(ultimaFecha);
                         let fechaAntiguaMasElTiempoDeNavegacion = (0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(ultimaFecha, importVoyage.steamingTime2);
-                        console.log("mas horas " + importVoyage.steamingTime2);
+                        console.log('mas horas ' + importVoyage.steamingTime2);
                         console.log(fechaAntiguaMasElTiempoDeNavegacion);
                         ultimaFecha = fechaAntiguaMasElTiempoDeNavegacion + '.000';
-                        console.log("ultimaFecha");
+                        console.log('ultimaFecha');
                         console.log(ultimaFecha);
                         if (ultimaFecha.length == 19) {
                             newReport.date = ultimaFecha;
@@ -736,7 +898,8 @@ let VoyagesController = class VoyagesController {
                         }
                         newReport.hour = (0, moment_assets_1.ObtenerlasHorasDeUnaFecaUTC)(ultimaFecha);
                         console.log(newReport.hour);
-                        ultimaFecha = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
+                        ultimaFecha =
+                            (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
                         newReport.date = ultimaFecha;
                         newReport.mplaIfo = importVoyage.mplaIfo || 0;
                         newReport.auxIfo = importVoyage.auxIfo || 0;
@@ -753,22 +916,76 @@ let VoyagesController = class VoyagesController {
                         if (!importVoyage.beaufour) {
                             newReport.beaufour = '';
                         }
-                        else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
+                        else if (importVoyage.beaufour === 's1' ||
+                            importVoyage.beaufour === 'S1' ||
+                            importVoyage.beaufour === 's 1' ||
+                            importVoyage.beaufour == 'S 1' ||
+                            importVoyage.beaufour === '1s' ||
+                            importVoyage.beaufour === '1S' ||
+                            importVoyage.beaufour === '1 s' ||
+                            importVoyage.beaufour == '1 S' ||
+                            importVoyage.beaufour == '1.00' ||
+                            importVoyage.beaufour == '1') {
                             newReport.beaufour = 'S1';
                         }
-                        else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
+                        else if (importVoyage.beaufour === 's2' ||
+                            importVoyage.beaufour === 'S2' ||
+                            importVoyage.beaufour === 's 2' ||
+                            importVoyage.beaufour == 'S 2' ||
+                            importVoyage.beaufour === '2s' ||
+                            importVoyage.beaufour === '2S' ||
+                            importVoyage.beaufour === '2 s' ||
+                            importVoyage.beaufour == '2 S' ||
+                            importVoyage.beaufour == '2.00' ||
+                            importVoyage.beaufour == '2') {
                             newReport.beaufour = 'S2';
                         }
-                        else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
+                        else if (importVoyage.beaufour === 's3' ||
+                            importVoyage.beaufour === 'S3' ||
+                            importVoyage.beaufour === 's 3' ||
+                            importVoyage.beaufour == 'S 3' ||
+                            importVoyage.beaufour === '3s' ||
+                            importVoyage.beaufour === '3S' ||
+                            importVoyage.beaufour === '3 s' ||
+                            importVoyage.beaufour == '3 S' ||
+                            importVoyage.beaufour == '3.00' ||
+                            importVoyage.beaufour == '3') {
                             newReport.beaufour = 'S3';
                         }
-                        else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
+                        else if (importVoyage.beaufour === 's4' ||
+                            importVoyage.beaufour === 'S4' ||
+                            importVoyage.beaufour === 's 4' ||
+                            importVoyage.beaufour == 'S 4' ||
+                            importVoyage.beaufour === '4s' ||
+                            importVoyage.beaufour === '4S' ||
+                            importVoyage.beaufour === '4 s' ||
+                            importVoyage.beaufour == '4 S' ||
+                            importVoyage.beaufour == '4.00' ||
+                            importVoyage.beaufour == '4') {
                             newReport.beaufour = 'S4';
                         }
-                        else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
+                        else if (importVoyage.beaufour === 's5' ||
+                            importVoyage.beaufour === 'S5' ||
+                            importVoyage.beaufour === 's 5' ||
+                            importVoyage.beaufour == 'S 5' ||
+                            importVoyage.beaufour === '5s' ||
+                            importVoyage.beaufour === '5S' ||
+                            importVoyage.beaufour === '5 s' ||
+                            importVoyage.beaufour == '5 S' ||
+                            importVoyage.beaufour == '5.00' ||
+                            importVoyage.beaufour == '5') {
                             newReport.beaufour = 'S5';
                         }
-                        else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
+                        else if (importVoyage.beaufour === 's6' ||
+                            importVoyage.beaufour === 'S6' ||
+                            importVoyage.beaufour === 's 6' ||
+                            importVoyage.beaufour == 'S 6' ||
+                            importVoyage.beaufour === '6s' ||
+                            importVoyage.beaufour === '6S' ||
+                            importVoyage.beaufour === '6 s' ||
+                            importVoyage.beaufour == '6 S' ||
+                            importVoyage.beaufour == '6.00' ||
+                            importVoyage.beaufour == '6') {
                             newReport.beaufour = 'S6';
                         }
                         else {
@@ -832,9 +1049,14 @@ let VoyagesController = class VoyagesController {
                     else {
                         delete newReport.id;
                     }
-                    ultimaFecha = (0, moment_assets_1.DateDayMonthYear)(importVoyage.date) + ' ' + importVoyage.hour + ':00.000';
+                    ultimaFecha =
+                        (0, moment_assets_1.DateDayMonthYear)(importVoyage.date) +
+                            ' ' +
+                            importVoyage.hour +
+                            ':00.000';
                     console.log(ultimaFecha);
-                    ultimaFecha = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
+                    ultimaFecha =
+                        (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
                     console.log(ultimaFecha);
                     if (ultimaFecha.length == 23) {
                         newReport.date = ultimaFecha;
@@ -850,7 +1072,8 @@ let VoyagesController = class VoyagesController {
                             newReport.hour = importVoyage.hour;
                         }
                         else {
-                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
+                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' +
+                                importVoyage.dailyReportId);
                         }
                     }
                     if (secrearaunNuevoReporte) {
@@ -921,22 +1144,76 @@ let VoyagesController = class VoyagesController {
                         if (!importVoyage.beaufour) {
                             newReport.beaufour = '';
                         }
-                        else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
+                        else if (importVoyage.beaufour === 's1' ||
+                            importVoyage.beaufour === 'S1' ||
+                            importVoyage.beaufour === 's 1' ||
+                            importVoyage.beaufour == 'S 1' ||
+                            importVoyage.beaufour === '1s' ||
+                            importVoyage.beaufour === '1S' ||
+                            importVoyage.beaufour === '1 s' ||
+                            importVoyage.beaufour == '1 S' ||
+                            importVoyage.beaufour == '1.00' ||
+                            importVoyage.beaufour == '1') {
                             newReport.beaufour = 'S1';
                         }
-                        else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
+                        else if (importVoyage.beaufour === 's2' ||
+                            importVoyage.beaufour === 'S2' ||
+                            importVoyage.beaufour === 's 2' ||
+                            importVoyage.beaufour == 'S 2' ||
+                            importVoyage.beaufour === '2s' ||
+                            importVoyage.beaufour === '2S' ||
+                            importVoyage.beaufour === '2 s' ||
+                            importVoyage.beaufour == '2 S' ||
+                            importVoyage.beaufour == '2.00' ||
+                            importVoyage.beaufour == '2') {
                             newReport.beaufour = 'S2';
                         }
-                        else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
+                        else if (importVoyage.beaufour === 's3' ||
+                            importVoyage.beaufour === 'S3' ||
+                            importVoyage.beaufour === 's 3' ||
+                            importVoyage.beaufour == 'S 3' ||
+                            importVoyage.beaufour === '3s' ||
+                            importVoyage.beaufour === '3S' ||
+                            importVoyage.beaufour === '3 s' ||
+                            importVoyage.beaufour == '3 S' ||
+                            importVoyage.beaufour == '3.00' ||
+                            importVoyage.beaufour == '3') {
                             newReport.beaufour = 'S3';
                         }
-                        else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
+                        else if (importVoyage.beaufour === 's4' ||
+                            importVoyage.beaufour === 'S4' ||
+                            importVoyage.beaufour === 's 4' ||
+                            importVoyage.beaufour == 'S 4' ||
+                            importVoyage.beaufour === '4s' ||
+                            importVoyage.beaufour === '4S' ||
+                            importVoyage.beaufour === '4 s' ||
+                            importVoyage.beaufour == '4 S' ||
+                            importVoyage.beaufour == '4.00' ||
+                            importVoyage.beaufour == '4') {
                             newReport.beaufour = 'S4';
                         }
-                        else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
+                        else if (importVoyage.beaufour === 's5' ||
+                            importVoyage.beaufour === 'S5' ||
+                            importVoyage.beaufour === 's 5' ||
+                            importVoyage.beaufour == 'S 5' ||
+                            importVoyage.beaufour === '5s' ||
+                            importVoyage.beaufour === '5S' ||
+                            importVoyage.beaufour === '5 s' ||
+                            importVoyage.beaufour == '5 S' ||
+                            importVoyage.beaufour == '5.00' ||
+                            importVoyage.beaufour == '5') {
                             newReport.beaufour = 'S5';
                         }
-                        else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
+                        else if (importVoyage.beaufour === 's6' ||
+                            importVoyage.beaufour === 'S6' ||
+                            importVoyage.beaufour === 's 6' ||
+                            importVoyage.beaufour == 'S 6' ||
+                            importVoyage.beaufour === '6s' ||
+                            importVoyage.beaufour === '6S' ||
+                            importVoyage.beaufour === '6 s' ||
+                            importVoyage.beaufour == '6 S' ||
+                            importVoyage.beaufour == '6.00' ||
+                            importVoyage.beaufour == '6') {
                             newReport.beaufour = 'S6';
                         }
                         else {
@@ -1084,63 +1361,99 @@ let VoyagesController = class VoyagesController {
         let numeroViaje = 0;
         let numeroAnio = 0;
         let textIFOorVLSFOorLSFO = '';
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             return this._usersService.Get(userId);
-        }).then((resultUser) => {
+        })
+            .then((resultUser) => {
             userEntity = resultUser;
             return this._voyagesService.GetLastVoyage(userId);
-        }).then(result => {
+        })
+            .then(result => {
             if (result.length != 2)
                 throw 'ERROR debe de haber mas de 2 viajes.';
             numeroViaje = result[1].voyageNumber;
             numeroAnio = result[1].year;
             voyageId = result[1].id;
             return this._dailyReportsService.GetReportVoyagePortDaily(userId, null, null, voyageId);
-        }).then(resultGetReportVoyagePortDaily => {
+        })
+            .then(resultGetReportVoyagePortDaily => {
             if (resultGetReportVoyagePortDaily.length == 0)
                 throw 'ERROR debe de arrojar mas de un registro';
             listGetReportVoyagePortDaily = resultGetReportVoyagePortDaily;
             let minDate = resultGetReportVoyagePortDaily[0].date;
             let maxDate = resultGetReportVoyagePortDaily[resultGetReportVoyagePortDaily.length - 1].date;
             return this._dailyReportsService.GetStartEndROByFilterDate(minDate, maxDate, userId);
-        }).then(resultGetStartEndROByFilterDate => {
+        })
+            .then(resultGetStartEndROByFilterDate => {
             if (!resultGetStartEndROByFilterDate)
                 throw 'ERROR GetStartEndROByFilterDate';
             let startDataROB = new daily_report_entity_1.GetROBByUser();
             let endDataROB = new daily_report_entity_1.GetROBByUser();
-            startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo;
-            startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo;
-            startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo, 2;
-            startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo, 2;
-            endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo);
-            endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo);
-            endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo, 2;
-            endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo, 2;
+            startDataROB.total_ifo =
+                resultGetStartEndROByFilterDate[0].total_bunkering_ifo -
+                    resultGetStartEndROByFilterDate[0].total_ifo;
+            startDataROB.total_mgo =
+                resultGetStartEndROByFilterDate[0].total_bunkering_mgo -
+                    resultGetStartEndROByFilterDate[0].total_mgo;
+            (startDataROB.total_bunkering_ifo =
+                resultGetStartEndROByFilterDate[0].total_bunkering_ifo),
+                2;
+            (startDataROB.total_bunkering_mgo =
+                resultGetStartEndROByFilterDate[0].total_bunkering_mgo),
+                2;
+            endDataROB.total_ifo =
+                startDataROB.total_ifo +
+                    (resultGetStartEndROByFilterDate[1].total_bunkering_ifo -
+                        resultGetStartEndROByFilterDate[1].total_ifo);
+            endDataROB.total_mgo =
+                startDataROB.total_mgo +
+                    (resultGetStartEndROByFilterDate[1].total_bunkering_mgo -
+                        resultGetStartEndROByFilterDate[1].total_mgo);
+            (endDataROB.total_bunkering_ifo =
+                resultGetStartEndROByFilterDate[1].total_bunkering_ifo),
+                2;
+            (endDataROB.total_bunkering_mgo =
+                resultGetStartEndROByFilterDate[1].total_bunkering_mgo),
+                2;
             getInfoFuelStartEndByFilterDate = new daily_report_entity_1.InfoFuelStartEndForDate(startDataROB, endDataROB);
             return this._formatExcelLastVoyageService.GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity);
-        }).then(resultGenerateFormatObjForExcelEmail => {
+        })
+            .then(resultGenerateFormatObjForExcelEmail => {
             let mailLastVoyage = resultGenerateFormatObjForExcelEmail;
-            mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO ? 'IFO' : userEntity.isConsumptionLSFO ? 'LSFO' : userEntity.isConsumptionVLSFO ? 'VLSFO' : '';
+            mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO
+                ? 'IFO'
+                : userEntity.isConsumptionLSFO
+                    ? 'LSFO'
+                    : userEntity.isConsumptionVLSFO
+                        ? 'VLSFO'
+                        : '';
             if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
                 mailLastVoyage.objMailLastVoyage.isVIew_IFO_VLSFO_LSFO = true;
             }
-            mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO ? 'MGO' : '';
+            mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO
+                ? 'MGO'
+                : '';
             if (mailLastVoyage.objMailLastVoyage.MGO) {
                 mailLastVoyage.objMailLastVoyage.isVIew_MGO = true;
             }
-            return (0, nodemailer_assets_1.SendMailArchiveInfoLastVoyage)(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
-        }).then(result => {
+            return (0, nodemailer_assets_1.SendMailArchiveInfoLastVoyage)(sendMailConfig.emails, userEntity.name, userEntity.name + ' Voyage Nº' + numeroViaje + ' - ' + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
+        })
+            .then(result => {
             if (!result) {
                 throw 'ERROR SUPPORT';
             }
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: result
+                data: result,
             };
-        }).catch(err => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch(err => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -1152,7 +1465,12 @@ let VoyagesController = class VoyagesController {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         voyages.forEach(async (voyage) => {
             if (voyage.SyncStatus === 'added') {
-                if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+                if (voyage &&
+                    Number(voyage.userId) &&
+                    Number(voyage.voyageNumber) &&
+                    Number(voyage.year) &&
+                    headerToken &&
+                    headerToken.id) {
                     if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                     }
                     else if (voyage.userId !== headerToken.id)
@@ -1169,7 +1487,12 @@ let VoyagesController = class VoyagesController {
                     throw 'MISSING_FIELS';
             }
             else if (voyage.SyncStatus === 'update') {
-                if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
+                if (voyage &&
+                    voyage.userId &&
+                    voyage.voyageNumber &&
+                    voyage.year &&
+                    headerToken &&
+                    headerToken.id) {
                     voyage.id = Number(voyage.id);
                     if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                     }
@@ -1200,7 +1523,8 @@ let VoyagesController = class VoyagesController {
         console.log(JSON.stringify(saveDataModuleCombustible));
         console.log('-----------[  END saveModuleVoyage   ]---------------');
         console.log('--------------------------');
-        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then((resultDummy) => {
             if (saveDataModuleCombustible) {
                 if (saveDataModuleCombustible.listVoyages) {
                     return this._voyagesService.SaveList(saveDataModuleCombustible.listVoyages);
@@ -1211,7 +1535,8 @@ let VoyagesController = class VoyagesController {
             }
             else
                 throw 'MISSING_FIELS';
-        }).then((resultMappingVoyages) => {
+        })
+            .then((resultMappingVoyages) => {
             mappingVoyages = resultMappingVoyages;
             if (saveDataModuleCombustible.listPorts) {
                 return this._portsService.SaveList(mappingVoyages, saveDataModuleCombustible.listPorts);
@@ -1219,7 +1544,8 @@ let VoyagesController = class VoyagesController {
             else {
                 return [];
             }
-        }).then((resultMappingPorts) => {
+        })
+            .then((resultMappingPorts) => {
             mappingPorts = resultMappingPorts;
             if (saveDataModuleCombustible.listDailyReports) {
                 return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
@@ -1227,15 +1553,17 @@ let VoyagesController = class VoyagesController {
             else {
                 return [];
             }
-        }).then((resultMappingDailyReports) => {
+        })
+            .then((resultMappingDailyReports) => {
             mappingDailyReports = resultMappingDailyReports;
-            if (saveDataModuleCombustible.listDailyReports) {
-                return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
+            if (saveDataModuleCombustible.listDailyReportSummaries) {
+                return this._dailyReportSummaryService.SaveList(mappingVoyages, mappingPorts, saveDataModuleCombustible.listDailyReportSummaries);
             }
             else {
                 return [];
             }
-        }).then((resultMappingDailyReportSummaries) => {
+        })
+            .then((resultMappingDailyReportSummaries) => {
             mappingDailyReportSummaries = resultMappingDailyReportSummaries;
             return {
                 status: common_1.HttpStatus.OK,
@@ -1244,8 +1572,8 @@ let VoyagesController = class VoyagesController {
                     mappingVoyages: mappingVoyages,
                     mappingPorts: mappingPorts,
                     mappingDailyReports: mappingDailyReports,
-                    mappingDailyReportSummaries: mappingDailyReportSummaries
-                }
+                    mappingDailyReportSummaries: mappingDailyReportSummaries,
+                },
             };
         });
     }
@@ -1360,6 +1688,7 @@ exports.VoyagesController = VoyagesController = __decorate([
     __metadata("design:paramtypes", [voyages_service_1.VoyagesService,
         ports_service_1.PortsService,
         daily_reports_service_1.DailyReportsService,
+        daily_report_summary_service_1.DailyReportSummaryService,
         format_excel_last_voyage_service_1.FormatExcelLastVoyageService,
         users_service_1.UsersService])
 ], VoyagesController);

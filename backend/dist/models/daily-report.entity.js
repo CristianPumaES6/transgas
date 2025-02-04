@@ -32,11 +32,23 @@ __decorate([
     __metadata("design:type", port_entity_1.Port)
 ], DailyReport.prototype, "port", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 18,
+        scale: 8,
+        default: '',
+        nullable: true,
+    }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "north_degree", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 18,
+        scale: 8,
+        default: '',
+        nullable: true,
+    }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "north_minutes", void 0);
 __decorate([
@@ -44,11 +56,23 @@ __decorate([
     __metadata("design:type", String)
 ], DailyReport.prototype, "north_north_south", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 18,
+        scale: 8,
+        default: '',
+        nullable: true,
+    }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "east_degree", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
+    (0, typeorm_1.Column)({
+        type: 'decimal',
+        precision: 18,
+        scale: 8,
+        default: '',
+        nullable: true,
+    }),
     __metadata("design:type", Number)
 ], DailyReport.prototype, "east_minutes", void 0);
 __decorate([
@@ -56,7 +80,7 @@ __decorate([
     __metadata("design:type", String)
 ], DailyReport.prototype, "east_east_west", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: "Otros" }),
+    (0, typeorm_1.Column)({ default: 'Otros' }),
     __metadata("design:type", String)
 ], DailyReport.prototype, "activityPerformed", void 0);
 __decorate([

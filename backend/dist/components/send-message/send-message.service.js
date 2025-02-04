@@ -27,9 +27,14 @@ let SendMessageService = class SendMessageService {
         return await false;
     }
     async Create(sendMessageEntity) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._sendMessageRepository.query("SP_ @userId='" + sendMessageEntity.userId + "', @year='" + sendMessageEntity.emails + "'");
+                return this._sendMessageRepository.query("SP_ @userId='" +
+                    sendMessageEntity.userId +
+                    "', @year='" +
+                    sendMessageEntity.emails +
+                    "'");
             }
             else {
                 if (sendMessageEntity.id) {
@@ -39,27 +44,31 @@ let SendMessageService = class SendMessageService {
                                 userId: sendMessageEntity.userId,
                                 emails: sendMessageEntity.emails,
                                 status: true,
-                            }
+                            },
                         ],
                         take: 1,
                         order: {
                             id: 'DESC',
-                        }
+                        },
                     });
                 }
                 else {
                     return true;
                 }
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             if (result) {
                 if (server_config_1.URL_Server.bd === 'MSSQL') {
                     return this._sendMessageRepository.query(`
                             SP_ @userId =  ${sendMessageEntity.userId}  ,
                             @userIdCreated =   ${sendMessageEntity.userIdCreated} ,
                             @dateCreated = '${sendMessageEntity.dateCreated}',
-                            @userIdUpdated =  ${sendMessageEntity.userIdUpdated ? sendMessageEntity.userIdUpdated : 0} ,
-                            @dateUpdated = '${sendMessageEntity.dateUpdated || ''}' ,
+                            @userIdUpdated =  ${sendMessageEntity.userIdUpdated
+                        ? sendMessageEntity.userIdUpdated
+                        : 0} ,
+                            @dateUpdated = '${sendMessageEntity.dateUpdated ||
+                        ''}' ,
                             @status = ${sendMessageEntity.status} 
                             `);
                 }
@@ -71,8 +80,8 @@ let SendMessageService = class SendMessageService {
                     return this._sendMessageRepository.save(sendMessageEntity);
                 }
             }
-            ;
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se pudo guardar la configuracion del mail.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -86,21 +95,25 @@ let SendMessageService = class SendMessageService {
         });
     }
     async BuscamosLaConfiracionDelBuque(sendMessageEntity) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
             }
             else {
                 return this._sendMessageRepository.find({
-                    where: [{
+                    where: [
+                        {
                             userId: Number(sendMessageEntity.userId),
-                            status: (0, typeorm_2.Not)(false)
-                        }],
+                            status: (0, typeorm_2.Not)(false),
+                        },
+                    ],
                     order: {
                         id: 'ASC',
-                    }
+                    },
                 });
             }
-        }).then((resultFind) => {
+        })
+            .then((resultFind) => {
             if (!resultFind)
                 throw new Error('does_not_exist');
             if (resultFind && resultFind.length > 0) {

@@ -20,10 +20,7 @@ exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
-        imports: [
-            jwt_1.JwtModule.register(jwt_config_1.JWTCONFIG),
-            users_module_1.UsersModule,
-        ],
+        imports: [jwt_1.JwtModule.register(jwt_config_1.JWTCONFIG), users_module_1.UsersModule],
         exports: [auth_service_1.AuthService],
     })
 ], AuthModule);

@@ -33,7 +33,8 @@ let BunkerOilService = class BunkerOilService {
         this._BunkerOil = _BunkerOil;
     }
     async Gets(groupOilEntity) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -41,28 +42,33 @@ let BunkerOilService = class BunkerOilService {
                 return this._BunkerOil.find({
                     where: [
                         {
-                            id: (groupOilEntity.id || (0, typeorm_2.Like)('%' + '%')),
-                            userId: (groupOilEntity.userId || (0, typeorm_2.Like)('%' + '%')),
-                            status: (0, typeorm_2.Not)(false)
-                        }
-                    ]
+                            id: groupOilEntity.id || (0, typeorm_2.Like)('%' + '%'),
+                            userId: groupOilEntity.userId || (0, typeorm_2.Like)('%' + '%'),
+                            status: (0, typeorm_2.Not)(false),
+                        },
+                    ],
                 });
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.';
             return result;
         });
     }
     async Create(bunkerOil) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._BunkerOil.query("SP_CheckTheLastRecordedTrip @userId='" + bunkerOil.userId + "', @year='");
+                return this._BunkerOil.query("SP_CheckTheLastRecordedTrip @userId='" +
+                    bunkerOil.userId +
+                    "', @year='");
             }
             else {
                 return this._BunkerOil.save(bunkerOil);
             }
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el Bunker del equipo.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {

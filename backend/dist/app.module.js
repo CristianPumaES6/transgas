@@ -40,18 +40,20 @@ exports.AppModule = AppModule = __decorate([
                 },
                 extra: {
                     trustServerCertificate: true,
-                }
+                },
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
             voyages_module_1.VoyagesModule,
             app_gateway_1.AppGateway,
             send_message_module_1.SendMessageModule,
-            oils_module_1.OilsModule
+            oils_module_1.OilsModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService,
-            app_gateway_1.AppGateway, format_excel_last_voyage_service_1.FormatExcelLastVoyageService
+        providers: [
+            app_service_1.AppService,
+            app_gateway_1.AppGateway,
+            format_excel_last_voyage_service_1.FormatExcelLastVoyageService,
         ],
     })
 ], AppModule);

@@ -11,11 +11,11 @@ const server_config_1 = require("./config/server.config");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const options = {
-        'origin': '*',
-        'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        'preflightContinue': false,
-        'optionsSuccessStatus': 204,
-        'credentials': true,
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+        credentials: true,
     };
     app.enableCors(options);
     app.use(express.static((0, path_1.join)(path_config_1.FOLDER_UPLOADS)));

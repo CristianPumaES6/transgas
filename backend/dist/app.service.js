@@ -36,54 +36,74 @@ let AppService = class AppService {
         return true;
     }
     ListConsumptionLubricantPerMonth(userid, startDate, endDate) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
-            return this._UsersService.Gets({ id: userid, role: 'BUQUE' });
-        }).then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
+            return this._UsersService.Gets({
+                id: userid,
+                role: 'BUQUE',
+            });
+        })
+            .then(result => {
             return this.ConsumptionLubricantPerMonthPerListUsers(result, startDate, endDate);
         });
     }
     GetOilAnalysis(buqueId, ETM_OilAnalysis_Oid) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             return this._ConsumptionEquipmentService.QueryGetTask(buqueId, ETM_OilAnalysis_Oid);
-        }).then(result => {
+        })
+            .then(result => {
             return result;
-        }).catch(result => {
+        })
+            .catch(result => {
             return [];
         });
     }
     SaveFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             return this._ConsumptionEquipmentService.ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid);
-        }).then((result) => {
+        })
+            .then((result) => {
             return result;
-        }).catch(result => {
+        })
+            .catch(result => {
             return [];
         });
     }
     ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             return this._ConsumptionEquipmentService.ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid);
-        }).then((result) => {
+        })
+            .then((result) => {
             return result;
-        }).catch(result => {
+        })
+            .catch(result => {
             return [];
         });
     }
     consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             return this._ConsumptionEquipmentService.consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH);
-        }).then(result => {
+        })
+            .then(result => {
             return result;
-        }).catch(result => {
+        })
+            .catch(result => {
             return [];
         });
     }
     GetShips() {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             return this._ConsumptionEquipmentService.GetShips();
-        }).then(result => {
+        })
+            .then(result => {
             return result;
-        }).catch(result => {
+        })
+            .catch(result => {
             return [];
         });
     }

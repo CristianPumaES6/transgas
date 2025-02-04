@@ -33,7 +33,8 @@ let GroupOilsService = class GroupOilsService {
         this._groupOilRepository = _groupOilRepository;
     }
     async Gets(groupOilEntity) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -41,27 +42,32 @@ let GroupOilsService = class GroupOilsService {
                 return this._groupOilRepository.find({
                     where: [
                         {
-                            id: (groupOilEntity.id || (0, typeorm_2.Like)('%' + '%')),
-                            status: (0, typeorm_2.Not)(false)
-                        }
-                    ]
+                            id: groupOilEntity.id || (0, typeorm_2.Like)('%' + '%'),
+                            status: (0, typeorm_2.Not)(false),
+                        },
+                    ],
                 });
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.';
             return result;
         });
     }
     async Create(groupOilEntity) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._groupOilRepository.query("SP_CheckTheLastRecordedTrip @userId='" + groupOilEntity.userId + "', @year='");
+                return this._groupOilRepository.query("SP_CheckTheLastRecordedTrip @userId='" +
+                    groupOilEntity.userId +
+                    "', @year='");
             }
             else {
                 return this._groupOilRepository.save(groupOilEntity);
             }
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el grupo de aceite.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {

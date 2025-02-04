@@ -13,7 +13,7 @@ exports.BunkerOil = void 0;
 const typeorm_1 = require("typeorm");
 let BunkerOil = class BunkerOil {
     constructor(id, userId, entityOilId, bunker, comment, datetime, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
-        this.SyncStatus = "";
+        this.SyncStatus = '';
         this.id = id || null;
         this.userId = userId || null;
         this.entityOilId = entityOilId || 0;

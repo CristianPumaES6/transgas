@@ -13,7 +13,7 @@ exports.ImportExcelLubricanteDiario = exports.DataModuleOils = exports.OilEntity
 const typeorm_1 = require("typeorm");
 let OilEntity = class OilEntity {
     constructor(id, userId, name, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
-        this.SyncStatus = "";
+        this.SyncStatus = '';
         this.id = id || null;
         this.userId = userId || null;
         this.name = name || '';

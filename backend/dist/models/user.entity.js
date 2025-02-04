@@ -42,7 +42,8 @@ let UserEntity = class UserEntity {
         this.isOtherIFO = isOtherIFO || false;
         this.contractSpeedSailingBallastMGO = contractSpeedSailingBallastMGO || 0;
         this.contractSpeedSailingLadenMGO = contractSpeedSailingLadenMGO || 0;
-        this.contractSpeedSailingEconomicalMGO = contractSpeedSailingEconomicalMGO || 0;
+        this.contractSpeedSailingEconomicalMGO =
+            contractSpeedSailingEconomicalMGO || 0;
         this.loadingConsumptionMGO = loadingConsumptionMGO || 0;
         this.dischargeConsumptionMGO = dischargeConsumptionMGO || 0;
         this.sailingBallastConsumptionMGO = sailingBallastConsumptionMGO || 0;
@@ -53,7 +54,8 @@ let UserEntity = class UserEntity {
         this.otherConsumptionMGO = otherConsumptionMGO || 0;
         this.contractSpeedSailingBallastIFO = contractSpeedSailingBallastIFO || 0;
         this.contractSpeedSailingLadenIFO = contractSpeedSailingLadenIFO || 0;
-        this.contractSpeedSailingEconomicalIFO = contractSpeedSailingEconomicalIFO || 0;
+        this.contractSpeedSailingEconomicalIFO =
+            contractSpeedSailingEconomicalIFO || 0;
         this.loadingConsumptionIFO = loadingConsumptionIFO || 0;
         this.dischargeConsumptionIFO = dischargeConsumptionIFO || 0;
         this.sailingBallastConsumptionIFO = sailingBallastConsumptionIFO || 0;
@@ -67,7 +69,8 @@ let UserEntity = class UserEntity {
         this.isDisplayAverageSpeed = isDisplayAverageSpeed || false;
         this.isDisplayDataMGO = isDisplayDataMGO || false;
         this.isDisplayDataLSFO = isDisplayDataLSFO || false;
-        this.isDisplayVesselPerformanceLSFO = isDisplayVesselPerformanceLSFO || false;
+        this.isDisplayVesselPerformanceLSFO =
+            isDisplayVesselPerformanceLSFO || false;
         this.isDisplayVesselPerformanceMGO = isDisplayVesselPerformanceMGO || false;
         this.consumptionEquipmentME_MGO = consumptionEquipmentME_MGO || 0;
         this.consumptionEquipmentAE_MGO = consumptionEquipmentAE_MGO || 0;

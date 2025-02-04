@@ -21,17 +21,22 @@ let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)
         this.authService = authService;
     }
     async validate(username, password) {
-        return await (0, promises_assets_1.DummyPromise)().then(result => {
+        return await (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (!result)
                 throw Error('Revisar la funcion DummyPromise(); no retorna lo esperado.');
             return this.authService.validateLogin(username, password);
-        }).then((resultValidateLogin) => {
+        })
+            .then((resultValidateLogin) => {
             if (!resultValidateLogin)
                 throw Error('El servicio de authenticacion no retorno lo esperado.');
             return resultValidateLogin;
-        }).catch((err) => {
-            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+        })
+            .catch((err) => {
+            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+            const errorMsg = typeof err === 'string'
+                ? err
+                : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.UnauthorizedException(errorMsg, clientMsg);
         });
     }

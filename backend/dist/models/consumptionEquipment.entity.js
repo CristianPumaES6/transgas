@@ -13,14 +13,15 @@ exports.ConsumptionEquipmentEntity = void 0;
 const typeorm_1 = require("typeorm");
 let ConsumptionEquipmentEntity = class ConsumptionEquipmentEntity {
     constructor(id, userId, date, amount, hourConsumption, observation, entityEquipmentOilCompatibilityId, consumptionTypeId, entityOilAnalysisId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
-        this.SyncStatus = "";
+        this.SyncStatus = '';
         this.id = id || null;
         this.userId = userId || null;
         this.date = date || '';
         this.amount = amount || 0;
         this.hourConsumption = hourConsumption || 0;
         this.observation = observation || '';
-        this.entityEquipmentOilCompatibilityId = entityEquipmentOilCompatibilityId || 0;
+        this.entityEquipmentOilCompatibilityId =
+            entityEquipmentOilCompatibilityId || 0;
         this.consumptionTypeId = consumptionTypeId || 0;
         this.entityOilAnalysisId = entityOilAnalysisId || 0;
         this.userIdCreated = userIdCreated || 0;

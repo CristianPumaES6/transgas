@@ -35,9 +35,14 @@ let VoyagesService = class VoyagesService {
         this.voyageRepository = voyageRepository;
     }
     async Create(voyage) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.voyageRepository.query("SP_CheckTheLastRecordedTrip @userId='" + voyage.userId + "', @year='" + voyage.year + "'");
+                return this.voyageRepository.query("SP_CheckTheLastRecordedTrip @userId='" +
+                    voyage.userId +
+                    "', @year='" +
+                    voyage.year +
+                    "'");
             }
             else {
                 return this.voyageRepository.find({
@@ -46,22 +51,22 @@ let VoyagesService = class VoyagesService {
                             userId: voyage.userId,
                             year: voyage.year,
                             status: true,
-                        }
+                        },
                     ],
                     take: 1,
                     order: {
                         voyageNumber: 'DESC',
-                    }
+                    },
                 });
             }
-        }).then((result) => {
-            if (result && (result.length > 0)) {
+        })
+            .then((result) => {
+            if (result && result.length > 0) {
                 voyage.voyageNumber = voyage.voyageNumber;
             }
             else {
                 voyage.voyageNumber = voyage.voyageNumber;
             }
-            ;
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.voyageRepository.query(`
                     SP_CreateNewVoyage @userId =  ${voyage.userId}  ,
@@ -77,7 +82,8 @@ let VoyagesService = class VoyagesService {
             else {
                 return this.voyageRepository.save(voyage);
             }
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el viaje en la BD.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -91,19 +97,23 @@ let VoyagesService = class VoyagesService {
         });
     }
     async Get(id) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.voyageRepository.query(`EXEC SP_ObtenerViajePorId @voyageId=${id || 0}`);
             }
             else {
                 return this.voyageRepository.find({
-                    where: [{
+                    where: [
+                        {
                             id: id,
-                            status: (0, typeorm_4.Not)(false)
-                        }]
+                            status: (0, typeorm_4.Not)(false),
+                        },
+                    ],
                 });
             }
-        }).then((resultFind) => {
+        })
+            .then((resultFind) => {
             if (!resultFind)
                 throw new Error('voyage_does_not_exist');
             if (resultFind && resultFind.length == 0)
@@ -113,50 +123,55 @@ let VoyagesService = class VoyagesService {
         });
     }
     async Gets(voyage, page = 1) {
-        return await this.voyageRepository.find({
+        return await this.voyageRepository
+            .find({
             where: [
                 {
                     userId: (0, typeorm_3.Like)('%' + (voyage.userId || '') + '%'),
                     voyageNumber: (0, typeorm_3.Like)('%' + (voyage.voyageNumber || '') + '%'),
                     year: (0, typeorm_3.Like)('%' + (voyage.year || '') + '%'),
-                    status: (0, typeorm_4.Not)(false)
-                }
+                    status: (0, typeorm_4.Not)(false),
+                },
             ],
             take: 5,
             skip: 5 * (page - 5),
             order: {
                 voyageNumber: 'DESC',
-            }
-        }).then((result) => {
+            },
+        })
+            .then((result) => {
             return result;
         });
     }
     async GetsDetails(voyage, page = 1) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd == 'MSSQL2') {
                 return this.InfoVoyage(voyage.userId, voyage.year);
             }
             else {
                 return this.voyageRepository.find({
-                    relations: ["ports"],
+                    relations: ['ports'],
                     where: [
                         {
-                            userId: (voyage.userId || ''),
+                            userId: voyage.userId || '',
                             voyageNumber: (0, typeorm_3.Like)('%' + (voyage.voyageNumber || '') + '%'),
                             year: voyage.year,
-                            status: (0, typeorm_4.Not)(false)
-                        }
+                            status: (0, typeorm_4.Not)(false),
+                        },
                     ],
                     take: 5,
                     skip: 5 * (page - 5),
                     order: {
                         voyageNumber: 'DESC',
-                    }
+                    },
                 });
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             return result;
-        }).catch(result => {
+        })
+            .catch(result => {
             throw result;
         });
     }
@@ -164,7 +179,8 @@ let VoyagesService = class VoyagesService {
         var _a, e_1, _b, _c, _d, e_2, _e, _f;
         let voyages = [];
         if (server_config_1.URL_Server.bd === 'MSSQL2') {
-            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}, @year=${year || 0}`);
+            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId ||
+                0}, @year=${year || 0}`);
         }
         let viajesConPuerto = [];
         try {
@@ -172,14 +188,16 @@ let VoyagesService = class VoyagesService {
                 _c = voyages_1_1.value;
                 _g = false;
                 let voyage = _c;
-                let puertos = await this.voyageRepository.query(`EXEC SP_ObtenerLosPuertoDeUnViaje @userId=${userId || 0}, @voyageId=${voyage.id || 0}`);
+                let puertos = await this.voyageRepository.query(`EXEC SP_ObtenerLosPuertoDeUnViaje @userId=${userId ||
+                    0}, @voyageId=${voyage.id || 0}`);
                 let puertosConReportes = [];
                 try {
                     for (var _h = true, puertos_1 = (e_2 = void 0, __asyncValues(puertos)), puertos_1_1; puertos_1_1 = await puertos_1.next(), _d = puertos_1_1.done, !_d; _h = true) {
                         _f = puertos_1_1.value;
                         _h = false;
                         let puerto = _f;
-                        let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @userId=${userId || 0},@portId=${puerto.id || 0}`);
+                        let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @userId=${userId ||
+                            0},@portId=${puerto.id || 0}`);
                         puerto.dailyReports = reportes;
                         puertosConReportes.push(puerto);
                     }
@@ -205,60 +223,71 @@ let VoyagesService = class VoyagesService {
         return viajesConPuerto;
     }
     async InfoUltimos5ResumenViaje(userId) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL2') {
-                return this.voyageRepository.query(`EXEC SP_obtener_los_ultimos_5_resumenes_del_reporte_diario @userId=${userId || 0}`);
+                return this.voyageRepository.query(`EXEC SP_obtener_los_ultimos_5_resumenes_del_reporte_diario @userId=${userId ||
+                    0}`);
             }
             else {
                 throw 'is not bd. wsp: +51 976873362 cpuma@transgas.com.pe';
             }
-        }).then((result) => {
+        })
+            .then((result) => {
             return result;
-        }).catch(result => {
+        })
+            .catch(result => {
             throw result;
         });
     }
     async GetsByYears(voyageFilterByYears) {
-        return await this.voyageRepository.find({
-            relations: ["ports"],
+        return await this.voyageRepository
+            .find({
+            relations: ['ports'],
             where: [
                 {
                     userId: voyageFilterByYears.userId,
                     year: (0, typeorm_2.In)(voyageFilterByYears.years),
-                    status: (0, typeorm_4.Not)(false)
-                }
+                    status: (0, typeorm_4.Not)(false),
+                },
             ],
             order: {
                 id: 'ASC',
-            }
-        }).then((result) => {
+            },
+        })
+            .then((result) => {
             return result;
         });
     }
     async Update(voyage) {
-        return await this.voyageRepository.findOne({
+        return await this.voyageRepository
+            .findOne({
             where: [
-                { id: voyage.id }
-            ]
-        }).then(resultFind => {
+                { id: voyage.id },
+            ],
+        })
+            .then(resultFind => {
             if (!resultFind)
                 throw new Error('voyage_does_not_exist');
             return this.voyageRepository.update(voyage.id, voyage);
-        }).then(resultUpdate => {
+        })
+            .then(resultUpdate => {
             if (!resultUpdate)
                 throw 'TYPEORM_UPDATE_VOYAGE';
             return voyage;
         });
     }
     async Delete(voyage) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd == 'MSSQL') {
                 return this.voyageRepository.query(`EXEC SP_DeleteVoyageById @voyageId=${voyage.id || 0} `);
             }
             else {
                 return this.voyageRepository.update(voyage.id, voyage);
             }
-        }).then((resultSave) => {
+        })
+            .then((resultSave) => {
             if (!resultSave)
                 throw new Error('error_update_delete_voyage');
             if (server_config_1.URL_Server.bd == 'MSSQL') {
@@ -271,9 +300,14 @@ let VoyagesService = class VoyagesService {
         });
     }
     async ThisVoyageNumberExistsInTheYear(voyageNumber, yearVoyage, userId) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @voyageNumber='" + voyageNumber + "', @yearVoyage='" + yearVoyage + "'");
+                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @voyageNumber='" +
+                    voyageNumber +
+                    "', @yearVoyage='" +
+                    yearVoyage +
+                    "'");
             }
             else {
                 return this.voyageRepository.findOne({
@@ -282,12 +316,13 @@ let VoyagesService = class VoyagesService {
                             voyageNumber: voyageNumber,
                             year: yearVoyage,
                             userId: userId,
-                            status: true
-                        }
-                    ]
+                            status: true,
+                        },
+                    ],
                 });
             }
-        }).then((resultFind) => {
+        })
+            .then((resultFind) => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 if (!resultFind && resultFind.length > 0) {
                     throw 'NO_REGISTER';
@@ -300,9 +335,14 @@ let VoyagesService = class VoyagesService {
         });
     }
     async ThisVoyageIdExists(voyageId, userId) {
-        return (0, promises_assets_1.DummyPromise)().then(result => {
+        return (0, promises_assets_1.DummyPromise)()
+            .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @id='" + voyageId + "', @userId='" + userId + "'");
+                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @id='" +
+                    voyageId +
+                    "', @userId='" +
+                    userId +
+                    "'");
             }
             else {
                 return this.voyageRepository.findOne({
@@ -310,12 +350,13 @@ let VoyagesService = class VoyagesService {
                         {
                             id: voyageId,
                             userId: userId,
-                            status: 1
-                        }
-                    ]
+                            status: 1,
+                        },
+                    ],
                 });
             }
-        }).then((resultFind) => {
+        })
+            .then((resultFind) => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 if (!resultFind && resultFind.length > 0)
                     throw 'NO_REGISTER';
@@ -327,7 +368,8 @@ let VoyagesService = class VoyagesService {
         });
     }
     async GetLastVoyage(userId) {
-        return await this.voyageRepository.createQueryBuilder('voyage')
+        return await this.voyageRepository
+            .createQueryBuilder('voyage')
             .select('voyage.id', 'id')
             .addSelect('voyage.voyageNumber', 'voyageNumber')
             .addSelect('voyage.year', 'year')
