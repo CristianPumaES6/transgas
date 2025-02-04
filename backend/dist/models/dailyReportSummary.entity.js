@@ -173,7 +173,7 @@ __decorate([
         nullable: true,
     }),
     __metadata("design:type", Number)
-], DailyReportSummary.prototype, "bunkeringMGO", void 0);
+], DailyReportSummary.prototype, "bunkeringMgo", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'decimal',

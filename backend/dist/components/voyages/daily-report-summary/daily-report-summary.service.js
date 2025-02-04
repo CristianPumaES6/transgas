@@ -98,7 +98,7 @@ let DailyReportSummaryService = class DailyReportSummaryService {
                 newDailyReportSummary.navigationObservations =
                     addDailyReportSummary.navigationObservations;
                 newDailyReportSummary.bunkeringIfo = addDailyReportSummary.bunkeringIfo;
-                newDailyReportSummary.bunkeringMGO = addDailyReportSummary.bunkeringMGO;
+                newDailyReportSummary.bunkeringMgo = addDailyReportSummary.bunkeringMgo;
                 newDailyReportSummary.mplaIfo = addDailyReportSummary.mplaIfo;
                 newDailyReportSummary.auxIfo = addDailyReportSummary.auxIfo;
                 newDailyReportSummary.boilerIfo = addDailyReportSummary.boilerIfo;
@@ -175,7 +175,7 @@ let DailyReportSummaryService = class DailyReportSummaryService {
                 reportSummary.navigationObservations =
                     updateDailyReportSummary.navigationObservations;
                 reportSummary.bunkeringIfo = updateDailyReportSummary.bunkeringIfo;
-                reportSummary.bunkeringMGO = updateDailyReportSummary.bunkeringMGO;
+                reportSummary.bunkeringMgo = updateDailyReportSummary.bunkeringMgo;
                 reportSummary.mplaIfo = updateDailyReportSummary.mplaIfo;
                 reportSummary.auxIfo = updateDailyReportSummary.auxIfo;
                 reportSummary.boilerIfo = updateDailyReportSummary.boilerIfo;
@@ -251,7 +251,7 @@ let DailyReportSummaryService = class DailyReportSummaryService {
                 reportSummary.navigationObservations =
                     deleteDailyReportSummary.navigationObservations;
                 reportSummary.bunkeringIfo = deleteDailyReportSummary.bunkeringIfo;
-                reportSummary.bunkeringMGO = deleteDailyReportSummary.bunkeringMGO;
+                reportSummary.bunkeringMgo = deleteDailyReportSummary.bunkeringMgo;
                 reportSummary.mplaIfo = deleteDailyReportSummary.mplaIfo;
                 reportSummary.auxIfo = deleteDailyReportSummary.auxIfo;
                 reportSummary.boilerIfo = deleteDailyReportSummary.boilerIfo;

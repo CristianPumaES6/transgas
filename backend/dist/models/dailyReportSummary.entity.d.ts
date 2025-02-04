@@ -23,7 +23,7 @@ export declare class DailyReportSummary {
     nauticalMile: number;
     navigationObservations: string;
     bunkeringIfo: number;
-    bunkeringMGO: number;
+    bunkeringMgo: number;
     mplaIfo: number;
     auxIfo: number;
     boilerIfo: number;
