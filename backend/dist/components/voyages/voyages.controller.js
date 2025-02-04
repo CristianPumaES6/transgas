@@ -81,6 +81,7 @@ let VoyagesController = class VoyagesController {
     }
     async GetsDetail(headers, voyage, page) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
+        let voyageDetail;
         return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (voyage) {
                 if (!voyage.userId) {
@@ -102,11 +103,15 @@ let VoyagesController = class VoyagesController {
                 throw new Error('MISSING_FIELS');
         }).then((resultValidate) => {
             return this._voyagesService.GetsDetails(voyage, page);
-        }).then((results) => {
+        }).then((result) => {
+            voyageDetail = result;
+            return this._voyagesService.InfoUltimos5ResumenViaje(voyage.userId);
+        }).then((resultsDailyReportSummary) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results
+                data: voyageDetail,
+                lastReportSummary: resultsDailyReportSummary
             };
         }).catch(err => {
             const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
@@ -1189,6 +1194,7 @@ let VoyagesController = class VoyagesController {
         let mappingVoyages = [];
         let mappingPorts = [];
         let mappingDailyReports = [];
+        let mappingDailyReportSummaries = [];
         console.log('--------------------------');
         console.log('-----------[  START saveModuleVoyage   ]---------------');
         console.log(JSON.stringify(saveDataModuleCombustible));
@@ -1219,20 +1225,26 @@ let VoyagesController = class VoyagesController {
                 return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
             }
             else {
-                return {
-                    mappingReport: [],
-                    registeredReportsList: []
-                };
+                return [];
             }
         }).then((resultMappingDailyReports) => {
-            mappingDailyReports = resultMappingDailyReports.mappingReport;
+            mappingDailyReports = resultMappingDailyReports;
+            if (saveDataModuleCombustible.listDailyReports) {
+                return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
+            }
+            else {
+                return [];
+            }
+        }).then((resultMappingDailyReportSummaries) => {
+            mappingDailyReportSummaries = resultMappingDailyReportSummaries;
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
                 data: {
                     mappingVoyages: mappingVoyages,
                     mappingPorts: mappingPorts,
-                    mappingDailyReports: mappingDailyReports
+                    mappingDailyReports: mappingDailyReports,
+                    mappingDailyReportSummaries: mappingDailyReportSummaries
                 }
             };
         });

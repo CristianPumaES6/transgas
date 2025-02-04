@@ -65,11 +65,12 @@ class ImportVoyage {
 }
 exports.ImportVoyage = ImportVoyage;
 class DataModuleCombustible {
-    constructor(userId, listVoyages, listPorts, listDailyReports) {
+    constructor(userId, listVoyages, listPorts, listDailyReports, listDailyReportSummaries) {
         this.userId = userId || null;
         this.listVoyages = listVoyages || [];
         this.listPorts = listPorts || [];
         this.listDailyReports = listDailyReports || [];
+        this.listDailyReportSummaries = listDailyReportSummaries || [];
     }
 }
 exports.DataModuleCombustible = DataModuleCombustible;

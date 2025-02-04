@@ -1,5 +1,6 @@
 import { Port } from './port.entity';
 import { DailyReport } from './daily-report.entity';
+import { DailyReportSummary } from './dailyReportSummary.entity';
 export declare class Voyage {
     id: number;
     ports: Port[];
@@ -68,5 +69,6 @@ export declare class DataModuleCombustible {
     listVoyages: Voyage[];
     listPorts: Port[];
     listDailyReports: DailyReport[];
-    constructor(userId?: number, listVoyages?: Voyage[], listPorts?: Port[], listDailyReports?: DailyReport[]);
+    listDailyReportSummaries: DailyReportSummary[];
+    constructor(userId?: number, listVoyages?: Voyage[], listPorts?: Port[], listDailyReports?: DailyReport[], listDailyReportSummaries?: DailyReportSummary[]);
 }

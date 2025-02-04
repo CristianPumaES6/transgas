@@ -21,7 +21,7 @@ export declare class DailyReportsService {
     GetReportDNVByUser(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
     GetReportDNVByUserNOON(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
     GetReportBuroBerita(userId: number, startDate: Date, endDate: Date): Promise<GetReportVoyagePortDaily[]>;
-    SaveList(MappingPorts: Mapping[], importDailyReport: DailyReport[]): Promise<SaveListDailyReport>;
+    SaveList(MappingPorts: Mapping[], importDailyReport: DailyReport[]): Promise<Mapping[]>;
 }
 export interface SaveListDailyReport {
     mappingReport: Mapping[];

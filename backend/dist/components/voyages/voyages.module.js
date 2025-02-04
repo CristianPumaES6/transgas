@@ -16,13 +16,14 @@ const ports_module_1 = require("./ports/ports.module");
 const daily_reports_module_1 = require("./daily-reports/daily-reports.module");
 const format_excel_last_voyage_service_1 = require("../../services/format-excel-last-voyage/format-excel-last-voyage.service");
 const users_module_1 = require("../users/users.module");
+const dailyReportSummary_entity_1 = require("../../models/dailyReportSummary.entity");
 let VoyagesModule = class VoyagesModule {
 };
 exports.VoyagesModule = VoyagesModule;
 exports.VoyagesModule = VoyagesModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([voyage_entity_1.Voyage]),
+            typeorm_1.TypeOrmModule.forFeature([voyage_entity_1.Voyage, dailyReportSummary_entity_1.DailyReportSummary]),
             ports_module_1.PortsModule,
             daily_reports_module_1.DailyReportsModule,
             users_module_1.UsersModule

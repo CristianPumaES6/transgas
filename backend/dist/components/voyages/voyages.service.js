@@ -204,6 +204,20 @@ let VoyagesService = class VoyagesService {
         }
         return viajesConPuerto;
     }
+    async InfoUltimos5ResumenViaje(userId) {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
+            if (server_config_1.URL_Server.bd === 'MSSQL2') {
+                return this.voyageRepository.query(`EXEC SP_obtener_los_ultimos_5_resumenes_del_reporte_diario @userId=${userId || 0}`);
+            }
+            else {
+                throw 'is not bd. wsp: +51 976873362 cpuma@transgas.com.pe';
+            }
+        }).then((result) => {
+            return result;
+        }).catch(result => {
+            throw result;
+        });
+    }
     async GetsByYears(voyageFilterByYears) {
         return await this.voyageRepository.find({
             relations: ["ports"],

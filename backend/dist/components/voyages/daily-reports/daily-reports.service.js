@@ -1116,10 +1116,7 @@ let DailyReportsService = class DailyReportsService {
             }
             finally { if (e_3) throw e_3.error; }
         }
-        return {
-            mappingReport: mappingDailyReports,
-            registeredReportsList: listDeReportesRegistrados
-        };
+        return mappingDailyReports;
     }
 };
 exports.DailyReportsService = DailyReportsService;
