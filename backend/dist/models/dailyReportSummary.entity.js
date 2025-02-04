@@ -109,11 +109,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
-], DailyReportSummary.prototype, "BunkeringIfo", void 0);
+], DailyReportSummary.prototype, "bunkeringIfo", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
-], DailyReportSummary.prototype, "BunkeringMGO", void 0);
+], DailyReportSummary.prototype, "bunkeringMGO", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
@@ -129,7 +129,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)
-], DailyReportSummary.prototype, "OtherIfo", void 0);
+], DailyReportSummary.prototype, "otherIfo", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: '', nullable: true }),
     __metadata("design:type", Number)

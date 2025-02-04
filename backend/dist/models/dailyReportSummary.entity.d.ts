@@ -22,12 +22,12 @@ export declare class DailyReportSummary {
     distanceSailed: number;
     nauticalMile: number;
     navigationObservations: string;
-    BunkeringIfo: number;
-    BunkeringMGO: number;
+    bunkeringIfo: number;
+    bunkeringMGO: number;
     mplaIfo: number;
     auxIfo: number;
     boilerIfo: number;
-    OtherIfo: number;
+    otherIfo: number;
     mplaMgo: number;
     auxMgo: number;
     boilerMgo: number;
