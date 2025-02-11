@@ -15,11 +15,9 @@ import { FOLDER_UPLOADS } from '../../config/path.config';
   //Importamos el TypeOrm con el modulo a usar, para que funcione en el servicio.
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
-    MulterModule.register(
-      {
-        dest: FOLDER_UPLOADS,
-      }
-    ),
+    MulterModule.register({
+      dest: FOLDER_UPLOADS,
+    }),
   ],
   // Exportamos el servicio para que lo usemos desde otro lado.
   exports: [UsersService],

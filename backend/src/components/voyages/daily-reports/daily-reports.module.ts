@@ -4,12 +4,11 @@ import { DailyReportsController } from './daily-reports.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DailyReport } from '../../../models/daily-report.entity';
 
-@Module({  //Importamos el TypeOrm con el modulo a usar, para que funcione en el servicio.
-  imports: [
-    TypeOrmModule.forFeature([DailyReport]),
-  ],
+@Module({
+  //Importamos el TypeOrm con el modulo a usar, para que funcione en el servicio.
+  imports: [TypeOrmModule.forFeature([DailyReport])],
   providers: [DailyReportsService],
   controllers: [DailyReportsController],
-  exports: [DailyReportsService]
+  exports: [DailyReportsService],
 })
-export class DailyReportsModule { }
+export class DailyReportsModule {}

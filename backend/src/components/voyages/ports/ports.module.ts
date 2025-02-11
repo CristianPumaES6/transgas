@@ -5,13 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Port } from '../../../models/port.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Port]),
-  ],
+  imports: [TypeOrmModule.forFeature([Port])],
   providers: [PortsService],
   controllers: [PortsController],
-  exports: [PortsService]
+  exports: [PortsService],
 })
-export class PortsModule {
-
-}
+export class PortsModule {}

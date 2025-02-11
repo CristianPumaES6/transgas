@@ -5,160 +5,139 @@ import { ImportExcelLubricanteDiario, OilEntity } from '../../models/oil.entity'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult } from 'typeorm';
-import { Like } from "typeorm";
-import { Not } from "typeorm";
+import { Like } from 'typeorm';
+import { Not } from 'typeorm';
 
-// Otras librerias. 
+// Otras librerias.
 import * as bcrypt from 'bcrypt';
 import { ROUNDS_BCRYPT } from '../../config/bcrypt.config';
-import { URL_Server } from '../../config/server.config'
+import { URL_Server } from '../../config/server.config';
 
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
-import { ConvertDDMMYYYYToUTC, ConvertMMDDYYYToYYYYMMDD, DateDayMonthYear, FormatDateUTCToDate, FormatDateUTCToDateYYYYMM, GetDate } from '../../assets/moment.assets';
+import {
+  ConvertDDMMYYYYToUTC,
+  ConvertMMDDYYYToYYYYMMDD,
+  DateDayMonthYear,
+  FormatDateUTCToDate,
+  FormatDateUTCToDateYYYYMM,
+  GetDate,
+} from '../../assets/moment.assets';
 import { Mapping } from '../../assets/mappingKeys';
 import { mathRound } from '../../assets/math.assets';
 import { ConsumptionEquipmentEntity } from 'src/models/consumptionEquipment.entity';
 
-
 @Injectable()
 export class OilsService {
+  constructor(
+    @InjectRepository(OilEntity)
+    private _oilRepository: Repository<OilEntity>,
+  ) {}
 
-    constructor(
-        @InjectRepository(OilEntity)
-        private _oilRepository: Repository<OilEntity>,
-    ) { }
-
-    // Retorna a un objeto por id.
-    async Get(id: Number): Promise<OilEntity> {
-
-        return DummyPromise().then(
-            result => {
-
-                if (URL_Server.bd === 'MSSQL') {
-                    // Buscamos el viaje
-                    return this._oilRepository.query(`
+  // Retorna a un objeto por id.
+  async Get(id: Number): Promise<OilEntity> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          // Buscamos el viaje
+          return this._oilRepository.query(`
                      EXEC SP_BuscarReportePorId 
                     @dailyReportId = ${id} 
                     `);
+        } else {
+          return this._oilRepository.find({
+            where: [
+              {
+                id: id,
+              },
+            ],
+          });
+        }
+      })
+      .then((resultFind: OilEntity[]) => {
+        // Validamos si encontro al usuario.
+        if (!resultFind) throw new Error('does_not_exist');
+        if (resultFind && resultFind.length == 0) throw new Error('does_not_exist');
 
-                } else {
+        let returnDailyReport = resultFind[0];
+        // retornamos el objeto.
+        return returnDailyReport;
+      });
+  }
 
+  async Gets(oilEntity: OilEntity): Promise<OilEntity[]> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return null;
 
-                    return this._oilRepository.find({
-                        where: [{
-                            id: id,
-                        }]
-                    });
-                }
+          //  return hthis.userRepository.query(
+          //
+          // `EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
+          // `
+          // );
+        } else {
+          return this._oilRepository.find({
+            where: [
+              // name && surname && nick && email
+              {
+                name: Like('%' + (oilEntity.name || '') + '%'),
+                status: Not(false),
+              },
+            ],
+          });
+        }
+      })
+      .then((result: OilEntity[]) => {
+        if (!result) throw 'ERROR AL CONSULTAR LOS ACEITES.';
 
-            }
-        ).then(
-            (resultFind: OilEntity[]) => {
-                // Validamos si encontro al usuario.
-                if (!resultFind) throw new Error('does_not_exist');
-                if (resultFind && resultFind.length == 0) throw new Error('does_not_exist');
+        // No lo validamos por que puede llegar vacio.
+        return result;
+      });
+  }
 
-
-                let returnDailyReport = resultFind[0];
-                // retornamos el objeto.
-                return returnDailyReport;
-            }
-        );
-    }
-
-    async Gets(oilEntity: OilEntity): Promise<OilEntity[]> {
-
-        return DummyPromise().then(
-            result => {
-
-                if (URL_Server.bd === 'MSSQL') {
-
-                    return null
-                    
-                    //  return hthis.userRepository.query(
-                    //
-                    // `EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
-                    // `
-                    // );
-
-                } else {
-
-                    return this._oilRepository.find({
-                        where: [
-                            // name && surname && nick && email
-                            { 
-                                name: Like('%' + (oilEntity.name || '') + '%'),
-                                status: Not(false)
-                            }
-                        ]
-                    });
-
-                }
-
-
-            }
-        ).then(
-            (result: OilEntity[]) => {
-
-                if (!result) throw 'ERROR AL CONSULTAR LOS ACEITES.'
-
-                // No lo validamos por que puede llegar vacio.
-                return result;
-            }
-        )
-    }
-
-
-    async Create(oilEntity: OilEntity): Promise<OilEntity> {
-
-        // buscamos si el nick o email ya esta en uso.
-        return DummyPromise().then(
-            result => {
- 
-            if (URL_Server.bd === 'MSSQL') {
-                return /*this.userRepository.query(
+  async Create(oilEntity: OilEntity): Promise<OilEntity> {
+    // buscamos si el nick o email ya esta en uso.
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return; /*this.userRepository.query(
                     `
                     EXEC SP_CreateNewUser
                     @nick ='${user.nick || ''}'
                     `
                 );*/
-            } else {
-                return this._oilRepository.save(oilEntity);
-            }
+        } else {
+          return this._oilRepository.save(oilEntity);
+        }
+      })
+      .then((resultSave: any) => {
+        if (!resultSave) throw new Error('No se puedo registrar el aceite en la BD.');
 
-        }).then(
-            (resultSave: any) => {
+        if (URL_Server.bd === 'MSSQL') {
+          // MSSQL
+          if (resultSave.length == 0) throw new Error('No se puedo registrar el aceite en la BD.');
+          return resultSave[0];
+        } else {
+          // SLQITE
+          return resultSave;
+        }
+      });
+  }
 
-
-                if (!resultSave) throw new Error('No se puedo registrar el aceite en la BD.');
-
-                if (URL_Server.bd === 'MSSQL') {
-                    // MSSQL
-                    if (resultSave.length == 0) throw new Error('No se puedo registrar el aceite en la BD.');
-                    return resultSave[0];
-                } else {
-                    // SLQITE
-                    return resultSave;
-                }
-            }
-        );
-    }
-
-    // Actualiza un aceite
-    async Update(oilEntity: OilEntity): Promise<OilEntity> {
-
-        return DummyPromise().then
-            (result => {
-                return this.Get(oilEntity.id);
-            }).then(resultFind => {
-
-                // Validamos si encontro al SailingAnality.
-                if (!resultFind) throw new Error('does_not_exist');
-                if (URL_Server.bd === 'MSSQL') {
-                    // Buscamos el viaje
-                    return null  /*this._dailyReportRepository.query(`
+  // Actualiza un aceite
+  async Update(oilEntity: OilEntity): Promise<OilEntity> {
+    return DummyPromise()
+      .then(result => {
+        return this.Get(oilEntity.id);
+      })
+      .then(resultFind => {
+        // Validamos si encontro al SailingAnality.
+        if (!resultFind) throw new Error('does_not_exist');
+        if (URL_Server.bd === 'MSSQL') {
+          // Buscamos el viaje
+          return null; /*this._dailyReportRepository.query(`
                     EXEC SP_UpdateDailyReport  
                         @id = ${dailyReport.userId} 
                         ,@userId = ${dailyReport.userId} 
@@ -187,152 +166,130 @@ export class OilsService {
                         ,@dateUpdated = '${dailyReport.dateUpdated || ''}'
                         ,@status = ${dailyReport.status}
                 `);*/
+        } else {
+          return this._oilRepository.update(oilEntity.id, oilEntity);
+        }
+        // Actualizamos
+      })
+      .then(resultUpdate => {
+        if (!resultUpdate) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+        if (URL_Server.bd === 'MSSQL') {
+          // if ( resultUpdate && resultUpdate.length == 0) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
+        }
+        // Envio respuesta con el resultado recibido del ultimo paso
+        return oilEntity;
+      });
+  }
 
-                } else {
-                    return this._oilRepository.update(oilEntity.id, oilEntity);
+  // Elimina a un aceite por id
+  async Delete(oilEntity: OilEntity, usuarioDelete: number): Promise<OilEntity> {
+    let returnOilEntity: OilEntity;
+    return DummyPromise()
+      .then(result => {
+        return this.Get(oilEntity.id);
+      })
+      .then(resultFind => {
+        // Validamos si encontro al usuario.
+        if (!resultFind) throw new Error('does_not_exist');
 
-                }
-                // Actualizamos
+        resultFind.userIdUpdated = usuarioDelete;
+        resultFind.dateUpdated = GetDate();
+        resultFind.status = false;
 
-            }).then(resultUpdate => {
+        returnOilEntity = resultFind;
+        // verificamos que el email no este en uso, recordemos que el email es unico.
+        return this.Update(resultFind);
+      })
+      .then(resultSave => {
+        // Validamos si encontro al usuario.
+        if (!resultSave) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
 
-                if (!resultUpdate) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
-                if (URL_Server.bd === 'MSSQL') {
+        return returnOilEntity;
+      });
+  }
 
-                    // if ( resultUpdate && resultUpdate.length == 0) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
-                }
-                // Envio respuesta con el resultado recibido del ultimo paso
-                return oilEntity;
-            });
+  // guarda una lista de aceite.
+  async SaveList(importOils: OilEntity[]) {
+    let MappingOilEntity: Mapping[] = [];
+    // Filtramos los datos que faltan aggregar y actualizar.
+    const addOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'added');
+    const updOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'updated');
+    const deleteOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'deleted');
+
+    for await (const oil of addOilEntity) {
+      // Armamos al nuevo aceite
+      let newOil = new OilEntity();
+
+      delete newOil.id;
+      newOil.userId = oil.userId;
+      newOil.name = oil.name;
+
+      // Auditoria.
+      newOil.userIdCreated = oil.userIdCreated;
+      newOil.dateCreated = GetDate();
+      delete newOil.userIdUpdated;
+      delete newOil.dateUpdated;
+      newOil.status = Boolean(oil.status);
+
+      // Registramos grupo de aceite
+      let registeredGroupOil = await this.Create(newOil);
+
+      // Lo agregamos al mapping
+      MappingOilEntity.push(new Mapping(oil.id, registeredGroupOil.id));
     }
 
-    // Elimina a un aceite por id
-    async Delete(oilEntity: OilEntity, usuarioDelete: number): Promise<OilEntity> {
-       
-       let returnOilEntity:OilEntity;
-        return DummyPromise().then(
-            result => {
-                return this.Get(oilEntity.id);
-            }
-        ).then(
-            resultFind => {
-                // Validamos si encontro al usuario.
-                if (!resultFind) throw new Error('does_not_exist');
+    for await (const oil of updOilEntity) {
+      // Armamos al nuevo aceite
+      let updatedOil = new OilEntity();
 
+      updatedOil.id = oil.id;
+      updatedOil.userId = oil.userId;
+      updatedOil.name = oil.name;
 
-                resultFind.userIdUpdated = usuarioDelete;
-                resultFind.dateUpdated = GetDate();
-                resultFind.status = false;
+      // Auditoria.
+      updatedOil.userIdCreated = oil.userIdCreated;
+      updatedOil.dateCreated = oil.dateCreated;
+      updatedOil.userIdUpdated = oil.userIdUpdated;
+      updatedOil.dateUpdated = oil.dateUpdated;
+      updatedOil.status = Boolean(oil.status);
 
-                returnOilEntity = resultFind; 
-                // verificamos que el email no este en uso, recordemos que el email es unico.
-                return this.Update(resultFind);
-            }
-        ).then(
-            resultSave => {
-
-                // Validamos si encontro al usuario.
-                if (!resultSave) throw new Error('ERROR_TYPEORM_UPDATE_PORT');
-
-                return returnOilEntity;
-            }
-        )
+      await this._oilRepository.save(updatedOil);
     }
 
-    
-    // guarda una lista de aceite.
-    async SaveList( importOils: OilEntity[] ) {
- 
+    for await (let oil of deleteOilEntity) {
+      // Armamos al nuevo aceite
+      let deleteOil = new OilEntity();
 
-        let MappingOilEntity: Mapping[] = [];
-        // Filtramos los datos que faltan aggregar y actualizar.
-        const addOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'added');
-        const updOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'updated');
-        const deleteOilEntity = importOils.filter((importOil: OilEntity) => importOil.SyncStatus == 'deleted');
+      deleteOil.id = oil.id;
+      deleteOil.userId = oil.userId;
+      deleteOil.name = oil.name;
 
+      // Auditoria.
+      deleteOil.userIdCreated = oil.userIdCreated;
+      deleteOil.dateCreated = oil.dateCreated;
+      deleteOil.userIdUpdated = oil.userIdUpdated;
+      deleteOil.dateUpdated = oil.dateUpdated;
+      deleteOil.status = Boolean(oil.status);
 
- 
-        for await (const oil of addOilEntity) {
-            // Armamos al nuevo aceite
-            let newOil = new OilEntity();
-
-            delete newOil.id;
-            newOil.userId = oil.userId;
-            newOil.name = oil.name;
-
-            // Auditoria.
-            newOil.userIdCreated = oil.userIdCreated;
-            newOil.dateCreated = GetDate();
-            delete newOil.userIdUpdated;
-            delete newOil.dateUpdated;
-            newOil.status = Boolean(oil.status);
-
-            // Registramos grupo de aceite
-            let registeredGroupOil = await this.Create(newOil);
-
-            // Lo agregamos al mapping
-            MappingOilEntity.push(new Mapping(oil.id, registeredGroupOil.id))
-        }
-
-        for await (const oil of updOilEntity) {
-            // Armamos al nuevo aceite
-            let updatedOil = new OilEntity();
-
-            updatedOil.id = oil.id;
-            updatedOil.userId = oil.userId;
-            updatedOil.name = oil.name;
-
-            // Auditoria.
-            updatedOil.userIdCreated = oil.userIdCreated;
-            updatedOil.dateCreated = oil.dateCreated;
-            updatedOil.userIdUpdated= oil.userIdUpdated;
-            updatedOil.dateUpdated = oil.dateUpdated;
-            updatedOil.status = Boolean(oil.status);
-
-            await  this._oilRepository.save(updatedOil);
-        }
-
-        for await (let oil of deleteOilEntity) {
-            // Armamos al nuevo aceite
-            let deleteOil = new OilEntity();
-
-            deleteOil.id = oil.id;
-            deleteOil.userId = oil.userId;
-            deleteOil.name = oil.name;
-
-            // Auditoria.
-            deleteOil.userIdCreated = oil.userIdCreated;
-            deleteOil.dateCreated = oil.dateCreated;
-            deleteOil.userIdUpdated= oil.userIdUpdated;
-            deleteOil.dateUpdated = oil.dateUpdated;
-            deleteOil.status = Boolean(oil.status);
-
-            await this._oilRepository.save(deleteOil);
-        }
-
-
-        return MappingOilEntity;
+      await this._oilRepository.save(deleteOil);
     }
 
+    return MappingOilEntity;
+  }
 
-    // Consumos registrados COnsulta Para enviar Mail
-    async ConsultarListaDeConsumosRegistrados(ListCONSUMOSId: any[]): Promise<DailyOilConsumptionData[]> {
- 
+  // Consumos registrados COnsulta Para enviar Mail
+  async ConsultarListaDeConsumosRegistrados(ListCONSUMOSId: any[]): Promise<DailyOilConsumptionData[]> {
+    let listDeIds = '';
 
-        let listDeIds = '';
+    // Inicio de la promesa.
+    return await DummyPromise()
+      .then(result => {
+        // Solo si la fecha es null, obtenedremos el ultimo registro ingresado
+        if (ListCONSUMOSId && ListCONSUMOSId.length) {
+          var listDeID = ListCONSUMOSId.join(',');
+          var queryWhere = 'CE.id in (' + listDeID + ')';
 
-        // Inicio de la promesa.
-        return await DummyPromise()
-            .then(
-                result => {
-                    // Solo si la fecha es null, obtenedremos el ultimo registro ingresado
-                    if (ListCONSUMOSId && ListCONSUMOSId.length) {
-
-
-                        var listDeID = ListCONSUMOSId.join(',');
-                        var queryWhere = 'CE.id in ('+listDeID+')';
-                        
-                        const query = `
+          const query = `
                         SELECT
                             CE.date AS dateConsumption,
                             ES.userId AS equipmentSystem_userId,
@@ -353,12 +310,11 @@ export class OilsService {
                         WHERE
                                 CE.status = 1
                                AND ${queryWhere};
-                        `
+                        `;
 
+          return this._oilRepository.query(query, []);
 
-                        return this._oilRepository.query(query,  []);
-                        
-                        /*
+          /*
                         // Buscamos el ultimo reporte.
                         return this._oilRepository.createQueryBuilder('oil')
                             .addSelect('consumptionEquipment.date', 'dateConsumption')
@@ -384,199 +340,174 @@ export class OilsService {
                             .limit(1000)
                             .getRawMany()
                         */
-                        return [];
-                    } else {
-                        return null;
-                    }
-                }
-            ).then(
-                resultFind => {
+          return [];
+        } else {
+          return null;
+        }
+      })
+      .then(resultFind => {
+        let dailyOilConsumptionData: DailyOilConsumptionData[] = [];
 
-                    let dailyOilConsumptionData: DailyOilConsumptionData[] = [];
+        resultFind.forEach(item => {
+          // Fecha de consumo
+          let dateYYYYMM = FormatDateUTCToDateYYYYMM(item.dateConsumption);
+          let dateConsumption = FormatDateUTCToDate(item.dateConsumption);
 
-                    resultFind.forEach(
-                        item => {
-                            // Fecha de consumo
-                            let dateYYYYMM = FormatDateUTCToDateYYYYMM(item.dateConsumption);
-                            let dateConsumption = FormatDateUTCToDate(item.dateConsumption);
+          // Calculamos el trialDay realizado en las horas
+          let calcRate = 0;
+          if (!item.hourConsumption || item.hourConsumption <= 0) {
+            calcRate = item.amountConsumption;
+          } else {
+            calcRate = mathRound(item.amountConsumption / item.hourConsumption, 2);
+          }
 
-                            // Calculamos el trialDay realizado en las horas
-                            let calcRate = 0;
-                            if (!item.hourConsumption || item.hourConsumption <= 0) {
-                                calcRate = item.amountConsumption;
-                            } else {
-                                calcRate = mathRound(item.amountConsumption/item.hourConsumption,2) ;
-                            }
+          // verificamos si el trialDay es mayor a la hora de trabajo.
+          if (calcRate > item.trialDay) {
+            let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
 
-                            // verificamos si el trialDay es mayor a la hora de trabajo.
-                            if(calcRate > item.trialDay ){
+            if (findDailyOilConsumptionData) {
+              findDailyOilConsumptionData.data.push({
+                userId: item.equipmentSystem_userId,
+                equipmentId: item.equipmentSystem_id,
+                equipment: item.equipment,
+                amountConsumption: item.amountConsumption,
+                nameOil: item.nameOil,
+                datetimeBunkerOil: item.datetimeBunkerOil,
+                hourConsumption: item.hourConsumption,
+                trialDay: item.trialDay,
+                calcRate: calcRate,
+              });
+            }
 
-                                let findDailyOilConsumptionData= dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
+            if (!findDailyOilConsumptionData) {
+              dailyOilConsumptionData.push({
+                dateConsumption: dateConsumption,
+                dateYYYYMM: dateYYYYMM,
+                observation: item.observation,
+                data: [
+                  {
+                    userId: item.equipmentSystem_userId,
+                    equipmentId: item.equipmentSystem_id,
+                    equipment: item.equipment,
+                    amountConsumption: item.amountConsumption,
+                    nameOil: item.nameOil,
+                    datetimeBunkerOil: item.datetimeBunkerOil,
+                    hourConsumption: item.hourConsumption,
+                    trialDay: item.trialDay,
+                    calcRate: calcRate,
+                  },
+                ],
+              });
+            }
+          }
+        });
 
-                                if(findDailyOilConsumptionData) {
-                                    findDailyOilConsumptionData.data.push(
-                                        {
-                                            userId:item.equipmentSystem_userId,
-                                            equipmentId : item.equipmentSystem_id,
-                                            equipment: item.equipment,
-                                            amountConsumption: item.amountConsumption,
-                                            nameOil: item.nameOil,
-                                            datetimeBunkerOil: item.datetimeBunkerOil,
-                                            hourConsumption: item.hourConsumption,
-                                            trialDay: item.trialDay,
-                                            calcRate: calcRate
-                                        }
-                                    );
-                                };
-    
-                                if(!findDailyOilConsumptionData) {
-    
-                                    dailyOilConsumptionData.push(
-                                        {
-                                            dateConsumption : dateConsumption,
-                                            dateYYYYMM : dateYYYYMM,
-                                            observation : item.observation,
-                                            data: [
-                                                {
-                                                    userId:item.equipmentSystem_userId,
-                                                    equipmentId : item.equipmentSystem_id,
-                                                    equipment: item.equipment,
-                                                    amountConsumption: item.amountConsumption,
-                                                    nameOil: item.nameOil,
-                                                    datetimeBunkerOil: item.datetimeBunkerOil,
-                                                    hourConsumption: item.hourConsumption,
-                                                    trialDay: item.trialDay,
-                                                    calcRate: calcRate
-                                                }
-                                            ]
-                                        }
-                                    );
-                                };
-                            }
-                            
+        return dailyOilConsumptionData;
+      })
+      .catch(result => {
+        console.log(result);
+        return [];
+      });
+  }
 
-                        }
-                    );
+  // Consumos registrados COnsulta Para enviar Mail
+  async ConsultarListaDeConsumosPorBuque(buqueId: number): Promise<DailyOilConsumptionData[]> {
+    // Inicio de la promesa.
+    return await DummyPromise()
+      .then(result => {
+        // Solo si la fecha es null, obtenedremos el ultimo registro ingresado
+        if (buqueId && buqueId > 0) {
+          var queryWhere = 'consumptionEquipment.userId = ' + buqueId;
 
-                    
+          // Buscamos el ultimo reporte.
+          return (
+            this._oilRepository
+              .createQueryBuilder('oil')
+              .addSelect('consumptionEquipment.date', 'dateConsumption')
+              .addSelect('equipmentSystem.equipment', 'equipment')
+              .addSelect('consumptionEquipment.amount', 'amountConsumption')
+              .addSelect('oil.name', 'nameOil')
+              .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
+              .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
+              .addSelect('equipmentSystem.trialDay', 'trialDay')
+              .addSelect('consumptionEquipment.observation', 'observation')
 
-                    return dailyOilConsumptionData;
-                }).catch(result =>{
-                    console.log(result)
-                    return []
-                });
-    }
- 
+              // UNION DE TABLAS
+              .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
+              .innerJoin('equipmentSystem', 'equipmentSystem', 'equipmentSystem.id = bunkerOil.entityEquipmentId AND equipmentSystem.status = 1')
+              .innerJoin(
+                'consumptionEquipment',
+                'consumptionEquipment',
+                'consumptionEquipment.entityEquipmentId = equipmentSystem.id AND consumptionEquipment.status = 1',
+              )
 
-    // Consumos registrados COnsulta Para enviar Mail
-    async ConsultarListaDeConsumosPorBuque(buqueId: number): Promise<DailyOilConsumptionData[]> {
- 
- 
+              // Where status
+              .where(queryWhere, {})
+              // Filtro por el usuario seleccionado.
+              .orderBy('consumptionEquipment.date', 'DESC')
+              .limit(1000)
+              .getRawMany()
+          );
+        } else {
+          return [];
+        }
+      })
+      .then(resultFind => {
+        let dailyOilConsumptionData: DailyOilConsumptionData[] = [];
 
-        // Inicio de la promesa.
-        return await DummyPromise()
-            .then(
-                result => {
-                    // Solo si la fecha es null, obtenedremos el ultimo registro ingresado
-                    if (buqueId && buqueId>0) {
+        resultFind.forEach(item => {
+          // Fecha de consumo
+          let dateYYYYMM = FormatDateUTCToDateYYYYMM(item.dateConsumption);
+          let dateConsumption = FormatDateUTCToDate(item.dateConsumption);
 
+          // Calculamos el rate realizado en las horas
+          let calcRate = 0;
+          if (!item.hourConsumption || item.hourConsumption <= 0) {
+            calcRate = item.amountConsumption;
+          } else {
+            calcRate = item.amountConsumption / item.hourConsumption;
+          }
 
-                        
-                        var queryWhere = 'consumptionEquipment.userId = '+buqueId;
-                        
+          dailyOilConsumptionData.push({
+            dateConsumption: dateConsumption,
+            dateYYYYMM: dateYYYYMM,
+            observation: item.observation,
+            data: [
+              {
+                userId: item.equipmentSystem_userId,
+                equipmentId: item.equipmentSystem_id,
+                equipment: item.equipment,
+                amountConsumption: item.amountConsumption,
+                nameOil: item.nameOil,
+                datetimeBunkerOil: item.datetimeBunkerOil,
+                hourConsumption: item.hourConsumption,
+                trialDay: item.trialDay,
+                calcRate: calcRate,
+              },
+            ],
+          });
+        });
 
-                        // Buscamos el ultimo reporte.
-                        return this._oilRepository.createQueryBuilder('oil')
-                            .addSelect('consumptionEquipment.date', 'dateConsumption')
-                            .addSelect('equipmentSystem.equipment', 'equipment')
-                            .addSelect('consumptionEquipment.amount', 'amountConsumption')
-                            .addSelect('oil.name', 'nameOil')
-                            .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
-                            .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                            .addSelect('equipmentSystem.trialDay', 'trialDay')
-                            .addSelect('consumptionEquipment.observation', 'observation')
-
-                            // UNION DE TABLAS
-                            .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
-                            .innerJoin('equipmentSystem', 'equipmentSystem', 'equipmentSystem.id = bunkerOil.entityEquipmentId AND equipmentSystem.status = 1')
-                            .innerJoin('consumptionEquipment', 'consumptionEquipment', 'consumptionEquipment.entityEquipmentId = equipmentSystem.id AND consumptionEquipment.status = 1')
-
-                            // Where status
-                            .where(queryWhere, {})
-                            // Filtro por el usuario seleccionado.
-                            .orderBy('consumptionEquipment.date', 'DESC')
-                            .limit(1000)
-                            .getRawMany()
-                    } else {
-                        return [];
-                    }
-                }
-            ).then(
-                resultFind => {
-
-                    let dailyOilConsumptionData: DailyOilConsumptionData[] = [];
-
-                    resultFind.forEach(
-                        item => {
-                            // Fecha de consumo 
-                            let dateYYYYMM = FormatDateUTCToDateYYYYMM(item.dateConsumption);
-                            let dateConsumption = FormatDateUTCToDate(item.dateConsumption);
-
-                            // Calculamos el rate realizado en las horas
-                            let calcRate = 0;
-                            if(!item.hourConsumption || item.hourConsumption <= 0){
-                                calcRate = item.amountConsumption;
-                            } else {
-                                calcRate = item.amountConsumption/item.hourConsumption;
-                            }
- 
-                            
-                            dailyOilConsumptionData.push(
-                                {
-                                    dateConsumption : dateConsumption,
-                                    dateYYYYMM : dateYYYYMM,
-                                    observation : item.observation,
-                                    data: [
-                                        {
-                                            userId:item.equipmentSystem_userId,
-                                            equipmentId : item.equipmentSystem_id,
-                                            equipment: item.equipment,
-                                            amountConsumption: item.amountConsumption,
-                                            nameOil: item.nameOil,
-                                            datetimeBunkerOil: item.datetimeBunkerOil,
-                                            hourConsumption: item.hourConsumption,
-                                            trialDay: item.trialDay,
-                                            calcRate: calcRate
-                                        }
-                                    ]
-                                }
-                            );
-                        }
-                    );
-
-                    return dailyOilConsumptionData;
-                });
-    }
-
-
-        
+        return dailyOilConsumptionData;
+      });
+  }
 }
 
 export interface DailyOilConsumptionData {
-    dateConsumption:string;
-    dateYYYYMM: string;
-    observation:string;
-    data: DataDailyOilConsumptionData[];
+  dateConsumption: string;
+  dateYYYYMM: string;
+  observation: string;
+  data: DataDailyOilConsumptionData[];
 }
 
 export interface DataDailyOilConsumptionData {
-    userId: string ;
-    equipmentId: string ;
-    equipment: string ;
-    datetimeBunkerOil:string;
-    nameOil: string;
-    amountConsumption: number;
-    hourConsumption: number;
-    calcRate:number;
-    trialDay:number;
+  userId: string;
+  equipmentId: string;
+  equipment: string;
+  datetimeBunkerOil: string;
+  nameOil: string;
+  amountConsumption: number;
+  hourConsumption: number;
+  calcRate: number;
+  trialDay: number;
 }

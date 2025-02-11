@@ -10,58 +10,47 @@ import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
 @Injectable()
 export class PortsService {
+  constructor(
+    @InjectRepository(Port)
+    private portRepository: Repository<Port>,
+  ) {}
 
-    constructor(
-        @InjectRepository(Port)
-        private portRepository: Repository<Port>, 
-    ) { }
+  // Registra un nuevo viaje
+  async Create(port: Port): Promise<Port> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.portRepository.query(`SP_CheckTheLastPortTrip @userId='${port.userId}', @voyageId='${port.voyageId}'`);
+        } else {
+          // Buscamos el viaje
+          return this.portRepository.find({
+            where: [
+              // name && surname && nick && email
+              {
+                userId: port.userId,
+                voyageId: port.voyageId,
+                status: true,
+              },
+            ],
+            take: 1,
+            order: {
+              portNumber: 'DESC',
+            },
+          });
+        }
+      })
+      .then((result: Port[]) => {
+        // result length
+        if (result && result.length > 0) {
+          // Aqui deberiamos sumar el ultimo puerto, pero no lo aremos registraremos el puerot tal cual es.
+          port.portNumber = port.portNumber;
+        } else {
+          port.portNumber = 1;
+        }
 
-
-    // Registra un nuevo viaje
-    async Create(port: Port): Promise<Port> {
-
-
-        return DummyPromise().then(
-            result => {
-                if (URL_Server.bd === 'MSSQL') {
-
-                    return this.portRepository.query(`SP_CheckTheLastPortTrip @userId='${port.userId}', @voyageId='${port.voyageId}'`);
-
-                } else {
-                    // Buscamos el viaje
-                    return this.portRepository.find({
-                        where: [
-                            // name && surname && nick && email
-                            {
-                                userId: port.userId,
-                                voyageId: port.voyageId,
-                                status: true
-                            }
-                        ],
-                        take: 1,
-                        order: {
-                            portNumber: 'DESC',
-                        }
-                    })
-                }
-            }
-        ).then(
-            (result: Port[]) => {
-                // result length 
-                if (result && (result.length > 0)) {
-
-                    // Aqui deberiamos sumar el ultimo puerto, pero no lo aremos registraremos el puerot tal cual es.
-                    port.portNumber = port.portNumber;
-                }
-                else {
-                    port.portNumber = 1;
-                };
-
-
-                if (URL_Server.bd === 'MSSQL') {
-
-                    // Ejecutamos el storeProceude creado.
-                    return this.portRepository.query(`
+        if (URL_Server.bd === 'MSSQL') {
+          // Ejecutamos el storeProceude creado.
+          return this.portRepository.query(`
                         EXEC SP_CreateNewPort
                         @userId = ${port.userId},
                         @voyageId = ${port.voyageId},
@@ -74,151 +63,136 @@ export class PortsService {
                         @dateUpdated ='${port.dateUpdated || null}',
                         @status =${port.status ? 1 : 0}
                     `);
+        } else {
+          return this.portRepository.save(port);
+        }
+      })
+      .then(resultSave => {
+        // Validamos si encontro al usuario.
+        if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
 
-                } else {
-                    return this.portRepository.save(port)
-                }
-            }
-        ).then(
-            (resultSave) => {
-                // Validamos si encontro al usuario.
-                if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
+        if (URL_Server.bd === 'MSSQL') {
+          // MSSQL
+          if (resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
+          return resultSave[0];
+        } else {
+          // SLQITE
+          return resultSave;
+        }
+        return resultSave;
+      });
+  }
 
-                if (URL_Server.bd === 'MSSQL') {
-                    // MSSQL
-                    if (resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
-                    return resultSave[0];
-                } else {
-                    // SLQITE
-                    return resultSave;
-                }
-                return resultSave;
-            }
-        )
-
-
-
-    }
-
-    // Retorna a un objeto por id.
-    async Get(id: Number): Promise<Port> {
-        return DummyPromise().then(
-            result => {
-                if (URL_Server.bd === 'MSSQL') {
-                    // Ejecutamos el storeProceude creado.
-                    return this.portRepository.query(`
+  // Retorna a un objeto por id.
+  async Get(id: Number): Promise<Port> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          // Ejecutamos el storeProceude creado.
+          return this.portRepository.query(`
                   EXEC SP_BuscarPuertoPorId  @portId = ${id}
-              `)
-                } else {
-                    return this.portRepository.findOne({
-                        where: [{
-                            id: id,
-                            status: Not(false)
-                        }]
-                    })
-                }
-
-            }).then(
-                (resultFind) => {
-                    // Validamos si encontro al usuario.
-                    if (!resultFind) throw 'port_does_not_exist';
-                    if (URL_Server.bd === 'MSSQL') {
-                        if (resultFind && resultFind.length == 0) { throw 'port_does_not_exist' }
-                        resultFind = resultFind[0];
-                    }
-                    // retornamos el objeto.
-                    return resultFind;
-                }
-            );
-    }
-
-    // Retorna todos los viajes segun filtro.
-    async Gets(port: Port): Promise<Port[]> {
-
-        // Hacemos where por todos los campos de la entidad
-        return await this.portRepository.find({
+              `);
+        } else {
+          return this.portRepository.findOne({
             where: [
-                // name && surname && nick && email
-                {
-                    userId: Like('%' + (port.userId || '') + '%'),
-                    voyageId: Like('%' + (port.voyageId || '') + '%'),
-                    portNumber: Like('%' + (port.portNumber || '') + '%'),
-                    departurePort: Like('%' + port.departurePort + '%'),
-                    arrivalPort: Like('%' + port.arrivalPort + '%'),
-                    status: Not(false)
-                }
-            ]
-        }).then(
-            (result: Port[]) => {
+              {
+                id: id,
+                status: Not(false),
+              },
+            ],
+          });
+        }
+      })
+      .then(resultFind => {
+        // Validamos si encontro al usuario.
+        if (!resultFind) throw 'port_does_not_exist';
+        if (URL_Server.bd === 'MSSQL') {
+          if (resultFind && resultFind.length == 0) {
+            throw 'port_does_not_exist';
+          }
+          resultFind = resultFind[0];
+        }
+        // retornamos el objeto.
+        return resultFind;
+      });
+  }
 
-                // No lo validamos por que puede llegar vacio.
+  // Retorna todos los viajes segun filtro.
+  async Gets(port: Port): Promise<Port[]> {
+    // Hacemos where por todos los campos de la entidad
+    return await this.portRepository
+      .find({
+        where: [
+          // name && surname && nick && email
+          {
+            userId: Like('%' + (port.userId || '') + '%'),
+            voyageId: Like('%' + (port.voyageId || '') + '%'),
+            portNumber: Like('%' + (port.portNumber || '') + '%'),
+            departurePort: Like('%' + port.departurePort + '%'),
+            arrivalPort: Like('%' + port.arrivalPort + '%'),
+            status: Not(false),
+          },
+        ],
+      })
+      .then((result: Port[]) => {
+        // No lo validamos por que puede llegar vacio.
 
-                return result;
-            }
-        )
-    }
+        return result;
+      });
+  }
 
-    // Retorna todos los viajes segun filtro.
-    async GetsDetail(port: Port): Promise<Port[]> {
+  // Retorna todos los viajes segun filtro.
+  async GetsDetail(port: Port): Promise<Port[]> {
+    // Hacemos where por todos los campos de la entidad
+    return await this.portRepository
+      .find({
+        relations: ['dailyReports'],
+        where: [
+          // name && surname && nick && email
+          {
+            userId: Like('%' + (port.userId || '') + '%'),
+            voyageId: Like('%' + (port.voyageId || '') + '%'),
+            portNumber: Like('%' + (port.portNumber || '') + '%'),
+            departurePort: Like('%' + port.departurePort + '%'),
+            arrivalPort: Like('%' + port.arrivalPort + '%'),
+            status: Not(false),
+          },
+        ],
+      })
+      .then((result: Port[]) => {
+        // No lo validamos por que puede llegar vacio.
 
-        // Hacemos where por todos los campos de la entidad
-        return await this.portRepository.find({
-            relations: ['dailyReports'],
-            where: [
-                // name && surname && nick && email
-                {
-                    userId: Like('%' + (port.userId || '') + '%'),
-                    voyageId: Like('%' + (port.voyageId || '') + '%'),
-                    portNumber: Like('%' + (port.portNumber || '') + '%'),
-                    departurePort: Like('%' + port.departurePort + '%'),
-                    arrivalPort: Like('%' + port.arrivalPort + '%'),
-                    status: Not(false)
-                }
-            ]
-        }).then(
-            (result: Port[]) => {
-                // No lo validamos por que puede llegar vacio.
+        return result;
+      });
+  }
 
-                return result;
-            }
-        )
-    }
-
-    // Actualiza un port
-    async Update(port: Port): Promise<Port> {
-
-
-        return DummyPromise().then(
-            result => {
-                if (URL_Server.bd === 'MSSQL') {
-
-                    // Ejecutamos el storeProceude creado.
-                    return this.portRepository.query(`
+  // Actualiza un port
+  async Update(port: Port): Promise<Port> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          // Ejecutamos el storeProceude creado.
+          return this.portRepository.query(`
                   EXEC SP_BuscarPuertoPorId  @portId = ${port.id}
               `);
+        } else {
+          return this.portRepository.find({
+            where: [
+              // hacemos un where donde buscamos por id.
+              { id: port.id },
+            ],
+          });
+        }
+      })
+      .then(resultFind => {
+        // Validamos si encontro al SailingAnality.
+        if (!resultFind) throw 'port_does_not_exist';
+        // Validamos si encontro al SailingAnality.
+        if (resultFind && resultFind.length == 0) throw 'port_does_not_exist';
 
-                } else {
-                    return this.portRepository.find({
-                        where: [
-                            // hacemos un where donde buscamos por id.
-                            { id: port.id }
-                        ]
-                    })
-                }
-
-            }
-        ).then(resultFind => {
-
-            // Validamos si encontro al SailingAnality.
-            if (!resultFind) throw 'port_does_not_exist';
-            // Validamos si encontro al SailingAnality.
-            if (resultFind && resultFind.length == 0) throw 'port_does_not_exist';
-
-
-            if (URL_Server.bd === 'MSSQL') {
-
-                // Ejecutamos el storeProceude creado.
-                return this.portRepository.query(`
+        if (URL_Server.bd === 'MSSQL') {
+          // Ejecutamos el storeProceude creado.
+          return this.portRepository.query(`
               EXEC SP_UpdatePort
               @portId = ${port.id},
               @userId = ${port.userId},
@@ -232,38 +206,33 @@ export class PortsService {
               @dateUpdated ='${port.dateUpdated || null}',
               @status =${port.status ? 1 : 0}
           `);
+        } else {
+          // Actualizamos
+          return this.portRepository.update(port.id, port);
+        }
+      })
+      .then(resultUpdate => {
+        if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE');
 
-            } else {
+        if (URL_Server.bd === 'MSSQL') {
+          if (resultUpdate && resultUpdate.length == 0) {
+            throw new Error('ERROR SQLSERVER PROCEDURE NO SE EJECUTO');
+          }
+        }
 
-                // Actualizamos
-                return this.portRepository.update(port.id, port);
-            }
+        // Envio respuesta con el resultado recibido del ultimo paso
+        return port;
+      });
+  }
 
-        }).then(resultUpdate => {
-
-            if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE');
-
-            if (URL_Server.bd === 'MSSQL') {
-                if (resultUpdate && resultUpdate.length == 0) {
-                    throw new Error('ERROR SQLSERVER PROCEDURE NO SE EJECUTO');
-                }
-            }
-
-            // Envio respuesta con el resultado recibido del ultimo paso
-            return port;
-        });
-    }
-
-
-    // Elimina a un port por id
-    async Delete(port: Port): Promise<Port> {
-        port.status = false;
-        return DummyPromise().then(
-            result => {
-                if (URL_Server.bd === 'MSSQL') {
-
-                    // Ejecutamos el storeProceude creado.
-                    return this.portRepository.query(`
+  // Elimina a un port por id
+  async Delete(port: Port): Promise<Port> {
+    port.status = false;
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          // Ejecutamos el storeProceude creado.
+          return this.portRepository.query(`
                       EXEC SP_UpdatePort
                       @portId = ${port.id},
                       @userId = ${port.userId},
@@ -277,250 +246,238 @@ export class PortsService {
                       @dateUpdated ='${port.dateUpdated || null}',
                       @status =${port.status ? 1 : 0}
                   `);
+        } else {
+          return this.portRepository.update(port.id, port).then(resultSave => {
+            // Validamos si encontro al usuario.
+            if (!resultSave) throw new Error('error_update_delete_port');
 
-                } else {
-                    return this.portRepository.update(port.id, port).then(
-                        resultSave => {
-                            // Validamos si encontro al usuario.
-                            if (!resultSave) throw new Error('error_update_delete_port');
-
-                            return port;
-                        }
-                    );
-                }
-
-            }
-        ).then(resultUpdate => {
-
-            if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE');
-
-            if (URL_Server.bd === 'MSSQL') {
-                if (resultUpdate && resultUpdate.length == 0) {
-
-                    throw new Error('ERROR SQLSERVER PROCEDURE NO SE EJECUTO');
-                }
-
-                resultUpdate = resultUpdate[0];
-            }
-
-            // Envio respuesta con el resultado recibido del ultimo paso
             return port;
-        });
-    }
+          });
+        }
+      })
+      .then(resultUpdate => {
+        if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE');
 
+        if (URL_Server.bd === 'MSSQL') {
+          if (resultUpdate && resultUpdate.length == 0) {
+            throw new Error('ERROR SQLSERVER PROCEDURE NO SE EJECUTO');
+          }
 
+          resultUpdate = resultUpdate[0];
+        }
 
-    // Permite consultar si el puerto existe en el viaje,
-    // Retorna underfined si el puerto no existe.
-    async ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number, userId:number): Promise<Port> {
-        let portSearch :Port;
-        return DummyPromise().then(
-            result => {
+        // Envio respuesta con el resultado recibido del ultimo paso
+        return port;
+      });
+  }
 
-                if (URL_Server.bd === 'MSSQL') {
-                    // Buscamos el viaje
-                    return this.portRepository.query(`
+  // Permite consultar si el puerto existe en el viaje,
+  // Retorna underfined si el puerto no existe.
+  async ThereIsThisPortInTheVoyage(portNumber: number, voyageId: number, userId: number): Promise<Port> {
+    let portSearch: Port;
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          // Buscamos el viaje
+          return this.portRepository.query(`
                         SP_ThereIsThisPortInTheVoyage 
                             @voyageId='${voyageId}',
                             @portNumber='${portNumber}'
                     `);
+        } else {
+          return this.portRepository.find({
+            where: [
+              // hacemos un where donde buscamos por id.
+              {
+                voyageId: voyageId,
+                portNumber: portNumber,
+                userId: userId,
+                status: true,
+              },
+            ],
+            take: 1,
+          });
+        }
+      })
+      .then(resultFind => {
+        if (resultFind && resultFind.length) {
+          portSearch = resultFind[0];
 
-                } else {
+          return resultFind[0];
+        } else {
+          return null;
+        }
+      })
+      .catch(err => {
+        throw '';
+      });
+  }
 
-                    return this.portRepository.find({
-                        where: [
-                            // hacemos un where donde buscamos por id.
-                            {
-                                voyageId: voyageId,
-                                portNumber: portNumber,
-                                userId: userId,
-                                status: true
-                            }
-                        ],
-                        take: 1,
-                    });
-                }
+  // NUEVOS QUERY CON OTRA CALIDA [o]v[o]
+  // Esta servicio prove el total de los parametros que tiene el viaje puerto y reporte.
+  async GetLastPortTotalConsumpByUserId(userId: number): Promise<any[]> {
+    // Si la fecha es null en automatico enviara los ultimos 40 registros.
 
-            }
-        ).then(resultFind => {
+    // Inicio de la promesa.
+    return await DummyPromise()
+      .then(result => {
+        return (
+          this.portRepository
+            .createQueryBuilder('port')
+            .select('port.id', 'portId')
+            .addSelect('port.userId', 'userId')
+            .addSelect('port.departurePort', 'departurePort')
+            .addSelect('port.arrivalPort', 'arrivalPort')
 
-            if (resultFind && resultFind.length) {
-                portSearch = resultFind[0];
+            .addSelect('port.startDate', 'startDate')
+            .addSelect('port.startIFO', 'startIFO')
+            .addSelect('port.startMGO', 'startMGO')
+            .addSelect('max(daily_report.date)', 'maxDate')
 
-                return resultFind[0];
-            }
-            else {
-                return null
-            }
+            .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
+            .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
 
-        }).catch(err => {
-            throw '';
-        });
+            .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
+            .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
+            .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
+            .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
+
+            //-- Informacion del puerto
+            .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
+            .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
+            .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
+            .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
+            .addSelect('SUM(daily_report.giMgo)', 'giMgo')
+            .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
+
+            .addSelect('SUM(daily_report.distance)', 'distance')
+            // UNION DE TABLAS
+            .leftJoinAndSelect(DailyReport, 'daily_report', 'port.id = daily_report.portId AND daily_report.status= 1')
+
+            // WHERE
+            .where('port.userId = :userId', { userId: userId })
+
+            .groupBy('port.id, port.userId, port.departurePort, port.arrivalPort,port.startDate, port.startIFO, port.startMGO')
+            .orderBy('port.id', 'DESC')
+            .limit(1)
+            .getRawMany()
+        );
+      })
+      .then((result: any) => {
+        // Verificamos que el resultado no este vacio.
+        if (!result) throw 'ERROR GetLastPortTotalConsumpByUserId';
+
+        return result;
+      });
+  }
+
+  async SaveList(MappingVoyages: Mapping[], importPorts: Port[]) {
+    // Mapping
+    let MappingPorts: Mapping[] = [];
+
+    // Filtramos los datos que faltan aggregar y actualizar.
+    const addPorts = importPorts.filter((port: Port) => port.SyncStatus == 'added');
+    const updatePorts = importPorts.filter((port: Port) => port.SyncStatus == 'updated');
+    const deletePorts = importPorts.filter((port: Port) => port.SyncStatus == 'deleted');
+
+    for await (const addPort of addPorts) {
+      let searchMappingVoyage = searchKey(MappingVoyages, addPort.voyageId);
+
+      // Armamos al nuevo aceite
+      let newPortEntity = new Port();
+
+      delete newPortEntity.id;
+      newPortEntity.userId = addPort.userId;
+
+      newPortEntity.voyageId = addPort.voyageId;
+      if (searchMappingVoyage) {
+        newPortEntity.voyageId = searchMappingVoyage.value;
+      }
+
+      newPortEntity.portNumber = addPort.portNumber;
+      newPortEntity.departurePort = addPort.departurePort;
+      newPortEntity.arrivalPort = addPort.arrivalPort;
+      newPortEntity.startDate = addPort.startDate;
+      newPortEntity.startIFO = addPort.startIFO;
+      newPortEntity.startMGO = addPort.startMGO;
+      newPortEntity.dateETA = addPort.dateETA;
+      newPortEntity.historyDateETA = addPort.historyDateETA;
+
+      // Auditoria
+      newPortEntity.userIdCreated = addPort.userIdCreated;
+      newPortEntity.dateCreated = GetDate();
+      delete newPortEntity.userIdUpdated;
+      delete newPortEntity.dateUpdated;
+      newPortEntity.status = Boolean(addPort.status);
+
+      // Registramos grupo de aceite
+      let registers = await this.Create(newPortEntity);
+
+      // Lo agregamos al mapping
+      MappingPorts.push(new Mapping(addPort.id, registers.id));
     }
 
-    
-    // NUEVOS QUERY CON OTRA CALIDA [o]v[o]
-    // Esta servicio prove el total de los parametros que tiene el viaje puerto y reporte.
-    async GetLastPortTotalConsumpByUserId(userId:number): Promise<any[]> {
+    for await (const updatePort of updatePorts) {
+      let updatePortEntity = new Port();
+      let searchMappingVoyage = searchKey(MappingVoyages, updatePort.voyageId);
 
-        // Si la fecha es null en automatico enviara los ultimos 40 registros.
-      
+      updatePortEntity.id = updatePort.id;
+      updatePortEntity.userId = updatePort.userId;
 
-        // Inicio de la promesa.
-        return await DummyPromise()
-            .then(
-                result => {
-      
-                    return this.portRepository.createQueryBuilder('port')
-                        .select('port.id', 'portId')
-                        .addSelect('port.userId', 'userId')
-                        .addSelect('port.departurePort', 'departurePort')
-                        .addSelect('port.arrivalPort', 'arrivalPort')
+      updatePortEntity.voyageId = updatePort.voyageId;
+      if (searchMappingVoyage) {
+        updatePortEntity.voyageId = searchMappingVoyage.value;
+      }
 
-                        .addSelect('port.startDate', 'startDate')
-                        .addSelect('port.startIFO', 'startIFO')
-                        .addSelect('port.startMGO', 'startMGO')
-                        .addSelect('max(daily_report.date)', 'maxDate')
+      updatePortEntity.portNumber = updatePort.portNumber;
+      updatePortEntity.departurePort = updatePort.departurePort;
+      updatePortEntity.arrivalPort = updatePort.arrivalPort;
+      updatePortEntity.startDate = updatePort.startDate;
+      updatePortEntity.startIFO = updatePort.startIFO;
+      updatePortEntity.startMGO = updatePort.startMGO;
+      updatePortEntity.dateETA = updatePort.dateETA;
+      updatePortEntity.historyDateETA = updatePort.historyDateETA;
 
-                        .addSelect('SUM(daily_report.bunkeringIfo)', 'bunkeringIfo')
-                        .addSelect('SUM(daily_report.bunkeringMgo)', 'bunkeringMgo')
+      // Auditoria
+      updatePortEntity.userIdCreated = updatePort.userIdCreated;
+      updatePortEntity.dateCreated = updatePort.dateCreated;
+      updatePortEntity.userIdUpdated = updatePort.userIdUpdated;
+      updatePortEntity.dateUpdated = updatePort.dateUpdated;
+      updatePortEntity.status = Boolean(updatePort.status);
 
-                        .addSelect('SUM(daily_report.mplaIfo)', 'mplaIfo')
-                        .addSelect('SUM(daily_report.auxIfo)', 'auxIfo')
-                        .addSelect('SUM(daily_report.boilerIfo)', 'boilerIfo')
-                        .addSelect('SUM(daily_report.otherIfo)', 'otherIfo')
-
-                        //-- Informacion del puerto
-                        .addSelect('SUM(daily_report.mplaMgo)', 'mplaMgo')
-                        .addSelect('SUM(daily_report.auxMgo)', 'auxMgo')
-                        .addSelect('SUM(daily_report.boilerMgo)', 'boilerMgo')
-                        .addSelect('SUM(daily_report.ppMgo)', 'ppMgo')
-                        .addSelect('SUM(daily_report.giMgo)', 'giMgo')
-                        .addSelect('SUM(daily_report.otherMgo)', 'otherMgo')
-
-                        .addSelect('SUM(daily_report.distance)', 'distance')
-                        // UNION DE TABLAS
-                        .leftJoinAndSelect(DailyReport,'daily_report', 'port.id = daily_report.portId AND daily_report.status= 1')
-                        
-                        // WHERE
-                        .where('port.userId = :userId', { userId: userId })
-
-                        .groupBy('port.id, port.userId, port.departurePort, port.arrivalPort,port.startDate, port.startIFO, port.startMGO', )
-                        .orderBy('port.id','DESC')
-                        .limit(1)
-                        .getRawMany()
-                }
-            ).then(
-                (result: any) => {
-                    // Verificamos que el resultado no este vacio.
-                    if (!result) throw 'ERROR GetLastPortTotalConsumpByUserId';
-                  
-                    return result;
-                }
-            );
+      await this.portRepository.save(updatePort);
     }
 
+    for await (let deletePort of deletePorts) {
+      let deletePortEntity = new Port();
+      let searchMappingVoyage = searchKey(MappingVoyages, deletePort.voyageId);
 
+      deletePortEntity.id = deletePort.id;
+      deletePortEntity.userId = deletePort.userId;
+      deletePortEntity.voyageId = deletePort.voyageId;
+      if (searchMappingVoyage) {
+        deletePort.voyageId = searchMappingVoyage.value;
+      }
 
-    
-    async  SaveList( MappingVoyages: Mapping[], importPorts: Port[] )  {
+      deletePortEntity.portNumber = deletePort.portNumber;
+      deletePortEntity.departurePort = deletePort.departurePort;
+      deletePortEntity.arrivalPort = deletePort.arrivalPort;
+      deletePortEntity.startDate = deletePort.startDate;
+      deletePortEntity.startIFO = deletePort.startIFO;
+      deletePortEntity.startMGO = deletePort.startMGO;
+      deletePortEntity.dateETA = deletePort.dateETA;
+      deletePortEntity.historyDateETA = deletePort.historyDateETA;
 
-        // Mapping
-        let MappingPorts: Mapping[] = [];
+      // Auditoria.
+      deletePortEntity.userIdCreated = deletePort.userIdCreated;
+      deletePortEntity.dateCreated = deletePort.dateCreated;
+      deletePortEntity.userIdUpdated = deletePort.userIdUpdated;
+      deletePortEntity.dateUpdated = deletePort.dateUpdated;
+      deletePortEntity.status = Boolean(deletePort.status);
 
-        // Filtramos los datos que faltan aggregar y actualizar.
-        const addPorts = importPorts.filter((port: Port) => port.SyncStatus == 'added');
-        const updatePorts = importPorts.filter((port: Port) => port.SyncStatus == 'updated');
-        const deletePorts = importPorts.filter((port: Port) => port.SyncStatus == 'deleted');
- 
-        for await (const addPort of addPorts) {
-            let searchMappingVoyage = searchKey(MappingVoyages, addPort.voyageId);
-           
-            // Armamos al nuevo aceite
-            let newPortEntity = new Port();
-
-            delete newPortEntity.id;
-            newPortEntity.userId = addPort.userId;
-
-            newPortEntity.voyageId = addPort.voyageId;
-            if (searchMappingVoyage) { newPortEntity.voyageId = searchMappingVoyage.value }
-            
-            newPortEntity.portNumber = addPort.portNumber;
-            newPortEntity.departurePort = addPort.departurePort;
-            newPortEntity.arrivalPort = addPort.arrivalPort;
-            newPortEntity.startDate = addPort.startDate;
-            newPortEntity.startIFO = addPort.startIFO;
-            newPortEntity.startMGO = addPort.startMGO;
-            
-
-            // Auditoria
-            newPortEntity.userIdCreated = addPort.userIdCreated;
-            newPortEntity.dateCreated = GetDate();
-            delete newPortEntity.userIdUpdated;
-            delete newPortEntity.dateUpdated;
-            newPortEntity.status = Boolean(addPort.status);
-
-            // Registramos grupo de aceite
-            let registers = await this.Create(newPortEntity);
-
-            // Lo agregamos al mapping
-            MappingPorts.push(new Mapping(addPort.id, registers.id))
-        }
-
-        for await (const updatePort of updatePorts) {
-            let updatePortEntity = new Port();
-            let searchMappingVoyage = searchKey(MappingVoyages, updatePort.voyageId);
-           
-            updatePortEntity.id = updatePort.id;
-            updatePortEntity.userId = updatePort.userId;
-            
-            updatePortEntity.voyageId = updatePort.voyageId;
-            if (searchMappingVoyage) { updatePortEntity.voyageId = searchMappingVoyage.value }
-            
-            updatePortEntity.portNumber = updatePort.portNumber;
-            updatePortEntity.departurePort = updatePort.departurePort;
-            updatePortEntity.arrivalPort = updatePort.arrivalPort;
-            updatePortEntity.startDate = updatePort.startDate;
-            updatePortEntity.startIFO = updatePort.startIFO;
-            updatePortEntity.startMGO = updatePort.startMGO;
-            
-            // Auditoria
-            updatePortEntity.userIdCreated = updatePort.userIdCreated;
-            updatePortEntity.dateCreated = updatePort.dateCreated;
-            updatePortEntity.userIdUpdated= updatePort.userIdUpdated;
-            updatePortEntity.dateUpdated = updatePort.dateUpdated;
-            updatePortEntity.status = Boolean(updatePort.status);
-
-            await this.portRepository.save(updatePort);
-        }
-
-        for await (let deletePort of deletePorts) {
-            let deletePortEntity = new Port();
-            let searchMappingVoyage = searchKey(MappingVoyages, deletePort.voyageId);
-           
-            deletePortEntity.id = deletePort.id;
-            deletePortEntity.userId = deletePort.userId;
-            deletePortEntity.voyageId = deletePort.voyageId;
-            if (searchMappingVoyage) { deletePort.voyageId = searchMappingVoyage.value }
-            
-            deletePortEntity.portNumber = deletePort.portNumber;
-            deletePortEntity.departurePort = deletePort.departurePort;
-            deletePortEntity.arrivalPort = deletePort.arrivalPort;
-            deletePortEntity.startDate = deletePort.startDate;
-            deletePortEntity.startIFO = deletePort.startIFO;
-            deletePortEntity.startMGO = deletePort.startMGO;
-
-            // Auditoria.
-            deletePortEntity.userIdCreated = deletePort.userIdCreated;
-            deletePortEntity.dateCreated = deletePort.dateCreated;
-            deletePortEntity.userIdUpdated= deletePort.userIdUpdated;
-            deletePortEntity.dateUpdated = deletePort.dateUpdated;
-            deletePortEntity.status = Boolean(deletePort.status);
-
-            await this.portRepository.save(deletePort);
-        }
-
-
-        return MappingPorts;
+      await this.portRepository.save(deletePort);
     }
+
+    return MappingPorts;
+  }
 }

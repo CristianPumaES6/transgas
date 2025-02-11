@@ -1,27 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('bunkerOil')
-export class BunkerOil {
+@Entity('oilAnalysis')
+export class OilAnalysisEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
-  userId: number;
-
-  @Column({ nullable: true })
-  entityOilId: number;
-
-  @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
-  bunker: number;
-  @Column({ nullable: true })
-  comment: string;
   @Column({ nullable: false })
-  datetime: string;
+  equipmentOilCompatibilityId: number;
+
+  @Column({ nullable: false })
+  fileId: number;
+
+  @Column({ type: 'timestamp', nullable: false })
+  analysisDate: string;
+
+  @Column({ nullable: true })
+  comments: string;
 
   // Auditoria
-  @Column()
+  @Column({ nullable: false })
   userIdCreated: number;
-  @Column()
+  @Column({ nullable: false })
   dateCreated: string;
   @Column({ nullable: true })
   userIdUpdated: number;
@@ -33,14 +32,10 @@ export class BunkerOil {
 
   constructor(
     id?: number,
-
-    userId?: number,
-
-    entityOilId?: number,
-
-    bunker?: number,
-    comment?: string,
-    datetime?: string,
+    equipmentOilCompatibilityId?: number,
+    fileId?: number,
+    analysisDate?: string,
+    comments?: string,
 
     userIdCreated?: number,
     dateCreated?: string,
@@ -50,13 +45,10 @@ export class BunkerOil {
     status?: boolean,
   ) {
     this.id = id || null;
-    this.userId = userId || null;
-
-    this.entityOilId = entityOilId || 0;
-    this.bunker = bunker || 0;
-    this.comment = comment || '';
-
-    this.datetime = datetime || '';
+    this.equipmentOilCompatibilityId = equipmentOilCompatibilityId || 0;
+    this.fileId = fileId || 0;
+    this.analysisDate = analysisDate || '';
+    this.comments = comments || '';
 
     // Auditoria
     this.userIdCreated = userIdCreated || 0;

@@ -12,19 +12,18 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { URL_Server } from './config/server.config';
 
 async function bootstrap() {
-
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const options = {
-    'origin': '*',
-    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    'preflightContinue': false,
-    'optionsSuccessStatus': 204,
-    'credentials': true,
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true,
   };
 
   // the next two lines did the trick
-   app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.json({ limit: '50mb' }));
   // app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
   // Habilitamos el CORS
@@ -42,7 +41,7 @@ async function bootstrap() {
 
   // Inicializo el serverNodemailer
   NodemailerInit();
-  
+
   await app.listen(URL_Server.puertoBackend);
 }
 bootstrap();

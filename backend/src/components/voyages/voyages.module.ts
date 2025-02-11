@@ -11,18 +11,13 @@ import { PortsService } from './ports/ports.service';
 import { DailyReportsService } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersModule } from '../users/users.module';
+import { DailyReportSummary } from '../../models/dailyReportSummary.entity';
+import { DailyReportSummaryService } from './daily-report-summary/daily-report-summary.service';
 
-
-
-@Module({  
+@Module({
   //Importamos el TypeOrm con el modulo a usar, para que funcione en el servicio.
-  imports: [
-    TypeOrmModule.forFeature([Voyage]),
-    PortsModule,
-    DailyReportsModule,
-    UsersModule
-  ],
-  providers: [VoyagesService, FormatExcelLastVoyageService],
-  controllers: [VoyagesController]
+  imports: [TypeOrmModule.forFeature([Voyage, DailyReportSummary]), PortsModule, DailyReportsModule, UsersModule],
+  providers: [VoyagesService, FormatExcelLastVoyageService, DailyReportSummaryService],
+  controllers: [VoyagesController],
 })
 export class VoyagesModule {}

@@ -4,158 +4,126 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateResult, DeleteResult } from 'typeorm';
-import { Like } from "typeorm";
-import { Not } from "typeorm";
+import { Like } from 'typeorm';
+import { Not } from 'typeorm';
 
-// Otras librerias. 
+// Otras librerias.
 import * as bcrypt from 'bcrypt';
 import { ROUNDS_BCRYPT } from '../../config/bcrypt.config';
-import { URL_Server } from '../../config/server.config'
+import { URL_Server } from '../../config/server.config';
 
 // Modelos.
 import { UserEntity } from '../../models/user.entity';
 import { DummyPromise } from '../../assets/promises.assets';
 import { ConvertMMDDYYYToYYYYMMDD, GetDate } from '../../assets/moment.assets';
 
-
 @Injectable()
 export class UsersService {
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
-    constructor(
-        @InjectRepository(UserEntity)
-        private userRepository: Repository<UserEntity>,
-    ) { }
+  async Get(id: number): Promise<UserEntity> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(`SP_BuscarUsuarioPorId @userId= ${id}`);
+        } else {
+          return this.userRepository.find({
+            where: {
+              id: id,
+              status: Not(false),
+            },
+          });
+        }
+      })
+      .then(resultFind => {
+        if (!resultFind || resultFind.length == 0) throw 'NO_REGISTER';
 
-    async Get(id: number): Promise<UserEntity> {
-        return DummyPromise().then(
-            result => {
+        let usuario: UserEntity = resultFind[0];
 
-                if (URL_Server.bd === 'MSSQL') {
+        // Vaciamos el campo del password.
+        usuario.password = null;
+        // retornamos el objeto.
+        return usuario;
+      });
+  }
 
-                    return this.userRepository.query(
-                        `SP_BuscarUsuarioPorId @userId= ${id}`
-                    )
+  async Gets(user: UserEntity): Promise<UserEntity[]> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(
+            `EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
+                    `,
+          );
+        } else {
+          return this.userRepository.find({
+            where: [
+              // name && surname && nick && email
+              {
+                id: user.id || Like('%' + '%'),
+                nick: Like('%' + (user.nick || '') + '%'),
+                name: Like('%' + (user.name || '') + '%'),
+                role: Like('%' + (user.role || '') + '%'),
+                status: Not(false),
+              },
+            ],
+          });
+        }
+      })
+      .then((result: UserEntity[]) => {
+        if (!result) throw 'ERROR AL CONSULTAR USUARIO.';
+        // Recorremos y borramos el password.
+        result.forEach(user => {
+          // delete user.password;
+          user.password = '';
+        });
 
-                } else {
+        // No lo validamos por que puede llegar vacio.
+        return result;
+      });
+  }
 
-                    return this.userRepository.find({
-                        where: {
-                            id: id,
-                            status: Not(false)
-                        }
-                    });
-                }
-
-
-            }
-        ).then(
-            resultFind => {
-
-                if (!resultFind || resultFind.length == 0) throw 'NO_REGISTER'
-
-                let usuario: UserEntity = resultFind[0];
-
-                // Vaciamos el campo del password.
-                usuario.password = null;
-                // retornamos el objeto.
-                return usuario;
-            });
-
-    }
-
-    async Gets(user: UserEntity): Promise<UserEntity[]> {
-        return DummyPromise().then(
-            result => {
-
-                if (URL_Server.bd === 'MSSQL') {
-
-                    return this.userRepository.query(
-                        `EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
-                    `
-                    );
-
-                } else {
-
-                    return this.userRepository.find({
-                        where: [
-                            // name && surname && nick && email
-                            {
-                                id: (user.id || Like('%' + '%')),
-                                nick: Like('%' + (user.nick || '') + '%'),
-                                name: Like('%' + (user.name || '') + '%'),
-                                role: Like('%' + (user.role || '') + '%'),
-                                status: Not(false)
-                            }
-                        ]
-                    });
-
-                }
-
-
-            }
-        ).then(
-            (result: UserEntity[]) => {
-
-                if (!result) throw 'ERROR AL CONSULTAR USUARIO.'
-                // Recorremos y borramos el password.
-                result.forEach(user => {
-                    // delete user.password;
-                    user.password = '';
-                });
-
-                // No lo validamos por que puede llegar vacio.
-                return result;
-            }
-        )
-    }
-
-    async CreateUserNickUnique(user: UserEntity): Promise<UserEntity> {
-
-        // buscamos si el nick o email ya esta en uso.
-        return DummyPromise().then(
-            result => {
-
-                if (URL_Server.bd === 'MSSQL') {
-                    return this.userRepository.query(`
+  async CreateUserNickUnique(user: UserEntity): Promise<UserEntity> {
+    // buscamos si el nick o email ya esta en uso.
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(`
                     EXEC SP_GETEmailEstaEnUso @userId = 0, @nick = '${user.nick || ''}' 
                     `);
+        } else {
+          return this.userRepository.find({
+            where: [
+              // hacemos un where donde buscamos por nick o email.
+              {
+                nick: user.nick,
+                status: Not(false),
+              },
+            ],
+          });
+        }
+      })
+      .then(resultFind => {
+        if (resultFind && resultFind.length > 0) throw 'REPEAT_NICK';
 
+        // encriptamos el password.
+        return bcrypt.hash(user.password, ROUNDS_BCRYPT);
+      })
+      .then(password => {
+        // le asignamos el password encriptado al objeto
+        user.password = password;
 
-                } else {
-                    return this.userRepository.find({
-                        where: [
-                            // hacemos un where donde buscamos por nick o email.
-                            {
-                                nick: user.nick,
-                                status: Not(false)
-                            }
-                        ]
-                    })
-                }
-            }
-        ).then(
-            resultFind => {
+        // Eliminamos el user id
+        delete user.id;
+        user.years = JSON.stringify(user.years);
+        // procedemos hacer el save.
 
-                if (resultFind && resultFind.length > 0) throw 'REPEAT_NICK';
-
-
-                // encriptamos el password.
-                return bcrypt.hash(user.password, ROUNDS_BCRYPT);
-
-            }
-        ).then(password => {
-            // le asignamos el password encriptado al objeto
-            user.password = password;
-
-            // Eliminamos el user id
-            delete user.id;
-            user.years = JSON.stringify(user.years);
-            // procedemos hacer el save.
-
-            if (URL_Server.bd === 'MSSQL') {
-
-                return this.userRepository.query(
-                    `
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(
+            `
                     EXEC SP_CreateNewUser
                     @nick ='${user.nick || ''}'
                     ,@name ='${user.name || ''}'
@@ -163,7 +131,7 @@ export class UsersService {
                     ,@password ='${user.password || ''}'
                     ,@language ='${user.language || ''}'
                     ,@role ='${user.role || ''}'
-                    ,@years  ='${user.years || '[]' }'
+                    ,@years  ='${user.years || '[]'}'
                     ,@minSpeed  = ${user.minSpeed || 0}
                     ,@maxSpeed  = ${user.maxSpeed || 0}
                     ,@isConsumptionIFO  = ${user.isConsumptionIFO || 0}
@@ -228,115 +196,102 @@ export class UsersService {
                     ,@userIdUpdated   = ${user.userIdUpdated || 0}
                     ,@dateUpdated   = '${user.dateUpdated || ''}'
                     ,@status   = ${user.status || 0}
-                    `
-                );
+                    `,
+          );
+        } else {
+          return this.userRepository.save(user);
+        }
+      })
+      .then((resultSave: any) => {
+        if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
 
-            } else {
+        if (URL_Server.bd === 'MSSQL') {
+          // MSSQL
+          if (resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
+          return resultSave[0];
+        } else {
+          // SLQITE
+          return resultSave;
+        }
+      });
+  }
 
-                return this.userRepository.save(user);
-            }
+  // Actualiza un usuario
+  async UpdateUserNickUnique(user: UserEntity): Promise<UserEntity> {
+    // Contrasela antigua
+    let contraseniaOld = '';
 
-        }).then(
-            (resultSave: any) => {
-
-
-                if (!resultSave) throw new Error('No se puedo registrar el viaje en la BD.');
-
-                if (URL_Server.bd === 'MSSQL') {
-                    // MSSQL
-                    if (resultSave.length == 0) throw new Error('No se puedo registrar el viaje en la BD.');
-                    return resultSave[0];
-                } else {
-                    // SLQITE
-                    return resultSave;
-                }
-            }
-        );
-    }
-
-    // Actualiza un usuario
-    async UpdateUserNickUnique(user: UserEntity): Promise<UserEntity> {
-        // Contrasela antigua
-        let contraseniaOld = '';
-
-
-        return DummyPromise().then(
-            result => {
-
-                if (URL_Server.bd === 'MSSQL') {
-                    return this.userRepository.query(
-                        `
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(
+            `
                         EXEC SP_BuscarUsuarioPorId
                         @userId ='${user.id || ''}'
-                    `)
-                } else {
-                    // SLQITE
-                    return this.userRepository.find({
-                        where: [
-                            // hacemos un where donde buscamos por id.
-                            { id: user.id }
-                        ]
-                    })
-                }
+                    `,
+          );
+        } else {
+          // SLQITE
+          return this.userRepository.find({
+            where: [
+              // hacemos un where donde buscamos por id.
+              { id: user.id },
+            ],
+          });
+        }
+      })
+      .then(resultFind => {
+        // Validamos si encontro al usuario.
+        if (!resultFind || resultFind.length == 0) throw new Error('user_does_not_exist');
 
-            }
-        ).then(resultFind => {
+        let userfind = resultFind[0];
 
-            // Validamos si encontro al usuario.
-            if (!resultFind || resultFind.length == 0) throw new Error('user_does_not_exist');
+        // Guardamos el password actual.
+        contraseniaOld = userfind.password;
 
-            let userfind = resultFind[0];
-
-            // Guardamos el password actual.
-            contraseniaOld = userfind.password;
-
-            if (URL_Server.bd === 'MSSQL') {
-                return this.userRepository.query(`
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(`
                 EXEC SP_GETEmailEstaEnUso @userId = ${user.id || 0}, @nick = '${user.nick || ''}' 
                 `);
-            } else {
+        } else {
+          // verificamos que el email no este en uso, recordemos que el email es unico.
+          return this.userRepository.find({
+            where: [
+              // hacemos un where donde buscamos por email y no sea del mismo id.
+              {
+                id: Not(user.id),
+                nick: user.nick,
+                status: Not(false),
+              },
+            ],
+          });
+        }
+      })
+      .then(result => {
+        if (!result) throw 'REPEAT NICK ERROR:22323';
+        if (result && result.length > 0) throw 'REPEAT_NICK';
 
-                // verificamos que el email no este en uso, recordemos que el email es unico.
-                return this.userRepository.find({
-                    where: [
-                        // hacemos un where donde buscamos por email y no sea del mismo id.
-                        {
-                            id: Not(user.id),
-                            nick: user.nick,
-                            status: Not(false)
-                        }
-                    ]
-                });
-            }
+        // Si existe el password lo encriptamos.
+        if (user.password) {
+          // encriptamos el password.
+          return bcrypt.hash(user.password, ROUNDS_BCRYPT);
+        } else {
+          // retornamos la antigua contraseña.
+          return contraseniaOld;
+        }
+      })
+      .then((password: string) => {
+        // Validamos el resultado.
+        if (!password) throw new Error('Revisar User.service la funcion hash o el retun no, respondio como se esperaba.');
 
-        }).then(result => {
+        // asignamos el password encriptado al objeto
+        user.password = password;
 
-            if (!result) throw 'REPEAT NICK ERROR:22323'
-            if ( result && result.length > 0) throw 'REPEAT_NICK'
+        user.years = JSON.stringify(user.years);
 
-            // Si existe el password lo encriptamos.
-            if (user.password) {
-                // encriptamos el password.
-                return bcrypt.hash(user.password, ROUNDS_BCRYPT);
-            } else {
-                // retornamos la antigua contraseña.
-                return contraseniaOld;
-            }
-
-        }).then(
-            (password: string) => {
-                // Validamos el resultado.
-                if (!password) throw new Error('Revisar User.service la funcion hash o el retun no, respondio como se esperaba.');
-
-                // asignamos el password encriptado al objeto
-                user.password = password;
-
-                user.years = JSON.stringify(user.years);
-
-                if (URL_Server.bd === 'MSSQL') {
-
-                    return this.userRepository.query(
-                        `
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(
+            `
                                         
                     EXEC SP_UpdateUser
                     @id = '${user.id}'
@@ -410,74 +365,58 @@ export class UsersService {
                     ,@dateUpdated   = '${user.dateUpdated || ''}'
                     ,@status   = ${user.status || 0}
 
-`
-                    );
+`,
+          );
+        } else {
+          // Actualizamos
+          return this.userRepository.update(user.id, user);
+        }
+      })
+      .then(resultUpdate => {
+        if (URL_Server.bd === 'MSSQL') {
+          if (!resultUpdate || !resultUpdate.length) throw new Error('userRepository.update no respondio como esperabamos.');
+        } else {
+          if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
+        }
+        // borramos el password por seguridad.
+        // delete user.password;
+        user.password = '';
 
-                } else {
+        // Envio respuesta con el resultado recibido del ultimo paso
+        return user;
+      });
+  }
 
-                    // Actualizamos
-                    return this.userRepository.update(user.id, user);
-                }
-            }
-        ).then(resultUpdate => {
+  // Elimina a un usuario por id
+  async Delete(userId: number, deleteUserId: number): Promise<UserEntity> {
+    let user: UserEntity = new UserEntity();
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(`SP_BuscarUsuarioPorId @userId= ${userId}`);
+        } else {
+          // Eliminamos de la base de dato al usuario.
+          return this.userRepository.find({
+            where: [
+              // hacemos un where donde buscamos por id.
+              { id: userId },
+            ],
+          });
+        }
+      })
+      .then(resultFind => {
+        if (!resultFind || resultFind.length == 0) throw new Error('user_does_not_exist');
 
-            if (URL_Server.bd === 'MSSQL') {
-                if (!resultUpdate || !resultUpdate.length) throw new Error('userRepository.update no respondio como esperabamos.');
-            } else {
-                if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
-            }
-            // borramos el password por seguridad.
-            // delete user.password;
-            user.password = '';
+        // Seteamos al usuario.
+        user = resultFind[0];
+        // Desactivamos el estado.
+        user.status = false;
+        user.userIdUpdated = deleteUserId;
+        user.dateUpdated = GetDate();
 
-            // Envio respuesta con el resultado recibido del ultimo paso
-            return user;
-        });
-    }
-
-    // Elimina a un usuario por id
-    async Delete(userId: number,deleteUserId:number): Promise<UserEntity> {
-
-
-        let user: UserEntity = new UserEntity();
-        return DummyPromise().then(
-            result => {
-
-                if (URL_Server.bd === 'MSSQL') {
-
-                    return this.userRepository.query(
-                        `SP_BuscarUsuarioPorId @userId= ${userId}`
-                    )
-
-                } else {
-
-                    // Eliminamos de la base de dato al usuario.
-                    return this.userRepository.find({
-                        where: [
-                            // hacemos un where donde buscamos por id.
-                            { id: userId }
-                        ]
-                    })
-                }
-
-            }
-        ).then(resultFind => {
-
-
-            if (!resultFind || resultFind.length == 0) throw new Error('user_does_not_exist');
-
-            // Seteamos al usuario.
-            user = resultFind[0];
-            // Desactivamos el estado.
-            user.status = false;
-            user.userIdUpdated = deleteUserId;
-            user.dateUpdated =  GetDate() ;
-
-
-            if (URL_Server.bd === 'MSSQL') {
-
-                return this.userRepository.query(
-                `
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(
+            `
 
                 EXEC SP_UpdateUser
                 @id = '${user.id}'
@@ -551,89 +490,67 @@ export class UsersService {
                 ,@dateUpdated   = '${user.dateUpdated || ''}'
                 ,@status   = ${user.status || 0}
 
-                `
-                );
+                `,
+          );
+        } else {
+          // Actualizamos
+          return this.userRepository.update(user.id, user);
+        }
+      })
+      .then(resultSave => {
+        // Validamos si se actualizo correctamente.
+        if (!resultSave) throw new Error('error_user_save');
+        // Borramos el password.
+        user.password = '';
 
-            } else {
+        return user;
+      });
+  }
 
-                // Actualizamos
-                return this.userRepository.update(user.id, user);
-            }
-        }).then(
-            resultSave => {
-
-                // Validamos si se actualizo correctamente.
-                if (!resultSave) throw new Error('error_user_save');
-                // Borramos el password.
-                user.password = '';
-
-                return user;
-            }
-        )
-    }
-
-    async GetUserByNick(nick: string): Promise<UserEntity> {
-
-        return await DummyPromise().then(
-            result => {
-
-
-                if (URL_Server.bd === 'MSSQL') {
-
-                    return this.userRepository.query(`
+  async GetUserByNick(nick: string): Promise<UserEntity> {
+    return await DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(`
                         EXEC SP_GetUserByNick
                             @nick = ${nick}
-                    `)
-                    //
+                    `);
+          //
+        } else {
+          return this.userRepository.find({
+            where: [
+              // hacemos un where donde buscamos por email.
+              { nick: nick, status: Not(false) },
+            ],
+          });
+        }
+      })
+      .then((resultUser: any) => {
+        if (!resultUser || (resultUser && !resultUser.length)) throw new Error('user_was_not_found');
 
-                }
-                else {
-                    return this.userRepository.find({
-                        where: [
-                            // hacemos un where donde buscamos por email.
-                            { nick: nick ,
-                                status: Not(false)
-                            }
-                        ]
-                    });
-                }
-            }
-        ).then((resultUser: any) => {
+        return resultUser[0];
+      });
+  }
 
-            if (!resultUser || (resultUser && !resultUser.length)) throw new Error('user_was_not_found');
+  // Actualiza el filename del usuario ademas retorna el newfilename.
+  async UpdateImageUser(id: number, newFilename: string): Promise<string> {
+    let urlImage: string = URL_Server.back + '/' + newFilename;
 
-            return resultUser[0];
-        });
-    }
-
-    // Actualiza el filename del usuario ademas retorna el newfilename.
-    async UpdateImageUser(id: number, newFilename: string): Promise<string> {
-
-
-        let urlImage: string = URL_Server.back + '/' + newFilename;
-
-        return await DummyPromise().then(
-            result => {
-
-
-                if (URL_Server.bd === 'MSSQL') {
-
-                    return this.userRepository.query(`
+    return await DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return this.userRepository.query(`
                         EXEC SP_UpdateImageUser @id = ${id} ,@urlImage = '${urlImage}'
                     `);
+        } else {
+          return this.userRepository.update(id, { filename: urlImage });
+        }
+      })
+      .then(resultUpdate => {
+        if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
 
-                }
-                else {
-                    return this.userRepository.update(id, { filename: urlImage })
-                }
-            }
-        ).then(resultUpdate => {
-
-            if (!resultUpdate) throw new Error('userRepository.update no respondio como esperabamos.');
-
-            // Envio respuesta con el resultado recibido del ultimo paso
-            return urlImage;
-        });
-    }
-
+        // Envio respuesta con el resultado recibido del ultimo paso
+        return urlImage;
+      });
+  }
 }
