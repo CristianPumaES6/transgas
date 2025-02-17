@@ -20,8 +20,7 @@ let ConsumptionEquipmentEntity = class ConsumptionEquipmentEntity {
         this.amount = amount || 0;
         this.hourConsumption = hourConsumption || 0;
         this.observation = observation || '';
-        this.entityEquipmentOilCompatibilityId =
-            entityEquipmentOilCompatibilityId || 0;
+        this.entityEquipmentOilCompatibilityId = entityEquipmentOilCompatibilityId || 0;
         this.consumptionTypeId = consumptionTypeId || 0;
         this.entityOilAnalysisId = entityOilAnalysisId || 0;
         this.userIdCreated = userIdCreated || 0;

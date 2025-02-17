@@ -80,13 +80,17 @@ __decorate([
     __metadata("design:type", String)
 ], DailyReport.prototype, "east_east_west", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 'Otros' }),
+    (0, typeorm_1.Column)({ default: 'OTHER_ACT' }),
     __metadata("design:type", String)
 ], DailyReport.prototype, "activityPerformed", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: '', nullable: true }),
     __metadata("design:type", String)
 ], DailyReport.prototype, "typeActivityPerformed", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: '', nullable: true }),
+    __metadata("design:type", String)
+], DailyReport.prototype, "nextActivityPerformed", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: '', nullable: false }),
     __metadata("design:type", String)

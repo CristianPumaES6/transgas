@@ -55,8 +55,7 @@ let UsersService = class UsersService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.userRepository.query(`EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick ||
-                    ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
+                return this.userRepository.query(`EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
                     `);
             }
             else {
@@ -87,8 +86,7 @@ let UsersService = class UsersService {
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
-                    EXEC SP_GETEmailEstaEnUso @userId = 0, @nick = '${user.nick ||
-                    ''}' 
+                    EXEC SP_GETEmailEstaEnUso @userId = 0, @nick = '${user.nick || ''}' 
                     `);
             }
             else {
@@ -141,80 +139,45 @@ let UsersService = class UsersService {
                     ,@isAEIFO   = ${user.isAEIFO || 0}
                     ,@isBoilerIFO   = ${user.isBoilerIFO || 0}
                     ,@isOtherIFO   = ${user.isOtherIFO || 0}
-                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO ||
-                    0}
-                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO ||
-                    0}
-                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO ||
-                    0}
-                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO ||
-                    0}
-                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO ||
-                    0}
-                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO ||
-                    0}
-                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO ||
-                    0}
-                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO ||
-                    0}
-                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO ||
-                    0}
-                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO ||
-                    0}
+                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO || 0}
+                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO || 0}
+                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO || 0}
+                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO || 0}
+                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO || 0}
+                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO || 0}
+                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO || 0}
+                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO || 0}
+                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO || 0}
+                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO || 0}
                     ,@otherConsumptionMGO   = ${user.otherConsumptionMGO || 0}
-                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO ||
-                    0}
-                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO ||
-                    0}
-                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO ||
-                    0}
-                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO ||
-                    0}
-                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO ||
-                    0}
-                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO ||
-                    0}
-                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO ||
-                    0}
-                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO ||
-                    0}
-                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO ||
-                    0}
-                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO ||
-                    0}
+                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO || 0}
+                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO || 0}
+                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO || 0}
+                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO || 0}
+                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO || 0}
+                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO || 0}
+                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO || 0}
+                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO || 0}
+                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO || 0}
+                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO || 0}
                     ,@otherConsumptionIFO   = ${user.otherConsumptionIFO || 0}
-                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption ||
-                    0}
-                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption ||
-                    0}
-                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed ||
-                    0}
+                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption || 0}
+                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption || 0}
+                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed || 0}
                     ,@isDisplayDataMGO   = ${user.isDisplayDataMGO || 0}
                     ,@isDisplayDataLSFO   = ${user.isDisplayDataLSFO || 0}
-                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO ||
-                    0}
-                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO ||
-                    0}
-                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO ||
-                    0}
-                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO ||
-                    0}
-                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO ||
-                    0}
-                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO ||
-                    0}
-                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO ||
-                    0}
-                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO ||
-                    0}
-                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO ||
-                    0}
-                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO ||
-                    0}
-                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO ||
-                    0}
-                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO ||
-                    0}
+                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO || 0}
+                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO || 0}
+                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO || 0}
+                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO || 0}
+                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO || 0}
+                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO || 0}
+                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO || 0}
+                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO || 0}
+                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO || 0}
+                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
+                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
+                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
                     ,@userIdCreated   = ${user.userIdCreated || 0}
                     ,@dateCreated   = '${user.dateCreated || ''}'
                     ,@userIdUpdated   = ${user.userIdUpdated || 0}
@@ -264,8 +227,7 @@ let UsersService = class UsersService {
             contraseniaOld = userfind.password;
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.userRepository.query(`
-                EXEC SP_GETEmailEstaEnUso @userId = ${user.id ||
-                    0}, @nick = '${user.nick || ''}' 
+                EXEC SP_GETEmailEstaEnUso @userId = ${user.id || 0}, @nick = '${user.nick || ''}' 
                 `);
             }
             else {
@@ -329,80 +291,45 @@ let UsersService = class UsersService {
                     ,@isAEIFO   = ${user.isAEIFO || 0}
                     ,@isBoilerIFO   = ${user.isBoilerIFO || 0}
                     ,@isOtherIFO   = ${user.isOtherIFO || 0}
-                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO ||
-                    0}
-                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO ||
-                    0}
-                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO ||
-                    0}
-                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO ||
-                    0}
-                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO ||
-                    0}
-                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO ||
-                    0}
-                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO ||
-                    0}
-                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO ||
-                    0}
-                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO ||
-                    0}
-                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO ||
-                    0}
+                    ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO || 0}
+                    ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO || 0}
+                    ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO || 0}
+                    ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO || 0}
+                    ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO || 0}
+                    ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO || 0}
+                    ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO || 0}
+                    ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO || 0}
+                    ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO || 0}
+                    ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO || 0}
                     ,@otherConsumptionMGO   = ${user.otherConsumptionMGO || 0}
-                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO ||
-                    0}
-                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO ||
-                    0}
-                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO ||
-                    0}
-                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO ||
-                    0}
-                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO ||
-                    0}
-                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO ||
-                    0}
-                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO ||
-                    0}
-                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO ||
-                    0}
-                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO ||
-                    0}
-                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO ||
-                    0}
+                    ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO || 0}
+                    ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO || 0}
+                    ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO || 0}
+                    ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO || 0}
+                    ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO || 0}
+                    ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO || 0}
+                    ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO || 0}
+                    ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO || 0}
+                    ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO || 0}
+                    ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO || 0}
                     ,@otherConsumptionIFO   = ${user.otherConsumptionIFO || 0}
-                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption ||
-                    0}
-                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption ||
-                    0}
-                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed ||
-                    0}
+                    ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption || 0}
+                    ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption || 0}
+                    ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed || 0}
                     ,@isDisplayDataMGO   = ${user.isDisplayDataMGO || 0}
                     ,@isDisplayDataLSFO   = ${user.isDisplayDataLSFO || 0}
-                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO ||
-                    0}
-                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO ||
-                    0}
-                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO ||
-                    0}
-                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO ||
-                    0}
-                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO ||
-                    0}
-                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO ||
-                    0}
-                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO ||
-                    0}
-                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO ||
-                    0}
-                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO ||
-                    0}
-                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO ||
-                    0}
-                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO ||
-                    0}
-                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO ||
-                    0}
+                    ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO || 0}
+                    ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO || 0}
+                    ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO || 0}
+                    ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO || 0}
+                    ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO || 0}
+                    ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO || 0}
+                    ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO || 0}
+                    ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO || 0}
+                    ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO || 0}
+                    ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
+                    ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
+                    ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
                     ,@userIdUpdated   = ${user.userIdUpdated || 0}
                     ,@dateUpdated   = '${user.dateUpdated || ''}'
                     ,@status   = ${user.status || 0}
@@ -480,73 +407,45 @@ let UsersService = class UsersService {
                 ,@isAEIFO   = ${user.isAEIFO || 0}
                 ,@isBoilerIFO   = ${user.isBoilerIFO || 0}
                 ,@isOtherIFO   = ${user.isOtherIFO || 0}
-                ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO ||
-                    0}
-                ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO ||
-                    0}
-                ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO ||
-                    0}
+                ,@contractSpeedSailingBallastMGO   = ${user.contractSpeedSailingBallastMGO || 0}
+                ,@contractSpeedSailingLadenMGO   = ${user.contractSpeedSailingLadenMGO || 0}
+                ,@contractSpeedSailingEconomicalMGO   = ${user.contractSpeedSailingEconomicalMGO || 0}
                 ,@loadingConsumptionMGO   = ${user.loadingConsumptionMGO || 0}
-                ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO ||
-                    0}
-                ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO ||
-                    0}
-                ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO ||
-                    0}
-                ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO ||
-                    0}
+                ,@dischargeConsumptionMGO   = ${user.dischargeConsumptionMGO || 0}
+                ,@sailingBallastConsumptionMGO   = ${user.sailingBallastConsumptionMGO || 0}
+                ,@sailingLoadConsumptionMGO   = ${user.sailingLoadConsumptionMGO || 0}
+                ,@sailingEconomicConsumptionMGO   = ${user.sailingEconomicConsumptionMGO || 0}
                 ,@anchoredConsumptionMGO   = ${user.anchoredConsumptionMGO || 0}
                 ,@maneuverConsumptionMGO   = ${user.maneuverConsumptionMGO || 0}
                 ,@otherConsumptionMGO   = ${user.otherConsumptionMGO || 0}
-                ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO ||
-                    0}
-                ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO ||
-                    0}
-                ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO ||
-                    0}
+                ,@contractSpeedSailingBallastIFO   = ${user.contractSpeedSailingBallastIFO || 0}
+                ,@contractSpeedSailingLadenIFO   = ${user.contractSpeedSailingLadenIFO || 0}
+                ,@contractSpeedSailingEconomicalIFO   = ${user.contractSpeedSailingEconomicalIFO || 0}
                 ,@loadingConsumptionIFO   = ${user.loadingConsumptionIFO || 0}
-                ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO ||
-                    0}
-                ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO ||
-                    0}
-                ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO ||
-                    0}
-                ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO ||
-                    0}
+                ,@dischargeConsumptionIFO   = ${user.dischargeConsumptionIFO || 0}
+                ,@sailingBallastConsumptionIFO   = ${user.sailingBallastConsumptionIFO || 0}
+                ,@sailingLoadConsumptionIFO   = ${user.sailingLoadConsumptionIFO || 0}
+                ,@sailingEconomicConsumptionIFO   = ${user.sailingEconomicConsumptionIFO || 0}
                 ,@anchoredConsumptionIFO   = ${user.anchoredConsumptionIFO || 0}
                 ,@maneuverConsumptionIFO   = ${user.maneuverConsumptionIFO || 0}
                 ,@otherConsumptionIFO   = ${user.otherConsumptionIFO || 0}
-                ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption ||
-                    0}
-                ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption ||
-                    0}
+                ,@isDisplayLSFOConsumption   = ${user.isDisplayLSFOConsumption || 0}
+                ,@isDisplayMGOConsumption   = ${user.isDisplayMGOConsumption || 0}
                 ,@isDisplayAverageSpeed   = ${user.isDisplayAverageSpeed || 0}
                 ,@isDisplayDataMGO   = ${user.isDisplayDataMGO || 0}
                 ,@isDisplayDataLSFO   = ${user.isDisplayDataLSFO || 0}
-                ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO ||
-                    0}
-                ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO ||
-                    0}
-                ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO ||
-                    0}
-                ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO ||
-                    0}
-                ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO ||
-                    0}
-                ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO ||
-                    0}
-                ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO ||
-                    0}
-                ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO ||
-                    0}
-                ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO ||
-                    0}
-                ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO ||
-                    0}
-                ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO ||
-                    0}
-                ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO ||
-                    0}
+                ,@isDisplayVesselPerformanceLSFO   = ${user.isDisplayVesselPerformanceLSFO || 0}
+                ,@isDisplayVesselPerformanceMGO   = ${user.isDisplayVesselPerformanceMGO || 0}
+                ,@consumptionEquipmentME_MGO   = ${user.consumptionEquipmentME_MGO || 0}
+                ,@consumptionEquipmentAE_MGO   = ${user.consumptionEquipmentAE_MGO || 0}
+                ,@consumptionEquipmentBOILER_MGO   = ${user.consumptionEquipmentBOILER_MGO || 0}
+                ,@consumptionEquipmentIG_MGO   = ${user.consumptionEquipmentIG_MGO || 0}
+                ,@consumptionEquipmentPP_MGO   = ${user.consumptionEquipmentPP_MGO || 0}
+                ,@consumptionEquipmentOther_MGO   = ${user.consumptionEquipmentOther_MGO || 0}
+                ,@consumptionEquipmentME_IFO   = ${user.consumptionEquipmentME_IFO || 0}
+                ,@consumptionEquipmentAE_IFO   = ${user.consumptionEquipmentAE_IFO || 0}
+                ,@consumptionEquipmentBOILER_IFO   = ${user.consumptionEquipmentBOILER_IFO || 0}
+                ,@consumptionEquipmentOther_IFO   = ${user.consumptionEquipmentOther_IFO || 0}
                 ,@userIdUpdated   = ${user.userIdUpdated || 0}
                 ,@dateUpdated   = '${user.dateUpdated || ''}'
                 ,@status   = ${user.status || 0}

@@ -30,11 +30,7 @@ let SendMessageService = class SendMessageService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._sendMessageRepository.query("SP_ @userId='" +
-                    sendMessageEntity.userId +
-                    "', @year='" +
-                    sendMessageEntity.emails +
-                    "'");
+                return this._sendMessageRepository.query("SP_ @userId='" + sendMessageEntity.userId + "', @year='" + sendMessageEntity.emails + "'");
             }
             else {
                 if (sendMessageEntity.id) {
@@ -64,11 +60,8 @@ let SendMessageService = class SendMessageService {
                             SP_ @userId =  ${sendMessageEntity.userId}  ,
                             @userIdCreated =   ${sendMessageEntity.userIdCreated} ,
                             @dateCreated = '${sendMessageEntity.dateCreated}',
-                            @userIdUpdated =  ${sendMessageEntity.userIdUpdated
-                        ? sendMessageEntity.userIdUpdated
-                        : 0} ,
-                            @dateUpdated = '${sendMessageEntity.dateUpdated ||
-                        ''}' ,
+                            @userIdUpdated =  ${sendMessageEntity.userIdUpdated ? sendMessageEntity.userIdUpdated : 0} ,
+                            @dateUpdated = '${sendMessageEntity.dateUpdated || ''}' ,
                             @status = ${sendMessageEntity.status} 
                             `);
                 }

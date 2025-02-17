@@ -33,8 +33,7 @@ let PortsController = class PortsController {
             results.forEach(element => {
                 getLastPortAndTotalConsump.portId = element.portId || 0;
                 getLastPortAndTotalConsump.userId = element.userId || 0;
-                getLastPortAndTotalConsump.departurePort =
-                    element.departurePort || '';
+                getLastPortAndTotalConsump.departurePort = element.departurePort || '';
                 getLastPortAndTotalConsump.arrivalPort = element.arrivalPort || '';
                 getLastPortAndTotalConsump.startDate = element.startDate || '';
                 getLastPortAndTotalConsump.startIFO = element.startIFO || 0;
@@ -62,9 +61,7 @@ let PortsController = class PortsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -99,9 +96,7 @@ let PortsController = class PortsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -135,9 +130,7 @@ let PortsController = class PortsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -172,9 +165,7 @@ let PortsController = class PortsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -186,12 +177,7 @@ let PortsController = class PortsController {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         return (0, promises_assets_1.DummyPromise)()
             .then((resultDummy) => {
-            if (port &&
-                port.userId &&
-                Number(port.portNumber) &&
-                port.departurePort &&
-                headerToken &&
-                headerToken.id) {
+            if (port && port.userId && Number(port.portNumber) && port.departurePort && headerToken && headerToken.id) {
                 if (headerToken.role !== 'ADMIN' && headerToken.role !== 'SUPPORT') {
                     if (Number(headerToken.id) !== Number(port.userId))
                         throw new Error('ERROR_USERID_FAIL');
@@ -216,9 +202,7 @@ let PortsController = class PortsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -230,12 +214,7 @@ let PortsController = class PortsController {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         return (0, promises_assets_1.DummyPromise)()
             .then((resultDummy) => {
-            if (port &&
-                port.userId &&
-                port.portNumber &&
-                port.departurePort &&
-                headerToken &&
-                headerToken.id) {
+            if (port && port.userId && port.portNumber && port.departurePort && headerToken && headerToken.id) {
                 if (headerToken.role === 'BUQUE') {
                     if (Number(headerToken.id) !== Number(port.userId))
                         throw new Error('ERROR_USERID_FAIL');
@@ -262,9 +241,7 @@ let PortsController = class PortsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -305,9 +282,7 @@ let PortsController = class PortsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,

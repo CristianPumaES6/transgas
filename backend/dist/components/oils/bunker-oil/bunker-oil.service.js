@@ -60,9 +60,7 @@ let BunkerOilService = class BunkerOilService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._BunkerOil.query("SP_CheckTheLastRecordedTrip @userId='" +
-                    bunkerOil.userId +
-                    "', @year='");
+                return this._BunkerOil.query("SP_CheckTheLastRecordedTrip @userId='" + bunkerOil.userId + "', @year='");
             }
             else {
                 return this._BunkerOil.save(bunkerOil);

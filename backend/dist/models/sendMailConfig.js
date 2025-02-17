@@ -14,8 +14,7 @@ class MailLastVoyage {
         this.dateCurrent = dateCurrent || null;
         this.currentMGO = currentMGO || 0;
         this.currentVLSFO = currentVLSFO || 0;
-        this.consumptionActivity =
-            consumptionActivity || new Consumption_IFO_and_MGO_byActivity();
+        this.consumptionActivity = consumptionActivity || new Consumption_IFO_and_MGO_byActivity();
         this.bunkeringIFO = bunkeringIFO || 0;
         this.bunkeringMGO = bunkeringMGO || 0;
         this.IFO_VLSFO_LSFO = IFO_VLSFO_LSFO || null;
@@ -48,8 +47,7 @@ class typeActivityConsumption {
         this.discharge = discharge || new ConsumptionActivity('DOWNLOADING');
         this.ballast = ballast || new ConsumptionActivity('SAILING_IN_BALLAST');
         this.laden = laden || new ConsumptionActivity('SAILING_WITH_LADEN');
-        this.economical =
-            economical || new ConsumptionActivity('ECONOMICAL_NAVIGATION');
+        this.economical = economical || new ConsumptionActivity('ECONOMICAL_NAVIGATION');
         this.anchored = anchored || new ConsumptionActivity('ANCHORED');
         this.maneuver = maneuver || new ConsumptionActivity('MANEUVER');
         this.other_act = other_act || new ConsumptionActivity('OTHER_ACT');

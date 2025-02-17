@@ -49,9 +49,7 @@ let GroupOilsController = class GroupOilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,

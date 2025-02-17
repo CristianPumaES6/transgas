@@ -36,10 +36,7 @@ let DailyReportsService = class DailyReportsService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._dailyReportRepository
-                    .query(` EXEC SP_CreateNewDailyReport @userId = ${dailyReport.userId} ,@portId = ${dailyReport.portId} ,@activityPerformed = '${dailyReport.activityPerformed}' ,@speedStraction = '${dailyReport.speedStraction}' ,@date ='${dailyReport.date}' ,@hour = '${dailyReport.hour}' ,@bunkeringIfo = ${dailyReport.bunkeringIfo} ,@bunkeringMgo = ${dailyReport.bunkeringMgo} ,@mplaIfo  = ${dailyReport.mplaIfo} ,@auxIfo  = ${dailyReport.auxIfo} ,@boilerIfo  = ${dailyReport.boilerIfo} ,@otherIfo = ${dailyReport.otherIfo} ,@mplaMgo = ${dailyReport.mplaMgo} ,@auxMgo   = ${dailyReport.auxMgo} ,@boilerMgo   = ${dailyReport.boilerMgo} ,@ppMgo = ${dailyReport.ppMgo} ,@giMgo = ${dailyReport.giMgo} ,@otherMgo  = ${dailyReport.otherMgo} ,@steamingTime  = ${dailyReport.steamingTime} ,@distance =${dailyReport.distance} ,@beaufour = '${dailyReport.beaufour}' ,@observation ='${dailyReport.observation}'  ,@userIdCreated = ${dailyReport.userIdCreated} ,@dateCreated = '${dailyReport.dateCreated}' ,@userIdUpdated = ${dailyReport.userIdUpdated ||
-                    0} ,@dateUpdated = '${dailyReport.dateUpdated ||
-                    null}' ,@status = ${dailyReport.status}
+                return this._dailyReportRepository.query(` EXEC SP_CreateNewDailyReport @userId = ${dailyReport.userId} ,@portId = ${dailyReport.portId} ,@activityPerformed = '${dailyReport.activityPerformed}' ,@speedStraction = '${dailyReport.speedStraction}' ,@date ='${dailyReport.date}' ,@hour = '${dailyReport.hour}' ,@bunkeringIfo = ${dailyReport.bunkeringIfo} ,@bunkeringMgo = ${dailyReport.bunkeringMgo} ,@mplaIfo  = ${dailyReport.mplaIfo} ,@auxIfo  = ${dailyReport.auxIfo} ,@boilerIfo  = ${dailyReport.boilerIfo} ,@otherIfo = ${dailyReport.otherIfo} ,@mplaMgo = ${dailyReport.mplaMgo} ,@auxMgo   = ${dailyReport.auxMgo} ,@boilerMgo   = ${dailyReport.boilerMgo} ,@ppMgo = ${dailyReport.ppMgo} ,@giMgo = ${dailyReport.giMgo} ,@otherMgo  = ${dailyReport.otherMgo} ,@steamingTime  = ${dailyReport.steamingTime} ,@distance =${dailyReport.distance} ,@beaufour = '${dailyReport.beaufour}' ,@observation ='${dailyReport.observation}'  ,@userIdCreated = ${dailyReport.userIdCreated} ,@dateCreated = '${dailyReport.dateCreated}' ,@userIdUpdated = ${dailyReport.userIdUpdated || 0} ,@dateUpdated = '${dailyReport.dateUpdated || null}' ,@status = ${dailyReport.status}
                     `);
             }
             else {
@@ -125,9 +122,7 @@ let DailyReportsService = class DailyReportsService {
                         ,@portId = ${dailyReport.portId} 
                         ,@activityPerformed = '${dailyReport.activityPerformed}' 
                         ,@speedStraction = '${dailyReport.speedStraction}' 
-                        ,@date ='${dailyReport.date
-                    ? (0, moment_assets_1.FormatDateUTCToDateHour)(dailyReport.date)
-                    : ''}' 
+                        ,@date ='${dailyReport.date ? (0, moment_assets_1.FormatDateUTCToDateHour)(dailyReport.date) : ''}' 
                         ,@hour = '${dailyReport.hour}' 
                         ,@bunkeringIfo = ${dailyReport.bunkeringIfo} 
                         ,@bunkeringMgo = ${dailyReport.bunkeringMgo} 
@@ -350,7 +345,11 @@ let DailyReportsService = class DailyReportsService {
             .andWhere('port.status = :status', { status: 1 })
             .andWhere('voyage.status = :status', { status: 1 })
             .andWhere('daily_report.userId = :userId', { userId: userId })
-            .andWhere('(( datetime(daily_report.date) >= datetime(:startDate) AND datetime(daily_report.date) <= datetime(:endDate) ) OR voyage.id = :voyageId)', { startDate: startDate, endDate: endDate, voyageId: filterByVoyage })
+            .andWhere('(( datetime(daily_report.date) >= datetime(:startDate) AND datetime(daily_report.date) <= datetime(:endDate) ) OR voyage.id = :voyageId)', {
+            startDate: startDate,
+            endDate: endDate,
+            voyageId: filterByVoyage,
+        })
             .orderBy('daily_report.date', 'ASC')
             .getRawMany()
             .then((result) => {
@@ -465,8 +464,7 @@ let DailyReportsService = class DailyReportsService {
             firstResultInfoVoyage.forEach((itemInfoVoyage) => {
                 let getInfoVoyageROBBunkering = new daily_report_entity_1.GetInfoVoyageROBBunkering();
                 getInfoVoyageROBBunkering.voyageId = itemInfoVoyage.voyageId;
-                getInfoVoyageROBBunkering.voyageNumber =
-                    itemInfoVoyage.voyageNumber;
+                getInfoVoyageROBBunkering.voyageNumber = itemInfoVoyage.voyageNumber;
                 getInfoVoyageROBBunkering.minDate = itemInfoVoyage.minDate;
                 getInfoVoyageROBBunkering.maxDate = itemInfoVoyage.maxDate;
                 getInfoVoyageROBBunkering.totalIFO = itemInfoVoyage.totalIFO;
@@ -870,43 +868,35 @@ let DailyReportsService = class DailyReportsService {
         let stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         if (userId == 7) {
             stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
         }
         if (userId == 14) {
             stringGroupBY = "datetime('daily_report'.'date','+7.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+7.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+7.999999 hour')";
         }
         if (userId == 10) {
             stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
         }
         if (userId == 21) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
         if (userId == 2) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
         if (userId == 15) {
             stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
         }
         if (userId == 13) {
             stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+8.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         }
         if (userId == 27) {
             stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
         }
         return await this._dailyReportRepository
             .createQueryBuilder('daily_report')
@@ -955,11 +945,7 @@ let DailyReportsService = class DailyReportsService {
                 .andWhere('daily_report2.distance > :distance', { distance: 0 })
                 .andWhere('port2.status = :status', { status: 1 })
                 .andWhere('voyage2.status = :status', { status: 1 })
-                .andWhere("strftime('%Y-%m-%d'," +
-                stringGroupBY +
-                ") = strftime('%Y-%m-%d'," +
-                stringGroupBY_TwoSelect +
-                ')')
+                .andWhere("strftime('%Y-%m-%d'," + stringGroupBY + ") = strftime('%Y-%m-%d'," + stringGroupBY_TwoSelect + ')')
                 .andWhere('daily_report2.userId = :userId', { userId: userId })
                 .limit(1);
         }, 'navigatedTime')
@@ -988,33 +974,27 @@ let DailyReportsService = class DailyReportsService {
         let stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         if (userId == 14) {
             stringGroupBY = "datetime('daily_report'.'date','+7.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+7.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+7.999999 hour')";
         }
         if (userId == 10) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
         if (userId == 21) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
         if (userId == 2) {
             stringGroupBY = "datetime('daily_report'.'date','+10.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+10.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+10.999999 hour')";
         }
         if (userId == 15) {
             stringGroupBY = "datetime('daily_report'.'date','+15.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+15.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+15.999999 hour')";
         }
         if (userId == 13) {
             stringGroupBY = "datetime('daily_report'.'date','+8.999999 hour')";
-            stringGroupBY_TwoSelect =
-                "datetime('daily_report2'.'date','+8.999999 hour')";
+            stringGroupBY_TwoSelect = "datetime('daily_report2'.'date','+8.999999 hour')";
         }
         return await this._dailyReportRepository
             .createQueryBuilder('daily_report')
@@ -1063,11 +1043,7 @@ let DailyReportsService = class DailyReportsService {
                 .andWhere('daily_report2.distance > :distance', { distance: 0 })
                 .andWhere('port2.status = :status', { status: 1 })
                 .andWhere('voyage2.status = :status', { status: 1 })
-                .andWhere("strftime('%Y-%m-%d'," +
-                stringGroupBY +
-                ") = strftime('%Y-%m-%d'," +
-                stringGroupBY_TwoSelect +
-                ')')
+                .andWhere("strftime('%Y-%m-%d'," + stringGroupBY + ") = strftime('%Y-%m-%d'," + stringGroupBY_TwoSelect + ')')
                 .andWhere('daily_report2.userId = :userId', { userId: userId })
                 .limit(1);
         }, 'navigatedTime')
@@ -1118,8 +1094,7 @@ let DailyReportsService = class DailyReportsService {
                 newDailyReport.east_minutes = addDailyReport.east_minutes;
                 newDailyReport.east_east_west = addDailyReport.east_east_west;
                 newDailyReport.activityPerformed = addDailyReport.activityPerformed;
-                newDailyReport.typeActivityPerformed =
-                    addDailyReport.typeActivityPerformed;
+                newDailyReport.typeActivityPerformed = addDailyReport.typeActivityPerformed;
                 newDailyReport.speedStraction = addDailyReport.speedStraction;
                 console.log('ADD DAILY');
                 console.log(addDailyReport.date);
@@ -1180,8 +1155,7 @@ let DailyReportsService = class DailyReportsService {
                 updateDailyReport.east_minutes = dailyReport.east_minutes;
                 updateDailyReport.east_east_west = dailyReport.east_east_west;
                 updateDailyReport.activityPerformed = dailyReport.activityPerformed;
-                updateDailyReport.typeActivityPerformed =
-                    dailyReport.typeActivityPerformed;
+                updateDailyReport.typeActivityPerformed = dailyReport.typeActivityPerformed;
                 updateDailyReport.speedStraction = dailyReport.speedStraction;
                 updateDailyReport.date = dailyReport.date;
                 console.log('updateDailyReport');
@@ -1241,8 +1215,7 @@ let DailyReportsService = class DailyReportsService {
                 deletePortEntity.east_minutes = dailyReport.east_minutes;
                 deletePortEntity.east_east_west = dailyReport.east_east_west;
                 deletePortEntity.activityPerformed = dailyReport.activityPerformed;
-                deletePortEntity.typeActivityPerformed =
-                    dailyReport.typeActivityPerformed;
+                deletePortEntity.typeActivityPerformed = dailyReport.typeActivityPerformed;
                 deletePortEntity.speedStraction = dailyReport.speedStraction;
                 deletePortEntity.date = dailyReport.date;
                 deletePortEntity.hour = dailyReport.hour;

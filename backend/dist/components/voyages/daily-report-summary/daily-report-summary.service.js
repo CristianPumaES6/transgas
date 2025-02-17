@@ -69,34 +69,23 @@ let DailyReportSummaryService = class DailyReportSummaryService {
                 }
                 newDailyReportSummary.date = addDailyReportSummary.date;
                 newDailyReportSummary.date_ETA = addDailyReportSummary.date_ETA;
-                newDailyReportSummary.latitud_degree =
-                    addDailyReportSummary.latitud_degree;
-                newDailyReportSummary.latitud_minutes =
-                    addDailyReportSummary.latitud_minutes;
-                newDailyReportSummary.latitud_north_south =
-                    addDailyReportSummary.latitud_north_south;
-                newDailyReportSummary.longitude_degree =
-                    addDailyReportSummary.longitude_degree;
-                newDailyReportSummary.longitude_minutes =
-                    addDailyReportSummary.longitude_minutes;
-                newDailyReportSummary.longitude_east_west =
-                    addDailyReportSummary.longitude_east_west;
+                newDailyReportSummary.latitud_degree = addDailyReportSummary.latitud_degree;
+                newDailyReportSummary.latitud_minutes = addDailyReportSummary.latitud_minutes;
+                newDailyReportSummary.latitud_north_south = addDailyReportSummary.latitud_north_south;
+                newDailyReportSummary.longitude_degree = addDailyReportSummary.longitude_degree;
+                newDailyReportSummary.longitude_minutes = addDailyReportSummary.longitude_minutes;
+                newDailyReportSummary.longitude_east_west = addDailyReportSummary.longitude_east_west;
                 newDailyReportSummary.typeOfEvent = addDailyReportSummary.typeOfEvent;
                 newDailyReportSummary.voyage = addDailyReportSummary.voyage;
-                newDailyReportSummary.port_Departure =
-                    addDailyReportSummary.port_Departure;
+                newDailyReportSummary.port_Departure = addDailyReportSummary.port_Departure;
                 newDailyReportSummary.port_Arrive = addDailyReportSummary.port_Arrive;
-                newDailyReportSummary.loadingCondition =
-                    addDailyReportSummary.loadingCondition;
+                newDailyReportSummary.loadingCondition = addDailyReportSummary.loadingCondition;
                 newDailyReportSummary.voyComment = addDailyReportSummary.voyComment;
                 newDailyReportSummary.timeElapsed = addDailyReportSummary.timeElapsed;
-                newDailyReportSummary.timeElapsedSailing =
-                    addDailyReportSummary.timeElapsedSailing;
-                newDailyReportSummary.distanceSailed =
-                    addDailyReportSummary.distanceSailed;
+                newDailyReportSummary.timeElapsedSailing = addDailyReportSummary.timeElapsedSailing;
+                newDailyReportSummary.distanceSailed = addDailyReportSummary.distanceSailed;
                 newDailyReportSummary.nauticalMile = addDailyReportSummary.nauticalMile;
-                newDailyReportSummary.navigationObservations =
-                    addDailyReportSummary.navigationObservations;
+                newDailyReportSummary.navigationObservations = addDailyReportSummary.navigationObservations;
                 newDailyReportSummary.bunkeringIfo = addDailyReportSummary.bunkeringIfo;
                 newDailyReportSummary.bunkeringMgo = addDailyReportSummary.bunkeringMgo;
                 newDailyReportSummary.mplaIfo = addDailyReportSummary.mplaIfo;
@@ -112,8 +101,7 @@ let DailyReportSummaryService = class DailyReportSummaryService {
                 newDailyReportSummary.rob_Mgo = addDailyReportSummary.rob_Mgo;
                 newDailyReportSummary.rob_Ifo = addDailyReportSummary.rob_Ifo;
                 newDailyReportSummary.load_Power = addDailyReportSummary.load_Power;
-                newDailyReportSummary.engine_Distance =
-                    addDailyReportSummary.engine_Distance;
+                newDailyReportSummary.engine_Distance = addDailyReportSummary.engine_Distance;
                 newDailyReportSummary.userIdCreated = addDailyReportSummary.userIdCreated;
                 newDailyReportSummary.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newDailyReportSummary.userIdUpdated;
@@ -152,28 +140,21 @@ let DailyReportSummaryService = class DailyReportSummaryService {
                 reportSummary.date_ETA = updateDailyReportSummary.date_ETA;
                 reportSummary.latitud_degree = updateDailyReportSummary.latitud_degree;
                 reportSummary.latitud_minutes = updateDailyReportSummary.latitud_minutes;
-                reportSummary.latitud_north_south =
-                    updateDailyReportSummary.latitud_north_south;
-                reportSummary.longitude_degree =
-                    updateDailyReportSummary.longitude_degree;
-                reportSummary.longitude_minutes =
-                    updateDailyReportSummary.longitude_minutes;
-                reportSummary.longitude_east_west =
-                    updateDailyReportSummary.longitude_east_west;
+                reportSummary.latitud_north_south = updateDailyReportSummary.latitud_north_south;
+                reportSummary.longitude_degree = updateDailyReportSummary.longitude_degree;
+                reportSummary.longitude_minutes = updateDailyReportSummary.longitude_minutes;
+                reportSummary.longitude_east_west = updateDailyReportSummary.longitude_east_west;
                 reportSummary.typeOfEvent = updateDailyReportSummary.typeOfEvent;
                 reportSummary.voyage = updateDailyReportSummary.voyage;
                 reportSummary.port_Departure = updateDailyReportSummary.port_Departure;
                 reportSummary.port_Arrive = updateDailyReportSummary.port_Arrive;
-                reportSummary.loadingCondition =
-                    updateDailyReportSummary.loadingCondition;
+                reportSummary.loadingCondition = updateDailyReportSummary.loadingCondition;
                 reportSummary.voyComment = updateDailyReportSummary.voyComment;
                 reportSummary.timeElapsed = updateDailyReportSummary.timeElapsed;
-                reportSummary.timeElapsedSailing =
-                    updateDailyReportSummary.timeElapsedSailing;
+                reportSummary.timeElapsedSailing = updateDailyReportSummary.timeElapsedSailing;
                 reportSummary.distanceSailed = updateDailyReportSummary.distanceSailed;
                 reportSummary.nauticalMile = updateDailyReportSummary.nauticalMile;
-                reportSummary.navigationObservations =
-                    updateDailyReportSummary.navigationObservations;
+                reportSummary.navigationObservations = updateDailyReportSummary.navigationObservations;
                 reportSummary.bunkeringIfo = updateDailyReportSummary.bunkeringIfo;
                 reportSummary.bunkeringMgo = updateDailyReportSummary.bunkeringMgo;
                 reportSummary.mplaIfo = updateDailyReportSummary.mplaIfo;
@@ -228,28 +209,21 @@ let DailyReportSummaryService = class DailyReportSummaryService {
                 reportSummary.date_ETA = deleteDailyReportSummary.date_ETA;
                 reportSummary.latitud_degree = deleteDailyReportSummary.latitud_degree;
                 reportSummary.latitud_minutes = deleteDailyReportSummary.latitud_minutes;
-                reportSummary.latitud_north_south =
-                    deleteDailyReportSummary.latitud_north_south;
-                reportSummary.longitude_degree =
-                    deleteDailyReportSummary.longitude_degree;
-                reportSummary.longitude_minutes =
-                    deleteDailyReportSummary.longitude_minutes;
-                reportSummary.longitude_east_west =
-                    deleteDailyReportSummary.longitude_east_west;
+                reportSummary.latitud_north_south = deleteDailyReportSummary.latitud_north_south;
+                reportSummary.longitude_degree = deleteDailyReportSummary.longitude_degree;
+                reportSummary.longitude_minutes = deleteDailyReportSummary.longitude_minutes;
+                reportSummary.longitude_east_west = deleteDailyReportSummary.longitude_east_west;
                 reportSummary.typeOfEvent = deleteDailyReportSummary.typeOfEvent;
                 reportSummary.voyage = deleteDailyReportSummary.voyage;
                 reportSummary.port_Departure = deleteDailyReportSummary.port_Departure;
                 reportSummary.port_Arrive = deleteDailyReportSummary.port_Arrive;
-                reportSummary.loadingCondition =
-                    deleteDailyReportSummary.loadingCondition;
+                reportSummary.loadingCondition = deleteDailyReportSummary.loadingCondition;
                 reportSummary.voyComment = deleteDailyReportSummary.voyComment;
                 reportSummary.timeElapsed = deleteDailyReportSummary.timeElapsed;
-                reportSummary.timeElapsedSailing =
-                    deleteDailyReportSummary.timeElapsedSailing;
+                reportSummary.timeElapsedSailing = deleteDailyReportSummary.timeElapsedSailing;
                 reportSummary.distanceSailed = deleteDailyReportSummary.distanceSailed;
                 reportSummary.nauticalMile = deleteDailyReportSummary.nauticalMile;
-                reportSummary.navigationObservations =
-                    deleteDailyReportSummary.navigationObservations;
+                reportSummary.navigationObservations = deleteDailyReportSummary.navigationObservations;
                 reportSummary.bunkeringIfo = deleteDailyReportSummary.bunkeringIfo;
                 reportSummary.bunkeringMgo = deleteDailyReportSummary.bunkeringMgo;
                 reportSummary.mplaIfo = deleteDailyReportSummary.mplaIfo;

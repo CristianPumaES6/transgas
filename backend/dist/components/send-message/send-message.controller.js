@@ -33,9 +33,7 @@ let SendMessageController = class SendMessageController {
                     throw new Error('MISSING_FIELS');
                 }
                 else {
-                    if (headerToken.role == 'ADMIN' ||
-                        headerToken.role == 'SUPPORT' ||
-                        headerToken.role == 'OWNER') {
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') {
                     }
                     else if (Number(sendMessageEntity.userId) !== Number(headerToken.id))
                         throw new Error('ERROR_USERID_FAIL');
@@ -57,9 +55,7 @@ let SendMessageController = class SendMessageController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_2.HttpException({
                 status: common_2.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -71,9 +67,7 @@ let SendMessageController = class SendMessageController {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         return (0, promises_assets_1.DummyPromise)()
             .then((resultDummy) => {
-            if (sendMessageEntity &&
-                sendMessageEntity.emails &&
-                sendMessageEntity.status) {
+            if (sendMessageEntity && sendMessageEntity.emails && sendMessageEntity.status) {
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 }
                 else if (sendMessageEntity.userId !== headerToken.id)
@@ -103,9 +97,7 @@ let SendMessageController = class SendMessageController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_2.HttpException({
                 status: common_2.HttpStatus.ACCEPTED,
                 error: clientMsg,

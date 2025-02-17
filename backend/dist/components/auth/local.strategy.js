@@ -34,9 +34,7 @@ let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)
         })
             .catch((err) => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.UnauthorizedException(errorMsg, clientMsg);
         });
     }

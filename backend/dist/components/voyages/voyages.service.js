@@ -38,11 +38,7 @@ let VoyagesService = class VoyagesService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.voyageRepository.query("SP_CheckTheLastRecordedTrip @userId='" +
-                    voyage.userId +
-                    "', @year='" +
-                    voyage.year +
-                    "'");
+                return this.voyageRepository.query("SP_CheckTheLastRecordedTrip @userId='" + voyage.userId + "', @year='" + voyage.year + "'");
             }
             else {
                 return this.voyageRepository.find({
@@ -179,8 +175,7 @@ let VoyagesService = class VoyagesService {
         var _a, e_1, _b, _c, _d, e_2, _e, _f;
         let voyages = [];
         if (server_config_1.URL_Server.bd === 'MSSQL2') {
-            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId ||
-                0}, @year=${year || 0}`);
+            voyages = await this.voyageRepository.query(`EXEC SP_ObtenerLosUltimos5Viajes @userId=${userId || 0}, @year=${year || 0}`);
         }
         let viajesConPuerto = [];
         try {
@@ -188,16 +183,14 @@ let VoyagesService = class VoyagesService {
                 _c = voyages_1_1.value;
                 _g = false;
                 let voyage = _c;
-                let puertos = await this.voyageRepository.query(`EXEC SP_ObtenerLosPuertoDeUnViaje @userId=${userId ||
-                    0}, @voyageId=${voyage.id || 0}`);
+                let puertos = await this.voyageRepository.query(`EXEC SP_ObtenerLosPuertoDeUnViaje @userId=${userId || 0}, @voyageId=${voyage.id || 0}`);
                 let puertosConReportes = [];
                 try {
                     for (var _h = true, puertos_1 = (e_2 = void 0, __asyncValues(puertos)), puertos_1_1; puertos_1_1 = await puertos_1.next(), _d = puertos_1_1.done, !_d; _h = true) {
                         _f = puertos_1_1.value;
                         _h = false;
                         let puerto = _f;
-                        let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @userId=${userId ||
-                            0},@portId=${puerto.id || 0}`);
+                        let reportes = await this.voyageRepository.query(`EXEC SP_ObtenerLosReportesDelPuerto @userId=${userId || 0},@portId=${puerto.id || 0}`);
                         puerto.dailyReports = reportes;
                         puertosConReportes.push(puerto);
                     }
@@ -226,8 +219,7 @@ let VoyagesService = class VoyagesService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL2') {
-                return this.voyageRepository.query(`EXEC SP_obtener_los_ultimos_5_resumenes_del_reporte_diario @userId=${userId ||
-                    0}`);
+                return this.voyageRepository.query(`EXEC SP_obtener_los_ultimos_5_resumenes_del_reporte_diario @userId=${userId || 0}`);
             }
             else {
                 throw 'is not bd. wsp: +51 976873362 cpuma@transgas.com.pe';
@@ -303,11 +295,7 @@ let VoyagesService = class VoyagesService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @voyageNumber='" +
-                    voyageNumber +
-                    "', @yearVoyage='" +
-                    yearVoyage +
-                    "'");
+                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @voyageNumber='" + voyageNumber + "', @yearVoyage='" + yearVoyage + "'");
             }
             else {
                 return this.voyageRepository.findOne({
@@ -338,11 +326,7 @@ let VoyagesService = class VoyagesService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @id='" +
-                    voyageId +
-                    "', @userId='" +
-                    userId +
-                    "'");
+                return this.voyageRepository.query("SP_ThisVoyageNumberExistsInTheYear @id='" + voyageId + "', @userId='" + userId + "'");
             }
             else {
                 return this.voyageRepository.findOne({

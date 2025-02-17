@@ -62,9 +62,7 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._EquipmentOilCompatibilityEntity.query("SP_CheckTheLastRecordedTrip @userId='" +
-                    equipmentOilCompatibility.userId +
-                    "', @year='");
+                return this._EquipmentOilCompatibilityEntity.query("SP_CheckTheLastRecordedTrip @userId='" + equipmentOilCompatibility.userId + "', @year='");
             }
             else {
                 return this._EquipmentOilCompatibilityEntity.save(equipmentOilCompatibility);
@@ -99,22 +97,16 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
                 let searchMappingEquipmentSystems = (0, mappingKeys_1.searchKey)(MappingEquipmentSystems, addEquipmentOilCompatibility.entityEquipmentId);
                 let newEquipmentOilCompatibilityEntity = new equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity();
                 delete newEquipmentOilCompatibilityEntity.id;
-                newEquipmentOilCompatibilityEntity.userId =
-                    addEquipmentOilCompatibility.userId;
-                newEquipmentOilCompatibilityEntity.entityOilId =
-                    addEquipmentOilCompatibility.entityOilId;
+                newEquipmentOilCompatibilityEntity.userId = addEquipmentOilCompatibility.userId;
+                newEquipmentOilCompatibilityEntity.entityOilId = addEquipmentOilCompatibility.entityOilId;
                 if (searchMappingOils) {
-                    newEquipmentOilCompatibilityEntity.entityOilId =
-                        searchMappingOils.value;
+                    newEquipmentOilCompatibilityEntity.entityOilId = searchMappingOils.value;
                 }
-                newEquipmentOilCompatibilityEntity.entityEquipmentId =
-                    addEquipmentOilCompatibility.entityEquipmentId;
+                newEquipmentOilCompatibilityEntity.entityEquipmentId = addEquipmentOilCompatibility.entityEquipmentId;
                 if (searchMappingEquipmentSystems) {
-                    newEquipmentOilCompatibilityEntity.entityEquipmentId =
-                        searchMappingEquipmentSystems.value;
+                    newEquipmentOilCompatibilityEntity.entityEquipmentId = searchMappingEquipmentSystems.value;
                 }
-                newEquipmentOilCompatibilityEntity.userIdCreated =
-                    addEquipmentOilCompatibility.userIdCreated;
+                newEquipmentOilCompatibilityEntity.userIdCreated = addEquipmentOilCompatibility.userIdCreated;
                 newEquipmentOilCompatibilityEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newEquipmentOilCompatibilityEntity.userIdUpdated;
                 delete newEquipmentOilCompatibilityEntity.dateUpdated;
@@ -140,25 +132,18 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
                 let equipmentOilCompatibility = new equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity();
                 equipmentOilCompatibility.id = updateEquipmentOilCompatibility.id;
                 equipmentOilCompatibility.userId = updateEquipmentOilCompatibility.userId;
-                equipmentOilCompatibility.entityOilId =
-                    updateEquipmentOilCompatibility.entityOilId;
+                equipmentOilCompatibility.entityOilId = updateEquipmentOilCompatibility.entityOilId;
                 if (searchMappingOils) {
                     equipmentOilCompatibility.entityOilId = searchMappingOils.value;
                 }
-                equipmentOilCompatibility.entityEquipmentId =
-                    updateEquipmentOilCompatibility.entityEquipmentId;
+                equipmentOilCompatibility.entityEquipmentId = updateEquipmentOilCompatibility.entityEquipmentId;
                 if (searchMappingEquipmentSystems) {
-                    equipmentOilCompatibility.entityEquipmentId =
-                        searchMappingEquipmentSystems.value;
+                    equipmentOilCompatibility.entityEquipmentId = searchMappingEquipmentSystems.value;
                 }
-                equipmentOilCompatibility.userIdCreated =
-                    updateEquipmentOilCompatibility.userIdCreated;
-                equipmentOilCompatibility.dateCreated =
-                    updateEquipmentOilCompatibility.dateCreated;
-                equipmentOilCompatibility.userIdUpdated =
-                    updateEquipmentOilCompatibility.userIdUpdated;
-                equipmentOilCompatibility.dateUpdated =
-                    updateEquipmentOilCompatibility.dateUpdated;
+                equipmentOilCompatibility.userIdCreated = updateEquipmentOilCompatibility.userIdCreated;
+                equipmentOilCompatibility.dateCreated = updateEquipmentOilCompatibility.dateCreated;
+                equipmentOilCompatibility.userIdUpdated = updateEquipmentOilCompatibility.userIdUpdated;
+                equipmentOilCompatibility.dateUpdated = updateEquipmentOilCompatibility.dateUpdated;
                 equipmentOilCompatibility.status = Boolean(updateEquipmentOilCompatibility.status);
                 if (equipmentOilCompatibility.status) {
                     listDeConsumosRegistrados.push(equipmentOilCompatibility.id);
@@ -183,25 +168,18 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
                 let equipmentOilCompatibility = new equipment_oil_compatibility_entity_1.EquipmentOilCompatibilityEntity();
                 equipmentOilCompatibility.id = deleteEquipmentOilCompatibility.id;
                 equipmentOilCompatibility.userId = deleteEquipmentOilCompatibility.userId;
-                equipmentOilCompatibility.entityOilId =
-                    deleteEquipmentOilCompatibility.entityOilId;
+                equipmentOilCompatibility.entityOilId = deleteEquipmentOilCompatibility.entityOilId;
                 if (searchMappingOils) {
                     equipmentOilCompatibility.entityOilId = searchMappingOils.value;
                 }
-                equipmentOilCompatibility.entityEquipmentId =
-                    deleteEquipmentOilCompatibility.entityEquipmentId;
+                equipmentOilCompatibility.entityEquipmentId = deleteEquipmentOilCompatibility.entityEquipmentId;
                 if (searchMappingEquipmentSystems) {
-                    equipmentOilCompatibility.entityEquipmentId =
-                        searchMappingEquipmentSystems.value;
+                    equipmentOilCompatibility.entityEquipmentId = searchMappingEquipmentSystems.value;
                 }
-                equipmentOilCompatibility.userIdCreated =
-                    deleteEquipmentOilCompatibility.userIdCreated;
-                equipmentOilCompatibility.dateCreated =
-                    deleteEquipmentOilCompatibility.dateCreated;
-                equipmentOilCompatibility.userIdUpdated =
-                    deleteEquipmentOilCompatibility.userIdUpdated;
-                equipmentOilCompatibility.dateUpdated =
-                    deleteEquipmentOilCompatibility.dateUpdated;
+                equipmentOilCompatibility.userIdCreated = deleteEquipmentOilCompatibility.userIdCreated;
+                equipmentOilCompatibility.dateCreated = deleteEquipmentOilCompatibility.dateCreated;
+                equipmentOilCompatibility.userIdUpdated = deleteEquipmentOilCompatibility.userIdUpdated;
+                equipmentOilCompatibility.dateUpdated = deleteEquipmentOilCompatibility.dateUpdated;
                 equipmentOilCompatibility.status = Boolean(deleteEquipmentOilCompatibility.status);
                 await this._EquipmentOilCompatibilityEntity.save(equipmentOilCompatibility);
             }

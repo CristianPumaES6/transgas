@@ -61,9 +61,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -144,9 +142,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -174,9 +170,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -204,9 +198,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -239,9 +231,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -282,9 +272,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -320,9 +308,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -406,13 +392,9 @@ let OilsController = class OilsController {
             }
         })
             .then((resultConsumptionEquipment) => {
-            mappingConsumptionsEquipment =
-                resultConsumptionEquipment.MappingConsumptionsEquipment;
-            listConsumosValidarSendMail =
-                resultConsumptionEquipment.listConsumosValidarSendMail;
-            if (listConsumosValidarSendMail &&
-                listConsumosValidarSendMail.length &&
-                listConsumosValidarSendMail.length > 0) {
+            mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
+            listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
+            if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
                 console.log('Se realiza la consulta de consumos registrados');
                 return this._OilsService.ConsultarListaDeConsumosRegistrados(listConsumosValidarSendMail);
             }
@@ -421,8 +403,7 @@ let OilsController = class OilsController {
             }
         })
             .then((listaDeConsumosRegistrados) => {
-            if (listaDeConsumosRegistrados &&
-                listaDeConsumosRegistrados.length > 0) {
+            if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
                 return (0, nodemailer_assets_1.SendMailHTMLOverCosumption)('cristian.puma.es6@gmail.com;', headerToken.name, (0, moment_assets_1.FormatDateUTCToDate)((0, moment_assets_1.GetDate)()), listaDeConsumosRegistrados);
             }
             else {
@@ -445,9 +426,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -472,9 +451,7 @@ let OilsController = class OilsController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,

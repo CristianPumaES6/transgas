@@ -50,14 +50,12 @@ let AppGateway = class AppGateway {
     }
     handleEvent(socketEmitModel, client) {
         this.logger.log('EmitConnect');
-        if (socketEmitModel &&
-            socketEmitModel.action == 'REGISTER_CONECTION_USER') {
+        if (socketEmitModel && socketEmitModel.action == 'REGISTER_CONECTION_USER') {
             let IsUserLogeatedExit = socketEmitModel.data;
             IsUserLogeatedExit.clientId = client.id;
             this.IsUserLogeatedExit(IsUserLogeatedExit);
         }
-        else if (socketEmitModel &&
-            socketEmitModel.action == 'SYNC_DATA_BY_USER') {
+        else if (socketEmitModel && socketEmitModel.action == 'SYNC_DATA_BY_USER') {
             let userLogeate = socketEmitModel.data;
             this.wss.to(userLogeate.clientId).emit('EmitConnect', socketEmitModel);
         }

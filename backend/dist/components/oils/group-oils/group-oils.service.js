@@ -59,9 +59,7 @@ let GroupOilsService = class GroupOilsService {
         return (0, promises_assets_1.DummyPromise)()
             .then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
-                return this._groupOilRepository.query("SP_CheckTheLastRecordedTrip @userId='" +
-                    groupOilEntity.userId +
-                    "', @year='");
+                return this._groupOilRepository.query("SP_CheckTheLastRecordedTrip @userId='" + groupOilEntity.userId + "', @year='");
             }
             else {
                 return this._groupOilRepository.save(groupOilEntity);

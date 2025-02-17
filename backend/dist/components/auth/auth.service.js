@@ -60,7 +60,6 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_service_1.UsersService,
-        jwt_1.JwtService])
+    __metadata("design:paramtypes", [users_service_1.UsersService, jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

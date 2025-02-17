@@ -54,9 +54,7 @@ let VoyagesController = class VoyagesController {
                     throw new Error('MISSING_FIELS');
                 }
                 else {
-                    if (headerToken.role == 'ADMIN' ||
-                        headerToken.role == 'SUPPORT' ||
-                        headerToken.role == 'OWNER') {
+                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') {
                     }
                     else if (Number(voyageFilterByYears.userId) !== Number(headerToken.id))
                         throw new Error('ERROR_USERID_FAIL');
@@ -79,9 +77,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -130,9 +126,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -160,9 +154,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -205,9 +197,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -219,12 +209,7 @@ let VoyagesController = class VoyagesController {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         return (0, promises_assets_1.DummyPromise)()
             .then((resultDummy) => {
-            if (voyage &&
-                Number(voyage.userId) &&
-                Number(voyage.voyageNumber) &&
-                Number(voyage.year) &&
-                headerToken &&
-                headerToken.id) {
+            if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 }
                 else if (voyage.userId !== headerToken.id)
@@ -249,9 +234,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -263,12 +246,7 @@ let VoyagesController = class VoyagesController {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         return (0, promises_assets_1.DummyPromise)()
             .then((resultDummy) => {
-            if (voyage &&
-                voyage.userId &&
-                voyage.voyageNumber &&
-                voyage.year &&
-                headerToken &&
-                headerToken.id) {
+            if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
                 voyage.id = Number(id);
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                 }
@@ -296,9 +274,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -338,9 +314,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -385,18 +359,14 @@ let VoyagesController = class VoyagesController {
                             delete newVoyage.dateUpdated;
                             newVoyage.status = true;
                             let voyageRegister = await this._voyagesService.Create(newVoyage);
-                            console.log('Se CREO EL VIAJE NUMERO ' +
-                                newVoyage.voyageNumber +
-                                '   con id :' +
-                                newVoyage.id);
+                            console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
                             MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageRegister.id));
                             MappingPort = [];
                         }
                         else {
                             if (voyageExistente.userId != importVoyage.userId)
                                 throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.';
-                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber ||
-                                voyageExistente.year != importVoyage.year) {
+                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber || voyageExistente.year != importVoyage.year) {
                                 delete voyageExistente.ports;
                                 voyageExistente.voyageNumber = importVoyage.voyageNumber;
                                 voyageExistente.year = importVoyage.year;
@@ -434,24 +404,15 @@ let VoyagesController = class VoyagesController {
                             else {
                                 newPort.startDate = null;
                             }
-                            newPort.startIFO =
-                                importVoyage.ROB[0] +
-                                    importVoyage.TOTAL[0] -
-                                    importVoyage.bunkeringIfo;
-                            newPort.startMGO =
-                                importVoyage.ROB[1] +
-                                    importVoyage.TOTAL[1] -
-                                    importVoyage.bunkeringMgo;
+                            newPort.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                            newPort.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
                             newPort.userIdCreated = headerToken.id;
                             newPort.dateCreated = (0, moment_assets_1.GetDate)();
                             delete newPort.userIdUpdated;
                             delete newPort.dateUpdated;
                             newPort.status = true;
                             let portRegister = await this._portsService.Create(newPort);
-                            console.log('Se CREO EL PUERTO NUMERO ' +
-                                portRegister.portNumber +
-                                '   con id :' +
-                                portRegister.id);
+                            console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portRegister.id));
                         }
                         else {
@@ -474,21 +435,12 @@ let VoyagesController = class VoyagesController {
                                 else {
                                     delete portExiste.startDate;
                                 }
-                                portExiste.startIFO =
-                                    importVoyage.ROB[0] +
-                                        importVoyage.TOTAL[0] -
-                                        importVoyage.bunkeringIfo;
-                                portExiste.startMGO =
-                                    importVoyage.ROB[1] +
-                                        importVoyage.TOTAL[1] -
-                                        importVoyage.bunkeringMgo;
+                                portExiste.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                                portExiste.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
                                 delete portExiste.dailyReports;
                                 portExiste.dateUpdated = (0, moment_assets_1.GetDate)();
                                 portExiste.status = true;
-                                console.log('Se actualizo el PUERTO NUMERO ' +
-                                    portExiste.portNumber +
-                                    '   con id :' +
-                                    portExiste.id);
+                                console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
                                 portExiste = await this._portsService.Update(portExiste);
                             }
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portExiste.id));
@@ -511,22 +463,16 @@ let VoyagesController = class VoyagesController {
                         importVoyage.date.length == 11 ||
                         importVoyage.date.length == 15 ||
                         importVoyage.date.length == 18) {
-                        ultimaFecha =
-                            (0, moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL)(importVoyage.date, 5) + '.000';
+                        ultimaFecha = (0, moment_assets_1.ConvertDDMMYYHHMM5HorasLOCAL)(importVoyage.date, 5) + '.000';
                     }
-                    else if (importVoyage.date.length == 19 ||
-                        importVoyage.date.length == 23) {
-                        ultimaFecha =
-                            (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(importVoyage.date) +
-                                '.000';
+                    else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
+                        ultimaFecha = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(importVoyage.date) + '.000';
                     }
                     else if (importVoyage.date.length == 9) {
-                        ultimaFecha =
-                            '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
+                        ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
                     }
                     else if (importVoyage.date.length == 10) {
-                        ultimaFecha =
-                            importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
+                        ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
                     }
                     else {
                         ultimaFecha = null;
@@ -543,15 +489,14 @@ let VoyagesController = class VoyagesController {
                         }
                         else {
                             newReport.hour = importVoyage.hour;
-                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' +
-                                importVoyage.dailyReportId);
+                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
                         }
                     }
                     else {
                         let fechatemporalporhora = (0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, 5);
                         newReport.hour = (0, moment_assets_1.ObtenerlasHorasDeUnaFecaUTC)(fechatemporalporhora);
                     }
-                    newReport.date = ((0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, -5));
+                    newReport.date = (0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, -5);
                     newReport.mplaIfo = importVoyage.mplaIfo || 0;
                     newReport.auxIfo = importVoyage.auxIfo || 0;
                     newReport.boilerIfo = importVoyage.boilerIfo || 0;
@@ -759,18 +704,14 @@ let VoyagesController = class VoyagesController {
                             delete newVoyage.dateUpdated;
                             newVoyage.status = true;
                             let voyageRegister = await this._voyagesService.Create(newVoyage);
-                            console.log('Se CREO EL VIAJE NUMERO ' +
-                                newVoyage.voyageNumber +
-                                '   con id :' +
-                                newVoyage.id);
+                            console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
                             MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageRegister.id));
                             MappingPort = [];
                         }
                         else {
                             if (voyageExistente.userId != importVoyage.userId)
                                 throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.';
-                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber ||
-                                voyageExistente.year != importVoyage.year) {
+                            if (voyageExistente.voyageNumber != importVoyage.voyageNumber || voyageExistente.year != importVoyage.year) {
                                 delete voyageExistente.ports;
                                 voyageExistente.voyageNumber = importVoyage.voyageNumber;
                                 voyageExistente.year = importVoyage.year;
@@ -808,24 +749,15 @@ let VoyagesController = class VoyagesController {
                             else {
                                 newPort.startDate = null;
                             }
-                            newPort.startIFO =
-                                importVoyage.ROB[0] +
-                                    importVoyage.TOTAL[0] -
-                                    importVoyage.bunkeringIfo;
-                            newPort.startMGO =
-                                importVoyage.ROB[1] +
-                                    importVoyage.TOTAL[1] -
-                                    importVoyage.bunkeringMgo;
+                            newPort.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                            newPort.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
                             newPort.userIdCreated = headerToken.id;
                             newPort.dateCreated = (0, moment_assets_1.GetDate)();
                             delete newPort.userIdUpdated;
                             delete newPort.dateUpdated;
                             newPort.status = true;
                             let portRegister = await this._portsService.Create(newPort);
-                            console.log('Se CREO EL PUERTO NUMERO ' +
-                                portRegister.portNumber +
-                                '   con id :' +
-                                portRegister.id);
+                            console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portRegister.id));
                         }
                         else {
@@ -848,21 +780,12 @@ let VoyagesController = class VoyagesController {
                                 else {
                                     delete portExiste.startDate;
                                 }
-                                portExiste.startIFO =
-                                    importVoyage.ROB[0] +
-                                        importVoyage.TOTAL[0] -
-                                        importVoyage.bunkeringIfo;
-                                portExiste.startMGO =
-                                    importVoyage.ROB[1] +
-                                        importVoyage.TOTAL[1] -
-                                        importVoyage.bunkeringMgo;
+                                portExiste.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                                portExiste.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
                                 delete portExiste.dailyReports;
                                 portExiste.dateUpdated = (0, moment_assets_1.GetDate)();
                                 portExiste.status = true;
-                                console.log('Se actualizo el PUERTO NUMERO ' +
-                                    portExiste.portNumber +
-                                    '   con id :' +
-                                    portExiste.id);
+                                console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
                                 portExiste = await this._portsService.Update(portExiste);
                             }
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portExiste.id));
@@ -898,8 +821,7 @@ let VoyagesController = class VoyagesController {
                         }
                         newReport.hour = (0, moment_assets_1.ObtenerlasHorasDeUnaFecaUTC)(ultimaFecha);
                         console.log(newReport.hour);
-                        ultimaFecha =
-                            (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
+                        ultimaFecha = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
                         newReport.date = ultimaFecha;
                         newReport.mplaIfo = importVoyage.mplaIfo || 0;
                         newReport.auxIfo = importVoyage.auxIfo || 0;
@@ -1049,14 +971,9 @@ let VoyagesController = class VoyagesController {
                     else {
                         delete newReport.id;
                     }
-                    ultimaFecha =
-                        (0, moment_assets_1.DateDayMonthYear)(importVoyage.date) +
-                            ' ' +
-                            importVoyage.hour +
-                            ':00.000';
+                    ultimaFecha = (0, moment_assets_1.DateDayMonthYear)(importVoyage.date) + ' ' + importVoyage.hour + ':00.000';
                     console.log(ultimaFecha);
-                    ultimaFecha =
-                        (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
+                    ultimaFecha = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL)(ultimaFecha) + '.000';
                     console.log(ultimaFecha);
                     if (ultimaFecha.length == 23) {
                         newReport.date = ultimaFecha;
@@ -1072,8 +989,7 @@ let VoyagesController = class VoyagesController {
                             newReport.hour = importVoyage.hour;
                         }
                         else {
-                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' +
-                                importVoyage.dailyReportId);
+                            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
                         }
                     }
                     if (secrearaunNuevoReporte) {
@@ -1390,32 +1306,16 @@ let VoyagesController = class VoyagesController {
                 throw 'ERROR GetStartEndROByFilterDate';
             let startDataROB = new daily_report_entity_1.GetROBByUser();
             let endDataROB = new daily_report_entity_1.GetROBByUser();
-            startDataROB.total_ifo =
-                resultGetStartEndROByFilterDate[0].total_bunkering_ifo -
-                    resultGetStartEndROByFilterDate[0].total_ifo;
-            startDataROB.total_mgo =
-                resultGetStartEndROByFilterDate[0].total_bunkering_mgo -
-                    resultGetStartEndROByFilterDate[0].total_mgo;
-            (startDataROB.total_bunkering_ifo =
-                resultGetStartEndROByFilterDate[0].total_bunkering_ifo),
-                2;
-            (startDataROB.total_bunkering_mgo =
-                resultGetStartEndROByFilterDate[0].total_bunkering_mgo),
-                2;
+            startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo;
+            startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo;
+            (startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo), 2;
+            (startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo), 2;
             endDataROB.total_ifo =
-                startDataROB.total_ifo +
-                    (resultGetStartEndROByFilterDate[1].total_bunkering_ifo -
-                        resultGetStartEndROByFilterDate[1].total_ifo);
+                startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo);
             endDataROB.total_mgo =
-                startDataROB.total_mgo +
-                    (resultGetStartEndROByFilterDate[1].total_bunkering_mgo -
-                        resultGetStartEndROByFilterDate[1].total_mgo);
-            (endDataROB.total_bunkering_ifo =
-                resultGetStartEndROByFilterDate[1].total_bunkering_ifo),
-                2;
-            (endDataROB.total_bunkering_mgo =
-                resultGetStartEndROByFilterDate[1].total_bunkering_mgo),
-                2;
+                startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo);
+            (endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo), 2;
+            (endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo), 2;
             getInfoFuelStartEndByFilterDate = new daily_report_entity_1.InfoFuelStartEndForDate(startDataROB, endDataROB);
             return this._formatExcelLastVoyageService.GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity);
         })
@@ -1431,9 +1331,7 @@ let VoyagesController = class VoyagesController {
             if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
                 mailLastVoyage.objMailLastVoyage.isVIew_IFO_VLSFO_LSFO = true;
             }
-            mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO
-                ? 'MGO'
-                : '';
+            mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO ? 'MGO' : '';
             if (mailLastVoyage.objMailLastVoyage.MGO) {
                 mailLastVoyage.objMailLastVoyage.isVIew_MGO = true;
             }
@@ -1451,9 +1349,7 @@ let VoyagesController = class VoyagesController {
         })
             .catch(err => {
             const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string'
-                ? err
-                : err.message || err.description || 'ERROR_EXEC_REQUEST';
+            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -1465,12 +1361,7 @@ let VoyagesController = class VoyagesController {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
         voyages.forEach(async (voyage) => {
             if (voyage.SyncStatus === 'added') {
-                if (voyage &&
-                    Number(voyage.userId) &&
-                    Number(voyage.voyageNumber) &&
-                    Number(voyage.year) &&
-                    headerToken &&
-                    headerToken.id) {
+                if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
                     if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                     }
                     else if (voyage.userId !== headerToken.id)
@@ -1487,12 +1378,7 @@ let VoyagesController = class VoyagesController {
                     throw 'MISSING_FIELS';
             }
             else if (voyage.SyncStatus === 'update') {
-                if (voyage &&
-                    voyage.userId &&
-                    voyage.voyageNumber &&
-                    voyage.year &&
-                    headerToken &&
-                    headerToken.id) {
+                if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
                     voyage.id = Number(voyage.id);
                     if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
                     }
