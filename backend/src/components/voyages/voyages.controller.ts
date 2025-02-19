@@ -527,6 +527,8 @@ export class VoyagesController {
             newPort.departurePort = importVoyage.departurePort;
             newPort.arrivalPort = importVoyage.arrivalPort;
             newPort.portNumber = importVoyage.portNumber;
+            newPort.dateETA = importVoyage.dateETA;
+            newPort.historyDateETA = "[]";
             /*              
                             ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OPCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
@@ -571,6 +573,7 @@ export class VoyagesController {
               portExiste.portNumber = importVoyage.portNumber;
               portExiste.departurePort = importVoyage.departurePort;
               portExiste.arrivalPort = importVoyage.arrivalPort;
+              portExiste.dateETA = importVoyage.dateETA; 
 
               if (ultimaFecha) {
                 portExiste.startDate = ultimaFecha;
@@ -796,6 +799,7 @@ export class VoyagesController {
         newReport.observation = importVoyage.observation;
 
         newReport.activityPerformed = importVoyage.activityPerformed;
+        newReport.nextActivityPerformed = importVoyage.nextActivityPerformed;
         if (newReport.activityPerformed == 'CARGANDO') {
           newReport.activityPerformed = 'LOADING';
         } else if (newReport.activityPerformed == 'DESCARGANDO') {
