@@ -60,12 +60,17 @@ export class DailyReport {
   @Column({ default: '', nullable: true })
   east_east_west: string;
 
-  // actividad Registrada
-  @Column({ default: 'Otros' })
+  // actividad Registrada transcurrida
+  @Column({ default: 'OTHER_ACT' })
   activityPerformed: string;
 
   @Column({ default: '', nullable: true })
   typeActivityPerformed: string;
+
+  // siguiente actividad
+  @Column({ default: '', nullable: true })
+  nextActivityPerformed: string;
+
 
   @Column({ default: '', nullable: false })
   speedStraction: string;

@@ -1488,6 +1488,8 @@ export class DailyReportsService {
 
       newDailyReport.activityPerformed = addDailyReport.activityPerformed;
       newDailyReport.typeActivityPerformed = addDailyReport.typeActivityPerformed;
+      newDailyReport.nextActivityPerformed = addDailyReport.nextActivityPerformed;
+
       newDailyReport.speedStraction = addDailyReport.speedStraction;
       console.log('ADD DAILY');
       console.log(addDailyReport.date);
@@ -1554,6 +1556,8 @@ export class DailyReportsService {
 
       updateDailyReport.activityPerformed = dailyReport.activityPerformed;
       updateDailyReport.typeActivityPerformed = dailyReport.typeActivityPerformed;
+      updateDailyReport.nextActivityPerformed = dailyReport.nextActivityPerformed;
+
       updateDailyReport.speedStraction = dailyReport.speedStraction;
 
       updateDailyReport.date = dailyReport.date;
@@ -1617,6 +1621,8 @@ export class DailyReportsService {
 
       deletePortEntity.activityPerformed = dailyReport.activityPerformed;
       deletePortEntity.typeActivityPerformed = dailyReport.typeActivityPerformed;
+      deletePortEntity.nextActivityPerformed = dailyReport.nextActivityPerformed;
+
       deletePortEntity.speedStraction = dailyReport.speedStraction;
 
       deletePortEntity.date = dailyReport.date;
