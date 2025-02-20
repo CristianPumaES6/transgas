@@ -13,7 +13,7 @@ export declare class AppService {
     SaveFileAnalysisOil(buqueId: number, ETM_OilAnalysis_Oid: string): Promise<QueryViewFileAnalysisOil[]>;
     ViewFileAnalysisOil(buqueId: number, ETM_OilAnalysis_Oid: string): Promise<QueryViewFileAnalysisOil[]>;
     consultEquipmentConsumptionByMonthUser(userId: number, entityEquipmentId: number, DateYEAR_MONTH: string): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
-    GetShips(): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
+    GetShips(): Promise<any[]>;
     ConsumptionLubricantPerMonthPerListUsers(users: UserEntity[], startDate: string, endDate: string): Promise<ListUserConsumptionLubricantPerMonth[]>;
 }
 export interface ListUserConsumptionLubricantPerMonth {

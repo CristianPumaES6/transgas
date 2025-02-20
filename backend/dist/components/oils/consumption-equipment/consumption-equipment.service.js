@@ -366,10 +366,70 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
     }
     async GetShips() {
         const query = `
-        Select  U.id AS Id,
+        SELECT  U.id AS Id,
                 U.name AS Name,
-                U.filename AS Filename
-        FROM USER U
+                U.filename AS Filename,
+                U.[years]
+                ,U.[minSpeed]
+                ,U.[maxSpeed]
+                ,U.[isConsumptionIFO]
+                ,U.[isConsumptionLSFO]
+                ,U.[isConsumptionVLSFO]
+                ,U.[isConsumptionMGO]
+                ,U.[maxIFOConsumption]
+                ,U.[maxMGOConsumption]
+                ,U.[minIFOConsumption]
+                ,U.[minMGOConsumption]
+                ,U.[isMEMGO]
+                ,U.[isAEMGO]
+                ,U.[isBoilerMGO]
+                ,U.[isIGMGO]
+                ,U.[isPowerPMGO]
+                ,U.[isOtherMGO]
+                ,U.[isMEIFO]
+                ,U.[isAEIFO]
+                ,U.[isBoilerIFO]
+                ,U.[isOtherIFO]
+                ,U.[contractSpeedSailingBallastMGO]
+                ,U.[contractSpeedSailingLadenMGO]
+                ,U.[contractSpeedSailingEconomicalMGO]
+                ,U.[loadingConsumptionMGO]
+                ,U.[dischargeConsumptionMGO]
+                ,U.[sailingBallastConsumptionMGO]
+                ,U.[sailingLoadConsumptionMGO]
+                ,U.[sailingEconomicConsumptionMGO]
+                ,U.[anchoredConsumptionMGO]
+                ,U.[maneuverConsumptionMGO]
+                ,U.[otherConsumptionMGO]
+                ,U.[contractSpeedSailingBallastIFO]
+                ,U.[contractSpeedSailingLadenIFO]
+                ,U.[contractSpeedSailingEconomicalIFO]
+                ,U.[loadingConsumptionIFO]
+                ,U.[dischargeConsumptionIFO]
+                ,U.[sailingBallastConsumptionIFO]
+                ,U.[sailingLoadConsumptionIFO]
+                ,U.[sailingEconomicConsumptionIFO]
+                ,U.[anchoredConsumptionIFO]
+                ,U.[maneuverConsumptionIFO]
+                ,U.[otherConsumptionIFO]
+                ,U.[isDisplayLSFOConsumption]
+                ,U.[isDisplayMGOConsumption]
+                ,U.[isDisplayAverageSpeed]
+                ,U.[isDisplayDataMGO]
+                ,U.[isDisplayDataLSFO]
+                ,U.[isDisplayVesselPerformanceLSFO]
+                ,U.[isDisplayVesselPerformanceMGO]
+                ,U.[consumptionEquipmentME_MGO]
+                ,U.[consumptionEquipmentAE_MGO]
+                ,U.[consumptionEquipmentBOILER_MGO]
+                ,U.[consumptionEquipmentIG_MGO]
+                ,U.[consumptionEquipmentPP_MGO]
+                ,U.[consumptionEquipmentOther_MGO]
+                ,U.[consumptionEquipmentME_IFO]
+                ,U.[consumptionEquipmentAE_IFO]
+                ,U.[consumptionEquipmentBOILER_IFO]
+                ,U.[consumptionEquipmentOther_IFO]
+        FROM [USER] U
         WHERE U.role = 'BUQUE' AND U.status = 1;
     `;
         return this._ConsumptionEquipment.query(query, []);

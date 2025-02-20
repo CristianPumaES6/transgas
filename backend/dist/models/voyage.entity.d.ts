@@ -28,6 +28,8 @@ export declare class ImportVoyage {
     portNumber: number;
     departurePort: string;
     arrivalPort: string;
+    nextActivityPerformed: string;
+    dateETA: string;
     VIAJE: string;
     date: string;
     hour: string;

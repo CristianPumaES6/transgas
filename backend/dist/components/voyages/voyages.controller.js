@@ -398,6 +398,8 @@ let VoyagesController = class VoyagesController {
                             newPort.departurePort = importVoyage.departurePort;
                             newPort.arrivalPort = importVoyage.arrivalPort;
                             newPort.portNumber = importVoyage.portNumber;
+                            newPort.dateETA = importVoyage.dateETA;
+                            newPort.historyDateETA = "[]";
                             if (ultimaFecha) {
                                 newPort.startDate = ultimaFecha;
                             }
@@ -429,6 +431,7 @@ let VoyagesController = class VoyagesController {
                                 portExiste.portNumber = importVoyage.portNumber;
                                 portExiste.departurePort = importVoyage.departurePort;
                                 portExiste.arrivalPort = importVoyage.arrivalPort;
+                                portExiste.dateETA = importVoyage.dateETA;
                                 if (ultimaFecha) {
                                     portExiste.startDate = ultimaFecha;
                                 }
@@ -474,6 +477,9 @@ let VoyagesController = class VoyagesController {
                     else if (importVoyage.date.length == 10) {
                         ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
                     }
+                    else if (importVoyage.date.length == 23) {
+                        ultimaFecha = (0, moment_assets_1.ConvertDateUTC_To_FORMAT_UTC)(importVoyage.date);
+                    }
                     else {
                         ultimaFecha = null;
                         console.log(importVoyage.date);
@@ -496,7 +502,7 @@ let VoyagesController = class VoyagesController {
                         let fechatemporalporhora = (0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, 5);
                         newReport.hour = (0, moment_assets_1.ObtenerlasHorasDeUnaFecaUTC)(fechatemporalporhora);
                     }
-                    newReport.date = (0, moment_assets_1.ConvertDateUTC_masUnaCantidadDeHoras)(newReport.date, -5);
+                    newReport.date = (0, moment_assets_1.ConvertYYYYMMHH_5HorasLOCAL)(newReport.date, -5);
                     newReport.mplaIfo = importVoyage.mplaIfo || 0;
                     newReport.auxIfo = importVoyage.auxIfo || 0;
                     newReport.boilerIfo = importVoyage.boilerIfo || 0;
@@ -507,7 +513,7 @@ let VoyagesController = class VoyagesController {
                     newReport.ppMgo = importVoyage.ppMgo || 0;
                     newReport.giMgo = importVoyage.giMgo || 0;
                     newReport.otherMgo = importVoyage.otherMgo || 0;
-                    newReport.steamingTime = importVoyage.steamingTime || 0;
+                    newReport.steamingTime = importVoyage.steamingTime2 * 60 || 0;
                     if (typeof importVoyage.distance === 'number') {
                         newReport.distance = importVoyage.distance;
                     }
@@ -596,6 +602,7 @@ let VoyagesController = class VoyagesController {
                     newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
                     newReport.observation = importVoyage.observation;
                     newReport.activityPerformed = importVoyage.activityPerformed;
+                    newReport.nextActivityPerformed = importVoyage.nextActivityPerformed;
                     if (newReport.activityPerformed == 'CARGANDO') {
                         newReport.activityPerformed = 'LOADING';
                     }

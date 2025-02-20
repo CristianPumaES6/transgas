@@ -28,7 +28,7 @@ export declare class AppController {
     GetOilAnalysis(buqueId: any, ETM_OilAnalysis_Oid: any): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").QueryGetTask[]>;
     ViewFileAnalysis(buqueId: any, ETM_OilAnalysis_Oid: any, res: Response): Promise<void | Response<any, Record<string, any>>>;
     ConsultEquipmentConsumptionByMonthUser(buqueId: any, EquipmentId: any, YEAR_MONTH: any): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
-    GetShips(): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
+    GetShips(): Promise<any[]>;
     GetStatusOilStartEnd(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     GetInfoAllVessel(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
 }

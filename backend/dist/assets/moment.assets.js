@@ -8,6 +8,7 @@ exports.FormatDateUTCToDateYYYYMM = FormatDateUTCToDateYYYYMM;
 exports.ConvertDateUTC_To_FORMAT_UTC = ConvertDateUTC_To_FORMAT_UTC;
 exports.Convert_YYYYMMD_To_YYYYMMDD = Convert_YYYYMMD_To_YYYYMMDD;
 exports.ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL;
+exports.ConvertYYYYMMHH_5HorasLOCAL = ConvertYYYYMMHH_5HorasLOCAL;
 exports.ConvertDDMMYYHHMM5HorasLOCAL = ConvertDDMMYYHHMM5HorasLOCAL;
 exports.DateDayMonthYear = DateDayMonthYear;
 exports.ObtenerlasHorasDeUnaFecaUTC = ObtenerlasHorasDeUnaFecaUTC;
@@ -59,6 +60,12 @@ function Convert_YYYYMMD_To_YYYYMMDD(date) {
 function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC) {
     let momentDate = moment.utc(dateUTC).subtract(5, 'hours');
     return momentDate.format('YYYY-MM-DD HH:mm:ss');
+}
+function ConvertYYYYMMHH_5HorasLOCAL(dateUTC, addHour) {
+    let mommentTemporal = moment.utc(dateUTC, 'YYYY-MM-DD HH:mm');
+    let momentDate = mommentTemporal.subtract(addHour, 'hours');
+    return momentDate.format('YYYY-MM-DD HH:mm:ss').replace(" ", "T") + "Z";
+    ;
 }
 function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC, addHour) {
     let mommentTemporal = moment.utc(dateUTC, 'DD/MM/YY HH:mm');
