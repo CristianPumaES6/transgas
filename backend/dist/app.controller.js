@@ -268,7 +268,7 @@ let AppController = class AppController {
     }
     async GetMGOConsumptionPerEquipment(userId, startDate, endDate) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            return this._ConsumptionEquipmentService.GetConsumoEquipoIFOPorMonth(userId, startDate, endDate);
+            return this._ConsumptionEquipmentService.GetConsumoEquipoMGOPorMonth(userId, startDate, endDate);
         });
     }
 };
