@@ -402,12 +402,72 @@ export class ConsumptionEquipmentService {
     return this._ConsumptionEquipment.query(query, []);
   }
 
-  async GetShips(): Promise<consultEquipmentConsumptionByMonthUser[]> {
+  async GetShips(): Promise<any[]> {
     const query = `
-        Select  U.id AS Id,
+        SELECT  U.id AS Id,
                 U.name AS Name,
-                U.filename AS Filename
-        FROM USER U
+                U.filename AS Filename,
+                U.[years]
+                ,U.[minSpeed]
+                ,U.[maxSpeed]
+                ,U.[isConsumptionIFO]
+                ,U.[isConsumptionLSFO]
+                ,U.[isConsumptionVLSFO]
+                ,U.[isConsumptionMGO]
+                ,U.[maxIFOConsumption]
+                ,U.[maxMGOConsumption]
+                ,U.[minIFOConsumption]
+                ,U.[minMGOConsumption]
+                ,U.[isMEMGO]
+                ,U.[isAEMGO]
+                ,U.[isBoilerMGO]
+                ,U.[isIGMGO]
+                ,U.[isPowerPMGO]
+                ,U.[isOtherMGO]
+                ,U.[isMEIFO]
+                ,U.[isAEIFO]
+                ,U.[isBoilerIFO]
+                ,U.[isOtherIFO]
+                ,U.[contractSpeedSailingBallastMGO]
+                ,U.[contractSpeedSailingLadenMGO]
+                ,U.[contractSpeedSailingEconomicalMGO]
+                ,U.[loadingConsumptionMGO]
+                ,U.[dischargeConsumptionMGO]
+                ,U.[sailingBallastConsumptionMGO]
+                ,U.[sailingLoadConsumptionMGO]
+                ,U.[sailingEconomicConsumptionMGO]
+                ,U.[anchoredConsumptionMGO]
+                ,U.[maneuverConsumptionMGO]
+                ,U.[otherConsumptionMGO]
+                ,U.[contractSpeedSailingBallastIFO]
+                ,U.[contractSpeedSailingLadenIFO]
+                ,U.[contractSpeedSailingEconomicalIFO]
+                ,U.[loadingConsumptionIFO]
+                ,U.[dischargeConsumptionIFO]
+                ,U.[sailingBallastConsumptionIFO]
+                ,U.[sailingLoadConsumptionIFO]
+                ,U.[sailingEconomicConsumptionIFO]
+                ,U.[anchoredConsumptionIFO]
+                ,U.[maneuverConsumptionIFO]
+                ,U.[otherConsumptionIFO]
+                ,U.[isDisplayLSFOConsumption]
+                ,U.[isDisplayMGOConsumption]
+                ,U.[isDisplayAverageSpeed]
+                ,U.[isDisplayDataMGO]
+                ,U.[isDisplayDataLSFO]
+                ,U.[isDisplayVesselPerformanceLSFO]
+                ,U.[isDisplayVesselPerformanceMGO]
+                ,U.[consumptionEquipmentME_MGO]
+                ,U.[consumptionEquipmentAE_MGO]
+                ,U.[consumptionEquipmentBOILER_MGO]
+                ,U.[consumptionEquipmentIG_MGO]
+                ,U.[consumptionEquipmentPP_MGO]
+                ,U.[consumptionEquipmentOther_MGO]
+                ,U.[consumptionEquipmentME_IFO]
+                ,U.[consumptionEquipmentAE_IFO]
+                ,U.[consumptionEquipmentBOILER_IFO]
+                ,U.[consumptionEquipmentOther_IFO]
+        FROM [USER] U
         WHERE U.role = 'BUQUE' AND U.status = 1;
     `;
 
@@ -415,94 +475,77 @@ export class ConsumptionEquipmentService {
   }
 
   async GetStatusOilStartEnd(userId: number, startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]> {
+
     const query = `
-    SELECT 
-            O.id AS oilId,
-            O.name AS oilName,
-            
-            -- Cantidad de lubricante inicial
-            (COALESCE((
-                SELECT SUM(BO.bunker)
-                FROM bunkerOil BO
-                WHERE BO.entityOilId = O.id
-                AND DATE(BO.datetime) < '${startDate}'
-                AND BO.userId = ${userId}
-                AND BO.status = true
-            ), 0) - COALESCE((
-                SELECT SUM(CE.amount)
-                FROM equipmentOilCompatibility EOC
-                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
-                WHERE EOC.entityOilId = O.id
-                AND DATE(CE.date) < '${startDate}'
-                AND EOC.userId = ${userId}
-                AND CE.userId = ${userId}
-                AND CE.status = 1
-            ), 0)) AS initialLubricant,
+DECLARE @startDate DATE = '${startDate}';
+DECLARE @endDate DATE = '${endDate}';
+DECLARE @userId INT = ${userId};
 
-            -- Suma de consumo en el rango de fechas
-            COALESCE((
-                SELECT SUM(CE.amount)
-                FROM equipmentOilCompatibility EOC
-                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
-                WHERE EOC.entityOilId = O.id
-                AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
-                AND EOC.userId = ${userId}
-                AND CE.userId = ${userId}
-                AND CE.status = 1
-            ), 0) AS totalRangeConsumption,
+SELECT 
+    O.id AS oilId,
+    O.name AS oilName,
 
-            -- Suma de bunker en el rango de fechas
-            COALESCE((
-                SELECT SUM(BO.bunker)
-                FROM bunkerOil BO
-                WHERE BO.entityOilId = O.id
-                AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
-                AND BO.userId = ${userId}
-                AND BO.status = 1
-            ), 0) AS totalRangeBunker,
+    -- Cantidad de lubricante inicial
+    COALESCE(BO_Init.initialBunker, 0) - COALESCE(CE_Init.initialConsumption, 0) AS initialLubricant,
 
-            -- Cantidad de lubricante final
-            ((COALESCE((
-                SELECT SUM(BO.bunker)
-                FROM bunkerOil BO
-                WHERE BO.entityOilId = O.id
-                AND DATE(BO.datetime) < '${startDate}'
-                AND BO.userId = ${userId}
-                AND BO.status = 1
-            ), 0) - COALESCE((
-                SELECT SUM(CE.amount)
-                FROM equipmentOilCompatibility EOC
-                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
-                WHERE EOC.entityOilId = O.id
-                AND DATE(CE.date) < '${startDate}'
-                AND EOC.userId = ${userId}
-                AND CE.userId = ${userId}
-                AND CE.status = 1
-            ), 0)) + COALESCE((
-                SELECT SUM(BO.bunker)
-                FROM bunkerOil BO
-                WHERE BO.entityOilId = O.id
-                AND BO.userId = ${userId}
-                AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
-                AND BO.status = 1
-            ), 0) - COALESCE((
-                SELECT SUM(CE.amount)
-                FROM equipmentOilCompatibility EOC
-                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
-                WHERE EOC.entityOilId = O.id
-                AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
-                AND EOC.userId = ${userId}
-                AND CE.userId = ${userId}
-                AND CE.status = 1
-            ), 0)) AS finalLubricant
-            
-        FROM 
-            oil O
-        WHERE 
-            -- O.userId = ${userId} AND
-            O.status = 1
-        ORDER BY 
-            O.id;
+    -- Suma de consumo en el rango de fechas
+    COALESCE(CE_Range.totalRangeConsumption, 0) AS totalRangeConsumption,
+
+    -- Suma de bunker en el rango de fechas
+    COALESCE(BO_Range.totalRangeBunker, 0) AS totalRangeBunker,
+
+    -- Cantidad de lubricante final
+    (COALESCE(BO_Init.initialBunker, 0) - COALESCE(CE_Init.initialConsumption, 0)) 
+    + COALESCE(BO_Range.totalRangeBunker, 0) - COALESCE(CE_Range.totalRangeConsumption, 0) AS finalLubricant
+
+FROM oil O
+
+-- Bunker antes del startDate
+OUTER APPLY (
+    SELECT SUM(BO.bunker) AS initialBunker
+    FROM bunkerOil BO
+    WHERE BO.entityOilId = O.id
+    AND CAST(BO.datetime AS DATE) < @startDate
+    AND BO.userId = @userId
+    AND BO.status = 1
+) BO_Init
+
+-- Consumo antes del startDate
+OUTER APPLY (
+    SELECT SUM(CE.amount) AS initialConsumption
+    FROM equipmentOilCompatibility EOC
+    INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+    WHERE EOC.entityOilId = O.id
+    AND CAST(CE.date AS DATE) < @startDate
+    AND EOC.userId = @userId
+    AND CE.userId = @userId
+    AND CE.status = 1
+) CE_Init
+
+-- Bunker dentro del rango de fechas
+OUTER APPLY (
+    SELECT SUM(BO.bunker) AS totalRangeBunker
+    FROM bunkerOil BO
+    WHERE BO.entityOilId = O.id
+    AND CAST(BO.datetime AS DATE) BETWEEN @startDate AND @endDate
+    AND BO.userId = @userId
+    AND BO.status = 1
+) BO_Range
+
+-- Consumo dentro del rango de fechas
+OUTER APPLY (
+    SELECT SUM(CE.amount) AS totalRangeConsumption
+    FROM equipmentOilCompatibility EOC
+    INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+    WHERE EOC.entityOilId = O.id
+    AND CAST(CE.date AS DATE) BETWEEN @startDate AND @endDate
+    AND EOC.userId = @userId
+    AND CE.userId = @userId
+    AND CE.status = 1
+) CE_Range
+
+WHERE O.status = 1
+ORDER BY O.id;
     `;
 
     return this._ConsumptionEquipment.query(query, []);

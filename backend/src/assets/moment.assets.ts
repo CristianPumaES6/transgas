@@ -73,6 +73,15 @@ export function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC): string {
 }
 
 // este convert retorna con -5 horas para que se registre en e; server
+export function ConvertYYYYMMHH_5HorasLOCAL(dateUTC, addHour: number): string {
+  let mommentTemporal = moment.utc(dateUTC, 'YYYY-MM-DD HH:mm');
+
+  let momentDate = mommentTemporal.subtract(addHour, 'hours');
+
+  return momentDate.format('YYYY-MM-DD HH:mm:ss').replace(" ", "T") + "Z";;
+}
+
+// este convert retorna con -5 horas para que se registre en e; server
 export function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC, addHour: number): string {
   let mommentTemporal = moment.utc(dateUTC, 'DD/MM/YY HH:mm');
 

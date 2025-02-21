@@ -17,6 +17,7 @@ import {
   ConvertDDMMYYHHMM5HorasLOCAL,
   ConvertMMDDYYYToYYYYMMDD,
   ConvertMomentUTC,
+  ConvertYYYYMMHH_5HorasLOCAL,
   DateDayMonthYear,
   FormatDateUTCToDateHour,
   GetDate,
@@ -633,6 +634,8 @@ export class VoyagesController {
           ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
         } else if (importVoyage.date.length == 10) {
           ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
+        } else if (importVoyage.date.length == 23) {
+          ultimaFecha = ConvertDateUTC_To_FORMAT_UTC(importVoyage.date);
         } else {
           ultimaFecha = null;
           console.log(importVoyage.date);
@@ -682,7 +685,7 @@ export class VoyagesController {
           newReport.hour = ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora);
         }
 
-        newReport.date = <any>ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, -5);
+        newReport.date = <any>ConvertYYYYMMHH_5HorasLOCAL(newReport.date, -5);
         // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
         // delete newReport.date;
         // delete newReport.hour;
@@ -701,7 +704,7 @@ export class VoyagesController {
         newReport.giMgo = importVoyage.giMgo || 0;
         newReport.otherMgo = importVoyage.otherMgo || 0;
 
-        newReport.steamingTime = importVoyage.steamingTime || 0;
+        newReport.steamingTime = importVoyage.steamingTime2*60 || 0;
         //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
         if (typeof importVoyage.distance === 'number') {
           newReport.distance = importVoyage.distance;

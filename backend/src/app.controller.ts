@@ -320,10 +320,6 @@ export class AppController {
   @Get('GetStatusOilStartEndDate/:userId/:startDate/:endDate')
   async GetStatusOilStartEnd(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
     return await DummyPromise().then((resultDummy: Boolean) => {
-      console.log('GetStatusOilStartEndDate/:userId/:startDate/:endDate');
-      console.log('userId:' + userId);
-      console.log('startDate:' + startDate);
-      console.log('endDate:' + endDate);
       return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId, startDate, endDate);
     });
   }
