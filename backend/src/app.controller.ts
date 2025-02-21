@@ -330,4 +330,54 @@ export class AppController {
       return this._ConsumptionEquipmentService.GetInfoAllVessel(startDate, endDate);
     });
   }
+
+  @Get('GetSpeedVoyagePort/:userId/:startDate/:endDate')
+  async GetSpeedVoyagePort(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetInfoPortVoyageSeped(userId, startDate, endDate);
+    });
+  }
+  
+  @Get('GetIFOActivityReport/:userId/:startDate/:endDate')
+  async GetIFOActivityReport(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetConsumoIFOByActivity(userId, startDate, endDate);
+    });
+  }
+
+  @Get('GetMGOActivityReport/:userId/:startDate/:endDate')
+  async GetMGOActivityReport(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetConsumoMGOByActivity(userId, startDate, endDate);
+    });
+  }
+
+  @Get('GetIFOROB/:userId/:startDate/:endDate')
+  async GetIFOROB(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetConsumoROBIFO(userId, startDate, endDate);
+    });
+  }
+  
+  @Get('GetMGOROB/:userId/:startDate/:endDate')
+  async GetMGOROB(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetConsumoROBMGO(userId, startDate, endDate);
+    });
+  }
+
+  @Get('GetIFOConsumptionPerEquipment/:userId/:startDate/:endDate')
+  async GetIFOConsumptionPerEquipment(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetConsumoEquipoIFOPorMonth(userId, startDate, endDate);
+    });
+  }
+  
+  @Get('GetMGOConsumptionPerEquipment/:userId/:startDate/:endDate')
+  async GetMGOConsumptionPerEquipment(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetConsumoEquipoIFOPorMonth(userId, startDate, endDate);
+    });
+  }
+
 }

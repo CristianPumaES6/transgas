@@ -228,6 +228,544 @@ export class ConsumptionEquipmentService {
     };
   }
 
+
+
+  async GetInfoPortVoyageSeped(userId: number, startDate: string, endDate: string): Promise<any[]>{
+    const query = `
+  
+  DECLARE @status INT = 1;
+DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
+DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
+DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
+
+SELECT 
+    V.id AS voyageId,
+    P.id AS portId,
+    V.voyageNumber,
+    P.portNumber,
+    P.arrivalPort AS arrival,
+    P.departurePort AS departure,
+    MIN(DR.date) AS minDate,
+    MAX(DR.date) AS maxDate,
+
+    -- Sumar la distancia total por puerto
+    SUM(DR.distance) AS totalDistance,
+
+    -- Sumar el tiempo total (en horas)
+    SUM(DR.steamingTime) / 60.0 AS totalTimeHour,
+
+    -- Calcular la velocidad (Distancia / Tiempo en horas)
+    CASE 
+        WHEN SUM(DR.steamingTime) > 0 THEN 
+            SUM(DR.distance) * 1.0 / NULLIF(SUM(DR.steamingTime) / 60.0, 0)
+        ELSE 
+            NULL
+    END AS avgSpeed
+
+FROM daily_report DR
+INNER JOIN port P ON P.id = DR.portId
+INNER JOIN voyage V ON V.id = P.voyageId
+
+WHERE 
+    P.status = @status  -- Filtrar solo puertos activos
+    AND V.status = @status -- Filtrar solo viajes activos
+    AND P.userId = @userId -- Filtrar por usuario
+    AND V.userId = @userId -- Asegurar que el viaje es del usuario
+    AND DR.date BETWEEN @startDate AND @endDate -- Filtrar por rango de fechas
+    AND DR.distance > 0 -- Solo registros con distancia válida
+
+GROUP BY 
+    V.id, P.id, V.voyageNumber, P.portNumber, P.arrivalPort, P.departurePort
+
+ORDER BY 
+    V.voyageNumber, P.portNumber;
+
+  
+        `;
+  
+    return this._ConsumptionEquipment.query(query, []);
+  }
+
+  async GetConsumoIFOByActivity(userId: number, startDate: string, endDate: string): Promise<any[]>{
+    const query = `
+  
+  
+   
+
+    DECLARE @status INT = 1;
+    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
+    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
+    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
+    
+
+SELECT    
+
+    --daily_report.id AS dailyReportId,
+    FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM') AS date,  -- Filtrado por mes
+ 
+    daily_report.activityPerformed AS activityPerformed, 
+
+    COUNT(*) AS countReports,
+    COUNT(DISTINCT port.id) AS countPorts,
+    
+    SUM(daily_report.steamingTime) AS steamingTime,
+    SUM(daily_report.distance) AS distance, 
+
+    SUM(daily_report.mplaIfo) AS mplaIfo,
+    SUM(daily_report.auxIfo) AS auxIfo,
+    SUM(daily_report.boilerIfo) AS boilerIfo,
+    SUM(daily_report.otherIfo) AS otherIfo,
+    SUM(daily_report.bunkeringIfo) AS bunkeringIfo
+
+FROM daily_report
+INNER JOIN port ON port.id = daily_report.portId 
+    AND port.status = @status 
+    AND daily_report.status = @status
+INNER JOIN voyage ON voyage.id = port.voyageId 
+    AND voyage.status = @status
+
+WHERE 
+    daily_report.status = @status
+    AND port.status = @status
+    AND voyage.status = @status
+
+    AND daily_report.userId = @userId
+    AND port.userId = @userId
+    AND voyage.userId = @userId
+
+    AND (
+        daily_report.mplaIfo > 0 OR 
+        daily_report.auxIfo > 0 OR 
+        daily_report.boilerIfo > 0 OR 
+        daily_report.otherIfo > 0 OR 
+        daily_report.bunkeringIfo > 0
+    )
+
+    AND CAST(daily_report.date AS DATETIME) >= @startDate
+    AND CAST(daily_report.date AS DATETIME) <= @endDate
+
+GROUP BY  FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM'),  daily_report.activityPerformed
+   
+ORDER BY   FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM');
+
+
+  
+        `;
+  
+    return this._ConsumptionEquipment.query(query, []);
+  }
+
+  async GetConsumoMGOByActivity(userId: number, startDate: string, endDate: string): Promise<any[]>{
+    const query = `
+  
+  
+   
+
+
+    DECLARE @status INT = 1;
+    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
+    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
+    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
+    
+
+
+SELECT    
+    FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM') AS date,  -- Filtrado por mes
+    daily_report.activityPerformed AS activityPerformed, 
+
+    COUNT(*) AS countReports,
+    COUNT(DISTINCT port.id) AS countPorts,
+    
+    SUM(daily_report.steamingTime) AS steamingTime,
+    SUM(daily_report.distance) AS distance, 
+
+    -- Sumas de MGO
+    SUM(daily_report.mplaMgo) AS mplaMgo,
+    SUM(daily_report.auxMgo) AS auxMgo,
+    SUM(daily_report.boilerMgo) AS boilerMgo,
+    SUM(daily_report.ppMgo) AS ppMgo,
+    SUM(daily_report.giMgo) AS giMgo,
+    SUM(daily_report.otherMgo) AS otherMgo,
+    SUM(daily_report.bunkeringMgo) AS bunkeringMgo
+
+FROM daily_report
+INNER JOIN port ON port.id = daily_report.portId 
+    AND port.status = @status 
+    AND daily_report.status = @status
+INNER JOIN voyage ON voyage.id = port.voyageId 
+    AND voyage.status = @status
+
+WHERE 
+    daily_report.status = @status
+    AND port.status = @status
+    AND voyage.status = @status
+
+    AND daily_report.userId = @userId
+    AND port.userId = @userId
+    AND voyage.userId = @userId
+
+    AND (
+        daily_report.mplaMgo > 0 OR 
+        daily_report.auxMgo > 0 OR 
+        daily_report.boilerMgo > 0 OR 
+        daily_report.ppMgo > 0 OR 
+        daily_report.giMgo > 0 OR 
+        daily_report.otherMgo > 0 OR 
+        daily_report.bunkeringMgo > 0
+    )
+
+    AND CAST(daily_report.date AS DATETIME) >= @startDate
+    AND CAST(daily_report.date AS DATETIME) <= @endDate
+
+GROUP BY FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM'), daily_report.activityPerformed
+
+ORDER BY FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM');
+
+  
+        `;
+  
+    return this._ConsumptionEquipment.query(query, []);
+  }
+
+  
+  async GetConsumoROBIFO(userId: number, startDate: string, endDate: string): Promise<any[]>{
+    const query = `
+  
+  
+   
+
+    DECLARE @status INT = 1;
+    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
+    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
+    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
+    
+
+-- CON ESTO INCIO CON EL RANGO DE FECHA
+SELECT 
+    SUM(daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo) AS total_ifo,
+    SUM(daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo) AS total_mgo,
+    SUM(daily_report.bunkeringIfo) AS total_bunkering_ifo,
+    SUM(daily_report.bunkeringMgo) AS total_bunkering_mgo
+FROM daily_report
+INNER JOIN port ON port.id = daily_report.portId 
+    AND port.status = @status
+    AND daily_report.status = @status						       
+INNER JOIN voyage ON voyage.id = port.voyageId 				       
+    AND voyage.status = @status
+WHERE 
+    daily_report.status = @status
+    AND port.status = @status
+    AND voyage.status = @status
+    AND daily_report.userId = @userId
+    AND CAST(daily_report.date AS DATETIME) < CAST(@startDate AS DATETIME);			 
+
+  
+  
+  
+        `;
+  
+    return this._ConsumptionEquipment.query(query, []);
+  }
+  async GetConsumoROBMGO(userId: number, startDate: string, endDate: string): Promise<any[]>{
+    const query = `
+  
+  
+   
+
+    DECLARE @status INT = 1;
+    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
+    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
+    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
+    
+SELECT 
+    SUM(daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo) AS total_ifo,
+    SUM(daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo) AS total_mgo,
+    SUM(daily_report.bunkeringIfo) AS total_bunkering_ifo,
+    SUM(daily_report.bunkeringMgo) AS total_bunkering_mgo
+FROM daily_report
+INNER JOIN port ON port.id = daily_report.portId 
+    AND port.status = @status
+    AND daily_report.status = @status
+INNER JOIN voyage ON voyage.id = port.voyageId 
+    AND voyage.status = @status
+WHERE 
+    daily_report.status = @status
+    AND port.status = @status
+    AND voyage.status = @status
+    AND daily_report.userId = @userId
+    AND CAST(daily_report.date AS DATETIME) >= @startDate
+    AND CAST(daily_report.date AS DATETIME) <= @endDate;
+  
+  
+        `;
+  
+    return this._ConsumptionEquipment.query(query, []);
+  }
+async GetConsumoEquipoIFOPorMonth(userId: number, startDate: string, endDate: string): Promise<any[]>{
+  const query = `
+
+
+ DECLARE @status INT = 1;
+DECLARE @userId INT = ${userId};  
+DECLARE @startDate DATETIME = '${startDate}';  
+DECLARE @endDate DATETIME = '${endDate}'; 
+
+SELECT    
+    FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
+    data.equipmentType,  -- Tipo de equipo
+
+    COUNT(*) AS countReports,
+    COUNT(DISTINCT port.id) AS countPorts,
+    
+    SUM(data.steamingTime) AS steamingTime,
+    SUM(data.distance) AS distance, 
+
+    SUM(data.fuelConsumption) AS totalIfoConsumption
+
+FROM (
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'mplaIfo' AS equipmentType,
+        mplaIfo AS fuelConsumption
+    FROM daily_report WHERE mplaIfo > 0
+    
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'auxIfo' AS equipmentType,
+        auxIfo AS fuelConsumption
+    FROM daily_report WHERE auxIfo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'boilerIfo' AS equipmentType,
+        boilerIfo AS fuelConsumption
+    FROM daily_report WHERE boilerIfo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'otherIfo' AS equipmentType,
+        otherIfo AS fuelConsumption
+    FROM daily_report WHERE otherIfo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'bunkeringIfo' AS equipmentType,
+        bunkeringIfo AS fuelConsumption
+    FROM daily_report WHERE bunkeringIfo > 0
+
+) AS data
+INNER JOIN port ON port.id = data.portId 
+    AND port.status = @status 
+INNER JOIN voyage ON voyage.id = port.voyageId 
+    AND voyage.status = @status
+
+WHERE 
+    port.status = @status
+    AND voyage.status = @status
+    AND port.userId = @userId
+    AND voyage.userId = @userId
+    AND CAST(data.date AS DATETIME) BETWEEN @startDate AND @endDate
+
+GROUP BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType
+ORDER BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType;
+
+
+
+
+      `;
+
+  return this._ConsumptionEquipment.query(query, []);
+}
+async GetConsumoEquipoMGOPorMonth(userId: number, startDate: string, endDate: string): Promise<any[]>{
+  const query = `
+
+DECLARE @status INT = 1;
+DECLARE @userId INT = ${userId};  
+DECLARE @startDate DATETIME = '${startDate}';  
+DECLARE @endDate DATETIME = '${endDate}'; 
+
+SELECT    
+    FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
+    data.equipmentType,  -- Tipo de equipo
+
+    COUNT(*) AS countReports,
+    COUNT(DISTINCT port.id) AS countPorts,
+    
+    SUM(data.steamingTime) AS steamingTime,
+    SUM(data.distance) AS distance, 
+
+    SUM(data.fuelConsumption) AS totalMgoConsumption
+
+FROM (
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'mplaMgo' AS equipmentType,
+        mplaMgo AS fuelConsumption
+    FROM daily_report WHERE mplaMgo > 0
+    
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'auxMgo' AS equipmentType,
+        auxMgo AS fuelConsumption
+    FROM daily_report WHERE auxMgo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'boilerMgo' AS equipmentType,
+        boilerMgo AS fuelConsumption
+    FROM daily_report WHERE boilerMgo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'ppMgo' AS equipmentType,
+        ppMgo AS fuelConsumption
+    FROM daily_report WHERE ppMgo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'giMgo' AS equipmentType,
+        giMgo AS fuelConsumption
+    FROM daily_report WHERE giMgo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'otherMgo' AS equipmentType,
+        otherMgo AS fuelConsumption
+    FROM daily_report WHERE otherMgo > 0
+
+    UNION ALL
+    
+    SELECT 
+        date,
+        portId,
+        steamingTime,
+        distance,
+        'bunkeringMgo' AS equipmentType,
+        bunkeringMgo AS fuelConsumption
+    FROM daily_report WHERE bunkeringMgo > 0
+
+) AS data
+INNER JOIN port ON port.id = data.portId 
+    AND port.status = @status 
+INNER JOIN voyage ON voyage.id = port.voyageId 
+    AND voyage.status = @status
+
+WHERE 
+    port.status = @status
+    AND voyage.status = @status
+    AND port.userId = @userId
+    AND voyage.userId = @userId
+    AND CAST(data.date AS DATETIME) BETWEEN @startDate AND @endDate
+
+GROUP BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType
+ORDER BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType;
+
+ 
+
+
+
+      `;
+
+  return this._ConsumptionEquipment.query(query, []);
+}
+
+  async getConsumoDeLUBRICANTEQUIPOPORFechas(userId: number, startDate: string, endDate: string): Promise<getOilConsumptionPerMonth[]> {
+    const query = `
+
+
+DECLARE @startDate DATE = '${startDate}';
+DECLARE @endDate DATE = '${startDate}';
+DECLARE @userId INT = ${userId};
+
+WITH OilList AS (
+    SELECT 
+        EOC.entityEquipmentId,
+        STUFF((
+            SELECT DISTINCT ', ' + O.name
+            FROM equipmentOilCompatibility EOC2
+            INNER JOIN oil O ON EOC2.entityOilId = O.id
+            WHERE EOC2.entityEquipmentId = EOC.entityEquipmentId
+            FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 
+        1, 2, ''
+        ) AS oilsUsed
+    FROM equipmentOilCompatibility EOC
+    GROUP BY EOC.entityEquipmentId
+)
+
+SELECT 
+    ES.id AS equipmentId,
+    ES.equipment AS equipmentName,
+    COALESCE(OilList.oilsUsed, 'N/A') AS oilsUsed, -- Aceites concatenados
+    SUM(CE.amount) AS totalConsumption,
+    SUM(CE.hourConsumption) AS totalHoursWorked
+FROM consumptionEquipment CE
+INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
+INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
+LEFT JOIN OilList ON ES.id = OilList.entityEquipmentId
+WHERE CE.date BETWEEN @startDate AND @endDate
+GROUP BY ES.id, ES.equipment, OilList.oilsUsed
+ORDER BY ES.equipment;
+
+
+
+
+
+        `;
+
+    return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
+  }
+
   async getOilConsumptionPerMonth(userId: number, startDate: string, endDate: string): Promise<getOilConsumptionPerMonth[]> {
     const query = `
 
