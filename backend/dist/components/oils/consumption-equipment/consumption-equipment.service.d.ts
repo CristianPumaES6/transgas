@@ -9,6 +9,14 @@ export declare class ConsumptionEquipmentService {
     Gets(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity[]>;
     Create(consumptionEquipment: ConsumptionEquipmentEntity): Promise<ConsumptionEquipmentEntity>;
     SaveList(MappingEquipmentOilCompatibility: Mapping[], consumptionsEquipment: ConsumptionEquipmentEntity[]): Promise<SaveListConsumptionEquipmentEntity>;
+    GetInfoPortVoyageSeped(userId: number, startDate: string, endDate: string): Promise<any[]>;
+    GetConsumoIFOByActivity(userId: number, startDate: string, endDate: string): Promise<any[]>;
+    GetConsumoMGOByActivity(userId: number, startDate: string, endDate: string): Promise<any[]>;
+    GetConsumoROBIFO(userId: number, startDate: string, endDate: string): Promise<any[]>;
+    GetConsumoROBMGO(userId: number, startDate: string, endDate: string): Promise<any[]>;
+    GetConsumoEquipoIFOPorMonth(userId: number, startDate: string, endDate: string): Promise<any[]>;
+    GetConsumoEquipoMGOPorMonth(userId: number, startDate: string, endDate: string): Promise<any[]>;
+    getConsumoDeLUBRICANTEQUIPOPORFechas(userId: number, startDate: string, endDate: string): Promise<getOilConsumptionPerMonth[]>;
     getOilConsumptionPerMonth(userId: number, startDate: string, endDate: string): Promise<getOilConsumptionPerMonth[]>;
     QueryGetTask(userId: number, ETM_OilAnalysis_Oid: string): Promise<QueryGetTask[]>;
     ViewFileAnalysisOil(buqueId: number, ETM_OilAnalysis_Oid: string): Promise<QueryViewFileAnalysisOil[]>;

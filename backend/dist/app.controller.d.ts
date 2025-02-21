@@ -31,4 +31,11 @@ export declare class AppController {
     GetShips(): Promise<any[]>;
     GetStatusOilStartEnd(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     GetInfoAllVessel(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
+    GetSpeedVoyagePort(userId: any, startDate: any, endDate: any): Promise<any[]>;
+    GetIFOActivityReport(userId: any, startDate: any, endDate: any): Promise<any[]>;
+    GetMGOActivityReport(userId: any, startDate: any, endDate: any): Promise<any[]>;
+    GetIFOROB(userId: any, startDate: any, endDate: any): Promise<any[]>;
+    GetMGOROB(userId: any, startDate: any, endDate: any): Promise<any[]>;
+    GetIFOConsumptionPerEquipment(userId: any, startDate: any, endDate: any): Promise<any[]>;
+    GetMGOConsumptionPerEquipment(userId: any, startDate: any, endDate: any): Promise<any[]>;
 }

@@ -230,6 +230,41 @@ let AppController = class AppController {
             return this._ConsumptionEquipmentService.GetInfoAllVessel(startDate, endDate);
         });
     }
+    async GetSpeedVoyagePort(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetInfoPortVoyageSeped(userId, startDate, endDate);
+        });
+    }
+    async GetIFOActivityReport(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetConsumoIFOByActivity(userId, startDate, endDate);
+        });
+    }
+    async GetMGOActivityReport(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetConsumoMGOByActivity(userId, startDate, endDate);
+        });
+    }
+    async GetIFOROB(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetConsumoROBIFO(userId, startDate, endDate);
+        });
+    }
+    async GetMGOROB(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetConsumoROBMGO(userId, startDate, endDate);
+        });
+    }
+    async GetIFOConsumptionPerEquipment(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetConsumoEquipoIFOPorMonth(userId, startDate, endDate);
+        });
+    }
+    async GetMGOConsumptionPerEquipment(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetConsumoEquipoIFOPorMonth(userId, startDate, endDate);
+        });
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -341,6 +376,69 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetInfoAllVessel", null);
+__decorate([
+    (0, common_1.Get)('GetSpeedVoyagePort/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetSpeedVoyagePort", null);
+__decorate([
+    (0, common_1.Get)('GetIFOActivityReport/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetIFOActivityReport", null);
+__decorate([
+    (0, common_1.Get)('GetMGOActivityReport/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetMGOActivityReport", null);
+__decorate([
+    (0, common_1.Get)('GetIFOROB/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetIFOROB", null);
+__decorate([
+    (0, common_1.Get)('GetMGOROB/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetMGOROB", null);
+__decorate([
+    (0, common_1.Get)('GetIFOConsumptionPerEquipment/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetIFOConsumptionPerEquipment", null);
+__decorate([
+    (0, common_1.Get)('GetMGOConsumptionPerEquipment/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetMGOConsumptionPerEquipment", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService,
