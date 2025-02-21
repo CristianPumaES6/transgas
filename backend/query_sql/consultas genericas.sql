@@ -48,3 +48,41 @@ where id in(991,992,993,994,995,996,997,998,999,1000)
 UPDATE daily_report
 SET bunkeringIfo = '1095.13'
 WHERE id = 1048
+
+
+
+--ver viajes duplicados
+SELECT 
+     voyageNumber, year,COUNT(*)
+FROM 
+    voyage
+WHERE USERiD=31 AND STATUS =1
+GROUP BY 
+    voyageNumber, year
+HAVING 
+    COUNT(*) > 1;
+
+
+
+-- ver puertos duplicados
+SELECT 
+     portNumber, voyageId,COUNT(*)
+FROM 
+    port
+WHERE USERiD=31 AND STATUS =1
+GROUP BY 
+   portNumber, voyageId
+HAVING 
+    COUNT(*) > 1;
+
+
+-- dias duplicados
+SELECT 
+     activityPerformed, date, hour,bunkeringIfo,bunkeringMgo, COUNT(*)
+FROM 
+    daily_report
+WHERE USERiD=31 AND STATUS =1
+GROUP BY 
+   activityPerformed, date, hour,bunkeringIfo,bunkeringMgo
+HAVING 
+    COUNT(*) > 1;
