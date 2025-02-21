@@ -225,6 +225,12 @@ let AppController = class AppController {
             return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId, startDate, endDate);
         });
     }
+    async ConsulGetConsumptionLubricantPerEquipmenttaGeneral(buqueId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            let userId = Number(buqueId);
+            return this._ConsumptionEquipmentService.getConsumoDeLUBRICANTEQUIPOPORFechas(userId, startDate, endDate);
+        });
+    }
     async GetInfoAllVessel(userId, startDate, endDate) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             return this._ConsumptionEquipmentService.GetInfoAllVessel(startDate, endDate);
@@ -367,6 +373,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetStatusOilStartEnd", null);
+__decorate([
+    (0, common_1.Get)('GetConsumptionLubricantPerEquipment/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "ConsulGetConsumptionLubricantPerEquipmenttaGeneral", null);
 __decorate([
     (0, common_1.Get)('GetInfoAllVessel/:startDate/:endDate'),
     __param(0, (0, common_1.Param)('userId')),
