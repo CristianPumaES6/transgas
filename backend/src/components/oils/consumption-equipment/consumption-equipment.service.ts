@@ -507,8 +507,8 @@ async GetConsumoEquipoIFOPorMonth(userId: number, startDate: string, endDate: st
 
  DECLARE @status INT = 1;
 DECLARE @userId INT = ${userId};  
-DECLARE @startDate DATETIME = '${startDate}';  
-DECLARE @endDate DATETIME = '${endDate}'; 
+DECLARE @startDate DATETIME = '${startDate} 00:00:00'; 
+DECLARE @endDate DATETIME = '${endDate} 00:00:00';
 
 SELECT    
     FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
@@ -604,8 +604,8 @@ async GetConsumoEquipoMGOPorMonth(userId: number, startDate: string, endDate: st
 
 DECLARE @status INT = 1;
 DECLARE @userId INT = ${userId};  
-DECLARE @startDate DATETIME = '${startDate}';  
-DECLARE @endDate DATETIME = '${endDate}'; 
+DECLARE @startDate DATETIME = '${startDate} 00:00:00';  
+DECLARE @endDate DATETIME = '${endDate} 00:00:00'; 
 
 SELECT    
     FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
