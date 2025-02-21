@@ -222,10 +222,6 @@ let AppController = class AppController {
     }
     async GetStatusOilStartEnd(userId, startDate, endDate) {
         return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
-            console.log('GetStatusOilStartEndDate/:userId/:startDate/:endDate');
-            console.log('userId:' + userId);
-            console.log('startDate:' + startDate);
-            console.log('endDate:' + endDate);
             return this._ConsumptionEquipmentService.GetStatusOilStartEnd(userId, startDate, endDate);
         });
     }
