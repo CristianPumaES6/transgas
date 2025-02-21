@@ -324,6 +324,17 @@ export class AppController {
     });
   }
 
+  
+  @Get('GetConsumptionLubricantPerEquipment/:userId/:startDate/:endDate')
+  async ConsulGetConsumptionLubricantPerEquipmenttaGeneral(@Param('userId') buqueId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      let userId = Number(buqueId);
+ 
+      return this._ConsumptionEquipmentService.getConsumoDeLUBRICANTEQUIPOPORFechas(userId, startDate, endDate);
+    });
+  }
+
+
   @Get('GetInfoAllVessel/:startDate/:endDate')
   async GetInfoAllVessel(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
     return await DummyPromise().then((resultDummy: Boolean) => {
