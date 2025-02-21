@@ -9,7 +9,6 @@ export const URL_Server = {
 };
 */
 
-
 /*
 // SERVIDOR LINUX - FRONT Firebase
 export const URL_Server = {
@@ -23,8 +22,6 @@ export const URL_Server = {
     passwordNotification: 'getlsmyuiluiwktq'
 };
 */
-
-
 
 /* 
 // CONFIGURACION PARA DESARROLLO local
@@ -40,26 +37,20 @@ export const URL_Server = {
 };
 */
 
-
-
-
 // CONFIGURACION PARA DESARROLLO SERVER
-/*export const URL_Server = {
-    front: 'https://esteesel.club',
-    back: 'https://esteesel.club',
-    version: 'v2',
-    puertoSocket: 4000,
-    puertoBackend: 3000,
-    bd: 'SQLITE', // MSSQL, MYSQL, MSSQL2
-    emailNotification: 'transgasshippinglines@gmail.com',
-    passwordNotification: 'getlsmyuiluiwktq'
-};*/
-
-
-
+export const URL_Server = {
+  front: 'https://dev-transgas.nautic.solutions',
+  back: 'https://dev-transgas.nautic.solutions',
+  version: 'v3',
+  puertoSocket: 2100,
+  puertoBackend: 2000,
+  bd: 'MSSQL2', // MSSQL, MYSQL, MSSQL2
+  emailNotification: 'transgasshippinglines@gmail.com',
+  passwordNotification: 'getlsmyuiluiwktq',
+};
 
 // SERVIDOR LINUX - FRONT Firebase
- export const URL_Server = {
+/* export const URL_Server = {
     front: 'https://transgas2.esteesel.club',
     back: 'https://transgas2.esteesel.club',
     version: 'v2',
@@ -68,7 +59,7 @@ export const URL_Server = {
     bd: 'SQLITE', // MSSQL, MYSQL
     emailNotification: 'transgasshippinglines@gmail.com',
     passwordNotification: 'getlsmyuiluiwktq'
-}; 
+}; */
 
 /*
 // SERVIDOR LINUX - FRONT LINUX

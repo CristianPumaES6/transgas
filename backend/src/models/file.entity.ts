@@ -1,26 +1,32 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('groupOil')
-export class GroupOilEntity {
+@Entity('file')
+export class FileEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
-  userId: number;
-
   @Column({ nullable: false })
-  label: string;
+  fileName: string;
 
-  @Column({ nullable: true, default: 0 })
+  // ubicacion del archivo
+  @Column({ nullable: false })
+  filePath: string;
+
+  // tipo de archivo
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  fileType: string;
+
+  // peso del archivo
+  @Column({ type: 'int', nullable: false })
+  fileSize: number;
+
+  @Column({ nullable: true })
   description: string;
 
-  @Column({ nullable: true, default: 0 })
-  groupId: number;
-
   // Auditoria
-  @Column()
+  @Column({ nullable: false })
   userIdCreated: number;
-  @Column()
+  @Column({ nullable: false })
   dateCreated: string;
   @Column({ nullable: true })
   userIdUpdated: number;
@@ -32,22 +38,25 @@ export class GroupOilEntity {
 
   constructor(
     id?: number,
-    userId?: number,
-    label?: string,
+    fileName?: string,
+    filePath?: string,
+    fileType?: string,
+    fileSize?: number,
     description?: string,
-    groupId?: number,
 
     userIdCreated?: number,
     dateCreated?: string,
     userIdUpdated?: number,
     dateUpdated?: string,
+
     status?: boolean,
   ) {
     this.id = id || null;
-    this.userId = userId || null;
-    this.label = label || '';
+    this.fileName = fileName || '';
+    this.filePath = filePath || '';
+    this.fileType = fileType || '';
+    this.fileSize = fileSize || 0;
     this.description = description || '';
-    this.groupId = groupId || 0;
 
     // Auditoria
     this.userIdCreated = userIdCreated || 0;

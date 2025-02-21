@@ -4,3 +4,4 @@ backend/IMAGE_UPLOADS/*
 backend/package-lock.json
 frontend/package-lock.json
 frontend/.angular/*
+backend/uploads/*

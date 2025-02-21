@@ -10,692 +10,645 @@ import { VoyagesService } from './voyages.service';
 // Entity
 import { DataModuleCombustible, ImportVoyage, Voyage, VoyageFilterByYears } from '../../models/voyage.entity';
 import { UserEntity } from '../../models/user.entity';
-import { ConvertDateUTC_masUnaCantidadDeHoras, ConvertDateUTC_To_FORMAT_UTC, ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL, ConvertDDMMYYHHMM5HorasLOCAL, ConvertMMDDYYYToYYYYMMDD, ConvertMomentUTC, DateDayMonthYear, FormatDateUTCToDateHour, GetDate, ObtenerlasHorasDeUnaFecaUTC } from '../../assets/moment.assets';
+import {
+  ConvertDateUTC_masUnaCantidadDeHoras,
+  ConvertDateUTC_To_FORMAT_UTC,
+  ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL,
+  ConvertDDMMYYHHMM5HorasLOCAL,
+  ConvertMMDDYYYToYYYYMMDD,
+  ConvertMomentUTC,
+  ConvertYYYYMMHH_5HorasLOCAL,
+  DateDayMonthYear,
+  FormatDateUTCToDateHour,
+  GetDate,
+  ObtenerlasHorasDeUnaFecaUTC,
+} from '../../assets/moment.assets';
 import { Port } from '../../models/port.entity';
 import { PortsService } from './ports/ports.service';
 import { DailyReport, GetReportVoyagePortDaily, GetROBByUser, InfoFuelStartEndForDate } from '../../models/daily-report.entity';
 import { DailyReportsService, SaveListDailyReport } from './daily-reports/daily-reports.service';
-import { FormatExcelLastVoyageService, GenerateFormatObjForExcelEmail } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
+import {
+  FormatExcelLastVoyageService,
+  GenerateFormatObjForExcelEmail,
+} from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { MailLastVoyage, SendMailConfig } from '../../models/sendMailConfig';
-import { SendMailArchiveInfoLastVoyage } from './../../assets/nodemailer.assets'
+import { SendMailArchiveInfoLastVoyage } from './../../assets/nodemailer.assets';
 import { Mapping, searchKey } from '../../assets/mappingKeys';
-
+import { DailyReportSummary } from 'src/models/dailyReportSummary.entity';
+import { DailyReportSummaryService } from './daily-report-summary/daily-report-summary.service';
 
 @Controller('voyages')
 export class VoyagesController {
+  constructor(
+    private readonly _voyagesService: VoyagesService,
+    private readonly _portsService: PortsService,
+    private readonly _dailyReportsService: DailyReportsService,
+    private readonly _dailyReportSummaryService: DailyReportSummaryService,
 
-    constructor(
-        private readonly _voyagesService: VoyagesService,
-        private readonly _portsService: PortsService,
-        private readonly _dailyReportsService: DailyReportsService,
-        private readonly _formatExcelLastVoyageService: FormatExcelLastVoyageService,
-        private readonly _usersService: UsersService,
-    ) { }
+    private readonly _formatExcelLastVoyageService: FormatExcelLastVoyageService,
+    private readonly _usersService: UsersService,
+  ) {}
 
-    @Get('byYears')
-    async GetsByYear(@Headers() headers, @Query() voyageFilterByYears: VoyageFilterByYears): Promise<any> {
+  @Get('byYears')
+  async GetsByYear(@Headers() headers, @Query() voyageFilterByYears: VoyageFilterByYears): Promise<any> {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
+    // Inicio una promesa Dummy.
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        if (voyageFilterByYears) {
+          // Tiene que llegar el userId
+          if (!voyageFilterByYears.userId) {
+            throw new Error('MISSING_FIELS');
+          } else {
+            // Validamos que el userId sea el mismo que el del token
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') {
+              // Nose hace nada
+            } else if (Number(voyageFilterByYears.userId) !== Number(headerToken.id)) throw new Error('ERROR_USERID_FAIL');
+            return true;
+          }
+        } else throw new Error('MISSING_FIELS');
+      })
+      .then((resultValidate: Boolean) => {
+        voyageFilterByYears.years = JSON.parse('' + voyageFilterByYears.years);
+        // Ejecutamos el servicio de obtener sailingAnalities.
+        return this._voyagesService.GetsByYears(voyageFilterByYears);
+      })
+      .then((results: Voyage[]) => {
+        // Retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: results,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-        // Inicio una promesa Dummy.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
-
-                if (voyageFilterByYears) {
-                    // Tiene que llegar el userId
-                    if (!voyageFilterByYears.userId) {
-                        throw new Error('MISSING_FIELS');
-                    } else {
-                        // Validamos que el userId sea el mismo que el del token
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') {
-                            // Nose hace nada
-                        } else if ((Number(voyageFilterByYears.userId) !== Number(headerToken.id))) throw new Error('ERROR_USERID_FAIL');
-                        return true;
-                    }
-                } else throw new Error('MISSING_FIELS');
-
-
-            }
-        ).then(
-            (resultValidate: Boolean) => {
-
-
-                voyageFilterByYears.years = JSON.parse('' + voyageFilterByYears.years);
-                // Ejecutamos el servicio de obtener sailingAnalities.
-                return this._voyagesService.GetsByYears(voyageFilterByYears);
-            }
-        ).then(
-            (results: Voyage[]) => {
-
-                // Retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: results
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
+        // Caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
-    }
+      });
+  }
 
-    @Get('detail')
-    async GetsDetail(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
+  @Get('detail')
+  async GetsDetail(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
+    let voyageDetail: Voyage[];
 
+    // Inicio una promesa Dummy.
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        if (voyage) {
+          // Si no existe el user id tiene que ser admin o suppor para seguir
+          if (!voyage.userId) {
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+              return true;
+            } else throw new Error('MISSING_FIELS');
+          } else {
+            // Validamos que el userId sea el mismo que el del token
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+              // Nose hace nada
+            } else if (Number(voyage.userId) !== Number(headerToken.id)) throw new Error('ERROR_USERID_FAIL');
+            return true;
+          }
+        } else throw new Error('MISSING_FIELS');
+      })
+      .then((resultValidate: Boolean) => {
+        // Ejecutamos el servicio de obtener sailingAnalities.
+        return this._voyagesService.GetsDetails(voyage, page);
+      })
+      .then((result: Voyage[]) => {
+        voyageDetail = result;
+        // Ejecutamos el servicio de obtener sailingAnalities.
+        return this._voyagesService.InfoUltimos5ResumenViaje(voyage.userId);
+      })
+      .then((resultsDailyReportSummary: DailyReportSummary[]) => {
+        // Retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: voyageDetail,
+          lastReportSummary: resultsDailyReportSummary,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-        // Inicio una promesa Dummy.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
-
-                if (voyage) {
-                    // Si no existe el user id tiene que ser admin o suppor para seguir
-                    if (!voyage.userId) {
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                            return true;
-                        } else throw new Error('MISSING_FIELS');
-                    } else {
-                        // Validamos que el userId sea el mismo que el del token
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                            // Nose hace nada
-                        } else if ((Number(voyage.userId) !== Number(headerToken.id))) throw new Error('ERROR_USERID_FAIL');
-                        return true;
-                    }
-                } else throw new Error('MISSING_FIELS');
-
-
-            }
-        ).then(
-            (resultValidate: Boolean) => {
-
-                // Ejecutamos el servicio de obtener sailingAnalities.
-                return this._voyagesService.GetsDetails(voyage, page);
-            }
-        ).then(
-            (results: Voyage[]) => {
-
-                // Retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: results
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
+        // Caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
-    }
+      });
+  }
 
-    @Get(':id')
-    async Get(@Param('id') id): Promise<any> {
+  @Get(':id')
+  async Get(@Param('id') id): Promise<any> {
+    // Inicio una promesa Dummy.
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        // Validamos que los datos recibidos sean los correctos.
+        if (Number(id)) {
+          let voyageId = Number(id);
+          return this._voyagesService.Get(voyageId);
+        } else {
+          // caso contrario retornamos un error
+          throw 'MISSING_FIELS';
+        }
+      })
+      .then((resultGet: Voyage) => {
+        // retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: resultGet,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-        // Inicio una promesa Dummy.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
-
-                // Validamos que los datos recibidos sean los correctos.
-                if (Number(id)) {
-                    let voyageId = Number(id);
-                    return this._voyagesService.Get(voyageId);
-                } else {
-                    // caso contrario retornamos un error
-                    throw 'MISSING_FIELS';
-                }
-
-            }
-        ).then(
-            (resultGet: Voyage) => {
-
-                // retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: resultGet
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
+        // Caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
-    }
+      });
+  }
 
-    @Get()
-    async Gets(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
+  @Get()
+  async Gets(@Headers() headers, @Query() voyage: Voyage, @Query('page') page: number): Promise<any> {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
+    // Inicio una promesa Dummy.
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        // Validamos que los datos sean los necesarios.
+        if (voyage) {
+          // Si no existe el user id tiene que ser admin o suppor para seguir
+          if (!voyage.userId) {
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+              return true;
+            } else throw new Error('MISSING_FIELS');
+          } else {
+            // Validamos que el userId sea el mismo que el del token
+            if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+              // Nose hace nada
+            } else if (Number(voyage.userId) !== Number(headerToken.id)) throw new Error('ERROR_USERID_FAIL');
+            return true;
+          }
+        } else throw new Error('MISSING_FIELS');
+      })
+      .then((resultValidate: Boolean) => {
+        // Ejecutamos el servicio de obtener sailingAnalities.
+        return this._voyagesService.Gets(voyage, page);
+      })
+      .then((results: Voyage[]) => {
+        // Retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: results,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-        // Inicio una promesa Dummy.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
-
-                // Validamos que los datos sean los necesarios.
-                if (voyage) {
-                    // Si no existe el user id tiene que ser admin o suppor para seguir
-                    if (!voyage.userId) {
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                            return true;
-                        } else throw new Error('MISSING_FIELS');
-                    } else {
-                        // Validamos que el userId sea el mismo que el del token
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                            // Nose hace nada
-                        } else if (Number(voyage.userId) !== Number(headerToken.id)) throw new Error('ERROR_USERID_FAIL');
-                        return true;
-                    }
-                } else throw new Error('MISSING_FIELS');
-
-
-            }
-        ).then(
-            (resultValidate: Boolean) => {
-
-                // Ejecutamos el servicio de obtener sailingAnalities.
-                return this._voyagesService.Gets(voyage, page);
-            }
-        ).then(
-            (results: Voyage[]) => {
-
-                // Retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: results
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
+        // Caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
-    }
+      });
+  }
 
-    @Post('create')
-    async CreateVoyage(@Headers() headers, @Body() voyage: Voyage): Promise<any> {
+  @Post('create')
+  async CreateVoyage(@Headers() headers, @Body() voyage: Voyage): Promise<any> {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        // Validamos que esten llegando los datos necesarios.
+        if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+          if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+            // NO se hace nada
+          } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
-                // Validamos que esten llegando los datos necesarios.
-                if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+          delete voyage.id;
+          // Auditoria.
+          voyage.userIdCreated = headerToken.id;
+          voyage.dateCreated = GetDate();
+          delete voyage.userIdUpdated;
+          delete voyage.dateUpdated;
+          voyage.status = Boolean(voyage.status);
+          // Ejecutamos la funcion que registra en bd.
+          return this._voyagesService.Create(voyage);
+        } else throw 'MISSING_FIELS';
+      })
+      .then((resultCreate: Voyage) => {
+        // retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: resultCreate,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                        // NO se hace nada
-                    } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
-
-                    delete voyage.id;
-                    // Auditoria.
-                    voyage.userIdCreated = headerToken.id;
-                    voyage.dateCreated = GetDate();
-                    delete voyage.userIdUpdated;
-                    delete voyage.dateUpdated;
-                    voyage.status = Boolean(voyage.status);
-                    // Ejecutamos la funcion que registra en bd.
-                    return this._voyagesService.Create(voyage);
-                }
-                else throw 'MISSING_FIELS';
-            }
-        ).then(
-            (resultCreate: Voyage) => {
-
-                // retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: resultCreate
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
+        // Caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
-    }
+      });
+  }
 
-    @Put(':id/update')
-    async Update(@Headers() headers, @Param('id') id, @Body() voyage: Voyage): Promise<any> {
+  @Put(':id/update')
+  async Update(@Headers() headers, @Param('id') id, @Body() voyage: Voyage): Promise<any> {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
+    // Inicio una promesa Dummy.
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        // Validamos los datos del objeto a registar.
+        if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
+          voyage.id = Number(id);
 
-        // Inicio una promesa Dummy.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
+          if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+            // No se hace nada
+          } else if (Number(headerToken.id) !== Number(voyage.userId)) throw new Error('ERROR_USERID_FAIL');
 
-                // Validamos los datos del objeto a registar.
-                if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
-                    voyage.id = Number(id);
+          // Auditoria.
+          delete voyage.userIdCreated;
+          delete voyage.dateCreated;
+          voyage.userIdUpdated = headerToken.id;
+          voyage.dateUpdated = GetDate();
+          voyage.status = Boolean(voyage.status);
+          // Ejecutamos la funcion que actualiza el obj en la bd.
+          return this._voyagesService.Update(voyage);
+        } else {
+          // Enviar los datos necesarios.
+          throw 'MISSING_FIELS';
+        }
+      })
+      .then((resultUpdate: Voyage) => {
+        // Validamos el resultado
+        if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE');
 
-                    if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                        // No se hace nada
-                    } else if (Number(headerToken.id) !== Number(voyage.userId)) throw new Error('ERROR_USERID_FAIL');
+        // Retornamos una! Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: resultUpdate,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-                    // Auditoria.
-                    delete voyage.userIdCreated;
-                    delete voyage.dateCreated;
-                    voyage.userIdUpdated = headerToken.id;
-                    voyage.dateUpdated = GetDate();
-                    voyage.status = Boolean(voyage.status);
-                    // Ejecutamos la funcion que actualiza el obj en la bd.
-                    return this._voyagesService.Update(voyage);
-
-                } else {
-
-                    // Enviar los datos necesarios.
-                    throw 'MISSING_FIELS';
-                }
-            }
-        ).then(
-            (resultUpdate: Voyage) => {
-                // Validamos el resultado
-                if (!resultUpdate) throw new Error('TYPEORM_UPDATE_VOYAGE');
-
-                // Retornamos una! Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: resultUpdate
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-
-            }
+        // Caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
-    }
+      });
+  }
 
-    @Delete(':id/delete')
-    async DeletePort(@Headers() headers, @Param('id') id): Promise<any> {
+  @Delete(':id/delete')
+  async DeletePort(@Headers() headers, @Param('id') id): Promise<any> {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
+    // Inicio una promesa Dummy.
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        // Validamos que los datos sean los necesarios.
+        if (Number(id)) {
+          // Decodeamos.
+          return this._voyagesService.Get(id);
+        } else {
+          // Enviar los datos necesarios.
+          throw new Error('MISSING_FIELS');
+        }
+      })
+      .then((result: Voyage) => {
+        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+          // No se hace nada
+        } else if (Number(headerToken.id) !== Number(result.userId)) throw new Error('ERROR_USERID_FAIL');
 
-        // Inicio una promesa Dummy.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
+        result.status = false;
 
-                // Validamos que los datos sean los necesarios.
-                if (Number(id)) {
-                    // Decodeamos.
-                    return this._voyagesService.Get(id);
-                } else {
-                    // Enviar los datos necesarios.
-                    throw new Error('MISSING_FIELS');
-                }
+        delete result.userIdCreated;
+        delete result.dateCreated;
+        result.userIdUpdated = headerToken.id;
+        result.dateUpdated = GetDate();
+        return this._voyagesService.Delete(result);
+      })
+      .then((resultDelete: Voyage) => {
+        // Retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: resultDelete,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-            }
-        ).then(
-            (result: Voyage) => {
-
-                if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                    // No se hace nada
-                } else if (Number(headerToken.id) !== Number(result.userId)) throw new Error('ERROR_USERID_FAIL');
-
-                result.status = false;
-
-                delete result.userIdCreated;
-                delete result.dateCreated;
-                result.userIdUpdated = headerToken.id;
-                result.dateUpdated = GetDate();
-                return this._voyagesService.Delete(result);
-            }
-        ).then(
-            (resultDelete: Voyage) => {
-
-                // Retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: resultDelete
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
-
-                // caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
+        // caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
-    }
+      });
+  }
 
-    // Registra viajes desde un arreglo del objeto Port.
-    @Post('importVoyages')
-    async ImportJSONVoyages(@Headers() headers, @Body() ImportVoyages: ImportVoyage[]): Promise<any> {
+  // Registra viajes desde un arreglo del objeto Port.
+  @Post('importVoyages')
+  async ImportJSONVoyages(@Headers() headers, @Body() ImportVoyages: ImportVoyage[]): Promise<any> {
+    try {
+      // HeadToken
+      let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        try {
+      if (!(headerToken.role === 'SUPPORT')) {
+        return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+      }
 
-            // HeadToken
-            let headerToken: UserEntity = JwtDecode(headers.authorization);
+      let MappingVoyage: Mapping[] = [];
+      let MappingPort: Mapping[] = [];
 
-            if (!(headerToken.role === 'SUPPORT')) {
-                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+      let ultimaFecha: any;
+      for await (const importVoyage of ImportVoyages) {
+        // Busca el numero de viaje si ya se registro
+        let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+
+        let userId = importVoyage.userId;
+
+        // Consultamos si el numero de viaje ya lo tenemos mapeado.
+        // Si no lo tuvieramos lo buscaremos en la BD
+        if (!existeViaje) {
+          let voyageExistente: Voyage;
+
+          // Si no existe un Vije ID lo buscamos por numero y año
+          if (!importVoyage.voyageId) {
+            // Hacemos una consulta si tenemos el numero de viaje en tal año.
+            voyageExistente = await this._voyagesService.ThisVoyageNumberExistsInTheYear(importVoyage.voyageNumber, importVoyage.year, userId);
+          } else {
+            voyageExistente = await this._voyagesService.Get(importVoyage.voyageId);
+          }
+
+          // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+          if (!voyageExistente) {
+            // ARMAMOS AL NUEVO VIAJE
+            let newVoyage = new Voyage();
+
+            delete newVoyage.id;
+
+            newVoyage.userId = importVoyage.userId;
+            newVoyage.voyageNumber = importVoyage.voyageNumber;
+            newVoyage.year = importVoyage.year;
+            // Auditoria.
+            newVoyage.userIdCreated = headerToken.id;
+            newVoyage.dateCreated = GetDate();
+            delete newVoyage.userIdUpdated;
+            delete newVoyage.dateUpdated;
+            newVoyage.status = true;
+
+            // LO REGISTRAMOS
+            let voyageRegister = await this._voyagesService.Create(newVoyage);
+
+            console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
+
+            // Lo agregamos al mapping
+            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
+            // Reset mapping Port
+            MappingPort = [];
+          } else {
+            if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.';
+
+            if (voyageExistente.voyageNumber != importVoyage.voyageNumber || voyageExistente.year != importVoyage.year) {
+              delete voyageExistente.ports;
+              voyageExistente.voyageNumber = importVoyage.voyageNumber;
+              voyageExistente.year = importVoyage.year;
+              voyageExistente.userIdUpdated = headerToken.id;
+              voyageExistente.dateUpdated = GetDate();
+              voyageExistente.status = true;
+
+              voyageExistente = await this._voyagesService.Update(voyageExistente);
             }
+            // Agregamos al mapping el id buscado por numero de viaje.
+            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id));
+            // Reset mapping Port
+            MappingPort = [];
+          }
+        }
 
-            let MappingVoyage: Mapping[] = [];
-            let MappingPort: Mapping[] = [];
+        // Actualizamos el viaje
+        existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
 
-            let ultimaFecha: any;
-            for await (const importVoyage of ImportVoyages) {
+        // Consultamos si tenemos mapeado el puerto.
+        // Si no lo tuvieramos lo registrariamos.
+        let existePort = searchKey(MappingPort, importVoyage.portNumber);
 
-                // Busca el numero de viaje si ya se registro
-                let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+        if (!existePort) {
+          let portExiste: Port;
 
-                let userId = importVoyage.userId;
+          if (!importVoyage.portId) {
+            // Consultamos si existe el numero de puerto en el viaje.
+            portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value, userId);
+          } else {
+            portExiste = await this._portsService.Get(importVoyage.portId);
+          }
 
-                // Consultamos si el numero de viaje ya lo tenemos mapeado.
-                // Si no lo tuvieramos lo buscaremos en la BD
-                if (!existeViaje) {
+          console.log('portExistet' + portExiste);
 
-                    let voyageExistente: Voyage;
-
-                    // Si no existe un Vije ID lo buscamos por numero y año
-                    if (!importVoyage.voyageId) {
-                        // Hacemos una consulta si tenemos el numero de viaje en tal año.
-                        voyageExistente = await this._voyagesService.ThisVoyageNumberExistsInTheYear(importVoyage.voyageNumber, importVoyage.year, userId);
-                    } else {
-                        voyageExistente = await this._voyagesService.Get(importVoyage.voyageId)
-                    }
-
-
-                    // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
-                    if (!voyageExistente) {
-
-                        // ARMAMOS AL NUEVO VIAJE
-                        let newVoyage = new Voyage();
-
-                        delete newVoyage.id;
-
-                        newVoyage.userId = importVoyage.userId;
-                        newVoyage.voyageNumber = importVoyage.voyageNumber;
-                        newVoyage.year = importVoyage.year;
-                        // Auditoria.
-                        newVoyage.userIdCreated = headerToken.id;
-                        newVoyage.dateCreated = GetDate();
-                        delete newVoyage.userIdUpdated;
-                        delete newVoyage.dateUpdated;
-                        newVoyage.status = true;
-
-                        // LO REGISTRAMOS
-                        let voyageRegister = await this._voyagesService.Create(newVoyage);
-
-                        console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id)
-
-                        // Lo agregamos al mapping
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
-                        // Reset mapping Port
-                        MappingPort = [];
-
-                    } else {
-                        if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.'
-
-                        if (voyageExistente.voyageNumber != importVoyage.voyageNumber
-                            || voyageExistente.year != importVoyage.year) {
-
-                            delete voyageExistente.ports;
-                            voyageExistente.voyageNumber = importVoyage.voyageNumber;
-                            voyageExistente.year = importVoyage.year;
-                            voyageExistente.userIdUpdated = headerToken.id;
-                            voyageExistente.dateUpdated = GetDate();
-                            voyageExistente.status = true;
-
-                            voyageExistente = await this._voyagesService.Update(voyageExistente)
-
-                        }
-                        // Agregamos al mapping el id buscado por numero de viaje.
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
-                        // Reset mapping Port
-                        MappingPort = [];
-                    }
-
-
-
-                }
-
-                // Actualizamos el viaje
-                existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-
-
-
-
-
-
-
-
-
-
-                // Consultamos si tenemos mapeado el puerto.
-                // Si no lo tuvieramos lo registrariamos.
-                let existePort = searchKey(MappingPort, importVoyage.portNumber);
-
-
-                if (!existePort) {
-                    let portExiste: Port;
-
-
-                    if (!importVoyage.portId) {
-                        // Consultamos si existe el numero de puerto en el viaje.
-                        portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value, userId)
-                    } else {
-                        portExiste = await this._portsService.Get(importVoyage.portId)
-                    }
-
-                    console.log('portExistet' + portExiste);
-
-                    // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
-                    if (!portExiste) {
-                        let newPort = new Port();
-                        delete newPort.id;
-                        newPort.userId = importVoyage.userId;
-                        newPort.voyageId = existeViaje.value;
-                        newPort.departurePort = importVoyage.departurePort;
-                        newPort.arrivalPort = importVoyage.arrivalPort;
-                        newPort.portNumber = importVoyage.portNumber
-                        /*              
+          // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+          if (!portExiste) {
+            let newPort = new Port();
+            delete newPort.id;
+            newPort.userId = importVoyage.userId;
+            newPort.voyageId = existeViaje.value;
+            newPort.departurePort = importVoyage.departurePort;
+            newPort.arrivalPort = importVoyage.arrivalPort;
+            newPort.portNumber = importVoyage.portNumber;
+            newPort.dateETA = importVoyage.dateETA;
+            newPort.historyDateETA = "[]";
+            /*              
                             ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OPCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
                         */
 
-                        if (ultimaFecha) {
-                            newPort.startDate = ultimaFecha;
-                        } else {
-                            newPort.startDate = null;
-                        }
+            if (ultimaFecha) {
+              newPort.startDate = ultimaFecha;
+            } else {
+              newPort.startDate = null;
+            }
 
-                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+            newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+            newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
+            // Auditoria.
+            newPort.userIdCreated = headerToken.id;
+            newPort.dateCreated = GetDate();
+            delete newPort.userIdUpdated;
+            delete newPort.dateUpdated;
+            newPort.status = true;
 
-                        // Auditoria.
-                        newPort.userIdCreated = headerToken.id;
-                        newPort.dateCreated = GetDate();
-                        delete newPort.userIdUpdated;
-                        delete newPort.dateUpdated;
-                        newPort.status = true;
+            // Lo registramos
+            let portRegister = await this._portsService.Create(newPort);
+            console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
+            MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
+          } else {
+            console.log('Entro al else de port');
+            if (portExiste.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar';
 
-                        // Lo registramos
-                        let portRegister = await this._portsService.Create(newPort);
-                        console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
-                    } else {
+            // ESTO SE DEBE DE TENER EN CUENTA SI DESEAMOS MODIFICAR LA POSICION DE UN
+            // PUERTO A OTRO VIAJEID
+            // portExiste.voyageId != importVoyage.voyageId ||
+            if (
+              (portExiste.portNumber != importVoyage.portNumber ||
+                portExiste.departurePort != importVoyage.departurePort ||
+                portExiste.arrivalPort != importVoyage.arrivalPort ||
+                portExiste.startIFO != <any>importVoyage.ROB[0] ||
+                portExiste.startMGO != <any>importVoyage.ROB[1]) &&
+              <any>importVoyage.updatePort
+            ) {
+              portExiste.voyageId = existeViaje.value;
+              portExiste.portNumber = importVoyage.portNumber;
+              portExiste.departurePort = importVoyage.departurePort;
+              portExiste.arrivalPort = importVoyage.arrivalPort;
+              portExiste.dateETA = importVoyage.dateETA; 
 
+              if (ultimaFecha) {
+                portExiste.startDate = ultimaFecha;
+              } else {
+                delete portExiste.startDate;
+              }
 
-                        console.log('Entro al else de port')
-                        if (portExiste.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar'
+              portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+              portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
+              delete portExiste.dailyReports;
+              portExiste.dateUpdated = GetDate();
+              portExiste.status = true;
 
-                        // ESTO SE DEBE DE TENER EN CUENTA SI DESEAMOS MODIFICAR LA POSICION DE UN 
-                        // PUERTO A OTRO VIAJEID
-                        // portExiste.voyageId != importVoyage.voyageId ||
-                        if ((portExiste.portNumber != importVoyage.portNumber
-                            || portExiste.departurePort != importVoyage.departurePort
-                            || portExiste.arrivalPort != importVoyage.arrivalPort
-                            || portExiste.startIFO != <any>importVoyage.ROB[0]
-                            || portExiste.startMGO != <any>importVoyage.ROB[1])
-                            && <any>importVoyage.updatePort) {
+              console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
+              portExiste = await this._portsService.Update(portExiste);
+            }
 
+            // Agregamos al mapping el id buscado por numero de viaje.
+            MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id));
+          }
+        }
+        // Actualizamos el puerto
+        existePort = searchKey(MappingPort, importVoyage.portNumber);
 
-                            portExiste.voyageId = existeViaje.value;
-                            portExiste.portNumber = importVoyage.portNumber
-                            portExiste.departurePort = importVoyage.departurePort
-                            portExiste.arrivalPort = importVoyage.arrivalPort
+        // Armamos el obj de reporte.
+        let newReport = new DailyReport();
 
-                            if (ultimaFecha) {
-                                portExiste.startDate = ultimaFecha;
-                            } else {
-                                delete portExiste.startDate
-                            }
+        // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear eliminaria el ID
+        if (importVoyage.dailyReportId) {
+          newReport.id = Number(importVoyage.dailyReportId);
+        } else {
+          delete newReport.id;
+        }
+        // delete newReport.userId;
+        // delete newReport.portId;
+        newReport.userId = importVoyage.userId;
+        newReport.portId = existePort.value;
 
-                            portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                            portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+        // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
 
-                            delete portExiste.dailyReports;
-                            portExiste.dateUpdated = GetDate();
-                            portExiste.status = true;
+        let fechaMAs0 = '';
+        // esto es por un excel especial
+        if (
+          importVoyage.date.length == 14 ||
+          importVoyage.date.length == 13 ||
+          importVoyage.date.length == 12 ||
+          importVoyage.date.length == 11 ||
+          importVoyage.date.length == 15 ||
+          importVoyage.date.length == 18
+        ) {
+          ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date, 5) + '.000';
+        } else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
+          // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
+          ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
+        } else if (importVoyage.date.length == 9) {
+          ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
+        } else if (importVoyage.date.length == 10) {
+          ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
+        } else if (importVoyage.date.length == 23) {
+          ultimaFecha = ConvertDateUTC_To_FORMAT_UTC(importVoyage.date);
+        } else {
+          ultimaFecha = null;
+          console.log(importVoyage.date);
+          console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR Linea 674 ');
+        }
 
-                            console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id)
-                            portExiste = await this._portsService.Update(portExiste)
-                        }
+        newReport.date = ultimaFecha;
 
-                        // Agregamos al mapping el id buscado por numero de viaje.
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id))
-                    }
+        // A la fecha le redusco 4 horas debido que se tiene esa diferencia
+        // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
+        // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
 
-                }
-                // Actualizamos el puerto
-                existePort = searchKey(MappingPort, importVoyage.portNumber);
-
-
-
-
-
-
-
-
-                // Armamos el obj de reporte.
-                let newReport = new DailyReport();
-
-                // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear eliminaria el ID
-                if (importVoyage.dailyReportId) {
-                    newReport.id = Number(importVoyage.dailyReportId);
-                } else {
-                    delete newReport.id;
-                }
-                // delete newReport.userId;
-                // delete newReport.portId;
-                newReport.userId = importVoyage.userId;
-                newReport.portId = existePort.value;
-
-                // ---- - - - --  \ MODIFICAR SIEMPRE ESTO A NUESTRA CONVENIENCIA LA FECHA Y LA HORA \ ------
-
-
-                let fechaMAs0 = '';
-                // esto es por un excel especial
-                if (importVoyage.date.length == 14 || importVoyage.date.length == 13 || importVoyage.date.length == 12 || importVoyage.date.length == 11 || importVoyage.date.length == 15 || importVoyage.date.length == 18) {
-
-                    ultimaFecha = ConvertDDMMYYHHMM5HorasLOCAL(importVoyage.date, 5) + '.000';
-
-                } else if (importVoyage.date.length == 19 || importVoyage.date.length == 23) {
-                    // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
-                    ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(importVoyage.date) + '.000';
-
-                } else if (importVoyage.date.length == 9) {
-                    ultimaFecha = '0' + importVoyage.date + ' ' + importVoyage.hour + ':00';
-                } else if (importVoyage.date.length == 10) {
-                    ultimaFecha = importVoyage.date + ' ' + importVoyage.hour + ' ' + ':00';
-                } else {
-                    ultimaFecha = null;
-                    console.log(importVoyage.date);
-                    console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR Linea 674 ');
-                }
-
-
-                newReport.date = ultimaFecha;
-
-                // A la fecha le redusco 4 horas debido que se tiene esa diferencia
-                // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
-                // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
-
-                /*     
+        /*     
                     let textoCadena: any = importVoyage.date;
                     textoCadena = <any>ConvertMomentUTC(textoCadena)
 
@@ -709,561 +662,605 @@ export class VoyagesController {
                     }
                 */
 
-                // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
+        // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
 
+        // No se actualiza ni fecha ni HOra
 
-                // No se actualiza ni fecha ni HOra
-
-                // Verificamos si existe una hora
-                if (importVoyage.hour) {
-                    // Verificamos el tamaño de la hora,
-                    // Lo normal seria 03:00 esto seria un total de 5 caracteres
-                    // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
-                    if (importVoyage.hour.length === 4) {
-                        // concatenamos el 0 a la hora.
-                        newReport.hour = '0' + importVoyage.hour;
-                    } else if (importVoyage.hour.length == 5) {
-                        newReport.hour = importVoyage.hour;
-                    } else {
-                        newReport.hour = importVoyage.hour;
-                        console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId)
-                    }
-                } else {
-                    let fechatemporalporhora = ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, 5);
-                    newReport.hour = ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora)
-
-                }
-
-                newReport.date = <any>ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, -5);
-                // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
-                // delete newReport.date;
-                // delete newReport.hour;
-
-                // -*--------------------------FIN MODIFICACION
-
-
-
-
-                newReport.mplaIfo = importVoyage.mplaIfo || 0;
-                newReport.auxIfo = importVoyage.auxIfo || 0;
-                newReport.boilerIfo = importVoyage.boilerIfo || 0;
-                newReport.otherIfo = importVoyage.otherIfo || 0;
-
-                newReport.mplaMgo = importVoyage.mplaMgo || 0;
-                newReport.auxMgo = importVoyage.auxMgo || 0;
-                newReport.boilerMgo = importVoyage.boilerMgo || 0;
-                newReport.ppMgo = importVoyage.ppMgo || 0;
-                newReport.giMgo = importVoyage.giMgo || 0;
-                newReport.otherMgo = importVoyage.otherMgo || 0;
-
-
-                newReport.steamingTime = importVoyage.steamingTime || 0;
-                //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
-                if (typeof importVoyage.distance === 'number') {
-                    newReport.distance = importVoyage.distance;
-                } else {
-                    newReport.distance = 0;
-                }
-
-                if (!importVoyage.beaufour) {
-                    newReport.beaufour = '';
-                } else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
-                    newReport.beaufour = 'S1';
-                } else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
-                    newReport.beaufour = 'S2';
-                } else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
-                    newReport.beaufour = 'S3';
-                } else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
-                    newReport.beaufour = 'S4';
-                } else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
-                    newReport.beaufour = 'S5';
-                } else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
-                    newReport.beaufour = 'S6';
-                } else {
-                    newReport.beaufour = importVoyage.beaufour;
-                }
-
-                newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
-                newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
-
-                newReport.observation = importVoyage.observation;
-
-                newReport.activityPerformed = importVoyage.activityPerformed;
-                if (newReport.activityPerformed == 'CARGANDO') {
-                    newReport.activityPerformed = 'LOADING';
-
-                } else if (newReport.activityPerformed == 'DESCARGANDO') {
-                    newReport.activityPerformed = 'DOWNLOADING';
-
-                } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
-                    newReport.activityPerformed = 'SAILING_IN_BALLAST';
-
-                } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
-                    newReport.activityPerformed = 'SAILING_WITH_LADEN';
-
-                } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
-                    newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
-
-                } else if (newReport.activityPerformed == 'FONDEADO') {
-                    newReport.activityPerformed = 'ANCHORED';
-
-                } else if (newReport.activityPerformed == 'MANIOBRA') {
-                    newReport.activityPerformed = 'MANEUVER';
-
-                } else if (newReport.activityPerformed == 'OTRAS ACT.') {
-                    newReport.activityPerformed = 'OTHER_ACT';
-                }
-
-
-                newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
-                // Tipo de velocidad.
-                newReport.speedStraction = importVoyage.speedStraction;
-                newReport.observation = importVoyage.observation;
-
-
-
-
-                newReport.north_degree = importVoyage.north_degree || 0;
-                newReport.north_minutes = importVoyage.north_minutes || 0;
-                newReport.north_north_south = importVoyage.north_north_south || '';
-                newReport.east_degree = importVoyage.east_degree || 0;
-                newReport.east_minutes = importVoyage.east_minutes || 0;
-                newReport.east_east_west = importVoyage.east_east_west || '';
-
-
-
-                if (importVoyage.delete_report) {
-                    newReport.status = false;
-                } else {
-                    // Auditoria.
-                    newReport.status = true;
-                }
-
-                // Si no tiene un reportId lo creamos
-                if (!importVoyage.dailyReportId) {
-
-                    newReport.userIdCreated = headerToken.id;
-                    newReport.dateCreated = GetDate();
-                    delete newReport.userIdUpdated;
-                    delete newReport.dateUpdated;
-                    await this._dailyReportsService.Create(newReport);
-                    console.log('Create' + newReport.date);
-
-                } else {
-                    newReport.userIdUpdated = headerToken.id;
-                    newReport.dateUpdated = GetDate();
-                    delete newReport.userIdCreated;
-                    delete newReport.dateCreated;
-                    await this._dailyReportsService.Update(newReport);
-                    console.log('Update' + newReport.id);
-                }
-
-            }
-
-            return 'Se registraron los datos correctamente.';
-
-
-        } catch (error) {
-            return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! '
+        // Verificamos si existe una hora
+        if (importVoyage.hour) {
+          // Verificamos el tamaño de la hora,
+          // Lo normal seria 03:00 esto seria un total de 5 caracteres
+          // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
+          if (importVoyage.hour.length === 4) {
+            // concatenamos el 0 a la hora.
+            newReport.hour = '0' + importVoyage.hour;
+          } else if (importVoyage.hour.length == 5) {
+            newReport.hour = importVoyage.hour;
+          } else {
+            newReport.hour = importVoyage.hour;
+            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
+          }
+        } else {
+          let fechatemporalporhora = ConvertDateUTC_masUnaCantidadDeHoras(newReport.date, 5);
+          newReport.hour = ObtenerlasHorasDeUnaFecaUTC(fechatemporalporhora);
         }
+
+        newReport.date = <any>ConvertYYYYMMHH_5HorasLOCAL(newReport.date, -5);
+        // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
+        // delete newReport.date;
+        // delete newReport.hour;
+
+        // -*--------------------------FIN MODIFICACION
+
+        newReport.mplaIfo = importVoyage.mplaIfo || 0;
+        newReport.auxIfo = importVoyage.auxIfo || 0;
+        newReport.boilerIfo = importVoyage.boilerIfo || 0;
+        newReport.otherIfo = importVoyage.otherIfo || 0;
+
+        newReport.mplaMgo = importVoyage.mplaMgo || 0;
+        newReport.auxMgo = importVoyage.auxMgo || 0;
+        newReport.boilerMgo = importVoyage.boilerMgo || 0;
+        newReport.ppMgo = importVoyage.ppMgo || 0;
+        newReport.giMgo = importVoyage.giMgo || 0;
+        newReport.otherMgo = importVoyage.otherMgo || 0;
+
+        newReport.steamingTime = importVoyage.steamingTime2*60 || 0;
+        //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
+        if (typeof importVoyage.distance === 'number') {
+          newReport.distance = importVoyage.distance;
+        } else {
+          newReport.distance = 0;
+        }
+
+        if (!importVoyage.beaufour) {
+          newReport.beaufour = '';
+        } else if (
+          importVoyage.beaufour === 's1' ||
+          importVoyage.beaufour === 'S1' ||
+          importVoyage.beaufour === 's 1' ||
+          importVoyage.beaufour == 'S 1' ||
+          importVoyage.beaufour === '1s' ||
+          importVoyage.beaufour === '1S' ||
+          importVoyage.beaufour === '1 s' ||
+          importVoyage.beaufour == '1 S' ||
+          importVoyage.beaufour == '1.00' ||
+          importVoyage.beaufour == '1'
+        ) {
+          newReport.beaufour = 'S1';
+        } else if (
+          importVoyage.beaufour === 's2' ||
+          importVoyage.beaufour === 'S2' ||
+          importVoyage.beaufour === 's 2' ||
+          importVoyage.beaufour == 'S 2' ||
+          importVoyage.beaufour === '2s' ||
+          importVoyage.beaufour === '2S' ||
+          importVoyage.beaufour === '2 s' ||
+          importVoyage.beaufour == '2 S' ||
+          importVoyage.beaufour == '2.00' ||
+          importVoyage.beaufour == '2'
+        ) {
+          newReport.beaufour = 'S2';
+        } else if (
+          importVoyage.beaufour === 's3' ||
+          importVoyage.beaufour === 'S3' ||
+          importVoyage.beaufour === 's 3' ||
+          importVoyage.beaufour == 'S 3' ||
+          importVoyage.beaufour === '3s' ||
+          importVoyage.beaufour === '3S' ||
+          importVoyage.beaufour === '3 s' ||
+          importVoyage.beaufour == '3 S' ||
+          importVoyage.beaufour == '3.00' ||
+          importVoyage.beaufour == '3'
+        ) {
+          newReport.beaufour = 'S3';
+        } else if (
+          importVoyage.beaufour === 's4' ||
+          importVoyage.beaufour === 'S4' ||
+          importVoyage.beaufour === 's 4' ||
+          importVoyage.beaufour == 'S 4' ||
+          importVoyage.beaufour === '4s' ||
+          importVoyage.beaufour === '4S' ||
+          importVoyage.beaufour === '4 s' ||
+          importVoyage.beaufour == '4 S' ||
+          importVoyage.beaufour == '4.00' ||
+          importVoyage.beaufour == '4'
+        ) {
+          newReport.beaufour = 'S4';
+        } else if (
+          importVoyage.beaufour === 's5' ||
+          importVoyage.beaufour === 'S5' ||
+          importVoyage.beaufour === 's 5' ||
+          importVoyage.beaufour == 'S 5' ||
+          importVoyage.beaufour === '5s' ||
+          importVoyage.beaufour === '5S' ||
+          importVoyage.beaufour === '5 s' ||
+          importVoyage.beaufour == '5 S' ||
+          importVoyage.beaufour == '5.00' ||
+          importVoyage.beaufour == '5'
+        ) {
+          newReport.beaufour = 'S5';
+        } else if (
+          importVoyage.beaufour === 's6' ||
+          importVoyage.beaufour === 'S6' ||
+          importVoyage.beaufour === 's 6' ||
+          importVoyage.beaufour == 'S 6' ||
+          importVoyage.beaufour === '6s' ||
+          importVoyage.beaufour === '6S' ||
+          importVoyage.beaufour === '6 s' ||
+          importVoyage.beaufour == '6 S' ||
+          importVoyage.beaufour == '6.00' ||
+          importVoyage.beaufour == '6'
+        ) {
+          newReport.beaufour = 'S6';
+        } else {
+          newReport.beaufour = importVoyage.beaufour;
+        }
+
+        newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
+        newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
+
+        newReport.observation = importVoyage.observation;
+
+        newReport.activityPerformed = importVoyage.activityPerformed;
+        newReport.nextActivityPerformed = importVoyage.nextActivityPerformed;
+        if (newReport.activityPerformed == 'CARGANDO') {
+          newReport.activityPerformed = 'LOADING';
+        } else if (newReport.activityPerformed == 'DESCARGANDO') {
+          newReport.activityPerformed = 'DOWNLOADING';
+        } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+          newReport.activityPerformed = 'SAILING_IN_BALLAST';
+        } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+          newReport.activityPerformed = 'SAILING_WITH_LADEN';
+        } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+          newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+        } else if (newReport.activityPerformed == 'FONDEADO') {
+          newReport.activityPerformed = 'ANCHORED';
+        } else if (newReport.activityPerformed == 'MANIOBRA') {
+          newReport.activityPerformed = 'MANEUVER';
+        } else if (newReport.activityPerformed == 'OTRAS ACT.') {
+          newReport.activityPerformed = 'OTHER_ACT';
+        }
+
+        newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+        // Tipo de velocidad.
+        newReport.speedStraction = importVoyage.speedStraction;
+        newReport.observation = importVoyage.observation;
+
+        newReport.north_degree = importVoyage.north_degree || 0;
+        newReport.north_minutes = importVoyage.north_minutes || 0;
+        newReport.north_north_south = importVoyage.north_north_south || '';
+        newReport.east_degree = importVoyage.east_degree || 0;
+        newReport.east_minutes = importVoyage.east_minutes || 0;
+        newReport.east_east_west = importVoyage.east_east_west || '';
+
+        if (importVoyage.delete_report) {
+          newReport.status = false;
+        } else {
+          // Auditoria.
+          newReport.status = true;
+        }
+
+        // Si no tiene un reportId lo creamos
+        if (!importVoyage.dailyReportId) {
+          newReport.userIdCreated = headerToken.id;
+          newReport.dateCreated = GetDate();
+          delete newReport.userIdUpdated;
+          delete newReport.dateUpdated;
+          await this._dailyReportsService.Create(newReport);
+          console.log('Create' + newReport.date);
+        } else {
+          newReport.userIdUpdated = headerToken.id;
+          newReport.dateUpdated = GetDate();
+          delete newReport.userIdCreated;
+          delete newReport.dateCreated;
+          await this._dailyReportsService.Update(newReport);
+          console.log('Update' + newReport.id);
+        }
+      }
+
+      return 'Se registraron los datos correctamente.';
+    } catch (error) {
+      return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! ';
     }
+  }
 
-    // Registra viajes desde un arreglo del objeto Port.
-    @Post('importVoyagesDeFormatDNV')
-    async ImportVoyagesDeFormatDNV(@Headers() headers, @Body() ImportVoyages: ImportVoyage[]): Promise<any> {
+  // Registra viajes desde un arreglo del objeto Port.
+  @Post('importVoyagesDeFormatDNV')
+  async ImportVoyagesDeFormatDNV(@Headers() headers, @Body() ImportVoyages: ImportVoyage[]): Promise<any> {
+    try {
+      // HeadToken
+      let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        try {
+      if (!(headerToken.role === 'SUPPORT')) {
+        return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+      }
 
-            // HeadToken
-            let headerToken: UserEntity = JwtDecode(headers.authorization);
+      let MappingVoyage: Mapping[] = [];
+      let MappingPort: Mapping[] = [];
 
-            if (!(headerToken.role === 'SUPPORT')) {
-                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+      let ultimaFecha: any;
+      let secrearaunNuevoReporte: boolean = false;
+      for await (const importVoyage of ImportVoyages) {
+        // Busca el numero de viaje si ya se registro
+        let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+
+        let userId = importVoyage.userId;
+
+        // Consultamos si el numero de viaje ya lo tenemos mapeado.
+        // Si no lo tuvieramos lo buscaremos en la BD
+        if (!existeViaje) {
+          let voyageExistente: Voyage;
+
+          // Si no existe un Vije ID lo buscamos por numero y año
+          if (!importVoyage.voyageId) {
+            // Hacemos una consulta si tenemos el numero de viaje en tal año.
+            voyageExistente = await this._voyagesService.ThisVoyageNumberExistsInTheYear(importVoyage.voyageNumber, importVoyage.year, userId);
+          } else {
+            voyageExistente = await this._voyagesService.Get(importVoyage.voyageId);
+          }
+
+          // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+          if (!voyageExistente) {
+            // ARMAMOS AL NUEVO VIAJE
+            let newVoyage = new Voyage();
+
+            delete newVoyage.id;
+
+            newVoyage.userId = importVoyage.userId;
+            newVoyage.voyageNumber = importVoyage.voyageNumber;
+            newVoyage.year = importVoyage.year;
+            // Auditoria.
+            newVoyage.userIdCreated = headerToken.id;
+            newVoyage.dateCreated = GetDate();
+            delete newVoyage.userIdUpdated;
+            delete newVoyage.dateUpdated;
+            newVoyage.status = true;
+
+            // LO REGISTRAMOS
+            let voyageRegister = await this._voyagesService.Create(newVoyage);
+
+            console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
+
+            // Lo agregamos al mapping
+            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
+            // Reset mapping Port
+            MappingPort = [];
+          } else {
+            if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.';
+
+            if (voyageExistente.voyageNumber != importVoyage.voyageNumber || voyageExistente.year != importVoyage.year) {
+              delete voyageExistente.ports;
+              voyageExistente.voyageNumber = importVoyage.voyageNumber;
+              voyageExistente.year = importVoyage.year;
+              voyageExistente.userIdUpdated = headerToken.id;
+              voyageExistente.dateUpdated = GetDate();
+              voyageExistente.status = true;
+
+              voyageExistente = await this._voyagesService.Update(voyageExistente);
             }
+            // Agregamos al mapping el id buscado por numero de viaje.
+            MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id));
+            // Reset mapping Port
+            MappingPort = [];
+          }
+        }
 
-            let MappingVoyage: Mapping[] = [];
-            let MappingPort: Mapping[] = [];
+        // Actualizamos el viaje
+        existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
 
-            let ultimaFecha: any;
-            let secrearaunNuevoReporte: boolean = false;
-            for await (const importVoyage of ImportVoyages) {
+        // Consultamos si tenemos mapeado el puerto.
+        // Si no lo tuvieramos lo registrariamos.
+        let existePort = searchKey(MappingPort, importVoyage.portNumber);
 
-                // Busca el numero de viaje si ya se registro
-                let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
+        if (!existePort) {
+          let portExiste: Port;
 
-                let userId = importVoyage.userId;
+          if (!importVoyage.portId) {
+            // Consultamos si existe el numero de puerto en el viaje.
+            portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value, userId);
+          } else {
+            portExiste = await this._portsService.Get(importVoyage.portId);
+          }
 
-                // Consultamos si el numero de viaje ya lo tenemos mapeado.
-                // Si no lo tuvieramos lo buscaremos en la BD
-                if (!existeViaje) {
+          console.log('portExistet' + portExiste);
 
-                    let voyageExistente: Voyage;
-
-                    // Si no existe un Vije ID lo buscamos por numero y año
-                    if (!importVoyage.voyageId) {
-                        // Hacemos una consulta si tenemos el numero de viaje en tal año.
-                        voyageExistente = await this._voyagesService.ThisVoyageNumberExistsInTheYear(importVoyage.voyageNumber, importVoyage.year, userId);
-                    } else {
-                        voyageExistente = await this._voyagesService.Get(importVoyage.voyageId)
-                    }
-
-                    // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
-                    if (!voyageExistente) {
-
-                        // ARMAMOS AL NUEVO VIAJE
-                        let newVoyage = new Voyage();
-
-                        delete newVoyage.id;
-
-                        newVoyage.userId = importVoyage.userId;
-                        newVoyage.voyageNumber = importVoyage.voyageNumber;
-                        newVoyage.year = importVoyage.year;
-                        // Auditoria.
-                        newVoyage.userIdCreated = headerToken.id;
-                        newVoyage.dateCreated = GetDate();
-                        delete newVoyage.userIdUpdated;
-                        delete newVoyage.dateUpdated;
-                        newVoyage.status = true;
-
-                        // LO REGISTRAMOS
-                        let voyageRegister = await this._voyagesService.Create(newVoyage);
-
-                        console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id)
-
-                        // Lo agregamos al mapping
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id))
-                        // Reset mapping Port
-                        MappingPort = [];
-                    } else {
-                        if (voyageExistente.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO NO PErteece al viaje asignado.'
-
-                        if (voyageExistente.voyageNumber != importVoyage.voyageNumber
-                            || voyageExistente.year != importVoyage.year) {
-
-                            delete voyageExistente.ports;
-                            voyageExistente.voyageNumber = importVoyage.voyageNumber;
-                            voyageExistente.year = importVoyage.year;
-                            voyageExistente.userIdUpdated = headerToken.id;
-                            voyageExistente.dateUpdated = GetDate();
-                            voyageExistente.status = true;
-
-                            voyageExistente = await this._voyagesService.Update(voyageExistente)
-
-                        }
-                        // Agregamos al mapping el id buscado por numero de viaje.
-                        MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageExistente.id))
-                        // Reset mapping Port
-                        MappingPort = [];
-                    }
-
-                }
-
-                // Actualizamos el viaje
-                existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
-
-
-
-
-
-
-
-
-
-
-                // Consultamos si tenemos mapeado el puerto.
-                // Si no lo tuvieramos lo registrariamos.
-                let existePort = searchKey(MappingPort, importVoyage.portNumber);
-
-
-                if (!existePort) {
-                    let portExiste: Port;
-
-
-                    if (!importVoyage.portId) {
-                        // Consultamos si existe el numero de puerto en el viaje.
-                        portExiste = await this._portsService.ThereIsThisPortInTheVoyage(importVoyage.portNumber, existeViaje.value, userId)
-                    } else {
-                        portExiste = await this._portsService.Get(importVoyage.portId)
-                    }
-
-                    console.log('portExistet' + portExiste);
-
-                    // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
-                    if (!portExiste) {
-                        let newPort = new Port();
-                        delete newPort.id;
-                        newPort.userId = importVoyage.userId;
-                        newPort.voyageId = existeViaje.value;
-                        newPort.departurePort = importVoyage.departurePort;
-                        newPort.arrivalPort = importVoyage.arrivalPort;
-                        newPort.portNumber = importVoyage.portNumber
-                        /*              
+          // Si no existe lo registraremos en la BD caso contrario solo lo agregamos al mapping
+          if (!portExiste) {
+            let newPort = new Port();
+            delete newPort.id;
+            newPort.userId = importVoyage.userId;
+            newPort.voyageId = existeViaje.value;
+            newPort.departurePort = importVoyage.departurePort;
+            newPort.arrivalPort = importVoyage.arrivalPort;
+            newPort.portNumber = importVoyage.portNumber;
+            /*              
                             ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OPCION PARA QUE SE REGISTE EL DATO ANTERIOR
                             OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
                         */
 
-                        if (ultimaFecha) {
-                            newPort.startDate = ultimaFecha;
-                        } else {
-                            newPort.startDate = null;
-                        }
-
-                        newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                        newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
-
-
-                        // Auditoria.
-                        newPort.userIdCreated = headerToken.id;
-                        newPort.dateCreated = GetDate();
-                        delete newPort.userIdUpdated;
-                        delete newPort.dateUpdated;
-                        newPort.status = true;
-
-                        // Lo registramos
-                        let portRegister = await this._portsService.Create(newPort);
-                        console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id))
-                    } else {
-
-
-                        console.log('Entro al else de port')
-                        if (portExiste.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar'
-
-
-                        // ESTO SE DEBE DE TENER EN CUENTA SI DESEAMOS MODIFICAR LA POSICION DE UN 
-                        // PUERTO A OTRO VIAJEID
-                        // portExiste.voyageId != importVoyage.voyageId ||
-                        if ((portExiste.portNumber != importVoyage.portNumber
-                            || portExiste.departurePort != importVoyage.departurePort
-                            || portExiste.arrivalPort != importVoyage.arrivalPort
-                            || portExiste.startIFO != <any>importVoyage.ROB[0]
-                            || portExiste.startMGO != <any>importVoyage.ROB[1])
-                            && <any>importVoyage.updatePort) {
-
-
-                            portExiste.voyageId = existeViaje.value;
-                            portExiste.portNumber = importVoyage.portNumber
-                            portExiste.departurePort = importVoyage.departurePort
-                            portExiste.arrivalPort = importVoyage.arrivalPort
-
-                            if (ultimaFecha) {
-                                portExiste.startDate = ultimaFecha;
-                            } else {
-                                delete portExiste.startDate
-                            }
-
-                            portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                            portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
-
-                            delete portExiste.dailyReports;
-                            portExiste.dateUpdated = GetDate();
-                            portExiste.status = true;
-
-                            console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id)
-                            portExiste = await this._portsService.Update(portExiste)
-                        }
-
-                        // Agregamos al mapping el id buscado por numero de viaje.
-                        MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id))
-                    }
-
-                }
-                // Actualizamos el puerto
-                existePort = searchKey(MappingPort, importVoyage.portNumber);
-
-
-
-
-
-
-
-
-                // Armamos el obj de reporte.
-                let newReport = new DailyReport();
-
-                // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear eliminaria el ID
-                if (importVoyage.dailyReportId) {
-                    newReport.id = Number(importVoyage.dailyReportId);
-                } else {
-                    delete newReport.id;
-                }
-                // delete newReport.userId;
-                // delete newReport.portId;
-                newReport.userId = importVoyage.userId;
-                newReport.portId = existePort.value;
-
-                // Reset valor
-                secrearaunNuevoReporte = false;
-                // si existe una fecha y si existe un  tiempo de navegacion registradas.
-                if (ultimaFecha && importVoyage.steamingTime2 > 0) {
-                    secrearaunNuevoReporte = true;
-
-
-
-
-                    console.log(importVoyage.steamingTime2)
-
-
-                    console.log("fechaAntiguaMasElTiempoDeNavegacion")
-                    console.log(ultimaFecha)
-
-                    let fechaAntiguaMasElTiempoDeNavegacion = ConvertDateUTC_masUnaCantidadDeHoras(ultimaFecha, importVoyage.steamingTime2)
-                    // 
-                    console.log("mas horas " + importVoyage.steamingTime2)
-                    console.log(fechaAntiguaMasElTiempoDeNavegacion)
-                    ultimaFecha = fechaAntiguaMasElTiempoDeNavegacion + '.000';
-
-                    console.log("ultimaFecha")
-                    console.log(ultimaFecha)
-
-
-                    if (ultimaFecha.length == 19) {
-                        newReport.date = ultimaFecha;
-                    } else {
-                        console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR linea 1111 ');
-                    }
-
-                    newReport.hour = ObtenerlasHorasDeUnaFecaUTC(ultimaFecha)
-
-                    console.log(newReport.hour)
-                    ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(ultimaFecha) + '.000';
-                    newReport.date = ultimaFecha;
-
-
-
-
-
-                    // -*--------------------------FIN MODIFICACION
-
-
-
-
-                    newReport.mplaIfo = importVoyage.mplaIfo || 0;
-                    newReport.auxIfo = importVoyage.auxIfo || 0;
-                    newReport.boilerIfo = importVoyage.boilerIfo || 0;
-                    newReport.otherIfo = importVoyage.otherIfo || 0;
-
-                    newReport.mplaMgo = importVoyage.mplaMgo || 0;
-                    newReport.auxMgo = importVoyage.auxMgo || 0;
-                    newReport.boilerMgo = importVoyage.boilerMgo || 0;
-                    newReport.ppMgo = importVoyage.ppMgo || 0;
-                    newReport.giMgo = importVoyage.giMgo || 0;
-                    newReport.otherMgo = importVoyage.otherMgo || 0;
-
-
-                    newReport.steamingTime = importVoyage.steamingTime || 0;
-                    //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
-
-                    newReport.distance = importVoyage.distance || 0;
-
-                    if (!importVoyage.beaufour) {
-                        newReport.beaufour = '';
-                    } else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
-                        newReport.beaufour = 'S1';
-                    } else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
-                        newReport.beaufour = 'S2';
-                    } else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
-                        newReport.beaufour = 'S3';
-                    } else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
-                        newReport.beaufour = 'S4';
-                    } else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
-                        newReport.beaufour = 'S5';
-                    } else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
-                        newReport.beaufour = 'S6';
-                    } else {
-                        newReport.beaufour = importVoyage.beaufour;
-                    }
-
-                    newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
-                    newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
-
-                    newReport.observation = importVoyage.observation;
-
-                    newReport.activityPerformed = importVoyage.activityPerformed;
-                    if (newReport.activityPerformed == 'CARGANDO') {
-                        newReport.activityPerformed = 'LOADING';
-
-                    } else if (newReport.activityPerformed == 'DESCARGANDO') {
-                        newReport.activityPerformed = 'DOWNLOADING';
-
-                    } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
-                        newReport.activityPerformed = 'SAILING_IN_BALLAST';
-
-                    } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
-                        newReport.activityPerformed = 'SAILING_WITH_LADEN';
-
-                    } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
-                        newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
-
-                    } else if (newReport.activityPerformed == 'FONDEADO') {
-                        newReport.activityPerformed = 'ANCHORED';
-
-                    } else if (newReport.activityPerformed == 'MANIOBRA') {
-                        newReport.activityPerformed = 'MANEUVER';
-
-                    } else if (newReport.activityPerformed == 'OTRAS ACT.') {
-                        newReport.activityPerformed = 'OTHER_ACT';
-                    }
-
-
-                    newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
-                    // Tipo de velocidad.
-                    newReport.speedStraction = importVoyage.speedStraction;
-                    newReport.observation = importVoyage.observation;
-
-
-
-
-                    newReport.north_degree = importVoyage.north_degree || 0;
-                    newReport.north_minutes = importVoyage.north_minutes || 0;
-                    newReport.north_north_south = importVoyage.north_north_south || '';
-                    newReport.east_degree = importVoyage.east_degree || 0;
-                    newReport.east_minutes = importVoyage.east_minutes || 0;
-                    newReport.east_east_west = importVoyage.east_east_west || '';
-
-
-
-                    if (importVoyage.delete_report) {
-                        newReport.status = false;
-                    } else {
-                        // Auditoria.
-                        newReport.status = true;
-                    }
-
-                    delete newReport.id;
-                    newReport.userIdCreated = headerToken.id;
-                    newReport.dateCreated = GetDate();
-                    delete newReport.userIdUpdated;
-                    delete newReport.dateUpdated;
-                    await this._dailyReportsService.Create(newReport);
-                    console.log('Create' + newReport.date);
-
-
-
-
-
-
-
-                }
-
-                newReport.id = importVoyage.dailyReportId;
-                if (importVoyage.dailyReportId) {
-                    newReport.id = Number(importVoyage.dailyReportId);
-                } else {
-                    delete newReport.id;
-                }
-
-                // y le resto el tiempo que paso.
-                // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
-                ultimaFecha = DateDayMonthYear(importVoyage.date) + ' ' + importVoyage.hour + ':00.000';
-                console.log(ultimaFecha)
-                ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(ultimaFecha) + '.000';
-                console.log(ultimaFecha)
-                // A la fecha le redusco 4 horas debido que se tiene esa diferencia
-                // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
-                // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
-
-                /*     
+            if (ultimaFecha) {
+              newPort.startDate = ultimaFecha;
+            } else {
+              newPort.startDate = null;
+            }
+
+            newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+            newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+
+            // Auditoria.
+            newPort.userIdCreated = headerToken.id;
+            newPort.dateCreated = GetDate();
+            delete newPort.userIdUpdated;
+            delete newPort.dateUpdated;
+            newPort.status = true;
+
+            // Lo registramos
+            let portRegister = await this._portsService.Create(newPort);
+            console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
+            MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
+          } else {
+            console.log('Entro al else de port');
+            if (portExiste.userId != importVoyage.userId) throw 'ALGO ANDA MAL EL ID DEL USUARIO no pertenece al puerto que se le quiere asignar';
+
+            // ESTO SE DEBE DE TENER EN CUENTA SI DESEAMOS MODIFICAR LA POSICION DE UN
+            // PUERTO A OTRO VIAJEID
+            // portExiste.voyageId != importVoyage.voyageId ||
+            if (
+              (portExiste.portNumber != importVoyage.portNumber ||
+                portExiste.departurePort != importVoyage.departurePort ||
+                portExiste.arrivalPort != importVoyage.arrivalPort ||
+                portExiste.startIFO != <any>importVoyage.ROB[0] ||
+                portExiste.startMGO != <any>importVoyage.ROB[1]) &&
+              <any>importVoyage.updatePort
+            ) {
+              portExiste.voyageId = existeViaje.value;
+              portExiste.portNumber = importVoyage.portNumber;
+              portExiste.departurePort = importVoyage.departurePort;
+              portExiste.arrivalPort = importVoyage.arrivalPort;
+
+              if (ultimaFecha) {
+                portExiste.startDate = ultimaFecha;
+              } else {
+                delete portExiste.startDate;
+              }
+
+              portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+              portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+
+              delete portExiste.dailyReports;
+              portExiste.dateUpdated = GetDate();
+              portExiste.status = true;
+
+              console.log('Se actualizo el PUERTO NUMERO ' + portExiste.portNumber + '   con id :' + portExiste.id);
+              portExiste = await this._portsService.Update(portExiste);
+            }
+
+            // Agregamos al mapping el id buscado por numero de viaje.
+            MappingPort.push(new Mapping(importVoyage.portNumber, portExiste.id));
+          }
+        }
+        // Actualizamos el puerto
+        existePort = searchKey(MappingPort, importVoyage.portNumber);
+
+        // Armamos el obj de reporte.
+        let newReport = new DailyReport();
+
+        // Estoy actuallizando un reporte por eso le agrego el id si quisiera crear eliminaria el ID
+        if (importVoyage.dailyReportId) {
+          newReport.id = Number(importVoyage.dailyReportId);
+        } else {
+          delete newReport.id;
+        }
+        // delete newReport.userId;
+        // delete newReport.portId;
+        newReport.userId = importVoyage.userId;
+        newReport.portId = existePort.value;
+
+        // Reset valor
+        secrearaunNuevoReporte = false;
+        // si existe una fecha y si existe un  tiempo de navegacion registradas.
+        if (ultimaFecha && importVoyage.steamingTime2 > 0) {
+          secrearaunNuevoReporte = true;
+
+          console.log(importVoyage.steamingTime2);
+
+          console.log('fechaAntiguaMasElTiempoDeNavegacion');
+          console.log(ultimaFecha);
+
+          let fechaAntiguaMasElTiempoDeNavegacion = ConvertDateUTC_masUnaCantidadDeHoras(ultimaFecha, importVoyage.steamingTime2);
+          //
+          console.log('mas horas ' + importVoyage.steamingTime2);
+          console.log(fechaAntiguaMasElTiempoDeNavegacion);
+          ultimaFecha = fechaAntiguaMasElTiempoDeNavegacion + '.000';
+
+          console.log('ultimaFecha');
+          console.log(ultimaFecha);
+
+          if (ultimaFecha.length == 19) {
+            newReport.date = ultimaFecha;
+          } else {
+            console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR linea 1111 ');
+          }
+
+          newReport.hour = ObtenerlasHorasDeUnaFecaUTC(ultimaFecha);
+
+          console.log(newReport.hour);
+          ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(ultimaFecha) + '.000';
+          newReport.date = ultimaFecha;
+
+          // -*--------------------------FIN MODIFICACION
+
+          newReport.mplaIfo = importVoyage.mplaIfo || 0;
+          newReport.auxIfo = importVoyage.auxIfo || 0;
+          newReport.boilerIfo = importVoyage.boilerIfo || 0;
+          newReport.otherIfo = importVoyage.otherIfo || 0;
+
+          newReport.mplaMgo = importVoyage.mplaMgo || 0;
+          newReport.auxMgo = importVoyage.auxMgo || 0;
+          newReport.boilerMgo = importVoyage.boilerMgo || 0;
+          newReport.ppMgo = importVoyage.ppMgo || 0;
+          newReport.giMgo = importVoyage.giMgo || 0;
+          newReport.otherMgo = importVoyage.otherMgo || 0;
+
+          newReport.steamingTime = importVoyage.steamingTime || 0;
+          //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
+
+          newReport.distance = importVoyage.distance || 0;
+
+          if (!importVoyage.beaufour) {
+            newReport.beaufour = '';
+          } else if (
+            importVoyage.beaufour === 's1' ||
+            importVoyage.beaufour === 'S1' ||
+            importVoyage.beaufour === 's 1' ||
+            importVoyage.beaufour == 'S 1' ||
+            importVoyage.beaufour === '1s' ||
+            importVoyage.beaufour === '1S' ||
+            importVoyage.beaufour === '1 s' ||
+            importVoyage.beaufour == '1 S' ||
+            importVoyage.beaufour == '1.00' ||
+            importVoyage.beaufour == '1'
+          ) {
+            newReport.beaufour = 'S1';
+          } else if (
+            importVoyage.beaufour === 's2' ||
+            importVoyage.beaufour === 'S2' ||
+            importVoyage.beaufour === 's 2' ||
+            importVoyage.beaufour == 'S 2' ||
+            importVoyage.beaufour === '2s' ||
+            importVoyage.beaufour === '2S' ||
+            importVoyage.beaufour === '2 s' ||
+            importVoyage.beaufour == '2 S' ||
+            importVoyage.beaufour == '2.00' ||
+            importVoyage.beaufour == '2'
+          ) {
+            newReport.beaufour = 'S2';
+          } else if (
+            importVoyage.beaufour === 's3' ||
+            importVoyage.beaufour === 'S3' ||
+            importVoyage.beaufour === 's 3' ||
+            importVoyage.beaufour == 'S 3' ||
+            importVoyage.beaufour === '3s' ||
+            importVoyage.beaufour === '3S' ||
+            importVoyage.beaufour === '3 s' ||
+            importVoyage.beaufour == '3 S' ||
+            importVoyage.beaufour == '3.00' ||
+            importVoyage.beaufour == '3'
+          ) {
+            newReport.beaufour = 'S3';
+          } else if (
+            importVoyage.beaufour === 's4' ||
+            importVoyage.beaufour === 'S4' ||
+            importVoyage.beaufour === 's 4' ||
+            importVoyage.beaufour == 'S 4' ||
+            importVoyage.beaufour === '4s' ||
+            importVoyage.beaufour === '4S' ||
+            importVoyage.beaufour === '4 s' ||
+            importVoyage.beaufour == '4 S' ||
+            importVoyage.beaufour == '4.00' ||
+            importVoyage.beaufour == '4'
+          ) {
+            newReport.beaufour = 'S4';
+          } else if (
+            importVoyage.beaufour === 's5' ||
+            importVoyage.beaufour === 'S5' ||
+            importVoyage.beaufour === 's 5' ||
+            importVoyage.beaufour == 'S 5' ||
+            importVoyage.beaufour === '5s' ||
+            importVoyage.beaufour === '5S' ||
+            importVoyage.beaufour === '5 s' ||
+            importVoyage.beaufour == '5 S' ||
+            importVoyage.beaufour == '5.00' ||
+            importVoyage.beaufour == '5'
+          ) {
+            newReport.beaufour = 'S5';
+          } else if (
+            importVoyage.beaufour === 's6' ||
+            importVoyage.beaufour === 'S6' ||
+            importVoyage.beaufour === 's 6' ||
+            importVoyage.beaufour == 'S 6' ||
+            importVoyage.beaufour === '6s' ||
+            importVoyage.beaufour === '6S' ||
+            importVoyage.beaufour === '6 s' ||
+            importVoyage.beaufour == '6 S' ||
+            importVoyage.beaufour == '6.00' ||
+            importVoyage.beaufour == '6'
+          ) {
+            newReport.beaufour = 'S6';
+          } else {
+            newReport.beaufour = importVoyage.beaufour;
+          }
+
+          newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
+          newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
+
+          newReport.observation = importVoyage.observation;
+
+          newReport.activityPerformed = importVoyage.activityPerformed;
+          if (newReport.activityPerformed == 'CARGANDO') {
+            newReport.activityPerformed = 'LOADING';
+          } else if (newReport.activityPerformed == 'DESCARGANDO') {
+            newReport.activityPerformed = 'DOWNLOADING';
+          } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+            newReport.activityPerformed = 'SAILING_IN_BALLAST';
+          } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+            newReport.activityPerformed = 'SAILING_WITH_LADEN';
+          } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+            newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+          } else if (newReport.activityPerformed == 'FONDEADO') {
+            newReport.activityPerformed = 'ANCHORED';
+          } else if (newReport.activityPerformed == 'MANIOBRA') {
+            newReport.activityPerformed = 'MANEUVER';
+          } else if (newReport.activityPerformed == 'OTRAS ACT.') {
+            newReport.activityPerformed = 'OTHER_ACT';
+          }
+
+          newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+          // Tipo de velocidad.
+          newReport.speedStraction = importVoyage.speedStraction;
+          newReport.observation = importVoyage.observation;
+
+          newReport.north_degree = importVoyage.north_degree || 0;
+          newReport.north_minutes = importVoyage.north_minutes || 0;
+          newReport.north_north_south = importVoyage.north_north_south || '';
+          newReport.east_degree = importVoyage.east_degree || 0;
+          newReport.east_minutes = importVoyage.east_minutes || 0;
+          newReport.east_east_west = importVoyage.east_east_west || '';
+
+          if (importVoyage.delete_report) {
+            newReport.status = false;
+          } else {
+            // Auditoria.
+            newReport.status = true;
+          }
+
+          delete newReport.id;
+          newReport.userIdCreated = headerToken.id;
+          newReport.dateCreated = GetDate();
+          delete newReport.userIdUpdated;
+          delete newReport.dateUpdated;
+          await this._dailyReportsService.Create(newReport);
+          console.log('Create' + newReport.date);
+        }
+
+        newReport.id = importVoyage.dailyReportId;
+        if (importVoyage.dailyReportId) {
+          newReport.id = Number(importVoyage.dailyReportId);
+        } else {
+          delete newReport.id;
+        }
+
+        // y le resto el tiempo que paso.
+        // le estoy reduciendo 5 horas por que en el backend lo sumara al registrar en el sqlite
+        ultimaFecha = DateDayMonthYear(importVoyage.date) + ' ' + importVoyage.hour + ':00.000';
+        console.log(ultimaFecha);
+        ultimaFecha = ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(ultimaFecha) + '.000';
+        console.log(ultimaFecha);
+        // A la fecha le redusco 4 horas debido que se tiene esa diferencia
+        // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
+        // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
+
+        /*     
                     let textoCadena: any = importVoyage.date;
                     textoCadena = <any>ConvertMomentUTC(textoCadena)
 
@@ -1277,580 +1274,587 @@ export class VoyagesController {
                     }
                 */
 
-                // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
-
-                if (ultimaFecha.length == 23) {
-                    newReport.date = ultimaFecha;
-                } else {
-                    console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
-                }
-
-                // No se actualiza ni fecha ni HOra
-
-                // Verificamos si existe una hora
-                if (importVoyage.hour) {
-                    // Verificamos el tamaño de la hora,
-                    // Lo normal seria 03:00 esto seria un total de 5 caracteres
-                    // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
-                    if (importVoyage.hour.length === 4) {
-                        // concatenamos el 0 a la hora.
-                        newReport.hour = '0' + importVoyage.hour;
-                    } else if (importVoyage.hour.length == 5) {
-                        newReport.hour = importVoyage.hour;
-                    } else {
-
-                        console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId)
-                    }
-                }
-
-                // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
-                // delete newReport.date;
-                // delete newReport.hour;
-
-                // -*--------------------------FIN MODIFICACION
-
-
-
-                if (secrearaunNuevoReporte) {
-
-                    newReport.mplaIfo = 0;
-                    newReport.auxIfo = 0;
-                    newReport.boilerIfo = 0;
-                    newReport.otherIfo = 0;
-
-                    newReport.mplaMgo = 0;
-                    newReport.auxMgo = 0;
-                    newReport.boilerMgo = 0;
-                    newReport.ppMgo = 0;
-                    newReport.giMgo = 0;
-                    newReport.otherMgo = 0;
-
-
-                    newReport.steamingTime = 0;
-                    //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
-
-                    newReport.distance = 0;
-
-                    newReport.beaufour = '';
-
-                    newReport.bunkeringIfo = 0;
-                    newReport.bunkeringMgo = 0;
-
-                    newReport.observation = '';
-
-                    newReport.activityPerformed = importVoyage.activityPerformed;
-                    if (newReport.activityPerformed == 'CARGANDO') {
-                        newReport.activityPerformed = 'LOADING';
-
-                    } else if (newReport.activityPerformed == 'DESCARGANDO') {
-                        newReport.activityPerformed = 'DOWNLOADING';
-
-                    } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
-                        newReport.activityPerformed = 'SAILING_IN_BALLAST';
-
-                    } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
-                        newReport.activityPerformed = 'SAILING_WITH_LADEN';
-
-                    } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
-                        newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
-
-                    } else if (newReport.activityPerformed == 'FONDEADO') {
-                        newReport.activityPerformed = 'ANCHORED';
-
-                    } else if (newReport.activityPerformed == 'MANIOBRA') {
-                        newReport.activityPerformed = 'MANEUVER';
-
-                    } else if (newReport.activityPerformed == 'OTRAS ACT.') {
-                        newReport.activityPerformed = 'OTHER_ACT';
-                    }
-
-
-                    newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
-                    // Tipo de velocidad.
-                    newReport.speedStraction = '';
-                    newReport.observation = '';
-
-
-
-
-                    newReport.north_degree = importVoyage.north_degree || 0;
-                    newReport.north_minutes = importVoyage.north_minutes || 0;
-                    newReport.north_north_south = importVoyage.north_north_south || '';
-                    newReport.east_degree = importVoyage.east_degree || 0;
-                    newReport.east_minutes = importVoyage.east_minutes || 0;
-                    newReport.east_east_west = importVoyage.east_east_west || '';
-
-
-
-                } else {
-
-                    newReport.mplaIfo = importVoyage.mplaIfo || 0;
-                    newReport.auxIfo = importVoyage.auxIfo || 0;
-                    newReport.boilerIfo = importVoyage.boilerIfo || 0;
-                    newReport.otherIfo = importVoyage.otherIfo || 0;
-
-                    newReport.mplaMgo = importVoyage.mplaMgo || 0;
-                    newReport.auxMgo = importVoyage.auxMgo || 0;
-                    newReport.boilerMgo = importVoyage.boilerMgo || 0;
-                    newReport.ppMgo = importVoyage.ppMgo || 0;
-                    newReport.giMgo = importVoyage.giMgo || 0;
-                    newReport.otherMgo = importVoyage.otherMgo || 0;
-
-
-                    newReport.steamingTime = importVoyage.steamingTime || 0;
-                    //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
-
-                    newReport.distance = importVoyage.distance || 0;
-
-                    if (!importVoyage.beaufour) {
-                        newReport.beaufour = '';
-                    } else if (importVoyage.beaufour === 's1' || importVoyage.beaufour === 'S1' || importVoyage.beaufour === 's 1' || importVoyage.beaufour == 'S 1' || importVoyage.beaufour === '1s' || importVoyage.beaufour === '1S' || importVoyage.beaufour === '1 s' || importVoyage.beaufour == '1 S' || importVoyage.beaufour == '1.00' || importVoyage.beaufour == '1') {
-                        newReport.beaufour = 'S1';
-                    } else if (importVoyage.beaufour === 's2' || importVoyage.beaufour === 'S2' || importVoyage.beaufour === 's 2' || importVoyage.beaufour == 'S 2' || importVoyage.beaufour === '2s' || importVoyage.beaufour === '2S' || importVoyage.beaufour === '2 s' || importVoyage.beaufour == '2 S' || importVoyage.beaufour == '2.00' || importVoyage.beaufour == '2') {
-                        newReport.beaufour = 'S2';
-                    } else if (importVoyage.beaufour === 's3' || importVoyage.beaufour === 'S3' || importVoyage.beaufour === 's 3' || importVoyage.beaufour == 'S 3' || importVoyage.beaufour === '3s' || importVoyage.beaufour === '3S' || importVoyage.beaufour === '3 s' || importVoyage.beaufour == '3 S' || importVoyage.beaufour == '3.00' || importVoyage.beaufour == '3') {
-                        newReport.beaufour = 'S3';
-                    } else if (importVoyage.beaufour === 's4' || importVoyage.beaufour === 'S4' || importVoyage.beaufour === 's 4' || importVoyage.beaufour == 'S 4' || importVoyage.beaufour === '4s' || importVoyage.beaufour === '4S' || importVoyage.beaufour === '4 s' || importVoyage.beaufour == '4 S' || importVoyage.beaufour == '4.00' || importVoyage.beaufour == '4') {
-                        newReport.beaufour = 'S4';
-                    } else if (importVoyage.beaufour === 's5' || importVoyage.beaufour === 'S5' || importVoyage.beaufour === 's 5' || importVoyage.beaufour == 'S 5' || importVoyage.beaufour === '5s' || importVoyage.beaufour === '5S' || importVoyage.beaufour === '5 s' || importVoyage.beaufour == '5 S' || importVoyage.beaufour == '5.00' || importVoyage.beaufour == '5') {
-                        newReport.beaufour = 'S5';
-                    } else if (importVoyage.beaufour === 's6' || importVoyage.beaufour === 'S6' || importVoyage.beaufour === 's 6' || importVoyage.beaufour == 'S 6' || importVoyage.beaufour === '6s' || importVoyage.beaufour === '6S' || importVoyage.beaufour === '6 s' || importVoyage.beaufour == '6 S' || importVoyage.beaufour == '6.00' || importVoyage.beaufour == '6') {
-                        newReport.beaufour = 'S6';
-                    } else {
-                        newReport.beaufour = importVoyage.beaufour;
-                    }
-
-                    newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
-                    newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
-
-                    newReport.observation = importVoyage.observation;
-
-                    newReport.activityPerformed = importVoyage.activityPerformed;
-                    if (newReport.activityPerformed == 'CARGANDO') {
-                        newReport.activityPerformed = 'LOADING';
-
-                    } else if (newReport.activityPerformed == 'DESCARGANDO') {
-                        newReport.activityPerformed = 'DOWNLOADING';
-
-                    } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
-                        newReport.activityPerformed = 'SAILING_IN_BALLAST';
-
-                    } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
-                        newReport.activityPerformed = 'SAILING_WITH_LADEN';
-
-                    } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
-                        newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
-
-                    } else if (newReport.activityPerformed == 'FONDEADO') {
-                        newReport.activityPerformed = 'ANCHORED';
-
-                    } else if (newReport.activityPerformed == 'MANIOBRA') {
-                        newReport.activityPerformed = 'MANEUVER';
-
-                    } else if (newReport.activityPerformed == 'OTRAS ACT.') {
-                        newReport.activityPerformed = 'OTHER_ACT';
-                    }
-
-
-                    newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
-                    // Tipo de velocidad.
-                    newReport.speedStraction = importVoyage.speedStraction;
-                    newReport.observation = importVoyage.observation;
-
-
-
-
-                    newReport.north_degree = importVoyage.north_degree || 0;
-                    newReport.north_minutes = importVoyage.north_minutes || 0;
-                    newReport.north_north_south = importVoyage.north_north_south || '';
-                    newReport.east_degree = importVoyage.east_degree || 0;
-                    newReport.east_minutes = importVoyage.east_minutes || 0;
-                    newReport.east_east_west = importVoyage.east_east_west || '';
-
-
-
-                }
-                if (importVoyage.delete_report) {
-                    newReport.status = false;
-                } else {
-                    // Auditoria.
-                    newReport.status = true;
-                }
-
-                // Si no tiene un reportId lo creamos
-                if (!importVoyage.dailyReportId) {
-
-                    newReport.userIdCreated = headerToken.id;
-                    newReport.dateCreated = GetDate();
-                    delete newReport.userIdUpdated;
-                    delete newReport.dateUpdated;
-                    await this._dailyReportsService.Create(newReport);
-                    console.log('Create' + newReport.date);
-
-                } else {
-                    newReport.userIdUpdated = headerToken.id;
-                    newReport.dateUpdated = GetDate();
-                    delete newReport.userIdCreated;
-                    delete newReport.dateCreated;
-                    await this._dailyReportsService.Update(newReport);
-                    console.log('Update' + newReport.id);
-                }
-
-            }
-
-            return 'Se registraron los datos correctamente.';
-
-
-        } catch (error) {
-            return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! '
+        // SOLO SI EL FROMATO DE FECHA ES UTC HAGO ESTO.
+
+        if (ultimaFecha.length == 23) {
+          newReport.date = ultimaFecha;
+        } else {
+          console.log('ERROR CON EL TAMAÑO DE LA FECHA REVISAR ');
         }
-    }
 
-    @Post('ImportListDailyReportAgregarOeliminar')
-    async ImportListDailyReportAgregarOeliminar(@Headers() headers, @Body() ImportDailyReport: DailyReport[]): Promise<any> {
+        // No se actualiza ni fecha ni HOra
 
-        try {
-
-            // HeadToken
-            let headerToken: UserEntity = JwtDecode(headers.authorization);
-
-            if (!(headerToken.role === 'SUPPORT')) {
-                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
-            }
-
-            let MappingVoyage: Mapping[] = [];
-            let MappingPort: Mapping[] = [];
-
-            let ultimaFecha: any;
-            for await (const importDailyReport of ImportDailyReport) {
-
-
-
-
-                // Armamos el obj de reporte.
-                let updateReport = <any>{};
-
-                updateReport.id = importDailyReport.id;
-
-
-                if (!!importDailyReport.north_degree) {
-                    updateReport.north_degree = importDailyReport.north_degree;
-                }
-                if (!!importDailyReport.north_minutes) {
-                    updateReport.north_minutes = importDailyReport.north_minutes;
-                }
-                if (!!importDailyReport.north_north_south) {
-                    updateReport.north_north_south = importDailyReport.north_north_south;
-                }
-
-                if (!!importDailyReport.east_degree) {
-                    updateReport.east_degree = importDailyReport.east_degree;
-                }
-                if (!!importDailyReport.east_minutes) {
-                    updateReport.east_minutes = importDailyReport.east_minutes;
-                }
-                if (!!importDailyReport.east_east_west) {
-                    updateReport.east_east_west = importDailyReport.east_east_west;
-                }
-
-
-
-                updateReport.distance = importDailyReport.distance;
-
-
-
-                // Si no tiene un reportId lo creamos
-                if (!updateReport.id) {
-
-                } else {
-                    await this._dailyReportsService.Update(updateReport);
-                    console.log('Update' + updateReport.id);
-                }
-
-            }
-
-            return 'Se registraron los datos correctamente.';
-
-
-        } catch (error) {
-            return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! '
+        // Verificamos si existe una hora
+        if (importVoyage.hour) {
+          // Verificamos el tamaño de la hora,
+          // Lo normal seria 03:00 esto seria un total de 5 caracteres
+          // entonces si solo tiene 4 caracteres le aumentamos el caracter 0
+          if (importVoyage.hour.length === 4) {
+            // concatenamos el 0 a la hora.
+            newReport.hour = '0' + importVoyage.hour;
+          } else if (importVoyage.hour.length == 5) {
+            newReport.hour = importVoyage.hour;
+          } else {
+            console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
+          }
         }
+
+        // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
+        // delete newReport.date;
+        // delete newReport.hour;
+
+        // -*--------------------------FIN MODIFICACION
+
+        if (secrearaunNuevoReporte) {
+          newReport.mplaIfo = 0;
+          newReport.auxIfo = 0;
+          newReport.boilerIfo = 0;
+          newReport.otherIfo = 0;
+
+          newReport.mplaMgo = 0;
+          newReport.auxMgo = 0;
+          newReport.boilerMgo = 0;
+          newReport.ppMgo = 0;
+          newReport.giMgo = 0;
+          newReport.otherMgo = 0;
+
+          newReport.steamingTime = 0;
+          //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
+
+          newReport.distance = 0;
+
+          newReport.beaufour = '';
+
+          newReport.bunkeringIfo = 0;
+          newReport.bunkeringMgo = 0;
+
+          newReport.observation = '';
+
+          newReport.activityPerformed = importVoyage.activityPerformed;
+          if (newReport.activityPerformed == 'CARGANDO') {
+            newReport.activityPerformed = 'LOADING';
+          } else if (newReport.activityPerformed == 'DESCARGANDO') {
+            newReport.activityPerformed = 'DOWNLOADING';
+          } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+            newReport.activityPerformed = 'SAILING_IN_BALLAST';
+          } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+            newReport.activityPerformed = 'SAILING_WITH_LADEN';
+          } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+            newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+          } else if (newReport.activityPerformed == 'FONDEADO') {
+            newReport.activityPerformed = 'ANCHORED';
+          } else if (newReport.activityPerformed == 'MANIOBRA') {
+            newReport.activityPerformed = 'MANEUVER';
+          } else if (newReport.activityPerformed == 'OTRAS ACT.') {
+            newReport.activityPerformed = 'OTHER_ACT';
+          }
+
+          newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+          // Tipo de velocidad.
+          newReport.speedStraction = '';
+          newReport.observation = '';
+
+          newReport.north_degree = importVoyage.north_degree || 0;
+          newReport.north_minutes = importVoyage.north_minutes || 0;
+          newReport.north_north_south = importVoyage.north_north_south || '';
+          newReport.east_degree = importVoyage.east_degree || 0;
+          newReport.east_minutes = importVoyage.east_minutes || 0;
+          newReport.east_east_west = importVoyage.east_east_west || '';
+        } else {
+          newReport.mplaIfo = importVoyage.mplaIfo || 0;
+          newReport.auxIfo = importVoyage.auxIfo || 0;
+          newReport.boilerIfo = importVoyage.boilerIfo || 0;
+          newReport.otherIfo = importVoyage.otherIfo || 0;
+
+          newReport.mplaMgo = importVoyage.mplaMgo || 0;
+          newReport.auxMgo = importVoyage.auxMgo || 0;
+          newReport.boilerMgo = importVoyage.boilerMgo || 0;
+          newReport.ppMgo = importVoyage.ppMgo || 0;
+          newReport.giMgo = importVoyage.giMgo || 0;
+          newReport.otherMgo = importVoyage.otherMgo || 0;
+
+          newReport.steamingTime = importVoyage.steamingTime || 0;
+          //newReport.steamingTime; // no quiero modificar el stemitine que tienen.
+
+          newReport.distance = importVoyage.distance || 0;
+
+          if (!importVoyage.beaufour) {
+            newReport.beaufour = '';
+          } else if (
+            importVoyage.beaufour === 's1' ||
+            importVoyage.beaufour === 'S1' ||
+            importVoyage.beaufour === 's 1' ||
+            importVoyage.beaufour == 'S 1' ||
+            importVoyage.beaufour === '1s' ||
+            importVoyage.beaufour === '1S' ||
+            importVoyage.beaufour === '1 s' ||
+            importVoyage.beaufour == '1 S' ||
+            importVoyage.beaufour == '1.00' ||
+            importVoyage.beaufour == '1'
+          ) {
+            newReport.beaufour = 'S1';
+          } else if (
+            importVoyage.beaufour === 's2' ||
+            importVoyage.beaufour === 'S2' ||
+            importVoyage.beaufour === 's 2' ||
+            importVoyage.beaufour == 'S 2' ||
+            importVoyage.beaufour === '2s' ||
+            importVoyage.beaufour === '2S' ||
+            importVoyage.beaufour === '2 s' ||
+            importVoyage.beaufour == '2 S' ||
+            importVoyage.beaufour == '2.00' ||
+            importVoyage.beaufour == '2'
+          ) {
+            newReport.beaufour = 'S2';
+          } else if (
+            importVoyage.beaufour === 's3' ||
+            importVoyage.beaufour === 'S3' ||
+            importVoyage.beaufour === 's 3' ||
+            importVoyage.beaufour == 'S 3' ||
+            importVoyage.beaufour === '3s' ||
+            importVoyage.beaufour === '3S' ||
+            importVoyage.beaufour === '3 s' ||
+            importVoyage.beaufour == '3 S' ||
+            importVoyage.beaufour == '3.00' ||
+            importVoyage.beaufour == '3'
+          ) {
+            newReport.beaufour = 'S3';
+          } else if (
+            importVoyage.beaufour === 's4' ||
+            importVoyage.beaufour === 'S4' ||
+            importVoyage.beaufour === 's 4' ||
+            importVoyage.beaufour == 'S 4' ||
+            importVoyage.beaufour === '4s' ||
+            importVoyage.beaufour === '4S' ||
+            importVoyage.beaufour === '4 s' ||
+            importVoyage.beaufour == '4 S' ||
+            importVoyage.beaufour == '4.00' ||
+            importVoyage.beaufour == '4'
+          ) {
+            newReport.beaufour = 'S4';
+          } else if (
+            importVoyage.beaufour === 's5' ||
+            importVoyage.beaufour === 'S5' ||
+            importVoyage.beaufour === 's 5' ||
+            importVoyage.beaufour == 'S 5' ||
+            importVoyage.beaufour === '5s' ||
+            importVoyage.beaufour === '5S' ||
+            importVoyage.beaufour === '5 s' ||
+            importVoyage.beaufour == '5 S' ||
+            importVoyage.beaufour == '5.00' ||
+            importVoyage.beaufour == '5'
+          ) {
+            newReport.beaufour = 'S5';
+          } else if (
+            importVoyage.beaufour === 's6' ||
+            importVoyage.beaufour === 'S6' ||
+            importVoyage.beaufour === 's 6' ||
+            importVoyage.beaufour == 'S 6' ||
+            importVoyage.beaufour === '6s' ||
+            importVoyage.beaufour === '6S' ||
+            importVoyage.beaufour === '6 s' ||
+            importVoyage.beaufour == '6 S' ||
+            importVoyage.beaufour == '6.00' ||
+            importVoyage.beaufour == '6'
+          ) {
+            newReport.beaufour = 'S6';
+          } else {
+            newReport.beaufour = importVoyage.beaufour;
+          }
+
+          newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
+          newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
+
+          newReport.observation = importVoyage.observation;
+
+          newReport.activityPerformed = importVoyage.activityPerformed;
+          if (newReport.activityPerformed == 'CARGANDO') {
+            newReport.activityPerformed = 'LOADING';
+          } else if (newReport.activityPerformed == 'DESCARGANDO') {
+            newReport.activityPerformed = 'DOWNLOADING';
+          } else if (newReport.activityPerformed == 'NAVEGANDO EN LASTRE') {
+            newReport.activityPerformed = 'SAILING_IN_BALLAST';
+          } else if (newReport.activityPerformed == 'NAVEGANDO CON CARGA') {
+            newReport.activityPerformed = 'SAILING_WITH_LADEN';
+          } else if (newReport.activityPerformed == 'NAVEGACION ECONOMICA') {
+            newReport.activityPerformed = 'ECONOMICAL_NAVIGATION';
+          } else if (newReport.activityPerformed == 'FONDEADO') {
+            newReport.activityPerformed = 'ANCHORED';
+          } else if (newReport.activityPerformed == 'MANIOBRA') {
+            newReport.activityPerformed = 'MANEUVER';
+          } else if (newReport.activityPerformed == 'OTRAS ACT.') {
+            newReport.activityPerformed = 'OTHER_ACT';
+          }
+
+          newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+          // Tipo de velocidad.
+          newReport.speedStraction = importVoyage.speedStraction;
+          newReport.observation = importVoyage.observation;
+
+          newReport.north_degree = importVoyage.north_degree || 0;
+          newReport.north_minutes = importVoyage.north_minutes || 0;
+          newReport.north_north_south = importVoyage.north_north_south || '';
+          newReport.east_degree = importVoyage.east_degree || 0;
+          newReport.east_minutes = importVoyage.east_minutes || 0;
+          newReport.east_east_west = importVoyage.east_east_west || '';
+        }
+        if (importVoyage.delete_report) {
+          newReport.status = false;
+        } else {
+          // Auditoria.
+          newReport.status = true;
+        }
+
+        // Si no tiene un reportId lo creamos
+        if (!importVoyage.dailyReportId) {
+          newReport.userIdCreated = headerToken.id;
+          newReport.dateCreated = GetDate();
+          delete newReport.userIdUpdated;
+          delete newReport.dateUpdated;
+          await this._dailyReportsService.Create(newReport);
+          console.log('Create' + newReport.date);
+        } else {
+          newReport.userIdUpdated = headerToken.id;
+          newReport.dateUpdated = GetDate();
+          delete newReport.userIdCreated;
+          delete newReport.dateCreated;
+          await this._dailyReportsService.Update(newReport);
+          console.log('Update' + newReport.id);
+        }
+      }
+
+      return 'Se registraron los datos correctamente.';
+    } catch (error) {
+      return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! ';
     }
+  }
 
-    @Post('sendEmailLastVoyage')
-    async SendEmailLastVoyage(@Body() sendMailConfig: SendMailConfig): Promise<any> {
+  @Post('ImportListDailyReportAgregarOeliminar')
+  async ImportListDailyReportAgregarOeliminar(@Headers() headers, @Body() ImportDailyReport: DailyReport[]): Promise<any> {
+    try {
+      // HeadToken
+      let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        // Datos para para la consultas.
-        let userId = sendMailConfig.userId;
-        let email = sendMailConfig.emails;
+      if (!(headerToken.role === 'SUPPORT')) {
+        return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+      }
 
-        let userEntity: UserEntity = null;
-        let voyageId: number = null;
+      let MappingVoyage: Mapping[] = [];
+      let MappingPort: Mapping[] = [];
 
-        // estas varaibles contendran la informacion correcta.
-        let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
-        let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
+      let ultimaFecha: any;
+      for await (const importDailyReport of ImportDailyReport) {
+        // Armamos el obj de reporte.
+        let updateReport = <any>{};
 
-        let numeroViaje = 0;
-        let numeroAnio = 0;
+        updateReport.id = importDailyReport.id;
 
-        let textIFOorVLSFOorLSFO = '';
+        if (!!importDailyReport.north_degree) {
+          updateReport.north_degree = importDailyReport.north_degree;
+        }
+        if (!!importDailyReport.north_minutes) {
+          updateReport.north_minutes = importDailyReport.north_minutes;
+        }
+        if (!!importDailyReport.north_north_south) {
+          updateReport.north_north_south = importDailyReport.north_north_south;
+        }
 
+        if (!!importDailyReport.east_degree) {
+          updateReport.east_degree = importDailyReport.east_degree;
+        }
+        if (!!importDailyReport.east_minutes) {
+          updateReport.east_minutes = importDailyReport.east_minutes;
+        }
+        if (!!importDailyReport.east_east_west) {
+          updateReport.east_east_west = importDailyReport.east_east_west;
+        }
 
-        // Empezamos la promesa.
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
+        updateReport.distance = importDailyReport.distance;
 
-                // Consultaos los ultimpos viajes.
-                return this._usersService.Get(userId);
-            }
-        ).then(
-            (resultUser: UserEntity) => {
+        // Si no tiene un reportId lo creamos
+        if (!updateReport.id) {
+        } else {
+          await this._dailyReportsService.Update(updateReport);
+          console.log('Update' + updateReport.id);
+        }
+      }
 
-                userEntity = resultUser;
+      return 'Se registraron los datos correctamente.';
+    } catch (error) {
+      return 'ERRRORRRRRRRRRRRRRRRRRRRRRRRRRR! ';
+    }
+  }
 
-                // Consultaos los ultimpos viajes.
-                return this._voyagesService.GetLastVoyage(userId);
-            }
-        ).then(
-            result => {
-                if (result.length != 2) throw 'ERROR debe de haber mas de 2 viajes.';
+  @Post('sendEmailLastVoyage')
+  async SendEmailLastVoyage(@Body() sendMailConfig: SendMailConfig): Promise<any> {
+    // Datos para para la consultas.
+    let userId = sendMailConfig.userId;
+    let email = sendMailConfig.emails;
 
-                numeroViaje = result[1].voyageNumber;
-                numeroAnio = result[1].year;
-                // Penultimo viaje creado.
-                voyageId = result[1].id;
+    let userEntity: UserEntity = null;
+    let voyageId: number = null;
 
-                // Obtenemos todos los reportes del viaje. REVISAR Aqi podriaoms obneter el detalle del viaje y asi tenerlo ordenando.
-                return this._dailyReportsService.GetReportVoyagePortDaily(userId, null, null, voyageId);
+    // estas varaibles contendran la informacion correcta.
+    let listGetReportVoyagePortDaily: GetReportVoyagePortDaily[] = [];
+    let getInfoFuelStartEndByFilterDate: InfoFuelStartEndForDate;
 
-            }
-        ).then(
-            // AQUI OBTENDREMOS EL ROB DE INICIO Y FIN
-            resultGetReportVoyagePortDaily => {
-                if (resultGetReportVoyagePortDaily.length == 0) throw 'ERROR debe de arrojar mas de un registro';
-                // Guardamos el resultado
-                listGetReportVoyagePortDaily = resultGetReportVoyagePortDaily;
+    let numeroViaje = 0;
+    let numeroAnio = 0;
 
-                // Primera Fecha y ultima fecha del reporte
-                let minDate = resultGetReportVoyagePortDaily[0].date;
-                let maxDate = resultGetReportVoyagePortDaily[resultGetReportVoyagePortDaily.length - 1].date;
+    let textIFOorVLSFOorLSFO = '';
 
-                // Obtenemos el resultado.
-                return this._dailyReportsService.GetStartEndROByFilterDate(minDate, maxDate, userId)
-            }
-        ).then(
-            // Lainformacion la procesamos para saber el rob de inicio y fin.
-            resultGetStartEndROByFilterDate => {
+    // Empezamos la promesa.
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        // Consultaos los ultimpos viajes.
+        return this._usersService.Get(userId);
+      })
+      .then((resultUser: UserEntity) => {
+        userEntity = resultUser;
 
-                if (!resultGetStartEndROByFilterDate) throw 'ERROR GetStartEndROByFilterDate';
+        // Consultaos los ultimpos viajes.
+        return this._voyagesService.GetLastVoyage(userId);
+      })
+      .then(result => {
+        if (result.length != 2) throw 'ERROR debe de haber mas de 2 viajes.';
 
-                // Trabajaremos con las siguientes variables.
-                let startDataROB: GetROBByUser = new GetROBByUser();
-                let endDataROB: GetROBByUser = new GetROBByUser()
+        numeroViaje = result[1].voyageNumber;
+        numeroAnio = result[1].year;
+        // Penultimo viaje creado.
+        voyageId = result[1].id;
 
-                // IFO
-                startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo;
-                startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo;
-                startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo, 2;
-                startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo, 2;
+        // Obtenemos todos los reportes del viaje. REVISAR Aqi podriaoms obneter el detalle del viaje y asi tenerlo ordenando.
+        return this._dailyReportsService.GetReportVoyagePortDaily(userId, null, null, voyageId);
+      })
+      .then(
+        // AQUI OBTENDREMOS EL ROB DE INICIO Y FIN
+        resultGetReportVoyagePortDaily => {
+          if (resultGetReportVoyagePortDaily.length == 0) throw 'ERROR debe de arrojar mas de un registro';
+          // Guardamos el resultado
+          listGetReportVoyagePortDaily = resultGetReportVoyagePortDaily;
 
-                // MGO
-                endDataROB.total_ifo = startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo);
-                endDataROB.total_mgo = startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo);
-                endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo, 2;
-                endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo, 2;
+          // Primera Fecha y ultima fecha del reporte
+          let minDate = resultGetReportVoyagePortDaily[0].date;
+          let maxDate = resultGetReportVoyagePortDaily[resultGetReportVoyagePortDaily.length - 1].date;
 
-                // Creamos la informacion de incio y fin de combustible
-                getInfoFuelStartEndByFilterDate = new InfoFuelStartEndForDate(
-                    startDataROB,
-                    endDataROB
-                );
+          // Obtenemos el resultado.
+          return this._dailyReportsService.GetStartEndROByFilterDate(minDate, maxDate, userId);
+        },
+      )
+      .then(
+        // Lainformacion la procesamos para saber el rob de inicio y fin.
+        resultGetStartEndROByFilterDate => {
+          if (!resultGetStartEndROByFilterDate) throw 'ERROR GetStartEndROByFilterDate';
 
-                // Generamos el excel
-                return this._formatExcelLastVoyageService.GenerateFormatObjForExcelEmail(listGetReportVoyagePortDaily, getInfoFuelStartEndByFilterDate, userEntity)
-            }
-        ).then(
-            resultGenerateFormatObjForExcelEmail => {
+          // Trabajaremos con las siguientes variables.
+          let startDataROB: GetROBByUser = new GetROBByUser();
+          let endDataROB: GetROBByUser = new GetROBByUser();
 
-                // armamos el objeto que enviaremos para el email
-                let mailLastVoyage: GenerateFormatObjForExcelEmail = resultGenerateFormatObjForExcelEmail;
+          // IFO
+          startDataROB.total_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo - resultGetStartEndROByFilterDate[0].total_ifo;
+          startDataROB.total_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo - resultGetStartEndROByFilterDate[0].total_mgo;
+          (startDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[0].total_bunkering_ifo), 2;
+          (startDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[0].total_bunkering_mgo), 2;
 
-                // si dice que si consumo IFO O VLSFO O LSFO mostraremos su dato
-                mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO ? 'IFO' : userEntity.isConsumptionLSFO ? 'LSFO' : userEntity.isConsumptionVLSFO ? 'VLSFO' : '';
-                if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
-                    mailLastVoyage.objMailLastVoyage.isVIew_IFO_VLSFO_LSFO = true;
-                }
+          // MGO
+          endDataROB.total_ifo =
+            startDataROB.total_ifo + (resultGetStartEndROByFilterDate[1].total_bunkering_ifo - resultGetStartEndROByFilterDate[1].total_ifo);
+          endDataROB.total_mgo =
+            startDataROB.total_mgo + (resultGetStartEndROByFilterDate[1].total_bunkering_mgo - resultGetStartEndROByFilterDate[1].total_mgo);
+          (endDataROB.total_bunkering_ifo = resultGetStartEndROByFilterDate[1].total_bunkering_ifo), 2;
+          (endDataROB.total_bunkering_mgo = resultGetStartEndROByFilterDate[1].total_bunkering_mgo), 2;
 
-                // si dice que si consumo mgo mostraremos su dato
-                mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO ? 'MGO' : '';
-                if (mailLastVoyage.objMailLastVoyage.MGO) {
-                    mailLastVoyage.objMailLastVoyage.isVIew_MGO = true;
-                }
-                // Enviar archivo mail.
-                return SendMailArchiveInfoLastVoyage(sendMailConfig.emails, userEntity.name, userEntity.name + " Voyage Nº" + numeroViaje + " - " + numeroAnio, mailLastVoyage.buffer, mailLastVoyage.objMailLastVoyage);
-            }
-        ).then(
-            result => {
-                // 
-                if (!result) { throw 'ERROR SUPPORT' }
-                // retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: result
-                };
-            }
-        ).catch(
-            err => {
-                // Obtengo mensajes de error
-                const clientMsg: string = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
-                const errorMsg: string = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
+          // Creamos la informacion de incio y fin de combustible
+          getInfoFuelStartEndByFilterDate = new InfoFuelStartEndForDate(startDataROB, endDataROB);
 
+          // Generamos el excel
+          return this._formatExcelLastVoyageService.GenerateFormatObjForExcelEmail(
+            listGetReportVoyagePortDaily,
+            getInfoFuelStartEndByFilterDate,
+            userEntity,
+          );
+        },
+      )
+      .then(resultGenerateFormatObjForExcelEmail => {
+        // armamos el objeto que enviaremos para el email
+        let mailLastVoyage: GenerateFormatObjForExcelEmail = resultGenerateFormatObjForExcelEmail;
 
-                // Caso contrario retornamos un error
-                throw new HttpException({
-                    status: HttpStatus.ACCEPTED,
-                    error: clientMsg,
-                    message: errorMsg,
-                }, HttpStatus.ACCEPTED);
-            }
+        // si dice que si consumo IFO O VLSFO O LSFO mostraremos su dato
+        mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO = userEntity.isConsumptionIFO
+          ? 'IFO'
+          : userEntity.isConsumptionLSFO
+          ? 'LSFO'
+          : userEntity.isConsumptionVLSFO
+          ? 'VLSFO'
+          : '';
+        if (mailLastVoyage.objMailLastVoyage.IFO_VLSFO_LSFO) {
+          mailLastVoyage.objMailLastVoyage.isVIew_IFO_VLSFO_LSFO = true;
+        }
+
+        // si dice que si consumo mgo mostraremos su dato
+        mailLastVoyage.objMailLastVoyage.MGO = userEntity.isConsumptionMGO ? 'MGO' : '';
+        if (mailLastVoyage.objMailLastVoyage.MGO) {
+          mailLastVoyage.objMailLastVoyage.isVIew_MGO = true;
+        }
+        // Enviar archivo mail.
+        return SendMailArchiveInfoLastVoyage(
+          sendMailConfig.emails,
+          userEntity.name,
+          userEntity.name + ' Voyage Nº' + numeroViaje + ' - ' + numeroAnio,
+          mailLastVoyage.buffer,
+          mailLastVoyage.objMailLastVoyage,
         );
+      })
+      .then(result => {
+        //
+        if (!result) {
+          throw 'ERROR SUPPORT';
+        }
+        // retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: result,
+        };
+      })
+      .catch(err => {
+        // Obtengo mensajes de error
+        const clientMsg: string = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
+        const errorMsg: string = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
 
-    }
-
-    UpdateData(@Headers() headers, @Body() voyages: Voyage[]): { mensaje: string } {
-
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
-
-        voyages.forEach(
-            async (voyage) => {
-                // Verifica el campo SyncStatus para decidir si es una adición o una actualización
-                if (voyage.SyncStatus === 'added') {
-
-                    if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
-
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                            // NO se hace nada
-                        } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
-
-                        delete voyage.id;
-                        // Auditoria.
-                        voyage.userIdCreated = headerToken.id;
-                        voyage.dateCreated = GetDate();
-                        delete voyage.userIdUpdated;
-                        delete voyage.dateUpdated;
-                        voyage.status = Boolean(voyage.status);
-                        // Ejecutamos la funcion que registra en bd.
-                        await this._voyagesService.Create(voyage);
-                    }
-                    else throw 'MISSING_FIELS';
-
-                } else if (voyage.SyncStatus === 'update') {
-
-                    // Validamos los datos del objeto a registar.
-                    if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
-
-                        voyage.id = Number(voyage.id);
-
-                        if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
-                            // No se hace nada
-                        } else if (Number(headerToken.id) !== Number(voyage.userId)) throw new Error('ERROR_USERID_FAIL');
-
-                        // Auditoria.
-                        delete voyage.userIdCreated;
-                        delete voyage.dateCreated;
-                        voyage.userIdUpdated = headerToken.id;
-                        voyage.dateUpdated = GetDate();
-                        voyage.status = Boolean(voyage.status);
-                        // Ejecutamos la funcion que actualiza el obj en la bd.
-                        await this._voyagesService.Update(voyage);
-                    } else {
-                        // Enviar los datos necesarios.
-                        throw 'MISSING_FIELS';
-                    }
-                }
-            }
+        // Caso contrario retornamos un error
+        throw new HttpException(
+          {
+            status: HttpStatus.ACCEPTED,
+            error: clientMsg,
+            message: errorMsg,
+          },
+          HttpStatus.ACCEPTED,
         );
+      });
+  }
 
-        return { mensaje: 'Datos recibidos correctamente' };
-    }
+  UpdateData(@Headers() headers, @Body() voyages: Voyage[]): { mensaje: string } {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-    @Post('saveModuleVoyage')
-    async SaveDataVoyage(@Headers() headers, @Body() saveDataModuleCombustible: DataModuleCombustible): Promise<any> {
+    voyages.forEach(async voyage => {
+      // Verifica el campo SyncStatus para decidir si es una adición o una actualización
+      if (voyage.SyncStatus === 'added') {
+        if (voyage && Number(voyage.userId) && Number(voyage.voyageNumber) && Number(voyage.year) && headerToken && headerToken.id) {
+          if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+            // NO se hace nada
+          } else if (voyage.userId !== headerToken.id) throw new Error('ERROR_USERID_FAIL');
 
-        // Le asigno el valor al token desde la cabecera.
-        // Lo decodifico con otra libreria por problemas jwt-module.
-        let headerToken: UserEntity = JwtDecode(headers.authorization);
+          delete voyage.id;
+          // Auditoria.
+          voyage.userIdCreated = headerToken.id;
+          voyage.dateCreated = GetDate();
+          delete voyage.userIdUpdated;
+          delete voyage.dateUpdated;
+          voyage.status = Boolean(voyage.status);
+          // Ejecutamos la funcion que registra en bd.
+          await this._voyagesService.Create(voyage);
+        } else throw 'MISSING_FIELS';
+      } else if (voyage.SyncStatus === 'update') {
+        // Validamos los datos del objeto a registar.
+        if (voyage && voyage.userId && voyage.voyageNumber && voyage.year && headerToken && headerToken.id) {
+          voyage.id = Number(voyage.id);
 
-        // Mapping de Id del server con el id del cliente
-        let mappingVoyages: Mapping[] = [];
-        let mappingPorts: Mapping[] = [];
-        let mappingDailyReports: Mapping[] = [];
+          if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
+            // No se hace nada
+          } else if (Number(headerToken.id) !== Number(voyage.userId)) throw new Error('ERROR_USERID_FAIL');
 
+          // Auditoria.
+          delete voyage.userIdCreated;
+          delete voyage.dateCreated;
+          voyage.userIdUpdated = headerToken.id;
+          voyage.dateUpdated = GetDate();
+          voyage.status = Boolean(voyage.status);
+          // Ejecutamos la funcion que actualiza el obj en la bd.
+          await this._voyagesService.Update(voyage);
+        } else {
+          // Enviar los datos necesarios.
+          throw 'MISSING_FIELS';
+        }
+      }
+    });
 
+    return { mensaje: 'Datos recibidos correctamente' };
+  }
 
+  @Post('saveModuleVoyage')
+  async SaveDataVoyage(@Headers() headers, @Body() saveDataModuleCombustible: DataModuleCombustible): Promise<any> {
+    // Le asigno el valor al token desde la cabecera.
+    // Lo decodifico con otra libreria por problemas jwt-module.
+    let headerToken: UserEntity = JwtDecode(headers.authorization);
 
-        console.log('--------------------------');
-        console.log('-----------[  START saveModuleVoyage   ]---------------');
-        console.log(JSON.stringify(saveDataModuleCombustible));
-        console.log('-----------[  END saveModuleVoyage   ]---------------');
-        console.log('--------------------------');
+    // Mapping de Id del server con el id del cliente
+    let mappingVoyages: Mapping[] = [];
+    let mappingPorts: Mapping[] = [];
+    let mappingDailyReports: Mapping[] = [];
+    let mappingDailyReportSummaries: Mapping[] = [];
 
-        return DummyPromise().then(
-            (resultDummy: Boolean) => {
-                // Validamos que esten llegando los datos necesarios.
-                if (saveDataModuleCombustible) {
-                    if (saveDataModuleCombustible.listVoyages) {
-                        // Ejecutamos la funcion que registra en bd.
-                        return this._voyagesService.SaveList(saveDataModuleCombustible.listVoyages);
-                    } else {
-                        return [];
-                    }
-                }
-                else throw 'MISSING_FIELS';
-            }
-        ).then(
-            (resultMappingVoyages: Mapping[]) => {
-                mappingVoyages = resultMappingVoyages;
+    console.log('--------------------------');
+    console.log('-----------[  START saveModuleVoyage   ]---------------');
+    console.log(JSON.stringify(saveDataModuleCombustible));
+    console.log('-----------[  END saveModuleVoyage   ]---------------');
+    console.log('--------------------------');
 
-                if (saveDataModuleCombustible.listPorts) {
-                    return this._portsService.SaveList(mappingVoyages, saveDataModuleCombustible.listPorts);
-                } else {
-                    return [];
-                }
-            }
-        ).then(
-            (resultMappingPorts: Mapping[]) => {
-                mappingPorts = resultMappingPorts;
+    return DummyPromise()
+      .then((resultDummy: Boolean) => {
+        // Validamos que esten llegando los datos necesarios.
+        if (saveDataModuleCombustible) {
+          if (saveDataModuleCombustible.listVoyages) {
+            // Ejecutamos la funcion que registra en bd.
+            return this._voyagesService.SaveList(saveDataModuleCombustible.listVoyages);
+          } else {
+            return [];
+          }
+        } else throw 'MISSING_FIELS';
+      })
+      .then((resultMappingVoyages: Mapping[]) => {
+        mappingVoyages = resultMappingVoyages;
 
-                if (saveDataModuleCombustible.listDailyReports) {
-                    return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
-                } else {
-                    return {
-                        mappingReport: [],
-                        registeredReportsList: []
-                    }
-                }
-            }
-        ).then(
-            (resultMappingDailyReports: SaveListDailyReport) => {
-                mappingDailyReports = resultMappingDailyReports.mappingReport;
+        if (saveDataModuleCombustible.listPorts) {
+          return this._portsService.SaveList(mappingVoyages, saveDataModuleCombustible.listPorts);
+        } else {
+          return [];
+        }
+      })
+      .then((resultMappingPorts: Mapping[]) => {
+        mappingPorts = resultMappingPorts;
 
-                // retornamos una Respuesta exitosa.
-                return {
-                    status: HttpStatus.OK,
-                    message: 'OK',
-                    data: {
-                        mappingVoyages: mappingVoyages,
-                        mappingPorts: mappingPorts,
-                        mappingDailyReports: mappingDailyReports
-                    }
-                };
-            }
-        );
-    }
+        if (saveDataModuleCombustible.listDailyReports) {
+          return this._dailyReportsService.SaveList(mappingPorts, saveDataModuleCombustible.listDailyReports);
+        } else {
+          return [];
+        }
+      })
+      .then((resultMappingDailyReports: Mapping[]) => {
+        mappingDailyReports = resultMappingDailyReports;
 
+        if (saveDataModuleCombustible.listDailyReportSummaries) {
+          return this._dailyReportSummaryService.SaveList(mappingVoyages, mappingPorts, saveDataModuleCombustible.listDailyReportSummaries);
+        } else {
+          return [];
+        }
+      })
+      .then((resultMappingDailyReportSummaries: Mapping[]) => {
+        mappingDailyReportSummaries = resultMappingDailyReportSummaries;
+
+        // retornamos una Respuesta exitosa.
+        return {
+          status: HttpStatus.OK,
+          message: 'OK',
+          data: {
+            mappingVoyages: mappingVoyages,
+            mappingPorts: mappingPorts,
+            mappingDailyReports: mappingDailyReports,
+            mappingDailyReportSummaries: mappingDailyReportSummaries,
+          },
+        };
+      });
+  }
 }

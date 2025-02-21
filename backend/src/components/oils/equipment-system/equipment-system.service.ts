@@ -9,189 +9,172 @@ import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class EquipmentSystemService {
+  constructor(
+    @InjectRepository(EquipmentSystemEntity)
+    private _EquipmentSystemEntity: Repository<EquipmentSystemEntity>,
+  ) {}
 
+  async Gets(equipmentSystemEntity: EquipmentSystemEntity): Promise<EquipmentSystemEntity[]> {
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          return null;
 
-    constructor(
-        @InjectRepository(EquipmentSystemEntity)
-        private _EquipmentSystemEntity: Repository<EquipmentSystemEntity>,
-    ) { }
+          //  return hthis.userRepository.query(
+          //
+          // `EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
+          // `
+          // );
+        } else {
+          return this._EquipmentSystemEntity.find({
+            where: [
+              // name && surname && nick && email
+              {
+                id: equipmentSystemEntity.id || Like('%' + '%'),
+                userId: equipmentSystemEntity.userId || Like('%' + '%'),
+                status: Not(false),
+              },
+            ],
+          });
+        }
+      })
+      .then((result: EquipmentSystemEntity[]) => {
+        if (!result) throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.';
 
+        // No lo validamos por que puede llegar vacio.
+        return result;
+      });
+  }
 
-    async Gets(equipmentSystemEntity: EquipmentSystemEntity): Promise<EquipmentSystemEntity[]> {
+  // Registra un nuevo grupo de aceite
+  async Create(equipmentSystemEntity: EquipmentSystemEntity): Promise<EquipmentSystemEntity> {
+    // Hacemos where por todos los campos de la entidad
+    return DummyPromise()
+      .then(result => {
+        if (URL_Server.bd === 'MSSQL') {
+          // Buscamos el viaje
+          return this._EquipmentSystemEntity.query("SP_CheckTheLastRecordedTrip @userId='" + equipmentSystemEntity.userId + "', @year='");
+        } else {
+          // No lo validamos por que puede llegar vacio.
+          return this._EquipmentSystemEntity.save(equipmentSystemEntity);
+        }
+      })
+      .then((resultSave: any) => {
+        if (!resultSave) throw new Error('No se puedo registrar el tipo de aceite.');
 
-        return DummyPromise().then(
-            result => {
+        if (URL_Server.bd === 'MSSQL') {
+          // MSSQL
+          if (resultSave.length == 0) throw new Error('No se puedo registrar el tipo de aceite.');
+          return resultSave[0];
+        } else {
+          // SLQITE
+          return resultSave;
+        }
+      });
+  }
 
-                if (URL_Server.bd === 'MSSQL') {
+  // guarda una lista de aceite.
+  async SaveList(MappingGroupOils: Mapping[], typesOfOilEquipmentEntity: EquipmentSystemEntity[]) {
+    // Mapping
+    let MappingEquipmentSystems: Mapping[] = [];
 
-                    return null
+    // FIltramos los datos que faltan aggregar y actualizar.
+    const addEquipmentSystems = typesOfOilEquipmentEntity.filter(
+      (equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'added',
+    );
+    const updateEquipmentSystems = typesOfOilEquipmentEntity.filter(
+      (equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'updated',
+    );
+    const deleteEquipmentSystems = typesOfOilEquipmentEntity.filter(
+      (equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'deleted',
+    );
 
-                    //  return hthis.userRepository.query(
-                    //
-                    // `EXEC SP_BuscarUsuariosByFilter @userId =0,@nick = '${user.nick || ''}',@name = '${user.name || ''}',@role= '${user.role || ''}'
-                    // `
-                    // );
+    for await (const addEquipmentSystem of addEquipmentSystems) {
+      let searchMappingGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entityGroupId);
 
-                } else {
+      // Armamos al nuevo tipo de aceite
+      let newEquipmentSystemEntity = new EquipmentSystemEntity();
 
-                    return this._EquipmentSystemEntity.find({
-                        where: [
-                            // name && surname && nick && email
-                            {
-                                id: (equipmentSystemEntity.id || Like('%' + '%')),
-                                userId: (equipmentSystemEntity.userId || Like('%' + '%')),
-                                status: Not(false)
-                            }
-                        ]
-                    });
+      delete newEquipmentSystemEntity.id;
+      newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
+      newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
+      newEquipmentSystemEntity.trialDay = addEquipmentSystem.trialDay || 0;
+      newEquipmentSystemEntity.lubUsedDuringMaintenance = addEquipmentSystem.lubUsedDuringMaintenance || 0;
+      newEquipmentSystemEntity.frequencyId = addEquipmentSystem.frequencyId;
 
-                }
+      newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
+      if (searchMappingGroupOils) {
+        newEquipmentSystemEntity.entityGroupId = searchMappingGroupOils.value;
+      }
 
+      // Auditoria.
+      newEquipmentSystemEntity.userIdCreated = addEquipmentSystem.userIdCreated;
+      newEquipmentSystemEntity.dateCreated = GetDate();
+      delete newEquipmentSystemEntity.userIdUpdated;
+      delete newEquipmentSystemEntity.dateUpdated;
+      newEquipmentSystemEntity.status = Boolean(addEquipmentSystem.status);
 
-            }
-        ).then(
-            (result: EquipmentSystemEntity[]) => {
+      // Registramos grupo de aceite
+      let registeredGroupOil = await this.Create(newEquipmentSystemEntity);
 
-                if (!result) throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.'
-
-                // No lo validamos por que puede llegar vacio.
-                return result;
-            }
-        )
+      // Lo agregamos al mapping
+      MappingEquipmentSystems.push(new Mapping(addEquipmentSystem.id, registeredGroupOil.id));
     }
 
+    for await (const updateEquipmentSystem of updateEquipmentSystems) {
+      let searchMappingGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entityGroupId);
 
-    // Registra un nuevo grupo de aceite
-    async Create(equipmentSystemEntity: EquipmentSystemEntity): Promise<EquipmentSystemEntity> {
+      let equipmentSystem = new EquipmentSystemEntity();
 
-        // Hacemos where por todos los campos de la entidad
-        return DummyPromise().then(
-            result => {
+      equipmentSystem.id = updateEquipmentSystem.id;
+      equipmentSystem.userId = updateEquipmentSystem.userId;
+      equipmentSystem.trialDay = updateEquipmentSystem.trialDay || 0;
+      equipmentSystem.lubUsedDuringMaintenance = updateEquipmentSystem.lubUsedDuringMaintenance || 0;
+      equipmentSystem.equipment = updateEquipmentSystem.equipment;
+      equipmentSystem.frequencyId = updateEquipmentSystem.frequencyId;
 
-                if (URL_Server.bd === 'MSSQL') {
-                    // Buscamos el viaje
-                    return this._EquipmentSystemEntity.query("SP_CheckTheLastRecordedTrip @userId='" + equipmentSystemEntity.userId + "', @year='");
-                } else {
-                    // No lo validamos por que puede llegar vacio.
-                    return this._EquipmentSystemEntity.save(equipmentSystemEntity);
-                }
+      equipmentSystem.entityGroupId = updateEquipmentSystem.entityGroupId;
+      if (searchMappingGroupOils) {
+        equipmentSystem.entityGroupId = searchMappingGroupOils.value;
+      }
 
-            }
-        ).then(
-            (resultSave: any) => {
-                if (!resultSave) throw new Error('No se puedo registrar el tipo de aceite.');
+      // Auditoria.
+      equipmentSystem.userIdCreated = updateEquipmentSystem.userIdCreated;
+      equipmentSystem.dateCreated = updateEquipmentSystem.dateCreated;
+      equipmentSystem.userIdUpdated = updateEquipmentSystem.userIdUpdated;
+      equipmentSystem.dateUpdated = updateEquipmentSystem.dateUpdated;
+      equipmentSystem.status = Boolean(updateEquipmentSystem.status);
 
-                if (URL_Server.bd === 'MSSQL') {
-                    // MSSQL
-                    if (resultSave.length == 0) throw new Error('No se puedo registrar el tipo de aceite.');
-                    return resultSave[0];
-                } else {
-                    // SLQITE
-                    return resultSave;
-                }
-            }
-        )
-
+      await this._EquipmentSystemEntity.save(equipmentSystem);
     }
 
+    for await (let deleteEquipmentSystem of deleteEquipmentSystems) {
+      let searchMappingGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
 
-    // guarda una lista de aceite.
-    async SaveList(MappingGroupOils: Mapping[], typesOfOilEquipmentEntity: EquipmentSystemEntity[]) {
+      let equipmentSystem = new EquipmentSystemEntity();
 
-        // Mapping
-        let MappingEquipmentSystems: Mapping[] = [];
+      equipmentSystem.id = deleteEquipmentSystem.id;
+      equipmentSystem.userId = deleteEquipmentSystem.userId;
+      equipmentSystem.trialDay = deleteEquipmentSystem.trialDay || 0;
+      equipmentSystem.lubUsedDuringMaintenance = deleteEquipmentSystem.lubUsedDuringMaintenance || 0;
+      equipmentSystem.equipment = deleteEquipmentSystem.equipment;
+      equipmentSystem.frequencyId = deleteEquipmentSystem.frequencyId;
 
-        // FIltramos los datos que faltan aggregar y actualizar.
-        const addEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'added');
-        const updateEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'updated');
-        const deleteEquipmentSystems = typesOfOilEquipmentEntity.filter((equipmentSystemEntity: EquipmentSystemEntity) => equipmentSystemEntity.SyncStatus == 'deleted');
+      equipmentSystem.entityGroupId = deleteEquipmentSystem.entityGroupId;
+      if (searchMappingGroupOils) {
+        equipmentSystem.entityGroupId = searchMappingGroupOils.value;
+      }
 
+      // Auditoria.
+      equipmentSystem.userIdCreated = deleteEquipmentSystem.userIdCreated;
+      equipmentSystem.dateCreated = deleteEquipmentSystem.dateCreated;
+      equipmentSystem.userIdUpdated = deleteEquipmentSystem.userIdUpdated;
+      equipmentSystem.dateUpdated = deleteEquipmentSystem.dateUpdated;
+      equipmentSystem.status = Boolean(deleteEquipmentSystem.status);
 
-
-        for await (const addEquipmentSystem of addEquipmentSystems) {
-
-            let searchMappingGroupOils = searchKey(MappingGroupOils, addEquipmentSystem.entityGroupId);
-
-            // Armamos al nuevo tipo de aceite
-            let newEquipmentSystemEntity = new EquipmentSystemEntity();
-
-            delete newEquipmentSystemEntity.id;
-            newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
-            newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
-            newEquipmentSystemEntity.rate = addEquipmentSystem.rate  || 0;
-            newEquipmentSystemEntity.lubUsedDuringMaintenance = addEquipmentSystem.lubUsedDuringMaintenance  || 0;
-            newEquipmentSystemEntity.frequencyId = addEquipmentSystem.frequencyId;
-            
-            newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
-            if (searchMappingGroupOils) { newEquipmentSystemEntity.entityGroupId = searchMappingGroupOils.value }
-
-            // Auditoria.
-            newEquipmentSystemEntity.userIdCreated = addEquipmentSystem.userIdCreated;
-            newEquipmentSystemEntity.dateCreated = GetDate();
-            delete newEquipmentSystemEntity.userIdUpdated;
-            delete newEquipmentSystemEntity.dateUpdated;
-            newEquipmentSystemEntity.status = Boolean(addEquipmentSystem.status);
-
-            // Registramos grupo de aceite
-            let registeredGroupOil = await this.Create(newEquipmentSystemEntity);
-
-            // Lo agregamos al mapping
-            MappingEquipmentSystems.push(new Mapping(addEquipmentSystem.id, registeredGroupOil.id))
-        }
-
-        for await (const updateEquipmentSystem of updateEquipmentSystems) {
-            let searchMappingGroupOils = searchKey(MappingGroupOils, updateEquipmentSystem.entityGroupId);
-
-            let equipmentSystem = new EquipmentSystemEntity();
-
-            equipmentSystem.id = updateEquipmentSystem.id;
-            equipmentSystem.userId = updateEquipmentSystem.userId;
-            equipmentSystem.rate = updateEquipmentSystem.rate  || 0;
-            equipmentSystem.lubUsedDuringMaintenance = updateEquipmentSystem.lubUsedDuringMaintenance  || 0;
-            equipmentSystem.equipment = updateEquipmentSystem.equipment;
-            equipmentSystem.frequencyId = updateEquipmentSystem.frequencyId;
-            
-            equipmentSystem.entityGroupId = updateEquipmentSystem.entityGroupId;
-            if (searchMappingGroupOils) { equipmentSystem.entityGroupId = searchMappingGroupOils.value }
-
-            // Auditoria.
-            equipmentSystem.userIdCreated = updateEquipmentSystem.userIdCreated;
-            equipmentSystem.dateCreated = updateEquipmentSystem.dateCreated;
-            equipmentSystem.userIdUpdated = updateEquipmentSystem.userIdUpdated;
-            equipmentSystem.dateUpdated = updateEquipmentSystem.dateUpdated;
-            equipmentSystem.status = Boolean(updateEquipmentSystem.status);
-
-            await this._EquipmentSystemEntity.save(equipmentSystem);
-        }
-
-
-
-        for await (let deleteEquipmentSystem of deleteEquipmentSystems) {
-           let searchMappingGroupOils = searchKey(MappingGroupOils, deleteEquipmentSystem.entityGroupId);
-
-            let equipmentSystem = new EquipmentSystemEntity();
-
-            equipmentSystem.id = deleteEquipmentSystem.id;
-            equipmentSystem.userId = deleteEquipmentSystem.userId;
-            equipmentSystem.rate = deleteEquipmentSystem.rate  || 0;
-            equipmentSystem.lubUsedDuringMaintenance = deleteEquipmentSystem.lubUsedDuringMaintenance  || 0;
-            equipmentSystem.equipment = deleteEquipmentSystem.equipment;
-            equipmentSystem.frequencyId = deleteEquipmentSystem.frequencyId;
-            
-            equipmentSystem.entityGroupId = deleteEquipmentSystem.entityGroupId;
-            if (searchMappingGroupOils) { equipmentSystem.entityGroupId = searchMappingGroupOils.value }
-
-            // Auditoria.
-            equipmentSystem.userIdCreated = deleteEquipmentSystem.userIdCreated;
-            equipmentSystem.dateCreated = deleteEquipmentSystem.dateCreated;
-            equipmentSystem.userIdUpdated = deleteEquipmentSystem.userIdUpdated;
-            equipmentSystem.dateUpdated = deleteEquipmentSystem.dateUpdated;
-            equipmentSystem.status = Boolean(deleteEquipmentSystem.status);
-
-            await this._EquipmentSystemEntity.save(equipmentSystem);
-        }
-
-
-        return MappingEquipmentSystems;
+      await this._EquipmentSystemEntity.save(equipmentSystem);
     }
+
+    return MappingEquipmentSystems;
+  }
 }

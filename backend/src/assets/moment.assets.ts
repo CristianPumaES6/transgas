@@ -2,157 +2,149 @@ import * as moment from 'moment';
 import * as momentTimezone from 'moment-timezone';
 
 moment.locale();
-momentTimezone().tz("America/Los_Angeles").format();
+momentTimezone()
+  .tz('America/Los_Angeles')
+  .format();
 //momentTimezone().tz("Africa/Abidjan").format();
 
 // AL ser una class lo tengo que poner en el constructor para que pueda ser utilizado.
 export function GetDate(): any {
-
-    // lo desencripto
-    return moment().format();
+  // lo desencripto
+  return moment().format();
 }
-
 
 // Convierte el formato de fecha.
 export function ConvertMMDDYYYToYYYYMMDD(dateMMDDYYY: any): Date {
+  let date = moment(dateMMDDYYY, 'MM/DD/YYYY');
 
-    let date = moment(dateMMDDYYY, "MM/DD/YYYY");
-
-    return new Date(date.format("YYYY/MM/DD"));
-
+  return new Date(date.format('YYYY/MM/DD'));
 }
 
-
 export function FormatDateUTCToDateHour(dateUTC: any): string {
-    // Con el formato YYYY MM DD
-    let momentDate = moment.utc(dateUTC);
+  // Con el formato YYYY MM DD
+  let momentDate = moment.utc(dateUTC);
 
-    let local = momentDate.local();
+  let local = momentDate.local();
 
-    let format = local.format('MM/DD/YYYY HH:mm');
+  let format = local.format('MM/DD/YYYY HH:mm');
 
-    return format;
+  return format;
 }
 
 export function FormatDateUTCToDate(dateUTC: any): string {
-    // Con el formato YYYY MM DD
-    let momentDate = moment.utc(dateUTC);
+  // Con el formato YYYY MM DD
+  let momentDate = moment.utc(dateUTC);
 
-    let local = momentDate.local();
+  let local = momentDate.local();
 
-    let format = local.format('MM/DD/YYYY');
+  let format = local.format('MM/DD/YYYY');
 
-    return format;
+  return format;
 }
 
 export function FormatDateUTCToDateYYYYMM(dateUTC: any): string {
-    // Con el formato YYYY MM DD
-    let momentDate = moment.utc(dateUTC);
+  // Con el formato YYYY MM DD
+  let momentDate = moment.utc(dateUTC);
 
-    let local = momentDate.local();
+  let local = momentDate.local();
 
-    let format = local.format('YYYY-MM');
+  let format = local.format('YYYY-MM');
 
-    return format;
+  return format;
 }
 
 export function ConvertDateUTC_To_FORMAT_UTC(dateUTC): string {
-    let momentDate = moment.utc(dateUTC);
+  let momentDate = moment.utc(dateUTC);
 
-    return momentDate.format('YYYY-MM-DD HH:mm:ss');
+  return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
-
 
 export function Convert_YYYYMMD_To_YYYYMMDD(date): string {
-    
-  let text =  moment(date, ['YYYY-M-D', 'YYYY-MM-DD']).format('YYYY-MM-DD');
+  let text = moment(date, ['YYYY-M-D', 'YYYY-MM-DD']).format('YYYY-MM-DD');
 
-    return text;
+  return text;
 }
-
 
 // este convert retorna con -5 horas para que se registre en e; server
 export function ConvertDateUTC_To_FORMAT_UTC_Menos5HorasLOCAL(dateUTC): string {
-    let momentDate = moment.utc(dateUTC).subtract(5, 'hours');
+  let momentDate = moment.utc(dateUTC).subtract(5, 'hours');
 
-    return momentDate.format('YYYY-MM-DD HH:mm:ss');
+  return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
 
 // este convert retorna con -5 horas para que se registre en e; server
-export function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC,addHour:number): string {
+export function ConvertYYYYMMHH_5HorasLOCAL(dateUTC, addHour: number): string {
+  let mommentTemporal = moment.utc(dateUTC, 'YYYY-MM-DD HH:mm');
 
+  let momentDate = mommentTemporal.subtract(addHour, 'hours');
 
-    let mommentTemporal = moment.utc(dateUTC, "DD/MM/YY HH:mm");
-
-    let momentDate = mommentTemporal.subtract(addHour, 'hours');
-
-    return momentDate.format('YYYY-MM-DD HH:mm:ss');
+  return momentDate.format('YYYY-MM-DD HH:mm:ss').replace(" ", "T") + "Z";;
 }
 
+// este convert retorna con -5 horas para que se registre en e; server
+export function ConvertDDMMYYHHMM5HorasLOCAL(dateUTC, addHour: number): string {
+  let mommentTemporal = moment.utc(dateUTC, 'DD/MM/YY HH:mm');
+
+  let momentDate = mommentTemporal.subtract(addHour, 'hours');
+
+  return momentDate.format('YYYY-MM-DD HH:mm:ss');
+}
 
 export function DateDayMonthYear(dateDDMMYYYY): string {
-    console.log(dateDDMMYYYY);
+  console.log(dateDDMMYYYY);
 
-    let date = moment.utc(dateDDMMYYYY, "DD/MM/YYYY");
-    console.log(date);
+  let date = moment.utc(dateDDMMYYYY, 'DD/MM/YYYY');
+  console.log(date);
 
-
-    let formatDate = date.format('YYYY-MM-DD');
-    console.log(formatDate);
-    return formatDate
+  let formatDate = date.format('YYYY-MM-DD');
+  console.log(formatDate);
+  return formatDate;
 }
 export function ObtenerlasHorasDeUnaFecaUTC(dateUTC): string {
-
-    let hour = dateUTC.substr(11, 5)
-    return hour;
+  let hour = dateUTC.substr(11, 5);
+  return hour;
 }
 export function ConvertDateUTC_masUnaCantidadDeHoras(dateUTC, horas): string {
+  let momentDate = moment.utc(dateUTC, 'DD/MM/YYYY').add(horas, 'h');
 
-    
-    let momentDate = moment.utc(dateUTC, "DD/MM/YYYY").add(horas, 'h');
-
-    return momentDate.format('YYYY-MM-DD HH:mm:ss');
+  return momentDate.format('YYYY-MM-DD HH:mm:ss');
 }
 
 // Resta una cantidad de dias a una fecha utc.
 export function FormatDateSumDays(dateUTC: any, subtractDays: number): string {
-    // Con el formato YYYY MM DD
-    let momentDate = moment.utc(dateUTC);
-    // Restamos los dias.
-    let subtract = momentDate.subtract(subtractDays, 'days');
+  // Con el formato YYYY MM DD
+  let momentDate = moment.utc(dateUTC);
+  // Restamos los dias.
+  let subtract = momentDate.subtract(subtractDays, 'days');
 
-    // damos formato a una fecha.
-    return subtract.format('YYYY-MM-DD HH:mm:ss') + 'Z';
+  // damos formato a una fecha.
+  return subtract.format('YYYY-MM-DD HH:mm:ss') + 'Z';
 }
 export function ConvertMomentUTC(dateUTC): moment.Moment {
-
-    // lo desencripto
-    return moment.utc(dateUTC);
+  // lo desencripto
+  return moment.utc(dateUTC);
 }
 
 export function ObtenerHoraDeDosStringUTC(fechaUTC: string, fechaUTC2: string): number {
+  let result = 0;
 
-    let result = 0;
+  let fecha1 = moment.utc(fechaUTC);
+  let fecha2 = moment.utc(fechaUTC2);
 
-    let fecha1 = moment.utc(fechaUTC);
-    let fecha2 = moment.utc(fechaUTC2);
+  var duration = moment.duration(fecha1.diff(fecha2));
+  result = duration.asHours();
 
-
-    var duration = moment.duration(fecha1.diff(fecha2));
-    result = duration.asHours();
-
-    return result;
+  return result;
 }
 
 export function GetHours(): any {
-    return moment().format('HH mm ss');
+  return moment().format('HH mm ss');
 }
 
-
 export function ConvertDDMMYYYYToUTC(dateDDMMYYYY): string {
+  let momentDate = moment(dateDDMMYYYY, 'DD/MM/YYYY');
 
-    let momentDate = moment(dateDDMMYYYY, 'DD/MM/YYYY');
-
-    return moment(momentDate, 'YYYY-MM-DD HH:mm').utc().format('YYYY-MM-DDTHH:mm:ssZ');
-
+  return moment(momentDate, 'YYYY-MM-DD HH:mm')
+    .utc()
+    .format('YYYY-MM-DDTHH:mm:ssZ');
 }

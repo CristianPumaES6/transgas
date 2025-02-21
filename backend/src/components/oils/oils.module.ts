@@ -19,15 +19,43 @@ import { EquipmentSystemEntity } from '../../models/equipment-system.entity';
 import { EquipmentSystemService } from './equipment-system/equipment-system.service';
 import { EquipmentOilCompatibilityService } from './equipment-oil-compatibility/equipment-oil-compatibility.service';
 import { EquipmentOilCompatibilityController } from './equipment-oil-compatibility/equipment-oil-compatibility.controller';
-import { EquipmentOilCompatibilityEntity } from'../../models/equipment-oil-compatibility.entity';
+import { EquipmentOilCompatibilityEntity } from '../../models/equipment-oil-compatibility.entity';
 import { OilPriceHistory } from '../../models/oilPriceHistory.entity';
+import { OilAnalysisEntity } from '../../models/oilAnalysis.entity';
+import { FileEntity } from '../../models/file.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OilEntity,OilPriceHistory,ConsumptionEquipmentEntity,GroupOilEntity,BunkerOil,EquipmentSystemEntity,EquipmentOilCompatibilityEntity]),
+    TypeOrmModule.forFeature([
+      OilEntity,
+      OilPriceHistory,
+      ConsumptionEquipmentEntity,
+      GroupOilEntity,
+      BunkerOil,
+      EquipmentSystemEntity,
+      EquipmentOilCompatibilityEntity,
+      OilAnalysisEntity,
+      FileEntity,
+    ]),
   ],
-  controllers: [OilsController, ConsumptionEquipmentController, GroupOilsController, EquipmentSystemController, BunkerOilController, EquipmentOilCompatibilityController,EquipmentOilCompatibilityController],
-  providers: [OilsService, ConsumptionEquipmentService, GroupOilsService, EquipmentSystemService, BunkerOilService, EquipmentOilCompatibilityService,EquipmentOilCompatibilityService ],
-  exports: [ConsumptionEquipmentService] 
+  controllers: [
+    OilsController,
+    ConsumptionEquipmentController,
+    GroupOilsController,
+    EquipmentSystemController,
+    BunkerOilController,
+    EquipmentOilCompatibilityController,
+    EquipmentOilCompatibilityController,
+  ],
+  providers: [
+    OilsService,
+    ConsumptionEquipmentService,
+    GroupOilsService,
+    EquipmentSystemService,
+    BunkerOilService,
+    EquipmentOilCompatibilityService,
+    EquipmentOilCompatibilityService,
+  ],
+  exports: [ConsumptionEquipmentService],
 })
 export class OilsModule {}

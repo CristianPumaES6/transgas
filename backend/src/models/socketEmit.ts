@@ -1,17 +1,11 @@
-import { LoggedUser } from "./loggedUser";
+import { LoggedUser } from './loggedUser';
 
 export class SocketEmitModel {
-    
-        public action: string;
-        public data: LoggedUser;
+  public action: string;
+  public data: LoggedUser;
 
- 
-    constructor(
-        action?:string,
-        data?:LoggedUser
-    ){
-        this.action = action || '';
-        this.data = data || <any>{}; 
-    }
-
+  constructor(action?: string, data?: LoggedUser) {
+    this.action = action || '';
+    this.data = data || <any>{};
+  }
 }
