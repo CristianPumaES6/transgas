@@ -39,4 +39,5 @@ export declare class AppController {
     GetMGOROB(userId: any, startDate: any, endDate: any): Promise<any[]>;
     GetIFOConsumptionPerEquipment(userId: any, startDate: any, endDate: any): Promise<any[]>;
     GetMGOConsumptionPerEquipment(userId: any, startDate: any, endDate: any): Promise<any[]>;
+    GetSelectDailyReport_Summary(userId: any, startDate: any, endDate: any): Promise<any[]>;
 }

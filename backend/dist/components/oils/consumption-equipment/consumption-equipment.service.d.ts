@@ -25,6 +25,7 @@ export declare class ConsumptionEquipmentService {
     GetStatusOilStartEnd(userId: number, startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
     GetInfoAllVessel(startDate: string, endDate: string): Promise<consultEquipmentConsumptionByMonthUser[]>;
     ImportExcelLubricantDiario(userEntity: UserEntity, ImportExcelLubricantDiaries: ImportExcelLubricanteDiario[]): Promise<Mapping[]>;
+    GetSelectDailyReport_Summary(userId: number, startDate: string, endDate: string): Promise<any[]>;
 }
 export interface SaveListConsumptionEquipmentEntity {
     MappingConsumptionsEquipment: Mapping[];

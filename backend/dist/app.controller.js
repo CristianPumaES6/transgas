@@ -271,6 +271,11 @@ let AppController = class AppController {
             return this._ConsumptionEquipmentService.GetConsumoEquipoMGOPorMonth(userId, startDate, endDate);
         });
     }
+    async GetSelectDailyReport_Summary(userId, startDate, endDate) {
+        return await (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
+            return this._ConsumptionEquipmentService.GetSelectDailyReport_Summary(userId, startDate, endDate);
+        });
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -454,6 +459,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "GetMGOConsumptionPerEquipment", null);
+__decorate([
+    (0, common_1.Get)('GetDailyReportSummary/:userId/:startDate/:endDate'),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Param)('startDate')),
+    __param(2, (0, common_1.Param)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "GetSelectDailyReport_Summary", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService,
