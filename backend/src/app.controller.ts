@@ -391,4 +391,14 @@ export class AppController {
     });
   }
 
+  
+  @Get('GetDailyReportSummary/:userId/:startDate/:endDate')
+  async GetSelectDailyReport_Summary(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetSelectDailyReport_Summary(userId, startDate, endDate);
+    });
+  }
+
+  
+
 }

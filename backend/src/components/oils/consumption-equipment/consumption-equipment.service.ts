@@ -1523,6 +1523,26 @@ ORDER BY
 
     return MappingOilEntity;
   }
+
+
+  
+  async GetSelectDailyReport_Summary(userId: number, startDate: string, endDate: string): Promise<any[]>{
+    const query = `
+
+          DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
+          DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Fecha de inicio
+          DECLARE @endDate DATE = '${endDate} 23:59:59'; -- Fecha de fin
+
+          SELECT * 
+          FROM daily_report_summary
+          WHERE userId = @userId
+          AND CAST(date AS DATETIME) BETWEEN @startDate AND @endDate;
+
+        `;
+  
+    return this._ConsumptionEquipment.query(query, []);
+  }
+
 }
 
 export interface SaveListConsumptionEquipmentEntity {
