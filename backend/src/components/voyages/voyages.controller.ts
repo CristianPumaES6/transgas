@@ -435,6 +435,7 @@ export class VoyagesController {
       let MappingPort: Mapping[] = [];
 
       let ultimaFecha: any;
+      let daily_report_summary: DailyReportSummary =<any>{};
       for await (const importVoyage of ImportVoyages) {
         // Busca el numero de viaje si ya se registro
         let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
@@ -476,6 +477,8 @@ export class VoyagesController {
 
             console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
 
+            daily_report_summary.voyage = voyageRegister.voyageNumber+"";
+            daily_report_summary.voyageId = voyageRegister.id;
             // Lo agregamos al mapping
             MappingVoyage.push(new Mapping(importVoyage.voyageNumber, voyageRegister.id));
             // Reset mapping Port
@@ -528,15 +531,15 @@ export class VoyagesController {
             newPort.departurePort = importVoyage.departurePort;
             newPort.arrivalPort = importVoyage.arrivalPort;
             newPort.portNumber = importVoyage.portNumber;
-            newPort.dateETA = importVoyage.dateETA;
+            newPort.dateETA = <any>ConvertYYYYMMHH_5HorasLOCAL(importVoyage.dateETA, -5);
             newPort.historyDateETA = "[]";
-            /*              
-                            ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OPCION PARA QUE SE REGISTE EL DATO ANTERIOR
-                            OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
-                        */
-
+            /*
+              ESTE CODIGO DEBE MEJORARSE DEBE HABER UNA OPCION PARA QUE SE REGISTE EL DATO ANTERIOR
+              OSEA NO EL IFO PRESENTE SINO DEL ULTIMO PUERTO PASADO.
+            */ 
+ 
             if (ultimaFecha) {
-              newPort.startDate = ultimaFecha;
+              newPort.startDate =  <any>ConvertYYYYMMHH_5HorasLOCAL(ultimaFecha, -5);
             } else {
               newPort.startDate = null;
             }
@@ -553,6 +556,12 @@ export class VoyagesController {
 
             // Lo registramos
             let portRegister = await this._portsService.Create(newPort);
+
+            
+            daily_report_summary.portId = newPort.id;
+            daily_report_summary.date_ETA = newPort.dateETA;
+            daily_report_summary.port_Departure = newPort.departurePort;
+            daily_report_summary.port_Arrive = newPort.arrivalPort;
             console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
             MappingPort.push(new Mapping(importVoyage.portNumber, portRegister.id));
           } else {
@@ -574,10 +583,10 @@ export class VoyagesController {
               portExiste.portNumber = importVoyage.portNumber;
               portExiste.departurePort = importVoyage.departurePort;
               portExiste.arrivalPort = importVoyage.arrivalPort;
-              portExiste.dateETA = importVoyage.dateETA; 
+              portExiste.dateETA = <any>ConvertYYYYMMHH_5HorasLOCAL(importVoyage.dateETA, -5);
 
               if (ultimaFecha) {
-                portExiste.startDate = ultimaFecha;
+                portExiste.startDate = <any>ConvertYYYYMMHH_5HorasLOCAL(ultimaFecha, -5);
               } else {
                 delete portExiste.startDate;
               }
@@ -643,7 +652,6 @@ export class VoyagesController {
         }
 
         newReport.date = ultimaFecha;
-
         // A la fecha le redusco 4 horas debido que se tiene esa diferencia
         // Aveces si estamos trabajando un update seria bueno que no lo modifique, ya que la fecha viene un UTC
         // textoCadena = textoCadena.subtract(4, 'hours');// Revisr siempre esto por que esto depende del las diferencias de horario del buque.
@@ -675,7 +683,7 @@ export class VoyagesController {
             // concatenamos el 0 a la hora.
             newReport.hour = '0' + importVoyage.hour;
           } else if (importVoyage.hour.length == 5) {
-            newReport.hour = importVoyage.hour;
+            newReport.hour = importVoyage.hour+":00";
           } else {
             newReport.hour = importVoyage.hour;
             console.log('ERROR EN LA EL TAMAÑO DE CARACTERES DE LA HORA, Revisar el id del reporte' + importVoyage.dailyReportId);
@@ -686,6 +694,7 @@ export class VoyagesController {
         }
 
         newReport.date = <any>ConvertYYYYMMHH_5HorasLOCAL(newReport.date, -5);
+    
         // Cuando actualizo la mayormente no deseo que se modifique la fecha ni la hora.
         // delete newReport.date;
         // delete newReport.hour;
@@ -856,6 +865,146 @@ export class VoyagesController {
           await this._dailyReportsService.Update(newReport);
           console.log('Update' + newReport.id);
         }
+
+
+        // ahora que sume lo del reporte sumarry
+
+        daily_report_summary.date =  newReport.date; 
+
+
+
+
+
+
+
+
+
+ 
+        daily_report_summary.latitud_degree = newReport.north_degree;
+        daily_report_summary.latitud_minutes = newReport.north_minutes; 
+        daily_report_summary.latitud_north_south = newReport.north_north_south; 
+        daily_report_summary.longitude_degree = newReport.east_degree; 
+        daily_report_summary.longitude_minutes = newReport.east_minutes;
+        daily_report_summary.longitude_east_west = newReport.east_east_west
+
+  
+        daily_report_summary.typeOfEvent = 'Daily';
+        daily_report_summary.loadingCondition= newReport.activityPerformed;
+        daily_report_summary.voyComment=''; 
+        daily_report_summary.timeElapsed = (daily_report_summary.timeElapsed || 0)+newReport.steamingTime;
+        if(newReport.distance>0){
+          daily_report_summary.timeElapsedSailing =(daily_report_summary.timeElapsedSailing||0)+newReport.steamingTime;
+          daily_report_summary.distanceSailed =(daily_report_summary.distanceSailed||0)+newReport.distance;
+          daily_report_summary.nauticalMile =(daily_report_summary.nauticalMile||0);
+        } 
+ 
+        daily_report_summary.navigationObservations= '';
+
+ 
+        daily_report_summary.bunkeringIfo =(daily_report_summary.bunkeringIfo||0)+newReport.bunkeringIfo;
+        daily_report_summary.bunkeringMgo =(daily_report_summary.bunkeringMgo||0)+newReport.bunkeringMgo;
+ 
+  
+        daily_report_summary.mplaIfo=(daily_report_summary.mplaIfo||0)+newReport.mplaIfo;
+        daily_report_summary.auxIfo=(daily_report_summary.auxIfo||0)+newReport.auxIfo;
+        daily_report_summary.boilerIfo=(daily_report_summary.boilerIfo||0)+newReport.boilerIfo;
+        daily_report_summary.otherIfo=(daily_report_summary.otherIfo||0)+newReport.otherIfo;
+
+
+        daily_report_summary.mplaMgo=(daily_report_summary.mplaMgo||0)+newReport.mplaMgo;
+        daily_report_summary.auxMgo=(daily_report_summary.auxMgo||0)+newReport.auxMgo;
+        daily_report_summary.boilerMgo=(daily_report_summary.boilerMgo||0)+newReport.boilerMgo;
+        daily_report_summary.ppMgo=(daily_report_summary.ppMgo||0)+newReport.ppMgo;
+        daily_report_summary.giMgo=(daily_report_summary.giMgo||0)+newReport.giMgo;
+        daily_report_summary.otherMgo=(daily_report_summary.otherMgo||0)+newReport.otherMgo;
+
+        daily_report_summary.rob_Mgo = (daily_report_summary.rob_Mgo||0) + newReport.bunkeringIfo - (
+                                                                                                newReport.mplaIfo
+                                                                                                +newReport.auxIfo
+                                                                                                +newReport.boilerIfo 
+                                                                                                +newReport.otherIfo
+                                                                                              );
+        daily_report_summary.rob_Ifo = (daily_report_summary.rob_Ifo||0) + newReport.bunkeringIfo-(
+                                                                                                newReport.mplaMgo
+                                                                                                +newReport.auxMgo
+                                                                                                +newReport.boilerMgo
+                                                                                                +newReport.ppMgo
+                                                                                                +newReport.giMgo
+                                                                                                +newReport.otherMgo
+                                                                                                );
+        daily_report_summary.load_Power = 0;
+        daily_report_summary.engine_Distance = 0;
+
+
+
+if(newReport.typeActivityPerformed == 'REPORT_AT_08_00'){
+
+
+  
+ 
+
+  daily_report_summary.userId = daily_report_summary.userId || newReport.userId;
+  daily_report_summary.userIdCreated = daily_report_summary.userIdCreated || newReport.userId;
+  daily_report_summary.dateCreated = daily_report_summary.dateCreated || newReport.date;
+  daily_report_summary.portId = daily_report_summary.portId || 0;
+  daily_report_summary.date_ETA =  daily_report_summary.date_ETA ||  newReport.date ;
+  daily_report_summary.port_Departure = daily_report_summary.port_Departure || '';
+  daily_report_summary.port_Arrive = daily_report_summary.port_Arrive || '';
+  daily_report_summary.voyage = daily_report_summary.voyage||'';
+  daily_report_summary.voyageId = daily_report_summary.voyageId || 0;  
+  daily_report_summary.status = daily_report_summary.status || true;  
+        await this._dailyReportSummaryService.Create(daily_report_summary);
+
+        daily_report_summary.timeElapsed = 0;
+          daily_report_summary.timeElapsedSailing =0;
+          daily_report_summary.distanceSailed =0;
+          daily_report_summary.nauticalMile =0;
+
+ 
+        daily_report_summary.bunkeringIfo =0;
+        daily_report_summary.bunkeringMgo =0;
+ 
+  
+        daily_report_summary.mplaIfo=0;
+        daily_report_summary.auxIfo=0;
+        daily_report_summary.boilerIfo=0;
+        daily_report_summary.otherIfo=0;
+
+
+        daily_report_summary.mplaMgo=0;
+        daily_report_summary.auxMgo=0;
+        daily_report_summary.boilerMgo=0;
+        daily_report_summary.ppMgo=0;
+        daily_report_summary.giMgo=0
+        daily_report_summary.otherMgo=0;
+
+        daily_report_summary.load_Power = 0;
+        daily_report_summary.engine_Distance = 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       }
 
       return 'Se registraron los datos correctamente.';
