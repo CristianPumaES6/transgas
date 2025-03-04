@@ -507,8 +507,8 @@ async GetConsumoEquipoIFOPorMonth(userId: number, startDate: string, endDate: st
 
  DECLARE @status INT = 1;
 DECLARE @userId INT = ${userId};  
-DECLARE @startDate DATETIME = '${startDate}';  
-DECLARE @endDate DATETIME = '${endDate}'; 
+DECLARE @startDate DATETIME = '${startDate} 00:00:00'; 
+DECLARE @endDate DATETIME = '${endDate} 00:00:00';
 
 SELECT    
     FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
@@ -604,8 +604,8 @@ async GetConsumoEquipoMGOPorMonth(userId: number, startDate: string, endDate: st
 
 DECLARE @status INT = 1;
 DECLARE @userId INT = ${userId};  
-DECLARE @startDate DATETIME = '${startDate}';  
-DECLARE @endDate DATETIME = '${endDate}'; 
+DECLARE @startDate DATETIME = '${startDate} 00:00:00';  
+DECLARE @endDate DATETIME = '${endDate} 00:00:00'; 
 
 SELECT    
     FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
@@ -1523,6 +1523,26 @@ ORDER BY
 
     return MappingOilEntity;
   }
+
+
+  
+  async GetSelectDailyReport_Summary(userId: number, startDate: string, endDate: string): Promise<any[]>{
+    const query = `
+
+          DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
+          DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Fecha de inicio
+          DECLARE @endDate DATE = '${endDate} 23:59:59'; -- Fecha de fin
+
+          SELECT * 
+          FROM daily_report_summary
+          WHERE userId = @userId
+          AND CAST(date AS DATETIME) BETWEEN @startDate AND @endDate;
+
+        `;
+  
+    return this._ConsumptionEquipment.query(query, []);
+  }
+
 }
 
 export interface SaveListConsumptionEquipmentEntity {

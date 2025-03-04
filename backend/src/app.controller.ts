@@ -387,8 +387,18 @@ export class AppController {
   @Get('GetMGOConsumptionPerEquipment/:userId/:startDate/:endDate')
   async GetMGOConsumptionPerEquipment(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
     return await DummyPromise().then((resultDummy: Boolean) => {
-      return this._ConsumptionEquipmentService.GetConsumoEquipoIFOPorMonth(userId, startDate, endDate);
+      return this._ConsumptionEquipmentService.GetConsumoEquipoMGOPorMonth(userId, startDate, endDate);
     });
   }
+
+  
+  @Get('GetDailyReportSummary/:userId/:startDate/:endDate')
+  async GetSelectDailyReport_Summary(@Param('userId') userId, @Param('startDate') startDate, @Param('endDate') endDate) {
+    return await DummyPromise().then((resultDummy: Boolean) => {
+      return this._ConsumptionEquipmentService.GetSelectDailyReport_Summary(userId, startDate, endDate);
+    });
+  }
+
+  
 
 }
