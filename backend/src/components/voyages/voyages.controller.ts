@@ -937,28 +937,28 @@ export class VoyagesController {
 
 
 
-if(newReport.typeActivityPerformed == 'REPORT_AT_08_00'){
+        if(newReport.typeActivityPerformed == 'REPORT_AT_08_00'){
 
 
   
- 
+          delete daily_report_summary.id;
 
-  daily_report_summary.userId = daily_report_summary.userId || newReport.userId;
-  daily_report_summary.userIdCreated = daily_report_summary.userIdCreated || newReport.userId;
-  daily_report_summary.dateCreated = daily_report_summary.dateCreated || newReport.date;
-  daily_report_summary.portId = daily_report_summary.portId || 0;
-  daily_report_summary.date_ETA =  daily_report_summary.date_ETA ||  newReport.date ;
-  daily_report_summary.port_Departure = daily_report_summary.port_Departure || '';
-  daily_report_summary.port_Arrive = daily_report_summary.port_Arrive || '';
-  daily_report_summary.voyage = daily_report_summary.voyage||'';
-  daily_report_summary.voyageId = daily_report_summary.voyageId || 0;  
-  daily_report_summary.status = daily_report_summary.status || true;  
+        daily_report_summary.userId = daily_report_summary.userId || newReport.userId;
+        daily_report_summary.userIdCreated = daily_report_summary.userIdCreated || newReport.userId;
+        daily_report_summary.dateCreated = daily_report_summary.dateCreated || newReport.date;
+        daily_report_summary.portId = daily_report_summary.portId || 0;
+        daily_report_summary.date_ETA =  daily_report_summary.date_ETA ||  newReport.date ;
+        daily_report_summary.port_Departure = daily_report_summary.port_Departure || '';
+        daily_report_summary.port_Arrive = daily_report_summary.port_Arrive || '';
+        daily_report_summary.voyage = daily_report_summary.voyage||'';
+        daily_report_summary.voyageId = daily_report_summary.voyageId || 0;  
+        daily_report_summary.status = daily_report_summary.status || true;  
         await this._dailyReportSummaryService.Create(daily_report_summary);
 
         daily_report_summary.timeElapsed = 0;
-          daily_report_summary.timeElapsedSailing =0;
-          daily_report_summary.distanceSailed =0;
-          daily_report_summary.nauticalMile =0;
+        daily_report_summary.timeElapsedSailing =0;
+        daily_report_summary.distanceSailed =0;
+        daily_report_summary.nauticalMile =0;
 
  
         daily_report_summary.bunkeringIfo =0;
