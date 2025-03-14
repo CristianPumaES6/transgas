@@ -332,6 +332,7 @@ let VoyagesController = class VoyagesController {
             let MappingVoyage = [];
             let MappingPort = [];
             let ultimaFecha;
+            let daily_report_summary = {};
             try {
                 for (var _d = true, ImportVoyages_1 = __asyncValues(ImportVoyages), ImportVoyages_1_1; ImportVoyages_1_1 = await ImportVoyages_1.next(), _a = ImportVoyages_1_1.done, !_a; _d = true) {
                     _c = ImportVoyages_1_1.value;
@@ -360,6 +361,8 @@ let VoyagesController = class VoyagesController {
                             newVoyage.status = true;
                             let voyageRegister = await this._voyagesService.Create(newVoyage);
                             console.log('Se CREO EL VIAJE NUMERO ' + newVoyage.voyageNumber + '   con id :' + newVoyage.id);
+                            daily_report_summary.voyage = voyageRegister.voyageNumber + "";
+                            daily_report_summary.voyageId = voyageRegister.id;
                             MappingVoyage.push(new mappingKeys_1.Mapping(importVoyage.voyageNumber, voyageRegister.id));
                             MappingPort = [];
                         }
@@ -398,22 +401,26 @@ let VoyagesController = class VoyagesController {
                             newPort.departurePort = importVoyage.departurePort;
                             newPort.arrivalPort = importVoyage.arrivalPort;
                             newPort.portNumber = importVoyage.portNumber;
-                            newPort.dateETA = importVoyage.dateETA;
+                            newPort.dateETA = (0, moment_assets_1.ConvertYYYYMMHH_5HorasLOCAL)(importVoyage.dateETA, -5);
                             newPort.historyDateETA = "[]";
                             if (ultimaFecha) {
-                                newPort.startDate = ultimaFecha;
+                                newPort.startDate = (0, moment_assets_1.ConvertYYYYMMHH_5HorasLOCAL)(ultimaFecha, -5);
                             }
                             else {
                                 newPort.startDate = null;
                             }
-                            newPort.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                            newPort.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                            newPort.startIFO = importVoyage.ROB_IFO + importVoyage.TOTAL_IFO - importVoyage.bunkeringIfo;
+                            newPort.startMGO = importVoyage.ROB_MGO + importVoyage.TOTAL_MGO - importVoyage.bunkeringMgo;
                             newPort.userIdCreated = headerToken.id;
                             newPort.dateCreated = (0, moment_assets_1.GetDate)();
                             delete newPort.userIdUpdated;
                             delete newPort.dateUpdated;
                             newPort.status = true;
                             let portRegister = await this._portsService.Create(newPort);
+                            daily_report_summary.portId = newPort.id;
+                            daily_report_summary.date_ETA = newPort.dateETA;
+                            daily_report_summary.port_Departure = newPort.departurePort;
+                            daily_report_summary.port_Arrive = newPort.arrivalPort;
                             console.log('Se CREO EL PUERTO NUMERO ' + portRegister.portNumber + '   con id :' + portRegister.id);
                             MappingPort.push(new mappingKeys_1.Mapping(importVoyage.portNumber, portRegister.id));
                         }
@@ -424,22 +431,22 @@ let VoyagesController = class VoyagesController {
                             if ((portExiste.portNumber != importVoyage.portNumber ||
                                 portExiste.departurePort != importVoyage.departurePort ||
                                 portExiste.arrivalPort != importVoyage.arrivalPort ||
-                                portExiste.startIFO != importVoyage.ROB[0] ||
-                                portExiste.startMGO != importVoyage.ROB[1]) &&
+                                portExiste.startIFO != importVoyage.ROB_IFO ||
+                                portExiste.startMGO != importVoyage.ROB_MGO) &&
                                 importVoyage.updatePort) {
                                 portExiste.voyageId = existeViaje.value;
                                 portExiste.portNumber = importVoyage.portNumber;
                                 portExiste.departurePort = importVoyage.departurePort;
                                 portExiste.arrivalPort = importVoyage.arrivalPort;
-                                portExiste.dateETA = importVoyage.dateETA;
+                                portExiste.dateETA = (0, moment_assets_1.ConvertYYYYMMHH_5HorasLOCAL)(importVoyage.dateETA, -5);
                                 if (ultimaFecha) {
-                                    portExiste.startDate = ultimaFecha;
+                                    portExiste.startDate = (0, moment_assets_1.ConvertYYYYMMHH_5HorasLOCAL)(ultimaFecha, -5);
                                 }
                                 else {
                                     delete portExiste.startDate;
                                 }
-                                portExiste.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                                portExiste.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                                portExiste.startIFO = importVoyage.ROB_IFO + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                                portExiste.startMGO = importVoyage.ROB_MGO + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
                                 delete portExiste.dailyReports;
                                 portExiste.dateUpdated = (0, moment_assets_1.GetDate)();
                                 portExiste.status = true;
@@ -491,7 +498,7 @@ let VoyagesController = class VoyagesController {
                             newReport.hour = '0' + importVoyage.hour;
                         }
                         else if (importVoyage.hour.length == 5) {
-                            newReport.hour = importVoyage.hour;
+                            newReport.hour = importVoyage.hour + ":00";
                         }
                         else {
                             newReport.hour = importVoyage.hour;
@@ -658,6 +665,79 @@ let VoyagesController = class VoyagesController {
                         await this._dailyReportsService.Update(newReport);
                         console.log('Update' + newReport.id);
                     }
+                    daily_report_summary.date = newReport.date;
+                    daily_report_summary.latitud_degree = newReport.north_degree;
+                    daily_report_summary.latitud_minutes = newReport.north_minutes;
+                    daily_report_summary.latitud_north_south = newReport.north_north_south;
+                    daily_report_summary.longitude_degree = newReport.east_degree;
+                    daily_report_summary.longitude_minutes = newReport.east_minutes;
+                    daily_report_summary.longitude_east_west = newReport.east_east_west;
+                    daily_report_summary.typeOfEvent = 'Daily';
+                    daily_report_summary.loadingCondition = newReport.activityPerformed;
+                    daily_report_summary.voyComment = '';
+                    daily_report_summary.timeElapsed = (daily_report_summary.timeElapsed || 0) + newReport.steamingTime;
+                    if (newReport.distance > 0) {
+                        daily_report_summary.timeElapsedSailing = (daily_report_summary.timeElapsedSailing || 0) + newReport.steamingTime;
+                        daily_report_summary.distanceSailed = (daily_report_summary.distanceSailed || 0) + newReport.distance;
+                        daily_report_summary.nauticalMile = (daily_report_summary.nauticalMile || 0);
+                    }
+                    daily_report_summary.navigationObservations = '';
+                    daily_report_summary.bunkeringIfo = (daily_report_summary.bunkeringIfo || 0) + newReport.bunkeringIfo;
+                    daily_report_summary.bunkeringMgo = (daily_report_summary.bunkeringMgo || 0) + newReport.bunkeringMgo;
+                    daily_report_summary.mplaIfo = (daily_report_summary.mplaIfo || 0) + newReport.mplaIfo;
+                    daily_report_summary.auxIfo = (daily_report_summary.auxIfo || 0) + newReport.auxIfo;
+                    daily_report_summary.boilerIfo = (daily_report_summary.boilerIfo || 0) + newReport.boilerIfo;
+                    daily_report_summary.otherIfo = (daily_report_summary.otherIfo || 0) + newReport.otherIfo;
+                    daily_report_summary.mplaMgo = (daily_report_summary.mplaMgo || 0) + newReport.mplaMgo;
+                    daily_report_summary.auxMgo = (daily_report_summary.auxMgo || 0) + newReport.auxMgo;
+                    daily_report_summary.boilerMgo = (daily_report_summary.boilerMgo || 0) + newReport.boilerMgo;
+                    daily_report_summary.ppMgo = (daily_report_summary.ppMgo || 0) + newReport.ppMgo;
+                    daily_report_summary.giMgo = (daily_report_summary.giMgo || 0) + newReport.giMgo;
+                    daily_report_summary.otherMgo = (daily_report_summary.otherMgo || 0) + newReport.otherMgo;
+                    daily_report_summary.rob_Mgo = (daily_report_summary.rob_Mgo || 0) + newReport.bunkeringIfo - (newReport.mplaIfo
+                        + newReport.auxIfo
+                        + newReport.boilerIfo
+                        + newReport.otherIfo);
+                    daily_report_summary.rob_Ifo = (daily_report_summary.rob_Ifo || 0) + newReport.bunkeringIfo - (newReport.mplaMgo
+                        + newReport.auxMgo
+                        + newReport.boilerMgo
+                        + newReport.ppMgo
+                        + newReport.giMgo
+                        + newReport.otherMgo);
+                    daily_report_summary.load_Power = 0;
+                    daily_report_summary.engine_Distance = 0;
+                    if (newReport.typeActivityPerformed == 'REPORT_AT_08_00') {
+                        delete daily_report_summary.id;
+                        daily_report_summary.userId = daily_report_summary.userId || newReport.userId;
+                        daily_report_summary.userIdCreated = daily_report_summary.userIdCreated || newReport.userId;
+                        daily_report_summary.dateCreated = daily_report_summary.dateCreated || newReport.date;
+                        daily_report_summary.portId = daily_report_summary.portId || 0;
+                        daily_report_summary.date_ETA = daily_report_summary.date_ETA || newReport.date;
+                        daily_report_summary.port_Departure = daily_report_summary.port_Departure || '';
+                        daily_report_summary.port_Arrive = daily_report_summary.port_Arrive || '';
+                        daily_report_summary.voyage = daily_report_summary.voyage || '';
+                        daily_report_summary.voyageId = daily_report_summary.voyageId || 0;
+                        daily_report_summary.status = daily_report_summary.status || true;
+                        await this._dailyReportSummaryService.Create(daily_report_summary);
+                        daily_report_summary.timeElapsed = 0;
+                        daily_report_summary.timeElapsedSailing = 0;
+                        daily_report_summary.distanceSailed = 0;
+                        daily_report_summary.nauticalMile = 0;
+                        daily_report_summary.bunkeringIfo = 0;
+                        daily_report_summary.bunkeringMgo = 0;
+                        daily_report_summary.mplaIfo = 0;
+                        daily_report_summary.auxIfo = 0;
+                        daily_report_summary.boilerIfo = 0;
+                        daily_report_summary.otherIfo = 0;
+                        daily_report_summary.mplaMgo = 0;
+                        daily_report_summary.auxMgo = 0;
+                        daily_report_summary.boilerMgo = 0;
+                        daily_report_summary.ppMgo = 0;
+                        daily_report_summary.giMgo = 0;
+                        daily_report_summary.otherMgo = 0;
+                        daily_report_summary.load_Power = 0;
+                        daily_report_summary.engine_Distance = 0;
+                    }
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -756,8 +836,8 @@ let VoyagesController = class VoyagesController {
                             else {
                                 newPort.startDate = null;
                             }
-                            newPort.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                            newPort.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                            newPort.startIFO = importVoyage.ROB_IFO + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                            newPort.startMGO = importVoyage.ROB_MGO + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
                             newPort.userIdCreated = headerToken.id;
                             newPort.dateCreated = (0, moment_assets_1.GetDate)();
                             delete newPort.userIdUpdated;
@@ -774,8 +854,8 @@ let VoyagesController = class VoyagesController {
                             if ((portExiste.portNumber != importVoyage.portNumber ||
                                 portExiste.departurePort != importVoyage.departurePort ||
                                 portExiste.arrivalPort != importVoyage.arrivalPort ||
-                                portExiste.startIFO != importVoyage.ROB[0] ||
-                                portExiste.startMGO != importVoyage.ROB[1]) &&
+                                portExiste.startIFO != importVoyage.ROB_IFO ||
+                                portExiste.startMGO != importVoyage.ROB_MGO) &&
                                 importVoyage.updatePort) {
                                 portExiste.voyageId = existeViaje.value;
                                 portExiste.portNumber = importVoyage.portNumber;
@@ -787,8 +867,8 @@ let VoyagesController = class VoyagesController {
                                 else {
                                     delete portExiste.startDate;
                                 }
-                                portExiste.startIFO = importVoyage.ROB[0] + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-                                portExiste.startMGO = importVoyage.ROB[1] + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+                                portExiste.startIFO = importVoyage.ROB_IFO + importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+                                portExiste.startMGO = importVoyage.ROB_MGO + importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
                                 delete portExiste.dailyReports;
                                 portExiste.dateUpdated = (0, moment_assets_1.GetDate)();
                                 portExiste.status = true;
