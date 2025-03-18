@@ -49,51 +49,55 @@ export class ImportVoyage {
   voyageId: number;
   portId: number;
   dailyReportId: number;
-  userId: number;
   year: number;
   voyageNumber: number;
   portNumber: number;
   departurePort: string;
   arrivalPort: string;
-  nextActivityPerformed: string;
-  dateETA: string;
-  VIAJE: string;
   date: string;
+  dateETA: string;
   hour: string;
   steamingTime: number;
   activityPerformed: string;
-  typeActivityPerformed: string;
+  nextActivityPerformed: string;
   speedStraction: string;
   observation: string;
   distance?: any;
   steamingTime2?: any;
-  VELOCIDAD: number;
+  SPEED?:any;
   beaufour: string;
-  RPM?: any;
   mplaIfo: number;
   auxIfo: number;
   boilerIfo: number;
   otherIfo: number;
-  TOTAL: number[];
+  TOTAL_IFO: number;
+  DAILY_CONSUMPTION_IFO: number;
   bunkeringIfo: number;
-  ROB: number[];
+  ROB_IFO: number;
   mplaMgo: number;
   auxMgo: number;
   boilerMgo: number;
   ppMgo: number;
   giMgo: number;
   otherMgo: number;
-  bunkeringMgo?: any;
-
+  TOTAL_MGO: number;
+  DAILY_CONSUMPTION_MGO: number;
+  bunkeringMgo: number;
+  ROB_MGO: number;
   north_degree: number;
   north_minutes: number;
   north_north_south: string;
   east_degree: number;
   east_minutes: number;
   east_east_west: string;
-  updatePort: number; // Esto nos dice si el puerto se va actualizar o no
+  typeActivityPerformed: string;
 
+  userId: number;
+  updatePort: boolean; // Esto nos dice si el puerto se va actualizar o no
   delete_report: boolean;
+ 
+  RPM?: any;  TOTAL: number[]; 
+
 }
 
 export class DataModuleCombustible {
