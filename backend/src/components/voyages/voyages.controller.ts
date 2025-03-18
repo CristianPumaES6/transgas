@@ -544,8 +544,8 @@ export class VoyagesController {
               newPort.startDate = null;
             }
 
-            newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-            newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+            newPort.startIFO = <any>importVoyage.ROB_IFO + <any>importVoyage.TOTAL_IFO - importVoyage.bunkeringIfo;
+            newPort.startMGO = <any>importVoyage.ROB_MGO + <any>importVoyage.TOTAL_MGO - importVoyage.bunkeringMgo;
 
             // Auditoria.
             newPort.userIdCreated = headerToken.id;
@@ -575,8 +575,8 @@ export class VoyagesController {
               (portExiste.portNumber != importVoyage.portNumber ||
                 portExiste.departurePort != importVoyage.departurePort ||
                 portExiste.arrivalPort != importVoyage.arrivalPort ||
-                portExiste.startIFO != <any>importVoyage.ROB[0] ||
-                portExiste.startMGO != <any>importVoyage.ROB[1]) &&
+                portExiste.startIFO != <any>importVoyage.ROB_IFO ||
+                portExiste.startMGO != <any>importVoyage.ROB_MGO) &&
               <any>importVoyage.updatePort
             ) {
               portExiste.voyageId = existeViaje.value;
@@ -591,8 +591,8 @@ export class VoyagesController {
                 delete portExiste.startDate;
               }
 
-              portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-              portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+              portExiste.startIFO = <any>importVoyage.ROB_IFO + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+              portExiste.startMGO = <any>importVoyage.ROB_MGO + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
               delete portExiste.dailyReports;
               portExiste.dateUpdated = GetDate();
@@ -905,10 +905,10 @@ export class VoyagesController {
         daily_report_summary.bunkeringMgo =(daily_report_summary.bunkeringMgo||0)+newReport.bunkeringMgo;
  
   
-        daily_report_summary.mplaIfo=(daily_report_summary.mplaIfo||0)+newReport.mplaIfo;
-        daily_report_summary.auxIfo=(daily_report_summary.auxIfo||0)+newReport.auxIfo;
-        daily_report_summary.boilerIfo=(daily_report_summary.boilerIfo||0)+newReport.boilerIfo;
-        daily_report_summary.otherIfo=(daily_report_summary.otherIfo||0)+newReport.otherIfo;
+        daily_report_summary.mplaIfo = (daily_report_summary.mplaIfo||0)+newReport.mplaIfo;
+        daily_report_summary.auxIfo = (daily_report_summary.auxIfo||0)+newReport.auxIfo;
+        daily_report_summary.boilerIfo = (daily_report_summary.boilerIfo||0)+newReport.boilerIfo;
+        daily_report_summary.otherIfo = (daily_report_summary.otherIfo||0)+newReport.otherIfo;
 
 
         daily_report_summary.mplaMgo=(daily_report_summary.mplaMgo||0)+newReport.mplaMgo;
@@ -1133,8 +1133,8 @@ export class VoyagesController {
               newPort.startDate = null;
             }
 
-            newPort.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-            newPort.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+            newPort.startIFO = <any>importVoyage.ROB_IFO + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+            newPort.startMGO = <any>importVoyage.ROB_MGO + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
             // Auditoria.
             newPort.userIdCreated = headerToken.id;
@@ -1158,8 +1158,8 @@ export class VoyagesController {
               (portExiste.portNumber != importVoyage.portNumber ||
                 portExiste.departurePort != importVoyage.departurePort ||
                 portExiste.arrivalPort != importVoyage.arrivalPort ||
-                portExiste.startIFO != <any>importVoyage.ROB[0] ||
-                portExiste.startMGO != <any>importVoyage.ROB[1]) &&
+                portExiste.startIFO != <any>importVoyage.ROB_IFO ||
+                portExiste.startMGO != <any>importVoyage.ROB_MGO) &&
               <any>importVoyage.updatePort
             ) {
               portExiste.voyageId = existeViaje.value;
@@ -1173,8 +1173,8 @@ export class VoyagesController {
                 delete portExiste.startDate;
               }
 
-              portExiste.startIFO = <any>importVoyage.ROB[0] + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
-              portExiste.startMGO = <any>importVoyage.ROB[1] + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
+              portExiste.startIFO = <any>importVoyage.ROB_IFO + <any>importVoyage.TOTAL[0] - importVoyage.bunkeringIfo;
+              portExiste.startMGO = <any>importVoyage.ROB_MGO + <any>importVoyage.TOTAL[1] - importVoyage.bunkeringMgo;
 
               delete portExiste.dailyReports;
               portExiste.dateUpdated = GetDate();
