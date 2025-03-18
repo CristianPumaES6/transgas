@@ -333,6 +333,13 @@ let VoyagesController = class VoyagesController {
             let MappingPort = [];
             let ultimaFecha;
             let daily_report_summary = {};
+            console.log("-------------------------------------");
+            console.log("-------------------------------------");
+            console.log("-------------------------------------");
+            console.log(ImportVoyages);
+            console.log("-------------------------------------");
+            console.log("-------------------------------------");
+            console.log("-------------------------------------");
             try {
                 for (var _d = true, ImportVoyages_1 = __asyncValues(ImportVoyages), ImportVoyages_1_1; ImportVoyages_1_1 = await ImportVoyages_1.next(), _a = ImportVoyages_1_1.done, !_a; _d = true) {
                     _c = ImportVoyages_1_1.value;
