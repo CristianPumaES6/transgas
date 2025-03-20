@@ -725,6 +725,12 @@ ORDER BY ES.equipment;
         return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
     }
     async getOilConsumptionPerMonth(userId, startDate, endDate) {
+        console.log(`
+
+
+          DECLARE @startDate DATE = '${startDate}';
+          DECLARE @endDate DATE = '${startDate}';
+          DECLARE @userId INT = ${userId};`);
         const query = `
 
 
