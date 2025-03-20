@@ -610,13 +610,17 @@ let VoyagesController = class VoyagesController {
                         newReport.beaufour = 'S6';
                     }
                     else {
-                        newReport.beaufour = importVoyage.beaufour;
+                        newReport.beaufour = importVoyage.beaufour || '';
+                        ;
                     }
                     newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
                     newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
-                    newReport.observation = importVoyage.observation;
-                    newReport.activityPerformed = importVoyage.activityPerformed;
-                    newReport.nextActivityPerformed = importVoyage.nextActivityPerformed;
+                    newReport.observation = importVoyage.observation || '';
+                    ;
+                    newReport.activityPerformed = importVoyage.activityPerformed || '';
+                    ;
+                    newReport.nextActivityPerformed = importVoyage.nextActivityPerformed || '';
+                    ;
                     if (newReport.activityPerformed == 'CARGANDO') {
                         newReport.activityPerformed = 'LOADING';
                     }
@@ -641,9 +645,12 @@ let VoyagesController = class VoyagesController {
                     else if (newReport.activityPerformed == 'OTRAS ACT.') {
                         newReport.activityPerformed = 'OTHER_ACT';
                     }
-                    newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
-                    newReport.speedStraction = importVoyage.speedStraction;
-                    newReport.observation = importVoyage.observation;
+                    newReport.typeActivityPerformed = importVoyage.typeActivityPerformed || '';
+                    ;
+                    newReport.speedStraction = importVoyage.speedStraction || '';
+                    ;
+                    newReport.observation = importVoyage.observation || '';
+                    ;
                     newReport.north_degree = importVoyage.north_degree || 0;
                     newReport.north_minutes = importVoyage.north_minutes || 0;
                     newReport.north_north_south = importVoyage.north_north_south || '';
@@ -661,7 +668,8 @@ let VoyagesController = class VoyagesController {
                         newReport.dateCreated = (0, moment_assets_1.GetDate)();
                         delete newReport.userIdUpdated;
                         delete newReport.dateUpdated;
-                        await this._dailyReportsService.Create(newReport);
+                        let varNewReport = JSON.parse(JSON.stringify(newReport));
+                        await this._dailyReportsService.Create(varNewReport);
                         console.log('Create' + newReport.date);
                     }
                     else {
@@ -669,7 +677,8 @@ let VoyagesController = class VoyagesController {
                         newReport.dateUpdated = (0, moment_assets_1.GetDate)();
                         delete newReport.userIdCreated;
                         delete newReport.dateCreated;
-                        await this._dailyReportsService.Update(newReport);
+                        let varEditReport = JSON.parse(JSON.stringify(newReport));
+                        await this._dailyReportsService.Update(varEditReport);
                         console.log('Update' + newReport.id);
                     }
                     daily_report_summary.date = newReport.date;
@@ -687,6 +696,11 @@ let VoyagesController = class VoyagesController {
                         daily_report_summary.timeElapsedSailing = (daily_report_summary.timeElapsedSailing || 0) + newReport.steamingTime;
                         daily_report_summary.distanceSailed = (daily_report_summary.distanceSailed || 0) + newReport.distance;
                         daily_report_summary.nauticalMile = (daily_report_summary.nauticalMile || 0);
+                    }
+                    else {
+                        daily_report_summary.timeElapsedSailing = 0;
+                        daily_report_summary.distanceSailed = 0;
+                        daily_report_summary.nauticalMile = 0;
                     }
                     daily_report_summary.navigationObservations = '';
                     daily_report_summary.bunkeringIfo = (daily_report_summary.bunkeringIfo || 0) + newReport.bunkeringIfo;
@@ -725,6 +739,7 @@ let VoyagesController = class VoyagesController {
                         daily_report_summary.voyage = daily_report_summary.voyage || '';
                         daily_report_summary.voyageId = daily_report_summary.voyageId || 0;
                         daily_report_summary.status = daily_report_summary.status || true;
+                        console.log(JSON.stringify(daily_report_summary));
                         await this._dailyReportSummaryService.Create(daily_report_summary);
                         daily_report_summary.timeElapsed = 0;
                         daily_report_summary.timeElapsedSailing = 0;
