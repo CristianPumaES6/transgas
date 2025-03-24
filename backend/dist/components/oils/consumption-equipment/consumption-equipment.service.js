@@ -729,13 +729,13 @@ ORDER BY ES.equipment;
 
 
           DECLARE @startDate DATE = '${startDate}';
-          DECLARE @endDate DATE = '${startDate}';
+          DECLARE @endDate DATE = '${endDate}';
           DECLARE @userId INT = ${userId};`);
         const query = `
 
 
           DECLARE @startDate DATE = '${startDate}';
-          DECLARE @endDate DATE = '${startDate}';
+          DECLARE @endDate DATE = '${endDate}';
           DECLARE @userId INT = ${userId};
 
           SELECT
