@@ -754,6 +754,8 @@ ORDER BY ES.equipment;
                   WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
                   ELSE 'OTHERS'
               END AS consumptionTypeName,
+			  SUM(CE.amount) AS total_amount,
+			  SUM(CE.hourConsumption) AS total_hourConsumption,
 
               -- Obtener el último oilId dentro del rango de fechas con una subconsulta
               (SELECT TOP 1 O.id 
@@ -803,7 +805,6 @@ ORDER BY ES.equipment;
               year_month,
               equipmentName,
               CE.consumptionTypeId;
-
 
         `;
         return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
