@@ -692,15 +692,13 @@ let VoyagesController = class VoyagesController {
                     daily_report_summary.loadingCondition = newReport.activityPerformed;
                     daily_report_summary.voyComment = '';
                     daily_report_summary.timeElapsed = (daily_report_summary.timeElapsed || 0) + newReport.steamingTime;
+                    daily_report_summary.timeElapsedSailing = 0;
+                    daily_report_summary.distanceSailed = 0;
+                    daily_report_summary.nauticalMile = 0;
                     if (newReport.distance > 0) {
-                        daily_report_summary.timeElapsedSailing = (daily_report_summary.timeElapsedSailing || 0) + newReport.steamingTime;
-                        daily_report_summary.distanceSailed = (daily_report_summary.distanceSailed || 0) + newReport.distance;
-                        daily_report_summary.nauticalMile = (daily_report_summary.nauticalMile || 0);
-                    }
-                    else {
-                        daily_report_summary.timeElapsedSailing = 0;
-                        daily_report_summary.distanceSailed = 0;
-                        daily_report_summary.nauticalMile = 0;
+                        daily_report_summary.timeElapsedSailing = daily_report_summary.timeElapsedSailing + newReport.steamingTime;
+                        daily_report_summary.distanceSailed = daily_report_summary.distanceSailed + newReport.distance;
+                        daily_report_summary.nauticalMile = daily_report_summary.nauticalMile;
                     }
                     daily_report_summary.navigationObservations = '';
                     daily_report_summary.bunkeringIfo = (daily_report_summary.bunkeringIfo || 0) + newReport.bunkeringIfo;
