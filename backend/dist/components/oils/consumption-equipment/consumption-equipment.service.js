@@ -1298,7 +1298,7 @@ ORDER BY
                 let newConsumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity.id;
                 newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity.date = (0, moment_assets_1.ConvertMMDDYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity.amount = lubricantDialy.LUB_ME;
                 newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity.observation = '';
@@ -1314,7 +1314,7 @@ ORDER BY
                 let newConsumptionEquipmentEntity2 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity2.id;
                 newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity2.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity2.date = (0, moment_assets_1.ConvertMMDDYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
                 newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity2.observation = '';
@@ -1330,7 +1330,7 @@ ORDER BY
                 let newConsumptionEquipmentEntity3 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity3.id;
                 newConsumptionEquipmentEntity3.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity3.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity3.date = (0, moment_assets_1.ConvertMMDDYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity3.amount = lubricantDialy.LUB_AUX1 || 0;
                 newConsumptionEquipmentEntity3.hourConsumption = lubricantDialy.HOUR_AUX1 || 0;
                 newConsumptionEquipmentEntity3.observation = '';
@@ -1346,7 +1346,7 @@ ORDER BY
                 let newConsumptionEquipmentEntity4 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity4.id;
                 newConsumptionEquipmentEntity4.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity4.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity4.date = (0, moment_assets_1.ConvertMMDDYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity4.amount = lubricantDialy.LUB_AUX2 || 0;
                 newConsumptionEquipmentEntity4.hourConsumption = lubricantDialy.HOUR_AUX2 || 0;
                 newConsumptionEquipmentEntity4.observation = '';

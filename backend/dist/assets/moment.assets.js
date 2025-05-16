@@ -18,6 +18,7 @@ exports.ConvertMomentUTC = ConvertMomentUTC;
 exports.ObtenerHoraDeDosStringUTC = ObtenerHoraDeDosStringUTC;
 exports.GetHours = GetHours;
 exports.ConvertDDMMYYYYToUTC = ConvertDDMMYYYYToUTC;
+exports.ConvertMMDDYYYYToUTC = ConvertMMDDYYYYToUTC;
 const moment = require("moment");
 const momentTimezone = require("moment-timezone");
 moment.locale();
@@ -109,6 +110,12 @@ function GetHours() {
 }
 function ConvertDDMMYYYYToUTC(dateDDMMYYYY) {
     let momentDate = moment(dateDDMMYYYY, 'DD/MM/YYYY');
+    return moment(momentDate, 'YYYY-MM-DD HH:mm')
+        .utc()
+        .format('YYYY-MM-DDTHH:mm:ssZ');
+}
+function ConvertMMDDYYYYToUTC(dateDDMMYYYY) {
+    let momentDate = moment(dateDDMMYYYY, 'MM/DD/YYYY');
     return moment(momentDate, 'YYYY-MM-DD HH:mm')
         .utc()
         .format('YYYY-MM-DDTHH:mm:ssZ');

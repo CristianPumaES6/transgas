@@ -17,3 +17,4 @@ export declare function ConvertMomentUTC(dateUTC: any): moment.Moment;
 export declare function ObtenerHoraDeDosStringUTC(fechaUTC: string, fechaUTC2: string): number;
 export declare function GetHours(): any;
 export declare function ConvertDDMMYYYYToUTC(dateDDMMYYYY: any): string;
+export declare function ConvertMMDDYYYYToUTC(dateDDMMYYYY: any): string;
