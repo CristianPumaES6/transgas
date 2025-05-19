@@ -5,7 +5,7 @@ exports.URL_Server = {
     front: 'https://transgas.nautic.solutions',
     back: 'https://transgas.nautic.solutions',
     version: 'v3',
-    puertoSocket: 3100,
+    puertoSocket: 4000,
     puertoBackend: 3000,
     bd: 'MSSQL2',
     emailNotification: 'transgasshippinglines@gmail.com',
