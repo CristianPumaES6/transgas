@@ -31,7 +31,7 @@ exports.AppModule = AppModule = __decorate([
                 port: 1433,
                 username: 'User_sa',
                 password: 'Server_Admin',
-                database: 'FuelOilPlatformDBTest',
+                database: 'FuelOilPlatformDB',
                 entities: [(0, path_1.join)(__dirname, '**/**.entity{.ts,.js}')],
                 synchronize: true,
                 options: {
