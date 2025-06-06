@@ -327,7 +327,7 @@ let VoyagesController = class VoyagesController {
         try {
             let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
             if (!(headerToken.role === 'SUPPORT')) {
-                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+                return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con nosotros. => +51 976873362';
             }
             let MappingVoyage = [];
             let MappingPort = [];
@@ -713,16 +713,16 @@ let VoyagesController = class VoyagesController {
                     daily_report_summary.ppMgo = (daily_report_summary.ppMgo || 0) + newReport.ppMgo;
                     daily_report_summary.giMgo = (daily_report_summary.giMgo || 0) + newReport.giMgo;
                     daily_report_summary.otherMgo = (daily_report_summary.otherMgo || 0) + newReport.otherMgo;
-                    daily_report_summary.rob_Mgo = (daily_report_summary.rob_Mgo || 0) + newReport.bunkeringIfo - (newReport.mplaIfo
-                        + newReport.auxIfo
-                        + newReport.boilerIfo
-                        + newReport.otherIfo);
-                    daily_report_summary.rob_Ifo = (daily_report_summary.rob_Ifo || 0) + newReport.bunkeringIfo - (newReport.mplaMgo
+                    daily_report_summary.rob_Mgo = (daily_report_summary.rob_Mgo || 0) + newReport.bunkeringMgo - (newReport.mplaMgo
                         + newReport.auxMgo
                         + newReport.boilerMgo
                         + newReport.ppMgo
                         + newReport.giMgo
                         + newReport.otherMgo);
+                    daily_report_summary.rob_Ifo = (daily_report_summary.rob_Ifo || 0) + newReport.bunkeringIfo - (newReport.mplaIfo
+                        + newReport.auxIfo
+                        + newReport.boilerIfo
+                        + newReport.otherIfo);
                     daily_report_summary.load_Power = 0;
                     daily_report_summary.engine_Distance = 0;
                     if (newReport.typeActivityPerformed == 'REPORT_AT_08_00') {
