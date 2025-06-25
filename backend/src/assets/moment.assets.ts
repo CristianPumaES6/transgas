@@ -148,3 +148,13 @@ export function ConvertDDMMYYYYToUTC(dateDDMMYYYY): string {
     .utc()
     .format('YYYY-MM-DDTHH:mm:ssZ');
 }
+
+
+
+export function ConvertMMDDYYYYToUTC(dateDDMMYYYY): string {
+  let momentDate = moment(dateDDMMYYYY, 'MM/DD/YYYY');
+
+  return moment(momentDate, 'YYYY-MM-DD HH:mm')
+    .utc()
+    .format('YYYY-MM-DDTHH:mm:ssZ');
+}

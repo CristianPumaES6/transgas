@@ -39,11 +39,11 @@ export const URL_Server = {
 
 // CONFIGURACION PARA DESARROLLO SERVER
 export const URL_Server = {
-  front: 'https://dev-transgas.nautic.solutions',
-  back: 'https://dev-transgas.nautic.solutions',
+  front: 'https://transgas.nautic.solutions',
+  back: 'https://transgas.nautic.solutions',
   version: 'v3',
-  puertoSocket: 2100,
-  puertoBackend: 2000,
+  puertoSocket: 4000,
+  puertoBackend: 3000,
   bd: 'MSSQL2', // MSSQL, MYSQL, MSSQL2
   emailNotification: 'transgasshippinglines@gmail.com',
   passwordNotification: 'getlsmyuiluiwktq',

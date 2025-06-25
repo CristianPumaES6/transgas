@@ -16,7 +16,7 @@ import { URL_Server } from '../../../config/server.config';
 // Modelos.
 import { UserEntity } from '../../../models/user.entity';
 import { DummyPromise } from '../../../assets/promises.assets';
-import { ConvertDDMMYYYYToUTC, ConvertMMDDYYYToYYYYMMDD, Convert_YYYYMMD_To_YYYYMMDD, GetDate } from '../../../assets/moment.assets';
+import { ConvertDDMMYYYYToUTC, ConvertMMDDYYYToYYYYMMDD, ConvertMMDDYYYYToUTC, Convert_YYYYMMD_To_YYYYMMDD, GetDate } from '../../../assets/moment.assets';
 import { ConsumptionEquipmentEntity } from '../../../models/consumptionEquipment.entity';
 import { Mapping, searchKey } from '../../../assets/mappingKeys';
 
@@ -767,102 +767,89 @@ ORDER BY ES.equipment;
   }
 
   async getOilConsumptionPerMonth(userId: number, startDate: string, endDate: string): Promise<getOilConsumptionPerMonth[]> {
+    
+    console.log(`
+
+
+          DECLARE @startDate DATE = '${startDate}';
+          DECLARE @endDate DATE = '${endDate}';
+          DECLARE @userId INT = ${userId};`)
+    
+    
     const query = `
 
 
+          DECLARE @startDate DATE = '${startDate}';
+          DECLARE @endDate DATE = '${endDate}';
+          DECLARE @userId INT = ${userId};
 
-    SELECT
-        EOC.id AS compatibilityId,
-        strftime('%Y-%m', CE.date) AS year_month,
-        ES.id AS equipmentId,
-        ES.equipment AS equipmentName,
-        ES.frequencyId AS frequencyId,
-        ES.trialDay AS rateSystems,
-        ES.entityGroupId AS groupId,
-        GO.label AS groupName, -- Agregar el tipo de grupo
-        CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
-        CASE
-            WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
-            WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
-            WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
-            ELSE 'OTHERS'
-        END AS consumptionTypeName, 
-        SUM(CE.amount) AS total_amount,
-        SUM(CE.hourConsumption) AS total_hourConsumption,
+          SELECT
+              EOC.id AS compatibilityId,
+              FORMAT(CAST(CE.date AS DATE), 'yyyy-MM') AS year_month,
+              ES.id AS equipmentId,
+              ES.equipment AS equipmentName,
+              ES.frequencyId AS frequencyId,
+              ES.trialDay AS rateSystems,
+              ES.entityGroupId AS groupId,
+              GO.label AS groupName,
+              CE.consumptionTypeId AS consumptionTypeId,
+              CASE
+                  WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
+                  WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
+                  WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
+                  ELSE 'OTHERS'
+              END AS consumptionTypeName,
+			  SUM(CE.amount) AS total_amount,
+			  SUM(CE.hourConsumption) AS total_hourConsumption,
 
-        (
-            SELECT O.id
-            FROM oil O
-            INNER JOIN (
-                SELECT entityOilId
-                FROM consumptionEquipment
-                WHERE entityEquipmentOilCompatibilityId = EOC.id
-                ORDER BY date DESC
-                LIMIT 1
-            ) AS LastConsumption ON O.id = LastConsumption.entityOilId
-        ) AS oilId,
-
-        (
-            SELECT O.name
-            FROM oil O
-            INNER JOIN (
-                SELECT entityOilId
-                FROM consumptionEquipment
-                WHERE entityEquipmentOilCompatibilityId = EOC.id
-                ORDER BY date DESC
-                LIMIT 1
-            ) AS LastConsumption ON O.id = LastConsumption.entityOilId
-        ) AS lastOilName,
-
-
-    -- Costo aceite
-    COALESCE((
-        SELECT OP.price
-        FROM oilPriceHistory OP
-        WHERE OP.entityOilId = EOC.entityOilId
-            AND  DATE(CE.date) >= DATE(OP.effectiveDate)
-            AND OP.status = 1
-        ORDER BY OP.effectiveDate DESC
-        LIMIT 1
-    ), 0) AS last_oil_cost,
-
-    -- Calcular el costo total del aceite
-    SUM(CE.amount * COALESCE((
-        SELECT OP.price
-        FROM oilPriceHistory OP
-        WHERE OP.entityOilId = EOC.entityOilId
-            AND DATE(CE.date) >= DATE(OP.effectiveDate)
-            AND OP.status = 1
-        ORDER BY OP.effectiveDate DESC
-        LIMIT 1
-    ), 0)) AS total_cost
+              -- Obtener el último oilId dentro del rango de fechas con una subconsulta
+              (SELECT TOP 1 O.id 
+              FROM oil O
+              INNER JOIN equipmentOilCompatibility EOC2 ON EOC2.entityOilId = O.id
+              INNER JOIN consumptionEquipment CE2 ON CE2.entityEquipmentOilCompatibilityId = EOC2.id 
+              WHERE EOC2.entityEquipmentId = ES.id  
+              AND CE2.consumptionTypeId = CE.consumptionTypeId 
+              AND CAST(CE2.date AS DATE) BETWEEN @startDate AND @endDate
+              ORDER BY CAST(CE2.date AS DATE) DESC
+              ) AS oilId,
+            
+              -- Obtener el último oilId dentro del rango de fechas con una subconsulta
+              (SELECT TOP 1O.name
+              FROM oil O
+              INNER JOIN equipmentOilCompatibility EOC2 ON EOC2.entityOilId = O.id
+              INNER JOIN consumptionEquipment CE2 ON CE2.entityEquipmentOilCompatibilityId = EOC2.id 
+              WHERE EOC2.entityEquipmentId = ES.id  
+              AND CE2.consumptionTypeId = CE.consumptionTypeId 
+              AND CAST(CE2.date AS DATE) BETWEEN @startDate AND @endDate
+              ORDER BY CAST(CE2.date AS DATE) DESC
+              ) AS lastOilName ,
 
 
-    FROM
-        consumptionEquipment CE
-        INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
-        INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
-        LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id -- Unir con la tabla groupOil para obtener el tipo
-    WHERE
-        CE.userId = ? AND
-        CE.status = 1 AND
-        ( ( DATE(?) = DATE('1900-01-01') OR DATE(?) = DATE('1900-01-01') ) OR DATE(CE.date) BETWEEN DATE(?) AND DATE(?) ) -- Filtro por rango de fechas
-        GROUP BY
-        year_month,
-        ES.equipment,  -- Agrupar por nombre del equipo
-        ES.id,         -- Agrupar por ID del equipo
-        ES.trialDay,       -- Asegurarse de incluir la tasa del sistema
-        ES.entityGroupId, -- Agrupar por ID del grupo
-        GO.label,      -- Asegurarse de incluir el nombre del grupo
-        CE.consumptionTypeId, -- Agregar el tipo de consumo a la lista de columnas de agrupación
-        EOC.id         -- Incluir la compatibilidad en la agrupación
-        ORDER BY
-        year_month,
-        equipmentName,
-        CE.consumptionTypeId;
+            
+              0 AS last_oil_cost,
+              
+              0  AS total_cost
+          FROM
+              consumptionEquipment CE
+              INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
+              INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
+              LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id
 
+          GROUP BY 
+              EOC.id,
+              FORMAT(CAST(CE.date AS DATE), 'yyyy-MM'),
+              ES.id,
+              ES.equipment,
+              ES.frequencyId,
+              ES.trialDay,
+              ES.entityGroupId,
+              GO.label,
+              CE.consumptionTypeId
 
-
+          ORDER BY
+              year_month,
+              equipmentName,
+              CE.consumptionTypeId;
 
         `;
 
@@ -1374,7 +1361,7 @@ ORDER BY
 
       delete newConsumptionEquipmentEntity.id;
       newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
-      newConsumptionEquipmentEntity.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+      newConsumptionEquipmentEntity.date = ConvertMMDDYYYYToUTC(lubricantDialy.DATE);
       newConsumptionEquipmentEntity.amount = lubricantDialy.LUB_ME;
       newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
       newConsumptionEquipmentEntity.observation = '';
@@ -1399,7 +1386,7 @@ ORDER BY
 
       delete newConsumptionEquipmentEntity2.id;
       newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
-      newConsumptionEquipmentEntity2.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+      newConsumptionEquipmentEntity2.date = ConvertMMDDYYYYToUTC(lubricantDialy.DATE);
       newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
       newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
       newConsumptionEquipmentEntity2.observation = '';
@@ -1424,7 +1411,7 @@ ORDER BY
 
       delete newConsumptionEquipmentEntity3.id;
       newConsumptionEquipmentEntity3.userId = lubricantDialy.USER_ID;
-      newConsumptionEquipmentEntity3.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+      newConsumptionEquipmentEntity3.date = ConvertMMDDYYYYToUTC(lubricantDialy.DATE);
       newConsumptionEquipmentEntity3.amount = lubricantDialy.LUB_AUX1 || 0;
       newConsumptionEquipmentEntity3.hourConsumption = lubricantDialy.HOUR_AUX1 || 0;
       newConsumptionEquipmentEntity3.observation = '';
@@ -1443,13 +1430,13 @@ ORDER BY
       newConsumptionEquipmentEntity3.status = Boolean(true);
 
       await this.Create(newConsumptionEquipmentEntity3);
-
+/*
       // Armamos al nuevo tipo de aceite
       let newConsumptionEquipmentEntity4 = new ConsumptionEquipmentEntity();
 
       delete newConsumptionEquipmentEntity4.id;
       newConsumptionEquipmentEntity4.userId = lubricantDialy.USER_ID;
-      newConsumptionEquipmentEntity4.date = ConvertDDMMYYYYToUTC(lubricantDialy.DATE);
+      newConsumptionEquipmentEntity4.date = ConvertMMDDYYYYToUTC(lubricantDialy.DATE);
       newConsumptionEquipmentEntity4.amount = lubricantDialy.LUB_AUX2 || 0;
       newConsumptionEquipmentEntity4.hourConsumption = lubricantDialy.HOUR_AUX2 || 0;
       newConsumptionEquipmentEntity4.observation = '';
@@ -1468,7 +1455,7 @@ ORDER BY
       newConsumptionEquipmentEntity4.status = Boolean(true);
 
       await this.Create(newConsumptionEquipmentEntity4);
-
+*/
       /*
             // Armamos al nuevo tipo de aceite
             let newConsumptionEquipmentEntity5 = new ConsumptionEquipmentEntity();

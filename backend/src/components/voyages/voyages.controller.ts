@@ -428,7 +428,7 @@ export class VoyagesController {
       let headerToken: UserEntity = JwtDecode(headers.authorization);
 
       if (!(headerToken.role === 'SUPPORT')) {
-        return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con notros. => +51976873362';
+        return 'AMIGUITO QUE HACES? Escribeme WSP, trabaja con nosotros. => +51 976873362';
       }
 
       let MappingVoyage: Mapping[] = [];
@@ -436,6 +436,17 @@ export class VoyagesController {
 
       let ultimaFecha: any;
       let daily_report_summary: DailyReportSummary =<any>{};
+
+
+      console.log("-------------------------------------")
+      console.log("-------------------------------------")
+      console.log("-------------------------------------")
+      console.log(ImportVoyages);
+      console.log("-------------------------------------")
+      console.log("-------------------------------------")
+      console.log("-------------------------------------")
+
+
       for await (const importVoyage of ImportVoyages) {
         // Busca el numero de viaje si ya se registro
         let existeViaje = searchKey(MappingVoyage, importVoyage.voyageNumber);
@@ -443,7 +454,7 @@ export class VoyagesController {
         let userId = importVoyage.userId;
 
         // Consultamos si el numero de viaje ya lo tenemos mapeado.
-        // Si no lo tuvieramos lo buscaremos en la BD
+        // Si no lo tuvieramos lo buscaremos en la BD 
         if (!existeViaje) {
           let voyageExistente: Voyage;
 
@@ -802,16 +813,16 @@ export class VoyagesController {
         ) {
           newReport.beaufour = 'S6';
         } else {
-          newReport.beaufour = importVoyage.beaufour;
+          newReport.beaufour = importVoyage.beaufour || '';;
         }
 
         newReport.bunkeringIfo = importVoyage.bunkeringIfo || 0;
         newReport.bunkeringMgo = importVoyage.bunkeringMgo || 0;
 
-        newReport.observation = importVoyage.observation;
+        newReport.observation = importVoyage.observation || '';;
 
-        newReport.activityPerformed = importVoyage.activityPerformed;
-        newReport.nextActivityPerformed = importVoyage.nextActivityPerformed;
+        newReport.activityPerformed = importVoyage.activityPerformed || '';;
+        newReport.nextActivityPerformed = importVoyage.nextActivityPerformed || '';;
         if (newReport.activityPerformed == 'CARGANDO') {
           newReport.activityPerformed = 'LOADING';
         } else if (newReport.activityPerformed == 'DESCARGANDO') {
@@ -830,10 +841,10 @@ export class VoyagesController {
           newReport.activityPerformed = 'OTHER_ACT';
         }
 
-        newReport.typeActivityPerformed = importVoyage.typeActivityPerformed;
+        newReport.typeActivityPerformed = importVoyage.typeActivityPerformed || '';;
         // Tipo de velocidad.
-        newReport.speedStraction = importVoyage.speedStraction;
-        newReport.observation = importVoyage.observation;
+        newReport.speedStraction = importVoyage.speedStraction || '';;
+        newReport.observation = importVoyage.observation || '';;
 
         newReport.north_degree = importVoyage.north_degree || 0;
         newReport.north_minutes = importVoyage.north_minutes || 0;
@@ -855,14 +866,19 @@ export class VoyagesController {
           newReport.dateCreated = GetDate();
           delete newReport.userIdUpdated;
           delete newReport.dateUpdated;
-          await this._dailyReportsService.Create(newReport);
+
+          let varNewReport = JSON.parse(JSON.stringify(newReport))
+          await this._dailyReportsService.Create(varNewReport);
           console.log('Create' + newReport.date);
         } else {
           newReport.userIdUpdated = headerToken.id;
           newReport.dateUpdated = GetDate();
           delete newReport.userIdCreated;
           delete newReport.dateCreated;
-          await this._dailyReportsService.Update(newReport);
+
+          
+          let varEditReport = JSON.parse(JSON.stringify(newReport))
+          await this._dailyReportsService.Update(varEditReport);
           console.log('Update' + newReport.id);
         }
 
@@ -892,12 +908,17 @@ export class VoyagesController {
         daily_report_summary.loadingCondition= newReport.activityPerformed;
         daily_report_summary.voyComment=''; 
         daily_report_summary.timeElapsed = (daily_report_summary.timeElapsed || 0)+newReport.steamingTime;
+
+        daily_report_summary.timeElapsedSailing = (daily_report_summary.timeElapsedSailing||0);
+        daily_report_summary.distanceSailed = (daily_report_summary.distanceSailed || 0);
+        daily_report_summary.nauticalMile = (daily_report_summary.nauticalMile||0);
+    
         if(newReport.distance>0){
-          daily_report_summary.timeElapsedSailing =(daily_report_summary.timeElapsedSailing||0)+newReport.steamingTime;
-          daily_report_summary.distanceSailed =(daily_report_summary.distanceSailed||0)+newReport.distance;
-          daily_report_summary.nauticalMile =(daily_report_summary.nauticalMile||0);
+          daily_report_summary.timeElapsedSailing = daily_report_summary.timeElapsedSailing + newReport.steamingTime;
+          daily_report_summary.distanceSailed = daily_report_summary.distanceSailed + newReport.distance;
+          daily_report_summary.nauticalMile =  daily_report_summary.nauticalMile ;
         } 
- 
+
         daily_report_summary.navigationObservations= '';
 
  
@@ -918,13 +939,7 @@ export class VoyagesController {
         daily_report_summary.giMgo=(daily_report_summary.giMgo||0)+newReport.giMgo;
         daily_report_summary.otherMgo=(daily_report_summary.otherMgo||0)+newReport.otherMgo;
 
-        daily_report_summary.rob_Mgo = (daily_report_summary.rob_Mgo||0) + newReport.bunkeringIfo - (
-                                                                                                newReport.mplaIfo
-                                                                                                +newReport.auxIfo
-                                                                                                +newReport.boilerIfo 
-                                                                                                +newReport.otherIfo
-                                                                                              );
-        daily_report_summary.rob_Ifo = (daily_report_summary.rob_Ifo||0) + newReport.bunkeringIfo-(
+        daily_report_summary.rob_Mgo = (daily_report_summary.rob_Mgo||0) + newReport.bunkeringMgo - (
                                                                                                 newReport.mplaMgo
                                                                                                 +newReport.auxMgo
                                                                                                 +newReport.boilerMgo
@@ -932,6 +947,12 @@ export class VoyagesController {
                                                                                                 +newReport.giMgo
                                                                                                 +newReport.otherMgo
                                                                                                 );
+        daily_report_summary.rob_Ifo = (daily_report_summary.rob_Ifo||0) + newReport.bunkeringIfo-(
+                                                                                                newReport.mplaIfo
+                                                                                                +newReport.auxIfo
+                                                                                                +newReport.boilerIfo 
+                                                                                                +newReport.otherIfo
+                                                                                              );
         daily_report_summary.load_Power = 0;
         daily_report_summary.engine_Distance = 0;
 
@@ -953,7 +974,10 @@ export class VoyagesController {
         daily_report_summary.voyage = daily_report_summary.voyage||'';
         daily_report_summary.voyageId = daily_report_summary.voyageId || 0;  
         daily_report_summary.status = daily_report_summary.status || true;  
-        await this._dailyReportSummaryService.Create(daily_report_summary);
+
+        console.log(JSON.stringify(daily_report_summary));
+        let temp:DailyReportSummary  = JSON.parse(JSON.stringify(daily_report_summary));
+        await this._dailyReportSummaryService.Create(temp);
 
         daily_report_summary.timeElapsed = 0;
         daily_report_summary.timeElapsedSailing =0;
