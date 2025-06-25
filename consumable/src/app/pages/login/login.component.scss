@@ -1,0 +1,25 @@
+.login-form {
+  max-width: 400px;
+  margin: 100px auto;
+
+  .full-width {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  mat-card {
+    padding: 1.5rem;
+  }
+
+  mat-card-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
