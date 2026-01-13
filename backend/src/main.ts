@@ -1,3 +1,4 @@
+import './polyfills';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -24,7 +25,7 @@ async function bootstrap() {
   };
 
   // the next two lines did the trick
-   app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.json({ limit: '50mb' }));
   // app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
   // Habilitamos el CORS
@@ -42,7 +43,7 @@ async function bootstrap() {
 
   // Inicializo el serverNodemailer
   NodemailerInit();
-  
+
   await app.listen(URL_Server.puertoBackend);
 }
 bootstrap();
