@@ -41,7 +41,7 @@ export class UserComponent implements OnInit {
   public roleUser: string = '';
 
   //======== VARIABLES DE TRADUCCION=============
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'user';
   //=================[ FIN ]=====================
 
@@ -53,9 +53,8 @@ export class UserComponent implements OnInit {
   private initialUser: User = <User>{};
 
   //======== Datos para el componente azList ===========
-  public SettingAzList: SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false,
-    this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
-    this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
+  //======== Datos para el componente azList ===========
+  public SettingAzList: SettingAzList;
   public azLists: AzList[] = [];
 
   // ===================================================
@@ -78,6 +77,10 @@ export class UserComponent implements OnInit {
     private fb: FormBuilder,
     public dialog: MatDialog,
   ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+    this.SettingAzList = new SettingAzList(["Application", "Users"], "Users", true, false,
+      this.languageService.GetMessage(this.translateCategory, 'NEW_USER'), "", false, "", true,
+      this.languageService.GetMessage(this.translateCategory, 'TOOLTIP_DELETE_USER'));
     console.log('User Constructor()');
   }
 

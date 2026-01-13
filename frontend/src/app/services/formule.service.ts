@@ -9,13 +9,15 @@ import { LanguageService } from './language.service';
 })
 export class FormuleService {
 
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'formuleService';
 
   constructor(
     private languageService: LanguageService,
     private dailyReportService: DailyReportService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
 
   // Calcula la velocidad Distancia / time
@@ -34,7 +36,7 @@ export class FormuleService {
     // Total
     let total: number = 0;
 
-    total = this.CalculateTotal_IFO_Or_MGO(getReportVoyagePortDaily,typeIfoOrMGO);
+    total = this.CalculateTotal_IFO_Or_MGO(getReportVoyagePortDaily, typeIfoOrMGO);
 
     // Calculamos el dayli consumtion si no hay tiempo el valor por defecto es 0
     let dailyConsumtion = getReportVoyagePortDaily.steamingTime ? (total * 24) / getReportVoyagePortDaily.steamingTime : 0;

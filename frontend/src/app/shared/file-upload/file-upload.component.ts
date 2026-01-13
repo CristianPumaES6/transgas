@@ -46,7 +46,7 @@ export class FileUploadComponent implements OnInit {
   public isOnline: boolean = true;
 
   //======== VARIABLES DE TRADUCCION=============
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'fileUpload';
   //=================[ FIN ]=====================
 
@@ -57,6 +57,7 @@ export class FileUploadComponent implements OnInit {
     private languageService: LanguageService,
     readonly onlineOfflineService: OnlineOfflineService,
   ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
 
 
     // subscribe receives the value. sirve para recibir algun emit
@@ -70,7 +71,7 @@ export class FileUploadComponent implements OnInit {
 
 
   ngOnInit() {
-    
+
     // Obtenemos el estado de la conexion.
     this.isOnline = this.onlineOfflineService.GetStatusOnline();
 

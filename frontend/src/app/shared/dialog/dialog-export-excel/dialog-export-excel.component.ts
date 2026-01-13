@@ -28,7 +28,7 @@ export class DialogExportExcelComponent implements OnInit {
   public isFirstCompleted: boolean = false;
 
   // Traducciones
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'dialog';
   public selectTypeExportExcel: string = '';
 
@@ -46,7 +46,9 @@ export class DialogExportExcelComponent implements OnInit {
     private excelService: ExcelService,
     private excelFormatDNVService: ExcelFormatDNVService,
     private excelFormatVesselDataRegisterService: ExcelFormatVesselDataRegisterService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   ngOnInit(): void {
   }

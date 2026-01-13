@@ -144,11 +144,13 @@
         <ng-template [ngIf]="(roleUser == 'ADMIN' || roleUser == 'SUPPORT') && user.role == 'BUQUE'">
 
           <hr>
-          <h2 class="az-content-title tx-24 mg-b-20 mg-t-10"><u> {{'VESSEL_CONFIGURATION' | translateMessage:translateCategory}}</u>
+          <h2 class="az-content-title tx-24 mg-b-20 mg-t-10"><u> {{'VESSEL_CONFIGURATION' |
+              translateMessage:translateCategory}}</u>
             <div class="float-right">
               {{TextYears(user.years)}}
               <button mat-button color="primary" (click)="ClickAddYear()"
                 matTooltip="{{'NEW_YEAR' | translateMessage:translateCategory}}" [disabled]='disableEdit'>
+                <mat-icon class="icon-add"></mat-icon>
                 {{'NEW_YEAR' | translateMessage:translateCategory}}
               </button>
 

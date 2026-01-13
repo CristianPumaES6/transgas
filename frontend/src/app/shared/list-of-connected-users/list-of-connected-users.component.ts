@@ -20,7 +20,7 @@ export class ListOfConnectedUsersComponent implements OnInit {
   @ViewChild('myDivContent') htmlMyDivContent: ElementRef;
 
   //======== VARIABLES DE TRADUCCION=============
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'users';
   //=================[ FIN ]=====================
 
@@ -60,7 +60,9 @@ export class ListOfConnectedUsersComponent implements OnInit {
     private notificationsService: NotificationsService,
     private _renderer2: Renderer2,
     private onlineOfflineService: OnlineOfflineService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   ngOnInit(): void {
 
@@ -239,8 +241,8 @@ export class ListOfConnectedUsersComponent implements OnInit {
     }
   }
 
-  public ClickSyncDataByUser(loggedUser:LoggedUser) {
-    
+  public ClickSyncDataByUser(loggedUser: LoggedUser) {
+
     if (this.onlineOfflineService.GetStatusOnline()) {
       this.onlineOfflineService.SyncDataByUser(loggedUser);
     }

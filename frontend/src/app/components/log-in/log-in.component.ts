@@ -32,7 +32,7 @@ import { DatabaseService } from '../../services/database.service';
 export class LogInComponent implements OnInit {
 
   // Variables de traduccion
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'logIn';
 
 
@@ -53,6 +53,7 @@ export class LogInComponent implements OnInit {
 
     // Mostramos la version del app
     this.version = EnvConfig.VERSION;
+    this.userLanguage = this.languageService.GetCurrentLanguage();
   }
 
   ngOnInit(): void {

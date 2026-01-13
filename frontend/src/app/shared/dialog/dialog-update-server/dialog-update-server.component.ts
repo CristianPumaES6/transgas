@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'; 
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LanguageService } from '../../../services/language.service';
- 
+
 
 // Interface de los input del componente.
 export interface IDialogUpdateServer {
-  versionActual:string,
-  versionServer:string
+  versionActual: string,
+  versionServer: string
 }
 
 @Component({
@@ -16,7 +16,7 @@ export interface IDialogUpdateServer {
 })
 export class DialogUpdateServerComponent implements OnInit {
 
- 
+
 
   // Constructores para setear valores al componente.
   constructor(
@@ -26,21 +26,23 @@ export class DialogUpdateServerComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: IDialogUpdateServer,
     // servicio de lenguaje.
     private languageService: LanguageService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   // Traducciones
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'dialog';
-  public iDialogUpdateServer : IDialogUpdateServer = <IDialogUpdateServer>{
-    versionActual : '',
-    versionServer:'',
+  public iDialogUpdateServer: IDialogUpdateServer = <IDialogUpdateServer>{
+    versionActual: '',
+    versionServer: '',
   };
- 
+
 
   ngOnInit(): void {
     this.iDialogUpdateServer = this.data || <IDialogUpdateServer>{
-      versionActual : '',
-      versionServer:'',
+      versionActual: '',
+      versionServer: '',
     };
   }
 }

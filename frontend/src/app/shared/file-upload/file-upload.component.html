@@ -1,6 +1,7 @@
 <div class="az-img-user cont-img-upload">
 
-  <img src="{{filename||'../../../../../assets/500x500.png'}}" alt="">
+  <img src="{{filename||'../../../../../assets/500x500.png'}}" (error)="filename = '../../../../../assets/500x500.png'"
+    alt="">
 
   <ng-template [ngIf]="isOnline">
     <ng-template [ngIf]="id && (role=='ADMIN' || role=='SUPPORT')">

@@ -35,7 +35,7 @@ export class SpeedAnalysisComponent implements OnInit {
   public isOnline: boolean = true;
 
   // Variables de traduccion
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'speedAnalysis';
 
   // Rol del usuario logeado.
@@ -102,6 +102,7 @@ export class SpeedAnalysisComponent implements OnInit {
     private formuleService: FormuleService,
     private userService: UserService,
   ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
     // Inicializamos y bloqueamos el formulario.
     this.ReactiveForm(true, false, true, false, true);
   }

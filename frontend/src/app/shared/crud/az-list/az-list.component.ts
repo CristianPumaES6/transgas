@@ -14,7 +14,7 @@ import PerfectScrollbar from 'perfect-scrollbar';
 export class AzListComponent implements OnInit {
 
   public translateCategory: string = 'azList';
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
 
   // Arreglo de item breadcrumb.
   @Input()
@@ -56,7 +56,9 @@ export class AzListComponent implements OnInit {
 
   constructor(
     private languageService: LanguageService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   ngOnInit(): void {
     setTimeout(() => {

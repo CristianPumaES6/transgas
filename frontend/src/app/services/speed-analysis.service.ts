@@ -10,12 +10,14 @@ import { GetReportVoyagePortDaily } from '../models/dialog-export-excel';
 })
 export class SpeedAnalysisService {
 
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'speedAnalysis';
 
   constructor(
     private languageService: LanguageService
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
 
   public async DowloadExcelDataLocal(BuqueName: string, listReportVPD: GetReportVoyagePortDaily[]): Promise<boolean> {
@@ -272,6 +274,71 @@ export class SpeedAnalysisService {
         console.error('ERROR Generating Full DB Excel', err);
         return false;
       });
+  }
+
+  // ==========================================
+  // IMPORT EXCEL
+  // ==========================================
+
+  public async ParseExcelToDbData(file: File): Promise<{ users: any[], voyages: any[], ports: any[], dailyReports: any[] }> {
+    const workbook = new Workbook();
+    const arrayBuffer = await file.arrayBuffer();
+    await workbook.xlsx.load(arrayBuffer);
+
+    const result = {
+      users: [] as any[],
+      voyages: [] as any[],
+      ports: [] as any[],
+      dailyReports: [] as any[]
+    };
+
+    // Helper to read sheet to array of objects
+    const sheetToObjects = (sheetName: string): any[] => {
+      const sheet = workbook.getWorksheet(sheetName);
+      if (!sheet) return [];
+
+      const data: any[] = [];
+      const headers: string[] = [];
+
+      sheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) {
+          // Headers
+          row.eachCell((cell, colNumber) => {
+            headers[colNumber] = cell.value ? cell.value.toString() : '';
+          });
+        } else {
+          // Data
+          let rowData: any = {};
+          row.eachCell((cell, colNumber) => {
+            const header = headers[colNumber];
+            if (header) {
+              let val = cell.value;
+              // Try JSON parse if string looks like object/array
+              // The sanitize function used JSON.stringify for objects.
+              // Primitive values are kept as is (except Excel might have its own types).
+              // string, number, etc.
+              if (typeof val === 'string' && (val.startsWith('{') || val.startsWith('['))) {
+                try {
+                  val = JSON.parse(val);
+                } catch (e) {
+                  // Keep as string if parse fails
+                }
+              }
+              rowData[header] = val;
+            }
+          });
+          data.push(rowData);
+        }
+      });
+      return data;
+    };
+
+    result.users = sheetToObjects('Users');
+    result.voyages = sheetToObjects('Voyages');
+    result.ports = sheetToObjects('Ports');
+    result.dailyReports = sheetToObjects('DailyReports');
+
+    return result;
   }
 
 }

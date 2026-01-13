@@ -25,7 +25,7 @@ import { FormuleService } from '../formule.service';
 export class ExcelFormatDNVService {
 
   // Translate
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'exportExcel';
   public selectUser: User = new User();
 
@@ -35,7 +35,9 @@ export class ExcelFormatDNVService {
     private dailyReportService: DailyReportService,
     private excelService: ExcelService,
     private formuleService: FormuleService
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
 
   // Opcion que exporta el excel.

@@ -34,10 +34,12 @@ export class DialogListReportComponent implements OnInit {
     public dialogRef: MatDialogRef<DialogListReportComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IDialogListReport,
     private languageService: LanguageService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   // Traducciones
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'dialog';
 
   // Viaje filtrado

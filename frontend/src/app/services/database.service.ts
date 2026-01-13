@@ -36,7 +36,7 @@ export class DatabaseService {
     private db: any;
 
     //======== VARIABLES DE TRADUCCION=============
-    public userLanguage: string = this.languageService.GetCurrentLanguage();
+    public userLanguage: string;
     public translateCategory: string = 'voyage';
 
     constructor(
@@ -49,6 +49,7 @@ export class DatabaseService {
         private languageService: LanguageService,
     ) {
         console.log('DatabaseService constructor()');
+        this.userLanguage = this.languageService.GetCurrentLanguage();
 
         // Creamos la DataBase.
         this.createDatabase();
@@ -588,6 +589,30 @@ export class DatabaseService {
                 });
     }
 
+
+    // =================== IMPORT / BULK PUT ====================================
+
+    public async BulkPutUsers(users: User[]): Promise<void> {
+        console.log('BulkPutUsers', users.length);
+        await this.db.users.bulkPut(users);
+    }
+
+    public async BulkPutVoyages(voyages: Voyage[]): Promise<void> {
+        console.log('BulkPutVoyages', voyages.length);
+        await this.db.voyages.bulkPut(voyages);
+    }
+
+    public async BulkPutPorts(ports: Port[]): Promise<void> {
+        console.log('BulkPutPorts', ports.length);
+        await this.db.ports.bulkPut(ports);
+    }
+
+    public async BulkPutDailyReports(dailyReports: DailyReport[]): Promise<void> {
+        console.log('BulkPutDailyReports', dailyReports.length);
+        await this.db.dailyReports.bulkPut(dailyReports);
+    }
+
+    // Existing addUsersIndexedDB...
     // Agregar Users por indexedDB
     public async addUsersIndexedDB(users: User[]): Promise<boolean> {
         console.log('addUsersIndexedDB(users: User[])');

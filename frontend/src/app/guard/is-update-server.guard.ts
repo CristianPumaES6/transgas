@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class IsUpdateServerGuard implements CanActivate {
 
   //======== VARIABLES DE TRADUCCION=============
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'guards';
   //=================[ FIN ]=====================
 
@@ -29,6 +29,7 @@ export class IsUpdateServerGuard implements CanActivate {
     private onlineOfflineService: OnlineOfflineService,
     public dialog: MatDialog,
   ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
     console.log('Constructor()')
   }
 

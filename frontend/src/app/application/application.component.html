@@ -50,12 +50,17 @@
               {{'EDIT_PERFIL' | translateMessage:translateCategory}}
             </a> -->
 
-            
+
+            <!-- IMPORT FOR SUPPORT ONLY -->
             <ng-template [ngIf]="loggedUser.role === 'SUPPORT'">
-            <a (click)="ClickOpenListOfConnectedUsers()" class="dropdown-item" style="cursor: pointer;">
-              <i class="icon-punto-circulo"></i>
-              {{'LIST_OF_CONNECTED_USERS' | translateMessage:translateCategory}}
-            </a>
+              <a (click)="ClickImportAllLocalData()" class="dropdown-item" style="cursor: pointer;">
+                <i class="icon-archivo-excel"></i>
+                Import Local Data
+              </a>
+              <a (click)="ClickOpenListOfConnectedUsers()" class="dropdown-item" style="cursor: pointer;">
+                <i class="icon-punto-circulo"></i>
+                {{'LIST_OF_CONNECTED_USERS' | translateMessage:translateCategory}}
+              </a>
             </ng-template>
             <a (click)="ClickDownloadLocalData()" class="dropdown-item" style="cursor: pointer;">
               <i class="icon-archivo-excel"></i>
@@ -84,14 +89,15 @@
   </div>
   <div class="az-footer">
     <div class="container-fluid">
-      <span>&copy; 2024 Transgas <span class="css-version-plataform">{{version}} - 07 JULY</span> - Sailing Anality</span>
+      <span>&copy; 2026 Transgas <span class="css-version-plataform">{{version}} - 07 JULY</span> - Sailing
+        Anality</span>
 
       <!-- <span>Designed by: ThemePixels</span> -->
- 
 
-      <span class="float-righ"  id="clickSyncDataLocal" (click)="ClickSyncDataLocal()"
+
+      <span class="float-righ" id="clickSyncDataLocal" (click)="ClickSyncDataLocal()"
         matTooltip="Update Data Local ( V{{cantidadRestanteOffline.voyage}}  P{{cantidadRestanteOffline.port}}  R{{cantidadRestanteOffline.report}})">
-         {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
+        {{'CURRENT_STATUS' | translateMessage:translateCategory}}:
         <span [className]="isOnline ? 'text-success' : 'text-danger'">{{'STATUS_'+isOnline |
           translateMessage:translateCategory}}
           <span class="icon-punto-circulo"></span>
@@ -103,9 +109,9 @@
             'refreshing': isRefreshingData
             }"></span>
 
-            <span class="pl-1">
-              T: {{ cantidadRestanteOffline.voyage + cantidadRestanteOffline.port + cantidadRestanteOffline.report}}
-            </span>
+          <span class="pl-1">
+            T: {{ cantidadRestanteOffline.voyage + cantidadRestanteOffline.port + cantidadRestanteOffline.report}}
+          </span>
         </span>
       </span>
 
@@ -114,3 +120,7 @@
   <!-- az-footer -->
 
 </div>
+
+<!-- Hidden File Input for Import -->
+<input type="file" id="importLocalDataInput" style="display: none;" (change)="OnImportFileSelected($event)"
+  accept=".xlsx, .xls">

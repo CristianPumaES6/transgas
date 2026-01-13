@@ -21,13 +21,15 @@ import { LanguageService } from '../language.service';
 })
 export class ExcelFormatVesselDataRegisterService {
 
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'exportExcel';
 
   constructor(
     private languageService: LanguageService,
     private dailyReportService: DailyReportService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   public GenerateExcel() {
 
@@ -68,7 +70,7 @@ export class ExcelFormatVesselDataRegisterService {
     // Add row with current date
     let subTitleRow = worksheet.addRow(['Date : ' + new Date()]);
 
- 
+
     // unir celdas
     worksheet.mergeCells('A1:D1');
 
@@ -144,8 +146,8 @@ export class ExcelFormatVesselDataRegisterService {
 
               // Validamos
               if (!result) { throw 'ERROR GER REPORT' };
-              
-              
+
+
               // Guardamos los datos en una variable.
               getInfoFuelStartEndByFilterDate = result;
 
@@ -315,7 +317,7 @@ export class ExcelFormatVesselDataRegisterService {
     let positionRow = position;
 
 
-    let tamanioTableReport = this.AddReportTable(worksheet, positionRow, positionColumn, selectUser, textIFOorVLSFOorLSFO,getInfoFuelStartEndByFilterDate);
+    let tamanioTableReport = this.AddReportTable(worksheet, positionRow, positionColumn, selectUser, textIFOorVLSFOorLSFO, getInfoFuelStartEndByFilterDate);
 
     positionRow = tamanioTableReport;
 
@@ -392,7 +394,7 @@ export class ExcelFormatVesselDataRegisterService {
         if (index == 0) {
 
           // Revisar stimitime no debria estar aqui. deberia apuntar a la leyenda
-          
+
 
 
           worksheet.getCell('Z' + positionRow).value = <any>{ formula: 'Z' + (positionRow - 2) + '-W' + positionRow + '+Y' + positionRow };
@@ -954,7 +956,7 @@ export class ExcelFormatVesselDataRegisterService {
     };
   };
 
-  private AddReportTable(worksheet, posit, colum, selectUser: User, textIFOorVLSFOorLSFO: string, getInfoFuelStartEndByFilterDate:any): number {
+  private AddReportTable(worksheet, posit, colum, selectUser: User, textIFOorVLSFOorLSFO: string, getInfoFuelStartEndByFilterDate: any): number {
     // Nos ubicamos en una posicion para empezar a poner los row
     // this.mergeCellReport(worksheet, position);
 
@@ -1161,7 +1163,7 @@ export class ExcelFormatVesselDataRegisterService {
     };
     worksheet.mergeCells('AA' + positionRow, 'AG' + positionRow);
 
-    console.log('MGO :'+getInfoFuelStartEndByFilterDate.mgo_start)
+    console.log('MGO :' + getInfoFuelStartEndByFilterDate.mgo_start)
     worksheet.getCell('AH' + positionRow).value = getInfoFuelStartEndByFilterDate.mgo_start;
     worksheet.getCell('AH' + positionRow).style = {
       alignment: {

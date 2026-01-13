@@ -34,7 +34,7 @@
         <i class="icon-menu-help"></i>
       </a>
       <span class="az-img-user online"><img src="{{loggedUser.filename||'../../../../assets/500x500.png'}}"
-          alt=""></span>
+          (error)="loggedUser.filename = '../../../../assets/500x500.png'" alt=""></span>
     </div><!-- az-iconbar-bottom -->
   </div><!-- az-iconbar -->
 
@@ -85,8 +85,8 @@
 
             </ng-template>
 
-                <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'oil_lubricant_analysis'}"
-                (click)="selectNavLink('oil_lubricant_analysis')">Oil Lubricant Analysis</a>
+            <a href="#" class="nav-link" [ngClass]="{'active' : navLink === 'oil_lubricant_analysis'}"
+              (click)="selectNavLink('oil_lubricant_analysis')">Oil Lubricant Analysis</a>
 
           </nav>
 

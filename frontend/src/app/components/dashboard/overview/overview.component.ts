@@ -26,7 +26,7 @@ export class OverviewComponent implements OnInit {
   public isOnline: boolean = true;
 
   // Variables de traduccion
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'overview';
 
   // Rol del usuario logeado.
@@ -38,11 +38,11 @@ export class OverviewComponent implements OnInit {
   public getLastPortAndTotalConsump: GetLastPortAndTotalConsump[] = [];
 
   public cantDecimal = 2;
-  public sendMessageEntity:SendMessageEntity = new SendMessageEntity();
+  public sendMessageEntity: SendMessageEntity = new SendMessageEntity();
 
   public selectUser: User = new User();
 
-  constructor (
+  constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
@@ -52,7 +52,9 @@ export class OverviewComponent implements OnInit {
     private loadingService: LoadingService,
     private portService: PortService,
     public dialog: MatDialog
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   ngOnInit(): void {
     setTimeout(() => {

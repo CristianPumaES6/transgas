@@ -20,13 +20,15 @@ import { LanguageService } from '../language.service';
 })
 export class ExcelService {
 
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'exportExcel';
 
   constructor(
     private languageService: LanguageService,
     private dailyReportService: DailyReportService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
   public GenerateExcel() {
 
@@ -339,7 +341,7 @@ export class ExcelService {
                 let blob = new Blob(
                   [data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
                 );
-                fs.saveAs(blob, 'REPORT '+selectUser.name.toUpperCase()+'.xlsx');
+                fs.saveAs(blob, 'REPORT ' + selectUser.name.toUpperCase() + '.xlsx');
               });
 
               return true;
@@ -1532,7 +1534,7 @@ export class ExcelService {
           getReportVoyagePortDaily.date, '', '',
           getReportVoyagePortDaily.hour, '',
           //{ formula: 'IF(P' + positionRow + '-P' + (positionRow - 1) + '=1,((S' + positionRow + '-S' + (positionRow - 1) + ')*24)+24,(S' + positionRow + '-S' + (positionRow - 1) + ')*24)' }, '',
-          { formula: '(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
+          { formula: '(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
           this.languageService.GetMessage(this.translateCategory, getReportVoyagePortDaily.activityPerformed), '', '', '',
 
 
@@ -1542,7 +1544,7 @@ export class ExcelService {
 
           getReportVoyagePortDaily.distance, '',
           // Solo si es de la actividad de navegacion deberia de agregarse.
-          { formula: '(P'+positionRow+' - P'+(positionRow-1)+')*24'}, '',
+          { formula: '(P' + positionRow + ' - P' + (positionRow - 1) + ')*24' }, '',
           // Velocidad formula.
           { formula: 'IF(ISERROR(AJ' + positionRow + '/AL' + positionRow + '),0,AJ' + positionRow + '/AL' + positionRow + ')' }, '',
           getReportVoyagePortDaily.beaufour, '',
@@ -2845,18 +2847,18 @@ export class ExcelService {
     return posit;
   }
   private StyleDashActivity(worksheet, posit, colum, selectUser: User, isIFOorMGO: string): number {
- 
 
-    let colorYellowTransgas = 'FFCD06'; 
+
+    let colorYellowTransgas = 'FFCD06';
     let blueHard3 = '001556'
-    let greenMedium = 'b6c2ff94' 
+    let greenMedium = 'b6c2ff94'
     let black = '000'
     let white = 'ffffff';
 
     // Variables de colores- 
-    let grisMedio = 'ebe8e8' 
- 
-    let redMedium = 'ffa4a4'; 
+    let grisMedio = 'ebe8e8'
+
+    let redMedium = 'ffa4a4';
 
     let textIFOorVLSFOorLSFO = selectUser.isConsumptionIFO ? 'IFO' : selectUser.isConsumptionLSFO ? 'LSFO' : selectUser.isConsumptionVLSFO ? 'VLSFO' : 'LSFO';
 

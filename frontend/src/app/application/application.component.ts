@@ -48,7 +48,7 @@ export class ApplicationComponent implements OnInit {
   public loggedUser: User = <any>{};
 
   // Variables de traduccion
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'application';
 
   // esta variable ayuda a saber si la aplicacion se encuantra en linea.
@@ -77,6 +77,7 @@ export class ApplicationComponent implements OnInit {
     private _SpeedAnalysisService: SpeedAnalysisService
   ) {
     console.log('ApplicationComponent constructor()');
+    this.userLanguage = this.languageService.GetCurrentLanguage();
 
     // Subscribe receives the value. sirve para recibir algun emit
     this.onlineOfflineService.emitterIsOnline.subscribe(
@@ -421,6 +422,52 @@ export class ApplicationComponent implements OnInit {
         return false;
       }
     );
+  }
+
+  public async ClickImportAllLocalData() {
+    console.log('ClickImportAllLocalData');
+    const fileInput = document.getElementById('importLocalDataInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  public async OnImportFileSelected(event: any) {
+    console.log('OnImportFileSelected');
+    const file: File = event.target.files[0];
+    if (file) {
+      this._loadingService.Open();
+      try {
+        const data = await this._SpeedAnalysisService.ParseExcelToDbData(file);
+
+        console.log('Importing Data:', {
+          users: data.users.length,
+          voyages: data.voyages.length,
+          ports: data.ports.length,
+          dailyReports: data.dailyReports.length
+        });
+
+        // Save to DB
+        // We use bulkPut to update existing records or insert new ones
+        if (data.users.length) await this.databaseService.BulkPutUsers(data.users);
+        if (data.voyages.length) await this.databaseService.BulkPutVoyages(data.voyages);
+        if (data.ports.length) await this.databaseService.BulkPutPorts(data.ports);
+        if (data.dailyReports.length) await this.databaseService.BulkPutDailyReports(data.dailyReports);
+
+        this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), 'Data Imported Successfully');
+
+        // Optional: Reload page or notify components to refresh
+        this.databaseService.EmitterReloadData();
+
+      } catch (err) {
+        console.error('Import Error', err);
+        this.notificationsService.error(this.languageService.GetMessage(this.translateCategory, 'ERROR'), 'Error Importing Data');
+      } finally {
+        this._loadingService.Close();
+        // Clear input so same file can be selected again
+        event.target.value = '';
+      }
+    }
   }
 
   public async ClickDownloadAllLocalData(): Promise<boolean> {

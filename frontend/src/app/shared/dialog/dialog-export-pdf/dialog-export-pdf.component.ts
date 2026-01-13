@@ -61,11 +61,13 @@ export class DialogExportPdfComponent implements OnInit {
     private loadingService: LoadingService,
     // Agregamos el servicio del reporte.
     private dailyReportService: DailyReportService,
-  ) { }
+  ) {
+    this.userLanguage = this.languageService.GetCurrentLanguage();
+  }
 
 
   // Traducciones
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'dialog';
 
   // Usuario seleccionado

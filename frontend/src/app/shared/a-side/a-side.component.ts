@@ -19,7 +19,7 @@ export class ASideComponent implements OnInit {
 
   // Variables de traduccion
   public translateCategory: string = 'aSide';
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
 
   @Input()
   public loggedUser: User = new User();
@@ -45,6 +45,7 @@ export class ASideComponent implements OnInit {
     private languageService: LanguageService,
   ) {
     console.log('constructor()');
+    this.userLanguage = this.languageService.GetCurrentLanguage();
 
 
   }

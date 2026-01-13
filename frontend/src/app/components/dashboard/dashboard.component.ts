@@ -71,7 +71,7 @@ export class DashboardComponent implements OnInit {
   public isOnline: boolean = true;
 
   // Variables de traduccion
-  public userLanguage: string = this.languageService.GetCurrentLanguage();
+  public userLanguage: string;
   public translateCategory: string = 'dashboard';
 
   // Rol del usuario logeado.
@@ -225,6 +225,8 @@ export class DashboardComponent implements OnInit {
         this.isOnline = isOnline;
       }
     );
+
+    this.userLanguage = this.languageService.GetCurrentLanguage();
 
   }
 
@@ -4343,7 +4345,7 @@ export class DashboardComponent implements OnInit {
 
     // CUADO SE CIERRA DE COMPONENTE NOS RETORAN UN RESULTADO.
     dialogRef.afterClosed().subscribe(
-     
+
       (result: number) => {
         if (!result) {
           // Si el resultado es 0 o null no hacemos nada.

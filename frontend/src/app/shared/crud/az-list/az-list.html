@@ -60,7 +60,8 @@
 
     <div class="az-contact-item" [ngClass]="{'selected' : azList === selectAzList}">
 
-      <div *ngIf="!!azList.image" class="az-img-user"><img src="{{azList.image}}" alt=""></div>
+      <div *ngIf="!!azList.image" class="az-img-user"><img src="{{azList.image}}"
+          (error)="azList.image = '../../../../../assets/500x500.png'" alt=""></div>
 
       <a href="#" class="az-contact-body" [ngClass]="{'ml-0': !azList.image == true}" (click)="OnSelectAzList(azList)">
         <h6 class="pt-2">
@@ -87,7 +88,8 @@
           </button>
         </ng-template>
 
-        <ng-template [ngIf]="settingAzList.activateSelectItemEmit3 && (!settingAzList.activateSelectItemEmit2 || azList.item2 > 0)">
+        <ng-template
+          [ngIf]="settingAzList.activateSelectItemEmit3 && (!settingAzList.activateSelectItemEmit2 || azList.item2 > 0)">
 
           <button mat-icon-button mat-button (click)="OnSelectItemEmit3(azList)"
             matTooltip="{{settingAzList.toolTipSelectItemEmit3}}">
