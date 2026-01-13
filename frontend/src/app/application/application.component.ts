@@ -447,17 +447,44 @@ export class ApplicationComponent implements OnInit {
           dailyReports: data.dailyReports.length
         });
 
+        // Helper to set syncStatus to 'added' so the Sync service picks them up and sends them to backend
+        const setSyncAdded = (item: any) => {
+          item.syncStatus = 'added';
+          return item;
+        };
+
+        const users = data.users.map((u: any) => {
+          u.syncStatus = 'added';
+          // Fix for Users: Ensure password exists for backend validation
+          if (!u.password) {
+            u.password = '123456';
+          }
+          // Fix for Users: Ensure IMO exists if role is BUQUE
+          if (u.role === 'BUQUE' && !u.imo) {
+            u.imo = '0000000';
+          }
+          return u;
+        });
+        const voyages = data.voyages.map(setSyncAdded);
+        const ports = data.ports.map(setSyncAdded);
+        const dailyReports = data.dailyReports.map(setSyncAdded);
+
         // Save to DB
         // We use bulkPut to update existing records or insert new ones
-        if (data.users.length) await this.databaseService.BulkPutUsers(data.users);
-        if (data.voyages.length) await this.databaseService.BulkPutVoyages(data.voyages);
-        if (data.ports.length) await this.databaseService.BulkPutPorts(data.ports);
-        if (data.dailyReports.length) await this.databaseService.BulkPutDailyReports(data.dailyReports);
+        if (users.length) await this.databaseService.BulkPutUsers(users);
+        if (voyages.length) await this.databaseService.BulkPutVoyages(voyages);
+        if (ports.length) await this.databaseService.BulkPutPorts(ports);
+        if (dailyReports.length) await this.databaseService.BulkPutDailyReports(dailyReports);
 
-        this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), 'Data Imported Successfully');
+        this.notificationsService.success(this.languageService.GetMessage(this.translateCategory, 'SUCCESS'), 'Data Imported Locally. Syncing to Server...');
 
-        // Optional: Reload page or notify components to refresh
+        // Reload data to show changes
         this.databaseService.EmitterReloadData();
+
+        // Trigger Sync to Backend immediately if online
+        if (this.isOnline) {
+          await this.ClickSyncDataLocal();
+        }
 
       } catch (err) {
         console.error('Import Error', err);
