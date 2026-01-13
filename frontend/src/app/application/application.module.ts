@@ -34,10 +34,12 @@ import { DialogConfigDashboardComponent } from '../shared/dialog/dialog-config-d
 import { OverviewComponent } from '../components/dashboard/overview/overview.component';
 import { DialogConfigMailComponent } from '../shared/dialog/dialog-config-mail/dialog-config-mail.component';
 import { LubricantAnalysisComponent } from '../components/dashboard/lubricant-analysis/lubricant-analysis.component';
+import { MigrationComponent } from '../components/migration/migration.component';
 
 @NgModule({
   declarations: [
     ApplicationComponent,
+    MigrationComponent,
     DashboardComponent,
     ASideComponent,
     AzListComponent,

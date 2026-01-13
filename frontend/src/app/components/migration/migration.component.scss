@@ -1,0 +1,31 @@
+
+.migration-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; 
+  background-color: #f4f5f7;
+  padding: 20px;
+}
+
+.migration-card {
+  width: 100%;
+  max-width: 600px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+
+.card-title {
+  color: #333;
+  font-weight: 700;
+}
+
+.status-text {
+  color: #555;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  background-color: #5b47fb; /* Transgas brand color approximation, adjust if needed */
+}

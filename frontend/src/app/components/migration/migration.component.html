@@ -1,0 +1,38 @@
+<div class="migration-container">
+    <div class="card migration-card">
+        <div class="card-body text-center">
+            <div class="mb-4">
+                <i class="fas fa-database fa-4x text-primary mb-3"></i>
+                <h2 class="card-title">Updating Version & Migrating Data</h2>
+                <p class="card-text text-muted">
+                    We are exporting all your local data to ensure a smooth transition to the new server version.
+                    Please do not close this window until the download is complete.
+                </p>
+            </div>
+
+            <div class="progress mb-3" style="height: 25px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                    [style.width.%]="progress" [attr.aria-valuenow]="progress" aria-valuemin="0" aria-valuemax="100">
+                    {{progress}}%
+                </div>
+            </div>
+
+            <p class="status-text font-weight-bold">{{status}}</p>
+
+            <div *ngIf="progress === 100" class="mt-4">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> Data exported successfully!
+                </div>
+                <button class="btn btn-primary btn-block" (click)="goBack()">Return to Dashboard</button>
+            </div>
+
+            <div *ngIf="status.includes('Error')" class="mt-4">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> Data export failed.
+                </div>
+                <button class="btn btn-secondary btn-block" (click)="goBack()">Return to Dashboard</button>
+            </div>
+
+        </div>
+    </div>
+</div>

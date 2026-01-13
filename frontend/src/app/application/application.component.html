@@ -61,6 +61,10 @@
               <i class="icon-archivo-excel"></i>
               {{'DOWNLOAD_LOCAL_DATA' | translateMessage:translateCategory}}
             </a>
+            <a (click)="ClickDownloadAllLocalData()" class="dropdown-item" style="cursor: pointer;">
+              <i class="icon-archivo-excel"></i>
+              {{'DOWNLOAD_ALL_LOCAL_DATA' | translateMessage:translateCategory}}
+            </a>
             <a (click)="ClickLogout()" class="dropdown-item" style="cursor: pointer;">
               <i class="icon-logout-1"></i>
               {{'EXIT_PERFIL' | translateMessage:translateCategory}}

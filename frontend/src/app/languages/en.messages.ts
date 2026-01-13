@@ -16,6 +16,7 @@ export const application: any = {
     EDIT_PERFIL: 'Edit profile',
     LIST_OF_CONNECTED_USERS: 'List of connected users',
     DOWNLOAD_LOCAL_DATA: 'Download local data',
+    DOWNLOAD_ALL_LOCAL_DATA: 'Download ALL local data',
     EXIT_PERFIL: 'Logout',
     CURRENT_STATUS: 'current status',
     STATUS_TRUE: 'Online',
@@ -455,7 +456,7 @@ export const dashboard: any = {
 
 export const dialog: any = {
     NEW_MODULE: 'New module',
-    NEW_MODULE_DESCRIPTION : 'This action is available in a later version.',
+    NEW_MODULE_DESCRIPTION: 'This action is available in a later version.',
     TYPE_CONSUMPTION: 'Type consumption',
     MORE_INFORMATION: 'More information :',
     VIEW_ALL_VOYAGE: 'See All Voyage',
@@ -525,7 +526,7 @@ export const dialog: any = {
     SUCCESS_TEST_SEND_EMAIL: 'The test was sent correctly.',
     ERROR: 'Error',
     SUCCESS: 'Success',
-    SOON_YOU_CONFIRMATION :'Soon you will receive a confirmation.',
+    SOON_YOU_CONFIRMATION: 'Soon you will receive a confirmation.',
     ERROR_EMAIL_CLEAR: 'the email field is empty.',
     ERROR_SAVE_CONFIG_SENDMAIL: 'Failed to save mail delivery settings, contact support.',
     SUCCESS_SEND_MAIL_SAVE: 'The mail delivery configuration was saved correctly.'

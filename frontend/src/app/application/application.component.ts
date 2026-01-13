@@ -423,6 +423,13 @@ export class ApplicationComponent implements OnInit {
     );
   }
 
+  public async ClickDownloadAllLocalData(): Promise<boolean> {
+    console.log('ClickDownloadAllLocalData Navigating to Migration Page');
+    // Using simple navigation via router. using absolute path since this method is in ApplicationComponent
+    this.router.navigate(['/application/migration']);
+    return true;
+  }
+
 
   public GetRoutelNavLink() {
     console.log('GetRoutelNavLink()');
@@ -491,7 +498,7 @@ export class ApplicationComponent implements OnInit {
         this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
         break;
       case 'oil_lubricant_analysis':
-          this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
+        this.router.navigate(['../application/dashboard/' + navLink], { relativeTo: this.activatedRoute });
         break;
       // Fin dashboard
 

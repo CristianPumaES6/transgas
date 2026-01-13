@@ -173,6 +173,105 @@ export class SpeedAnalysisService {
 
   }
 
+  public async DowloadFullDbExport(
+    users: any[],
+    voyages: any[],
+    ports: any[],
+    dailyReports: any[]
+  ): Promise<boolean> {
 
+    // Helper to sanitize object values for Excel
+    const sanitizeForExcel = (item: any): any => {
+      let newItem: any = {};
+      for (const key in item) {
+        if (Object.prototype.hasOwnProperty.call(item, key)) {
+          let value = item[key];
+          // If value is array or object (and not null/date), stringify it
+          if (value && typeof value === 'object' && !(value instanceof Date)) {
+            try {
+              newItem[key] = JSON.stringify(value);
+            } catch (e) {
+              newItem[key] = '[Complex Object]';
+            }
+          } else {
+            newItem[key] = value;
+          }
+        }
+      }
+      return newItem;
+    };
+
+    // Creamos una nueva hoja de trabajo
+    let workbook = new Workbook();
+    workbook.creator = 'codev.site';
+    let timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    let textDocDownload = 'Full_Export_Local_DB_' + timestamp;
+
+    return await Promise.resolve(true)
+      .then(result => {
+
+        // ==========================================
+        // SHEET 1: USERS
+        // ==========================================
+        let sheetUsers = workbook.addWorksheet('Users');
+        if (users.length > 0) {
+          let keys = Object.keys(users[0]);
+          sheetUsers.columns = keys.map(key => ({ header: key, key: key }));
+          users.forEach(u => sheetUsers.addRow(sanitizeForExcel(u)));
+        } else {
+          sheetUsers.columns = [{ header: 'No Data', key: 'nodata' }];
+        }
+
+        // ==========================================
+        // SHEET 2: VOYAGES
+        // ==========================================
+        let sheetVoyages = workbook.addWorksheet('Voyages');
+        if (voyages.length > 0) {
+          let keys = Object.keys(voyages[0]);
+          sheetVoyages.columns = keys.map(key => ({ header: key, key: key }));
+          voyages.forEach(v => sheetVoyages.addRow(sanitizeForExcel(v)));
+        } else {
+          sheetVoyages.columns = [{ header: 'No Data', key: 'nodata' }];
+        }
+
+        // ==========================================
+        // SHEET 3: PORTS
+        // ==========================================
+        let sheetPorts = workbook.addWorksheet('Ports');
+        if (ports.length > 0) {
+          let keys = Object.keys(ports[0]);
+          sheetPorts.columns = keys.map(key => ({ header: key, key: key }));
+          ports.forEach(p => sheetPorts.addRow(sanitizeForExcel(p)));
+        } else {
+          sheetPorts.columns = [{ header: 'No Data', key: 'nodata' }];
+        }
+
+        // ==========================================
+        // SHEET 4: DAILY REPORTS
+        // ==========================================
+        let sheetDaily = workbook.addWorksheet('DailyReports');
+        if (dailyReports.length > 0) {
+          let keys = Object.keys(dailyReports[0]);
+          sheetDaily.columns = keys.map(key => ({ header: key, key: key }));
+          dailyReports.forEach(d => sheetDaily.addRow(sanitizeForExcel(d)));
+        } else {
+          sheetDaily.columns = [{ header: 'No Data', key: 'nodata' }];
+        }
+
+        // Write Buffer
+        workbook.xlsx.writeBuffer().then((data) => {
+          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          fs.saveAs(blob, textDocDownload + '.xlsx');
+        });
+
+      })
+      .then(result => {
+        return true;
+      })
+      .catch(err => {
+        console.error('ERROR Generating Full DB Excel', err);
+        return false;
+      });
+  }
 
 }

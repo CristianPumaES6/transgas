@@ -17,10 +17,14 @@ import { ConsumptionAnalysisComponent } from '../components/dashboard/consumptio
 import { OverviewComponent } from '../components/dashboard/overview/overview.component';
 import { LubricantAnalysisComponent } from '../components/dashboard/lubricant-analysis/lubricant-analysis.component';
 
+import { MigrationComponent } from '../components/migration/migration.component';
+
 const routes: Routes = [
   {
     path: 'application', component: ApplicationComponent, canActivate: [IsUpdateServerGuard, LoginGuard],
     children: [
+      { path: 'migration', component: MigrationComponent },
+
       // se esta agregando el canActive para saber si es un buque y redireccione a voyages.
       { path: '', component: DashboardComponent, canActivate: [IsBuqueGuard] },
       // Dashboard de la pagina
