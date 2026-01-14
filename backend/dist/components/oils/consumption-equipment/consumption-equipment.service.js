@@ -35,8 +35,7 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         this._ConsumptionEquipment = _ConsumptionEquipment;
     }
     async Gets(consumptionEquipment) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -44,31 +43,28 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
                 return this._ConsumptionEquipment.find({
                     where: [
                         {
-                            id: consumptionEquipment.id || (0, typeorm_3.Like)('%' + '%'),
-                            userId: consumptionEquipment.userId || (0, typeorm_3.Like)('%' + '%'),
-                            status: (0, typeorm_4.Not)(false),
-                        },
-                    ],
+                            id: (consumptionEquipment.id || (0, typeorm_3.Like)('%' + '%')),
+                            userId: (consumptionEquipment.userId || (0, typeorm_3.Like)('%' + '%')),
+                            status: (0, typeorm_4.Not)(false)
+                        }
+                    ]
                 });
             }
-        })
-            .then((result) => {
+        }).then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.';
             return result;
         });
     }
     async Create(consumptionEquipment) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._ConsumptionEquipment.query("SP_CheckTheLastRecordedTrip @userId='" + consumptionEquipment.userId + "', @year='");
             }
             else {
                 return this._ConsumptionEquipment.save(consumptionEquipment);
             }
-        })
-            .then((resultSave) => {
+        }).then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el consumo por equipo.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -199,623 +195,109 @@ let ConsumptionEquipmentService = class ConsumptionEquipmentService {
         }
         return {
             MappingConsumptionsEquipment: MappingConsumptionsEquipment,
-            listConsumosValidarSendMail: listDeConsumosRegistrados,
+            listConsumosValidarSendMail: listDeConsumosRegistrados
         };
     }
-    async GetInfoPortVoyageSeped(userId, startDate, endDate) {
-        const query = `
-  
-  DECLARE @status INT = 1;
-DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
-DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
-DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
-
-SELECT 
-    V.id AS voyageId,
-    P.id AS portId,
-    V.voyageNumber,
-    P.portNumber,
-    P.arrivalPort AS arrival,
-    P.departurePort AS departure,
-    MIN(DR.date) AS minDate,
-    MAX(DR.date) AS maxDate,
-
-    -- Sumar la distancia total por puerto
-    SUM(DR.distance) AS totalDistance,
-
-    -- Sumar el tiempo total (en horas)
-    SUM(DR.steamingTime) / 60.0 AS totalTimeHour,
-
-    -- Calcular la velocidad (Distancia / Tiempo en horas)
-    CASE 
-        WHEN SUM(DR.steamingTime) > 0 THEN 
-            SUM(DR.distance) * 1.0 / NULLIF(SUM(DR.steamingTime) / 60.0, 0)
-        ELSE 
-            NULL
-    END AS avgSpeed
-
-FROM daily_report DR
-INNER JOIN port P ON P.id = DR.portId
-INNER JOIN voyage V ON V.id = P.voyageId
-
-WHERE 
-    P.status = @status  -- Filtrar solo puertos activos
-    AND V.status = @status -- Filtrar solo viajes activos
-    AND P.userId = @userId -- Filtrar por usuario
-    AND V.userId = @userId -- Asegurar que el viaje es del usuario
-    AND DR.date BETWEEN @startDate AND @endDate -- Filtrar por rango de fechas
-    AND DR.distance > 0 -- Solo registros con distancia válida
-
-GROUP BY 
-    V.id, P.id, V.voyageNumber, P.portNumber, P.arrivalPort, P.departurePort
-
-ORDER BY 
-    V.voyageNumber, P.portNumber;
-
-  
-        `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async GetConsumoIFOByActivity(userId, startDate, endDate) {
-        const query = `
-  
-  
-   
-
-    DECLARE @status INT = 1;
-    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
-    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
-    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
-    
-
-SELECT    
-
-    --daily_report.id AS dailyReportId,
-    FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM') AS date,  -- Filtrado por mes
- 
-    daily_report.activityPerformed AS activityPerformed, 
-
-    COUNT(*) AS countReports,
-    COUNT(DISTINCT port.id) AS countPorts,
-    
-    SUM(daily_report.steamingTime) AS steamingTime,
-    SUM(daily_report.distance) AS distance, 
-
-    SUM(daily_report.mplaIfo) AS mplaIfo,
-    SUM(daily_report.auxIfo) AS auxIfo,
-    SUM(daily_report.boilerIfo) AS boilerIfo,
-    SUM(daily_report.otherIfo) AS otherIfo,
-    SUM(daily_report.bunkeringIfo) AS bunkeringIfo
-
-FROM daily_report
-INNER JOIN port ON port.id = daily_report.portId 
-    AND port.status = @status 
-    AND daily_report.status = @status
-INNER JOIN voyage ON voyage.id = port.voyageId 
-    AND voyage.status = @status
-
-WHERE 
-    daily_report.status = @status
-    AND port.status = @status
-    AND voyage.status = @status
-
-    AND daily_report.userId = @userId
-    AND port.userId = @userId
-    AND voyage.userId = @userId
-
-    AND (
-        daily_report.mplaIfo > 0 OR 
-        daily_report.auxIfo > 0 OR 
-        daily_report.boilerIfo > 0 OR 
-        daily_report.otherIfo > 0 OR 
-        daily_report.bunkeringIfo > 0
-    )
-
-    AND CAST(daily_report.date AS DATETIME) >= @startDate
-    AND CAST(daily_report.date AS DATETIME) <= @endDate
-
-GROUP BY  FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM'),  daily_report.activityPerformed
-   
-ORDER BY   FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM');
-
-
-  
-        `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async GetConsumoMGOByActivity(userId, startDate, endDate) {
-        const query = `
-  
-  
-   
-
-
-    DECLARE @status INT = 1;
-    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
-    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
-    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
-    
-
-
-SELECT    
-    FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM') AS date,  -- Filtrado por mes
-    daily_report.activityPerformed AS activityPerformed, 
-
-    COUNT(*) AS countReports,
-    COUNT(DISTINCT port.id) AS countPorts,
-    
-    SUM(daily_report.steamingTime) AS steamingTime,
-    SUM(daily_report.distance) AS distance, 
-
-    -- Sumas de MGO
-    SUM(daily_report.mplaMgo) AS mplaMgo,
-    SUM(daily_report.auxMgo) AS auxMgo,
-    SUM(daily_report.boilerMgo) AS boilerMgo,
-    SUM(daily_report.ppMgo) AS ppMgo,
-    SUM(daily_report.giMgo) AS giMgo,
-    SUM(daily_report.otherMgo) AS otherMgo,
-    SUM(daily_report.bunkeringMgo) AS bunkeringMgo
-
-FROM daily_report
-INNER JOIN port ON port.id = daily_report.portId 
-    AND port.status = @status 
-    AND daily_report.status = @status
-INNER JOIN voyage ON voyage.id = port.voyageId 
-    AND voyage.status = @status
-
-WHERE 
-    daily_report.status = @status
-    AND port.status = @status
-    AND voyage.status = @status
-
-    AND daily_report.userId = @userId
-    AND port.userId = @userId
-    AND voyage.userId = @userId
-
-    AND (
-        daily_report.mplaMgo > 0 OR 
-        daily_report.auxMgo > 0 OR 
-        daily_report.boilerMgo > 0 OR 
-        daily_report.ppMgo > 0 OR 
-        daily_report.giMgo > 0 OR 
-        daily_report.otherMgo > 0 OR 
-        daily_report.bunkeringMgo > 0
-    )
-
-    AND CAST(daily_report.date AS DATETIME) >= @startDate
-    AND CAST(daily_report.date AS DATETIME) <= @endDate
-
-GROUP BY FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM'), daily_report.activityPerformed
-
-ORDER BY FORMAT(CAST(daily_report.date AS DATETIME), 'yyyy-MM');
-
-  
-        `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async GetConsumoROBIFO(userId, startDate, endDate) {
-        const query = `
-  
-  
-   
-
-    DECLARE @status INT = 1;
-    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
-    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
-    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
-    
-
--- CON ESTO INCIO CON EL RANGO DE FECHA
-SELECT 
-    SUM(daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo) AS total_ifo,
-    SUM(daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo) AS total_mgo,
-    SUM(daily_report.bunkeringIfo) AS total_bunkering_ifo,
-    SUM(daily_report.bunkeringMgo) AS total_bunkering_mgo
-FROM daily_report
-INNER JOIN port ON port.id = daily_report.portId 
-    AND port.status = @status
-    AND daily_report.status = @status						       
-INNER JOIN voyage ON voyage.id = port.voyageId 				       
-    AND voyage.status = @status
-WHERE 
-    daily_report.status = @status
-    AND port.status = @status
-    AND voyage.status = @status
-    AND daily_report.userId = @userId
-    AND CAST(daily_report.date AS DATETIME) < CAST(@startDate AS DATETIME);			 
-
-  
-  
-  
-        `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async GetConsumoROBMGO(userId, startDate, endDate) {
-        const query = `
-  
-  
-   
-
-    DECLARE @status INT = 1;
-    DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
-    DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Reemplaza con la fecha de inicio
-    DECLARE @endDate DATETIME = '${endDate} 23:59:59'; -- Reemplaza con la fecha de fin
-    
-SELECT 
-    SUM(daily_report.mplaIfo + daily_report.auxIfo + daily_report.boilerIfo + daily_report.otherIfo) AS total_ifo,
-    SUM(daily_report.mplaMgo + daily_report.auxMgo + daily_report.boilerMgo + daily_report.ppMgo + daily_report.giMgo + daily_report.otherMgo) AS total_mgo,
-    SUM(daily_report.bunkeringIfo) AS total_bunkering_ifo,
-    SUM(daily_report.bunkeringMgo) AS total_bunkering_mgo
-FROM daily_report
-INNER JOIN port ON port.id = daily_report.portId 
-    AND port.status = @status
-    AND daily_report.status = @status
-INNER JOIN voyage ON voyage.id = port.voyageId 
-    AND voyage.status = @status
-WHERE 
-    daily_report.status = @status
-    AND port.status = @status
-    AND voyage.status = @status
-    AND daily_report.userId = @userId
-    AND CAST(daily_report.date AS DATETIME) >= @startDate
-    AND CAST(daily_report.date AS DATETIME) <= @endDate;
-  
-  
-        `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async GetConsumoEquipoIFOPorMonth(userId, startDate, endDate) {
-        const query = `
-
-
- DECLARE @status INT = 1;
-DECLARE @userId INT = ${userId};  
-DECLARE @startDate DATETIME = '${startDate} 00:00:00'; 
-DECLARE @endDate DATETIME = '${endDate} 00:00:00';
-
-SELECT    
-    FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
-    data.equipmentType,  -- Tipo de equipo
-
-    COUNT(*) AS countReports,
-    COUNT(DISTINCT port.id) AS countPorts,
-    
-    SUM(data.steamingTime) AS steamingTime,
-    SUM(data.distance) AS distance, 
-
-    SUM(data.fuelConsumption) AS totalIfoConsumption
-
-FROM (
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'mplaIfo' AS equipmentType,
-        mplaIfo AS fuelConsumption
-    FROM daily_report WHERE mplaIfo > 0
-    
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'auxIfo' AS equipmentType,
-        auxIfo AS fuelConsumption
-    FROM daily_report WHERE auxIfo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'boilerIfo' AS equipmentType,
-        boilerIfo AS fuelConsumption
-    FROM daily_report WHERE boilerIfo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'otherIfo' AS equipmentType,
-        otherIfo AS fuelConsumption
-    FROM daily_report WHERE otherIfo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'bunkeringIfo' AS equipmentType,
-        bunkeringIfo AS fuelConsumption
-    FROM daily_report WHERE bunkeringIfo > 0
-
-) AS data
-INNER JOIN port ON port.id = data.portId 
-    AND port.status = @status 
-INNER JOIN voyage ON voyage.id = port.voyageId 
-    AND voyage.status = @status
-
-WHERE 
-    port.status = @status
-    AND voyage.status = @status
-    AND port.userId = @userId
-    AND voyage.userId = @userId
-    AND CAST(data.date AS DATETIME) BETWEEN @startDate AND @endDate
-
-GROUP BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType
-ORDER BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType;
-
-
-
-
-      `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async GetConsumoEquipoMGOPorMonth(userId, startDate, endDate) {
-        const query = `
-
-DECLARE @status INT = 1;
-DECLARE @userId INT = ${userId};  
-DECLARE @startDate DATETIME = '${startDate} 00:00:00';  
-DECLARE @endDate DATETIME = '${endDate} 00:00:00'; 
-
-SELECT    
-    FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM') AS date,  -- Agrupado por mes
-    data.equipmentType,  -- Tipo de equipo
-
-    COUNT(*) AS countReports,
-    COUNT(DISTINCT port.id) AS countPorts,
-    
-    SUM(data.steamingTime) AS steamingTime,
-    SUM(data.distance) AS distance, 
-
-    SUM(data.fuelConsumption) AS totalMgoConsumption
-
-FROM (
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'mplaMgo' AS equipmentType,
-        mplaMgo AS fuelConsumption
-    FROM daily_report WHERE mplaMgo > 0
-    
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'auxMgo' AS equipmentType,
-        auxMgo AS fuelConsumption
-    FROM daily_report WHERE auxMgo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'boilerMgo' AS equipmentType,
-        boilerMgo AS fuelConsumption
-    FROM daily_report WHERE boilerMgo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'ppMgo' AS equipmentType,
-        ppMgo AS fuelConsumption
-    FROM daily_report WHERE ppMgo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'giMgo' AS equipmentType,
-        giMgo AS fuelConsumption
-    FROM daily_report WHERE giMgo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'otherMgo' AS equipmentType,
-        otherMgo AS fuelConsumption
-    FROM daily_report WHERE otherMgo > 0
-
-    UNION ALL
-    
-    SELECT 
-        date,
-        portId,
-        steamingTime,
-        distance,
-        'bunkeringMgo' AS equipmentType,
-        bunkeringMgo AS fuelConsumption
-    FROM daily_report WHERE bunkeringMgo > 0
-
-) AS data
-INNER JOIN port ON port.id = data.portId 
-    AND port.status = @status 
-INNER JOIN voyage ON voyage.id = port.voyageId 
-    AND voyage.status = @status
-
-WHERE 
-    port.status = @status
-    AND voyage.status = @status
-    AND port.userId = @userId
-    AND voyage.userId = @userId
-    AND CAST(data.date AS DATETIME) BETWEEN @startDate AND @endDate
-
-GROUP BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType
-ORDER BY FORMAT(CAST(data.date AS DATETIME), 'yyyy-MM'), data.equipmentType;
-
- 
-
-
-
-      `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async getConsumoDeLUBRICANTEQUIPOPORFechas(userId, startDate, endDate) {
-        const query = `
-
-
-DECLARE @startDate DATE = '${startDate}';
-DECLARE @endDate DATE = '${startDate}';
-DECLARE @userId INT = ${userId};
-
-WITH OilList AS (
-    SELECT 
-        EOC.entityEquipmentId,
-        STUFF((
-            SELECT DISTINCT ', ' + O.name
-            FROM equipmentOilCompatibility EOC2
-            INNER JOIN oil O ON EOC2.entityOilId = O.id
-            WHERE EOC2.entityEquipmentId = EOC.entityEquipmentId
-            FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 
-        1, 2, ''
-        ) AS oilsUsed
-    FROM equipmentOilCompatibility EOC
-    GROUP BY EOC.entityEquipmentId
-)
-
-SELECT 
-    ES.id AS equipmentId,
-    ES.equipment AS equipmentName,
-    COALESCE(OilList.oilsUsed, 'N/A') AS oilsUsed, -- Aceites concatenados
-    SUM(CE.amount) AS totalConsumption,
-    SUM(CE.hourConsumption) AS totalHoursWorked
-FROM consumptionEquipment CE
-INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
-INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
-LEFT JOIN OilList ON ES.id = OilList.entityEquipmentId
-WHERE CE.date BETWEEN @startDate AND @endDate
-GROUP BY ES.id, ES.equipment, OilList.oilsUsed
-ORDER BY ES.equipment;
-
-
-
-
-
-        `;
-        return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
-    }
     async getOilConsumptionPerMonth(userId, startDate, endDate) {
-        console.log(`
-
-
-          DECLARE @startDate DATE = '${startDate}';
-          DECLARE @endDate DATE = '${endDate}';
-          DECLARE @userId INT = ${userId};`);
         const query = `
 
 
-          DECLARE @startDate DATE = '${startDate}';
-          DECLARE @endDate DATE = '${endDate}';
-          DECLARE @userId INT = ${userId};
 
-          SELECT
-              EOC.id AS compatibilityId,
-              FORMAT(CAST(CE.date AS DATE), 'yyyy-MM') AS year_month,
-              ES.id AS equipmentId,
-              ES.equipment AS equipmentName,
-              ES.frequencyId AS frequencyId,
-              ES.trialDay AS rateSystems,
-              ES.entityGroupId AS groupId,
-              GO.label AS groupName,
-              CE.consumptionTypeId AS consumptionTypeId,
-              CASE
-                  WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
-                  WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
-                  WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
-                  ELSE 'OTHERS'
-              END AS consumptionTypeName,
-			  SUM(CE.amount) AS total_amount,
-			  SUM(CE.hourConsumption) AS total_hourConsumption,
+    SELECT
+        EOC.id AS compatibilityId,
+        strftime('%Y-%m', CE.date) AS year_month,
+        ES.id AS equipmentId,
+        ES.equipment AS equipmentName,
+        ES.frequencyId AS frequencyId,
+        ES.rate AS rateSystems,
+        ES.entityGroupId AS groupId,
+        GO.label AS groupName, -- Agregar el tipo de grupo
+        CE.consumptionTypeId AS consumptionTypeId, -- Agregar el tipo de consumo
+        CASE
+            WHEN CE.consumptionTypeId = 1 THEN 'NORMAL'
+            WHEN CE.consumptionTypeId = 2 THEN 'OIL CHANGE'
+            WHEN CE.consumptionTypeId = 3 THEN 'OIL POLLUTION'
+            ELSE 'OTHERS'
+        END AS consumptionTypeName, 
+        SUM(CE.amount) AS total_amount,
+        SUM(CE.hourConsumption) AS total_hourConsumption,
 
-              -- Obtener el último oilId dentro del rango de fechas con una subconsulta
-              (SELECT TOP 1 O.id 
-              FROM oil O
-              INNER JOIN equipmentOilCompatibility EOC2 ON EOC2.entityOilId = O.id
-              INNER JOIN consumptionEquipment CE2 ON CE2.entityEquipmentOilCompatibilityId = EOC2.id 
-              WHERE EOC2.entityEquipmentId = ES.id  
-              AND CE2.consumptionTypeId = CE.consumptionTypeId 
-              AND CAST(CE2.date AS DATE) BETWEEN @startDate AND @endDate
-              ORDER BY CAST(CE2.date AS DATE) DESC
-              ) AS oilId,
-            
-              -- Obtener el último oilId dentro del rango de fechas con una subconsulta
-              (SELECT TOP 1O.name
-              FROM oil O
-              INNER JOIN equipmentOilCompatibility EOC2 ON EOC2.entityOilId = O.id
-              INNER JOIN consumptionEquipment CE2 ON CE2.entityEquipmentOilCompatibilityId = EOC2.id 
-              WHERE EOC2.entityEquipmentId = ES.id  
-              AND CE2.consumptionTypeId = CE.consumptionTypeId 
-              AND CAST(CE2.date AS DATE) BETWEEN @startDate AND @endDate
-              ORDER BY CAST(CE2.date AS DATE) DESC
-              ) AS lastOilName ,
+        (
+            SELECT O.id
+            FROM oil O
+            INNER JOIN (
+                SELECT entityOilId
+                FROM consumptionEquipment
+                WHERE entityEquipmentOilCompatibilityId = EOC.id
+                ORDER BY date DESC
+                LIMIT 1
+            ) AS LastConsumption ON O.id = LastConsumption.entityOilId
+        ) AS oilId,
+
+        (
+            SELECT O.name
+            FROM oil O
+            INNER JOIN (
+                SELECT entityOilId
+                FROM consumptionEquipment
+                WHERE entityEquipmentOilCompatibilityId = EOC.id
+                ORDER BY date DESC
+                LIMIT 1
+            ) AS LastConsumption ON O.id = LastConsumption.entityOilId
+        ) AS lastOilName,
 
 
-            
-              0 AS last_oil_cost,
-              
-              0  AS total_cost
-          FROM
-              consumptionEquipment CE
-              INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
-              INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
-              LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id
+    -- Costo aceite
+    COALESCE((
+        SELECT OP.price
+        FROM oilPriceHistory OP
+        WHERE OP.entityOilId = EOC.entityOilId
+            AND  DATE(CE.date) >= DATE(OP.effectiveDate)
+            AND OP.status = 1
+        ORDER BY OP.effectiveDate DESC
+        LIMIT 1
+    ), 0) AS last_oil_cost,
 
-          GROUP BY 
-              EOC.id,
-              FORMAT(CAST(CE.date AS DATE), 'yyyy-MM'),
-              ES.id,
-              ES.equipment,
-              ES.frequencyId,
-              ES.trialDay,
-              ES.entityGroupId,
-              GO.label,
-              CE.consumptionTypeId
+    -- Calcular el costo total del aceite
+    SUM(CE.amount * COALESCE((
+        SELECT OP.price
+        FROM oilPriceHistory OP
+        WHERE OP.entityOilId = EOC.entityOilId
+            AND DATE(CE.date) >= DATE(OP.effectiveDate)
+            AND OP.status = 1
+        ORDER BY OP.effectiveDate DESC
+        LIMIT 1
+    ), 0)) AS total_cost
 
-          ORDER BY
-              year_month,
-              equipmentName,
-              CE.consumptionTypeId;
+
+    FROM
+        consumptionEquipment CE
+        INNER JOIN equipmentOilCompatibility EOC ON CE.entityEquipmentOilCompatibilityId = EOC.id
+        INNER JOIN equipmentSystem ES ON EOC.entityEquipmentId = ES.id
+        LEFT JOIN groupOil GO ON ES.entityGroupId = GO.id -- Unir con la tabla groupOil para obtener el tipo
+    WHERE
+        CE.userId = ? AND
+        CE.status = 1 AND
+        ( ( DATE(?) = DATE('1900-01-01') OR DATE(?) = DATE('1900-01-01') ) OR DATE(CE.date) BETWEEN DATE(?) AND DATE(?) ) -- Filtro por rango de fechas
+        GROUP BY
+        year_month,
+        ES.equipment,  -- Agrupar por nombre del equipo
+        ES.id,         -- Agrupar por ID del equipo
+        ES.rate,       -- Asegurarse de incluir la tasa del sistema
+        ES.entityGroupId, -- Agrupar por ID del grupo
+        GO.label,      -- Asegurarse de incluir el nombre del grupo
+        CE.consumptionTypeId, -- Agregar el tipo de consumo a la lista de columnas de agrupación
+        EOC.id         -- Incluir la compatibilidad en la agrupación
+        ORDER BY
+        year_month,
+        equipmentName,
+        CE.consumptionTypeId;
+
+
+
 
         `;
         return this._ConsumptionEquipment.query(query, [userId, startDate, endDate, startDate, endDate]);
-    }
-    async QueryGetTask(userId, ETM_OilAnalysis_Oid) {
-        const query = `ConsultaMantenimientoPorBD  @dbName = 'TMS_Pilargas',  @tareaId = 'EFC5577E-8EC3-44D7-A2B4-76D90A9803B1'; `;
-        return this._ConsumptionEquipment.query(query, []);
-    }
-    async ViewFileAnalysisOil(buqueId, ETM_OilAnalysis_Oid) {
-        const query = `SP_ViewFileAnalysisOil @nameBaseDatos = 'TMS_Pilargas', @OidTarea = '4DDECDC0-BD7C-4CB4-A190-CD5FA37C1B35';`;
-        return this._ConsumptionEquipment.query(query, []);
     }
     async consultEquipmentConsumptionByMonthUser(userId, entityEquipmentId, DateYEAR_MONTH) {
         const query = `               
@@ -825,7 +307,7 @@ ORDER BY ES.equipment;
             strftime('%Y-%m-%d', CE.date) AS consumption_date, -- Agregar la fecha de consumo
             ES.id AS equipmentId,
             ES.equipment AS equipmentName,
-            ES.trialDay AS rateSystems,
+            ES.rate AS rateSystems,
             ES.entityGroupId AS subgroupId,
             SUM(CE.amount) AS total_amount,
             SUM(CE.hourConsumption) AS total_hourConsumption,
@@ -851,7 +333,7 @@ ORDER BY ES.equipment;
             CASE 
                 WHEN COALESCE(SUM(CE.hourConsumption), 0) > 0 THEN ROUND(CAST(SUM(CE.amount) AS REAL) / SUM(CE.hourConsumption), 2) 
                 ELSE 0 
-            END AS trialDay,
+            END AS rate,
             GROUP_CONCAT(CE.observation, ', ') AS observation
         FROM
             consumptionEquipment CE
@@ -872,145 +354,103 @@ ORDER BY ES.equipment;
     }
     async GetShips() {
         const query = `
-        SELECT  U.id AS Id,
+        Select  U.id AS Id,
                 U.name AS Name,
-                U.filename AS Filename,
-                U.[years]
-                ,U.[minSpeed]
-                ,U.[maxSpeed]
-                ,U.[isConsumptionIFO]
-                ,U.[isConsumptionLSFO]
-                ,U.[isConsumptionVLSFO]
-                ,U.[isConsumptionMGO]
-                ,U.[maxIFOConsumption]
-                ,U.[maxMGOConsumption]
-                ,U.[minIFOConsumption]
-                ,U.[minMGOConsumption]
-                ,U.[isMEMGO]
-                ,U.[isAEMGO]
-                ,U.[isBoilerMGO]
-                ,U.[isIGMGO]
-                ,U.[isPowerPMGO]
-                ,U.[isOtherMGO]
-                ,U.[isMEIFO]
-                ,U.[isAEIFO]
-                ,U.[isBoilerIFO]
-                ,U.[isOtherIFO]
-                ,U.[contractSpeedSailingBallastMGO]
-                ,U.[contractSpeedSailingLadenMGO]
-                ,U.[contractSpeedSailingEconomicalMGO]
-                ,U.[loadingConsumptionMGO]
-                ,U.[dischargeConsumptionMGO]
-                ,U.[sailingBallastConsumptionMGO]
-                ,U.[sailingLoadConsumptionMGO]
-                ,U.[sailingEconomicConsumptionMGO]
-                ,U.[anchoredConsumptionMGO]
-                ,U.[maneuverConsumptionMGO]
-                ,U.[otherConsumptionMGO]
-                ,U.[contractSpeedSailingBallastIFO]
-                ,U.[contractSpeedSailingLadenIFO]
-                ,U.[contractSpeedSailingEconomicalIFO]
-                ,U.[loadingConsumptionIFO]
-                ,U.[dischargeConsumptionIFO]
-                ,U.[sailingBallastConsumptionIFO]
-                ,U.[sailingLoadConsumptionIFO]
-                ,U.[sailingEconomicConsumptionIFO]
-                ,U.[anchoredConsumptionIFO]
-                ,U.[maneuverConsumptionIFO]
-                ,U.[otherConsumptionIFO]
-                ,U.[isDisplayLSFOConsumption]
-                ,U.[isDisplayMGOConsumption]
-                ,U.[isDisplayAverageSpeed]
-                ,U.[isDisplayDataMGO]
-                ,U.[isDisplayDataLSFO]
-                ,U.[isDisplayVesselPerformanceLSFO]
-                ,U.[isDisplayVesselPerformanceMGO]
-                ,U.[consumptionEquipmentME_MGO]
-                ,U.[consumptionEquipmentAE_MGO]
-                ,U.[consumptionEquipmentBOILER_MGO]
-                ,U.[consumptionEquipmentIG_MGO]
-                ,U.[consumptionEquipmentPP_MGO]
-                ,U.[consumptionEquipmentOther_MGO]
-                ,U.[consumptionEquipmentME_IFO]
-                ,U.[consumptionEquipmentAE_IFO]
-                ,U.[consumptionEquipmentBOILER_IFO]
-                ,U.[consumptionEquipmentOther_IFO]
-        FROM [USER] U
+                U.filename AS Filename
+        FROM USER U
         WHERE U.role = 'BUQUE' AND U.status = 1;
     `;
         return this._ConsumptionEquipment.query(query, []);
     }
     async GetStatusOilStartEnd(userId, startDate, endDate) {
         const query = `
-DECLARE @startDate DATE = '${startDate}';
-DECLARE @endDate DATE = '${endDate}';
-DECLARE @userId INT = ${userId};
+    SELECT 
+            O.id AS oilId,
+            O.name AS oilName,
+            
+            -- Cantidad de lubricante inicial
+            (COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND DATE(BO.datetime) < '${startDate}'
+                AND BO.userId = ${userId}
+                AND BO.status = true
+            ), 0) - COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) < '${startDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0)) AS initialLubricant,
 
-SELECT 
-    O.id AS oilId,
-    O.name AS oilName,
+            -- Suma de consumo en el rango de fechas
+            COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0) AS totalRangeConsumption,
 
-    -- Cantidad de lubricante inicial
-    COALESCE(BO_Init.initialBunker, 0) - COALESCE(CE_Init.initialConsumption, 0) AS initialLubricant,
+            -- Suma de bunker en el rango de fechas
+            COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
+                AND BO.userId = ${userId}
+                AND BO.status = 1
+            ), 0) AS totalRangeBunker,
 
-    -- Suma de consumo en el rango de fechas
-    COALESCE(CE_Range.totalRangeConsumption, 0) AS totalRangeConsumption,
-
-    -- Suma de bunker en el rango de fechas
-    COALESCE(BO_Range.totalRangeBunker, 0) AS totalRangeBunker,
-
-    -- Cantidad de lubricante final
-    (COALESCE(BO_Init.initialBunker, 0) - COALESCE(CE_Init.initialConsumption, 0)) 
-    + COALESCE(BO_Range.totalRangeBunker, 0) - COALESCE(CE_Range.totalRangeConsumption, 0) AS finalLubricant
-
-FROM oil O
-
--- Bunker antes del startDate
-OUTER APPLY (
-    SELECT SUM(BO.bunker) AS initialBunker
-    FROM bunkerOil BO
-    WHERE BO.entityOilId = O.id
-    AND CAST(BO.datetime AS DATE) < @startDate
-    AND BO.userId = @userId
-    AND BO.status = 1
-) BO_Init
-
--- Consumo antes del startDate
-OUTER APPLY (
-    SELECT SUM(CE.amount) AS initialConsumption
-    FROM equipmentOilCompatibility EOC
-    INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
-    WHERE EOC.entityOilId = O.id
-    AND CAST(CE.date AS DATE) < @startDate
-    AND EOC.userId = @userId
-    AND CE.userId = @userId
-    AND CE.status = 1
-) CE_Init
-
--- Bunker dentro del rango de fechas
-OUTER APPLY (
-    SELECT SUM(BO.bunker) AS totalRangeBunker
-    FROM bunkerOil BO
-    WHERE BO.entityOilId = O.id
-    AND CAST(BO.datetime AS DATE) BETWEEN @startDate AND @endDate
-    AND BO.userId = @userId
-    AND BO.status = 1
-) BO_Range
-
--- Consumo dentro del rango de fechas
-OUTER APPLY (
-    SELECT SUM(CE.amount) AS totalRangeConsumption
-    FROM equipmentOilCompatibility EOC
-    INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
-    WHERE EOC.entityOilId = O.id
-    AND CAST(CE.date AS DATE) BETWEEN @startDate AND @endDate
-    AND EOC.userId = @userId
-    AND CE.userId = @userId
-    AND CE.status = 1
-) CE_Range
-
-WHERE O.status = 1
-ORDER BY O.id;
+            -- Cantidad de lubricante final
+            ((COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND DATE(BO.datetime) < '${startDate}'
+                AND BO.userId = ${userId}
+                AND BO.status = 1
+            ), 0) - COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) < '${startDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0)) + COALESCE((
+                SELECT SUM(BO.bunker)
+                FROM bunkerOil BO
+                WHERE BO.entityOilId = O.id
+                AND BO.userId = ${userId}
+                AND DATE(BO.datetime) BETWEEN '${startDate}' AND '${endDate}'
+                AND BO.status = 1
+            ), 0) - COALESCE((
+                SELECT SUM(CE.amount)
+                FROM equipmentOilCompatibility EOC
+                INNER JOIN consumptionEquipment CE ON EOC.id = CE.entityEquipmentOilCompatibilityId
+                WHERE EOC.entityOilId = O.id
+                AND DATE(CE.date) BETWEEN '${startDate}' AND '${endDate}'
+                AND EOC.userId = ${userId}
+                AND CE.userId = ${userId}
+                AND CE.status = 1
+            ), 0)) AS finalLubricant
+            
+        FROM 
+            oil O
+        WHERE 
+            -- O.userId = ${userId} AND
+            O.status = 1
+        ORDER BY 
+            O.id;
     `;
         return this._ConsumptionEquipment.query(query, []);
     }
@@ -1298,7 +738,7 @@ ORDER BY
                 let newConsumptionEquipmentEntity = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity.id;
                 newConsumptionEquipmentEntity.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity.date = (0, moment_assets_1.ConvertMMDDYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity.amount = lubricantDialy.LUB_ME;
                 newConsumptionEquipmentEntity.hourConsumption = lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity.observation = '';
@@ -1314,7 +754,7 @@ ORDER BY
                 let newConsumptionEquipmentEntity2 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity2.id;
                 newConsumptionEquipmentEntity2.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity2.date = (0, moment_assets_1.ConvertMMDDYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity2.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity2.amount = lubricantDialy.LUB_ME_CYLINDER || 0;
                 newConsumptionEquipmentEntity2.hourConsumption = lubricantDialy.HOUR_ME || 0;
                 newConsumptionEquipmentEntity2.observation = '';
@@ -1330,7 +770,7 @@ ORDER BY
                 let newConsumptionEquipmentEntity3 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
                 delete newConsumptionEquipmentEntity3.id;
                 newConsumptionEquipmentEntity3.userId = lubricantDialy.USER_ID;
-                newConsumptionEquipmentEntity3.date = (0, moment_assets_1.ConvertMMDDYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity3.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
                 newConsumptionEquipmentEntity3.amount = lubricantDialy.LUB_AUX1 || 0;
                 newConsumptionEquipmentEntity3.hourConsumption = lubricantDialy.HOUR_AUX1 || 0;
                 newConsumptionEquipmentEntity3.observation = '';
@@ -1343,6 +783,22 @@ ORDER BY
                 delete newConsumptionEquipmentEntity3.dateUpdated;
                 newConsumptionEquipmentEntity3.status = Boolean(true);
                 await this.Create(newConsumptionEquipmentEntity3);
+                let newConsumptionEquipmentEntity4 = new consumptionEquipment_entity_1.ConsumptionEquipmentEntity();
+                delete newConsumptionEquipmentEntity4.id;
+                newConsumptionEquipmentEntity4.userId = lubricantDialy.USER_ID;
+                newConsumptionEquipmentEntity4.date = (0, moment_assets_1.ConvertDDMMYYYYToUTC)(lubricantDialy.DATE);
+                newConsumptionEquipmentEntity4.amount = lubricantDialy.LUB_AUX2 || 0;
+                newConsumptionEquipmentEntity4.hourConsumption = lubricantDialy.HOUR_AUX2 || 0;
+                newConsumptionEquipmentEntity4.observation = '';
+                newConsumptionEquipmentEntity4.entityEquipmentOilCompatibilityId = lubricantDialy.IDENT_AUX2;
+                newConsumptionEquipmentEntity4.consumptionTypeId = 1;
+                newConsumptionEquipmentEntity4.entityOilAnalysisId = 0;
+                newConsumptionEquipmentEntity4.userIdCreated = userEntity.id;
+                newConsumptionEquipmentEntity4.dateCreated = (0, moment_assets_1.GetDate)();
+                delete newConsumptionEquipmentEntity4.userIdUpdated;
+                delete newConsumptionEquipmentEntity4.dateUpdated;
+                newConsumptionEquipmentEntity4.status = Boolean(true);
+                await this.Create(newConsumptionEquipmentEntity4);
             }
         }
         catch (e_4_1) { e_4 = { error: e_4_1 }; }
@@ -1353,21 +809,6 @@ ORDER BY
             finally { if (e_4) throw e_4.error; }
         }
         return MappingOilEntity;
-    }
-    async GetSelectDailyReport_Summary(userId, startDate, endDate) {
-        const query = `
-
-          DECLARE @userId INT = ${userId}; -- Reemplaza con el ID del usuario
-          DECLARE @startDate DATE = '${startDate} 00:00:00'; -- Fecha de inicio
-          DECLARE @endDate DATE = '${endDate} 23:59:59'; -- Fecha de fin
-
-          SELECT * 
-          FROM daily_report_summary
-          WHERE userId = @userId
-          AND CAST(date AS DATETIME) BETWEEN @startDate AND @endDate;
-
-        `;
-        return this._ConsumptionEquipment.query(query, []);
     }
 };
 exports.ConsumptionEquipmentService = ConsumptionEquipmentService;

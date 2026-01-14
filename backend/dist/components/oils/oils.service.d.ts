@@ -28,5 +28,5 @@ export interface DataDailyOilConsumptionData {
     amountConsumption: number;
     hourConsumption: number;
     calcRate: number;
-    trialDay: number;
+    rate: number;
 }

@@ -5,7 +5,6 @@ import { AuthService } from './components/auth/auth.service';
 import { LoggedUser } from './models/loggedUser';
 import { AppGateway } from './app.gateway';
 import { ConsumptionEquipmentService } from './components/oils/consumption-equipment/consumption-equipment.service';
-import { Response } from 'express';
 export declare class AppController {
     private readonly appService;
     private readonly authService;
@@ -25,19 +24,8 @@ export declare class AppController {
     GetLoggedUsers(headers: any, loggedUser: LoggedUser): Promise<any>;
     EmitConnect(): Promise<any>;
     ConsultaGeneral(buqueId: any, startDate: any, endDate: any): Promise<import("./app.service").ListUserConsumptionLubricantPerMonth[]>;
-    GetOilAnalysis(buqueId: any, ETM_OilAnalysis_Oid: any): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").QueryGetTask[]>;
-    ViewFileAnalysis(buqueId: any, ETM_OilAnalysis_Oid: any, res: Response): Promise<void | Response<any, Record<string, any>>>;
     ConsultEquipmentConsumptionByMonthUser(buqueId: any, EquipmentId: any, YEAR_MONTH: any): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
-    GetShips(): Promise<any[]>;
+    GetShips(): Promise<any[] | import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
     GetStatusOilStartEnd(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
-    ConsulGetConsumptionLubricantPerEquipmenttaGeneral(buqueId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").getOilConsumptionPerMonth[]>;
     GetInfoAllVessel(userId: any, startDate: any, endDate: any): Promise<import("./components/oils/consumption-equipment/consumption-equipment.service").consultEquipmentConsumptionByMonthUser[]>;
-    GetSpeedVoyagePort(userId: any, startDate: any, endDate: any): Promise<any[]>;
-    GetIFOActivityReport(userId: any, startDate: any, endDate: any): Promise<any[]>;
-    GetMGOActivityReport(userId: any, startDate: any, endDate: any): Promise<any[]>;
-    GetIFOROB(userId: any, startDate: any, endDate: any): Promise<any[]>;
-    GetMGOROB(userId: any, startDate: any, endDate: any): Promise<any[]>;
-    GetIFOConsumptionPerEquipment(userId: any, startDate: any, endDate: any): Promise<any[]>;
-    GetMGOConsumptionPerEquipment(userId: any, startDate: any, endDate: any): Promise<any[]>;
-    GetSelectDailyReport_Summary(userId: any, startDate: any, endDate: any): Promise<any[]>;
 }

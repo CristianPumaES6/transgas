@@ -21,18 +21,15 @@ function HbsInit(app) {
 }
 function HbsConvertHtmlRender(fileHbs, objRender) {
     let contentHTML = '';
-    return (0, promises_assets_1.DummyPromise)()
-        .then((result) => {
+    return (0, promises_assets_1.DummyPromise)().then((result) => {
         let originalFileFullPath = path.join(path_config_1.TEMPLATE_MAIL_PATH, fileHbs);
         return (0, file_manager_assets_1.ReadFileContent)(originalFileFullPath, 'utf8');
-    })
-        .then((resultContent) => {
+    }).then((resultContent) => {
         if (!resultContent)
             throw Error('revisar la funcion ReadFileContent.');
         contentHTML = resultContent;
         return GetHbsHtml();
-    })
-        .then((resultHbsHtml) => {
+    }).then((resultHbsHtml) => {
         if (!resultHbsHtml)
             throw 'No se pudo inicializar engine para generación de HTML';
         let theme = resultHbsHtml.compile(contentHTML);

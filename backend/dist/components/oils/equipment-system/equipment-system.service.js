@@ -33,8 +33,7 @@ let EquipmentSystemService = class EquipmentSystemService {
         this._EquipmentSystemEntity = _EquipmentSystemEntity;
     }
     async Gets(equipmentSystemEntity) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -42,31 +41,28 @@ let EquipmentSystemService = class EquipmentSystemService {
                 return this._EquipmentSystemEntity.find({
                     where: [
                         {
-                            id: equipmentSystemEntity.id || (0, typeorm_2.Like)('%' + '%'),
-                            userId: equipmentSystemEntity.userId || (0, typeorm_2.Like)('%' + '%'),
-                            status: (0, typeorm_2.Not)(false),
-                        },
-                    ],
+                            id: (equipmentSystemEntity.id || (0, typeorm_2.Like)('%' + '%')),
+                            userId: (equipmentSystemEntity.userId || (0, typeorm_2.Like)('%' + '%')),
+                            status: (0, typeorm_2.Not)(false)
+                        }
+                    ]
                 });
             }
-        })
-            .then((result) => {
+        }).then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR LOS CONSUMO DE EQUIPOS.';
             return result;
         });
     }
     async Create(equipmentSystemEntity) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._EquipmentSystemEntity.query("SP_CheckTheLastRecordedTrip @userId='" + equipmentSystemEntity.userId + "', @year='");
             }
             else {
                 return this._EquipmentSystemEntity.save(equipmentSystemEntity);
             }
-        })
-            .then((resultSave) => {
+        }).then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el tipo de aceite.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -95,7 +91,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 delete newEquipmentSystemEntity.id;
                 newEquipmentSystemEntity.userId = addEquipmentSystem.userId;
                 newEquipmentSystemEntity.equipment = addEquipmentSystem.equipment;
-                newEquipmentSystemEntity.trialDay = addEquipmentSystem.trialDay || 0;
+                newEquipmentSystemEntity.rate = addEquipmentSystem.rate || 0;
                 newEquipmentSystemEntity.lubUsedDuringMaintenance = addEquipmentSystem.lubUsedDuringMaintenance || 0;
                 newEquipmentSystemEntity.frequencyId = addEquipmentSystem.frequencyId;
                 newEquipmentSystemEntity.entityGroupId = addEquipmentSystem.entityGroupId;
@@ -127,7 +123,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
                 equipmentSystem.id = updateEquipmentSystem.id;
                 equipmentSystem.userId = updateEquipmentSystem.userId;
-                equipmentSystem.trialDay = updateEquipmentSystem.trialDay || 0;
+                equipmentSystem.rate = updateEquipmentSystem.rate || 0;
                 equipmentSystem.lubUsedDuringMaintenance = updateEquipmentSystem.lubUsedDuringMaintenance || 0;
                 equipmentSystem.equipment = updateEquipmentSystem.equipment;
                 equipmentSystem.frequencyId = updateEquipmentSystem.frequencyId;
@@ -159,7 +155,7 @@ let EquipmentSystemService = class EquipmentSystemService {
                 let equipmentSystem = new equipment_system_entity_1.EquipmentSystemEntity();
                 equipmentSystem.id = deleteEquipmentSystem.id;
                 equipmentSystem.userId = deleteEquipmentSystem.userId;
-                equipmentSystem.trialDay = deleteEquipmentSystem.trialDay || 0;
+                equipmentSystem.rate = deleteEquipmentSystem.rate || 0;
                 equipmentSystem.lubUsedDuringMaintenance = deleteEquipmentSystem.lubUsedDuringMaintenance || 0;
                 equipmentSystem.equipment = deleteEquipmentSystem.equipment;
                 equipmentSystem.frequencyId = deleteEquipmentSystem.frequencyId;

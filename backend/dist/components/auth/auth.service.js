@@ -22,17 +22,15 @@ let AuthService = class AuthService {
     }
     async validateLogin(nick, password) {
         let user = {};
-        return await this.usersService
-            .GetUserByNick(nick)
-            .then(resultfindUser => {
+        return await this.usersService.GetUserByNick(nick)
+            .then((resultfindUser) => {
             if (!resultfindUser)
                 throw new Error('there_is_no_email');
             if (!resultfindUser.status)
                 throw 'account_status_false';
             user = resultfindUser;
             return bcrypt.compare(password, resultfindUser.password);
-        })
-            .then((checkComparePsw) => {
+        }).then((checkComparePsw) => {
             if (checkComparePsw) {
                 user.password = null;
             }
@@ -48,11 +46,11 @@ let AuthService = class AuthService {
             name: user.name,
             email: user.email,
             password: user.password,
-            role: user.role,
+            role: user.role
         };
         return await (0, promises_assets_1.DummyPromise)().then(result => {
             if (!result)
-                throw 'Error en la respuesta del DummyPromise.';
+                throw ('Error en la respuesta del DummyPromise.');
             return this.jwtService.sign(payload);
         });
     }
@@ -60,6 +58,7 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_service_1.UsersService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [users_service_1.UsersService,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

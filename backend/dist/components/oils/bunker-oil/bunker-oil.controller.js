@@ -24,32 +24,28 @@ let BunkerOilController = class BunkerOilController {
     }
     Gets(headers, bunkerOilEntity) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (bunkerOilEntity) {
                 bunkerOilEntity.userId = Number(bunkerOilEntity.userId);
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        })
-            .then((resultValidate) => {
+        }).then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
             else if (bunkerOilEntity.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
             return this._BunkerOilService.Gets(bunkerOilEntity);
-        })
-            .then((results) => {
+        }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results,
+                data: results
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,

@@ -284,7 +284,7 @@ complex.js
 MIT
 MIT License
 
-Copyright (c) 2018 Robert Eisele
+Copyright (c) 2025 Robert Eisele
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -339,7 +339,7 @@ component-inherit
 
 core-js
 MIT
-Copyright (c) 2014-2023 Denis Pushkarev
+Copyright (c) 2014-2025 Denis Pushkarev, 2025 CoreJS Company
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -387,7 +387,7 @@ decimal.js
 MIT
 The MIT Licence.
 
-Copyright (c) 2022 Michael Mclaughlin
+Copyright (c) 2025 Michael Mclaughlin
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -619,7 +619,7 @@ Apache License
 dompurify
 (MPL-2.0 OR Apache-2.0)
 DOMPurify
-Copyright 2023 Dr.-Ing. Mario Heiderich, Cure53
+Copyright 2024 Dr.-Ing. Mario Heiderich, Cure53
 
 DOMPurify is free software; you can redistribute it and/or modify it under the
 terms of either:
@@ -1269,7 +1269,7 @@ fflate
 MIT
 MIT License
 
-Copyright (c) 2020 Arjun Barrett
+Copyright (c) 2023 Arjun Barrett
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

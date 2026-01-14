@@ -12,7 +12,6 @@ export declare class DailyReport {
     east_east_west: string;
     activityPerformed: string;
     typeActivityPerformed: string;
-    nextActivityPerformed: string;
     speedStraction: string;
     date: string;
     hour: string;

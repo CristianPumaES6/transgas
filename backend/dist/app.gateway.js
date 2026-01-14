@@ -38,8 +38,8 @@ let AppGateway = class AppGateway {
     handleDisconnect(client) {
         this.logger.log('Client disconnected' + client.id);
         if (client && client.id) {
-            let userDisconnect = this.loggedUsers.find(logeate => {
-                return logeate.clientId === client.id && logeate.isActive == true;
+            let userDisconnect = this.loggedUsers.find((logeate) => {
+                return (logeate.clientId === client.id && logeate.isActive == true);
             });
             if (userDisconnect) {
                 userDisconnect.lastConnection = (0, moment_assets_1.GetDate)();
@@ -67,8 +67,8 @@ let AppGateway = class AppGateway {
         return [];
     }
     IsUserLogeatedExit(loggedUser) {
-        let isUserExit = this.loggedUsers.find(logeate => {
-            return logeate.clientId === loggedUser.clientId;
+        let isUserExit = this.loggedUsers.find((logeate) => {
+            return (logeate.clientId === loggedUser.clientId);
         });
         if (isUserExit) {
             isUserExit.userName = loggedUser.userName || isUserExit.userName;

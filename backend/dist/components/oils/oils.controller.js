@@ -36,32 +36,28 @@ let OilsController = class OilsController {
     }
     Gets(headers, oilEntity) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity) {
                 oilEntity.userId = Number(oilEntity.userId);
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        })
-            .then((resultValidate) => {
+        }).then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
             else if (oilEntity.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
             return this._OilsService.Gets(oilEntity);
-        })
-            .then((results) => {
+        }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results,
+                data: results
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -77,16 +73,14 @@ let OilsController = class OilsController {
         let listConsumptionEquipment = [];
         let listBunkerOil = [];
         let listEquipmentOilCompatibilityEntity = [];
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity) {
                 oilEntity.userId = Number(oilEntity.userId);
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS2222');
-        })
-            .then((resultValidate) => {
+        }).then((resultValidate) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
             else if (oilEntity.userId !== headerToken.id)
@@ -94,38 +88,32 @@ let OilsController = class OilsController {
             let oilEntityFilter = {};
             oilEntityFilter.userId = oilEntity.userId;
             return this._OilsService.Gets(oilEntityFilter);
-        })
-            .then((Oils) => {
+        }).then((Oils) => {
             listOils = Oils;
             let groupOilEntity = {};
             groupOilEntity.userId = oilEntity.userId;
             return this._GroupOilEntityService.Gets(groupOilEntity);
-        })
-            .then((GroupsOilEntity) => {
+        }).then((GroupsOilEntity) => {
             listGroups = GroupsOilEntity;
             let equipmentSystemEntity = {};
             equipmentSystemEntity.userId = oilEntity.userId;
             return this._EquipmentSystemService.Gets(equipmentSystemEntity);
-        })
-            .then((EquipmentSystemsEntity) => {
+        }).then((EquipmentSystemsEntity) => {
             listEquipmentSystem = EquipmentSystemsEntity;
             let consumptionEquipmentEntity = {};
             consumptionEquipmentEntity.userId = oilEntity.userId;
             return this._ConsumptionEquipmentService.Gets(consumptionEquipmentEntity);
-        })
-            .then((ConsumptionsEquipmentEntity) => {
+        }).then((ConsumptionsEquipmentEntity) => {
             listConsumptionEquipment = ConsumptionsEquipmentEntity;
             let bunkersOilEntity = {};
             bunkersOilEntity.userId = oilEntity.userId;
             return this._BunkerOilService.Gets(bunkersOilEntity);
-        })
-            .then((bunkersOilEntity) => {
+        }).then((bunkersOilEntity) => {
             listBunkerOil = bunkersOilEntity;
             let equipmentOilCompatibility = {};
             equipmentOilCompatibility.userId = oilEntity.userId;
             return this._EquipmentOilCompatibilityService.Gets(equipmentOilCompatibility);
-        })
-            .then((equipmentOilCompatibilityEntity) => {
+        }).then((equipmentOilCompatibilityEntity) => {
             listEquipmentOilCompatibilityEntity = equipmentOilCompatibilityEntity;
             return {
                 status: common_1.HttpStatus.OK,
@@ -136,13 +124,12 @@ let OilsController = class OilsController {
                     listEquipmentSystem: listEquipmentSystem,
                     listBunkerOil: listBunkerOil,
                     listEquipmentOilCompatibility: listEquipmentOilCompatibilityEntity,
-                    listConsumptionEquipment: listConsumptionEquipment,
-                },
+                    listConsumptionEquipment: listConsumptionEquipment
+                }
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -151,8 +138,7 @@ let OilsController = class OilsController {
         });
     }
     async getDataBuque(buqueId) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(buqueId)) {
                 let userId = Number(buqueId);
                 return this._OilsService.ConsultarListaDeConsumosPorBuque(buqueId);
@@ -160,17 +146,15 @@ let OilsController = class OilsController {
             else {
                 throw 'MISSING_FIELS';
             }
-        })
-            .then((resultGet) => {
+        }).then((resultGet) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultGet,
+                data: resultGet
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -179,8 +163,7 @@ let OilsController = class OilsController {
         });
     }
     async Get(id) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 let userId = Number(id);
                 return this._OilsService.Get(userId);
@@ -188,17 +171,15 @@ let OilsController = class OilsController {
             else {
                 throw 'MISSING_FIELS';
             }
-        })
-            .then((resultGet) => {
+        }).then((resultGet) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultGet,
+                data: resultGet
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -208,8 +189,7 @@ let OilsController = class OilsController {
     }
     Create(headers, oilEntity) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity && oilEntity.userId && oilEntity.name) {
                 delete oilEntity.id;
                 oilEntity.userIdCreated = headerToken.id;
@@ -221,17 +201,15 @@ let OilsController = class OilsController {
             }
             else
                 throw 'MISSING_FIELS';
-        })
-            .then((resultCreate) => {
+        }).then((resultCreate) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultCreate,
+                data: resultCreate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -241,8 +219,7 @@ let OilsController = class OilsController {
     }
     async Update(headers, id, oilEntity) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (oilEntity && oilEntity.name && headerToken && headerToken.id) {
                 oilEntity.id = Number(id);
                 if (headerToken.role === 'SUPPORT' || headerToken.role === 'ADMIN') {
@@ -260,19 +237,17 @@ let OilsController = class OilsController {
             else {
                 throw 'MISSING_FIELS';
             }
-        })
-            .then((resultUpdate) => {
+        }).then((resultUpdate) => {
             if (!resultUpdate)
                 throw new Error('TYPEORM_UPDATE_OIL_DETAIL');
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultUpdate,
+                data: resultUpdate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -282,33 +257,29 @@ let OilsController = class OilsController {
     }
     async Delete(headers, id) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 return this._OilsService.Get(id);
             }
             else {
                 throw new Error('MISSING_FIELS');
             }
-        })
-            .then((result) => {
+        }).then((result) => {
             result.status = false;
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
             else if (Number(headerToken.id) !== Number(result.userId))
                 throw new Error('ERROR_USERID_FAIL');
             return this._OilsService.Delete(result, headerToken.id);
-        })
-            .then((resultDelete) => {
+        }).then((resultDelete) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultDelete,
+                data: resultDelete
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -330,8 +301,7 @@ let OilsController = class OilsController {
         console.log(JSON.stringify(saveDateOils));
         console.log('-----------[   END saveModuleOils   ]---------------');
         console.log('--------------------------');
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (saveDateOils) {
                 if (saveDateOils.listGroups) {
                     return this._GroupOilEntityService.SaveList(saveDateOils.listGroups);
@@ -342,8 +312,7 @@ let OilsController = class OilsController {
             }
             else
                 throw 'MISSING_FIELS';
-        })
-            .then((resultMappingGroupOils) => {
+        }).then((resultMappingGroupOils) => {
             mappingGroupOils = resultMappingGroupOils;
             if (saveDateOils.listOils) {
                 return this._OilsService.SaveList(saveDateOils.listOils);
@@ -351,8 +320,7 @@ let OilsController = class OilsController {
             else {
                 return [];
             }
-        })
-            .then((resultMappingOil) => {
+        }).then((resultMappingOil) => {
             mappingOils = resultMappingOil;
             if (saveDateOils.listBunkerOil) {
                 return this._BunkerOilService.SaveList(mappingOils, saveDateOils.listBunkerOil);
@@ -360,8 +328,7 @@ let OilsController = class OilsController {
             else {
                 return [];
             }
-        })
-            .then((resultBunkerOil) => {
+        }).then((resultBunkerOil) => {
             mappingBunkersOil = resultBunkerOil;
             if (saveDateOils.listEquipmentSystem) {
                 return this._EquipmentSystemService.SaveList(mappingGroupOils, saveDateOils.listEquipmentSystem);
@@ -369,8 +336,7 @@ let OilsController = class OilsController {
             else {
                 return [];
             }
-        })
-            .then((resultMappingEquipmentSystem) => {
+        }).then((resultMappingEquipmentSystem) => {
             mappingEquipmentSystems = resultMappingEquipmentSystem;
             if (saveDateOils.listEquipmentOilCompatibility) {
                 return this._EquipmentOilCompatibilityService.SaveList(mappingOils, mappingEquipmentSystems, saveDateOils.listEquipmentOilCompatibility);
@@ -378,8 +344,7 @@ let OilsController = class OilsController {
             else {
                 return [];
             }
-        })
-            .then((resultMappingEquipmentOilCompatibility) => {
+        }).then((resultMappingEquipmentOilCompatibility) => {
             mappingEquipmentOilCompatibility = resultMappingEquipmentOilCompatibility;
             if (saveDateOils.listConsumptionEquipment) {
                 return this._ConsumptionEquipmentService.SaveList(mappingEquipmentOilCompatibility, saveDateOils.listConsumptionEquipment);
@@ -387,11 +352,10 @@ let OilsController = class OilsController {
             else {
                 return {
                     MappingConsumptionsEquipment: [],
-                    listConsumosValidarSendMail: [],
+                    listConsumosValidarSendMail: []
                 };
             }
-        })
-            .then((resultConsumptionEquipment) => {
+        }).then((resultConsumptionEquipment) => {
             mappingConsumptionsEquipment = resultConsumptionEquipment.MappingConsumptionsEquipment;
             listConsumosValidarSendMail = resultConsumptionEquipment.listConsumosValidarSendMail;
             if (listConsumosValidarSendMail && listConsumosValidarSendMail.length && listConsumosValidarSendMail.length > 0) {
@@ -401,16 +365,14 @@ let OilsController = class OilsController {
             else {
                 return [];
             }
-        })
-            .then((listaDeConsumosRegistrados) => {
+        }).then((listaDeConsumosRegistrados) => {
             if (listaDeConsumosRegistrados && listaDeConsumosRegistrados.length > 0) {
                 return (0, nodemailer_assets_1.SendMailHTMLOverCosumption)('cristian.puma.es6@gmail.com;', headerToken.name, (0, moment_assets_1.FormatDateUTCToDate)((0, moment_assets_1.GetDate)()), listaDeConsumosRegistrados);
             }
             else {
                 return true;
             }
-        })
-            .then((resultSendMail) => {
+        }).then((resultSendMail) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
@@ -420,13 +382,12 @@ let OilsController = class OilsController {
                     mappingConsumptionsEquipment: mappingConsumptionsEquipment,
                     mappingOils: mappingOils,
                     mappingBunkersOil: mappingBunkersOil,
-                    mappingEquipmentOilCompatibility: mappingEquipmentOilCompatibility,
-                },
+                    mappingEquipmentOilCompatibility: mappingEquipmentOilCompatibility
+                }
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -436,8 +397,7 @@ let OilsController = class OilsController {
     }
     async ImportDataMasive(headers, saveDataOils) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (saveDataOils) {
                 if (saveDataOils.length) {
                     return this._ConsumptionEquipmentService.ImportExcelLubricantDiario(headerToken, saveDataOils);
@@ -448,10 +408,9 @@ let OilsController = class OilsController {
             }
             else
                 throw 'MISSING_FIELS';
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,

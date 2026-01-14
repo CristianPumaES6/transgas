@@ -3,8 +3,8 @@ export declare const URL_Server: {
     back: string;
     version: string;
     puertoSocket: number;
-    puertoBackend: number;
     bd: string;
+    puertoBackend: number;
     emailNotification: string;
     passwordNotification: string;
 };

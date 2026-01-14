@@ -17,10 +17,12 @@ let PortsModule = class PortsModule {
 exports.PortsModule = PortsModule;
 exports.PortsModule = PortsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([port_entity_1.Port])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([port_entity_1.Port]),
+        ],
         providers: [ports_service_1.PortsService],
         controllers: [ports_controller_1.PortsController],
-        exports: [ports_service_1.PortsService],
+        exports: [ports_service_1.PortsService]
     })
 ], PortsModule);
 //# sourceMappingURL=ports.module.js.map

@@ -36,8 +36,7 @@ let OilsService = class OilsService {
         this._oilRepository = _oilRepository;
     }
     async Get(id) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._oilRepository.query(`
                      EXEC SP_BuscarReportePorId 
@@ -46,15 +45,12 @@ let OilsService = class OilsService {
             }
             else {
                 return this._oilRepository.find({
-                    where: [
-                        {
+                    where: [{
                             id: id,
-                        },
-                    ],
+                        }]
                 });
             }
-        })
-            .then((resultFind) => {
+        }).then((resultFind) => {
             if (!resultFind)
                 throw new Error('does_not_exist');
             if (resultFind && resultFind.length == 0)
@@ -64,8 +60,7 @@ let OilsService = class OilsService {
         });
     }
     async Gets(oilEntity) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -74,29 +69,26 @@ let OilsService = class OilsService {
                     where: [
                         {
                             name: (0, typeorm_3.Like)('%' + (oilEntity.name || '') + '%'),
-                            status: (0, typeorm_4.Not)(false),
-                        },
-                    ],
+                            status: (0, typeorm_4.Not)(false)
+                        }
+                    ]
                 });
             }
-        })
-            .then((result) => {
+        }).then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR LOS ACEITES.';
             return result;
         });
     }
     async Create(oilEntity) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return;
             }
             else {
                 return this._oilRepository.save(oilEntity);
             }
-        })
-            .then((resultSave) => {
+        }).then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el aceite en la BD.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -110,11 +102,9 @@ let OilsService = class OilsService {
         });
     }
     async Update(oilEntity) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this.Get(oilEntity.id);
-        })
-            .then(resultFind => {
+        }).then(resultFind => {
             if (!resultFind)
                 throw new Error('does_not_exist');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -123,8 +113,7 @@ let OilsService = class OilsService {
             else {
                 return this._oilRepository.update(oilEntity.id, oilEntity);
             }
-        })
-            .then(resultUpdate => {
+        }).then(resultUpdate => {
             if (!resultUpdate)
                 throw new Error('ERROR_TYPEORM_UPDATE_PORT');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -134,11 +123,9 @@ let OilsService = class OilsService {
     }
     async Delete(oilEntity, usuarioDelete) {
         let returnOilEntity;
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             return this.Get(oilEntity.id);
-        })
-            .then(resultFind => {
+        }).then(resultFind => {
             if (!resultFind)
                 throw new Error('does_not_exist');
             resultFind.userIdUpdated = usuarioDelete;
@@ -146,8 +133,7 @@ let OilsService = class OilsService {
             resultFind.status = false;
             returnOilEntity = resultFind;
             return this.Update(resultFind);
-        })
-            .then(resultSave => {
+        }).then(resultSave => {
             if (!resultSave)
                 throw new Error('ERROR_TYPEORM_UPDATE_PORT');
             return returnOilEntity;
@@ -251,7 +237,7 @@ let OilsService = class OilsService {
                             O.name AS nameOil,
                             BO.datetime AS datetimeBunkerOil,
                             CE.hourConsumption AS hourConsumption,
-                            ES.trialDay AS trialDay,
+                            ES.rate AS rate,
                             CE.observation AS observation
                         FROM
                             consumptionEquipment CE
@@ -269,8 +255,7 @@ let OilsService = class OilsService {
             else {
                 return null;
             }
-        })
-            .then(resultFind => {
+        }).then(resultFind => {
             let dailyOilConsumptionData = [];
             resultFind.forEach(item => {
                 let dateYYYYMM = (0, moment_assets_1.FormatDateUTCToDateYYYYMM)(item.dateConsumption);
@@ -282,7 +267,7 @@ let OilsService = class OilsService {
                 else {
                     calcRate = (0, math_assets_1.mathRound)(item.amountConsumption / item.hourConsumption, 2);
                 }
-                if (calcRate > item.trialDay) {
+                if (calcRate > item.rate) {
                     let findDailyOilConsumptionData = dailyOilConsumptionData.find(item2 => item2.dateConsumption == dateConsumption);
                     if (findDailyOilConsumptionData) {
                         findDailyOilConsumptionData.data.push({
@@ -293,10 +278,11 @@ let OilsService = class OilsService {
                             nameOil: item.nameOil,
                             datetimeBunkerOil: item.datetimeBunkerOil,
                             hourConsumption: item.hourConsumption,
-                            trialDay: item.trialDay,
-                            calcRate: calcRate,
+                            rate: item.rate,
+                            calcRate: calcRate
                         });
                     }
+                    ;
                     if (!findDailyOilConsumptionData) {
                         dailyOilConsumptionData.push({
                             dateConsumption: dateConsumption,
@@ -311,17 +297,17 @@ let OilsService = class OilsService {
                                     nameOil: item.nameOil,
                                     datetimeBunkerOil: item.datetimeBunkerOil,
                                     hourConsumption: item.hourConsumption,
-                                    trialDay: item.trialDay,
-                                    calcRate: calcRate,
-                                },
-                            ],
+                                    rate: item.rate,
+                                    calcRate: calcRate
+                                }
+                            ]
                         });
                     }
+                    ;
                 }
             });
             return dailyOilConsumptionData;
-        })
-            .catch(result => {
+        }).catch(result => {
             console.log(result);
             return [];
         });
@@ -331,15 +317,14 @@ let OilsService = class OilsService {
             .then(result => {
             if (buqueId && buqueId > 0) {
                 var queryWhere = 'consumptionEquipment.userId = ' + buqueId;
-                return (this._oilRepository
-                    .createQueryBuilder('oil')
+                return this._oilRepository.createQueryBuilder('oil')
                     .addSelect('consumptionEquipment.date', 'dateConsumption')
                     .addSelect('equipmentSystem.equipment', 'equipment')
                     .addSelect('consumptionEquipment.amount', 'amountConsumption')
                     .addSelect('oil.name', 'nameOil')
                     .addSelect('bunkerOil.datetime', 'datetimeBunkerOil')
                     .addSelect('consumptionEquipment.hourConsumption', 'hourConsumption')
-                    .addSelect('equipmentSystem.trialDay', 'trialDay')
+                    .addSelect('equipmentSystem.rate', 'rate')
                     .addSelect('consumptionEquipment.observation', 'observation')
                     .innerJoin('bunkerOil', 'bunkerOil', 'bunkerOil.entityOilId = oil.id AND bunkerOil.status = 1 AND oil.status = 1')
                     .innerJoin('equipmentSystem', 'equipmentSystem', 'equipmentSystem.id = bunkerOil.entityEquipmentId AND equipmentSystem.status = 1')
@@ -347,13 +332,12 @@ let OilsService = class OilsService {
                     .where(queryWhere, {})
                     .orderBy('consumptionEquipment.date', 'DESC')
                     .limit(1000)
-                    .getRawMany());
+                    .getRawMany();
             }
             else {
                 return [];
             }
-        })
-            .then(resultFind => {
+        }).then(resultFind => {
             let dailyOilConsumptionData = [];
             resultFind.forEach(item => {
                 let dateYYYYMM = (0, moment_assets_1.FormatDateUTCToDateYYYYMM)(item.dateConsumption);
@@ -378,10 +362,10 @@ let OilsService = class OilsService {
                             nameOil: item.nameOil,
                             datetimeBunkerOil: item.datetimeBunkerOil,
                             hourConsumption: item.hourConsumption,
-                            trialDay: item.trialDay,
-                            calcRate: calcRate,
-                        },
-                    ],
+                            rate: item.rate,
+                            calcRate: calcRate
+                        }
+                    ]
                 });
             });
             return dailyOilConsumptionData;

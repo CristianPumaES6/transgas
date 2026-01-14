@@ -34,8 +34,7 @@ let PortsService = class PortsService {
         this.portRepository = portRepository;
     }
     async Create(port) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`SP_CheckTheLastPortTrip @userId='${port.userId}', @voyageId='${port.voyageId}'`);
             }
@@ -45,23 +44,23 @@ let PortsService = class PortsService {
                         {
                             userId: port.userId,
                             voyageId: port.voyageId,
-                            status: true,
-                        },
+                            status: true
+                        }
                     ],
                     take: 1,
                     order: {
                         portNumber: 'DESC',
-                    },
+                    }
                 });
             }
-        })
-            .then((result) => {
-            if (result && result.length > 0) {
+        }).then((result) => {
+            if (result && (result.length > 0)) {
                 port.portNumber = port.portNumber;
             }
             else {
                 port.portNumber = 1;
             }
+            ;
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                         EXEC SP_CreateNewPort
@@ -80,8 +79,7 @@ let PortsService = class PortsService {
             else {
                 return this.portRepository.save(port);
             }
-        })
-            .then(resultSave => {
+        }).then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el viaje en la BD.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -96,8 +94,7 @@ let PortsService = class PortsService {
         });
     }
     async Get(id) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                   EXEC SP_BuscarPuertoPorId  @portId = ${id}
@@ -105,16 +102,13 @@ let PortsService = class PortsService {
             }
             else {
                 return this.portRepository.findOne({
-                    where: [
-                        {
+                    where: [{
                             id: id,
-                            status: (0, typeorm_2.Not)(false),
-                        },
-                    ],
+                            status: (0, typeorm_2.Not)(false)
+                        }]
                 });
             }
-        })
-            .then(resultFind => {
+        }).then((resultFind) => {
             if (!resultFind)
                 throw 'port_does_not_exist';
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -127,8 +121,7 @@ let PortsService = class PortsService {
         });
     }
     async Gets(port) {
-        return await this.portRepository
-            .find({
+        return await this.portRepository.find({
             where: [
                 {
                     userId: (0, typeorm_2.Like)('%' + (port.userId || '') + '%'),
@@ -136,17 +129,15 @@ let PortsService = class PortsService {
                     portNumber: (0, typeorm_2.Like)('%' + (port.portNumber || '') + '%'),
                     departurePort: (0, typeorm_2.Like)('%' + port.departurePort + '%'),
                     arrivalPort: (0, typeorm_2.Like)('%' + port.arrivalPort + '%'),
-                    status: (0, typeorm_2.Not)(false),
-                },
-            ],
-        })
-            .then((result) => {
+                    status: (0, typeorm_2.Not)(false)
+                }
+            ]
+        }).then((result) => {
             return result;
         });
     }
     async GetsDetail(port) {
-        return await this.portRepository
-            .find({
+        return await this.portRepository.find({
             relations: ['dailyReports'],
             where: [
                 {
@@ -155,17 +146,15 @@ let PortsService = class PortsService {
                     portNumber: (0, typeorm_2.Like)('%' + (port.portNumber || '') + '%'),
                     departurePort: (0, typeorm_2.Like)('%' + port.departurePort + '%'),
                     arrivalPort: (0, typeorm_2.Like)('%' + port.arrivalPort + '%'),
-                    status: (0, typeorm_2.Not)(false),
-                },
-            ],
-        })
-            .then((result) => {
+                    status: (0, typeorm_2.Not)(false)
+                }
+            ]
+        }).then((result) => {
             return result;
         });
     }
     async Update(port) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                   EXEC SP_BuscarPuertoPorId  @portId = ${port.id}
@@ -174,12 +163,11 @@ let PortsService = class PortsService {
             else {
                 return this.portRepository.find({
                     where: [
-                        { id: port.id },
-                    ],
+                        { id: port.id }
+                    ]
                 });
             }
-        })
-            .then(resultFind => {
+        }).then(resultFind => {
             if (!resultFind)
                 throw 'port_does_not_exist';
             if (resultFind && resultFind.length == 0)
@@ -203,8 +191,7 @@ let PortsService = class PortsService {
             else {
                 return this.portRepository.update(port.id, port);
             }
-        })
-            .then(resultUpdate => {
+        }).then(resultUpdate => {
             if (!resultUpdate)
                 throw new Error('TYPEORM_UPDATE_VOYAGE');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -217,8 +204,7 @@ let PortsService = class PortsService {
     }
     async Delete(port) {
         port.status = false;
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                       EXEC SP_UpdatePort
@@ -242,8 +228,7 @@ let PortsService = class PortsService {
                     return port;
                 });
             }
-        })
-            .then(resultUpdate => {
+        }).then(resultUpdate => {
             if (!resultUpdate)
                 throw new Error('TYPEORM_UPDATE_VOYAGE');
             if (server_config_1.URL_Server.bd === 'MSSQL') {
@@ -257,8 +242,7 @@ let PortsService = class PortsService {
     }
     async ThereIsThisPortInTheVoyage(portNumber, voyageId, userId) {
         let portSearch;
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this.portRepository.query(`
                         SP_ThereIsThisPortInTheVoyage 
@@ -273,14 +257,13 @@ let PortsService = class PortsService {
                             voyageId: voyageId,
                             portNumber: portNumber,
                             userId: userId,
-                            status: true,
-                        },
+                            status: true
+                        }
                     ],
                     take: 1,
                 });
             }
-        })
-            .then(resultFind => {
+        }).then(resultFind => {
             if (resultFind && resultFind.length) {
                 portSearch = resultFind[0];
                 return resultFind[0];
@@ -288,16 +271,14 @@ let PortsService = class PortsService {
             else {
                 return null;
             }
-        })
-            .catch(err => {
+        }).catch(err => {
             throw '';
         });
     }
     async GetLastPortTotalConsumpByUserId(userId) {
         return await (0, promises_assets_1.DummyPromise)()
             .then(result => {
-            return (this.portRepository
-                .createQueryBuilder('port')
+            return this.portRepository.createQueryBuilder('port')
                 .select('port.id', 'portId')
                 .addSelect('port.userId', 'userId')
                 .addSelect('port.departurePort', 'departurePort')
@@ -324,9 +305,8 @@ let PortsService = class PortsService {
                 .groupBy('port.id, port.userId, port.departurePort, port.arrivalPort,port.startDate, port.startIFO, port.startMGO')
                 .orderBy('port.id', 'DESC')
                 .limit(1)
-                .getRawMany());
-        })
-            .then((result) => {
+                .getRawMany();
+        }).then((result) => {
             if (!result)
                 throw 'ERROR GetLastPortTotalConsumpByUserId';
             return result;
@@ -357,8 +337,6 @@ let PortsService = class PortsService {
                 newPortEntity.startDate = addPort.startDate;
                 newPortEntity.startIFO = addPort.startIFO;
                 newPortEntity.startMGO = addPort.startMGO;
-                newPortEntity.dateETA = addPort.dateETA;
-                newPortEntity.historyDateETA = addPort.historyDateETA;
                 newPortEntity.userIdCreated = addPort.userIdCreated;
                 newPortEntity.dateCreated = (0, moment_assets_1.GetDate)();
                 delete newPortEntity.userIdUpdated;
@@ -394,8 +372,6 @@ let PortsService = class PortsService {
                 updatePortEntity.startDate = updatePort.startDate;
                 updatePortEntity.startIFO = updatePort.startIFO;
                 updatePortEntity.startMGO = updatePort.startMGO;
-                updatePortEntity.dateETA = updatePort.dateETA;
-                updatePortEntity.historyDateETA = updatePort.historyDateETA;
                 updatePortEntity.userIdCreated = updatePort.userIdCreated;
                 updatePortEntity.dateCreated = updatePort.dateCreated;
                 updatePortEntity.userIdUpdated = updatePort.userIdUpdated;
@@ -430,8 +406,6 @@ let PortsService = class PortsService {
                 deletePortEntity.startDate = deletePort.startDate;
                 deletePortEntity.startIFO = deletePort.startIFO;
                 deletePortEntity.startMGO = deletePort.startMGO;
-                deletePortEntity.dateETA = deletePort.dateETA;
-                deletePortEntity.historyDateETA = deletePort.historyDateETA;
                 deletePortEntity.userIdCreated = deletePort.userIdCreated;
                 deletePortEntity.dateCreated = deletePort.dateCreated;
                 deletePortEntity.userIdUpdated = deletePort.userIdUpdated;

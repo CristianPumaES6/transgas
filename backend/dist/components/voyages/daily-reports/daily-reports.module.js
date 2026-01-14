@@ -17,10 +17,12 @@ let DailyReportsModule = class DailyReportsModule {
 exports.DailyReportsModule = DailyReportsModule;
 exports.DailyReportsModule = DailyReportsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([daily_report_entity_1.DailyReport])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([daily_report_entity_1.DailyReport]),
+        ],
         providers: [daily_reports_service_1.DailyReportsService],
         controllers: [daily_reports_controller_1.DailyReportsController],
-        exports: [daily_reports_service_1.DailyReportsService],
+        exports: [daily_reports_service_1.DailyReportsService]
     })
 ], DailyReportsModule);
 //# sourceMappingURL=daily-reports.module.js.map

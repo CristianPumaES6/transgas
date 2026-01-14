@@ -35,8 +35,7 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
         this._EquipmentOilCompatibilityEntity = _EquipmentOilCompatibilityEntity;
     }
     async Gets(equipmentOilCompatibility) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return null;
             }
@@ -44,31 +43,28 @@ let EquipmentOilCompatibilityService = class EquipmentOilCompatibilityService {
                 return this._EquipmentOilCompatibilityEntity.find({
                     where: [
                         {
-                            id: equipmentOilCompatibility.id || (0, typeorm_3.Like)('%' + '%'),
-                            userId: equipmentOilCompatibility.userId || (0, typeorm_3.Like)('%' + '%'),
-                            status: (0, typeorm_4.Not)(false),
-                        },
-                    ],
+                            id: (equipmentOilCompatibility.id || (0, typeorm_3.Like)('%' + '%')),
+                            userId: (equipmentOilCompatibility.userId || (0, typeorm_3.Like)('%' + '%')),
+                            status: (0, typeorm_4.Not)(false)
+                        }
+                    ]
                 });
             }
-        })
-            .then((result) => {
+        }).then((result) => {
             if (!result)
                 throw 'ERROR AL CONSULTAR LOS aceites compatibles con el equipo.';
             return result;
         });
     }
     async Create(equipmentOilCompatibility) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then(result => {
+        return (0, promises_assets_1.DummyPromise)().then(result => {
             if (server_config_1.URL_Server.bd === 'MSSQL') {
                 return this._EquipmentOilCompatibilityEntity.query("SP_CheckTheLastRecordedTrip @userId='" + equipmentOilCompatibility.userId + "', @year='");
             }
             else {
                 return this._EquipmentOilCompatibilityEntity.save(equipmentOilCompatibility);
             }
-        })
-            .then((resultSave) => {
+        }).then((resultSave) => {
             if (!resultSave)
                 throw new Error('No se puedo registrar el aceite compatible.');
             if (server_config_1.URL_Server.bd === 'MSSQL') {

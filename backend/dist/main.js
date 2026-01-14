@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./polyfills");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const bodyParser = require("body-parser");
@@ -12,11 +13,11 @@ const server_config_1 = require("./config/server.config");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const options = {
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        preflightContinue: false,
-        optionsSuccessStatus: 204,
-        credentials: true,
+        'origin': '*',
+        'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        'preflightContinue': false,
+        'optionsSuccessStatus': 204,
+        'credentials': true,
     };
     app.use(bodyParser.json({ limit: '50mb' }));
     app.enableCors(options);

@@ -44,7 +44,7 @@ __decorate([
     __metadata("design:type", String)
 ], SendMessageEntity.prototype, "typeSend", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar', { length: 2000 }),
+    (0, typeorm_1.Column)("varchar", { length: 2000 }),
     __metadata("design:type", String)
 ], SendMessageEntity.prototype, "html", void 0);
 __decorate([

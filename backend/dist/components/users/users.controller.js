@@ -29,8 +29,7 @@ let UsersController = class UsersController {
     }
     async Get(headers, id) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((result) => {
+        return (0, promises_assets_1.DummyPromise)().then((result) => {
             let userId = Number(id);
             if (userId && headerToken.id) {
                 if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
@@ -44,17 +43,15 @@ let UsersController = class UsersController {
             else {
                 throw new Error('MISSING_FIELS');
             }
-        })
-            .then((resultGet) => {
+        }).then((resultGet) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultGet,
+                data: resultGet
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -64,8 +61,7 @@ let UsersController = class UsersController {
     }
     async Gets(headers, user) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (headerToken && (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT' || headerToken.role == 'OWNER') && user) {
                 return this._usersService.Gets(user);
             }
@@ -77,17 +73,15 @@ let UsersController = class UsersController {
                     throw new Error('MISSING_FIELS');
                 }
             }
-        })
-            .then((results) => {
+        }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results,
+                data: results
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -97,8 +91,7 @@ let UsersController = class UsersController {
     }
     async Create(headers, user) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -172,17 +165,15 @@ let UsersController = class UsersController {
             else {
                 throw 'MISSING_FIELS';
             }
-        })
-            .then((resultCreate) => {
+        }).then((resultCreate) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultCreate,
+                data: resultCreate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -192,8 +183,7 @@ let UsersController = class UsersController {
     }
     async UpdateUser(headers, id, user) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -268,17 +258,15 @@ let UsersController = class UsersController {
             else {
                 throw 'MISSING_FIELS';
             }
-        })
-            .then((resultUpdate) => {
+        }).then((resultUpdate) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultUpdate,
+                data: resultUpdate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -288,8 +276,7 @@ let UsersController = class UsersController {
     }
     async delete(headers, id) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -299,17 +286,15 @@ let UsersController = class UsersController {
             else {
                 throw new Error('MISSING_FIELS');
             }
-        })
-            .then((resultUpdate) => {
+        }).then((resultUpdate) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultUpdate,
+                data: resultUpdate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -319,8 +304,7 @@ let UsersController = class UsersController {
     }
     async UploadImagePerfil(headers, id, file) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (!(headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT')) {
                 throw new Error('Se esta intentado registrar con un rol no valido.');
             }
@@ -328,19 +312,17 @@ let UsersController = class UsersController {
                 throw 'MISSING_IMAGE';
             }
             return this._usersService.UpdateImageUser(id, file.filename);
-        })
-            .then((resultFilenameUpdate) => {
+        }).then((resultFilenameUpdate) => {
             if (!resultFilenameUpdate)
                 throw new Error('No se guardo la imagen correctamente.');
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultFilenameUpdate,
+                data: resultFilenameUpdate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -398,7 +380,7 @@ __decorate([
             destination: path_config_1.FOLDER_UPLOADS,
             filename: image_middleware_1.EditFileName,
         }),
-        fileFilter: image_middleware_1.ImageFileFilter,
+        fileFilter: image_middleware_1.ImageFileFilter
     })),
     __param(0, (0, common_1.Headers)()),
     __param(1, (0, common_1.Param)('id')),

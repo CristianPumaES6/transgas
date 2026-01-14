@@ -13,7 +13,7 @@ exports.EquipmentOilCompatibilityEntity = void 0;
 const typeorm_1 = require("typeorm");
 let EquipmentOilCompatibilityEntity = class EquipmentOilCompatibilityEntity {
     constructor(id, userId, entityEquipmentId, entityOilId, userIdCreated, dateCreated, userIdUpdated, dateUpdated, status) {
-        this.SyncStatus = '';
+        this.SyncStatus = "";
         this.id = id || null;
         this.userId = userId || null;
         this.entityEquipmentId = entityEquipmentId || 0;

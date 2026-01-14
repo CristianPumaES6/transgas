@@ -35,7 +35,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.OneToMany)(type => daily_report_entity_1.DailyReport, dailyReport => dailyReport.port, {
         eager: true,
-        cascade: true,
+        cascade: true
     }),
     __metadata("design:type", Array)
 ], Port.prototype, "dailyReports", void 0);
@@ -56,33 +56,13 @@ __decorate([
     __metadata("design:type", String)
 ], Port.prototype, "startDate", void 0);
 __decorate([
-    (0, typeorm_1.Column)({
-        type: 'decimal',
-        precision: 18,
-        scale: 8,
-        default: 0,
-        nullable: true,
-    }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], Port.prototype, "startIFO", void 0);
 __decorate([
-    (0, typeorm_1.Column)({
-        type: 'decimal',
-        precision: 18,
-        scale: 8,
-        default: 0,
-        nullable: true,
-    }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 8, default: 0, nullable: true }),
     __metadata("design:type", Number)
 ], Port.prototype, "startMGO", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
-], Port.prototype, "dateETA", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
-], Port.prototype, "historyDateETA", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)

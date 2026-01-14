@@ -1,4 +1,4 @@
-import { LoggedUser } from './loggedUser';
+import { LoggedUser } from "./loggedUser";
 export declare class SocketEmitModel {
     action: string;
     data: LoggedUser;

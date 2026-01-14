@@ -24,11 +24,9 @@ let PortsController = class PortsController {
         this._portsService = _portsService;
     }
     GetLastPortAndTotalConsump(userId) {
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             return this._portsService.GetLastPortTotalConsumpByUserId(userId);
-        })
-            .then((results) => {
+        }).then((results) => {
             let getLastPortAndTotalConsump = new port_entity_1.GetLastPortAndTotalConsump();
             results.forEach(element => {
                 getLastPortAndTotalConsump.portId = element.portId || 0;
@@ -56,12 +54,11 @@ let PortsController = class PortsController {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: getLastPortAndTotalConsump,
+                data: getLastPortAndTotalConsump
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -71,32 +68,28 @@ let PortsController = class PortsController {
     }
     async GetsDetail(headers, port) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId) {
                 port.userId = Number(port.userId);
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        })
-            .then((resultValidate) => {
+        }).then((resultValidate) => {
             if (headerToken.role === 'ADMIN' || headerToken.role === 'SUPPORT') {
             }
             else if (port.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
             return this._portsService.GetsDetail(port);
-        })
-            .then((results) => {
+        }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results,
+                data: results
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -106,8 +99,7 @@ let PortsController = class PortsController {
     }
     async Get(headers, id) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 let portId = Number(id);
                 return this._portsService.Get(portId);
@@ -115,8 +107,7 @@ let PortsController = class PortsController {
             else {
                 throw 'MISSING_FIELS';
             }
-        })
-            .then((resultGet) => {
+        }).then((resultGet) => {
             if (headerToken.role === 'ADMIN' || headerToken.role === 'SUPPORT') {
             }
             else if (Number(resultGet.userId) !== Number(headerToken.id)) {
@@ -125,12 +116,11 @@ let PortsController = class PortsController {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultGet,
+                data: resultGet
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -140,32 +130,28 @@ let PortsController = class PortsController {
     }
     async Gets(headers, port) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId) {
                 port.userId = Number(port.userId);
                 return true;
             }
             else
                 throw new Error('MISSING_FIELS');
-        })
-            .then((resultValidate) => {
+        }).then((resultValidate) => {
             if (headerToken.role === 'ADMIN' || headerToken.role === 'SUPPORT') {
             }
             else if (port.userId !== headerToken.id)
                 throw new Error('ERROR_USERID_FAIL');
             return this._portsService.Gets(port);
-        })
-            .then((results) => {
+        }).then((results) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: results,
+                data: results
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -175,8 +161,7 @@ let PortsController = class PortsController {
     }
     async CreatePort(headers, port) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId && Number(port.portNumber) && port.departurePort && headerToken && headerToken.id) {
                 if (headerToken.role !== 'ADMIN' && headerToken.role !== 'SUPPORT') {
                     if (Number(headerToken.id) !== Number(port.userId))
@@ -192,28 +177,26 @@ let PortsController = class PortsController {
             }
             else
                 throw 'MISSING_FIELS';
-        })
-            .then((resultCreate) => {
+        }).then((resultCreate) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultCreate,
+                data: resultCreate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
                 message: errorMsg,
             }, common_1.HttpStatus.ACCEPTED);
         });
+        ;
     }
     async Update(headers, id, port) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (port && port.userId && port.portNumber && port.departurePort && headerToken && headerToken.id) {
                 if (headerToken.role === 'BUQUE') {
                     if (Number(headerToken.id) !== Number(port.userId))
@@ -229,19 +212,17 @@ let PortsController = class PortsController {
             else {
                 throw 'MISSING_FIELS';
             }
-        })
-            .then((resultUpdate) => {
+        }).then((resultUpdate) => {
             if (!resultUpdate)
                 throw new Error('TYPEORM_UPDATE_VOYAGE');
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultUpdate,
+                data: resultUpdate
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,
@@ -251,16 +232,14 @@ let PortsController = class PortsController {
     }
     async Delete(headers, id) {
         let headerToken = (0, jwtDecode_assets_1.JwtDecode)(headers.authorization);
-        return (0, promises_assets_1.DummyPromise)()
-            .then((resultDummy) => {
+        return (0, promises_assets_1.DummyPromise)().then((resultDummy) => {
             if (Number(id)) {
                 return this._portsService.Get(id);
             }
             else {
                 throw new Error('MISSING_FIELS');
             }
-        })
-            .then((result) => {
+        }).then((result) => {
             if (headerToken.role == 'ADMIN' || headerToken.role == 'SUPPORT') {
             }
             else if (Number(headerToken.id) !== Number(result.userId))
@@ -272,17 +251,15 @@ let PortsController = class PortsController {
             result.userIdUpdated = headerToken.id;
             result.dateUpdated = (0, moment_assets_1.GetDate)();
             return this._portsService.Delete(result);
-        })
-            .then((resultDelete) => {
+        }).then((resultDelete) => {
             return {
                 status: common_1.HttpStatus.OK,
                 message: 'OK',
-                data: resultDelete,
+                data: resultDelete
             };
-        })
-            .catch(err => {
-            const clientMsg = typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST';
-            const errorMsg = typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST';
+        }).catch(err => {
+            const clientMsg = (typeof err === 'string' ? err : 'CANNOT_PROCESS_REQUEST');
+            const errorMsg = (typeof err === 'string' ? err : err.message || err.description || 'ERROR_EXEC_REQUEST');
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.ACCEPTED,
                 error: clientMsg,

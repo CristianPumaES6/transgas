@@ -6,15 +6,13 @@ import { DailyReportsService } from './daily-reports/daily-reports.service';
 import { FormatExcelLastVoyageService } from '../../services/format-excel-last-voyage/format-excel-last-voyage.service';
 import { UsersService } from '../users/users.service';
 import { SendMailConfig } from '../../models/sendMailConfig';
-import { DailyReportSummaryService } from './daily-report-summary/daily-report-summary.service';
 export declare class VoyagesController {
     private readonly _voyagesService;
     private readonly _portsService;
     private readonly _dailyReportsService;
-    private readonly _dailyReportSummaryService;
     private readonly _formatExcelLastVoyageService;
     private readonly _usersService;
-    constructor(_voyagesService: VoyagesService, _portsService: PortsService, _dailyReportsService: DailyReportsService, _dailyReportSummaryService: DailyReportSummaryService, _formatExcelLastVoyageService: FormatExcelLastVoyageService, _usersService: UsersService);
+    constructor(_voyagesService: VoyagesService, _portsService: PortsService, _dailyReportsService: DailyReportsService, _formatExcelLastVoyageService: FormatExcelLastVoyageService, _usersService: UsersService);
     GetsByYear(headers: any, voyageFilterByYears: VoyageFilterByYears): Promise<any>;
     GetsDetail(headers: any, voyage: Voyage, page: number): Promise<any>;
     Get(id: any): Promise<any>;
