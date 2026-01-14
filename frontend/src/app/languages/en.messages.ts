@@ -20,7 +20,7 @@ export const application: any = {
     EXIT_PERFIL: 'Logout',
     CURRENT_STATUS: 'current status',
     STATUS_TRUE: 'Online',
-    STATUS_FALSE: 'Offline',
+    STATUS_FALSE: 'Technical support available 🛠️',
     // Errores comunes
     ERROR: 'Error',
     SUCCESS: 'Success',

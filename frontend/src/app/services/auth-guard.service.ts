@@ -32,19 +32,11 @@ export class AuthGuardService implements CanActivate {
 
         // Si el error es un 401 Unauthorized asumo que la sesion se perdio
         if (err.status === 401) {
-            // Actualizo sesion y usario en localStorage
-            localStorage.removeItem('Session');
-            localStorage.removeItem('LoggedUser');
-            localStorage.removeItem('LoggedUserRole');
-            localStorage.removeItem('IsSystemUser');
-            localStorage.removeItem('LoggingOut');
 
-            // RECARGAMOS LA SESSION.
-            location.reload();
+            alert('La sesión del usuario ha expirado. Comuníquese con soporte.');
+
             // Actualizo el mensaje a mostrar
             errMsg = 'SESSION_LOST_401';
-
-
         }
 
         // Si el error es un 402 Payment required la instancia está vencida o suspendida

@@ -145,4 +145,21 @@ export class LogInComponent implements OnInit {
 
   }
 
+  public ClickChangeApiUrl() {
+    console.log('ClickChangeApiUrl');
+    const currentUrl = localStorage.getItem('API_URL_OVERRIDE') || EnvConfig.API;
+    const newUrl = prompt('Update API URL:', currentUrl);
+
+    if (newUrl !== null) {
+      if (newUrl.trim() === '') {
+        // Reset to default if empty
+        localStorage.removeItem('API_URL_OVERRIDE');
+      } else {
+        localStorage.setItem('API_URL_OVERRIDE', newUrl.trim());
+      }
+      // Reload to apply changes
+      location.reload();
+    }
+  }
+
 }
